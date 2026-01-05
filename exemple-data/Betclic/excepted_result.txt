@@ -1,0 +1,42 @@
+Betclic: pseudo: jmenfouu
+4416 Mains.
+Date: Global
+Tornaments 300
+CEV SpinnPro 86
+HU SB 32
+HU BB 21
+BTN 24
+3W SB 5
+3W BB 4
+28500 chips won
+25786 Net excepted Chips Won
+25372 chips won with showdown
+3128 chips won without showdown
+
+Betclic: pseudo: jmenfouu
+date: 02/01/2026:
+Tornaments 192
+CEV SpinnPro 100
+HU SB 51
+HU BB 19
+BTN 28
+3W SB -5
+3W BB 7
+19500 chips won
+19130 Net excepted Chips Won
+17726 chips won with showdown
+1774 chips won without showdown
+
+Betclic: pseudo: jmenfouu
+date: 03/01/2026:
+Tornaments 108
+CEV SpinnPro 62
+HU SB 0
+HU BB 25
+BTN 16
+3W SB 22
+3W BB -1
+9000 chips won
+6656 Net excepted Chips Won
+7646 chips won with showdown
+1354 chips won without showdown
