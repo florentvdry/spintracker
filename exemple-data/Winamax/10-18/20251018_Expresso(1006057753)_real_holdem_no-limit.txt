@@ -1,0 +1,544 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985147022245889-1-1760786603 - Holdem no limit (10/20) - 2025/10/18 11:23:23 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Dantee_8 (500)
+*** ANTE/BLINDS ***
+Dantee_8 posts small blind 10
+SP_Mage47981 posts big blind 20
+Dealt to Nelfrot-YT [8d Jc]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Dantee_8 calls 10
+SP_Mage47981 checks
+*** FLOP *** [Ad 8s 2h]
+Dantee_8 checks
+SP_Mage47981 bets 20
+Dantee_8 calls 20
+*** TURN *** [Ad 8s 2h][Kd]
+Dantee_8 checks
+SP_Mage47981 checks
+*** RIVER *** [Ad 8s 2h Kd][Js]
+Dantee_8 checks
+SP_Mage47981 checks
+*** SHOW DOWN ***
+Dantee_8 shows [7h 3h] (High card : Ace)
+SP_Mage47981 shows [5h 5s] (One pair : 5)
+SP_Mage47981 collected 80 from pot
+*** SUMMARY ***
+Total pot 80 | No rake
+Board: [Ad 8s 2h Kd Js]
+Seat 1: SP_Mage47981 (big blind) showed [5h 5s] and won 80 with One pair : 5
+Seat 3: Dantee_8 (small blind) showed [7h 3h] and lost with High card : Ace
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985147022245889-2-1760786626 - Holdem no limit (10/20) - 2025/10/18 11:23:46 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SP_Mage47981 (540)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Dantee_8 (460)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [8c Td]
+*** PRE-FLOP *** 
+Dantee_8 folds
+SP_Mage47981 calls 10
+Nelfrot-YT checks
+*** FLOP *** [6s Kc 4d]
+SP_Mage47981 checks
+Nelfrot-YT bets 20
+SP_Mage47981 calls 20
+*** TURN *** [6s Kc 4d][Ad]
+SP_Mage47981 checks
+Nelfrot-YT bets 60
+SP_Mage47981 raises 440 to 500 and is all-in
+Nelfrot-YT folds
+SP_Mage47981 collected 640 from pot
+*** SUMMARY ***
+Total pot 640 | No rake
+Board: [6s Kc 4d Ad]
+Seat 1: SP_Mage47981 (small blind) won 640
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985147022245889-3-1760786645 - Holdem no limit (10/20) - 2025/10/18 11:24:05 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SP_Mage47981 (640)
+Seat 2: Nelfrot-YT (400)
+Seat 3: Dantee_8 (460)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Dantee_8 posts big blind 20
+Dealt to Nelfrot-YT [6h Kh]
+*** PRE-FLOP *** 
+SP_Mage47981 calls 20
+Nelfrot-YT calls 10
+Dantee_8 checks
+*** FLOP *** [7s Js 5s]
+Nelfrot-YT checks
+Dantee_8 checks
+SP_Mage47981 checks
+*** TURN *** [7s Js 5s][2c]
+Nelfrot-YT checks
+Dantee_8 bets 20
+SP_Mage47981 calls 20
+Nelfrot-YT folds
+*** RIVER *** [7s Js 5s 2c][7h]
+Dantee_8 checks
+SP_Mage47981 checks
+*** SHOW DOWN ***
+Dantee_8 shows [6s Tc] (One pair : 7)
+SP_Mage47981 shows [As 4c] (One pair : 7)
+SP_Mage47981 collected 100 from pot
+*** SUMMARY ***
+Total pot 100 | No rake
+Board: [7s Js 5s 2c 7h]
+Seat 1: SP_Mage47981 (button) showed [As 4c] and won 100 with One pair : 7
+Seat 3: Dantee_8 (big blind) showed [6s Tc] and lost with One pair : 7
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985147022245889-4-1760786679 - Holdem no limit (10/20) - 2025/10/18 11:24:39 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (700)
+Seat 2: Nelfrot-YT (380)
+Seat 3: Dantee_8 (420)
+*** ANTE/BLINDS ***
+Dantee_8 posts small blind 10
+SP_Mage47981 posts big blind 20
+Dealt to Nelfrot-YT [Jh Jc]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+Dantee_8 raises 20 to 60
+SP_Mage47981 folds
+Nelfrot-YT raises 320 to 380 and is all-in
+Dantee_8 calls 320
+*** FLOP *** [5c Ts 8c]
+*** TURN *** [5c Ts 8c][Kd]
+*** RIVER *** [5c Ts 8c Kd][2s]
+*** SHOW DOWN ***
+Dantee_8 shows [6s 6d] (One pair : 6)
+Nelfrot-YT shows [Jh Jc] (One pair : Jacks)
+Nelfrot-YT collected 780 from pot
+*** SUMMARY ***
+Total pot 780 | No rake
+Board: [5c Ts 8c Kd 2s]
+Seat 2: Nelfrot-YT (button) showed [Jh Jc] and won 780 with One pair : Jacks
+Seat 3: Dantee_8 (small blind) showed [6s 6d] and lost with One pair : 6
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320985147022245889-5-1760786699 - Holdem no limit (15/30) - 2025/10/18 11:24:59 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SP_Mage47981 (680)
+Seat 2: Nelfrot-YT (780)
+Seat 3: Dantee_8 (40)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [4s 7h]
+*** PRE-FLOP *** 
+Dantee_8 raises 10 to 40 and is all-in
+SP_Mage47981 calls 25
+Nelfrot-YT folds
+*** FLOP *** [2s Qs 8d]
+*** TURN *** [2s Qs 8d][5d]
+*** RIVER *** [2s Qs 8d 5d][6d]
+*** SHOW DOWN ***
+SP_Mage47981 shows [Kh Jd] (High card : King)
+Dantee_8 shows [Jc 8s] (One pair : 8)
+Dantee_8 collected 110 from pot
+*** SUMMARY ***
+Total pot 110 | No rake
+Board: [2s Qs 8d 5d 6d]
+Seat 1: SP_Mage47981 (small blind) showed [Kh Jd] and lost with High card : King
+Seat 3: Dantee_8 (button) showed [Jc 8s] and won 110 with One pair : 8
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320985147022245889-6-1760786714 - Holdem no limit (15/30) - 2025/10/18 11:25:14 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SP_Mage47981 (640)
+Seat 2: Nelfrot-YT (750)
+Seat 3: Dantee_8 (110)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Dantee_8 posts big blind 30
+Dealt to Nelfrot-YT [Ts 7s]
+*** PRE-FLOP *** 
+SP_Mage47981 folds
+Nelfrot-YT raises 720 to 750 and is all-in
+Dantee_8 calls 80 and is all-in
+*** FLOP *** [5d 2c 4h]
+*** TURN *** [5d 2c 4h][3h]
+*** RIVER *** [5d 2c 4h 3h][4s]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Ts 7s] (One pair : 4)
+Dantee_8 shows [4d Kd] (Trips of 4)
+Dantee_8 collected 220 from main pot
+Nelfrot-YT collected 640 from side pot 1
+*** SUMMARY ***
+Total pot 860 | No rake
+Board: [5d 2c 4h 3h 4s]
+Seat 2: Nelfrot-YT (small blind) showed [Ts 7s] and won 640 with One pair : 4
+Seat 3: Dantee_8 (big blind) showed [4d Kd] and won 220 with Trips of 4
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320985147022245889-7-1760786728 - Holdem no limit (15/30) - 2025/10/18 11:25:28 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (640)
+Seat 2: Nelfrot-YT (640)
+Seat 3: Dantee_8 (220)
+*** ANTE/BLINDS ***
+Dantee_8 posts small blind 15
+SP_Mage47981 posts big blind 30
+Dealt to Nelfrot-YT [4s Ah]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 30 to 60
+Dantee_8 calls 45
+SP_Mage47981 folds
+*** FLOP *** [5d Qd Qs]
+Dantee_8 checks
+Nelfrot-YT bets 38
+Dantee_8 calls 38
+*** TURN *** [5d Qd Qs][6s]
+Dantee_8 checks
+Nelfrot-YT checks
+*** RIVER *** [5d Qd Qs 6s][Jd]
+Dantee_8 checks
+Nelfrot-YT checks
+*** SHOW DOWN ***
+Nelfrot-YT shows [4s Ah] (One pair : Queens)
+Dantee_8 shows [Ad 4h] (One pair : Queens)
+Dantee_8 collected 113 from pot
+Nelfrot-YT collected 113 from pot
+*** SUMMARY ***
+Total pot 226 | No rake
+Board: [5d Qd Qs 6s Jd]
+Seat 2: Nelfrot-YT (button) showed [4s Ah] and won 113 with One pair : Queens
+Seat 3: Dantee_8 (small blind) showed [Ad 4h] and won 113 with One pair : Queens
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320985147022245889-8-1760786773 - Holdem no limit (15/30) - 2025/10/18 11:26:13 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SP_Mage47981 (610)
+Seat 2: Nelfrot-YT (655)
+Seat 3: Dantee_8 (235)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Ad Kd]
+*** PRE-FLOP *** 
+Dantee_8 raises 30 to 60
+SP_Mage47981 folds
+Nelfrot-YT raises 595 to 655 and is all-in
+Dantee_8 calls 175 and is all-in
+*** FLOP *** [4c 5c 4h]
+*** TURN *** [4c 5c 4h][Kc]
+*** RIVER *** [4c 5c 4h Kc][9h]
+*** SHOW DOWN ***
+Dantee_8 shows [Kh Qh] (Two pairs : Kings and 4)
+Nelfrot-YT shows [Ad Kd] (Two pairs : Kings and 4)
+Nelfrot-YT collected 905 from pot
+*** SUMMARY ***
+Total pot 905 | No rake
+Board: [4c 5c 4h Kc 9h]
+Seat 2: Nelfrot-YT (big blind) showed [Ad Kd] and won 905 with Two pairs : Kings and 4
+Seat 3: Dantee_8 (button) showed [Kh Qh] and lost with Two pairs : Kings and 4
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985147022245889-9-1760786794 - Holdem no limit (20/40) - 2025/10/18 11:26:34 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (595)
+Seat 2: Nelfrot-YT (905)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SP_Mage47981 posts big blind 40
+Dealt to Nelfrot-YT [2s Tc]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+SP_Mage47981 checks
+*** FLOP *** [8h Th As]
+SP_Mage47981 checks
+Nelfrot-YT bets 40
+SP_Mage47981 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [8h Th As]
+Seat 2: Nelfrot-YT (small blind) (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985147022245889-10-1760786809 - Holdem no limit (20/40) - 2025/10/18 11:26:49 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SP_Mage47981 (555)
+Seat 2: Nelfrot-YT (945)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Ks 8s]
+*** PRE-FLOP *** 
+SP_Mage47981 calls 20
+Nelfrot-YT checks
+*** FLOP *** [5s Tc 6d]
+Nelfrot-YT checks
+SP_Mage47981 checks
+*** TURN *** [5s Tc 6d][6s]
+Nelfrot-YT bets 40
+SP_Mage47981 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [5s Tc 6d 6s]
+Seat 2: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985147022245889-11-1760786822 - Holdem no limit (20/40) - 2025/10/18 11:27:02 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (515)
+Seat 2: Nelfrot-YT (985)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SP_Mage47981 posts big blind 40
+Dealt to Nelfrot-YT [Td Qs]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 40 to 80
+SP_Mage47981 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985147022245889-12-1760786830 - Holdem no limit (20/40) - 2025/10/18 11:27:10 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SP_Mage47981 (475)
+Seat 2: Nelfrot-YT (1025)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Ah Ks]
+*** PRE-FLOP *** 
+SP_Mage47981 calls 20
+Nelfrot-YT raises 985 to 1025 and is all-in
+SP_Mage47981 folds
+Nelfrot-YT collected 1065 from pot
+*** SUMMARY ***
+Total pot 1065 | No rake
+Seat 2: Nelfrot-YT (big blind) won 1065
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985147022245889-13-1760786839 - Holdem no limit (20/40) - 2025/10/18 11:27:19 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (435)
+Seat 2: Nelfrot-YT (1065)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SP_Mage47981 posts big blind 40
+Dealt to Nelfrot-YT [8h 3d]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+SP_Mage47981 checks
+*** FLOP *** [Qs 9h 5c]
+SP_Mage47981 checks
+Nelfrot-YT bets 40
+SP_Mage47981 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [Qs 9h 5c]
+Seat 2: Nelfrot-YT (small blind) (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985147022245889-14-1760786851 - Holdem no limit (20/40) - 2025/10/18 11:27:31 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SP_Mage47981 (395)
+Seat 2: Nelfrot-YT (1105)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Jh 9s]
+*** PRE-FLOP *** 
+SP_Mage47981 calls 20
+Nelfrot-YT checks
+*** FLOP *** [8s 3s 4c]
+Nelfrot-YT checks
+SP_Mage47981 bets 40
+Nelfrot-YT calls 40
+*** TURN *** [8s 3s 4c][Th]
+Nelfrot-YT checks
+SP_Mage47981 bets 40
+Nelfrot-YT folds
+SP_Mage47981 collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [8s 3s 4c Th]
+Seat 1: SP_Mage47981 (small blind) (button) won 200
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985147022245889-15-1760786876 - Holdem no limit (30/60) - 2025/10/18 11:27:56 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (475)
+Seat 2: Nelfrot-YT (1025)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SP_Mage47981 posts big blind 60
+Dealt to Nelfrot-YT [9c 7d]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+SP_Mage47981 checks
+*** FLOP *** [Kc 9s Kd]
+SP_Mage47981 checks
+Nelfrot-YT bets 60
+SP_Mage47981 folds
+Nelfrot-YT collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Board: [Kc 9s Kd]
+Seat 2: Nelfrot-YT (small blind) (button) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985147022245889-16-1760786886 - Holdem no limit (30/60) - 2025/10/18 11:28:06 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SP_Mage47981 (415)
+Seat 2: Nelfrot-YT (1085)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Ts 4c]
+*** PRE-FLOP *** 
+SP_Mage47981 calls 30
+Nelfrot-YT checks
+*** FLOP *** [Kh Ah Tc]
+Nelfrot-YT checks
+SP_Mage47981 checks
+*** TURN *** [Kh Ah Tc][9d]
+Nelfrot-YT bets 60
+SP_Mage47981 calls 60
+*** RIVER *** [Kh Ah Tc 9d][3s]
+Nelfrot-YT checks
+SP_Mage47981 checks
+*** SHOW DOWN ***
+SP_Mage47981 shows [Jh 9h] (One pair : 9)
+Nelfrot-YT shows [Ts 4c] (One pair : Tens)
+Nelfrot-YT collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Board: [Kh Ah Tc 9d 3s]
+Seat 1: SP_Mage47981 (small blind) (button) showed [Jh 9h] and lost with One pair : 9
+Seat 2: Nelfrot-YT (big blind) showed [Ts 4c] and won 240 with One pair : Tens
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985147022245889-17-1760786905 - Holdem no limit (30/60) - 2025/10/18 11:28:25 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (295)
+Seat 2: Nelfrot-YT (1205)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SP_Mage47981 posts big blind 60
+Dealt to Nelfrot-YT [4c 3h]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+SP_Mage47981 checks
+*** FLOP *** [5s Ac Kc]
+SP_Mage47981 checks
+Nelfrot-YT bets 60
+SP_Mage47981 folds
+Nelfrot-YT collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Board: [5s Ac Kc]
+Seat 2: Nelfrot-YT (small blind) (button) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985147022245889-18-1760786916 - Holdem no limit (30/60) - 2025/10/18 11:28:36 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SP_Mage47981 (235)
+Seat 2: Nelfrot-YT (1265)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [5s Jc]
+*** PRE-FLOP *** 
+SP_Mage47981 raises 175 to 235 and is all-in
+Nelfrot-YT folds
+SP_Mage47981 collected 295 from pot
+*** SUMMARY ***
+Total pot 295 | No rake
+Seat 1: SP_Mage47981 (small blind) (button) won 295
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985147022245889-19-1760786922 - Holdem no limit (30/60) - 2025/10/18 11:28:42 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (295)
+Seat 2: Nelfrot-YT (1205)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SP_Mage47981 posts big blind 60
+Dealt to Nelfrot-YT [8d 3c]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+SP_Mage47981 raises 235 to 295 and is all-in
+Nelfrot-YT folds
+SP_Mage47981 collected 355 from pot
+*** SUMMARY ***
+Total pot 355 | No rake
+Seat 1: SP_Mage47981 (big blind) won 355
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985147022245889-20-1760786929 - Holdem no limit (30/60) - 2025/10/18 11:28:49 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SP_Mage47981 (355)
+Seat 2: Nelfrot-YT (1145)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [6c 2s]
+*** PRE-FLOP *** 
+SP_Mage47981 raises 295 to 355 and is all-in
+Nelfrot-YT folds
+SP_Mage47981 collected 415 from pot
+*** SUMMARY ***
+Total pot 415 | No rake
+Seat 1: SP_Mage47981 (small blind) (button) won 415
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985147022245889-21-1760786935 - Holdem no limit (30/60) - 2025/10/18 11:28:55 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SP_Mage47981 (415)
+Seat 2: Nelfrot-YT (1085)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SP_Mage47981 posts big blind 60
+Dealt to Nelfrot-YT [Ah 8c]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1025 to 1085 and is all-in
+SP_Mage47981 folds
+Nelfrot-YT collected 1145 from pot
+*** SUMMARY ***
+Total pot 1145 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 1145
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985147022245889-22-1760786943 - Holdem no limit (30/60) - 2025/10/18 11:29:03 UTC
+Table: 'Expresso(1006057753)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SP_Mage47981 (355)
+Seat 2: Nelfrot-YT (1145)
+*** ANTE/BLINDS ***
+SP_Mage47981 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [9c Qc]
+*** PRE-FLOP *** 
+SP_Mage47981 raises 295 to 355 and is all-in
+Nelfrot-YT calls 295
+*** FLOP *** [2h Qs 3d]
+*** TURN *** [2h Qs 3d][Td]
+*** RIVER *** [2h Qs 3d Td][5s]
+*** SHOW DOWN ***
+SP_Mage47981 shows [3c 8s] (One pair : 3)
+Nelfrot-YT shows [9c Qc] (One pair : Queens)
+Nelfrot-YT collected 710 from pot
+*** SUMMARY ***
+Total pot 710 | No rake
+Board: [2h Qs 3d Td 5s]
+Seat 1: SP_Mage47981 (small blind) (button) showed [3c 8s] and lost with One pair : 3
+Seat 2: Nelfrot-YT (big blind) showed [9c Qc] and won 710 with One pair : Queens
+
+

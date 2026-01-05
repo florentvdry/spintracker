@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802239858">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143493459</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:05:16</duration>
+  <gamecount>16</gamecount>
+  <startdate>2026-01-02 01:55:12</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>2 147</bets>
+  <wins>519</wins>
+  <chipsin>560</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143493458</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>20€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728910442">
+  <general>
+   <startdate>2026-01-02 01:55:12</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="500" dealer="1" name="sharkstorm56" reg_code="" seat="6" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="100"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="SPinPlz" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="3" player="sharkstorm56" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">DA SK</cards>
+   <action no="4" player="80CEV9Tabling" sum="500" type="23"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="5" player="SPinPlz" sum="0" type="0"/>
+   <action no="6" player="sharkstorm56" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728916272">
+  <general>
+   <startdate>2026-01-02 01:55:36</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="480" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="20" chips="460" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="20"/>
+    <player bet="0" chips="560" dealer="1" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="10" type="1"/>
+   <action no="2" player="sharkstorm56" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">HQ H4</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="4" player="SPinPlz" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728916316">
+  <general>
+   <startdate>2026-01-02 01:55:44</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="470" dealer="1" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="470" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="0"/>
+    <player bet="560" chips="560" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sharkstorm56" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="3" player="SPinPlz" sum="40" type="23"/>
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="4" player="sharkstorm56" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 SA</cards>
+   <action no="5" player="80CEV9Tabling" sum="560" type="23"/>
+   <action no="6" player="SPinPlz" sum="0" type="0"/>
+   <action no="7" player="sharkstorm56" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728916466">
+  <general>
+   <startdate>2026-01-02 01:56:16</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="430" dealer="0" name="SPinPlz" reg_code="" seat="3" win="20"/>
+    <player bet="0" chips="430" dealer="1" name="sharkstorm56" reg_code="" seat="6" win="0"/>
+    <player bet="10" chips="640" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="SPinPlz" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="3" player="sharkstorm56" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D4 C9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728916508">
+  <general>
+   <startdate>2026-01-02 01:56:24</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="440" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="62" chips="430" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="0"/>
+    <player bet="162" chips="630" dealer="1" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="134"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="10" type="1"/>
+   <action no="2" player="sharkstorm56" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CK C10</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="4" player="SPinPlz" sum="0" type="0"/>
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="5" player="sharkstorm56" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H9 H2 CQ</cards>
+   <action no="6" player="sharkstorm56" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="sharkstorm56" sum="22" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HA</cards>
+   <action no="9" player="sharkstorm56" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="100" type="5"/>
+   <action no="11" player="sharkstorm56" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728916662">
+  <general>
+   <startdate>2026-01-02 01:56:58</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="430" dealer="1" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="80" chips="368" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="80"/>
+    <player bet="40" chips="702" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sharkstorm56" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="3" player="SPinPlz" sum="0" type="0"/>
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="4" player="sharkstorm56" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C8 DQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C6 HK C4</cards>
+   <action no="6" player="sharkstorm56" sum="40" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728916794">
+  <general>
+   <startdate>2026-01-02 01:57:23</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="430" chips="430" dealer="0" name="SPinPlz" reg_code="" seat="3" win="75"/>
+    <player bet="30" chips="408" dealer="1" name="sharkstorm56" reg_code="" seat="6" win="0"/>
+    <player bet="15" chips="662" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="SPinPlz" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="3" player="sharkstorm56" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S4 D7</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="5" player="SPinPlz" sum="430" type="23"/>
+   <action no="6" player="sharkstorm56" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728916865">
+  <general>
+   <startdate>2026-01-02 01:57:37</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="475" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="378" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="0"/>
+    <player bet="93" chips="647" dealer="1" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="135"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="15" type="1"/>
+   <action no="2" player="sharkstorm56" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DQ CK</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="4" player="SPinPlz" sum="0" type="0"/>
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="5" player="sharkstorm56" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C6 D6 S5</cards>
+   <action no="6" player="sharkstorm56" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="33" type="5"/>
+   <action no="8" player="sharkstorm56" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728916959">
+  <general>
+   <startdate>2026-01-02 01:57:57</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="460" dealer="1" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="15" chips="318" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="722" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="30"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sharkstorm56" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H3 C8</cards>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="3" player="SPinPlz" sum="0" type="0"/>
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="4" player="sharkstorm56" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917021">
+  <general>
+   <startdate>2026-01-02 01:58:09</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="105" chips="460" dealer="0" name="SPinPlz" reg_code="" seat="3" win="225"/>
+    <player bet="105" chips="303" dealer="1" name="sharkstorm56" reg_code="" seat="6" win="0"/>
+    <player bet="15" chips="737" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="SPinPlz" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sharkstorm56" type="Pocket">C9 C8</cards>
+   <action no="3" player="sharkstorm56" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S9 D3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="SPinPlz" type="Pocket">CJ S8</cards>
+   <action no="5" player="SPinPlz" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S10 D10 H8</cards>
+   <action no="6" player="SPinPlz" sum="0" type="4"/>
+   <action no="7" player="sharkstorm56" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S5</cards>
+   <action no="8" player="SPinPlz" sum="75" type="5"/>
+   <action no="9" player="sharkstorm56" sum="75" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">S6</cards>
+   <action no="10" player="SPinPlz" sum="0" type="4"/>
+   <action no="11" player="sharkstorm56" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728917221">
+  <general>
+   <startdate>2026-01-02 01:58:56</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="580" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="198" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="30"/>
+    <player bet="0" chips="722" dealer="1" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="15" type="1"/>
+   <action no="2" player="sharkstorm56" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">H10 D8</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="4" player="SPinPlz" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917260">
+  <general>
+   <startdate>2026-01-02 01:59:03</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="565" dealer="1" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="213" chips="213" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="60"/>
+    <player bet="30" chips="722" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sharkstorm56" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="3" player="SPinPlz" sum="0" type="0"/>
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="4" player="sharkstorm56" sum="213" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 H9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917306">
+  <general>
+   <startdate>2026-01-02 01:59:14</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="565" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="243" chips="243" dealer="1" name="sharkstorm56" reg_code="" seat="6" win="100"/>
+    <player bet="20" chips="692" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="SPinPlz" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="3" player="sharkstorm56" sum="243" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S9 D7</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="5" player="SPinPlz" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917381">
+  <general>
+   <startdate>2026-01-02 01:59:28</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="20" chips="525" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="303" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="40"/>
+    <player bet="0" chips="672" dealer="1" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="20" type="1"/>
+   <action no="2" player="sharkstorm56" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">S3 SK</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="4" player="SPinPlz" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917420">
+  <general>
+   <startdate>2026-01-02 01:59:39</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="505" dealer="1" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="323" chips="323" dealer="0" name="sharkstorm56" reg_code="" seat="6" win="646"/>
+    <player bet="323" chips="672" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sharkstorm56" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="3" player="SPinPlz" sum="0" type="0"/>
+   <cards player="sharkstorm56" type="Pocket">D9 H5</cards>
+   <action no="4" player="sharkstorm56" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S10 S2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S9 HK S5</cards>
+   <action no="6" player="sharkstorm56" sum="80" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="80" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">SQ</cards>
+   <action no="8" player="sharkstorm56" sum="203" type="5"/>
+   <action no="9" player="80CEV9Tabling" sum="203" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">H9</cards>
+  </round>
+ </game>
+ <game gamecode="8728917535">
+  <general>
+   <startdate>2026-01-02 02:00:06</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="505" chips="505" dealer="0" name="SPinPlz" reg_code="" seat="3" win="738"/>
+    <player bet="40" chips="646" dealer="1" name="sharkstorm56" reg_code="" seat="6" win="0"/>
+    <player bet="349" chips="349" dealer="0" name="80CEV9Tabling" reg_code="5802239858" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="SPinPlz" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sharkstorm56" type="Pocket">X X</cards>
+   <action no="3" player="sharkstorm56" sum="40" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HJ D9</cards>
+   <action no="4" player="80CEV9Tabling" sum="349" type="23"/>
+   <cards player="SPinPlz" type="Pocket">SJ CA</cards>
+   <action no="5" player="SPinPlz" sum="465" type="7"/>
+   <action no="6" player="sharkstorm56" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C4 DJ H3</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C2</cards>
+  </round>
+ </game>
+</session>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802223774">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143481160</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:02:01</duration>
+  <gamecount>6</gamecount>
+  <startdate>2026-01-02 00:50:44</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>500</bets>
+  <wins>0</wins>
+  <chipsin>455</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143481159</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728838949">
+  <general>
+   <startdate>2026-01-02 00:50:44</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="45" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802223774" seat="3" win="0"/>
+    <player bet="65" chips="500" dealer="1" name="computerkeen34" reg_code="" seat="6" win="100"/>
+    <player bet="10" chips="500" dealer="0" name="SpicyToeNail" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SpicyToeNail" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="computerkeen34" type="Pocket">X X</cards>
+   <action no="3" player="computerkeen34" sum="20" type="3"/>
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="4" player="SpicyToeNail" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D2 DQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CK SK DJ</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="computerkeen34" sum="25" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="25" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C10</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="computerkeen34" sum="20" type="5"/>
+   <action no="11" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728839103">
+  <general>
+   <startdate>2026-01-02 00:51:11</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="60" chips="455" dealer="0" name="80CEV9Tabling" reg_code="5802223774" seat="3" win="0"/>
+    <player bet="120" chips="555" dealer="0" name="computerkeen34" reg_code="" seat="6" win="120"/>
+    <player bet="0" chips="490" dealer="1" name="SpicyToeNail" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="computerkeen34" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="3" player="SpicyToeNail" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ DA</cards>
+   <action no="4" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="computerkeen34" type="Pocket">X X</cards>
+   <action no="5" player="computerkeen34" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H6 S6 C2</cards>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="computerkeen34" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CJ</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="computerkeen34" sum="60" type="5"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728839224">
+  <general>
+   <startdate>2026-01-02 00:51:33</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="395" dealer="1" name="80CEV9Tabling" reg_code="5802223774" seat="3" win="0"/>
+    <player bet="20" chips="615" dealer="0" name="computerkeen34" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="490" dealer="0" name="SpicyToeNail" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="computerkeen34" sum="10" type="1"/>
+   <action no="2" player="SpicyToeNail" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S2 H8</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="computerkeen34" type="Pocket">X X</cards>
+   <action no="4" player="computerkeen34" sum="10" type="3"/>
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="5" player="SpicyToeNail" sum="60" type="23"/>
+   <action no="6" player="computerkeen34" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728839332">
+  <general>
+   <startdate>2026-01-02 00:51:50</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="395" dealer="0" name="80CEV9Tabling" reg_code="5802223774" seat="3" win="0"/>
+    <player bet="0" chips="595" dealer="1" name="computerkeen34" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="510" dealer="0" name="SpicyToeNail" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SpicyToeNail" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="computerkeen34" type="Pocket">X X</cards>
+   <action no="3" player="computerkeen34" sum="0" type="0"/>
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="4" player="SpicyToeNail" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 H3</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728839415">
+  <general>
+   <startdate>2026-01-02 00:52:05</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="365" dealer="0" name="80CEV9Tabling" reg_code="5802223774" seat="3" win="0"/>
+    <player bet="60" chips="595" dealer="0" name="computerkeen34" reg_code="" seat="6" win="0"/>
+    <player bet="104" chips="540" dealer="1" name="SpicyToeNail" reg_code="" seat="10" win="135"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="computerkeen34" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="3" player="SpicyToeNail" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H2 D3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="computerkeen34" type="Pocket">X X</cards>
+   <action no="5" player="computerkeen34" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C9 C5 SK</cards>
+   <action no="6" player="computerkeen34" sum="0" type="4"/>
+   <action no="7" player="SpicyToeNail" sum="44" type="5"/>
+   <action no="8" player="computerkeen34" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728844216">
+  <general>
+   <startdate>2026-01-02 00:52:25</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="350" chips="350" dealer="1" name="80CEV9Tabling" reg_code="5802223774" seat="3" win="0"/>
+    <player bet="15" chips="535" dealer="0" name="computerkeen34" reg_code="" seat="6" win="0"/>
+    <player bet="350" chips="615" dealer="0" name="SpicyToeNail" reg_code="" seat="10" win="715"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="computerkeen34" sum="15" type="1"/>
+   <action no="2" player="SpicyToeNail" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CA S3</cards>
+   <action no="3" player="80CEV9Tabling" sum="350" type="23"/>
+   <cards player="computerkeen34" type="Pocket">X X</cards>
+   <action no="4" player="computerkeen34" sum="0" type="0"/>
+   <cards player="SpicyToeNail" type="Pocket">C7 SA</cards>
+   <action no="5" player="SpicyToeNail" sum="320" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DA S5 C2</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S10</cards>
+  </round>
+  <round no="4">
+   <cards type="River">HA</cards>
+  </round>
+ </game>
+</session>

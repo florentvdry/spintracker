@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802228909">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143485127</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:02:54</duration>
+  <gamecount>9</gamecount>
+  <startdate>2026-01-02 01:09:35</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 220</bets>
+  <wins>200</wins>
+  <chipsin>540</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143485126</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>20€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728863026">
+  <general>
+   <startdate>2026-01-02 01:09:35</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="100" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802228909" seat="3" win="80"/>
+    <player bet="0" chips="500" dealer="1" name="luitre69007" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="500" dealer="0" name="Duski77" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Duski77" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="luitre69007" type="Pocket">X X</cards>
+   <action no="3" player="luitre69007" sum="0" type="0"/>
+   <cards player="Duski77" type="Pocket">X X</cards>
+   <action no="4" player="Duski77" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 D2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C6 H7 S2</cards>
+   <action no="6" player="Duski77" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="8" player="Duski77" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D7</cards>
+   <action no="9" player="Duski77" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="11" player="Duski77" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728863133">
+  <general>
+   <startdate>2026-01-02 01:09:57</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="540" dealer="0" name="80CEV9Tabling" reg_code="5802228909" seat="3" win="0"/>
+    <player bet="110" chips="500" dealer="0" name="luitre69007" reg_code="" seat="6" win="120"/>
+    <player bet="50" chips="460" dealer="1" name="Duski77" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="luitre69007" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Duski77" type="Pocket">X X</cards>
+   <action no="3" player="Duski77" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C7 DK</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="luitre69007" type="Pocket">X X</cards>
+   <action no="5" player="luitre69007" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 C5 CQ</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="luitre69007" sum="0" type="4"/>
+   <action no="8" player="Duski77" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D5</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="luitre69007" sum="30" type="5"/>
+   <action no="11" player="Duski77" sum="30" type="3"/>
+   <action no="12" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="4">
+   <cards type="River">DA</cards>
+   <action no="13" player="luitre69007" sum="60" type="5"/>
+   <action no="14" player="Duski77" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728863249">
+  <general>
+   <startdate>2026-01-02 01:10:22</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="520" dealer="1" name="80CEV9Tabling" reg_code="5802228909" seat="3" win="0"/>
+    <player bet="20" chips="570" dealer="0" name="luitre69007" reg_code="" seat="6" win="0"/>
+    <player bet="80" chips="410" dealer="0" name="Duski77" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="luitre69007" sum="10" type="1"/>
+   <action no="2" player="Duski77" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H4 S10</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="luitre69007" type="Pocket">X X</cards>
+   <action no="4" player="luitre69007" sum="10" type="3"/>
+   <cards player="Duski77" type="Pocket">X X</cards>
+   <action no="5" player="Duski77" sum="80" type="23"/>
+   <action no="6" player="luitre69007" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728863326">
+  <general>
+   <startdate>2026-01-02 01:10:37</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="50" chips="520" dealer="0" name="80CEV9Tabling" reg_code="5802228909" seat="3" win="0"/>
+    <player bet="125" chips="550" dealer="1" name="luitre69007" reg_code="" seat="6" win="150"/>
+    <player bet="50" chips="430" dealer="0" name="Duski77" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Duski77" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="luitre69007" type="Pocket">X X</cards>
+   <action no="3" player="luitre69007" sum="20" type="3"/>
+   <cards player="Duski77" type="Pocket">X X</cards>
+   <action no="4" player="Duski77" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C10 C8</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S10 HQ S7</cards>
+   <action no="6" player="Duski77" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="luitre69007" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HK</cards>
+   <action no="9" player="Duski77" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="luitre69007" sum="30" type="5"/>
+   <action no="12" player="Duski77" sum="30" type="3"/>
+   <action no="13" player="80CEV9Tabling" sum="30" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">CA</cards>
+   <action no="14" player="Duski77" sum="0" type="4"/>
+   <action no="15" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="16" player="luitre69007" sum="75" type="5"/>
+   <action no="17" player="Duski77" sum="0" type="0"/>
+   <action no="18" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728863504">
+  <general>
+   <startdate>2026-01-02 01:11:12</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="470" dealer="0" name="80CEV9Tabling" reg_code="5802228909" seat="3" win="0"/>
+    <player bet="380" chips="650" dealer="0" name="luitre69007" reg_code="" seat="6" win="770"/>
+    <player bet="380" chips="380" dealer="1" name="Duski77" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="luitre69007" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Duski77" type="Pocket">SJ DK</cards>
+   <action no="3" player="Duski77" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S2 H10</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="luitre69007" type="Pocket">HJ C10</cards>
+   <action no="5" player="luitre69007" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H8 CJ S6</cards>
+   <action no="6" player="luitre69007" sum="0" type="4"/>
+   <action no="7" player="Duski77" sum="60" type="5"/>
+   <action no="8" player="luitre69007" sum="60" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S7</cards>
+   <action no="9" player="luitre69007" sum="0" type="4"/>
+   <action no="10" player="Duski77" sum="120" type="5"/>
+   <action no="11" player="luitre69007" sum="240" type="23"/>
+   <action no="12" player="Duski77" sum="160" type="7"/>
+   <action no="13" player="luitre69007" sum="40" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">S10</cards>
+  </round>
+ </game>
+ <game gamecode="8728863672">
+  <general>
+   <startdate>2026-01-02 01:11:45</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="460" dealer="1" name="80CEV9Tabling" reg_code="5802228909" seat="3" win="60"/>
+    <player bet="30" chips="1 040" dealer="0" name="luitre69007" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="luitre69007" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ C7</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="luitre69007" type="Pocket">X X</cards>
+   <action no="4" player="luitre69007" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728863744">
+  <general>
+   <startdate>2026-01-02 01:11:58</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="490" dealer="0" name="80CEV9Tabling" reg_code="5802228909" seat="3" win="0"/>
+    <player bet="90" chips="1 010" dealer="1" name="luitre69007" reg_code="" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="luitre69007" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="luitre69007" type="Pocket">X X</cards>
+   <action no="3" player="luitre69007" sum="90" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">CQ H2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728863782">
+  <general>
+   <startdate>2026-01-02 01:12:07</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="460" chips="460" dealer="1" name="80CEV9Tabling" reg_code="5802228909" seat="3" win="60"/>
+    <player bet="30" chips="1 040" dealer="0" name="luitre69007" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="luitre69007" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C9 CA</cards>
+   <action no="3" player="80CEV9Tabling" sum="460" type="23"/>
+   <cards player="luitre69007" type="Pocket">X X</cards>
+   <action no="4" player="luitre69007" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728863825">
+  <general>
+   <startdate>2026-01-02 01:12:15</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="490" chips="490" dealer="0" name="80CEV9Tabling" reg_code="5802228909" seat="3" win="0"/>
+    <player bet="490" chips="1 010" dealer="1" name="luitre69007" reg_code="" seat="6" win="980"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="luitre69007" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="luitre69007" type="Pocket">S8 HA</cards>
+   <action no="3" player="luitre69007" sum="120" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 S7</cards>
+   <action no="4" player="80CEV9Tabling" sum="490" type="23"/>
+   <action no="5" player="luitre69007" sum="370" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S4 H8 H9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S10</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H2</cards>
+  </round>
+ </game>
+</session>

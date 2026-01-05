@@ -1,0 +1,207 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321004053468282881-1-1760787456 - Holdem no limit (10/20) - 2025/10/18 11:37:36 UTC
+Table: 'Expresso(1006062155)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (500)
+Seat 2: Pablomota8 (500)
+Seat 3: Emperor67 (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Pablomota8 posts big blind 20
+Dealt to Nelfrot-YT [2d 7d]
+*** PRE-FLOP *** 
+Emperor67 raises 50 to 70
+Nelfrot-YT folds
+Pablomota8 folds
+Emperor67 collected 100 from pot
+*** SUMMARY ***
+Total pot 100 | No rake
+Seat 3: Emperor67 (button) won 100
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321004053468282881-2-1760787469 - Holdem no limit (10/20) - 2025/10/18 11:37:49 UTC
+Table: 'Expresso(1006062155)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (490)
+Seat 2: Pablomota8 (480)
+Seat 3: Emperor67 (530)
+*** ANTE/BLINDS ***
+Pablomota8 posts small blind 10
+Emperor67 posts big blind 20
+Dealt to Nelfrot-YT [7s 2h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Pablomota8 raises 20 to 40
+Emperor67 calls 20
+*** FLOP *** [5d 9h 6d]
+Pablomota8 bets 20
+Emperor67 calls 20
+*** TURN *** [5d 9h 6d][Jh]
+Pablomota8 bets 20
+Emperor67 calls 20
+*** RIVER *** [5d 9h 6d Jh][Kd]
+Pablomota8 bets 20
+Emperor67 calls 20
+*** SHOW DOWN ***
+Emperor67 shows [6s 4h] (One pair : 6)
+Pablomota8 shows [Ks 5h] (Two pairs : Kings and 5)
+Pablomota8 collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [5d 9h 6d Jh Kd]
+Seat 2: Pablomota8 (small blind) showed [Ks 5h] and won 200 with Two pairs : Kings and 5
+Seat 3: Emperor67 (big blind) showed [6s 4h] and lost with One pair : 6
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321004053468282881-3-1760787490 - Holdem no limit (10/20) - 2025/10/18 11:38:10 UTC
+Table: 'Expresso(1006062155)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (490)
+Seat 2: Pablomota8 (580)
+Seat 3: Emperor67 (430)
+*** ANTE/BLINDS ***
+Emperor67 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Qc 8h]
+*** PRE-FLOP *** 
+Pablomota8 raises 20 to 40
+Emperor67 folds
+Nelfrot-YT folds
+Pablomota8 collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 2: Pablomota8 (button) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321004053468282881-4-1760787498 - Holdem no limit (10/20) - 2025/10/18 11:38:18 UTC
+Table: 'Expresso(1006062155)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (470)
+Seat 2: Pablomota8 (610)
+Seat 3: Emperor67 (420)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Pablomota8 posts big blind 20
+Dealt to Nelfrot-YT [2d 4s]
+*** PRE-FLOP *** 
+Emperor67 folds
+Nelfrot-YT calls 10
+Pablomota8 checks
+*** FLOP *** [5h 3h 3s]
+Nelfrot-YT bets 20
+Pablomota8 folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [5h 3h 3s]
+Seat 1: Nelfrot-YT (small blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321004053468282881-5-1760787509 - Holdem no limit (10/20) - 2025/10/18 11:38:29 UTC
+Table: 'Expresso(1006062155)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (490)
+Seat 2: Pablomota8 (590)
+Seat 3: Emperor67 (420)
+*** ANTE/BLINDS ***
+Pablomota8 posts small blind 10
+Emperor67 posts big blind 20
+Dealt to Nelfrot-YT [Tc 2c]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Pablomota8 folds
+Emperor67 collected 30 from pot
+*** SUMMARY ***
+Total pot 30 | No rake
+Seat 3: Emperor67 (big blind) won 30
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321004053468282881-6-1760787516 - Holdem no limit (10/20) - 2025/10/18 11:38:36 UTC
+Table: 'Expresso(1006062155)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (490)
+Seat 2: Pablomota8 (580)
+Seat 3: Emperor67 (430)
+*** ANTE/BLINDS ***
+Emperor67 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [5s 4d]
+*** PRE-FLOP *** 
+Pablomota8 raises 20 to 40
+Emperor67 calls 30
+Nelfrot-YT folds
+*** FLOP *** [7d 2d 4h]
+Emperor67 checks
+Pablomota8 bets 30
+Emperor67 calls 30
+*** TURN *** [7d 2d 4h][Td]
+Emperor67 checks
+Pablomota8 checks
+*** RIVER *** [7d 2d 4h Td][Ks]
+Emperor67 bets 104
+Pablomota8 calls 104
+*** SHOW DOWN ***
+Emperor67 shows [Js Kd] (One pair : Kings)
+Pablomota8 shows [Kh Qh] (One pair : Kings)
+Pablomota8 collected 368 from pot
+*** SUMMARY ***
+Total pot 368 | No rake
+Board: [7d 2d 4h Td Ks]
+Seat 2: Pablomota8 (button) showed [Kh Qh] and won 368 with One pair : Kings
+Seat 3: Emperor67 (small blind) showed [Js Kd] and lost with One pair : Kings
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321004053468282881-7-1760787538 - Holdem no limit (10/20) - 2025/10/18 11:38:58 UTC
+Table: 'Expresso(1006062155)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (470)
+Seat 2: Pablomota8 (774)
+Seat 3: Emperor67 (256)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Pablomota8 posts big blind 20
+Dealt to Nelfrot-YT [5s 6c]
+*** PRE-FLOP *** 
+Emperor67 calls 20
+Nelfrot-YT folds
+Pablomota8 checks
+*** FLOP *** [6s 9s 4s]
+Pablomota8 checks
+Emperor67 checks
+*** TURN *** [6s 9s 4s][3c]
+Pablomota8 checks
+Emperor67 bets 33
+Pablomota8 calls 33
+*** RIVER *** [6s 9s 4s 3c][Qc]
+Pablomota8 checks
+Emperor67 checks
+*** SHOW DOWN ***
+Pablomota8 shows [5d Jh] (High card : Queen)
+Emperor67 shows [Jc 9h] (One pair : 9)
+Emperor67 collected 116 from pot
+*** SUMMARY ***
+Total pot 116 | No rake
+Board: [6s 9s 4s 3c Qc]
+Seat 2: Pablomota8 (big blind) showed [5d Jh] and lost with High card : Queen
+Seat 3: Emperor67 (button) showed [Jc 9h] and won 116 with One pair : 9
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4321004053468282881-8-1760787556 - Holdem no limit (15/30) - 2025/10/18 11:39:16 UTC
+Table: 'Expresso(1006062155)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (460)
+Seat 2: Pablomota8 (721)
+Seat 3: Emperor67 (319)
+*** ANTE/BLINDS ***
+Pablomota8 posts small blind 15
+Emperor67 posts big blind 30
+Dealt to Nelfrot-YT [7d As]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 430 to 460 and is all-in
+Pablomota8 raises 261 to 721 and is all-in
+Emperor67 folds
+*** FLOP *** [Jc 9c 5h]
+*** TURN *** [Jc 9c 5h][8h]
+*** RIVER *** [Jc 9c 5h 8h][5d]
+*** SHOW DOWN ***
+Nelfrot-YT shows [7d As] (One pair : 5)
+Pablomota8 shows [9s Ts] (Two pairs : 9 and 5)
+Pablomota8 collected 1211 from pot
+*** SUMMARY ***
+Total pot 1211 | No rake
+Board: [Jc 9c 5h 8h 5d]
+Seat 1: Nelfrot-YT (button) showed [7d As] and lost with One pair : 5
+Seat 2: Pablomota8 (small blind) showed [9s Ts] and won 1211 with Two pairs : 9 and 5
+
+

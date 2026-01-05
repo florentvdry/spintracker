@@ -1,0 +1,227 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971351587291137-1-1760785970 - Holdem no limit (10/20) - 2025/10/18 11:12:50 UTC
+Table: 'Expresso(1006054541)#0' 3-max (real money) Seat #2 is the button
+Seat 1: rdmc (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: viciorio15 (500)
+*** ANTE/BLINDS ***
+viciorio15 posts small blind 10
+rdmc posts big blind 20
+Dealt to Nelfrot-YT [6d 8d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+viciorio15 raises 20 to 40
+rdmc calls 20
+*** FLOP *** [7c 7d 4s]
+viciorio15 checks
+rdmc bets 460 and is all-in
+viciorio15 folds
+rdmc collected 540 from pot
+*** SUMMARY ***
+Total pot 540 | No rake
+Board: [7c 7d 4s]
+Seat 1: rdmc (big blind) won 540
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971351587291137-2-1760785982 - Holdem no limit (10/20) - 2025/10/18 11:13:02 UTC
+Table: 'Expresso(1006054541)#0' 3-max (real money) Seat #3 is the button
+Seat 1: rdmc (540)
+Seat 2: Nelfrot-YT (500)
+Seat 3: viciorio15 (460)
+*** ANTE/BLINDS ***
+rdmc posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [7d 7h]
+*** PRE-FLOP *** 
+viciorio15 raises 20 to 40
+rdmc calls 30
+Nelfrot-YT raises 460 to 500 and is all-in
+viciorio15 folds
+rdmc folds
+Nelfrot-YT collected 580 from pot
+*** SUMMARY ***
+Total pot 580 | No rake
+Seat 2: Nelfrot-YT (big blind) won 580
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971351587291137-3-1760785995 - Holdem no limit (10/20) - 2025/10/18 11:13:15 UTC
+Table: 'Expresso(1006054541)#0' 3-max (real money) Seat #1 is the button
+Seat 1: rdmc (500)
+Seat 2: Nelfrot-YT (580)
+Seat 3: viciorio15 (420)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+viciorio15 posts big blind 20
+Dealt to Nelfrot-YT [4d Qc]
+*** PRE-FLOP *** 
+rdmc calls 20
+Nelfrot-YT folds
+viciorio15 raises 40 to 60
+rdmc calls 40
+*** FLOP *** [5s Th 8d]
+viciorio15 checks
+rdmc checks
+*** TURN *** [5s Th 8d][Ad]
+viciorio15 bets 46
+rdmc calls 46
+*** RIVER *** [5s Th 8d Ad][3d]
+viciorio15 checks
+rdmc bets 144
+viciorio15 folds
+rdmc collected 366 from pot
+*** SUMMARY ***
+Total pot 366 | No rake
+Board: [5s Th 8d Ad 3d]
+Seat 1: rdmc (button) won 366
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971351587291137-4-1760786020 - Holdem no limit (10/20) - 2025/10/18 11:13:40 UTC
+Table: 'Expresso(1006054541)#0' 3-max (real money) Seat #2 is the button
+Seat 1: rdmc (616)
+Seat 2: Nelfrot-YT (570)
+Seat 3: viciorio15 (314)
+*** ANTE/BLINDS ***
+viciorio15 posts small blind 10
+rdmc posts big blind 20
+Dealt to Nelfrot-YT [6d Jc]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+viciorio15 raises 20 to 40
+rdmc calls 20
+*** FLOP *** [Tc 2s Js]
+viciorio15 bets 28
+rdmc calls 28
+*** TURN *** [Tc 2s Js][2c]
+viciorio15 bets 48
+rdmc calls 48
+*** RIVER *** [Tc 2s Js 2c][Kd]
+viciorio15 bets 198 and is all-in
+rdmc calls 198
+*** SHOW DOWN ***
+viciorio15 shows [4s 3s] (One pair : 2)
+rdmc shows [Ts 5s] (Two pairs : Tens and 2)
+rdmc collected 628 from pot
+*** SUMMARY ***
+Total pot 628 | No rake
+Board: [Tc 2s Js 2c Kd]
+Seat 1: rdmc (big blind) showed [Ts 5s] and won 628 with Two pairs : Tens and 2
+Seat 3: viciorio15 (small blind) showed [4s 3s] and lost with One pair : 2
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971351587291137-5-1760786043 - Holdem no limit (10/20) - 2025/10/18 11:14:03 UTC
+Table: 'Expresso(1006054541)#0' 3-max (real money) Seat #1 is the button
+Seat 1: rdmc (930)
+Seat 2: Nelfrot-YT (570)
+*** ANTE/BLINDS ***
+rdmc posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Ah Jd]
+*** PRE-FLOP *** 
+rdmc calls 10
+Nelfrot-YT raises 140 to 160
+rdmc folds
+Nelfrot-YT collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Seat 2: Nelfrot-YT (big blind) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971351587291137-6-1760786053 - Holdem no limit (10/20) - 2025/10/18 11:14:13 UTC
+Table: 'Expresso(1006054541)#0' 3-max (real money) Seat #2 is the button
+Seat 1: rdmc (910)
+Seat 2: Nelfrot-YT (590)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+rdmc posts big blind 20
+Dealt to Nelfrot-YT [8c Jc]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 10
+rdmc checks
+*** FLOP *** [3h 4c 5d]
+rdmc bets 26
+Nelfrot-YT folds
+rdmc collected 66 from pot
+*** SUMMARY ***
+Total pot 66 | No rake
+Board: [3h 4c 5d]
+Seat 1: rdmc (big blind) won 66
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320971351587291137-7-1760786064 - Holdem no limit (15/30) - 2025/10/18 11:14:24 UTC
+Table: 'Expresso(1006054541)#0' 3-max (real money) Seat #1 is the button
+Seat 1: rdmc (930)
+Seat 2: Nelfrot-YT (570)
+*** ANTE/BLINDS ***
+rdmc posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [9h 2h]
+*** PRE-FLOP *** 
+rdmc raises 60 to 90
+Nelfrot-YT folds
+rdmc collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 1: rdmc (small blind) (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320971351587291137-8-1760786070 - Holdem no limit (15/30) - 2025/10/18 11:14:30 UTC
+Table: 'Expresso(1006054541)#0' 3-max (real money) Seat #2 is the button
+Seat 1: rdmc (960)
+Seat 2: Nelfrot-YT (540)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+rdmc posts big blind 30
+Dealt to Nelfrot-YT [9s Kc]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 30 to 60
+rdmc calls 30
+*** FLOP *** [4s 3c Tc]
+rdmc checks
+Nelfrot-YT bets 30
+rdmc calls 30
+*** TURN *** [4s 3c Tc][2c]
+rdmc bets 63
+Nelfrot-YT calls 63
+*** RIVER *** [4s 3c Tc 2c][6d]
+rdmc bets 107
+Nelfrot-YT folds
+rdmc collected 413 from pot
+*** SUMMARY ***
+Total pot 413 | No rake
+Board: [4s 3c Tc 2c 6d]
+Seat 1: rdmc (big blind) won 413
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320971351587291137-9-1760786107 - Holdem no limit (15/30) - 2025/10/18 11:15:07 UTC
+Table: 'Expresso(1006054541)#0' 3-max (real money) Seat #1 is the button
+Seat 1: rdmc (1113)
+Seat 2: Nelfrot-YT (387)
+*** ANTE/BLINDS ***
+rdmc posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Jh 9c]
+*** PRE-FLOP *** 
+rdmc calls 15
+Nelfrot-YT checks
+*** FLOP *** [2d Jc 5h]
+Nelfrot-YT checks
+rdmc bets 39
+Nelfrot-YT calls 39
+*** TURN *** [2d Jc 5h][6h]
+Nelfrot-YT checks
+rdmc bets 30
+Nelfrot-YT calls 30
+*** RIVER *** [2d Jc 5h 6h][5d]
+Nelfrot-YT checks
+rdmc bets 1014 and is all-in
+Nelfrot-YT calls 288 and is all-in
+*** SHOW DOWN ***
+Nelfrot-YT shows [Jh 9c] (Two pairs : Jacks and 5)
+rdmc shows [5s Qd] (Trips of 5)
+rdmc collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [2d Jc 5h 6h 5d]
+Seat 1: rdmc (small blind) (button) showed [5s Qd] and won 1500 with Trips of 5
+Seat 2: Nelfrot-YT (big blind) showed [Jh 9c] and lost with Two pairs : Jacks and 5
+
+

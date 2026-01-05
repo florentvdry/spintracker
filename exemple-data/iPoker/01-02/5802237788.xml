@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802237788">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143492093</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:54</duration>
+  <gamecount>12</gamecount>
+  <startdate>2026-01-02 01:47:13</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 265</bets>
+  <wins>485</wins>
+  <chipsin>480</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143492092</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728901799">
+  <general>
+   <startdate>2026-01-02 01:47:13</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="0"/>
+    <player bet="80" chips="500" dealer="0" name="tigerbrave867" reg_code="" seat="6" win="60"/>
+    <player bet="20" chips="500" dealer="1" name="Kameloss" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="tigerbrave867" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Kameloss" type="Pocket">X X</cards>
+   <action no="3" player="Kameloss" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D3 DJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="5" player="tigerbrave867" sum="80" type="23"/>
+   <action no="6" player="Kameloss" sum="0" type="0"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728901880">
+  <general>
+   <startdate>2026-01-02 01:47:32</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="162" chips="480" dealer="1" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="134"/>
+    <player bet="10" chips="540" dealer="0" name="tigerbrave867" reg_code="" seat="6" win="0"/>
+    <player bet="62" chips="480" dealer="0" name="Kameloss" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="tigerbrave867" sum="10" type="1"/>
+   <action no="2" player="Kameloss" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CJ D9</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="4" player="tigerbrave867" sum="0" type="0"/>
+   <cards player="Kameloss" type="Pocket">X X</cards>
+   <action no="5" player="Kameloss" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H8 S10 D7</cards>
+   <action no="6" player="Kameloss" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="Kameloss" sum="22" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CA</cards>
+   <action no="9" player="Kameloss" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="100" type="5"/>
+   <action no="11" player="Kameloss" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728908483">
+  <general>
+   <startdate>2026-01-02 01:48:07</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="552" dealer="0" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="0"/>
+    <player bet="130" chips="530" dealer="1" name="tigerbrave867" reg_code="" seat="6" win="90"/>
+    <player bet="10" chips="418" dealer="0" name="Kameloss" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Kameloss" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="3" player="tigerbrave867" sum="40" type="23"/>
+   <cards player="Kameloss" type="Pocket">X X</cards>
+   <action no="4" player="Kameloss" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">DA D8</cards>
+   <action no="5" player="80CEV9Tabling" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DJ H7 CJ</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="tigerbrave867" sum="90" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728908575">
+  <general>
+   <startdate>2026-01-02 01:48:26</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="512" dealer="0" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="0"/>
+    <player bet="100" chips="580" dealer="0" name="tigerbrave867" reg_code="" seat="6" win="0"/>
+    <player bet="310" chips="408" dealer="1" name="Kameloss" reg_code="" seat="10" win="210"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="tigerbrave867" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Kameloss" type="Pocket">X X</cards>
+   <action no="3" player="Kameloss" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S4 C7</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="5" player="tigerbrave867" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HQ H10 S8</cards>
+   <action no="6" player="tigerbrave867" sum="20" type="5"/>
+   <action no="7" player="Kameloss" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S6</cards>
+   <action no="8" player="tigerbrave867" sum="20" type="5"/>
+   <action no="9" player="Kameloss" sum="20" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">HK</cards>
+   <action no="10" player="tigerbrave867" sum="40" type="5"/>
+   <action no="11" player="Kameloss" sum="250" type="23"/>
+   <action no="12" player="tigerbrave867" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728908739">
+  <general>
+   <startdate>2026-01-02 01:49:03</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="502" dealer="1" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="0"/>
+    <player bet="60" chips="480" dealer="0" name="tigerbrave867" reg_code="" seat="6" win="60"/>
+    <player bet="30" chips="518" dealer="0" name="Kameloss" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="tigerbrave867" sum="15" type="1"/>
+   <action no="2" player="Kameloss" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H9 S2</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="4" player="tigerbrave867" sum="15" type="3"/>
+   <cards player="Kameloss" type="Pocket">X X</cards>
+   <action no="5" player="Kameloss" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H8 C2 C10</cards>
+   <action no="6" player="tigerbrave867" sum="30" type="5"/>
+   <action no="7" player="Kameloss" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728908829">
+  <general>
+   <startdate>2026-01-02 01:49:24</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="502" dealer="0" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="30"/>
+    <player bet="0" chips="510" dealer="1" name="tigerbrave867" reg_code="" seat="6" win="0"/>
+    <player bet="15" chips="488" dealer="0" name="Kameloss" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Kameloss" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H7 H8</cards>
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="3" player="tigerbrave867" sum="0" type="0"/>
+   <cards player="Kameloss" type="Pocket">X X</cards>
+   <action no="4" player="Kameloss" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728908882">
+  <general>
+   <startdate>2026-01-02 01:49:37</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="517" dealer="0" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="120"/>
+    <player bet="60" chips="510" dealer="0" name="tigerbrave867" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="473" dealer="1" name="Kameloss" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="tigerbrave867" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Kameloss" type="Pocket">X X</cards>
+   <action no="3" player="Kameloss" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C8 C4</cards>
+   <action no="4" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="5" player="tigerbrave867" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D5 D2 S5</cards>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="tigerbrave867" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728908960">
+  <general>
+   <startdate>2026-01-02 01:49:55</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="228" chips="577" dealer="1" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="201"/>
+    <player bet="15" chips="450" dealer="0" name="tigerbrave867" reg_code="" seat="6" win="0"/>
+    <player bet="93" chips="473" dealer="0" name="Kameloss" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="tigerbrave867" sum="15" type="1"/>
+   <action no="2" player="Kameloss" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C10 C8</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="4" player="tigerbrave867" sum="0" type="0"/>
+   <cards player="Kameloss" type="Pocket">X X</cards>
+   <action no="5" player="Kameloss" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SA S6 D5</cards>
+   <action no="6" player="Kameloss" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="33" type="5"/>
+   <action no="8" player="Kameloss" sum="33" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D9</cards>
+   <action no="9" player="Kameloss" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="135" type="5"/>
+   <action no="11" player="Kameloss" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909084">
+  <general>
+   <startdate>2026-01-02 01:50:23</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="380" chips="685" dealer="0" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="0"/>
+    <player bet="0" chips="435" dealer="1" name="tigerbrave867" reg_code="" seat="6" win="0"/>
+    <player bet="380" chips="380" dealer="0" name="Kameloss" reg_code="" seat="10" win="760"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Kameloss" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="3" player="tigerbrave867" sum="0" type="0"/>
+   <cards player="Kameloss" type="Pocket">DQ DK</cards>
+   <action no="4" player="Kameloss" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HQ S6</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CQ C5 S3</cards>
+   <action no="6" player="Kameloss" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="8" player="Kameloss" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D9</cards>
+   <action no="9" player="Kameloss" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="120" type="5"/>
+   <action no="11" player="Kameloss" sum="300" type="23"/>
+   <action no="12" player="80CEV9Tabling" sum="180" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">C8</cards>
+  </round>
+ </game>
+ <game gamecode="8728909264">
+  <general>
+   <startdate>2026-01-02 01:51:01</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="20" chips="305" dealer="0" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="0"/>
+    <player bet="120" chips="435" dealer="0" name="tigerbrave867" reg_code="" seat="6" win="100"/>
+    <player bet="40" chips="760" dealer="1" name="Kameloss" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="tigerbrave867" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Kameloss" type="Pocket">X X</cards>
+   <action no="3" player="Kameloss" sum="40" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S9 C9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="5" player="tigerbrave867" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 H5 CJ</cards>
+   <action no="6" player="tigerbrave867" sum="80" type="5"/>
+   <action no="7" player="Kameloss" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909360">
+  <general>
+   <startdate>2026-01-02 01:51:20</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="285" dealer="1" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="0"/>
+    <player bet="120" chips="495" dealer="0" name="tigerbrave867" reg_code="" seat="6" win="240"/>
+    <player bet="120" chips="720" dealer="0" name="Kameloss" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="tigerbrave867" sum="20" type="1"/>
+   <action no="2" player="Kameloss" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H2 D5</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="tigerbrave867" type="Pocket">H5 H8</cards>
+   <action no="4" player="tigerbrave867" sum="20" type="3"/>
+   <cards player="Kameloss" type="Pocket">HA SK</cards>
+   <action no="5" player="Kameloss" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 DJ D4</cards>
+   <action no="6" player="tigerbrave867" sum="40" type="5"/>
+   <action no="7" player="Kameloss" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D3</cards>
+   <action no="8" player="tigerbrave867" sum="40" type="5"/>
+   <action no="9" player="Kameloss" sum="40" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">DQ</cards>
+   <action no="10" player="tigerbrave867" sum="0" type="4"/>
+   <action no="11" player="Kameloss" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728909507">
+  <general>
+   <startdate>2026-01-02 01:51:50</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="285" chips="285" dealer="0" name="80CEV9Tabling" reg_code="5802237788" seat="3" win="0"/>
+    <player bet="0" chips="615" dealer="1" name="tigerbrave867" reg_code="" seat="6" win="0"/>
+    <player bet="285" chips="600" dealer="0" name="Kameloss" reg_code="" seat="10" win="570"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Kameloss" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="tigerbrave867" type="Pocket">X X</cards>
+   <action no="3" player="tigerbrave867" sum="0" type="0"/>
+   <cards player="Kameloss" type="Pocket">D9 C9</cards>
+   <action no="4" player="Kameloss" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H2 SA</cards>
+   <action no="5" player="80CEV9Tabling" sum="285" type="23"/>
+   <action no="6" player="Kameloss" sum="225" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S3 H8 S2</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H6</cards>
+  </round>
+  <round no="4">
+   <cards type="River">HQ</cards>
+  </round>
+ </game>
+</session>

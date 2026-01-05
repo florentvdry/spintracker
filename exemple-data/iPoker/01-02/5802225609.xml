@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802225609">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143482626</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:03:20</duration>
+  <gamecount>9</gamecount>
+  <startdate>2026-01-02 00:57:02</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 620</bets>
+  <wins>395</wins>
+  <chipsin>560</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143482625</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>20€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728848619">
+  <general>
+   <startdate>2026-01-02 00:57:02</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="500" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802225609" seat="3" win="100"/>
+    <player bet="20" chips="500" dealer="0" name="SpicyToeNail" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="500" dealer="1" name="DjANaVEzE" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="SpicyToeNail" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="DjANaVEzE" type="Pocket">X X</cards>
+   <action no="3" player="DjANaVEzE" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D10 HA</cards>
+   <action no="4" player="80CEV9Tabling" sum="500" type="23"/>
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="5" player="SpicyToeNail" sum="0" type="0"/>
+   <action no="6" player="DjANaVEzE" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728848714">
+  <general>
+   <startdate>2026-01-02 00:57:19</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="560" chips="560" dealer="1" name="80CEV9Tabling" reg_code="5802225609" seat="3" win="0"/>
+    <player bet="10" chips="480" dealer="0" name="SpicyToeNail" reg_code="" seat="6" win="0"/>
+    <player bet="460" chips="460" dealer="0" name="DjANaVEzE" reg_code="" seat="10" win="930"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SpicyToeNail" sum="10" type="1"/>
+   <action no="2" player="DjANaVEzE" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SQ CQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="4" player="SpicyToeNail" sum="0" type="0"/>
+   <cards player="DjANaVEzE" type="Pocket">H3 H6</cards>
+   <action no="5" player="DjANaVEzE" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H10 H2 D7</cards>
+   <action no="6" player="DjANaVEzE" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="DjANaVEzE" sum="109" type="23"/>
+   <action no="9" player="80CEV9Tabling" sum="520" type="23"/>
+   <action no="10" player="DjANaVEzE" sum="311" type="7"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">CJ</cards>
+  </round>
+ </game>
+ <game gamecode="8728848899">
+  <general>
+   <startdate>2026-01-02 00:57:55</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="100" chips="100" dealer="0" name="80CEV9Tabling" reg_code="5802225609" seat="3" win="200"/>
+    <player bet="0" chips="470" dealer="1" name="SpicyToeNail" reg_code="" seat="6" win="0"/>
+    <player bet="930" chips="930" dealer="0" name="DjANaVEzE" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="DjANaVEzE" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="3" player="SpicyToeNail" sum="0" type="0"/>
+   <cards player="DjANaVEzE" type="Pocket">D3 HK</cards>
+   <action no="4" player="DjANaVEzE" sum="930" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D10 D9</cards>
+   <action no="5" player="80CEV9Tabling" sum="80" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D8 CQ C9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S7</cards>
+  </round>
+ </game>
+ <game gamecode="8728849009">
+  <general>
+   <startdate>2026-01-02 00:58:17</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="200" dealer="0" name="80CEV9Tabling" reg_code="5802225609" seat="3" win="0"/>
+    <player bet="20" chips="470" dealer="0" name="SpicyToeNail" reg_code="" seat="6" win="20"/>
+    <player bet="0" chips="830" dealer="1" name="DjANaVEzE" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="SpicyToeNail" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <cards player="DjANaVEzE" type="Pocket">X X</cards>
+   <action no="3" player="DjANaVEzE" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">DQ H6</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849110">
+  <general>
+   <startdate>2026-01-02 00:58:38</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="190" dealer="1" name="80CEV9Tabling" reg_code="5802225609" seat="3" win="0"/>
+    <player bet="60" chips="480" dealer="0" name="SpicyToeNail" reg_code="" seat="6" win="40"/>
+    <player bet="20" chips="830" dealer="0" name="DjANaVEzE" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SpicyToeNail" sum="10" type="1"/>
+   <action no="2" player="DjANaVEzE" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C3 H10</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="4" player="SpicyToeNail" sum="60" type="23"/>
+   <cards player="DjANaVEzE" type="Pocket">X X</cards>
+   <action no="5" player="DjANaVEzE" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849217">
+  <general>
+   <startdate>2026-01-02 00:58:57</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="190" dealer="0" name="80CEV9Tabling" reg_code="5802225609" seat="3" win="20"/>
+    <player bet="0" chips="500" dealer="1" name="SpicyToeNail" reg_code="" seat="6" win="0"/>
+    <player bet="10" chips="810" dealer="0" name="DjANaVEzE" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="DjANaVEzE" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S8 S6</cards>
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="3" player="SpicyToeNail" sum="0" type="0"/>
+   <cards player="DjANaVEzE" type="Pocket">X X</cards>
+   <action no="4" player="DjANaVEzE" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849284">
+  <general>
+   <startdate>2026-01-02 00:59:13</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="200" dealer="0" name="80CEV9Tabling" reg_code="5802225609" seat="3" win="0"/>
+    <player bet="30" chips="500" dealer="0" name="SpicyToeNail" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="800" dealer="1" name="DjANaVEzE" reg_code="" seat="10" win="75"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="SpicyToeNail" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="DjANaVEzE" type="Pocket">X X</cards>
+   <action no="3" player="DjANaVEzE" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C6 H2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="5" player="SpicyToeNail" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849368">
+  <general>
+   <startdate>2026-01-02 00:59:30</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="185" chips="185" dealer="1" name="80CEV9Tabling" reg_code="5802225609" seat="3" win="75"/>
+    <player bet="15" chips="470" dealer="0" name="SpicyToeNail" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="845" dealer="0" name="DjANaVEzE" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SpicyToeNail" sum="15" type="1"/>
+   <action no="2" player="DjANaVEzE" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C10 SQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="185" type="23"/>
+   <cards player="SpicyToeNail" type="Pocket">X X</cards>
+   <action no="4" player="SpicyToeNail" sum="0" type="0"/>
+   <cards player="DjANaVEzE" type="Pocket">X X</cards>
+   <action no="5" player="DjANaVEzE" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849447">
+  <general>
+   <startdate>2026-01-02 00:59:44</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="230" chips="230" dealer="0" name="80CEV9Tabling" reg_code="5802225609" seat="3" win="0"/>
+    <player bet="455" chips="455" dealer="1" name="SpicyToeNail" reg_code="" seat="6" win="475"/>
+    <player bet="15" chips="815" dealer="0" name="DjANaVEzE" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="DjANaVEzE" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SpicyToeNail" type="Pocket">SK H9</cards>
+   <action no="3" player="SpicyToeNail" sum="60" type="23"/>
+   <cards player="DjANaVEzE" type="Pocket">X X</cards>
+   <action no="4" player="DjANaVEzE" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C10 DQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CQ C8 DK</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="SpicyToeNail" sum="30" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C9</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="SpicyToeNail" sum="365" type="5"/>
+   <action no="11" player="80CEV9Tabling" sum="140" type="7"/>
+  </round>
+  <round no="4">
+   <cards type="River">H8</cards>
+  </round>
+ </game>
+</session>

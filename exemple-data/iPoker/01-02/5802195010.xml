@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802195010">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143459987</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:06:03</duration>
+  <gamecount>16</gamecount>
+  <startdate>2026-01-01 23:26:57</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 915</bets>
+  <wins>710</wins>
+  <chipsin>420</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143459986</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728708681">
+  <general>
+   <startdate>2026-01-01 23:26:57</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="80" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="240" chips="500" dealer="0" name="Ayas59" reg_code="" seat="10" win="160"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ayas59" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="3" player="Shams0092" sum="0" type="0"/>
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="4" player="Ayas59" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D3 C2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H3 D10 S9</cards>
+   <action no="6" player="Ayas59" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="8" player="Ayas59" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H7</cards>
+   <action no="9" player="Ayas59" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="11" player="Ayas59" sum="40" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">C4</cards>
+   <action no="12" player="Ayas59" sum="160" type="5"/>
+   <action no="13" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728708849">
+  <general>
+   <startdate>2026-01-01 23:27:19</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="150" chips="420" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="120"/>
+    <player bet="60" chips="500" dealer="0" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="580" dealer="1" name="Ayas59" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Shams0092" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="3" player="Ayas59" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 S10</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="5" player="Shams0092" sum="60" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D5 DJ D3</cards>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="Shams0092" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H7</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="Shams0092" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">SQ</cards>
+   <action no="11" player="80CEV9Tabling" sum="90" type="5"/>
+   <action no="12" player="Shams0092" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728716727">
+  <general>
+   <startdate>2026-01-01 23:27:53</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="70" chips="480" dealer="1" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="120"/>
+    <player bet="40" chips="440" dealer="0" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="580" dealer="0" name="Ayas59" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Shams0092" sum="10" type="1"/>
+   <action no="2" player="Ayas59" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DA D7</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="4" player="Shams0092" sum="30" type="3"/>
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="5" player="Ayas59" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S9 S4 H9</cards>
+   <action no="6" player="Shams0092" sum="0" type="4"/>
+   <action no="7" player="Ayas59" sum="0" type="4"/>
+   <action no="8" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="9" player="Shams0092" sum="0" type="0"/>
+   <action no="10" player="Ayas59" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728716851">
+  <general>
+   <startdate>2026-01-01 23:28:10</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="65" chips="560" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="60"/>
+    <player bet="20" chips="400" dealer="1" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="540" dealer="0" name="Ayas59" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ayas59" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="3" player="Shams0092" sum="20" type="3"/>
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="4" player="Ayas59" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HJ C10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK DK SA</cards>
+   <action no="6" player="Ayas59" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="Shams0092" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S10</cards>
+   <action no="9" player="Ayas59" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="Shams0092" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">CK</cards>
+   <action no="12" player="Ayas59" sum="0" type="4"/>
+   <action no="13" player="80CEV9Tabling" sum="45" type="5"/>
+   <action no="14" player="Shams0092" sum="0" type="0"/>
+   <action no="15" player="Ayas59" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728717059">
+  <general>
+   <startdate>2026-01-01 23:28:37</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="120" chips="600" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="90"/>
+    <player bet="30" chips="380" dealer="0" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="520" dealer="1" name="Ayas59" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Shams0092" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="3" player="Ayas59" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SJ HJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="120" type="23"/>
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="5" player="Shams0092" sum="0" type="0"/>
+   <action no="6" player="Ayas59" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728717183">
+  <general>
+   <startdate>2026-01-01 23:28:52</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="660" dealer="1" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="0"/>
+    <player bet="15" chips="350" dealer="0" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="490" dealer="0" name="Ayas59" reg_code="" seat="10" win="30"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Shams0092" sum="15" type="1"/>
+   <action no="2" player="Ayas59" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">S2 DQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="4" player="Shams0092" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728717242">
+  <general>
+   <startdate>2026-01-01 23:29:00</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="660" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="0"/>
+    <player bet="90" chips="335" dealer="1" name="Shams0092" reg_code="" seat="6" win="90"/>
+    <player bet="30" chips="505" dealer="0" name="Ayas59" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ayas59" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="3" player="Shams0092" sum="30" type="3"/>
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="4" player="Ayas59" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S8 D7</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S9 C2 S4</cards>
+   <action no="6" player="Ayas59" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="Shams0092" sum="60" type="5"/>
+   <action no="9" player="Ayas59" sum="0" type="0"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728717548">
+  <general>
+   <startdate>2026-01-01 23:29:38</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="630" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="120"/>
+    <player bet="60" chips="395" dealer="0" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="475" dealer="1" name="Ayas59" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Shams0092" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="3" player="Ayas59" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">HQ C3</cards>
+   <action no="4" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="Shams0092" type="Pocket">H7 H9</cards>
+   <action no="5" player="Shams0092" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DK S10 DQ</cards>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="Shams0092" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C10</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="Shams0092" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H6</cards>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="Shams0092" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728717974">
+  <general>
+   <startdate>2026-01-01 23:30:35</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="690" dealer="1" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="0"/>
+    <player bet="335" chips="335" dealer="0" name="Shams0092" reg_code="" seat="6" win="670"/>
+    <player bet="475" chips="475" dealer="0" name="Ayas59" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Shams0092" sum="20" type="1"/>
+   <action no="2" player="Ayas59" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S10 S6</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Shams0092" type="Pocket">D10 CA</cards>
+   <action no="4" player="Shams0092" sum="120" type="23"/>
+   <cards player="Ayas59" type="Pocket">DJ D7</cards>
+   <action no="5" player="Ayas59" sum="80" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SJ HQ S3</cards>
+   <action no="6" player="Shams0092" sum="0" type="4"/>
+   <action no="7" player="Ayas59" sum="355" type="5"/>
+   <action no="8" player="Shams0092" sum="215" type="7"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HK</cards>
+  </round>
+  <round no="4">
+   <cards type="River">HJ</cards>
+  </round>
+ </game>
+ <game gamecode="8728718153">
+  <general>
+   <startdate>2026-01-01 23:31:00</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="140" chips="690" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="0"/>
+    <player bet="0" chips="670" dealer="1" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="140" chips="140" dealer="0" name="Ayas59" reg_code="" seat="10" win="280"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ayas59" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="3" player="Shams0092" sum="0" type="0"/>
+   <cards player="Ayas59" type="Pocket">D10 SJ</cards>
+   <action no="4" player="Ayas59" sum="140" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C7 C5</cards>
+   <action no="5" player="80CEV9Tabling" sum="100" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK H2 C9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S3</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C3</cards>
+  </round>
+ </game>
+ <game gamecode="8728718294">
+  <general>
+   <startdate>2026-01-01 23:31:20</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="550" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="80"/>
+    <player bet="40" chips="670" dealer="0" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="280" dealer="1" name="Ayas59" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Shams0092" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="3" player="Ayas59" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 SK</cards>
+   <action no="4" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="5" player="Shams0092" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718388">
+  <general>
+   <startdate>2026-01-01 23:31:32</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="0" chips="590" dealer="1" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="0"/>
+    <player bet="60" chips="630" dealer="0" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="280" chips="280" dealer="0" name="Ayas59" reg_code="" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Shams0092" sum="30" type="1"/>
+   <action no="2" player="Ayas59" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H10 C7</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Shams0092" type="Pocket">X X</cards>
+   <action no="4" player="Shams0092" sum="30" type="3"/>
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="5" player="Ayas59" sum="280" type="23"/>
+   <action no="6" player="Shams0092" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718447">
+  <general>
+   <startdate>2026-01-01 23:31:43</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="590" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="0"/>
+    <player bet="340" chips="570" dealer="1" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="340" chips="340" dealer="0" name="Ayas59" reg_code="" seat="10" win="740"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ayas59" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Shams0092" type="Pocket">SA DQ</cards>
+   <action no="3" player="Shams0092" sum="60" type="3"/>
+   <cards player="Ayas59" type="Pocket">C3 DA</cards>
+   <action no="4" player="Ayas59" sum="340" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">HJ C10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="6" player="Shams0092" sum="280" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C8 S3 S8</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H7</cards>
+  </round>
+  <round no="4">
+   <cards type="River">CK</cards>
+  </round>
+ </game>
+ <game gamecode="8728718625">
+  <general>
+   <startdate>2026-01-01 23:32:06</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="530" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="0"/>
+    <player bet="230" chips="230" dealer="0" name="Shams0092" reg_code="" seat="6" win="0"/>
+    <player bet="230" chips="740" dealer="1" name="Ayas59" reg_code="" seat="10" win="520"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Shams0092" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ayas59" type="Pocket">C6 HK</cards>
+   <action no="3" player="Ayas59" sum="60" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S9 S3</cards>
+   <action no="4" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="Shams0092" type="Pocket">SQ C9</cards>
+   <action no="5" player="Shams0092" sum="230" type="23"/>
+   <action no="6" player="Ayas59" sum="170" type="3"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D4 C5 D5</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H3</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S7</cards>
+  </round>
+ </game>
+ <game gamecode="8728718845">
+  <general>
+   <startdate>2026-01-01 23:32:36</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="470" chips="470" dealer="1" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="120"/>
+    <player bet="60" chips="1 030" dealer="0" name="Ayas59" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Ayas59" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DK H5</cards>
+   <action no="3" player="80CEV9Tabling" sum="470" type="23"/>
+   <cards player="Ayas59" type="Pocket">X X</cards>
+   <action no="4" player="Ayas59" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718904">
+  <general>
+   <startdate>2026-01-01 23:32:44</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="530" chips="530" dealer="0" name="80CEV9Tabling" reg_code="5802195010" seat="3" win="0"/>
+    <player bet="530" chips="970" dealer="1" name="Ayas59" reg_code="" seat="10" win="1 060"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ayas59" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ayas59" type="Pocket">S10 DQ</cards>
+   <action no="3" player="Ayas59" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SK C5</cards>
+   <action no="4" player="80CEV9Tabling" sum="530" type="23"/>
+   <action no="5" player="Ayas59" sum="470" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C9 H10 H9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">HK</cards>
+  </round>
+  <round no="4">
+   <cards type="River">DJ</cards>
+  </round>
+ </game>
+</session>

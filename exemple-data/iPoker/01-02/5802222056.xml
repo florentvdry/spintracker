@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802222056">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143479931</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:35</duration>
+  <gamecount>10</gamecount>
+  <startdate>2026-01-02 00:45:00</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>970</bets>
+  <wins>470</wins>
+  <chipsin>490</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143479930</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728828522">
+  <general>
+   <startdate>2026-01-02 00:45:00</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="140" chips="500" dealer="0" name="housecharm38" reg_code="" seat="3" win="290"/>
+    <player bet="140" chips="500" dealer="1" name="rakjs" reg_code="" seat="6" win="0"/>
+    <player bet="10" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="housecharm38" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rakjs" type="Pocket">H4 HA</cards>
+   <action no="3" player="rakjs" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S9 H2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="housecharm38" type="Pocket">D2 DJ</cards>
+   <action no="5" player="housecharm38" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DQ HJ S8</cards>
+   <action no="6" player="housecharm38" sum="0" type="4"/>
+   <action no="7" player="rakjs" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CK</cards>
+   <action no="8" player="housecharm38" sum="0" type="4"/>
+   <action no="9" player="rakjs" sum="40" type="5"/>
+   <action no="10" player="housecharm38" sum="80" type="23"/>
+   <action no="11" player="rakjs" sum="40" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">D4</cards>
+   <action no="12" player="housecharm38" sum="20" type="5"/>
+   <action no="13" player="rakjs" sum="20" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728834773">
+  <general>
+   <startdate>2026-01-02 00:45:34</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="180" chips="650" dealer="0" name="housecharm38" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="360" dealer="0" name="rakjs" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="490" dealer="1" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="housecharm38" sum="10" type="1"/>
+   <action no="2" player="rakjs" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H5 S10</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="housecharm38" type="Pocket">X X</cards>
+   <action no="4" player="housecharm38" sum="10" type="3"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="5" player="rakjs" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CQ SQ C3</cards>
+   <action no="6" player="housecharm38" sum="0" type="4"/>
+   <action no="7" player="rakjs" sum="40" type="5"/>
+   <action no="8" player="housecharm38" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S3</cards>
+   <action no="9" player="housecharm38" sum="0" type="4"/>
+   <action no="10" player="rakjs" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">CJ</cards>
+   <action no="11" player="housecharm38" sum="120" type="5"/>
+   <action no="12" player="rakjs" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728834919">
+  <general>
+   <startdate>2026-01-02 00:46:06</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="710" dealer="1" name="housecharm38" reg_code="" seat="3" win="0"/>
+    <player bet="80" chips="300" dealer="0" name="rakjs" reg_code="" seat="6" win="40"/>
+    <player bet="20" chips="490" dealer="0" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rakjs" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="housecharm38" type="Pocket">X X</cards>
+   <action no="3" player="housecharm38" sum="0" type="0"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="4" player="rakjs" sum="80" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 HA</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728834975">
+  <general>
+   <startdate>2026-01-02 00:46:17</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="470" chips="710" dealer="0" name="housecharm38" reg_code="" seat="3" win="470"/>
+    <player bet="0" chips="320" dealer="1" name="rakjs" reg_code="" seat="6" win="0"/>
+    <player bet="470" chips="470" dealer="0" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="470"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="housecharm38" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="3" player="rakjs" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">DA DK</cards>
+   <action no="4" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="housecharm38" type="Pocket">CK SA</cards>
+   <action no="5" player="housecharm38" sum="60" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="470" type="23"/>
+   <action no="7" player="housecharm38" sum="410" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HA C5 CJ</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D3</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S5</cards>
+  </round>
+ </game>
+ <game gamecode="8728835070">
+  <general>
+   <startdate>2026-01-02 00:46:41</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="710" dealer="0" name="housecharm38" reg_code="" seat="3" win="0"/>
+    <player bet="90" chips="320" dealer="0" name="rakjs" reg_code="" seat="6" win="60"/>
+    <player bet="0" chips="470" dealer="1" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="housecharm38" sum="15" type="1"/>
+   <action no="2" player="rakjs" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CJ C5</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="housecharm38" type="Pocket">X X</cards>
+   <action no="4" player="housecharm38" sum="15" type="3"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="5" player="rakjs" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S6 DQ C2</cards>
+   <action no="6" player="housecharm38" sum="0" type="4"/>
+   <action no="7" player="rakjs" sum="60" type="5"/>
+   <action no="8" player="housecharm38" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728835162">
+  <general>
+   <startdate>2026-01-02 00:46:58</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="680" dealer="1" name="housecharm38" reg_code="" seat="3" win="0"/>
+    <player bet="120" chips="350" dealer="0" name="rakjs" reg_code="" seat="6" win="120"/>
+    <player bet="60" chips="470" dealer="0" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rakjs" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="housecharm38" type="Pocket">X X</cards>
+   <action no="3" player="housecharm38" sum="0" type="0"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="4" player="rakjs" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C2 S6</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HQ D6 HJ</cards>
+   <action no="6" player="rakjs" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="8" player="rakjs" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S4</cards>
+   <action no="9" player="rakjs" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">S8</cards>
+   <action no="11" player="rakjs" sum="60" type="5"/>
+   <action no="12" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728835291">
+  <general>
+   <startdate>2026-01-02 00:47:26</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="680" dealer="0" name="housecharm38" reg_code="" seat="3" win="210"/>
+    <player bet="90" chips="410" dealer="1" name="rakjs" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="410" dealer="0" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="housecharm38" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rakjs" type="Pocket">C5 CQ</cards>
+   <action no="3" player="rakjs" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C8 C4</cards>
+   <action no="4" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="housecharm38" type="Pocket">D8 D2</cards>
+   <action no="5" player="housecharm38" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H9 S6 C9</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="housecharm38" sum="0" type="4"/>
+   <action no="8" player="rakjs" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D5</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="housecharm38" sum="0" type="4"/>
+   <action no="11" player="rakjs" sum="30" type="5"/>
+   <action no="12" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="13" player="housecharm38" sum="30" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">D7</cards>
+   <action no="14" player="housecharm38" sum="30" type="5"/>
+   <action no="15" player="rakjs" sum="30" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728835543">
+  <general>
+   <startdate>2026-01-02 00:48:21</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="200" chips="800" dealer="0" name="housecharm38" reg_code="" seat="3" win="240"/>
+    <player bet="120" chips="320" dealer="0" name="rakjs" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="380" dealer="1" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="housecharm38" sum="20" type="1"/>
+   <action no="2" player="rakjs" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DK S4</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="housecharm38" type="Pocket">X X</cards>
+   <action no="4" player="housecharm38" sum="20" type="3"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="5" player="rakjs" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C6 S3 C9</cards>
+   <action no="6" player="housecharm38" sum="0" type="4"/>
+   <action no="7" player="rakjs" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H8</cards>
+   <action no="8" player="housecharm38" sum="0" type="4"/>
+   <action no="9" player="rakjs" sum="80" type="5"/>
+   <action no="10" player="housecharm38" sum="160" type="23"/>
+   <action no="11" player="rakjs" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728835688">
+  <general>
+   <startdate>2026-01-02 00:48:54</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="200" chips="920" dealer="1" name="housecharm38" reg_code="" seat="3" win="0"/>
+    <player bet="200" chips="200" dealer="0" name="rakjs" reg_code="" seat="6" win="440"/>
+    <player bet="40" chips="380" dealer="0" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rakjs" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="housecharm38" type="Pocket">HJ HK</cards>
+   <action no="3" player="housecharm38" sum="40" type="3"/>
+   <cards player="rakjs" type="Pocket">S8 S10</cards>
+   <action no="4" player="rakjs" sum="200" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 C5</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="6" player="housecharm38" sum="160" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 C2 S6</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S2</cards>
+  </round>
+  <round no="4">
+   <cards type="River">DQ</cards>
+  </round>
+ </game>
+ <game gamecode="8728835793">
+  <general>
+   <startdate>2026-01-02 00:49:18</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="340" chips="720" dealer="0" name="housecharm38" reg_code="" seat="3" win="720"/>
+    <player bet="40" chips="440" dealer="1" name="rakjs" reg_code="" seat="6" win="0"/>
+    <player bet="340" chips="340" dealer="0" name="80CEV9Tabling" reg_code="5802222056" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="housecharm38" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="3" player="rakjs" sum="40" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HQ H8</cards>
+   <action no="4" player="80CEV9Tabling" sum="340" type="23"/>
+   <cards player="housecharm38" type="Pocket">DA HJ</cards>
+   <action no="5" player="housecharm38" sum="300" type="3"/>
+   <action no="6" player="rakjs" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H9 S8 S2</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">CA</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D3</cards>
+  </round>
+ </game>
+</session>

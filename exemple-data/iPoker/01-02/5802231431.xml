@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802231431">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143487036</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:47</duration>
+  <gamecount>12</gamecount>
+  <startdate>2026-01-02 01:19:29</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>2 370</bets>
+  <wins>2 160</wins>
+  <chipsin>540</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143487035</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>15€</win>
+ </general>
+ <game gamecode="8728873309">
+  <general>
+   <startdate>2026-01-02 01:19:29</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="500" dealer="1" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="80"/>
+    <player bet="40" chips="500" dealer="0" name="DjANaVEzE" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="DjANaVEzE" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="3" player="SPinPlz" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D9 H8</cards>
+   <action no="4" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="DjANaVEzE" type="Pocket">X X</cards>
+   <action no="5" player="DjANaVEzE" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 D3 S6</cards>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="DjANaVEzE" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873371">
+  <general>
+   <startdate>2026-01-02 01:19:43</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="460" chips="500" dealer="0" name="SPinPlz" reg_code="" seat="3" win="920"/>
+    <player bet="0" chips="540" dealer="1" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="0"/>
+    <player bet="460" chips="460" dealer="0" name="DjANaVEzE" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="DjANaVEzE" sum="10" type="1"/>
+   <action no="2" player="SPinPlz" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D8 H5</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="DjANaVEzE" type="Pocket">H9 HQ</cards>
+   <action no="4" player="DjANaVEzE" sum="40" type="23"/>
+   <cards player="SPinPlz" type="Pocket">HK DK</cards>
+   <action no="5" player="SPinPlz" sum="120" type="23"/>
+   <action no="6" player="DjANaVEzE" sum="80" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H8 S5 D6</cards>
+   <action no="7" player="DjANaVEzE" sum="0" type="4"/>
+   <action no="8" player="SPinPlz" sum="90" type="5"/>
+   <action no="9" player="DjANaVEzE" sum="340" type="23"/>
+   <action no="10" player="SPinPlz" sum="250" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D9</cards>
+  </round>
+  <round no="4">
+   <cards type="River">DJ</cards>
+  </round>
+ </game>
+ <game gamecode="8728873548">
+  <general>
+   <startdate>2026-01-02 01:20:25</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="960" dealer="1" name="SPinPlz" reg_code="" seat="3" win="40"/>
+    <player bet="20" chips="540" dealer="0" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="3" player="SPinPlz" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ C2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C3 HA H8</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="SPinPlz" sum="20" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873682">
+  <general>
+   <startdate>2026-01-02 01:20:51</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="980" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="520" dealer="1" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="SPinPlz" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HK S9</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="4" player="SPinPlz" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK HJ S6</cards>
+   <action no="5" player="SPinPlz" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="SPinPlz" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873830">
+  <general>
+   <startdate>2026-01-02 01:21:19</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="75" chips="940" dealer="1" name="SPinPlz" reg_code="" seat="3" win="60"/>
+    <player bet="30" chips="560" dealer="0" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="3" player="SPinPlz" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C2 H3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D5 SK S10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="SPinPlz" sum="45" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873908">
+  <general>
+   <startdate>2026-01-02 01:21:36</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="970" chips="970" dealer="0" name="SPinPlz" reg_code="" seat="3" win="60"/>
+    <player bet="30" chips="530" dealer="1" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="SPinPlz" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H3 D4</cards>
+   <action no="3" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="4" player="SPinPlz" sum="970" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873962">
+  <general>
+   <startdate>2026-01-02 01:21:47</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="1 000" dealer="1" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">CQ D7</cards>
+   <action no="3" player="SPinPlz" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C5 H9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 CA H6</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="SPinPlz" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H5</cards>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="SPinPlz" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">D2</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="SPinPlz" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728874118">
+  <general>
+   <startdate>2026-01-02 01:22:18</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="970" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="530" chips="530" dealer="1" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="SPinPlz" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CJ SA</cards>
+   <action no="3" player="80CEV9Tabling" sum="530" type="23"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="4" player="SPinPlz" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728874176">
+  <general>
+   <startdate>2026-01-02 01:22:29</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="140" chips="940" dealer="1" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="140" chips="560" dealer="0" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="280"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">C4 C8</cards>
+   <action no="3" player="SPinPlz" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D9 S5</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SJ S10 H9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="SPinPlz" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="SPinPlz" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H6</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="SPinPlz" sum="100" type="5"/>
+   <action no="11" player="80CEV9Tabling" sum="100" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728874343">
+  <general>
+   <startdate>2026-01-02 01:23:09</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="800" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="700" chips="700" dealer="1" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="SPinPlz" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SA C3</cards>
+   <action no="3" player="80CEV9Tabling" sum="700" type="23"/>
+   <cards player="SPinPlz" type="Pocket">X X</cards>
+   <action no="4" player="SPinPlz" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728874373">
+  <general>
+   <startdate>2026-01-02 01:23:16</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="740" chips="760" dealer="1" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="740" chips="740" dealer="0" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="1 480"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="SPinPlz" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">S9 D5</cards>
+   <action no="3" player="SPinPlz" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S10 C9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S6 S4 H8</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="SPinPlz" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H7</cards>
+   <action no="7" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="8" player="SPinPlz" sum="240" type="23"/>
+   <action no="9" player="80CEV9Tabling" sum="700" type="23"/>
+   <action no="10" player="SPinPlz" sum="460" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">CQ</cards>
+  </round>
+ </game>
+ <game gamecode="8728881920">
+  <general>
+   <startdate>2026-01-02 01:24:07</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="20" chips="20" dealer="0" name="SPinPlz" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="1 480" dealer="1" name="80CEV9Tabling" reg_code="5802231431" seat="6" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="SPinPlz" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="SPinPlz" type="Pocket">H3 S5</cards>
+   <cards player="80CEV9Tabling" type="Pocket">SA DK</cards>
+  </round>
+  <round no="2">
+   <cards type="Flop">D3 D9 CK</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S10</cards>
+  </round>
+  <round no="4">
+   <cards type="River">HQ</cards>
+  </round>
+ </game>
+</session>

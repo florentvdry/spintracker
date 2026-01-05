@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802215837">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143475357</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:51</duration>
+  <gamecount>15</gamecount>
+  <startdate>2026-01-02 00:24:30</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>4 042</bets>
+  <wins>2 330</wins>
+  <chipsin>500</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143475355</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>15€</win>
+ </general>
+ <game gamecode="8728804413">
+  <general>
+   <startdate>2026-01-02 00:24:30</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="0"/>
+    <player bet="60" chips="500" dealer="0" name="BaRRicade85" reg_code="" seat="6" win="0"/>
+    <player bet="120" chips="500" dealer="0" name="VIXI3" reg_code="" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="BaRRicade85" sum="10" type="1"/>
+   <action no="2" player="VIXI3" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D10 C2</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="BaRRicade85" type="Pocket">X X</cards>
+   <action no="4" player="BaRRicade85" sum="60" type="23"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="5" player="VIXI3" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 H10 DK</cards>
+   <action no="6" player="BaRRicade85" sum="0" type="4"/>
+   <action no="7" player="VIXI3" sum="60" type="5"/>
+   <action no="8" player="BaRRicade85" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728804665">
+  <general>
+   <startdate>2026-01-02 00:25:12</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="122" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="254"/>
+    <player bet="122" chips="440" dealer="1" name="BaRRicade85" reg_code="" seat="6" win="0"/>
+    <player bet="10" chips="560" dealer="0" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="VIXI3" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="BaRRicade85" type="Pocket">SA H6</cards>
+   <action no="3" player="BaRRicade85" sum="40" type="23"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="4" player="VIXI3" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H10 DK</cards>
+   <action no="5" player="80CEV9Tabling" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D3 D10 CJ</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="BaRRicade85" sum="40" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HJ</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="BaRRicade85" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">S6</cards>
+   <action no="11" player="80CEV9Tabling" sum="42" type="5"/>
+   <action no="12" player="BaRRicade85" sum="42" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728804830">
+  <general>
+   <startdate>2026-01-02 00:25:40</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="632" chips="632" dealer="0" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="100"/>
+    <player bet="20" chips="318" dealer="0" name="BaRRicade85" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="550" dealer="1" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="BaRRicade85" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="3" player="VIXI3" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">HA CJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="632" type="23"/>
+   <cards player="BaRRicade85" type="Pocket">X X</cards>
+   <action no="5" player="BaRRicade85" sum="0" type="0"/>
+   <action no="6" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728804929">
+  <general>
+   <startdate>2026-01-02 00:25:58</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="298" chips="692" dealer="1" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="616"/>
+    <player bet="298" chips="298" dealer="0" name="BaRRicade85" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="510" dealer="0" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="BaRRicade85" sum="10" type="1"/>
+   <action no="2" player="VIXI3" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C10 CA</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="BaRRicade85" type="Pocket">HA C2</cards>
+   <action no="4" player="BaRRicade85" sum="298" type="23"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="5" player="VIXI3" sum="0" type="0"/>
+   <action no="6" player="80CEV9Tabling" sum="258" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S6 HJ DA</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D8</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H10</cards>
+  </round>
+ </game>
+ <game gamecode="8728805101">
+  <general>
+   <startdate>2026-01-02 00:26:27</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="1 010" dealer="0" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="0"/>
+    <player bet="60" chips="490" dealer="1" name="VIXI3" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="VIXI3" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="3" player="VIXI3" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D2 HJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DK C4 H7</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="VIXI3" sum="30" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805220">
+  <general>
+   <startdate>2026-01-02 00:26:48</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="980" dealer="1" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="0"/>
+    <player bet="520" chips="520" dealer="0" name="VIXI3" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="VIXI3" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C7 DJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="4" player="VIXI3" sum="520" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805283">
+  <general>
+   <startdate>2026-01-02 00:26:57</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="950" dealer="0" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="0"/>
+    <player bet="550" chips="550" dealer="1" name="VIXI3" reg_code="" seat="10" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="VIXI3" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="3" player="VIXI3" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C4 C6</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H4 C7 H10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="VIXI3" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CA</cards>
+   <action no="7" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="8" player="VIXI3" sum="60" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">D3</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="VIXI3" sum="460" type="5"/>
+   <action no="11" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805487">
+  <general>
+   <startdate>2026-01-02 00:27:32</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="200" chips="860" dealer="1" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="160"/>
+    <player bet="80" chips="640" dealer="0" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="VIXI3" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C5 S10</cards>
+   <action no="3" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="4" player="VIXI3" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C4 C8 SJ</cards>
+   <action no="5" player="VIXI3" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="VIXI3" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">SK</cards>
+   <action no="8" player="VIXI3" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="120" type="5"/>
+   <action no="10" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805648">
+  <general>
+   <startdate>2026-01-02 00:27:58</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="940" dealer="0" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="0"/>
+    <player bet="80" chips="560" dealer="1" name="VIXI3" reg_code="" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="VIXI3" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="3" player="VIXI3" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C9 S4</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DQ H8 C3</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="VIXI3" sum="40" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805724">
+  <general>
+   <startdate>2026-01-02 00:28:13</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="900" dealer="1" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="80"/>
+    <player bet="40" chips="600" dealer="0" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="VIXI3" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ D9</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="4" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805783">
+  <general>
+   <startdate>2026-01-02 00:28:21</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="940" chips="940" dealer="0" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="80"/>
+    <player bet="40" chips="560" dealer="1" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="VIXI3" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="3" player="VIXI3" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 CA</cards>
+   <action no="4" player="80CEV9Tabling" sum="940" type="23"/>
+   <action no="5" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805837">
+  <general>
+   <startdate>2026-01-02 00:28:31</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="980" dealer="1" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="80"/>
+    <player bet="40" chips="520" dealer="0" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="VIXI3" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ D4</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="4" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805900">
+  <general>
+   <startdate>2026-01-02 00:28:42</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="1 020" chips="1 020" dealer="0" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="80"/>
+    <player bet="40" chips="480" dealer="1" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="VIXI3" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="3" player="VIXI3" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ HJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="1 020" type="23"/>
+   <action no="5" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805952">
+  <general>
+   <startdate>2026-01-02 00:28:51</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="120" chips="1 060" dealer="1" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="160"/>
+    <player bet="80" chips="440" dealer="0" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="VIXI3" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H4 D3</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="4" player="VIXI3" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HQ C4 H5</cards>
+   <action no="5" player="VIXI3" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728806048">
+  <general>
+   <startdate>2026-01-02 00:29:09</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="360" chips="1 140" dealer="0" name="80CEV9Tabling" reg_code="5802215837" seat="3" win="720"/>
+    <player bet="360" chips="360" dealer="1" name="VIXI3" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="VIXI3" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="VIXI3" type="Pocket">S4 CA</cards>
+   <action no="3" player="VIXI3" sum="360" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S8 C8</cards>
+   <action no="4" player="80CEV9Tabling" sum="300" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S9 SJ C4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D3</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C5</cards>
+  </round>
+ </game>
+</session>

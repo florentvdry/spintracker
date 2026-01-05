@@ -1,0 +1,268 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320995712641794049-1-1760787078 - Holdem no limit (10/20) - 2025/10/18 11:31:18 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (500)
+Seat 2: rastapiter (500)
+Seat 3: dj frawks (500)
+*** ANTE/BLINDS ***
+rastapiter posts small blind 10
+dj frawks posts big blind 20
+Dealt to Nelfrot-YT [3h 8h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+rastapiter raises 20 to 40
+dj frawks calls 20
+*** FLOP *** [9h As 5h]
+rastapiter bets 28
+dj frawks calls 28
+*** TURN *** [9h As 5h][7h]
+rastapiter checks
+dj frawks checks
+*** RIVER *** [9h As 5h 7h][9d]
+rastapiter checks
+dj frawks bets 88
+rastapiter folds
+dj frawks collected 224 from pot
+*** SUMMARY ***
+Total pot 224 | No rake
+Board: [9h As 5h 7h 9d]
+Seat 3: dj frawks (big blind) won 224
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320995712641794049-2-1760787141 - Holdem no limit (10/20) - 2025/10/18 11:32:21 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (500)
+Seat 2: rastapiter (432)
+Seat 3: dj frawks (568)
+*** ANTE/BLINDS ***
+dj frawks posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [5c Th]
+*** PRE-FLOP *** 
+rastapiter raises 412 to 432 and is all-in
+dj frawks folds
+Nelfrot-YT folds
+rastapiter collected 462 from pot
+*** SUMMARY ***
+Total pot 462 | No rake
+Seat 2: rastapiter (button) won 462
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320995712641794049-3-1760787155 - Holdem no limit (10/20) - 2025/10/18 11:32:35 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (480)
+Seat 2: rastapiter (462)
+Seat 3: dj frawks (558)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+rastapiter posts big blind 20
+Dealt to Nelfrot-YT [3c 6c]
+*** PRE-FLOP *** 
+dj frawks raises 20 to 40
+Nelfrot-YT folds
+rastapiter folds
+dj frawks collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 3: dj frawks (button) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320995712641794049-4-1760787172 - Holdem no limit (15/30) - 2025/10/18 11:32:52 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (470)
+Seat 2: rastapiter (442)
+Seat 3: dj frawks (588)
+*** ANTE/BLINDS ***
+rastapiter posts small blind 15
+dj frawks posts big blind 30
+Dealt to Nelfrot-YT [2s 4d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+rastapiter calls 15
+dj frawks checks
+*** FLOP *** [7d Ac 9h]
+rastapiter checks
+dj frawks bets 39
+rastapiter calls 39
+*** TURN *** [7d Ac 9h][Jc]
+rastapiter checks
+dj frawks bets 48
+rastapiter calls 48
+*** RIVER *** [7d Ac 9h Jc][5h]
+rastapiter checks
+dj frawks checks
+*** SHOW DOWN ***
+rastapiter shows [6h 9d] (One pair : 9)
+dj frawks shows [Qs Jd] (One pair : Jacks)
+dj frawks collected 234 from pot
+*** SUMMARY ***
+Total pot 234 | No rake
+Board: [7d Ac 9h Jc 5h]
+Seat 2: rastapiter (small blind) showed [6h 9d] and lost with One pair : 9
+Seat 3: dj frawks (big blind) showed [Qs Jd] and won 234 with One pair : Jacks
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320995712641794049-5-1760787214 - Holdem no limit (15/30) - 2025/10/18 11:33:34 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (470)
+Seat 2: rastapiter (325)
+Seat 3: dj frawks (705)
+*** ANTE/BLINDS ***
+dj frawks posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [6c 2c]
+*** PRE-FLOP *** 
+rastapiter folds
+dj frawks calls 15
+Nelfrot-YT checks
+*** FLOP *** [2s 8c 9d]
+dj frawks bets 30
+Nelfrot-YT calls 30
+*** TURN *** [2s 8c 9d][As]
+dj frawks checks
+Nelfrot-YT checks
+*** RIVER *** [2s 8c 9d As][Td]
+dj frawks bets 78
+Nelfrot-YT calls 78
+*** SHOW DOWN ***
+Nelfrot-YT shows [6c 2c] (One pair : 2)
+dj frawks shows [2d 5s] (One pair : 2)
+dj frawks collected 138 from pot
+Nelfrot-YT collected 138 from pot
+*** SUMMARY ***
+Total pot 276 | No rake
+Board: [2s 8c 9d As Td]
+Seat 1: Nelfrot-YT (big blind) showed [6c 2c] and won 138 with One pair : 2
+Seat 3: dj frawks (small blind) showed [2d 5s] and won 138 with One pair : 2
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320995712641794049-6-1760787245 - Holdem no limit (15/30) - 2025/10/18 11:34:05 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (470)
+Seat 2: rastapiter (325)
+Seat 3: dj frawks (705)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+rastapiter posts big blind 30
+Dealt to Nelfrot-YT [Ts 3c]
+*** PRE-FLOP *** 
+dj frawks raises 30 to 60
+Nelfrot-YT folds
+rastapiter folds
+dj frawks collected 105 from pot
+*** SUMMARY ***
+Total pot 105 | No rake
+Seat 3: dj frawks (button) won 105
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320995712641794049-7-1760787265 - Holdem no limit (20/40) - 2025/10/18 11:34:25 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (455)
+Seat 2: rastapiter (295)
+Seat 3: dj frawks (750)
+*** ANTE/BLINDS ***
+rastapiter posts small blind 20
+dj frawks posts big blind 40
+Dealt to Nelfrot-YT [2s 9d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+rastapiter folds
+dj frawks collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 3: dj frawks (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320995712641794049-8-1760787270 - Holdem no limit (20/40) - 2025/10/18 11:34:30 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (455)
+Seat 2: rastapiter (275)
+Seat 3: dj frawks (770)
+*** ANTE/BLINDS ***
+dj frawks posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [4c Kh]
+*** PRE-FLOP *** 
+rastapiter raises 235 to 275 and is all-in
+dj frawks folds
+Nelfrot-YT folds
+rastapiter collected 335 from pot
+*** SUMMARY ***
+Total pot 335 | No rake
+Seat 2: rastapiter (button) won 335
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320995712641794049-9-1760787286 - Holdem no limit (20/40) - 2025/10/18 11:34:46 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (415)
+Seat 2: rastapiter (335)
+Seat 3: dj frawks (750)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+rastapiter posts big blind 40
+Dealt to Nelfrot-YT [Kc Jc]
+*** PRE-FLOP *** 
+dj frawks raises 40 to 80
+Nelfrot-YT raises 335 to 415 and is all-in
+rastapiter calls 295 and is all-in
+dj frawks folds
+*** FLOP *** [4d 4s 2d]
+*** TURN *** [4d 4s 2d][Jd]
+*** RIVER *** [4d 4s 2d Jd][3d]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Kc Jc] (Two pairs : Jacks and 4)
+rastapiter shows [Th Td] (Flush Jack high)
+rastapiter collected 750 from main pot
+Nelfrot-YT collected 80 from side pot 1
+*** SUMMARY ***
+Total pot 830 | No rake
+Board: [4d 4s 2d Jd 3d]
+Seat 1: Nelfrot-YT (small blind) showed [Kc Jc] and won 80 with Two pairs : Jacks and 4
+Seat 2: rastapiter (big blind) showed [Th Td] and won 750 with Flush Jack high
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320995712641794049-10-1760787306 - Holdem no limit (20/40) - 2025/10/18 11:35:06 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (80)
+Seat 2: rastapiter (750)
+Seat 3: dj frawks (670)
+*** ANTE/BLINDS ***
+rastapiter posts small blind 20
+dj frawks posts big blind 40
+Dealt to Nelfrot-YT [5c Qh]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+rastapiter raises 40 to 80
+dj frawks folds
+rastapiter collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 2: rastapiter (small blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320995712641794049-11-1760787343 - Holdem no limit (20/40) - 2025/10/18 11:35:43 UTC
+Table: 'Expresso(1006060213)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (80)
+Seat 2: rastapiter (790)
+Seat 3: dj frawks (630)
+*** ANTE/BLINDS ***
+dj frawks posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Ah 6s]
+*** PRE-FLOP *** 
+rastapiter raises 40 to 80
+dj frawks folds
+Nelfrot-YT calls 40 and is all-in
+*** FLOP *** [9c Qs 5c]
+*** TURN *** [9c Qs 5c][Kh]
+*** RIVER *** [9c Qs 5c Kh][9s]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Ah 6s] (One pair : 9)
+rastapiter shows [Jh Js] (Two pairs : Jacks and 9)
+rastapiter collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Board: [9c Qs 5c Kh 9s]
+Seat 1: Nelfrot-YT (big blind) showed [Ah 6s] and lost with One pair : 9
+Seat 2: rastapiter (button) showed [Jh Js] and won 180 with Two pairs : Jacks and 9
+
+

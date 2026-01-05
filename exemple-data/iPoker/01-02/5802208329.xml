@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802208329">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143469732</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:01:01</duration>
+  <gamecount>4</gamecount>
+  <startdate>2026-01-02 00:02:51</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>500</bets>
+  <wins>0</wins>
+  <chipsin>500</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143469731</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728773582">
+  <general>
+   <startdate>2026-01-02 00:02:51</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="0" name="clownmountain9" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802208329" seat="6" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="pistolblank14" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="10" type="1"/>
+   <action no="2" player="clownmountain9" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S3 H10</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="4" player="pistolblank14" sum="500" type="23"/>
+   <cards player="clownmountain9" type="Pocket">X X</cards>
+   <action no="5" player="clownmountain9" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728773682">
+  <general>
+   <startdate>2026-01-02 00:03:05</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="60" chips="480" dealer="0" name="clownmountain9" reg_code="" seat="3" win="40"/>
+    <player bet="20" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802208329" seat="6" win="0"/>
+    <player bet="0" chips="520" dealer="1" name="pistolblank14" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="clownmountain9" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="0" type="0"/>
+   <cards player="clownmountain9" type="Pocket">X X</cards>
+   <action no="4" player="clownmountain9" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C4 S3</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728773738">
+  <general>
+   <startdate>2026-01-02 00:03:15</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="500" dealer="1" name="clownmountain9" reg_code="" seat="3" win="0"/>
+    <player bet="10" chips="480" dealer="0" name="80CEV9Tabling" reg_code="5802208329" seat="6" win="0"/>
+    <player bet="20" chips="520" dealer="0" name="pistolblank14" reg_code="" seat="10" win="20"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="pistolblank14" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <cards player="clownmountain9" type="Pocket">X X</cards>
+   <action no="3" player="clownmountain9" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D3 S4</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728773839">
+  <general>
+   <startdate>2026-01-02 00:03:30</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="500" dealer="0" name="clownmountain9" reg_code="" seat="3" win="0"/>
+    <player bet="470" chips="470" dealer="1" name="80CEV9Tabling" reg_code="5802208329" seat="6" win="0"/>
+    <player bet="530" chips="530" dealer="0" name="pistolblank14" reg_code="" seat="10" win="980"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="10" type="1"/>
+   <action no="2" player="clownmountain9" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SA SQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="pistolblank14" type="Pocket">S10 HQ</cards>
+   <action no="4" player="pistolblank14" sum="30" type="3"/>
+   <cards player="clownmountain9" type="Pocket">X X</cards>
+   <action no="5" player="clownmountain9" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D4 CQ C3</cards>
+   <action no="6" player="pistolblank14" sum="490" type="5"/>
+   <action no="7" player="clownmountain9" sum="0" type="0"/>
+   <action no="8" player="80CEV9Tabling" sum="430" type="7"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C10</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S9</cards>
+  </round>
+ </game>
+</session>

@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802238971">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143492776</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:03:58</duration>
+  <gamecount>14</gamecount>
+  <startdate>2026-01-02 01:50:53</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 601</bets>
+  <wins>370</wins>
+  <chipsin>338</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143492775</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728909224">
+  <general>
+   <startdate>2026-01-02 01:50:53</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="500" dealer="0" name="Sameregale" reg_code="" seat="3" win="0"/>
+    <player bet="162" chips="500" dealer="0" name="dragonsharp15" reg_code="" seat="6" win="334"/>
+    <player bet="162" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="10" type="1"/>
+   <action no="2" player="dragonsharp15" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DJ CQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="4" player="Sameregale" sum="0" type="0"/>
+   <cards player="dragonsharp15" type="Pocket">S4 SA</cards>
+   <action no="5" player="dragonsharp15" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK C6 C9</cards>
+   <action no="6" player="dragonsharp15" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="dragonsharp15" sum="22" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HA</cards>
+   <action no="9" player="dragonsharp15" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="100" type="5"/>
+   <action no="11" player="dragonsharp15" sum="100" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">S5</cards>
+   <action no="12" player="dragonsharp15" sum="0" type="4"/>
+   <action no="13" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728909377">
+  <general>
+   <startdate>2026-01-02 01:51:24</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="490" dealer="1" name="Sameregale" reg_code="" seat="3" win="0"/>
+    <player bet="10" chips="672" dealer="0" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="338" dealer="0" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="20"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="dragonsharp15" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D2 H3</cards>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="3" player="Sameregale" sum="0" type="0"/>
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="4" player="dragonsharp15" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909440">
+  <general>
+   <startdate>2026-01-02 01:51:35</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="490" dealer="0" name="Sameregale" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="662" dealer="1" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="348" dealer="0" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Sameregale" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="3" player="dragonsharp15" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">HK C8</cards>
+   <action no="4" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="5" player="Sameregale" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909581">
+  <general>
+   <startdate>2026-01-02 01:52:03</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="470" dealer="0" name="Sameregale" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="662" dealer="0" name="dragonsharp15" reg_code="" seat="6" win="30"/>
+    <player bet="0" chips="368" dealer="1" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="15" type="1"/>
+   <action no="2" player="dragonsharp15" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">C5 C10</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="4" player="Sameregale" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909607">
+  <general>
+   <startdate>2026-01-02 01:52:09</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="455" dealer="1" name="Sameregale" reg_code="" seat="3" win="0"/>
+    <player bet="15" chips="677" dealer="0" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="368" dealer="0" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="30"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="dragonsharp15" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H10 C4</cards>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="3" player="Sameregale" sum="0" type="0"/>
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="4" player="dragonsharp15" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909650">
+  <general>
+   <startdate>2026-01-02 01:52:18</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="455" chips="455" dealer="0" name="Sameregale" reg_code="" seat="3" win="60"/>
+    <player bet="0" chips="662" dealer="1" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="383" dealer="0" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Sameregale" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="3" player="dragonsharp15" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">S10 S2</cards>
+   <action no="4" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="5" player="Sameregale" sum="455" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909720">
+  <general>
+   <startdate>2026-01-02 01:52:34</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="100" chips="485" dealer="0" name="Sameregale" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="662" dealer="0" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="353" dealer="1" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="15" type="1"/>
+   <action no="2" player="dragonsharp15" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C6 H2</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="4" player="Sameregale" sum="60" type="23"/>
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="5" player="dragonsharp15" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 S2 HQ</cards>
+   <action no="6" player="Sameregale" sum="40" type="5"/>
+   <action no="7" player="dragonsharp15" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909857">
+  <general>
+   <startdate>2026-01-02 01:53:04</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="545" dealer="1" name="Sameregale" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="602" dealer="0" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="353" chips="353" dealer="0" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="dragonsharp15" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="3" player="Sameregale" sum="0" type="0"/>
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="4" player="dragonsharp15" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SK H7</cards>
+   <action no="5" player="80CEV9Tabling" sum="353" type="23"/>
+   <action no="6" player="dragonsharp15" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909926">
+  <general>
+   <startdate>2026-01-02 01:53:19</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="545" dealer="0" name="Sameregale" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="562" dealer="1" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="80" chips="393" dealer="0" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Sameregale" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="3" player="dragonsharp15" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D4 D6</cards>
+   <action no="4" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="5" player="Sameregale" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728909978">
+  <general>
+   <startdate>2026-01-02 01:53:30</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="505" chips="505" dealer="0" name="Sameregale" reg_code="" seat="3" win="80"/>
+    <player bet="40" chips="562" dealer="0" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="433" dealer="1" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="20" type="1"/>
+   <action no="2" player="dragonsharp15" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S2 C5</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="4" player="Sameregale" sum="505" type="23"/>
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="5" player="dragonsharp15" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728910046">
+  <general>
+   <startdate>2026-01-02 01:53:44</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="545" chips="545" dealer="1" name="Sameregale" reg_code="" seat="3" win="100"/>
+    <player bet="20" chips="522" dealer="0" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="433" dealer="0" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="dragonsharp15" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="3" player="Sameregale" sum="545" type="23"/>
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="4" player="dragonsharp15" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C10 D6</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728910105">
+  <general>
+   <startdate>2026-01-02 01:53:55</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="605" dealer="0" name="Sameregale" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="502" dealer="1" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="393" chips="393" dealer="0" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Sameregale" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="dragonsharp15" type="Pocket">X X</cards>
+   <action no="3" player="dragonsharp15" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H6 DQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="393" type="23"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="5" player="Sameregale" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728910201">
+  <general>
+   <startdate>2026-01-02 01:54:15</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="545" chips="545" dealer="0" name="Sameregale" reg_code="" seat="3" win="1 004"/>
+    <player bet="502" chips="502" dealer="0" name="dragonsharp15" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="453" dealer="1" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="30" type="1"/>
+   <action no="2" player="dragonsharp15" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H2 S8</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Sameregale" type="Pocket">H9 HJ</cards>
+   <action no="4" player="Sameregale" sum="545" type="23"/>
+   <cards player="dragonsharp15" type="Pocket">S6 C6</cards>
+   <action no="5" player="dragonsharp15" sum="442" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D4 SJ DJ</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">CQ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S3</cards>
+  </round>
+ </game>
+ <game gamecode="8728910295">
+  <general>
+   <startdate>2026-01-02 01:54:36</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="1 047" chips="1 047" dealer="1" name="Sameregale" reg_code="" seat="3" win="906"/>
+    <player bet="453" chips="453" dealer="0" name="80CEV9Tabling" reg_code="5802238971" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Sameregale" type="Pocket">CK SJ</cards>
+   <action no="3" player="Sameregale" sum="1 047" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C9 S10</cards>
+   <action no="4" player="80CEV9Tabling" sum="393" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H4 C3 D4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">HJ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H8</cards>
+  </round>
+ </game>
+</session>

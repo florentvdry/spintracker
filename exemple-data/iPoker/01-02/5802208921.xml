@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802208921">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143470187</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:02:17</duration>
+  <gamecount>5</gamecount>
+  <startdate>2026-01-02 00:04:21</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>570</bets>
+  <wins>50</wins>
+  <chipsin>480</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143470185</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>20€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728774172">
+  <general>
+   <startdate>2026-01-02 00:04:21</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="80" chips="500" dealer="1" name="Nobluf74" reg_code="" seat="3" win="60"/>
+    <player bet="20" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802208921" seat="6" win="0"/>
+    <player bet="20" chips="500" dealer="0" name="Tiken76" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Tiken76" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Nobluf74" type="Pocket">X X</cards>
+   <action no="3" player="Nobluf74" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SJ CK</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="Tiken76" type="Pocket">X X</cards>
+   <action no="5" player="Tiken76" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S3 D4 S10</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="Tiken76" sum="0" type="4"/>
+   <action no="8" player="Nobluf74" sum="60" type="5"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="10" player="Tiken76" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728774381">
+  <general>
+   <startdate>2026-01-02 00:04:52</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="540" dealer="0" name="Nobluf74" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="480" dealer="1" name="80CEV9Tabling" reg_code="5802208921" seat="6" win="0"/>
+    <player bet="60" chips="480" dealer="0" name="Tiken76" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Tiken76" sum="10" type="1"/>
+   <action no="2" player="Nobluf74" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C4 H3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Tiken76" type="Pocket">X X</cards>
+   <action no="4" player="Tiken76" sum="10" type="3"/>
+   <cards player="Nobluf74" type="Pocket">X X</cards>
+   <action no="5" player="Nobluf74" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C7 HA H8</cards>
+   <action no="6" player="Tiken76" sum="40" type="5"/>
+   <action no="7" player="Nobluf74" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728774499">
+  <general>
+   <startdate>2026-01-02 00:05:11</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="520" dealer="0" name="Nobluf74" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="480" dealer="0" name="80CEV9Tabling" reg_code="5802208921" seat="6" win="50"/>
+    <player bet="20" chips="500" dealer="1" name="Tiken76" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Nobluf74" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Tiken76" type="Pocket">X X</cards>
+   <action no="3" player="Tiken76" sum="20" type="3"/>
+   <cards player="Nobluf74" type="Pocket">X X</cards>
+   <action no="4" player="Nobluf74" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">HQ D9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S4 H3 H9</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="Tiken76" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D4</cards>
+   <action no="8" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="9" player="Tiken76" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728774694">
+  <general>
+   <startdate>2026-01-02 00:05:39</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="70" chips="510" dealer="1" name="Nobluf74" reg_code="" seat="3" win="50"/>
+    <player bet="10" chips="510" dealer="0" name="80CEV9Tabling" reg_code="5802208921" seat="6" win="0"/>
+    <player bet="20" chips="480" dealer="0" name="Tiken76" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Tiken76" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Nobluf74" type="Pocket">X X</cards>
+   <action no="3" player="Nobluf74" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C3 SJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Tiken76" type="Pocket">X X</cards>
+   <action no="5" player="Tiken76" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 DA C4</cards>
+   <action no="6" player="Tiken76" sum="0" type="4"/>
+   <action no="7" player="Nobluf74" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H10</cards>
+   <action no="8" player="Tiken76" sum="0" type="4"/>
+   <action no="9" player="Nobluf74" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">C7</cards>
+   <action no="10" player="Tiken76" sum="0" type="4"/>
+   <action no="11" player="Nobluf74" sum="50" type="5"/>
+   <action no="12" player="Tiken76" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728774872">
+  <general>
+   <startdate>2026-01-02 00:06:05</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="500" chips="540" dealer="0" name="Nobluf74" reg_code="" seat="3" win="1 010"/>
+    <player bet="500" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802208921" seat="6" win="0"/>
+    <player bet="10" chips="460" dealer="0" name="Tiken76" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Tiken76" sum="10" type="1"/>
+   <action no="2" player="Nobluf74" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C6 C10</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Tiken76" type="Pocket">X X</cards>
+   <action no="4" player="Tiken76" sum="0" type="0"/>
+   <cards player="Nobluf74" type="Pocket">S8 C7</cards>
+   <action no="5" player="Nobluf74" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CK D6 C9</cards>
+   <action no="6" player="Nobluf74" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="Nobluf74" sum="22" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H10</cards>
+   <action no="9" player="Nobluf74" sum="67" type="5"/>
+   <action no="10" player="80CEV9Tabling" sum="144" type="23"/>
+   <action no="11" player="Nobluf74" sum="77" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">D8</cards>
+   <action no="12" player="Nobluf74" sum="20" type="5"/>
+   <action no="13" player="80CEV9Tabling" sum="294" type="23"/>
+   <action no="14" player="Nobluf74" sum="274" type="3"/>
+  </round>
+ </game>
+</session>

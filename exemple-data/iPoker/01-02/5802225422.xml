@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802225422">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143482400</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:10</duration>
+  <gamecount>16</gamecount>
+  <startdate>2026-01-02 00:56:36</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>3 190</bets>
+  <wins>2 570</wins>
+  <chipsin>480</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143482398</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>10€</win>
+ </general>
+ <game gamecode="8728848483">
+  <general>
+   <startdate>2026-01-02 00:56:36</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+    <player bet="70" chips="500" dealer="0" name="Caro64250" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Caro64250" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="3" player="Ingenioustable3" sum="0" type="0"/>
+   <cards player="Caro64250" type="Pocket">X X</cards>
+   <action no="4" player="Caro64250" sum="70" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">HK S2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728848538">
+  <general>
+   <startdate>2026-01-02 00:56:47</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="480" dealer="0" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="0"/>
+    <player bet="40" chips="500" dealer="0" name="Ingenioustable3" reg_code="" seat="6" win="50"/>
+    <player bet="20" chips="520" dealer="1" name="Caro64250" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Ingenioustable3" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Caro64250" type="Pocket">X X</cards>
+   <action no="3" player="Caro64250" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H2 SQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="5" player="Ingenioustable3" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CJ S9 HJ</cards>
+   <action no="6" player="Ingenioustable3" sum="20" type="5"/>
+   <action no="7" player="Caro64250" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728848622">
+  <general>
+   <startdate>2026-01-02 00:57:02</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="470" chips="470" dealer="1" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="950"/>
+    <player bet="10" chips="530" dealer="0" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="Caro64250" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ingenioustable3" sum="10" type="1"/>
+   <action no="2" player="Caro64250" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H8 HJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="4" player="Ingenioustable3" sum="0" type="0"/>
+   <cards player="Caro64250" type="Pocket">H4 H9</cards>
+   <action no="5" player="Caro64250" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 H7 S10</cards>
+   <action no="6" player="Caro64250" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="Caro64250" sum="102" type="23"/>
+   <action no="9" player="80CEV9Tabling" sum="80" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HA</cards>
+   <action no="10" player="Caro64250" sum="0" type="4"/>
+   <action no="11" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H10</cards>
+   <action no="12" player="Caro64250" sum="358" type="5"/>
+   <action no="13" player="80CEV9Tabling" sum="328" type="7"/>
+  </round>
+ </game>
+ <game gamecode="8728848802">
+  <general>
+   <startdate>2026-01-02 00:57:38</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="950" dealer="0" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="60"/>
+    <player bet="0" chips="520" dealer="1" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="30" dealer="0" name="Caro64250" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Caro64250" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C4 HJ</cards>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="3" player="Ingenioustable3" sum="0" type="0"/>
+   <cards player="Caro64250" type="Pocket">D4 D2</cards>
+   <action no="4" player="Caro64250" sum="15" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C9 D5 H9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">SJ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">CJ</cards>
+  </round>
+ </game>
+ <game gamecode="8728848900">
+  <general>
+   <startdate>2026-01-02 00:57:55</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="980" dealer="1" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="0"/>
+    <player bet="90" chips="520" dealer="0" name="Ingenioustable3" reg_code="" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Ingenioustable3" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H9 S8</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="4" player="Ingenioustable3" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D10 S3 D2</cards>
+   <action no="5" player="Ingenioustable3" sum="30" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728848955">
+  <general>
+   <startdate>2026-01-02 00:58:07</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="120" chips="920" dealer="0" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="120"/>
+    <player bet="60" chips="580" dealer="1" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ingenioustable3" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="3" player="Ingenioustable3" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 CQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S3 H7 C2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Ingenioustable3" sum="30" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="90" type="23"/>
+   <action no="8" player="Ingenioustable3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849041">
+  <general>
+   <startdate>2026-01-02 00:58:23</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="980" dealer="1" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="60"/>
+    <player bet="30" chips="520" dealer="0" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Ingenioustable3" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S7 S10</cards>
+   <action no="3" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="4" player="Ingenioustable3" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C10 H6 S5</cards>
+   <action no="5" player="Ingenioustable3" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="Ingenioustable3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849122">
+  <general>
+   <startdate>2026-01-02 00:58:39</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="1 010" dealer="0" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="40"/>
+    <player bet="20" chips="490" dealer="1" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ingenioustable3" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HJ DK</cards>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="3" player="Ingenioustable3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849161">
+  <general>
+   <startdate>2026-01-02 00:58:46</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="1 030" dealer="1" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="0"/>
+    <player bet="80" chips="470" dealer="0" name="Ingenioustable3" reg_code="" seat="6" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Ingenioustable3" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C7 C10</cards>
+   <action no="3" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="4" player="Ingenioustable3" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SQ S4 SK</cards>
+   <action no="5" player="Ingenioustable3" sum="40" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849207">
+  <general>
+   <startdate>2026-01-02 00:58:54</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="990" dealer="0" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="0"/>
+    <player bet="80" chips="510" dealer="1" name="Ingenioustable3" reg_code="" seat="6" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ingenioustable3" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="3" player="Ingenioustable3" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D10 H2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SQ H4 SA</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Ingenioustable3" sum="40" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849274">
+  <general>
+   <startdate>2026-01-02 00:59:10</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="120" chips="950" dealer="1" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="160"/>
+    <player bet="80" chips="550" dealer="0" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Ingenioustable3" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C10 HJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="4" player="Ingenioustable3" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CJ S4 SA</cards>
+   <action no="5" player="Ingenioustable3" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="Ingenioustable3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849386">
+  <general>
+   <startdate>2026-01-02 00:59:35</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="1 030" dealer="0" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="0"/>
+    <player bet="120" chips="470" dealer="1" name="Ingenioustable3" reg_code="" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ingenioustable3" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="3" player="Ingenioustable3" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H4 D8</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 SQ D3</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Ingenioustable3" sum="60" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849477">
+  <general>
+   <startdate>2026-01-02 00:59:51</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="970" dealer="1" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="0"/>
+    <player bet="120" chips="530" dealer="0" name="Ingenioustable3" reg_code="" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Ingenioustable3" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ C8</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="4" player="Ingenioustable3" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C2 HK C3</cards>
+   <action no="5" player="Ingenioustable3" sum="60" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849538">
+  <general>
+   <startdate>2026-01-02 01:00:05</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="910" chips="910" dealer="0" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="120"/>
+    <player bet="60" chips="590" dealer="1" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ingenioustable3" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="3" player="Ingenioustable3" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">CA CQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="910" type="23"/>
+   <action no="5" player="Ingenioustable3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849588">
+  <general>
+   <startdate>2026-01-02 01:00:15</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="120" chips="970" dealer="1" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="120"/>
+    <player bet="60" chips="530" dealer="0" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Ingenioustable3" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H2 S7</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="Ingenioustable3" type="Pocket">X X</cards>
+   <action no="4" player="Ingenioustable3" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HJ S9 S3</cards>
+   <action no="5" player="Ingenioustable3" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="7" player="Ingenioustable3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728849647">
+  <general>
+   <startdate>2026-01-02 01:00:28</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="1 030" chips="1 030" dealer="0" name="80CEV9Tabling" reg_code="5802225422" seat="3" win="940"/>
+    <player bet="470" chips="470" dealer="1" name="Ingenioustable3" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ingenioustable3" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ingenioustable3" type="Pocket">CK H10</cards>
+   <action no="3" player="Ingenioustable3" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">CQ C8</cards>
+   <action no="4" player="80CEV9Tabling" sum="1 030" type="23"/>
+   <action no="5" player="Ingenioustable3" sum="410" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SQ S3 S7</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">HJ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H4</cards>
+  </round>
+ </game>
+</session>

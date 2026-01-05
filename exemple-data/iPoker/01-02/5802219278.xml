@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802219278">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143477804</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:18</duration>
+  <gamecount>17</gamecount>
+  <startdate>2026-01-02 00:35:38</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>3 950</bets>
+  <wins>2 090</wins>
+  <chipsin>830</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143477803</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728817092">
+  <general>
+   <startdate>2026-01-02 00:35:38</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="270" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="600"/>
+    <player bet="60" chips="500" dealer="1" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="270" chips="500" dealer="0" name="GamblingEagle" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="GamblingEagle" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="20" type="3"/>
+   <cards player="GamblingEagle" type="Pocket">DA H7</cards>
+   <action no="4" player="GamblingEagle" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ SK</cards>
+   <action no="5" player="80CEV9Tabling" sum="40" type="3"/>
+   <action no="6" player="titanbook552" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HK C5 C3</cards>
+   <action no="7" player="GamblingEagle" sum="0" type="4"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D7</cards>
+   <action no="10" player="GamblingEagle" sum="90" type="5"/>
+   <action no="11" player="80CEV9Tabling" sum="90" type="3"/>
+   <action no="12" player="titanbook552" sum="0" type="0"/>
+  </round>
+  <round no="4">
+   <cards type="River">H10</cards>
+   <action no="13" player="GamblingEagle" sum="120" type="5"/>
+   <action no="14" player="80CEV9Tabling" sum="120" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728817285">
+  <general>
+   <startdate>2026-01-02 00:36:13</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="830" dealer="0" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="0"/>
+    <player bet="20" chips="440" dealer="0" name="titanbook552" reg_code="" seat="6" win="20"/>
+    <player bet="0" chips="230" dealer="1" name="GamblingEagle" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="titanbook552" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <cards player="GamblingEagle" type="Pocket">X X</cards>
+   <action no="3" player="GamblingEagle" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">S2 C3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728817342">
+  <general>
+   <startdate>2026-01-02 00:36:24</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="230" chips="820" dealer="1" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="470"/>
+    <player bet="10" chips="450" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="230" chips="230" dealer="0" name="GamblingEagle" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="10" type="1"/>
+   <action no="2" player="GamblingEagle" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DA HQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="4" player="titanbook552" sum="0" type="0"/>
+   <cards player="GamblingEagle" type="Pocket">D10 H10</cards>
+   <action no="5" player="GamblingEagle" sum="230" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="190" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S9 S6 HA</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C4</cards>
+  </round>
+  <round no="4">
+   <cards type="River">CQ</cards>
+  </round>
+ </game>
+ <game gamecode="8728817505">
+  <general>
+   <startdate>2026-01-02 00:36:53</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="1 060" dealer="0" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="0"/>
+    <player bet="270" chips="440" dealer="1" name="titanbook552" reg_code="" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="270" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S4 H3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728817571">
+  <general>
+   <startdate>2026-01-02 00:37:03</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="1 030" dealer="1" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="0"/>
+    <player bet="270" chips="470" dealer="0" name="titanbook552" reg_code="" seat="6" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="titanbook552" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S10 CJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="4" player="titanbook552" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H2 D7 HA</cards>
+   <action no="5" player="titanbook552" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="titanbook552" sum="210" type="23"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728817660">
+  <general>
+   <startdate>2026-01-02 00:37:20</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="940" dealer="0" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="0"/>
+    <player bet="560" chips="560" dealer="1" name="titanbook552" reg_code="" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="560" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H7 CJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728817724">
+  <general>
+   <startdate>2026-01-02 00:37:33</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="910" dealer="1" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="60"/>
+    <player bet="30" chips="590" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="titanbook552" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C2 D3</cards>
+   <action no="3" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="4" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HK D4 DJ</cards>
+   <action no="5" player="titanbook552" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728817776">
+  <general>
+   <startdate>2026-01-02 00:37:42</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="940" chips="940" dealer="0" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="560"/>
+    <player bet="560" chips="560" dealer="1" name="titanbook552" reg_code="" seat="6" win="560"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">S4 SA</cards>
+   <action no="3" player="titanbook552" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">CA HK</cards>
+   <action no="4" player="80CEV9Tabling" sum="180" type="23"/>
+   <action no="5" player="titanbook552" sum="140" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HA DA S5</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C8</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">D5</cards>
+   <action no="10" player="80CEV9Tabling" sum="144" type="5"/>
+   <action no="11" player="titanbook552" sum="288" type="23"/>
+   <action no="12" player="80CEV9Tabling" sum="760" type="23"/>
+   <action no="13" player="titanbook552" sum="92" type="7"/>
+  </round>
+ </game>
+ <game gamecode="8728823901">
+  <general>
+   <startdate>2026-01-02 00:38:07</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="120" chips="940" dealer="1" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="0"/>
+    <player bet="120" chips="560" dealer="0" name="titanbook552" reg_code="" seat="6" win="240"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="titanbook552" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SQ C6</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="titanbook552" type="Pocket">DJ S2</cards>
+   <action no="4" player="titanbook552" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S8 HJ D6</cards>
+   <action no="5" player="titanbook552" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="titanbook552" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D8</cards>
+   <action no="8" player="titanbook552" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">C5</cards>
+   <action no="10" player="titanbook552" sum="0" type="4"/>
+   <action no="11" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728824021">
+  <general>
+   <startdate>2026-01-02 00:38:26</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="120" chips="820" dealer="0" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="80"/>
+    <player bet="40" chips="680" dealer="1" name="titanbook552" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S7 H9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D5 D2 S3</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H2</cards>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">HQ</cards>
+   <action no="9" player="80CEV9Tabling" sum="80" type="5"/>
+   <action no="10" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824100">
+  <general>
+   <startdate>2026-01-02 00:38:40</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="30" chips="860" dealer="1" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="0"/>
+    <player bet="60" chips="640" dealer="0" name="titanbook552" reg_code="" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="titanbook552" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">D2 C9</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824151">
+  <general>
+   <startdate>2026-01-02 00:38:49</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="830" dealer="0" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="0"/>
+    <player bet="180" chips="670" dealer="1" name="titanbook552" reg_code="" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="180" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C8 D6</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824192">
+  <general>
+   <startdate>2026-01-02 00:38:58</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="120" chips="770" dealer="1" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="120"/>
+    <player bet="60" chips="730" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="titanbook552" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SJ C2</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="4" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S4 C4 D6</cards>
+   <action no="5" player="titanbook552" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="7" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824277">
+  <general>
+   <startdate>2026-01-02 00:39:12</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="830" chips="830" dealer="0" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="120"/>
+    <player bet="60" chips="670" dealer="1" name="titanbook552" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S4 SQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="830" type="23"/>
+   <action no="5" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824319">
+  <general>
+   <startdate>2026-01-02 00:39:20</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="610" chips="890" dealer="1" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="0"/>
+    <player bet="610" chips="610" dealer="0" name="titanbook552" reg_code="" seat="6" win="1 220"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="titanbook552" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DQ HJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="120" type="23"/>
+   <cards player="titanbook552" type="Pocket">CA D6</cards>
+   <action no="4" player="titanbook552" sum="610" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="490" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D9 SA DA</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">CK</cards>
+  </round>
+ </game>
+ <game gamecode="8728824430">
+  <general>
+   <startdate>2026-01-02 00:39:38</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="80" chips="280" dealer="0" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="80"/>
+    <player bet="40" chips="1 220" dealer="1" name="titanbook552" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="40" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SJ D7</cards>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824463">
+  <general>
+   <startdate>2026-01-02 00:39:44</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="320" chips="320" dealer="1" name="80CEV9Tabling" reg_code="5802219278" seat="3" win="0"/>
+    <player bet="320" chips="1 180" dealer="0" name="titanbook552" reg_code="" seat="6" win="640"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="40" type="1"/>
+   <action no="2" player="titanbook552" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H4 CK</cards>
+   <action no="3" player="80CEV9Tabling" sum="320" type="23"/>
+   <cards player="titanbook552" type="Pocket">CQ DA</cards>
+   <action no="4" player="titanbook552" sum="240" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DQ S2 C4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S3</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H10</cards>
+  </round>
+ </game>
+</session>

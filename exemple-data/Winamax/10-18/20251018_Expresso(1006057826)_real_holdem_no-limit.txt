@@ -1,0 +1,419 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985460554858497-1-1760786611 - Holdem no limit (10/20) - 2025/10/18 11:23:31 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SBKaiser1939 (500)
+Seat 2: LeSoignollai (500)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+SBKaiser1939 posts big blind 20
+Dealt to Nelfrot-YT [Js 2d]
+*** PRE-FLOP *** 
+LeSoignollai raises 20 to 40
+Nelfrot-YT folds
+SBKaiser1939 calls 20
+*** FLOP *** [5h 8h Jh]
+SBKaiser1939 checks
+LeSoignollai bets 31
+SBKaiser1939 raises 31 to 62
+LeSoignollai folds
+SBKaiser1939 collected 183 from pot
+*** SUMMARY ***
+Total pot 183 | No rake
+Board: [5h 8h Jh]
+Seat 1: SBKaiser1939 (big blind) won 183
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985460554858497-2-1760786632 - Holdem no limit (10/20) - 2025/10/18 11:23:52 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SBKaiser1939 (581)
+Seat 2: LeSoignollai (429)
+Seat 3: Nelfrot-YT (490)
+*** ANTE/BLINDS ***
+SBKaiser1939 posts small blind 10
+LeSoignollai posts big blind 20
+Dealt to Nelfrot-YT [Kc 6d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+SBKaiser1939 raises 20 to 40
+LeSoignollai folds
+SBKaiser1939 collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 1: SBKaiser1939 (small blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985460554858497-3-1760786649 - Holdem no limit (10/20) - 2025/10/18 11:24:09 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SBKaiser1939 (601)
+Seat 2: LeSoignollai (409)
+Seat 3: Nelfrot-YT (490)
+*** ANTE/BLINDS ***
+LeSoignollai posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [4s Qh]
+*** PRE-FLOP *** 
+SBKaiser1939 raises 20 to 40
+LeSoignollai calls 30
+Nelfrot-YT folds
+*** FLOP *** [9s 4h 4c]
+LeSoignollai checks
+SBKaiser1939 bets 120
+LeSoignollai folds
+SBKaiser1939 collected 220 from pot
+*** SUMMARY ***
+Total pot 220 | No rake
+Board: [9s 4h 4c]
+Seat 1: SBKaiser1939 (button) won 220
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985460554858497-4-1760786664 - Holdem no limit (10/20) - 2025/10/18 11:24:24 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #2 is the button
+Seat 1: SBKaiser1939 (661)
+Seat 2: LeSoignollai (369)
+Seat 3: Nelfrot-YT (470)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+SBKaiser1939 posts big blind 20
+Dealt to Nelfrot-YT [2c Kh]
+*** PRE-FLOP *** 
+LeSoignollai raises 30 to 50
+Nelfrot-YT folds
+SBKaiser1939 calls 30
+*** FLOP *** [3s 8s 8h]
+SBKaiser1939 bets 100
+LeSoignollai folds
+SBKaiser1939 collected 210 from pot
+*** SUMMARY ***
+Total pot 210 | No rake
+Board: [3s 8s 8h]
+Seat 1: SBKaiser1939 (big blind) won 210
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985460554858497-5-1760786688 - Holdem no limit (10/20) - 2025/10/18 11:24:48 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SBKaiser1939 (721)
+Seat 2: LeSoignollai (319)
+Seat 3: Nelfrot-YT (460)
+*** ANTE/BLINDS ***
+SBKaiser1939 posts small blind 10
+LeSoignollai posts big blind 20
+Dealt to Nelfrot-YT [Jh 9s]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+SBKaiser1939 raises 20 to 40
+LeSoignollai calls 20
+*** FLOP *** [Qc 4s Kc]
+SBKaiser1939 bets 60
+LeSoignollai calls 60
+*** TURN *** [Qc 4s Kc][2h]
+SBKaiser1939 bets 60
+LeSoignollai calls 60
+*** RIVER *** [Qc 4s Kc 2h][3s]
+SBKaiser1939 checks
+LeSoignollai bets 80
+SBKaiser1939 calls 80
+*** SHOW DOWN ***
+LeSoignollai shows [Qh 9h] (One pair : Queens)
+SBKaiser1939 shows [Js Kh] (One pair : Kings)
+SBKaiser1939 collected 480 from pot
+*** SUMMARY ***
+Total pot 480 | No rake
+Board: [Qc 4s Kc 2h 3s]
+Seat 1: SBKaiser1939 (small blind) showed [Js Kh] and won 480 with One pair : Kings
+Seat 2: LeSoignollai (big blind) showed [Qh 9h] and lost with One pair : Queens
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320985460554858497-6-1760786743 - Holdem no limit (15/30) - 2025/10/18 11:25:43 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SBKaiser1939 (961)
+Seat 2: LeSoignollai (79)
+Seat 3: Nelfrot-YT (460)
+*** ANTE/BLINDS ***
+LeSoignollai posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Kd Qs]
+*** PRE-FLOP *** 
+SBKaiser1939 raises 90 to 120
+LeSoignollai calls 64 and is all-in
+Nelfrot-YT calls 90
+*** FLOP *** [9s Js 8h]
+Nelfrot-YT checks
+SBKaiser1939 bets 60
+Nelfrot-YT calls 60
+*** TURN *** [9s Js 8h][Qd]
+Nelfrot-YT checks
+SBKaiser1939 checks
+*** RIVER *** [9s Js 8h Qd][4h]
+Nelfrot-YT bets 280 and is all-in
+SBKaiser1939 folds
+*** SHOW DOWN ***
+LeSoignollai shows [8s 7c] (One pair : 8)
+Nelfrot-YT shows [Kd Qs] (One pair : Queens)
+Nelfrot-YT collected 719 from pot
+*** SUMMARY ***
+Total pot 719 | No rake
+Board: [9s Js 8h Qd 4h]
+Seat 2: LeSoignollai (small blind) showed [8s 7c] and lost with One pair : 8
+Seat 3: Nelfrot-YT (big blind) showed [Kd Qs] and won 719 with One pair : Queens
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985460554858497-7-1760786806 - Holdem no limit (20/40) - 2025/10/18 11:26:46 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SBKaiser1939 (781)
+Seat 3: Nelfrot-YT (719)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SBKaiser1939 posts big blind 40
+Dealt to Nelfrot-YT [7s Jh]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+SBKaiser1939 checks
+*** FLOP *** [Kc 3s 8s]
+SBKaiser1939 checks
+Nelfrot-YT bets 40
+SBKaiser1939 raises 40 to 80
+Nelfrot-YT folds
+SBKaiser1939 collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [Kc 3s 8s]
+Seat 1: SBKaiser1939 (big blind) won 200
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985460554858497-8-1760786835 - Holdem no limit (20/40) - 2025/10/18 11:27:15 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SBKaiser1939 (861)
+Seat 3: Nelfrot-YT (639)
+*** ANTE/BLINDS ***
+SBKaiser1939 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [4h 3h]
+*** PRE-FLOP *** 
+SBKaiser1939 raises 821 to 861 and is all-in
+Nelfrot-YT folds
+SBKaiser1939 collected 901 from pot
+*** SUMMARY ***
+Total pot 901 | No rake
+Seat 1: SBKaiser1939 (small blind) (button) won 901
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985460554858497-9-1760786861 - Holdem no limit (20/40) - 2025/10/18 11:27:41 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SBKaiser1939 (901)
+Seat 3: Nelfrot-YT (599)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SBKaiser1939 posts big blind 40
+Dealt to Nelfrot-YT [Ah Kd]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 559 to 599 and is all-in
+SBKaiser1939 folds
+Nelfrot-YT collected 639 from pot
+*** SUMMARY ***
+Total pot 639 | No rake
+Seat 3: Nelfrot-YT (small blind) (button) won 639
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985460554858497-10-1760786872 - Holdem no limit (20/40) - 2025/10/18 11:27:52 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SBKaiser1939 (861)
+Seat 3: Nelfrot-YT (639)
+*** ANTE/BLINDS ***
+SBKaiser1939 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Qd 6c]
+*** PRE-FLOP *** 
+SBKaiser1939 calls 20
+Nelfrot-YT checks
+*** FLOP *** [Kd Kc Js]
+Nelfrot-YT checks
+SBKaiser1939 checks
+*** TURN *** [Kd Kc Js][Jh]
+Nelfrot-YT bets 40
+SBKaiser1939 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [Kd Kc Js Jh]
+Seat 3: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985460554858497-11-1760786902 - Holdem no limit (30/60) - 2025/10/18 11:28:22 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SBKaiser1939 (821)
+Seat 3: Nelfrot-YT (679)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SBKaiser1939 posts big blind 60
+Dealt to Nelfrot-YT [Kh Ks]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 60 to 120
+SBKaiser1939 calls 60
+*** FLOP *** [Qc 3d 8h]
+SBKaiser1939 checks
+Nelfrot-YT bets 60
+SBKaiser1939 folds
+Nelfrot-YT collected 300 from pot
+*** SUMMARY ***
+Total pot 300 | No rake
+Board: [Qc 3d 8h]
+Seat 3: Nelfrot-YT (small blind) (button) won 300
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985460554858497-12-1760786918 - Holdem no limit (30/60) - 2025/10/18 11:28:38 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SBKaiser1939 (701)
+Seat 3: Nelfrot-YT (799)
+*** ANTE/BLINDS ***
+SBKaiser1939 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [5d 3s]
+*** PRE-FLOP *** 
+SBKaiser1939 calls 30
+Nelfrot-YT checks
+*** FLOP *** [4s 6s Tc]
+Nelfrot-YT checks
+SBKaiser1939 bets 120
+Nelfrot-YT folds
+SBKaiser1939 collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Board: [4s 6s Tc]
+Seat 1: SBKaiser1939 (small blind) (button) won 240
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985460554858497-13-1760786934 - Holdem no limit (30/60) - 2025/10/18 11:28:54 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SBKaiser1939 (761)
+Seat 3: Nelfrot-YT (739)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SBKaiser1939 posts big blind 60
+Dealt to Nelfrot-YT [Kc 3h]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 679 to 739 and is all-in
+SBKaiser1939 folds
+Nelfrot-YT collected 799 from pot
+*** SUMMARY ***
+Total pot 799 | No rake
+Seat 3: Nelfrot-YT (small blind) (button) won 799
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985460554858497-14-1760786941 - Holdem no limit (30/60) - 2025/10/18 11:29:01 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SBKaiser1939 (701)
+Seat 3: Nelfrot-YT (799)
+*** ANTE/BLINDS ***
+SBKaiser1939 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Qc 4s]
+*** PRE-FLOP *** 
+SBKaiser1939 raises 60 to 120
+Nelfrot-YT folds
+SBKaiser1939 collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Seat 1: SBKaiser1939 (small blind) (button) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985460554858497-15-1760786951 - Holdem no limit (30/60) - 2025/10/18 11:29:11 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SBKaiser1939 (761)
+Seat 3: Nelfrot-YT (739)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SBKaiser1939 posts big blind 60
+Dealt to Nelfrot-YT [5c 3c]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+SBKaiser1939 checks
+*** FLOP *** [3s Jh Kc]
+SBKaiser1939 checks
+Nelfrot-YT bets 60
+SBKaiser1939 folds
+Nelfrot-YT collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Board: [3s Jh Kc]
+Seat 3: Nelfrot-YT (small blind) (button) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 5 - HandId: #4320985460554858497-16-1760786985 - Holdem no limit (40/80) - 2025/10/18 11:29:45 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SBKaiser1939 (701)
+Seat 3: Nelfrot-YT (799)
+*** ANTE/BLINDS ***
+SBKaiser1939 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [6h 9s]
+*** PRE-FLOP *** 
+SBKaiser1939 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 3: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 5 - HandId: #4320985460554858497-17-1760786994 - Holdem no limit (40/80) - 2025/10/18 11:29:54 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SBKaiser1939 (661)
+Seat 3: Nelfrot-YT (839)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+SBKaiser1939 posts big blind 80
+Dealt to Nelfrot-YT [6s Ts]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 40
+SBKaiser1939 checks
+*** FLOP *** [Jd Ah Ad]
+SBKaiser1939 checks
+Nelfrot-YT bets 80
+SBKaiser1939 folds
+Nelfrot-YT collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Board: [Jd Ah Ad]
+Seat 3: Nelfrot-YT (small blind) (button) won 240
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 5 - HandId: #4320985460554858497-18-1760787011 - Holdem no limit (40/80) - 2025/10/18 11:30:11 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #1 is the button
+Seat 1: SBKaiser1939 (581)
+Seat 3: Nelfrot-YT (919)
+*** ANTE/BLINDS ***
+SBKaiser1939 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [Kh 9h]
+*** PRE-FLOP *** 
+SBKaiser1939 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 3: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 5 - HandId: #4320985460554858497-19-1760787016 - Holdem no limit (40/80) - 2025/10/18 11:30:16 UTC
+Table: 'Expresso(1006057826)#0' 3-max (real money) Seat #3 is the button
+Seat 1: SBKaiser1939 (541)
+Seat 3: Nelfrot-YT (959)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+SBKaiser1939 posts big blind 80
+Dealt to Nelfrot-YT [Ad Qh]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 879 to 959 and is all-in
+SBKaiser1939 calls 461 and is all-in
+*** FLOP *** [Qc Js Ac]
+*** TURN *** [Qc Js Ac][Tc]
+*** RIVER *** [Qc Js Ac Tc][2s]
+*** SHOW DOWN ***
+SBKaiser1939 shows [6s As] (One pair : Aces)
+Nelfrot-YT shows [Ad Qh] (Two pairs : Aces and Queens)
+Nelfrot-YT collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [Qc Js Ac Tc 2s]
+Seat 1: SBKaiser1939 (big blind) showed [6s As] and lost with One pair : Aces
+Seat 3: Nelfrot-YT (small blind) (button) showed [Ad Qh] and won 1500 with Two pairs : Aces and Queens
+
+

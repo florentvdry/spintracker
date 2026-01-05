@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802213606">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143473632</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:01:54</duration>
+  <gamecount>6</gamecount>
+  <startdate>2026-01-02 00:17:34</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 525</bets>
+  <wins>2 120</wins>
+  <chipsin>520</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143473631</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>10€</win>
+ </general>
+ <game gamecode="8728797625">
+  <general>
+   <startdate>2026-01-02 00:17:34</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802213606" seat="3" win="40"/>
+    <player bet="20" chips="500" dealer="0" name="sungrey14" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="BaRRicade85" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="sungrey14" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="BaRRicade85" type="Pocket">X X</cards>
+   <action no="3" player="BaRRicade85" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H8 D3</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="sungrey14" type="Pocket">X X</cards>
+   <action no="5" player="sungrey14" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 C8 H5</cards>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="sungrey14" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728797787">
+  <general>
+   <startdate>2026-01-02 00:18:03</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="520" dealer="1" name="80CEV9Tabling" reg_code="5802213606" seat="3" win="0"/>
+    <player bet="480" chips="480" dealer="0" name="sungrey14" reg_code="" seat="6" win="100"/>
+    <player bet="20" chips="500" dealer="0" name="BaRRicade85" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sungrey14" sum="10" type="1"/>
+   <action no="2" player="BaRRicade85" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D8 D10</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="sungrey14" type="Pocket">X X</cards>
+   <action no="4" player="sungrey14" sum="480" type="23"/>
+   <cards player="BaRRicade85" type="Pocket">X X</cards>
+   <action no="5" player="BaRRicade85" sum="0" type="0"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728797865">
+  <general>
+   <startdate>2026-01-02 00:18:19</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="480" dealer="0" name="80CEV9Tabling" reg_code="5802213606" seat="3" win="0"/>
+    <player bet="540" chips="540" dealer="1" name="sungrey14" reg_code="" seat="6" win="980"/>
+    <player bet="480" chips="480" dealer="0" name="BaRRicade85" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="BaRRicade85" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sungrey14" type="Pocket">DA S5</cards>
+   <action no="3" player="sungrey14" sum="540" type="23"/>
+   <cards player="BaRRicade85" type="Pocket">HK DQ</cards>
+   <action no="4" player="BaRRicade85" sum="470" type="7"/>
+   <cards player="80CEV9Tabling" type="Pocket">H3 D3</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S6 CA C5</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">SQ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H8</cards>
+  </round>
+ </game>
+ <game gamecode="8728798004">
+  <general>
+   <startdate>2026-01-02 00:18:43</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="460" chips="460" dealer="1" name="80CEV9Tabling" reg_code="5802213606" seat="3" win="920"/>
+    <player bet="460" chips="1 040" dealer="0" name="sungrey14" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="sungrey14" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C7 HK</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="sungrey14" type="Pocket">C6 CQ</cards>
+   <action no="4" player="sungrey14" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D8 C3 CK</cards>
+   <action no="5" player="sungrey14" sum="120" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="400" type="23"/>
+   <action no="7" player="sungrey14" sum="280" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S7</cards>
+  </round>
+ </game>
+ <game gamecode="8728798130">
+  <general>
+   <startdate>2026-01-02 00:19:07</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="920" dealer="0" name="80CEV9Tabling" reg_code="5802213606" seat="3" win="30"/>
+    <player bet="15" chips="580" dealer="1" name="sungrey14" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sungrey14" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H7 S10</cards>
+   <cards player="sungrey14" type="Pocket">X X</cards>
+   <action no="3" player="sungrey14" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728798192">
+  <general>
+   <startdate>2026-01-02 00:19:16</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="935" chips="935" dealer="1" name="80CEV9Tabling" reg_code="5802213606" seat="3" win="1 130"/>
+    <player bet="565" chips="565" dealer="0" name="sungrey14" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="sungrey14" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CA S7</cards>
+   <action no="3" player="80CEV9Tabling" sum="935" type="23"/>
+   <cards player="sungrey14" type="Pocket">DK SA</cards>
+   <action no="4" player="sungrey14" sum="535" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CQ D10 H9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D6</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C8</cards>
+  </round>
+ </game>
+</session>

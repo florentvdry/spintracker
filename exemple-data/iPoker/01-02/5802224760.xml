@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802224760">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143481961</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:01:50</duration>
+  <gamecount>7</gamecount>
+  <startdate>2026-01-02 00:54:13</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 060</bets>
+  <wins>60</wins>
+  <chipsin>540</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143481960</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728847759">
+  <general>
+   <startdate>2026-01-02 00:54:13</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="500" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802224760" seat="3" win="60"/>
+    <player bet="20" chips="500" dealer="1" name="MouiiteMouite" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="500" dealer="0" name="GamblingEagle" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="GamblingEagle" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="MouiiteMouite" type="Pocket">X X</cards>
+   <action no="3" player="MouiiteMouite" sum="20" type="3"/>
+   <cards player="GamblingEagle" type="Pocket">X X</cards>
+   <action no="4" player="GamblingEagle" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HA C4</cards>
+   <action no="5" player="80CEV9Tabling" sum="500" type="23"/>
+   <action no="6" player="MouiiteMouite" sum="0" type="0"/>
+   <action no="7" player="GamblingEagle" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728847823">
+  <general>
+   <startdate>2026-01-02 00:54:27</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="540" dealer="0" name="80CEV9Tabling" reg_code="5802224760" seat="3" win="0"/>
+    <player bet="20" chips="480" dealer="0" name="MouiiteMouite" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="480" dealer="1" name="GamblingEagle" reg_code="" seat="10" win="50"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="MouiiteMouite" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="GamblingEagle" type="Pocket">X X</cards>
+   <action no="3" player="GamblingEagle" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">DJ DQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="MouiiteMouite" type="Pocket">X X</cards>
+   <action no="5" player="MouiiteMouite" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728847878">
+  <general>
+   <startdate>2026-01-02 00:54:37</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="530" dealer="1" name="80CEV9Tabling" reg_code="5802224760" seat="3" win="0"/>
+    <player bet="10" chips="460" dealer="0" name="MouiiteMouite" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="510" dealer="0" name="GamblingEagle" reg_code="" seat="10" win="20"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="MouiiteMouite" sum="10" type="1"/>
+   <action no="2" player="GamblingEagle" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="GamblingEagle" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">S8 D6</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="MouiiteMouite" type="Pocket">X X</cards>
+   <action no="4" player="MouiiteMouite" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728847909">
+  <general>
+   <startdate>2026-01-02 00:54:44</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="60" chips="530" dealer="0" name="80CEV9Tabling" reg_code="5802224760" seat="3" win="0"/>
+    <player bet="0" chips="450" dealer="1" name="MouiiteMouite" reg_code="" seat="6" win="0"/>
+    <player bet="120" chips="520" dealer="0" name="GamblingEagle" reg_code="" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="GamblingEagle" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="MouiiteMouite" type="Pocket">X X</cards>
+   <action no="3" player="MouiiteMouite" sum="0" type="0"/>
+   <cards player="GamblingEagle" type="Pocket">X X</cards>
+   <action no="4" player="GamblingEagle" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C3 HA</cards>
+   <action no="5" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H9 S5 D6</cards>
+   <action no="6" player="GamblingEagle" sum="60" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728848002">
+  <general>
+   <startdate>2026-01-02 00:55:02</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="470" chips="470" dealer="0" name="80CEV9Tabling" reg_code="5802224760" seat="3" win="0"/>
+    <player bet="450" chips="450" dealer="0" name="MouiiteMouite" reg_code="" seat="6" win="900"/>
+    <player bet="0" chips="580" dealer="1" name="GamblingEagle" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="MouiiteMouite" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="GamblingEagle" type="Pocket">X X</cards>
+   <action no="3" player="GamblingEagle" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ HA</cards>
+   <action no="4" player="80CEV9Tabling" sum="470" type="23"/>
+   <cards player="MouiiteMouite" type="Pocket">D9 SA</cards>
+   <action no="5" player="MouiiteMouite" sum="430" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H3 H6 C9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">HK</cards>
+  </round>
+ </game>
+ <game gamecode="8728848109">
+  <general>
+   <startdate>2026-01-02 00:55:23</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="20" dealer="1" name="80CEV9Tabling" reg_code="5802224760" seat="3" win="0"/>
+    <player bet="192" chips="900" dealer="0" name="MouiiteMouite" reg_code="" seat="6" win="160"/>
+    <player bet="80" chips="580" dealer="0" name="GamblingEagle" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="MouiiteMouite" sum="10" type="1"/>
+   <action no="2" player="GamblingEagle" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C9 D5</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="MouiiteMouite" type="Pocket">X X</cards>
+   <action no="4" player="MouiiteMouite" sum="10" type="3"/>
+   <cards player="GamblingEagle" type="Pocket">X X</cards>
+   <action no="5" player="GamblingEagle" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CQ C2 H6</cards>
+   <action no="6" player="MouiiteMouite" sum="20" type="5"/>
+   <action no="7" player="GamblingEagle" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C6</cards>
+   <action no="8" player="MouiiteMouite" sum="40" type="5"/>
+   <action no="9" player="GamblingEagle" sum="40" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">S3</cards>
+   <action no="10" player="MouiiteMouite" sum="112" type="5"/>
+   <action no="11" player="GamblingEagle" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728848232">
+  <general>
+   <startdate>2026-01-02 00:55:48</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="20" chips="20" dealer="0" name="80CEV9Tabling" reg_code="5802224760" seat="3" win="0"/>
+    <player bet="90" chips="980" dealer="1" name="MouiiteMouite" reg_code="" seat="6" win="55"/>
+    <player bet="15" chips="500" dealer="0" name="GamblingEagle" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="GamblingEagle" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SQ D9</cards>
+   <cards player="MouiiteMouite" type="Pocket">CA CQ</cards>
+   <action no="3" player="MouiiteMouite" sum="90" type="23"/>
+   <cards player="GamblingEagle" type="Pocket">X X</cards>
+   <action no="4" player="GamblingEagle" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 DQ D5</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C2</cards>
+  </round>
+  <round no="4">
+   <cards type="River">DA</cards>
+  </round>
+ </game>
+</session>

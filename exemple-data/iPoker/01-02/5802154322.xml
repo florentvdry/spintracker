@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802154322">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143430183</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:08:24</duration>
+  <gamecount>25</gamecount>
+  <startdate>2026-01-01 21:52:15</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>4 867</bets>
+  <wins>3 100</wins>
+  <chipsin>500</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143430182</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>20€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>20€</win>
+ </general>
+ <game gamecode="8728524414">
+  <general>
+   <startdate>2026-01-01 21:52:15</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="120" chips="500" dealer="0" name="Kevin56240" reg_code="" seat="6" win="240"/>
+    <player bet="120" chips="500" dealer="0" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Kevin56240" sum="10" type="1"/>
+   <action no="2" player="lionteal255" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CQ C4</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Kevin56240" type="Pocket">H10 S4</cards>
+   <action no="4" player="Kevin56240" sum="10" type="3"/>
+   <cards player="lionteal255" type="Pocket">SA D6</cards>
+   <action no="5" player="lionteal255" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D9 C7 CJ</cards>
+   <action no="6" player="Kevin56240" sum="0" type="4"/>
+   <action no="7" player="lionteal255" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C8</cards>
+   <action no="8" player="Kevin56240" sum="40" type="5"/>
+   <action no="9" player="lionteal255" sum="40" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">CA</cards>
+   <action no="10" player="Kevin56240" sum="60" type="5"/>
+   <action no="11" player="lionteal255" sum="60" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728534231">
+  <general>
+   <startdate>2026-01-01 21:52:51</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="20"/>
+    <player bet="0" chips="620" dealer="1" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="10" chips="380" dealer="0" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SJ D10</cards>
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="3" player="Kevin56240" sum="0" type="0"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="4" player="lionteal255" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728534281">
+  <general>
+   <startdate>2026-01-01 21:52:58</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="510" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="40" chips="620" dealer="0" name="Kevin56240" reg_code="" seat="6" win="40"/>
+    <player bet="0" chips="370" dealer="1" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Kevin56240" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="3" player="lionteal255" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H3 D10</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="5" player="Kevin56240" sum="40" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728534393">
+  <general>
+   <startdate>2026-01-01 21:53:12</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="62" chips="490" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="90"/>
+    <player bet="10" chips="640" dealer="0" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="370" dealer="0" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Kevin56240" sum="10" type="1"/>
+   <action no="2" player="lionteal255" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D5 S5</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="4" player="Kevin56240" sum="0" type="0"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="5" player="lionteal255" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 SJ S10</cards>
+   <action no="6" player="lionteal255" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="lionteal255" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728534561">
+  <general>
+   <startdate>2026-01-01 21:53:34</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="540" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="80" chips="630" dealer="1" name="Kevin56240" reg_code="" seat="6" win="60"/>
+    <player bet="20" chips="330" dealer="0" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="3" player="Kevin56240" sum="20" type="3"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="4" player="lionteal255" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H4 SK</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DJ CA S4</cards>
+   <action no="6" player="lionteal255" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="Kevin56240" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H2</cards>
+   <action no="9" player="lionteal255" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="Kevin56240" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">HQ</cards>
+   <action no="12" player="lionteal255" sum="0" type="4"/>
+   <action no="13" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="14" player="Kevin56240" sum="60" type="5"/>
+   <action no="15" player="lionteal255" sum="0" type="0"/>
+   <action no="16" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728534888">
+  <general>
+   <startdate>2026-01-01 21:54:16</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="520" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="30" chips="670" dealer="0" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="310" chips="310" dealer="1" name="lionteal255" reg_code="" seat="10" win="75"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Kevin56240" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="3" player="lionteal255" sum="310" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H3 CA</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="5" player="Kevin56240" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728534990">
+  <general>
+   <startdate>2026-01-01 21:54:29</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="505" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="60" chips="640" dealer="0" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="355" chips="355" dealer="0" name="lionteal255" reg_code="" seat="10" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Kevin56240" sum="15" type="1"/>
+   <action no="2" player="lionteal255" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DK C10</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="4" player="Kevin56240" sum="45" type="3"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="5" player="lionteal255" sum="355" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="7" player="Kevin56240" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728535097">
+  <general>
+   <startdate>2026-01-01 21:54:43</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="445" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="0" chips="580" dealer="1" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="420" chips="475" dealer="0" name="lionteal255" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="3" player="Kevin56240" sum="0" type="0"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="4" player="lionteal255" sum="420" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ H5</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728535199">
+  <general>
+   <startdate>2026-01-01 21:54:56</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="415" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="180" chips="580" dealer="0" name="Kevin56240" reg_code="" seat="6" win="180"/>
+    <player bet="0" chips="505" dealer="1" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Kevin56240" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="3" player="lionteal255" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ D7</cards>
+   <action no="4" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="5" player="Kevin56240" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 D9 H5</cards>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="Kevin56240" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DJ</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="Kevin56240" sum="90" type="5"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728535540">
+  <general>
+   <startdate>2026-01-01 21:55:42</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="325" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="60" chips="670" dealer="0" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="90" chips="505" dealer="0" name="lionteal255" reg_code="" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Kevin56240" sum="15" type="1"/>
+   <action no="2" player="lionteal255" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SJ H7</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="4" player="Kevin56240" sum="15" type="3"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="5" player="lionteal255" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 C6 H9</cards>
+   <action no="6" player="Kevin56240" sum="30" type="5"/>
+   <action no="7" player="lionteal255" sum="60" type="23"/>
+   <action no="8" player="Kevin56240" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728535676">
+  <general>
+   <startdate>2026-01-01 21:56:01</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="325" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="180" chips="610" dealer="1" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="180" chips="565" dealer="0" name="lionteal255" reg_code="" seat="10" win="390"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Kevin56240" type="Pocket">HA C6</cards>
+   <action no="3" player="Kevin56240" sum="30" type="3"/>
+   <cards player="lionteal255" type="Pocket">H5 S9</cards>
+   <action no="4" player="lionteal255" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C7 H4</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D9 SA C5</cards>
+   <action no="6" player="lionteal255" sum="30" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="8" player="Kevin56240" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DJ</cards>
+   <action no="9" player="lionteal255" sum="30" type="5"/>
+   <action no="10" player="Kevin56240" sum="30" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">S3</cards>
+   <action no="11" player="lionteal255" sum="30" type="5"/>
+   <action no="12" player="Kevin56240" sum="60" type="23"/>
+   <action no="13" player="lionteal255" sum="90" type="23"/>
+   <action no="14" player="Kevin56240" sum="30" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728536024">
+  <general>
+   <startdate>2026-01-01 21:56:48</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="295" chips="295" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="80"/>
+    <player bet="40" chips="430" dealer="0" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="775" dealer="1" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Kevin56240" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="3" player="lionteal255" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">DA D3</cards>
+   <action no="4" player="80CEV9Tabling" sum="295" type="23"/>
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="5" player="Kevin56240" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728536109">
+  <general>
+   <startdate>2026-01-01 21:57:02</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="335" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="20" chips="390" dealer="0" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="775" dealer="0" name="lionteal255" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Kevin56240" sum="20" type="1"/>
+   <action no="2" player="lionteal255" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">D3 D10</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Kevin56240" type="Pocket">X X</cards>
+   <action no="4" player="Kevin56240" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728536253">
+  <general>
+   <startdate>2026-01-01 21:57:21</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="335" chips="335" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="690"/>
+    <player bet="335" chips="370" dealer="1" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="795" dealer="0" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Kevin56240" type="Pocket">CJ HK</cards>
+   <action no="3" player="Kevin56240" sum="80" type="23"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="4" player="lionteal255" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 S9</cards>
+   <action no="5" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D5 S8 DQ</cards>
+   <action no="6" player="80CEV9Tabling" sum="255" type="5"/>
+   <action no="7" player="Kevin56240" sum="255" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HA</cards>
+  </round>
+  <round no="4">
+   <cards type="River">SA</cards>
+  </round>
+ </game>
+ <game gamecode="8728536435">
+  <general>
+   <startdate>2026-01-01 21:57:47</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="35" chips="690" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="70"/>
+    <player bet="35" chips="35" dealer="0" name="Kevin56240" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="775" dealer="1" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Kevin56240" sum="35" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Kevin56240" type="Pocket">DA SQ</cards>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="3" player="lionteal255" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H9 C10</cards>
+   <action no="4" player="80CEV9Tabling" sum="15" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S10 DJ H3</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D8</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D2</cards>
+  </round>
+ </game>
+ <game gamecode="8728536595">
+  <general>
+   <startdate>2026-01-01 21:58:10</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="725" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="80"/>
+    <player bet="40" chips="775" dealer="0" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="lionteal255" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S4 D10</cards>
+   <action no="3" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="4" player="lionteal255" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C8 H8 C4</cards>
+   <action no="5" player="lionteal255" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="lionteal255" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728536766">
+  <general>
+   <startdate>2026-01-01 21:58:32</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="765" chips="765" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="120"/>
+    <player bet="60" chips="735" dealer="1" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="3" player="lionteal255" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">DQ S2</cards>
+   <action no="4" player="80CEV9Tabling" sum="765" type="23"/>
+   <action no="5" player="lionteal255" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728536902">
+  <general>
+   <startdate>2026-01-01 21:58:50</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="120" chips="825" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="180" chips="675" dealer="0" name="lionteal255" reg_code="" seat="10" win="240"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="lionteal255" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HJ C6</cards>
+   <action no="3" player="80CEV9Tabling" sum="120" type="23"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="4" player="lionteal255" sum="60" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C3 D10 S9</cards>
+   <action no="5" player="lionteal255" sum="60" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543404">
+  <general>
+   <startdate>2026-01-01 21:59:06</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="705" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="120" chips="795" dealer="1" name="lionteal255" reg_code="" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="3" player="lionteal255" sum="120" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D10 H3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543465">
+  <general>
+   <startdate>2026-01-01 21:59:13</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="645" chips="645" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="120"/>
+    <player bet="60" chips="855" dealer="0" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="lionteal255" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H9 HA</cards>
+   <action no="3" player="80CEV9Tabling" sum="645" type="23"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="4" player="lionteal255" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543521">
+  <general>
+   <startdate>2026-01-01 21:59:21</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="120" chips="705" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="0"/>
+    <player bet="180" chips="795" dealer="1" name="lionteal255" reg_code="" seat="10" win="240"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="3" player="lionteal255" sum="120" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H8 HK</cards>
+   <action no="4" player="80CEV9Tabling" sum="60" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 H3 DQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="lionteal255" sum="60" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543630">
+  <general>
+   <startdate>2026-01-01 21:59:36</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="585" chips="585" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="1 170"/>
+    <player bet="585" chips="915" dealer="0" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="lionteal255" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CQ S8</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="lionteal255" type="Pocket">S9 D8</cards>
+   <action no="4" player="lionteal255" sum="120" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="60" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C8 H5 C7</cards>
+   <action no="6" player="lionteal255" sum="60" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="465" type="23"/>
+   <action no="8" player="lionteal255" sum="405" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H8</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S4</cards>
+  </round>
+ </game>
+ <game gamecode="8728543886">
+  <general>
+   <startdate>2026-01-01 22:00:06</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="1 170" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="60"/>
+    <player bet="30" chips="330" dealer="1" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C8 C6</cards>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="3" player="lionteal255" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543959">
+  <general>
+   <startdate>2026-01-01 22:00:16</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="1 200" chips="1 200" dealer="1" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="160"/>
+    <player bet="80" chips="300" dealer="0" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="40" type="1"/>
+   <action no="2" player="lionteal255" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C2 CA</cards>
+   <action no="3" player="80CEV9Tabling" sum="1 200" type="23"/>
+   <cards player="lionteal255" type="Pocket">X X</cards>
+   <action no="4" player="lionteal255" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728544020">
+  <general>
+   <startdate>2026-01-01 22:00:23</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="220" chips="1 280" dealer="0" name="80CEV9Tabling" reg_code="5802154322" seat="3" win="440"/>
+    <player bet="220" chips="220" dealer="1" name="lionteal255" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="lionteal255" sum="40" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="lionteal255" type="Pocket">D9 DJ</cards>
+   <action no="3" player="lionteal255" sum="220" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">CQ D8</cards>
+   <action no="4" player="80CEV9Tabling" sum="140" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C2 H7 SQ</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H2</cards>
+  </round>
+  <round no="4">
+   <cards type="River">DA</cards>
+  </round>
+ </game>
+</session>

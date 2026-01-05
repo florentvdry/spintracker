@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802231479">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143487240</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:03:38</duration>
+  <gamecount>14</gamecount>
+  <startdate>2026-01-02 01:19:48</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>4 820</bets>
+  <wins>3 290</wins>
+  <chipsin>1 000</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143487239</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>15€</win>
+ </general>
+ <game gamecode="8728873394">
+  <general>
+   <startdate>2026-01-02 01:19:48</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="500" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="1 000"/>
+    <player bet="0" chips="500" dealer="1" name="Mimi62" reg_code="" seat="6" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="Ingenioustrue41" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ingenioustrue41" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="3" player="Mimi62" sum="0" type="0"/>
+   <cards player="Ingenioustrue41" type="Pocket">CK C3</cards>
+   <action no="4" player="Ingenioustrue41" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">HA HQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="500" type="23"/>
+   <action no="6" player="Ingenioustrue41" sum="440" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D4 CJ S5</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H9</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S2</cards>
+  </round>
+ </game>
+ <game gamecode="8728873540">
+  <general>
+   <startdate>2026-01-02 01:20:23</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="1 000" chips="1 000" dealer="1" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="40"/>
+    <player bet="20" chips="500" dealer="0" name="Mimi62" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Mimi62" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H6 HA</cards>
+   <action no="3" player="80CEV9Tabling" sum="1 000" type="23"/>
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="4" player="Mimi62" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873573">
+  <general>
+   <startdate>2026-01-02 01:20:31</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="1 020" dealer="0" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="20"/>
+    <player bet="10" chips="480" dealer="1" name="Mimi62" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Mimi62" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S2 H5</cards>
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="3" player="Mimi62" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873603">
+  <general>
+   <startdate>2026-01-02 01:20:37</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="60" chips="1 030" dealer="1" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="80"/>
+    <player bet="40" chips="470" dealer="0" name="Mimi62" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Mimi62" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CK S5</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="4" player="Mimi62" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S9 D5 H5</cards>
+   <action no="5" player="Mimi62" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="Mimi62" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873677">
+  <general>
+   <startdate>2026-01-02 01:20:50</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="1 070" dealer="0" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="40"/>
+    <player bet="20" chips="430" dealer="1" name="Mimi62" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Mimi62" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="3" player="Mimi62" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">DJ D7</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CJ S5 C10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Mimi62" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D4</cards>
+   <action no="7" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="8" player="Mimi62" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873789">
+  <general>
+   <startdate>2026-01-02 01:21:12</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="1 090" dealer="1" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="40"/>
+    <player bet="20" chips="410" dealer="0" name="Mimi62" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Mimi62" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DQ SJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="4" player="Mimi62" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873831">
+  <general>
+   <startdate>2026-01-02 01:21:19</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="180" chips="1 110" dealer="0" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="0"/>
+    <player bet="180" chips="390" dealer="1" name="Mimi62" reg_code="" seat="6" win="360"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Mimi62" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Mimi62" type="Pocket">S9 SA</cards>
+   <action no="3" player="Mimi62" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D9 C3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK H9 H8</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Mimi62" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="Mimi62" sum="30" type="5"/>
+   <action no="9" player="80CEV9Tabling" sum="30" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">C2</cards>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="Mimi62" sum="120" type="5"/>
+   <action no="12" player="80CEV9Tabling" sum="120" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728873956">
+  <general>
+   <startdate>2026-01-02 01:21:46</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="930" chips="930" dealer="1" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="570"/>
+    <player bet="570" chips="570" dealer="0" name="Mimi62" reg_code="" seat="6" win="570"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Mimi62" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S4 H4</cards>
+   <action no="3" player="80CEV9Tabling" sum="930" type="23"/>
+   <cards player="Mimi62" type="Pocket">DK HQ</cards>
+   <action no="4" player="Mimi62" sum="540" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D7 H5 CA</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H7</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C5</cards>
+  </round>
+ </game>
+ <game gamecode="8728874039">
+  <general>
+   <startdate>2026-01-02 01:22:02</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="930" dealer="0" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="30"/>
+    <player bet="15" chips="570" dealer="1" name="Mimi62" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Mimi62" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D6 H3</cards>
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="3" player="Mimi62" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728874072">
+  <general>
+   <startdate>2026-01-02 01:22:08</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="945" dealer="1" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="180"/>
+    <player bet="90" chips="555" dealer="0" name="Mimi62" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Mimi62" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C5 S8</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="Mimi62" type="Pocket">DK H5</cards>
+   <action no="4" player="Mimi62" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SJ HA D8</cards>
+   <action no="5" player="Mimi62" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="Mimi62" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H2</cards>
+   <action no="8" player="Mimi62" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">HQ</cards>
+   <action no="10" player="Mimi62" sum="0" type="4"/>
+   <action no="11" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728874155">
+  <general>
+   <startdate>2026-01-02 01:22:26</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="1 035" dealer="0" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="0"/>
+    <player bet="270" chips="465" dealer="1" name="Mimi62" reg_code="" seat="6" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Mimi62" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="3" player="Mimi62" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C4 D2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D8 C6 D9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Mimi62" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D10</cards>
+   <action no="7" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="8" player="Mimi62" sum="240" type="23"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728874234">
+  <general>
+   <startdate>2026-01-02 01:22:45</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="945" dealer="1" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="0"/>
+    <player bet="270" chips="555" dealer="0" name="Mimi62" reg_code="" seat="6" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Mimi62" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ D7</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="4" player="Mimi62" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D5 D4 C8</cards>
+   <action no="5" player="Mimi62" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="Mimi62" sum="210" type="23"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728874325">
+  <general>
+   <startdate>2026-01-02 01:23:05</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="855" chips="855" dealer="0" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="80"/>
+    <player bet="40" chips="645" dealer="1" name="Mimi62" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Mimi62" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Mimi62" type="Pocket">X X</cards>
+   <action no="3" player="Mimi62" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H7 CQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="855" type="23"/>
+   <action no="5" player="Mimi62" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728874364">
+  <general>
+   <startdate>2026-01-02 01:23:13</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="895" chips="895" dealer="1" name="80CEV9Tabling" reg_code="5802231479" seat="3" win="1 210"/>
+    <player bet="605" chips="605" dealer="0" name="Mimi62" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Mimi62" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C7 S7</cards>
+   <action no="3" player="80CEV9Tabling" sum="895" type="23"/>
+   <cards player="Mimi62" type="Pocket">D10 C9</cards>
+   <action no="4" player="Mimi62" sum="565" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H8 DQ H5</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+  </round>
+  <round no="4">
+   <cards type="River">SQ</cards>
+  </round>
+ </game>
+</session>

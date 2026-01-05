@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802190481">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143456831</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:05:31</duration>
+  <gamecount>15</gamecount>
+  <startdate>2026-01-01 23:16:24</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 930</bets>
+  <wins>390</wins>
+  <chipsin>490</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143456830</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728692395">
+  <general>
+   <startdate>2026-01-01 23:16:24</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="20" chips="500" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="20"/>
+    <player bet="0" chips="500" dealer="1" name="payemonloyerstp" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Skillfulsleepy4" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="3" player="payemonloyerstp" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H8 D2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728692507">
+  <general>
+   <startdate>2026-01-01 23:16:39</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="490" dealer="1" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="20" chips="510" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="50" chips="500" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Skillfulsleepy4" sum="10" type="1"/>
+   <action no="2" player="payemonloyerstp" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H4 D2</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="4" player="Skillfulsleepy4" sum="10" type="3"/>
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="5" player="payemonloyerstp" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK H3 S8</cards>
+   <action no="6" player="Skillfulsleepy4" sum="0" type="4"/>
+   <action no="7" player="payemonloyerstp" sum="30" type="5"/>
+   <action no="8" player="Skillfulsleepy4" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728692758">
+  <general>
+   <startdate>2026-01-01 23:17:10</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="490" chips="490" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="40"/>
+    <player bet="0" chips="490" dealer="1" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="520" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="payemonloyerstp" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="3" player="Skillfulsleepy4" sum="0" type="0"/>
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="4" player="payemonloyerstp" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C4 D4</cards>
+   <action no="5" player="80CEV9Tabling" sum="490" type="23"/>
+   <action no="6" player="payemonloyerstp" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728692871">
+  <general>
+   <startdate>2026-01-01 23:17:26</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="150" chips="510" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="120"/>
+    <player bet="60" chips="490" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="payemonloyerstp" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Skillfulsleepy4" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="3" player="payemonloyerstp" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 H9</cards>
+   <action no="4" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="5" player="Skillfulsleepy4" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S10 C8 S7</cards>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="Skillfulsleepy4" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DK</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="Skillfulsleepy4" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">C9</cards>
+   <action no="10" player="80CEV9Tabling" sum="90" type="5"/>
+   <action no="11" player="Skillfulsleepy4" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693156">
+  <general>
+   <startdate>2026-01-01 23:18:04</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="570" dealer="1" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="30" chips="430" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="500" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Skillfulsleepy4" sum="15" type="1"/>
+   <action no="2" player="payemonloyerstp" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S8 DJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="4" player="Skillfulsleepy4" sum="15" type="3"/>
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="5" player="payemonloyerstp" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HK H7 D6</cards>
+   <action no="6" player="Skillfulsleepy4" sum="0" type="4"/>
+   <action no="7" player="payemonloyerstp" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S2</cards>
+   <action no="8" player="Skillfulsleepy4" sum="0" type="4"/>
+   <action no="9" player="payemonloyerstp" sum="30" type="5"/>
+   <action no="10" player="Skillfulsleepy4" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693462">
+  <general>
+   <startdate>2026-01-01 23:18:46</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="570" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="30"/>
+    <player bet="0" chips="400" dealer="1" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="15" chips="530" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="payemonloyerstp" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ S3</cards>
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="3" player="Skillfulsleepy4" sum="0" type="0"/>
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="4" player="payemonloyerstp" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693520">
+  <general>
+   <startdate>2026-01-01 23:18:53</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="585" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="90" chips="400" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="120"/>
+    <player bet="0" chips="515" dealer="1" name="payemonloyerstp" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Skillfulsleepy4" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="3" player="payemonloyerstp" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C8 SK</cards>
+   <action no="4" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="5" player="Skillfulsleepy4" sum="90" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693624">
+  <general>
+   <startdate>2026-01-01 23:19:06</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="525" dealer="1" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="30" chips="460" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="30"/>
+    <player bet="30" chips="515" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="30"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Skillfulsleepy4" sum="15" type="1"/>
+   <action no="2" player="payemonloyerstp" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S7 H10</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Skillfulsleepy4" type="Pocket">CQ C4</cards>
+   <action no="4" player="Skillfulsleepy4" sum="15" type="3"/>
+   <cards player="payemonloyerstp" type="Pocket">SQ H8</cards>
+   <action no="5" player="payemonloyerstp" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C9 H2 CA</cards>
+   <action no="6" player="Skillfulsleepy4" sum="0" type="4"/>
+   <action no="7" player="payemonloyerstp" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">SJ</cards>
+   <action no="8" player="Skillfulsleepy4" sum="0" type="4"/>
+   <action no="9" player="payemonloyerstp" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">S9</cards>
+   <action no="10" player="Skillfulsleepy4" sum="0" type="4"/>
+   <action no="11" player="payemonloyerstp" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728693933">
+  <general>
+   <startdate>2026-01-01 23:19:50</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="525" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="0" chips="460" dealer="1" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="515" chips="515" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="payemonloyerstp" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="3" player="Skillfulsleepy4" sum="0" type="0"/>
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="4" player="payemonloyerstp" sum="515" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C8 C2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728694041">
+  <general>
+   <startdate>2026-01-01 23:20:05</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="485" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="80"/>
+    <player bet="40" chips="460" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="555" dealer="1" name="payemonloyerstp" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Skillfulsleepy4" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="3" player="payemonloyerstp" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C10 CK</cards>
+   <action no="4" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="5" player="Skillfulsleepy4" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728694156">
+  <general>
+   <startdate>2026-01-01 23:20:21</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="525" dealer="1" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="40" chips="420" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="555" chips="555" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Skillfulsleepy4" sum="20" type="1"/>
+   <action no="2" player="payemonloyerstp" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D10 D6</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="4" player="Skillfulsleepy4" sum="20" type="3"/>
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="5" player="payemonloyerstp" sum="555" type="23"/>
+   <action no="6" player="Skillfulsleepy4" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728694229">
+  <general>
+   <startdate>2026-01-01 23:20:33</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="525" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="0" chips="380" dealer="1" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="80" chips="595" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="payemonloyerstp" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="3" player="Skillfulsleepy4" sum="0" type="0"/>
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="4" player="payemonloyerstp" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ D2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H8 S4 HK</cards>
+   <action no="6" player="payemonloyerstp" sum="40" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728694441">
+  <general>
+   <startdate>2026-01-01 23:21:01</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="485" chips="485" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="120"/>
+    <player bet="60" chips="380" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="635" dealer="1" name="payemonloyerstp" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Skillfulsleepy4" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <action no="3" player="payemonloyerstp" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">DJ CK</cards>
+   <action no="4" player="80CEV9Tabling" sum="485" type="23"/>
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="5" player="Skillfulsleepy4" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728703131">
+  <general>
+   <startdate>2026-01-01 23:21:19</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="0" chips="545" dealer="1" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="30" chips="320" dealer="0" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="635" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Skillfulsleepy4" sum="30" type="1"/>
+   <action no="2" player="payemonloyerstp" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="payemonloyerstp" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">SK D6</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="4" player="Skillfulsleepy4" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728703215">
+  <general>
+   <startdate>2026-01-01 23:21:31</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="545" chips="545" dealer="0" name="80CEV9Tabling" reg_code="5802190481" seat="3" win="0"/>
+    <player bet="0" chips="290" dealer="1" name="Skillfulsleepy4" reg_code="" seat="6" win="0"/>
+    <player bet="665" chips="665" dealer="0" name="payemonloyerstp" reg_code="" seat="10" win="1 090"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="payemonloyerstp" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Skillfulsleepy4" type="Pocket">X X</cards>
+   <action no="3" player="Skillfulsleepy4" sum="0" type="0"/>
+   <cards player="payemonloyerstp" type="Pocket">C9 C8</cards>
+   <action no="4" player="payemonloyerstp" sum="665" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S8 SK</cards>
+   <action no="5" player="80CEV9Tabling" sum="485" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 C3 C6</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D8</cards>
+  </round>
+ </game>
+</session>

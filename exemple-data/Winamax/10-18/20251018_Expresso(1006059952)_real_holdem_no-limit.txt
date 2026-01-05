@@ -1,0 +1,305 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320994591655329793-1-1760787024 - Holdem no limit (10/20) - 2025/10/18 11:30:24 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #2 is the button
+Seat 1: LegendaIp (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Me Naume (500)
+*** ANTE/BLINDS ***
+Me Naume posts small blind 10
+LegendaIp posts big blind 20
+Dealt to Nelfrot-YT [8d 3d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Me Naume raises 30 to 50
+LegendaIp calls 30
+*** FLOP *** [5h 4s Td]
+Me Naume bets 65
+LegendaIp calls 65
+*** TURN *** [5h 4s Td][Ad]
+Me Naume checks
+LegendaIp bets 70
+Me Naume raises 315 to 385 and is all-in
+LegendaIp folds
+Me Naume collected 685 from pot
+*** SUMMARY ***
+Total pot 685 | No rake
+Board: [5h 4s Td Ad]
+Seat 3: Me Naume (small blind) won 685
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320994591655329793-2-1760787061 - Holdem no limit (10/20) - 2025/10/18 11:31:01 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #3 is the button
+Seat 1: LegendaIp (315)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Me Naume (685)
+*** ANTE/BLINDS ***
+LegendaIp posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Tc 9s]
+*** PRE-FLOP *** 
+Me Naume folds
+LegendaIp raises 20 to 40
+Nelfrot-YT calls 20
+*** FLOP *** [Jh Ts 2d]
+LegendaIp checks
+Nelfrot-YT bets 20
+LegendaIp calls 20
+*** TURN *** [Jh Ts 2d][6s]
+LegendaIp checks
+Nelfrot-YT bets 48
+LegendaIp folds
+Nelfrot-YT collected 168 from pot
+*** SUMMARY ***
+Total pot 168 | No rake
+Board: [Jh Ts 2d 6s]
+Seat 2: Nelfrot-YT (big blind) won 168
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320994591655329793-3-1760787100 - Holdem no limit (10/20) - 2025/10/18 11:31:40 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #1 is the button
+Seat 1: LegendaIp (255)
+Seat 2: Nelfrot-YT (560)
+Seat 3: Me Naume (685)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Me Naume posts big blind 20
+Dealt to Nelfrot-YT [Kc Ac]
+*** PRE-FLOP *** 
+LegendaIp folds
+Nelfrot-YT raises 20 to 40
+Me Naume folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 2: Nelfrot-YT (small blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320994591655329793-4-1760787112 - Holdem no limit (15/30) - 2025/10/18 11:31:52 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #2 is the button
+Seat 1: LegendaIp (255)
+Seat 2: Nelfrot-YT (580)
+Seat 3: Me Naume (665)
+*** ANTE/BLINDS ***
+Me Naume posts small blind 15
+LegendaIp posts big blind 30
+Dealt to Nelfrot-YT [Qh 8h]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 30 to 60
+Me Naume folds
+LegendaIp raises 195 to 255 and is all-in
+Nelfrot-YT folds
+LegendaIp collected 330 from pot
+*** SUMMARY ***
+Total pot 330 | No rake
+Seat 1: LegendaIp (big blind) won 330
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320994591655329793-5-1760787136 - Holdem no limit (15/30) - 2025/10/18 11:32:16 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #3 is the button
+Seat 1: LegendaIp (330)
+Seat 2: Nelfrot-YT (520)
+Seat 3: Me Naume (650)
+*** ANTE/BLINDS ***
+LegendaIp posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Ad 6s]
+*** PRE-FLOP *** 
+Me Naume raises 30 to 60
+LegendaIp folds
+Nelfrot-YT calls 30
+*** FLOP *** [2h 5s 4h]
+Nelfrot-YT checks
+Me Naume checks
+*** TURN *** [2h 5s 4h][Ks]
+Nelfrot-YT bets 101
+Me Naume folds
+Nelfrot-YT collected 236 from pot
+*** SUMMARY ***
+Total pot 236 | No rake
+Board: [2h 5s 4h Ks]
+Seat 2: Nelfrot-YT (big blind) won 236
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320994591655329793-6-1760787170 - Holdem no limit (15/30) - 2025/10/18 11:32:50 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #1 is the button
+Seat 1: LegendaIp (315)
+Seat 2: Nelfrot-YT (595)
+Seat 3: Me Naume (590)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Me Naume posts big blind 30
+Dealt to Nelfrot-YT [9c 8c]
+*** PRE-FLOP *** 
+LegendaIp folds
+Nelfrot-YT calls 15
+Me Naume checks
+*** FLOP *** [7h 6h 9h]
+Nelfrot-YT bets 30
+Me Naume folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [7h 6h 9h]
+Seat 2: Nelfrot-YT (small blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320994591655329793-7-1760787187 - Holdem no limit (15/30) - 2025/10/18 11:33:07 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #2 is the button
+Seat 1: LegendaIp (315)
+Seat 2: Nelfrot-YT (625)
+Seat 3: Me Naume (560)
+*** ANTE/BLINDS ***
+Me Naume posts small blind 15
+LegendaIp posts big blind 30
+Dealt to Nelfrot-YT [As Kc]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 30 to 60
+Me Naume calls 45
+LegendaIp calls 30
+*** FLOP *** [8s 6s Qs]
+Me Naume checks
+LegendaIp checks
+Nelfrot-YT bets 45
+Me Naume folds
+LegendaIp folds
+Nelfrot-YT collected 225 from pot
+*** SUMMARY ***
+Total pot 225 | No rake
+Board: [8s 6s Qs]
+Seat 2: Nelfrot-YT (button) won 225
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320994591655329793-8-1760787219 - Holdem no limit (20/40) - 2025/10/18 11:33:39 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #3 is the button
+Seat 1: LegendaIp (255)
+Seat 2: Nelfrot-YT (745)
+Seat 3: Me Naume (500)
+*** ANTE/BLINDS ***
+LegendaIp posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [4c Kc]
+*** PRE-FLOP *** 
+Me Naume folds
+LegendaIp raises 60 to 100
+Nelfrot-YT folds
+LegendaIp collected 140 from pot
+*** SUMMARY ***
+Total pot 140 | No rake
+Seat 1: LegendaIp (small blind) won 140
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320994591655329793-9-1760787237 - Holdem no limit (20/40) - 2025/10/18 11:33:57 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #1 is the button
+Seat 1: LegendaIp (295)
+Seat 2: Nelfrot-YT (705)
+Seat 3: Me Naume (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Me Naume posts big blind 40
+Dealt to Nelfrot-YT [Kh Jh]
+*** PRE-FLOP *** 
+LegendaIp raises 255 to 295 and is all-in
+Nelfrot-YT raises 410 to 705 and is all-in
+Me Naume folds
+*** FLOP *** [4c 7s As]
+*** TURN *** [4c 7s As][Ad]
+*** RIVER *** [4c 7s As Ad][2s]
+*** SHOW DOWN ***
+LegendaIp shows [Ah 2d] (Full of Aces and 2)
+Nelfrot-YT shows [Kh Jh] (One pair : Aces)
+Nelfrot-YT collected 410 from side pot 1
+LegendaIp collected 630 from main pot
+*** SUMMARY ***
+Total pot 1040 | No rake
+Board: [4c 7s As Ad 2s]
+Seat 1: LegendaIp (button) showed [Ah 2d] and won 630 with Full of Aces and 2
+Seat 2: Nelfrot-YT (small blind) showed [Kh Jh] and won 410 with One pair : Aces
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320994591655329793-10-1760787257 - Holdem no limit (20/40) - 2025/10/18 11:34:17 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #2 is the button
+Seat 1: LegendaIp (630)
+Seat 2: Nelfrot-YT (410)
+Seat 3: Me Naume (460)
+*** ANTE/BLINDS ***
+Me Naume posts small blind 20
+LegendaIp posts big blind 40
+Dealt to Nelfrot-YT [2c Td]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Me Naume folds
+LegendaIp collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 1: LegendaIp (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320994591655329793-11-1760787262 - Holdem no limit (20/40) - 2025/10/18 11:34:22 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #3 is the button
+Seat 1: LegendaIp (650)
+Seat 2: Nelfrot-YT (410)
+Seat 3: Me Naume (440)
+*** ANTE/BLINDS ***
+LegendaIp posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [9c 6d]
+*** PRE-FLOP *** 
+Me Naume raises 40 to 80
+LegendaIp folds
+Nelfrot-YT folds
+Me Naume collected 140 from pot
+*** SUMMARY ***
+Total pot 140 | No rake
+Seat 3: Me Naume (button) won 140
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320994591655329793-12-1760787273 - Holdem no limit (20/40) - 2025/10/18 11:34:33 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #1 is the button
+Seat 1: LegendaIp (630)
+Seat 2: Nelfrot-YT (370)
+Seat 3: Me Naume (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Me Naume posts big blind 40
+Dealt to Nelfrot-YT [6c 2h]
+*** PRE-FLOP *** 
+LegendaIp raises 40 to 80
+Nelfrot-YT folds
+Me Naume calls 40
+*** FLOP *** [Qd Js Qc]
+Me Naume checks
+LegendaIp bets 40
+Me Naume folds
+LegendaIp collected 220 from pot
+*** SUMMARY ***
+Total pot 220 | No rake
+Board: [Qd Js Qc]
+Seat 1: LegendaIp (button) won 220
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320994591655329793-13-1760787294 - Holdem no limit (30/60) - 2025/10/18 11:34:54 UTC
+Table: 'Expresso(1006059952)#0' 3-max (real money) Seat #2 is the button
+Seat 1: LegendaIp (730)
+Seat 2: Nelfrot-YT (350)
+Seat 3: Me Naume (420)
+*** ANTE/BLINDS ***
+Me Naume posts small blind 30
+LegendaIp posts big blind 60
+Dealt to Nelfrot-YT [7h Kh]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 290 to 350 and is all-in
+Me Naume raises 70 to 420 and is all-in
+LegendaIp folds
+*** FLOP *** [4d Jh As]
+*** TURN *** [4d Jh As][Qd]
+*** RIVER *** [4d Jh As Qd][2d]
+*** SHOW DOWN ***
+Nelfrot-YT shows [7h Kh] (High card : Ace)
+Me Naume shows [Tc Ac] (One pair : Aces)
+Me Naume collected 830 from pot
+*** SUMMARY ***
+Total pot 830 | No rake
+Board: [4d Jh As Qd 2d]
+Seat 2: Nelfrot-YT (button) showed [7h Kh] and lost with High card : Ace
+Seat 3: Me Naume (small blind) showed [Tc Ac] and won 830 with One pair : Aces
+
+

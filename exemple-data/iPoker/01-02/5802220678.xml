@@ -1,0 +1,787 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802220678">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143478817</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:06:01</duration>
+  <gamecount>26</gamecount>
+  <startdate>2026-01-02 00:40:19</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>5 669</bets>
+  <wins>2 260</wins>
+  <chipsin>540</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143478816</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728827111">
+  <general>
+   <startdate>2026-01-02 00:40:19</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="0" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="20" chips="500" dealer="1" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="pistolblank14" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D6 CA</cards>
+   <action no="4" player="80CEV9Tabling" sum="500" type="23"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="5" player="pistolblank14" sum="0" type="0"/>
+   <action no="6" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728827168">
+  <general>
+   <startdate>2026-01-02 00:40:31</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="480" dealer="0" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="480" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="62" chips="540" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="90"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="10" type="1"/>
+   <action no="2" player="titanbook552" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H9 H7</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="4" player="pistolblank14" sum="0" type="0"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="5" player="titanbook552" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S8 D6 CK</cards>
+   <action no="6" player="titanbook552" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728827234">
+  <general>
+   <startdate>2026-01-02 00:40:44</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="50" chips="470" dealer="1" name="pistolblank14" reg_code="" seat="3" win="60"/>
+    <player bet="20" chips="440" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="590" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="20" type="3"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="4" player="titanbook552" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S5 H2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D2 SJ C10</cards>
+   <action no="6" player="titanbook552" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="pistolblank14" sum="30" type="5"/>
+   <action no="9" player="titanbook552" sum="0" type="0"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728827337">
+  <general>
+   <startdate>2026-01-02 00:41:04</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="60" chips="510" dealer="0" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="80" chips="420" dealer="1" name="titanbook552" reg_code="" seat="6" win="130"/>
+    <player bet="10" chips="570" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="pistolblank14" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C4 DJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="5" player="pistolblank14" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CQ C8 H2</cards>
+   <action no="6" player="pistolblank14" sum="20" type="5"/>
+   <action no="7" player="titanbook552" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H3</cards>
+   <action no="8" player="pistolblank14" sum="0" type="4"/>
+   <action no="9" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">SA</cards>
+   <action no="10" player="pistolblank14" sum="20" type="5"/>
+   <action no="11" player="titanbook552" sum="40" type="23"/>
+   <action no="12" player="pistolblank14" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728827433">
+  <general>
+   <startdate>2026-01-02 00:41:23</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="450" dealer="0" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="490" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="62" chips="560" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="90"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="10" type="1"/>
+   <action no="2" player="titanbook552" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DQ CJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="4" player="pistolblank14" sum="0" type="0"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="5" player="titanbook552" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK D8 SJ</cards>
+   <action no="6" player="titanbook552" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728827479">
+  <general>
+   <startdate>2026-01-02 00:41:34</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="440" dealer="1" name="pistolblank14" reg_code="" seat="3" win="60"/>
+    <player bet="20" chips="450" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="610" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="20" type="3"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="4" player="titanbook552" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">CQ HJ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S8 H3 C6</cards>
+   <action no="6" player="titanbook552" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="pistolblank14" sum="20" type="5"/>
+   <action no="9" player="titanbook552" sum="0" type="0"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728827586">
+  <general>
+   <startdate>2026-01-02 00:41:58</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="480" dealer="0" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="430" dealer="1" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="590" chips="590" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="90"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="pistolblank14" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">DA C7</cards>
+   <action no="4" player="80CEV9Tabling" sum="590" type="23"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="5" player="pistolblank14" sum="0" type="0"/>
+   <action no="6" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728827645">
+  <general>
+   <startdate>2026-01-02 00:42:08</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="450" dealer="0" name="pistolblank14" reg_code="" seat="3" win="180"/>
+    <player bet="90" chips="400" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="650" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="15" type="1"/>
+   <action no="2" player="titanbook552" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ C6</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="pistolblank14" type="Pocket">SQ D7</cards>
+   <action no="4" player="pistolblank14" sum="15" type="3"/>
+   <cards player="titanbook552" type="Pocket">H7 D8</cards>
+   <action no="5" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C9 H4 S7</cards>
+   <action no="6" player="pistolblank14" sum="30" type="5"/>
+   <action no="7" player="titanbook552" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D5</cards>
+   <action no="8" player="pistolblank14" sum="0" type="4"/>
+   <action no="9" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">SK</cards>
+   <action no="10" player="pistolblank14" sum="30" type="5"/>
+   <action no="11" player="titanbook552" sum="30" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728827727">
+  <general>
+   <startdate>2026-01-02 00:42:25</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="540" dealer="1" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="310" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="150" chips="650" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="0" type="0"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="4" player="titanbook552" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S5 SJ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C8 HJ C2</cards>
+   <action no="6" player="titanbook552" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="8" player="titanbook552" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D10</cards>
+   <action no="9" player="titanbook552" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H5</cards>
+   <action no="11" player="titanbook552" sum="0" type="4"/>
+   <action no="12" player="80CEV9Tabling" sum="90" type="5"/>
+   <action no="13" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728827849">
+  <general>
+   <startdate>2026-01-02 00:42:47</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="120" chips="540" dealer="0" name="pistolblank14" reg_code="" seat="3" win="255"/>
+    <player bet="120" chips="250" dealer="1" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="15" chips="710" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="pistolblank14" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">D2 DJ</cards>
+   <action no="3" player="titanbook552" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D4 HK</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="pistolblank14" type="Pocket">S4 H6</cards>
+   <action no="5" player="pistolblank14" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CK D6 S6</cards>
+   <action no="6" player="pistolblank14" sum="0" type="4"/>
+   <action no="7" player="titanbook552" sum="60" type="5"/>
+   <action no="8" player="pistolblank14" sum="60" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CJ</cards>
+   <action no="9" player="pistolblank14" sum="0" type="4"/>
+   <action no="10" player="titanbook552" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H2</cards>
+   <action no="11" player="pistolblank14" sum="30" type="5"/>
+   <action no="12" player="titanbook552" sum="30" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728827966">
+  <general>
+   <startdate>2026-01-02 00:43:10</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="675" dealer="0" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="130" dealer="0" name="titanbook552" reg_code="" seat="6" win="30"/>
+    <player bet="0" chips="695" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="15" type="1"/>
+   <action no="2" player="titanbook552" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">C2 SQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="4" player="pistolblank14" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728828000">
+  <general>
+   <startdate>2026-01-02 00:43:16</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="660" dealer="1" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="145" dealer="0" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="695" chips="695" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="0" type="0"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="4" player="titanbook552" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HQ C8</cards>
+   <action no="5" player="80CEV9Tabling" sum="695" type="23"/>
+   <action no="6" player="titanbook552" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728828050">
+  <general>
+   <startdate>2026-01-02 00:43:26</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="115" chips="660" dealer="0" name="pistolblank14" reg_code="" seat="3" win="250"/>
+    <player bet="115" chips="115" dealer="1" name="titanbook552" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="725" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="pistolblank14" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">C10 SK</cards>
+   <action no="3" player="titanbook552" sum="115" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S9 H7</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="pistolblank14" type="Pocket">C2 D2</cards>
+   <action no="5" player="pistolblank14" sum="75" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S8 S3 C9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">DQ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D6</cards>
+  </round>
+ </game>
+ <game gamecode="8728828150">
+  <general>
+   <startdate>2026-01-02 00:43:44</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="795" chips="795" dealer="0" name="pistolblank14" reg_code="" seat="3" win="160"/>
+    <player bet="80" chips="705" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="pistolblank14" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H10 DK</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="4" player="pistolblank14" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SA S7 SK</cards>
+   <action no="5" player="pistolblank14" sum="715" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728828231">
+  <general>
+   <startdate>2026-01-02 00:44:01</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="875" chips="875" dealer="1" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="625" chips="625" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="1 250"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">DA DQ</cards>
+   <action no="3" player="pistolblank14" sum="875" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">HJ DJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="585" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S2 S5 H9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C9</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D2</cards>
+  </round>
+ </game>
+ <game gamecode="8728828315">
+  <general>
+   <startdate>2026-01-02 00:44:18</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="250" chips="250" dealer="0" name="pistolblank14" reg_code="" seat="3" win="500"/>
+    <player bet="1 250" chips="1 250" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="pistolblank14" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DA SQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="1 250" type="23"/>
+   <cards player="pistolblank14" type="Pocket">H9 S6</cards>
+   <action no="4" player="pistolblank14" sum="210" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C4 D3 S9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C8</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H3</cards>
+  </round>
+ </game>
+ <game gamecode="8728828406">
+  <general>
+   <startdate>2026-01-02 00:44:35</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="500" chips="500" dealer="1" name="pistolblank14" reg_code="" seat="3" win="80"/>
+    <player bet="40" chips="1 000" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="500" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H7 S9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728828441">
+  <general>
+   <startdate>2026-01-02 00:44:42</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="540" dealer="0" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="80" chips="960" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="pistolblank14" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D4 HJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="4" player="pistolblank14" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SJ DQ H3</cards>
+   <action no="5" player="pistolblank14" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="pistolblank14" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728828484">
+  <general>
+   <startdate>2026-01-02 00:44:52</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="500" chips="500" dealer="1" name="pistolblank14" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="1 000" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="500" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ C7</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728828525">
+  <general>
+   <startdate>2026-01-02 00:45:01</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="560" dealer="0" name="pistolblank14" reg_code="" seat="3" win="60"/>
+    <player bet="30" chips="940" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="pistolblank14" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">S6 C3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728828557">
+  <general>
+   <startdate>2026-01-02 00:45:06</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="590" chips="590" dealer="1" name="pistolblank14" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="910" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="590" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">SJ D4</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728828590">
+  <general>
+   <startdate>2026-01-02 00:45:14</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="120" chips="650" dealer="0" name="pistolblank14" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="850" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="pistolblank14" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S10 H9</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="4" player="pistolblank14" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 H4 C7</cards>
+   <action no="5" player="pistolblank14" sum="60" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728834738">
+  <general>
+   <startdate>2026-01-02 00:45:26</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="710" chips="710" dealer="1" name="pistolblank14" reg_code="" seat="3" win="648"/>
+    <player bet="324" chips="790" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S8 H9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 SA HQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="pistolblank14" sum="60" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="120" type="23"/>
+   <action no="8" player="pistolblank14" sum="60" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D8</cards>
+   <action no="9" player="80CEV9Tabling" sum="144" type="5"/>
+   <action no="10" player="pistolblank14" sum="530" type="23"/>
+   <action no="11" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728834812">
+  <general>
+   <startdate>2026-01-02 00:45:43</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="180" chips="1 034" dealer="0" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="180" chips="466" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="360"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="pistolblank14" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S9 H3</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="pistolblank14" type="Pocket">D2 H5</cards>
+   <action no="4" player="pistolblank14" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H2 C10 D3</cards>
+   <action no="5" player="pistolblank14" sum="60" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="60" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H10</cards>
+   <action no="7" player="pistolblank14" sum="0" type="4"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H9</cards>
+   <action no="9" player="pistolblank14" sum="60" type="5"/>
+   <action no="10" player="80CEV9Tabling" sum="60" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728834905">
+  <general>
+   <startdate>2026-01-02 00:46:02</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="30" chips="854" dealer="1" name="pistolblank14" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="646" dealer="0" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolblank14" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ CK</cards>
+   <cards player="pistolblank14" type="Pocket">X X</cards>
+   <action no="3" player="pistolblank14" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728834931">
+  <general>
+   <startdate>2026-01-02 00:46:08</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="676" chips="824" dealer="0" name="pistolblank14" reg_code="" seat="3" win="1 352"/>
+    <player bet="676" chips="676" dealer="1" name="80CEV9Tabling" reg_code="5802220678" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="pistolblank14" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C9 HA</cards>
+   <action no="3" player="80CEV9Tabling" sum="676" type="23"/>
+   <cards player="pistolblank14" type="Pocket">C3 CA</cards>
+   <action no="4" player="pistolblank14" sum="616" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H7 DK C4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S2</cards>
+  </round>
+ </game>
+</session>

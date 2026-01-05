@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802240451">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143493926</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:07:04</duration>
+  <gamecount>24</gamecount>
+  <startdate>2026-01-02 01:58:03</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>4 125</bets>
+  <wins>1 540</wins>
+  <chipsin>490</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143493925</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728916987">
+  <general>
+   <startdate>2026-01-02 01:58:03</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="45" chips="500" dealer="0" name="zipeside" reg_code="" seat="3" win="50"/>
+    <player bet="20" chips="500" dealer="1" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="10" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="zipeside" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="3" player="cestlaheds" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">DK S6</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="5" player="zipeside" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D5 S5 C8</cards>
+   <action no="6" player="zipeside" sum="0" type="4"/>
+   <action no="7" player="cestlaheds" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C4</cards>
+   <action no="8" player="zipeside" sum="25" type="5"/>
+   <action no="9" player="cestlaheds" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917068">
+  <general>
+   <startdate>2026-01-02 01:58:20</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="530" dealer="0" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="480" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="490" dealer="1" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="130"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="zipeside" sum="10" type="1"/>
+   <action no="2" player="cestlaheds" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SK C9</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="4" player="zipeside" sum="0" type="0"/>
+   <cards player="cestlaheds" type="Pocket">H8 HJ</cards>
+   <action no="5" player="cestlaheds" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H7 DA HQ</cards>
+   <action no="6" player="cestlaheds" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="8" player="cestlaheds" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C8</cards>
+   <action no="9" player="cestlaheds" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">S9</cards>
+   <action no="11" player="cestlaheds" sum="0" type="4"/>
+   <action no="12" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728917147">
+  <general>
+   <startdate>2026-01-02 01:58:39</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="67" chips="520" dealer="1" name="zipeside" reg_code="" seat="3" win="90"/>
+    <player bet="10" chips="420" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="560" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cestlaheds" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="3" player="zipeside" sum="40" type="23"/>
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="4" player="cestlaheds" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">S10 HJ</cards>
+   <action no="5" player="80CEV9Tabling" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C7 H9 DK</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="zipeside" sum="27" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917219">
+  <general>
+   <startdate>2026-01-02 01:58:56</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="570" dealer="0" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="410" dealer="1" name="cestlaheds" reg_code="" seat="6" win="60"/>
+    <player bet="20" chips="520" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="zipeside" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="3" player="cestlaheds" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">CJ C4</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="5" player="zipeside" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D8 H9 S5</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="zipeside" sum="0" type="4"/>
+   <action no="8" player="cestlaheds" sum="40" type="5"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="10" player="zipeside" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917327">
+  <general>
+   <startdate>2026-01-02 01:59:17</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="550" dealer="0" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="20" chips="450" dealer="0" name="cestlaheds" reg_code="" seat="6" win="20"/>
+    <player bet="0" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="zipeside" sum="10" type="1"/>
+   <action no="2" player="cestlaheds" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">CQ D3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="4" player="zipeside" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917383">
+  <general>
+   <startdate>2026-01-02 01:59:29</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="540" dealer="1" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="50" chips="460" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="100" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="100"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cestlaheds" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="3" player="zipeside" sum="0" type="0"/>
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="4" player="cestlaheds" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H8 C7</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C10 SJ CA</cards>
+   <action no="6" player="cestlaheds" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="8" player="cestlaheds" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D2</cards>
+   <action no="9" player="cestlaheds" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="50" type="5"/>
+   <action no="11" player="cestlaheds" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917457">
+  <general>
+   <startdate>2026-01-02 01:59:48</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="540" dealer="0" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="410" dealer="1" name="cestlaheds" reg_code="" seat="6" win="75"/>
+    <player bet="15" chips="550" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="zipeside" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="3" player="cestlaheds" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D2 SJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="5" player="zipeside" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK S4 D8</cards>
+   <action no="6" player="zipeside" sum="0" type="4"/>
+   <action no="7" player="cestlaheds" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S5</cards>
+   <action no="8" player="zipeside" sum="0" type="4"/>
+   <action no="9" player="cestlaheds" sum="30" type="5"/>
+   <action no="10" player="zipeside" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917542">
+  <general>
+   <startdate>2026-01-02 02:00:08</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="150" chips="510" dealer="0" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="150" chips="455" dealer="0" name="cestlaheds" reg_code="" seat="6" win="300"/>
+    <player bet="0" chips="535" dealer="1" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="zipeside" sum="15" type="1"/>
+   <action no="2" player="cestlaheds" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H8 C4</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="zipeside" type="Pocket">D8 CQ</cards>
+   <action no="4" player="zipeside" sum="15" type="3"/>
+   <cards player="cestlaheds" type="Pocket">DA S4</cards>
+   <action no="5" player="cestlaheds" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SQ D10 HA</cards>
+   <action no="6" player="zipeside" sum="0" type="4"/>
+   <action no="7" player="cestlaheds" sum="30" type="5"/>
+   <action no="8" player="zipeside" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C5</cards>
+   <action no="9" player="zipeside" sum="0" type="4"/>
+   <action no="10" player="cestlaheds" sum="30" type="5"/>
+   <action no="11" player="zipeside" sum="30" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">C6</cards>
+   <action no="12" player="zipeside" sum="0" type="4"/>
+   <action no="13" player="cestlaheds" sum="60" type="5"/>
+   <action no="14" player="zipeside" sum="60" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728917662">
+  <general>
+   <startdate>2026-01-02 02:00:34</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="360" dealer="1" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="120" chips="605" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="535" chips="535" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="240"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cestlaheds" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="3" player="zipeside" sum="0" type="0"/>
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="4" player="cestlaheds" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C9 H4</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H7 C2 S9</cards>
+   <action no="6" player="cestlaheds" sum="30" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="90" type="23"/>
+   <action no="8" player="cestlaheds" sum="60" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D10</cards>
+   <action no="9" player="cestlaheds" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="415" type="5"/>
+   <action no="11" player="cestlaheds" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917723">
+  <general>
+   <startdate>2026-01-02 02:00:50</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="360" dealer="0" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="485" dealer="1" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="655" chips="655" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="90"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="zipeside" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="3" player="cestlaheds" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S10 HK</cards>
+   <action no="4" player="80CEV9Tabling" sum="655" type="23"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="5" player="zipeside" sum="0" type="0"/>
+   <action no="6" player="cestlaheds" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917770">
+  <general>
+   <startdate>2026-01-02 02:01:03</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="160" chips="330" dealer="0" name="zipeside" reg_code="" seat="3" win="160"/>
+    <player bet="80" chips="455" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="715" dealer="1" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="zipeside" sum="20" type="1"/>
+   <action no="2" player="cestlaheds" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D7 HJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="4" player="zipeside" sum="20" type="3"/>
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="5" player="cestlaheds" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C7 C9 C3</cards>
+   <action no="6" player="zipeside" sum="40" type="5"/>
+   <action no="7" player="cestlaheds" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S7</cards>
+   <action no="8" player="zipeside" sum="0" type="4"/>
+   <action no="9" player="cestlaheds" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">D2</cards>
+   <action no="10" player="zipeside" sum="80" type="5"/>
+   <action no="11" player="cestlaheds" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917858">
+  <general>
+   <startdate>2026-01-02 02:01:27</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="410" dealer="1" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="220" chips="375" dealer="0" name="cestlaheds" reg_code="" seat="6" win="200"/>
+    <player bet="100" chips="715" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cestlaheds" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="3" player="zipeside" sum="0" type="0"/>
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="4" player="cestlaheds" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D4 C10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK D9 H9</cards>
+   <action no="6" player="cestlaheds" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="8" player="cestlaheds" sum="60" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CQ</cards>
+   <action no="9" player="cestlaheds" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">SQ</cards>
+   <action no="11" player="cestlaheds" sum="120" type="5"/>
+   <action no="12" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917944">
+  <general>
+   <startdate>2026-01-02 02:01:50</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="410" chips="410" dealer="0" name="zipeside" reg_code="" seat="3" win="160"/>
+    <player bet="0" chips="475" dealer="1" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="80" chips="615" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="zipeside" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="3" player="cestlaheds" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">CJ S6</cards>
+   <action no="4" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="5" player="zipeside" sum="410" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728918022">
+  <general>
+   <startdate>2026-01-02 02:02:07</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="120" chips="490" dealer="0" name="zipeside" reg_code="" seat="3" win="240"/>
+    <player bet="120" chips="475" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="535" dealer="1" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="zipeside" sum="20" type="1"/>
+   <action no="2" player="cestlaheds" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D7 H5</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="zipeside" type="Pocket">D8 S9</cards>
+   <action no="4" player="zipeside" sum="20" type="3"/>
+   <cards player="cestlaheds" type="Pocket">D6 C8</cards>
+   <action no="5" player="cestlaheds" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HQ S8 D3</cards>
+   <action no="6" player="zipeside" sum="0" type="4"/>
+   <action no="7" player="cestlaheds" sum="40" type="5"/>
+   <action no="8" player="zipeside" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DJ</cards>
+   <action no="9" player="zipeside" sum="0" type="4"/>
+   <action no="10" player="cestlaheds" sum="40" type="5"/>
+   <action no="11" player="zipeside" sum="40" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">C4</cards>
+   <action no="12" player="zipeside" sum="0" type="4"/>
+   <action no="13" player="cestlaheds" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728918096">
+  <general>
+   <startdate>2026-01-02 02:02:27</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="610" dealer="1" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="355" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="535" chips="535" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cestlaheds" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="3" player="zipeside" sum="0" type="0"/>
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="4" player="cestlaheds" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H2 DK</cards>
+   <action no="5" player="80CEV9Tabling" sum="535" type="23"/>
+   <action no="6" player="cestlaheds" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728918144">
+  <general>
+   <startdate>2026-01-02 02:02:40</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="610" dealer="0" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="315" chips="315" dealer="1" name="cestlaheds" reg_code="" seat="6" win="690"/>
+    <player bet="575" chips="575" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="zipeside" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cestlaheds" type="Pocket">DK SJ</cards>
+   <action no="3" player="cestlaheds" sum="60" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">DQ D9</cards>
+   <action no="4" player="80CEV9Tabling" sum="575" type="23"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="5" player="zipeside" sum="0" type="0"/>
+   <action no="6" player="cestlaheds" sum="255" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S2 H6 C2</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H3</cards>
+  </round>
+ </game>
+ <game gamecode="8728918228">
+  <general>
+   <startdate>2026-01-02 02:03:02</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="550" chips="550" dealer="0" name="zipeside" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="690" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="260" dealer="1" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="zipeside" sum="30" type="1"/>
+   <action no="2" player="cestlaheds" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C7 HQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="4" player="zipeside" sum="550" type="23"/>
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="5" player="cestlaheds" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728918264">
+  <general>
+   <startdate>2026-01-02 02:03:11</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="0" chips="610" dealer="1" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="630" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="260" chips="260" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cestlaheds" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="3" player="zipeside" sum="0" type="0"/>
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <action no="4" player="cestlaheds" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H3 C9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D5 C6 S5</cards>
+   <action no="6" player="cestlaheds" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="200" type="5"/>
+   <action no="8" player="cestlaheds" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728918321">
+  <general>
+   <startdate>2026-01-02 02:03:24</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="610" dealer="0" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="320" chips="570" dealer="1" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="320" chips="320" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="700"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="zipeside" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cestlaheds" type="Pocket">SQ H9</cards>
+   <action no="3" player="cestlaheds" sum="60" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HA C7</cards>
+   <action no="4" player="80CEV9Tabling" sum="320" type="23"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="5" player="zipeside" sum="0" type="0"/>
+   <action no="6" player="cestlaheds" sum="260" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H5 S2 C4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H6</cards>
+  </round>
+  <round no="4">
+   <cards type="River">DK</cards>
+  </round>
+ </game>
+ <game gamecode="8728918395">
+  <general>
+   <startdate>2026-01-02 02:03:44</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="30" chips="550" dealer="0" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="250" dealer="0" name="cestlaheds" reg_code="" seat="6" win="60"/>
+    <player bet="0" chips="700" dealer="1" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="zipeside" sum="30" type="1"/>
+   <action no="2" player="cestlaheds" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cestlaheds" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">D10 S8</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="4" player="zipeside" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728918447">
+  <general>
+   <startdate>2026-01-02 02:03:58</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="520" chips="520" dealer="1" name="zipeside" reg_code="" seat="3" win="620"/>
+    <player bet="280" chips="280" dealer="0" name="cestlaheds" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="700" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cestlaheds" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="zipeside" type="Pocket">CA SJ</cards>
+   <action no="3" player="zipeside" sum="520" type="23"/>
+   <cards player="cestlaheds" type="Pocket">SA C6</cards>
+   <action no="4" player="cestlaheds" sum="250" type="7"/>
+   <cards player="80CEV9Tabling" type="Pocket">D4 HQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C4 CK S7</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C8</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D2</cards>
+  </round>
+ </game>
+ <game gamecode="8728923934">
+  <general>
+   <startdate>2026-01-02 02:04:16</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="80" chips="860" dealer="0" name="zipeside" reg_code="" seat="3" win="80"/>
+    <player bet="40" chips="640" dealer="1" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="40" type="1"/>
+   <action no="2" player="zipeside" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">C4 D3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728923963">
+  <general>
+   <startdate>2026-01-02 02:04:21</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="40" chips="900" dealer="1" name="zipeside" reg_code="" seat="3" win="0"/>
+    <player bet="80" chips="600" dealer="0" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="zipeside" sum="40" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S5 S3</cards>
+   <cards player="zipeside" type="Pocket">X X</cards>
+   <action no="3" player="zipeside" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728924002">
+  <general>
+   <startdate>2026-01-02 02:04:32</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="860" chips="860" dealer="0" name="zipeside" reg_code="" seat="3" win="1 280"/>
+    <player bet="640" chips="640" dealer="1" name="80CEV9Tabling" reg_code="5802240451" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="40" type="1"/>
+   <action no="2" player="zipeside" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S7 D2</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="3"/>
+   <cards player="zipeside" type="Pocket">SJ D7</cards>
+   <action no="4" player="zipeside" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C7 H7 C8</cards>
+   <action no="5" player="zipeside" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="80" type="5"/>
+   <action no="7" player="zipeside" sum="80" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S5</cards>
+   <action no="8" player="zipeside" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="240" type="5"/>
+   <action no="10" player="zipeside" sum="700" type="23"/>
+   <action no="11" player="80CEV9Tabling" sum="240" type="7"/>
+  </round>
+  <round no="4">
+   <cards type="River">CJ</cards>
+  </round>
+ </game>
+</session>

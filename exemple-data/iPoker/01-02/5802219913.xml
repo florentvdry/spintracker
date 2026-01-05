@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802219913">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143478297</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:05:05</duration>
+  <gamecount>20</gamecount>
+  <startdate>2026-01-02 00:37:50</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>5 870</bets>
+  <wins>2 970</wins>
+  <chipsin>435</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143478296</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>10€</win>
+ </general>
+ <game gamecode="8728817815">
+  <general>
+   <startdate>2026-01-02 00:37:50</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="0" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="65" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="0"/>
+    <player bet="130" chips="500" dealer="0" name="sissifanfan" reg_code="" seat="10" win="150"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sissifanfan" sum="10" type="1"/>
+   <action no="2" player="cristwar" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CK C10</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="sissifanfan" type="Pocket">X X</cards>
+   <action no="4" player="sissifanfan" sum="30" type="3"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="5" player="cristwar" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S4 H3 DA</cards>
+   <action no="6" player="sissifanfan" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="25" type="5"/>
+   <action no="8" player="sissifanfan" sum="90" type="23"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728823924">
+  <general>
+   <startdate>2026-01-02 00:38:11</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="480" dealer="0" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="435" chips="435" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="880"/>
+    <player bet="435" chips="585" dealer="1" name="sissifanfan" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cristwar" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sissifanfan" type="Pocket">S5 SJ</cards>
+   <action no="3" player="sissifanfan" sum="40" type="23"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="4" player="cristwar" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">CQ DQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="435" type="23"/>
+   <action no="6" player="sissifanfan" sum="395" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C9 DK S10</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D4</cards>
+  </round>
+ </game>
+ <game gamecode="8728824070">
+  <general>
+   <startdate>2026-01-02 00:38:34</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="470" dealer="1" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="150" chips="880" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="0"/>
+    <player bet="150" chips="150" dealer="0" name="sissifanfan" reg_code="" seat="10" win="320"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="sissifanfan" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="3" player="cristwar" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ HA</cards>
+   <action no="4" player="80CEV9Tabling" sum="150" type="23"/>
+   <cards player="sissifanfan" type="Pocket">C10 D5</cards>
+   <action no="5" player="sissifanfan" sum="130" type="7"/>
+   <action no="6" player="cristwar" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C3 S5 HK</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">HJ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C6</cards>
+  </round>
+ </game>
+ <game gamecode="8728824196">
+  <general>
+   <startdate>2026-01-02 00:38:59</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="180" chips="450" dealer="0" name="cristwar" reg_code="" seat="3" win="360"/>
+    <player bet="0" chips="730" dealer="1" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="0"/>
+    <player bet="180" chips="320" dealer="0" name="sissifanfan" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sissifanfan" sum="15" type="1"/>
+   <action no="2" player="cristwar" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HJ C6</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="sissifanfan" type="Pocket">SK C8</cards>
+   <action no="4" player="sissifanfan" sum="15" type="3"/>
+   <cards player="cristwar" type="Pocket">D10 SA</cards>
+   <action no="5" player="cristwar" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C3 H10 H8</cards>
+   <action no="6" player="sissifanfan" sum="0" type="4"/>
+   <action no="7" player="cristwar" sum="30" type="5"/>
+   <action no="8" player="sissifanfan" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S5</cards>
+   <action no="9" player="sissifanfan" sum="30" type="5"/>
+   <action no="10" player="cristwar" sum="30" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">S6</cards>
+   <action no="11" player="sissifanfan" sum="30" type="5"/>
+   <action no="12" player="cristwar" sum="60" type="23"/>
+   <action no="13" player="sissifanfan" sum="90" type="23"/>
+   <action no="14" player="cristwar" sum="30" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728824318">
+  <general>
+   <startdate>2026-01-02 00:39:20</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="630" dealer="0" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="730" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="0"/>
+    <player bet="140" chips="140" dealer="1" name="sissifanfan" reg_code="" seat="10" win="75"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cristwar" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="sissifanfan" type="Pocket">X X</cards>
+   <action no="3" player="sissifanfan" sum="140" type="23"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="4" player="cristwar" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 C5</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824435">
+  <general>
+   <startdate>2026-01-02 00:39:39</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="615" dealer="1" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="700" chips="700" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="60"/>
+    <player bet="30" chips="185" dealer="0" name="sissifanfan" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="sissifanfan" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="3" player="cristwar" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">HQ D10</cards>
+   <action no="4" player="80CEV9Tabling" sum="700" type="23"/>
+   <cards player="sissifanfan" type="Pocket">X X</cards>
+   <action no="5" player="sissifanfan" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824489">
+  <general>
+   <startdate>2026-01-02 00:39:48</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="615" dealer="0" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="730" chips="730" dealer="1" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="340"/>
+    <player bet="155" chips="155" dealer="0" name="sissifanfan" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="sissifanfan" sum="15" type="1"/>
+   <action no="2" player="cristwar" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SA D7</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="sissifanfan" type="Pocket">C5 D8</cards>
+   <action no="4" player="sissifanfan" sum="45" type="3"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="5" player="cristwar" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S3 S4 H7</cards>
+   <action no="6" player="sissifanfan" sum="30" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="670" type="23"/>
+   <action no="8" player="sissifanfan" sum="65" type="7"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S10</cards>
+  </round>
+  <round no="4">
+   <cards type="River">HK</cards>
+  </round>
+ </game>
+ <game gamecode="8728824656">
+  <general>
+   <startdate>2026-01-02 00:40:18</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="20" chips="585" dealer="1" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="915" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cristwar" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ D7</cards>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="3" player="cristwar" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824699">
+  <general>
+   <startdate>2026-01-02 00:40:26</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="160" chips="565" dealer="0" name="cristwar" reg_code="" seat="3" win="160"/>
+    <player bet="80" chips="935" dealer="1" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="cristwar" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H8 S2</cards>
+   <action no="3" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="4" player="cristwar" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S10 DK H9</cards>
+   <action no="5" player="cristwar" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="cristwar" sum="120" type="23"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824845">
+  <general>
+   <startdate>2026-01-02 00:40:51</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="30" chips="645" dealer="1" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="855" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cristwar" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H2 SQ</cards>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="3" player="cristwar" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824881">
+  <general>
+   <startdate>2026-01-02 00:40:57</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="615" dealer="0" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="885" chips="885" dealer="1" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="cristwar" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ SA</cards>
+   <action no="3" player="80CEV9Tabling" sum="885" type="23"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="4" player="cristwar" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824933">
+  <general>
+   <startdate>2026-01-02 00:41:08</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="30" chips="555" dealer="1" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="945" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cristwar" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C4 DA</cards>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="3" player="cristwar" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728824968">
+  <general>
+   <startdate>2026-01-02 00:41:14</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="525" chips="525" dealer="0" name="cristwar" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="975" dealer="1" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="cristwar" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D9 C2</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="4" player="cristwar" sum="525" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728825039">
+  <general>
+   <startdate>2026-01-02 00:41:26</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="585" chips="585" dealer="1" name="cristwar" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="915" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cristwar" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="3" player="cristwar" sum="585" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D5 SJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728825088">
+  <general>
+   <startdate>2026-01-02 00:41:35</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="645" chips="645" dealer="0" name="cristwar" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="855" dealer="1" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="cristwar" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CQ S2</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="4" player="cristwar" sum="645" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728825197">
+  <general>
+   <startdate>2026-01-02 00:41:52</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="80" chips="705" dealer="1" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="80" chips="795" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="160"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cristwar" sum="40" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cristwar" type="Pocket">HJ C10</cards>
+   <action no="3" player="cristwar" sum="40" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S5 C3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D4 H2 H3</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="cristwar" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HQ</cards>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="cristwar" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">S4</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="cristwar" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728825356">
+  <general>
+   <startdate>2026-01-02 00:42:19</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="80" chips="625" dealer="0" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="875" chips="875" dealer="1" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="160"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="40" type="1"/>
+   <action no="2" player="cristwar" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S10 HA</cards>
+   <action no="3" player="80CEV9Tabling" sum="875" type="23"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="4" player="cristwar" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728825401">
+  <general>
+   <startdate>2026-01-02 00:42:28</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="40" chips="545" dealer="1" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="80" chips="955" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cristwar" sum="40" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HK S2</cards>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="3" player="cristwar" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728825436">
+  <general>
+   <startdate>2026-01-02 00:42:35</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="80" chips="505" dealer="0" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="995" chips="995" dealer="1" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="160"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="40" type="1"/>
+   <action no="2" player="cristwar" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SQ CA</cards>
+   <action no="3" player="80CEV9Tabling" sum="995" type="23"/>
+   <cards player="cristwar" type="Pocket">X X</cards>
+   <action no="4" player="cristwar" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728825470">
+  <general>
+   <startdate>2026-01-02 00:42:42</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="425" chips="425" dealer="1" name="cristwar" reg_code="" seat="3" win="0"/>
+    <player bet="425" chips="1 075" dealer="0" name="80CEV9Tabling" reg_code="5802219913" seat="6" win="850"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="cristwar" sum="40" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="cristwar" type="Pocket">S4 D6</cards>
+   <action no="3" player="cristwar" sum="425" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 SK</cards>
+   <action no="4" player="80CEV9Tabling" sum="345" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S6 SQ C9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S9</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C8</cards>
+  </round>
+ </game>
+</session>

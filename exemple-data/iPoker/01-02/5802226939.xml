@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802226939">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143483660</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:20</duration>
+  <gamecount>14</gamecount>
+  <startdate>2026-01-02 01:02:05</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>4 192</bets>
+  <wins>2 140</wins>
+  <chipsin>500</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143483658</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>10€</win>
+ </general>
+ <game gamecode="8728854908">
+  <general>
+   <startdate>2026-01-02 01:02:05</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="93" chips="500" dealer="0" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="0"/>
+    <player bet="126" chips="500" dealer="0" name="pistolspear249" reg_code="" seat="10" win="186"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolspear249" sum="10" type="1"/>
+   <action no="2" player="ALANS0" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D3 C3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="pistolspear249" type="Pocket">X X</cards>
+   <action no="4" player="pistolspear249" sum="10" type="3"/>
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="5" player="ALANS0" sum="60" type="23"/>
+   <action no="6" player="pistolspear249" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DQ CK S8</cards>
+   <action no="7" player="pistolspear249" sum="0" type="4"/>
+   <action no="8" player="ALANS0" sum="33" type="5"/>
+   <action no="9" player="pistolspear249" sum="66" type="23"/>
+   <action no="10" player="ALANS0" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728855073">
+  <general>
+   <startdate>2026-01-02 01:02:36</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="407" dealer="0" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="330"/>
+    <player bet="160" chips="593" dealer="1" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="ALANS0" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolspear249" type="Pocket">X X</cards>
+   <action no="3" player="pistolspear249" sum="20" type="3"/>
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="4" player="ALANS0" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">CA SQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="160" type="23"/>
+   <action no="6" player="pistolspear249" sum="140" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S2 D9 DK</cards>
+   <action no="7" player="80CEV9Tabling" sum="340" type="5"/>
+   <action no="8" player="pistolspear249" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728855146">
+  <general>
+   <startdate>2026-01-02 01:02:50</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="397" dealer="1" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="670" chips="670" dealer="0" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="40"/>
+    <player bet="20" chips="433" dealer="0" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="pistolspear249" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="3" player="ALANS0" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">SA S8</cards>
+   <action no="4" player="80CEV9Tabling" sum="670" type="23"/>
+   <cards player="pistolspear249" type="Pocket">X X</cards>
+   <action no="5" player="pistolspear249" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728855193">
+  <general>
+   <startdate>2026-01-02 01:02:59</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="100" chips="397" dealer="0" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="690" dealer="1" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="0"/>
+    <player bet="413" chips="413" dealer="0" name="pistolspear249" reg_code="" seat="10" win="200"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolspear249" sum="10" type="1"/>
+   <action no="2" player="ALANS0" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CJ C3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="pistolspear249" type="Pocket">X X</cards>
+   <action no="4" player="pistolspear249" sum="10" type="3"/>
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="5" player="ALANS0" sum="60" type="23"/>
+   <action no="6" player="pistolspear249" sum="100" type="23"/>
+   <action no="7" player="ALANS0" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H5 S7 C2</cards>
+   <action no="8" player="pistolspear249" sum="313" type="5"/>
+   <action no="9" player="ALANS0" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728855311">
+  <general>
+   <startdate>2026-01-02 01:03:21</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="297" chips="297" dealer="0" name="ALANS0" reg_code="" seat="3" win="624"/>
+    <player bet="30" chips="690" dealer="0" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="0"/>
+    <player bet="297" chips="513" dealer="1" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="ALANS0" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolspear249" type="Pocket">D3 D7</cards>
+   <action no="3" player="pistolspear249" sum="30" type="3"/>
+   <cards player="ALANS0" type="Pocket">S2 H2</cards>
+   <action no="4" player="ALANS0" sum="297" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S8 S6</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="6" player="pistolspear249" sum="267" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D4 D2 H4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H7</cards>
+  </round>
+ </game>
+ <game gamecode="8728855430">
+  <general>
+   <startdate>2026-01-02 01:03:45</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="109" chips="624" dealer="1" name="ALANS0" reg_code="" seat="3" win="135"/>
+    <player bet="15" chips="660" dealer="0" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="0"/>
+    <player bet="60" chips="216" dealer="0" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="pistolspear249" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="3" player="ALANS0" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S6 S7</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="pistolspear249" type="Pocket">X X</cards>
+   <action no="5" player="pistolspear249" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CQ HA CK</cards>
+   <action no="6" player="pistolspear249" sum="0" type="4"/>
+   <action no="7" player="ALANS0" sum="49" type="5"/>
+   <action no="8" player="pistolspear249" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728855516">
+  <general>
+   <startdate>2026-01-02 01:04:00</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="699" dealer="0" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="156" chips="645" dealer="1" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="372"/>
+    <player bet="156" chips="156" dealer="0" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolspear249" sum="15" type="1"/>
+   <action no="2" player="ALANS0" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SQ CK</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="pistolspear249" type="Pocket">C6 D5</cards>
+   <action no="4" player="pistolspear249" sum="45" type="3"/>
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="5" player="ALANS0" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H10 DJ HJ</cards>
+   <action no="6" player="pistolspear249" sum="96" type="5"/>
+   <action no="7" player="ALANS0" sum="0" type="0"/>
+   <action no="8" player="80CEV9Tabling" sum="96" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D7</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H3</cards>
+  </round>
+ </game>
+ <game gamecode="8728855698">
+  <general>
+   <startdate>2026-01-02 01:04:35</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="639" dealer="1" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="220" chips="861" dealer="0" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="160"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="ALANS0" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="3" player="ALANS0" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H3 CK</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 C10 C4</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="ALANS0" sum="40" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H5</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="ALANS0" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">CJ</cards>
+   <action no="10" player="80CEV9Tabling" sum="140" type="5"/>
+   <action no="11" player="ALANS0" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728855899">
+  <general>
+   <startdate>2026-01-02 01:05:17</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="559" dealer="0" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="941" chips="941" dealer="1" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="ALANS0" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S9 HK</cards>
+   <action no="3" player="80CEV9Tabling" sum="941" type="23"/>
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="4" player="ALANS0" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728855958">
+  <general>
+   <startdate>2026-01-02 01:05:27</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="499" chips="499" dealer="1" name="ALANS0" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="1 001" dealer="0" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="ALANS0" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="3" player="ALANS0" sum="499" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D4 S5</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728855997">
+  <general>
+   <startdate>2026-01-02 01:05:34</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="559" dealer="0" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="120" chips="941" dealer="1" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="ALANS0" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ S6</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="4" player="ALANS0" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 HK S5</cards>
+   <action no="5" player="ALANS0" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="7" player="ALANS0" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728856067">
+  <general>
+   <startdate>2026-01-02 01:05:48</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="30" chips="499" dealer="1" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="1 001" dealer="0" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="ALANS0" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CJ SQ</cards>
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="3" player="ALANS0" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728856154">
+  <general>
+   <startdate>2026-01-02 01:06:04</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="80" chips="469" dealer="0" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="1 031" chips="1 031" dealer="1" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="160"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="40" type="1"/>
+   <action no="2" player="ALANS0" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D10 HK</cards>
+   <action no="3" player="80CEV9Tabling" sum="1 031" type="23"/>
+   <cards player="ALANS0" type="Pocket">X X</cards>
+   <action no="4" player="ALANS0" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728856190">
+  <general>
+   <startdate>2026-01-02 01:06:12</startdate>
+   <smallblind>40</smallblind>
+   <bigblind>80</bigblind>
+   <players>
+    <player bet="389" chips="389" dealer="1" name="ALANS0" reg_code="" seat="3" win="0"/>
+    <player bet="389" chips="1 111" dealer="0" name="80CEV9Tabling" reg_code="5802226939" seat="6" win="778"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="ALANS0" sum="40" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="80" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="ALANS0" type="Pocket">HJ D6</cards>
+   <action no="3" player="ALANS0" sum="389" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">CA CK</cards>
+   <action no="4" player="80CEV9Tabling" sum="309" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S6 SA H9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S4</cards>
+  </round>
+  <round no="4">
+   <cards type="River">HK</cards>
+  </round>
+ </game>
+</session>

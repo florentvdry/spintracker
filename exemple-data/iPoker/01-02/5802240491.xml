@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802240491">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143493973</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:03:22</duration>
+  <gamecount>13</gamecount>
+  <startdate>2026-01-02 01:58:11</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 455</bets>
+  <wins>525</wins>
+  <chipsin>480</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143493972</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728917028">
+  <general>
+   <startdate>2026-01-02 01:58:11</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="500" dealer="1" name="rakjs" reg_code="" seat="3" win="50"/>
+    <player bet="10" chips="500" dealer="0" name="Sameregale" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="3" player="rakjs" sum="40" type="23"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="4" player="Sameregale" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H2 DJ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917084">
+  <general>
+   <startdate>2026-01-02 01:58:23</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="225" chips="530" dealer="0" name="rakjs" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="490" dealer="1" name="Sameregale" reg_code="" seat="6" win="0"/>
+    <player bet="225" chips="480" dealer="0" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="450"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="rakjs" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="3" player="Sameregale" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C6 DQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="rakjs" type="Pocket">SJ HA</cards>
+   <action no="5" player="rakjs" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C10 S6 H2</cards>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="rakjs" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D6</cards>
+   <action no="8" player="80CEV9Tabling" sum="90" type="5"/>
+   <action no="9" player="rakjs" sum="90" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">HQ</cards>
+   <action no="10" player="80CEV9Tabling" sum="75" type="5"/>
+   <action no="11" player="rakjs" sum="75" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728917172">
+  <general>
+   <startdate>2026-01-02 01:58:45</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="60" chips="305" dealer="0" name="rakjs" reg_code="" seat="3" win="40"/>
+    <player bet="20" chips="490" dealer="0" name="Sameregale" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="705" dealer="1" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rakjs" sum="10" type="1"/>
+   <action no="2" player="Sameregale" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H8 DQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="4" player="rakjs" sum="60" type="23"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="5" player="Sameregale" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917243">
+  <general>
+   <startdate>2026-01-02 01:58:59</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="325" dealer="1" name="rakjs" reg_code="" seat="3" win="0"/>
+    <player bet="70" chips="470" dealer="0" name="Sameregale" reg_code="" seat="6" win="100"/>
+    <player bet="50" chips="705" dealer="0" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="3" player="rakjs" sum="0" type="0"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="4" player="Sameregale" sum="50" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 H6</cards>
+   <action no="5" player="80CEV9Tabling" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK C2 HQ</cards>
+   <action no="6" player="Sameregale" sum="20" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917314">
+  <general>
+   <startdate>2026-01-02 01:59:15</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="325" chips="325" dealer="0" name="rakjs" reg_code="" seat="3" win="665"/>
+    <player bet="520" chips="520" dealer="1" name="Sameregale" reg_code="" seat="6" win="0"/>
+    <player bet="15" chips="655" dealer="0" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="rakjs" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Sameregale" type="Pocket">SA DQ</cards>
+   <action no="3" player="Sameregale" sum="520" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">SK D10</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="rakjs" type="Pocket">D7 DK</cards>
+   <action no="5" player="rakjs" sum="295" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H3 C5 S4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S9</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H7</cards>
+  </round>
+ </game>
+ <game gamecode="8728917404">
+  <general>
+   <startdate>2026-01-02 01:59:34</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="665" dealer="0" name="rakjs" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="195" dealer="0" name="Sameregale" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="640" dealer="1" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="75"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rakjs" sum="15" type="1"/>
+   <action no="2" player="Sameregale" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DJ S9</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="4" player="rakjs" sum="0" type="0"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="5" player="Sameregale" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917452">
+  <general>
+   <startdate>2026-01-02 01:59:47</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="650" dealer="1" name="rakjs" reg_code="" seat="3" win="0"/>
+    <player bet="165" chips="165" dealer="0" name="Sameregale" reg_code="" seat="6" win="60"/>
+    <player bet="30" chips="685" dealer="0" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="3" player="rakjs" sum="0" type="0"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="4" player="Sameregale" sum="165" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S5 CJ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917488">
+  <general>
+   <startdate>2026-01-02 01:59:55</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="650" chips="650" dealer="0" name="rakjs" reg_code="" seat="3" win="120"/>
+    <player bet="0" chips="195" dealer="1" name="Sameregale" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="655" dealer="0" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="rakjs" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="3" player="Sameregale" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">D6 C10</cards>
+   <action no="4" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="5" player="rakjs" sum="650" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917556">
+  <general>
+   <startdate>2026-01-02 02:00:11</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="20" chips="710" dealer="0" name="rakjs" reg_code="" seat="3" win="0"/>
+    <player bet="195" chips="195" dealer="0" name="Sameregale" reg_code="" seat="6" win="410"/>
+    <player bet="595" chips="595" dealer="1" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rakjs" sum="20" type="1"/>
+   <action no="2" player="Sameregale" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SA D2</cards>
+   <action no="3" player="80CEV9Tabling" sum="595" type="23"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="4" player="rakjs" sum="0" type="0"/>
+   <cards player="Sameregale" type="Pocket">CQ HA</cards>
+   <action no="5" player="Sameregale" sum="155" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HQ D4 S10</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C3</cards>
+  </round>
+  <round no="4">
+   <cards type="River">SQ</cards>
+  </round>
+ </game>
+ <game gamecode="8728917642">
+  <general>
+   <startdate>2026-01-02 02:00:31</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="690" dealer="1" name="rakjs" reg_code="" seat="3" win="0"/>
+    <player bet="410" chips="410" dealer="0" name="Sameregale" reg_code="" seat="6" win="80"/>
+    <player bet="40" chips="400" dealer="0" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="3" player="rakjs" sum="0" type="0"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="4" player="Sameregale" sum="410" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H8 H9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917695">
+  <general>
+   <startdate>2026-01-02 02:00:44</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="690" dealer="0" name="rakjs" reg_code="" seat="3" win="0"/>
+    <player bet="450" chips="450" dealer="1" name="Sameregale" reg_code="" seat="6" win="100"/>
+    <player bet="20" chips="360" dealer="0" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="rakjs" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="3" player="Sameregale" sum="450" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C9 C4</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="5" player="rakjs" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917742">
+  <general>
+   <startdate>2026-01-02 02:00:55</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="120" chips="650" dealer="0" name="rakjs" reg_code="" seat="3" win="160"/>
+    <player bet="80" chips="510" dealer="0" name="Sameregale" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="340" dealer="1" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rakjs" sum="20" type="1"/>
+   <action no="2" player="Sameregale" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DJ H8</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="rakjs" type="Pocket">X X</cards>
+   <action no="4" player="rakjs" sum="20" type="3"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="5" player="Sameregale" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C2 D6 C10</cards>
+   <action no="6" player="rakjs" sum="0" type="4"/>
+   <action no="7" player="Sameregale" sum="40" type="5"/>
+   <action no="8" player="rakjs" sum="80" type="23"/>
+   <action no="9" player="Sameregale" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728917827">
+  <general>
+   <startdate>2026-01-02 02:01:18</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="340" chips="730" dealer="1" name="rakjs" reg_code="" seat="3" win="710"/>
+    <player bet="30" chips="430" dealer="0" name="Sameregale" reg_code="" seat="6" win="0"/>
+    <player bet="340" chips="340" dealer="0" name="80CEV9Tabling" reg_code="5802240491" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Sameregale" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rakjs" type="Pocket">HK H8</cards>
+   <action no="3" player="rakjs" sum="60" type="3"/>
+   <cards player="Sameregale" type="Pocket">X X</cards>
+   <action no="4" player="Sameregale" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">CJ SQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="340" type="23"/>
+   <action no="6" player="rakjs" sum="280" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H5 H2 CK</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">HJ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C5</cards>
+  </round>
+ </game>
+</session>

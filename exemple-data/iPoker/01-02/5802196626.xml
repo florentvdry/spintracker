@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802196626">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143461146</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:03:39</duration>
+  <gamecount>13</gamecount>
+  <startdate>2026-01-01 23:31:09</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>3 828</bets>
+  <wins>3 358</wins>
+  <chipsin>1 020</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143461145</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>10€</win>
+ </general>
+ <game gamecode="8728718197">
+  <general>
+   <startdate>2026-01-01 23:31:09</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="0" name="wil490" reg_code="" seat="3" win="0"/>
+    <player bet="500" chips="500" dealer="1" name="ALANS0" reg_code="" seat="6" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="1 020"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="wil490" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="ALANS0" type="Pocket">HA CK</cards>
+   <action no="3" player="ALANS0" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D5 S5</cards>
+   <action no="4" player="80CEV9Tabling" sum="500" type="23"/>
+   <cards player="wil490" type="Pocket">X X</cards>
+   <action no="5" player="wil490" sum="0" type="0"/>
+   <action no="6" player="ALANS0" sum="460" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D10 C7 H3</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H10</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H6</cards>
+  </round>
+ </game>
+ <game gamecode="8728718359">
+  <general>
+   <startdate>2026-01-01 23:31:29</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="480" chips="480" dealer="0" name="wil490" reg_code="" seat="3" win="40"/>
+    <player bet="20" chips="1 020" dealer="1" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="wil490" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C4 S9</cards>
+   <action no="3" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="wil490" type="Pocket">X X</cards>
+   <action no="4" player="wil490" sum="480" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718418">
+  <general>
+   <startdate>2026-01-01 23:31:38</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="500" chips="500" dealer="1" name="wil490" reg_code="" seat="3" win="40"/>
+    <player bet="20" chips="1 000" dealer="0" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="wil490" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="wil490" type="Pocket">X X</cards>
+   <action no="3" player="wil490" sum="500" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 DQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718465">
+  <general>
+   <startdate>2026-01-01 23:31:46</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="128" chips="520" dealer="0" name="wil490" reg_code="" seat="3" win="128"/>
+    <player bet="128" chips="980" dealer="1" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="128"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="wil490" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HK DQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="wil490" type="Pocket">DK H4</cards>
+   <action no="4" player="wil490" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CQ C5 C9</cards>
+   <action no="5" player="wil490" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="wil490" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CJ</cards>
+   <action no="8" player="wil490" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="48" type="5"/>
+   <action no="10" player="wil490" sum="48" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">CA</cards>
+   <action no="11" player="wil490" sum="20" type="5"/>
+   <action no="12" player="80CEV9Tabling" sum="20" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728718692">
+  <general>
+   <startdate>2026-01-01 23:32:16</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="520" dealer="1" name="wil490" reg_code="" seat="3" win="60"/>
+    <player bet="30" chips="980" dealer="0" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="wil490" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="wil490" type="Pocket">X X</cards>
+   <action no="3" player="wil490" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S7 D2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DK H3 S10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="wil490" sum="30" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718789">
+  <general>
+   <startdate>2026-01-01 23:32:28</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="550" dealer="0" name="wil490" reg_code="" seat="3" win="30"/>
+    <player bet="15" chips="950" dealer="1" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="wil490" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="wil490" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">C2 D3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718830">
+  <general>
+   <startdate>2026-01-01 23:32:34</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="165" chips="565" dealer="1" name="wil490" reg_code="" seat="3" win="0"/>
+    <player bet="935" chips="935" dealer="0" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="330"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="wil490" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="wil490" type="Pocket">X X</cards>
+   <action no="3" player="wil490" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SA DK</cards>
+   <action no="4" player="80CEV9Tabling" sum="165" type="23"/>
+   <action no="5" player="wil490" sum="135" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H5 H10 D2</cards>
+   <action no="6" player="80CEV9Tabling" sum="770" type="5"/>
+   <action no="7" player="wil490" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718973">
+  <general>
+   <startdate>2026-01-01 23:32:54</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="400" chips="400" dealer="0" name="wil490" reg_code="" seat="3" win="800"/>
+    <player bet="1 100" chips="1 100" dealer="1" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="wil490" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HK SA</cards>
+   <action no="3" player="80CEV9Tabling" sum="1 100" type="23"/>
+   <cards player="wil490" type="Pocket">C10 H10</cards>
+   <action no="4" player="wil490" sum="370" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DQ CQ H7</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H4</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S7</cards>
+  </round>
+ </game>
+ <game gamecode="8728719127">
+  <general>
+   <startdate>2026-01-01 23:33:14</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="800" chips="800" dealer="1" name="wil490" reg_code="" seat="3" win="80"/>
+    <player bet="40" chips="700" dealer="0" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="wil490" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="wil490" type="Pocket">X X</cards>
+   <action no="3" player="wil490" sum="800" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">HA C7</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728719211">
+  <general>
+   <startdate>2026-01-01 23:33:28</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="240" chips="840" dealer="0" name="wil490" reg_code="" seat="3" win="0"/>
+    <player bet="240" chips="660" dealer="1" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="480"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="wil490" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S9 DJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="wil490" type="Pocket">S5 D5</cards>
+   <action no="4" player="wil490" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H4 D9 HK</cards>
+   <action no="5" player="wil490" sum="40" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S2</cards>
+   <action no="7" player="wil490" sum="40" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">SA</cards>
+   <action no="9" player="wil490" sum="80" type="5"/>
+   <action no="10" player="80CEV9Tabling" sum="80" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728719454">
+  <general>
+   <startdate>2026-01-01 23:34:02</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="600" dealer="1" name="wil490" reg_code="" seat="3" win="80"/>
+    <player bet="40" chips="900" dealer="0" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="wil490" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="wil490" type="Pocket">X X</cards>
+   <action no="3" player="wil490" sum="80" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H6 D8</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728719522">
+  <general>
+   <startdate>2026-01-01 23:34:12</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="640" chips="640" dealer="0" name="wil490" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="860" dealer="1" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="wil490" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D4 D2</cards>
+   <action no="3" player="80CEV9Tabling" sum="30" type="3"/>
+   <cards player="wil490" type="Pocket">X X</cards>
+   <action no="4" player="wil490" sum="640" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728719655">
+  <general>
+   <startdate>2026-01-01 23:34:29</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="700" chips="700" dealer="1" name="wil490" reg_code="" seat="3" win="0"/>
+    <player bet="700" chips="800" dealer="0" name="80CEV9Tabling" reg_code="5802196626" seat="10" win="1 400"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="wil490" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="wil490" type="Pocket">CQ H6</cards>
+   <action no="3" player="wil490" sum="700" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">CA S4</cards>
+   <action no="4" player="80CEV9Tabling" sum="640" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SJ S9 S3</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H7</cards>
+  </round>
+  <round no="4">
+   <cards type="River">CK</cards>
+  </round>
+ </game>
+</session>

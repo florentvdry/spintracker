@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802215153">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143474667</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:03:54</duration>
+  <gamecount>13</gamecount>
+  <startdate>2026-01-02 00:22:09</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 340</bets>
+  <wins>360</wins>
+  <chipsin>500</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143474666</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728799053">
+  <general>
+   <startdate>2026-01-02 00:22:09</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="500" dealer="0" name="Spiritedsharp54" reg_code="" seat="3" win="40"/>
+    <player bet="20" chips="500" dealer="0" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Spiritedsharp54" sum="10" type="1"/>
+   <action no="2" player="bouff25" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H4 C9</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Spiritedsharp54" type="Pocket">X X</cards>
+   <action no="4" player="Spiritedsharp54" sum="10" type="3"/>
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="5" player="bouff25" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D3 D9 D4</cards>
+   <action no="6" player="Spiritedsharp54" sum="20" type="5"/>
+   <action no="7" player="bouff25" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728799134">
+  <general>
+   <startdate>2026-01-02 00:22:23</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="520" dealer="1" name="Spiritedsharp54" reg_code="" seat="3" win="0"/>
+    <player bet="20" chips="480" dealer="0" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="160" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="bouff25" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Spiritedsharp54" type="Pocket">X X</cards>
+   <action no="3" player="Spiritedsharp54" sum="0" type="0"/>
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="4" player="bouff25" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SA H10</cards>
+   <action no="5" player="80CEV9Tabling" sum="160" type="23"/>
+   <action no="6" player="bouff25" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728799209">
+  <general>
+   <startdate>2026-01-02 00:22:36</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="80" chips="520" dealer="0" name="Spiritedsharp54" reg_code="" seat="3" win="120"/>
+    <player bet="0" chips="460" dealer="1" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="520" dealer="0" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Spiritedsharp54" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="3" player="bouff25" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">S8 H5</cards>
+   <action no="4" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Spiritedsharp54" type="Pocket">X X</cards>
+   <action no="5" player="Spiritedsharp54" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D9 S5 CA</cards>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="Spiritedsharp54" sum="40" type="23"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728799314">
+  <general>
+   <startdate>2026-01-02 00:22:55</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="580" dealer="0" name="Spiritedsharp54" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="460" dealer="0" name="bouff25" reg_code="" seat="6" win="80"/>
+    <player bet="0" chips="460" dealer="1" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Spiritedsharp54" sum="10" type="1"/>
+   <action no="2" player="bouff25" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H8 SJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Spiritedsharp54" type="Pocket">C3 SA</cards>
+   <action no="4" player="Spiritedsharp54" sum="40" type="23"/>
+   <cards player="bouff25" type="Pocket">S5 C5</cards>
+   <action no="5" player="bouff25" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C8 CQ D10</cards>
+   <action no="6" player="Spiritedsharp54" sum="0" type="4"/>
+   <action no="7" player="bouff25" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S6</cards>
+   <action no="8" player="Spiritedsharp54" sum="0" type="4"/>
+   <action no="9" player="bouff25" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">DQ</cards>
+   <action no="10" player="Spiritedsharp54" sum="0" type="4"/>
+   <action no="11" player="bouff25" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728799399">
+  <general>
+   <startdate>2026-01-02 00:23:11</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="540" dealer="1" name="Spiritedsharp54" reg_code="" seat="3" win="50"/>
+    <player bet="10" chips="500" dealer="0" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="460" dealer="0" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="bouff25" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Spiritedsharp54" type="Pocket">X X</cards>
+   <action no="3" player="Spiritedsharp54" sum="40" type="23"/>
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="4" player="bouff25" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C3 HQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728799452">
+  <general>
+   <startdate>2026-01-02 00:23:22</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="80" chips="570" dealer="0" name="Spiritedsharp54" reg_code="" seat="3" win="160"/>
+    <player bet="0" chips="490" dealer="1" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="80" chips="440" dealer="0" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Spiritedsharp54" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="3" player="bouff25" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C10 C3</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="Spiritedsharp54" type="Pocket">S7 SA</cards>
+   <action no="5" player="Spiritedsharp54" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D4 C5 CK</cards>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="Spiritedsharp54" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H2</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="Spiritedsharp54" sum="40" type="5"/>
+   <action no="10" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">HQ</cards>
+   <action no="11" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="12" player="Spiritedsharp54" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728806652">
+  <general>
+   <startdate>2026-01-02 00:24:03</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="650" dealer="0" name="Spiritedsharp54" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="490" dealer="0" name="bouff25" reg_code="" seat="6" win="30"/>
+    <player bet="0" chips="360" dealer="1" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Spiritedsharp54" sum="15" type="1"/>
+   <action no="2" player="bouff25" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">H6 CJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Spiritedsharp54" type="Pocket">X X</cards>
+   <action no="4" player="Spiritedsharp54" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728806685">
+  <general>
+   <startdate>2026-01-02 00:24:09</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="635" dealer="1" name="Spiritedsharp54" reg_code="" seat="3" win="75"/>
+    <player bet="15" chips="505" dealer="0" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="360" dealer="0" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="bouff25" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Spiritedsharp54" type="Pocket">X X</cards>
+   <action no="3" player="Spiritedsharp54" sum="30" type="3"/>
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="4" player="bouff25" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">CJ D2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S8 D9 CA</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="Spiritedsharp54" sum="30" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728806805">
+  <general>
+   <startdate>2026-01-02 00:24:30</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="680" dealer="0" name="Spiritedsharp54" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="490" dealer="1" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="330" chips="330" dealer="0" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Spiritedsharp54" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="3" player="bouff25" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">DJ S10</cards>
+   <action no="4" player="80CEV9Tabling" sum="330" type="23"/>
+   <cards player="Spiritedsharp54" type="Pocket">X X</cards>
+   <action no="5" player="Spiritedsharp54" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728806874">
+  <general>
+   <startdate>2026-01-02 00:24:43</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="120" chips="650" dealer="0" name="Spiritedsharp54" reg_code="" seat="3" win="180"/>
+    <player bet="90" chips="490" dealer="0" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="360" dealer="1" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Spiritedsharp54" sum="15" type="1"/>
+   <action no="2" player="bouff25" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C4 H10</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Spiritedsharp54" type="Pocket">X X</cards>
+   <action no="4" player="Spiritedsharp54" sum="15" type="3"/>
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="5" player="bouff25" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SA C6 C7</cards>
+   <action no="6" player="Spiritedsharp54" sum="30" type="5"/>
+   <action no="7" player="bouff25" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">SQ</cards>
+   <action no="8" player="Spiritedsharp54" sum="30" type="5"/>
+   <action no="9" player="bouff25" sum="30" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">H5</cards>
+   <action no="10" player="Spiritedsharp54" sum="30" type="5"/>
+   <action no="11" player="bouff25" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728807026">
+  <general>
+   <startdate>2026-01-02 00:25:10</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="740" dealer="1" name="Spiritedsharp54" reg_code="" seat="3" win="0"/>
+    <player bet="20" chips="400" dealer="0" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="80" chips="360" dealer="0" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="bouff25" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Spiritedsharp54" type="Pocket">DQ H5</cards>
+   <action no="3" player="Spiritedsharp54" sum="40" type="3"/>
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="4" player="bouff25" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H4 C3</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C10 CJ S4</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="Spiritedsharp54" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C2</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="Spiritedsharp54" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">C4</cards>
+   <action no="10" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="11" player="Spiritedsharp54" sum="40" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728807143">
+  <general>
+   <startdate>2026-01-02 00:25:34</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="660" dealer="0" name="Spiritedsharp54" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="380" dealer="1" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="80" chips="460" dealer="0" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Spiritedsharp54" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="3" player="bouff25" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">CQ H6</cards>
+   <action no="4" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="Spiritedsharp54" type="Pocket">X X</cards>
+   <action no="5" player="Spiritedsharp54" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DQ C10 D4</cards>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="Spiritedsharp54" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728807234">
+  <general>
+   <startdate>2026-01-02 00:25:48</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="500" chips="620" dealer="0" name="Spiritedsharp54" reg_code="" seat="3" win="1 040"/>
+    <player bet="40" chips="380" dealer="0" name="bouff25" reg_code="" seat="6" win="0"/>
+    <player bet="500" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802215153" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Spiritedsharp54" sum="20" type="1"/>
+   <action no="2" player="bouff25" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S5 HA</cards>
+   <action no="3" player="80CEV9Tabling" sum="500" type="23"/>
+   <cards player="Spiritedsharp54" type="Pocket">D10 DQ</cards>
+   <action no="4" player="Spiritedsharp54" sum="480" type="3"/>
+   <cards player="bouff25" type="Pocket">X X</cards>
+   <action no="5" player="bouff25" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H7 C2 S6</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H4</cards>
+  </round>
+  <round no="4">
+   <cards type="River">CQ</cards>
+  </round>
+ </game>
+</session>

@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802157018">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143432297</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:05:56</duration>
+  <gamecount>20</gamecount>
+  <startdate>2026-01-01 21:57:49</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>2 824</bets>
+  <wins>955</wins>
+  <chipsin>500</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143432296</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>20€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728536443">
+  <general>
+   <startdate>2026-01-01 21:57:49</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="240" chips="500" dealer="0" name="universequiet2" reg_code="" seat="3" win="160"/>
+    <player bet="0" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="80" chips="500" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="supaseba42" sum="10" type="1"/>
+   <action no="2" player="universequiet2" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H4 H3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="4" player="supaseba42" sum="40" type="23"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="5" player="universequiet2" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C7 C10 D5</cards>
+   <action no="6" player="supaseba42" sum="20" type="5"/>
+   <action no="7" player="universequiet2" sum="40" type="23"/>
+   <action no="8" player="supaseba42" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H8</cards>
+   <action no="9" player="supaseba42" sum="0" type="4"/>
+   <action no="10" player="universequiet2" sum="160" type="5"/>
+   <action no="11" player="supaseba42" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728536633">
+  <general>
+   <startdate>2026-01-01 21:58:14</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="580" dealer="0" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="80" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="80"/>
+    <player bet="0" chips="420" dealer="1" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="universequiet2" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="3" player="supaseba42" sum="0" type="0"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="4" player="universequiet2" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S4 C8</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D8 HA H8</cards>
+   <action no="6" player="universequiet2" sum="20" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="60" type="23"/>
+   <action no="8" player="universequiet2" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728536834">
+  <general>
+   <startdate>2026-01-01 21:58:40</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="540" dealer="1" name="universequiet2" reg_code="" seat="3" win="50"/>
+    <player bet="10" chips="540" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="20" chips="420" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="supaseba42" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="3" player="universequiet2" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D5 C2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="5" player="supaseba42" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 SJ DA</cards>
+   <action no="6" player="supaseba42" sum="0" type="4"/>
+   <action no="7" player="universequiet2" sum="20" type="5"/>
+   <action no="8" player="supaseba42" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543355">
+  <general>
+   <startdate>2026-01-01 21:58:57</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="60" chips="570" dealer="0" name="universequiet2" reg_code="" seat="3" win="80"/>
+    <player bet="0" chips="530" dealer="1" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="40" chips="400" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="supaseba42" sum="10" type="1"/>
+   <action no="2" player="universequiet2" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H9 S7</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="4" player="supaseba42" sum="10" type="3"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="5" player="universequiet2" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C6 H4 H3</cards>
+   <action no="6" player="supaseba42" sum="0" type="4"/>
+   <action no="7" player="universequiet2" sum="20" type="5"/>
+   <action no="8" player="supaseba42" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D3</cards>
+   <action no="9" player="supaseba42" sum="0" type="4"/>
+   <action no="10" player="universequiet2" sum="20" type="5"/>
+   <action no="11" player="supaseba42" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543547">
+  <general>
+   <startdate>2026-01-01 21:59:25</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="610" dealer="0" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="20" chips="530" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="20"/>
+    <player bet="0" chips="360" dealer="1" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="universequiet2" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C8 H5</cards>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="3" player="supaseba42" sum="0" type="0"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="4" player="universequiet2" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543587">
+  <general>
+   <startdate>2026-01-01 21:59:31</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="600" dealer="1" name="universequiet2" reg_code="" seat="3" win="50"/>
+    <player bet="10" chips="540" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="20" chips="360" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="supaseba42" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="3" player="universequiet2" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D2 D10</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="5" player="supaseba42" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543698">
+  <general>
+   <startdate>2026-01-01 21:59:44</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="630" chips="630" dealer="0" name="universequiet2" reg_code="" seat="3" win="90"/>
+    <player bet="40" chips="530" dealer="1" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="10" chips="340" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="supaseba42" sum="10" type="1"/>
+   <action no="2" player="universequiet2" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S10 SJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="4" player="supaseba42" sum="0" type="0"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="5" player="universequiet2" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HK H7 H9</cards>
+   <action no="6" player="universequiet2" sum="590" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543850">
+  <general>
+   <startdate>2026-01-01 22:00:03</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="680" dealer="0" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="75" chips="490" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="60"/>
+    <player bet="0" chips="330" dealer="1" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="universequiet2" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="3" player="supaseba42" sum="0" type="0"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="4" player="universequiet2" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C7 H9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H5 H6 S4</cards>
+   <action no="6" player="universequiet2" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="45" type="5"/>
+   <action no="8" player="universequiet2" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728543986">
+  <general>
+   <startdate>2026-01-01 22:00:20</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="650" dealer="1" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="520" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="60"/>
+    <player bet="30" chips="330" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="supaseba42" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="3" player="universequiet2" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">S3 S2</cards>
+   <action no="4" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="5" player="supaseba42" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CA DJ S8</cards>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="supaseba42" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728544130">
+  <general>
+   <startdate>2026-01-01 22:00:36</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="650" dealer="0" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="550" dealer="1" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="75"/>
+    <player bet="15" chips="300" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="supaseba42" sum="15" type="1"/>
+   <action no="2" player="universequiet2" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">DK HQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="4" player="supaseba42" sum="0" type="0"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="5" player="universequiet2" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728544219">
+  <general>
+   <startdate>2026-01-01 22:00:48</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="105" chips="620" dealer="0" name="universequiet2" reg_code="" seat="3" win="150"/>
+    <player bet="75" chips="595" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="0" chips="285" dealer="1" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="universequiet2" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="3" player="supaseba42" sum="0" type="0"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="4" player="universequiet2" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S2 C10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DJ SQ HK</cards>
+   <action no="6" player="universequiet2" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="45" type="5"/>
+   <action no="8" player="universequiet2" sum="45" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H6</cards>
+   <action no="9" player="universequiet2" sum="30" type="5"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728544381">
+  <general>
+   <startdate>2026-01-01 22:01:08</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="695" chips="695" dealer="1" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="520" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="285" chips="285" dealer="0" name="supaseba42" reg_code="" seat="10" win="600"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="supaseba42" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="universequiet2" type="Pocket">D3 S3</cards>
+   <action no="3" player="universequiet2" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H5 H6</cards>
+   <action no="4" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="supaseba42" type="Pocket">DQ SQ</cards>
+   <action no="5" player="supaseba42" sum="90" type="23"/>
+   <action no="6" player="universequiet2" sum="60" type="3"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DJ S2 S6</cards>
+   <action no="8" player="supaseba42" sum="90" type="5"/>
+   <action no="9" player="universequiet2" sum="605" type="23"/>
+   <action no="10" player="supaseba42" sum="105" type="7"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D8</cards>
+  </round>
+ </game>
+ <game gamecode="8728544598">
+  <general>
+   <startdate>2026-01-01 22:01:38</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="410" chips="410" dealer="0" name="universequiet2" reg_code="" seat="3" win="201"/>
+    <player bet="93" chips="490" dealer="1" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="15" chips="600" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="supaseba42" sum="15" type="1"/>
+   <action no="2" player="universequiet2" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CK DQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="4" player="supaseba42" sum="0" type="0"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="5" player="universequiet2" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 D3 C6</cards>
+   <action no="6" player="universequiet2" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="33" type="5"/>
+   <action no="8" player="universequiet2" sum="33" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S9</cards>
+   <action no="9" player="universequiet2" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">S2</cards>
+   <action no="11" player="universequiet2" sum="317" type="5"/>
+   <action no="12" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728544841">
+  <general>
+   <startdate>2026-01-01 22:02:11</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="518" dealer="0" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="200" chips="397" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="160"/>
+    <player bet="0" chips="585" dealer="1" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="universequiet2" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="3" player="supaseba42" sum="0" type="0"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="4" player="universequiet2" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H6 H10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H7 H9 D10</cards>
+   <action no="6" player="universequiet2" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="8" player="universequiet2" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D9</cards>
+   <action no="9" player="universequiet2" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="120" type="5"/>
+   <action no="11" player="universequiet2" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728544983">
+  <general>
+   <startdate>2026-01-01 22:02:29</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="438" dealer="1" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="477" chips="477" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="200"/>
+    <player bet="40" chips="585" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="supaseba42" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="3" player="universequiet2" sum="80" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H8 HA</cards>
+   <action no="4" player="80CEV9Tabling" sum="477" type="23"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="5" player="supaseba42" sum="0" type="0"/>
+   <action no="6" player="universequiet2" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728545070">
+  <general>
+   <startdate>2026-01-01 22:02:40</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="358" dealer="0" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="597" chips="597" dealer="1" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="100"/>
+    <player bet="20" chips="545" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="supaseba42" sum="20" type="1"/>
+   <action no="2" player="universequiet2" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CA S6</cards>
+   <action no="3" player="80CEV9Tabling" sum="597" type="23"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="4" player="supaseba42" sum="0" type="0"/>
+   <cards player="universequiet2" type="Pocket">X X</cards>
+   <action no="5" player="universequiet2" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728545122">
+  <general>
+   <startdate>2026-01-01 22:02:48</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="318" chips="318" dealer="0" name="universequiet2" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="657" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="525" chips="525" dealer="1" name="supaseba42" reg_code="" seat="10" win="676"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="universequiet2" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="supaseba42" type="Pocket">D10 CA</cards>
+   <action no="3" player="supaseba42" sum="525" type="23"/>
+   <cards player="universequiet2" type="Pocket">HQ DQ</cards>
+   <action no="4" player="universequiet2" sum="298" type="7"/>
+   <cards player="80CEV9Tabling" type="Pocket">H10 S7</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S3 H3 C4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H2</cards>
+  </round>
+ </game>
+ <game gamecode="8728545255">
+  <general>
+   <startdate>2026-01-01 22:03:06</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="200" chips="617" dealer="1" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="160"/>
+    <player bet="80" chips="883" dealer="0" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="supaseba42" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D2 S9</cards>
+   <action no="3" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="4" player="supaseba42" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H5 CJ S10</cards>
+   <action no="5" player="supaseba42" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="supaseba42" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HK</cards>
+   <action no="8" player="supaseba42" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="120" type="5"/>
+   <action no="10" player="supaseba42" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728545409">
+  <general>
+   <startdate>2026-01-01 22:03:25</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="697" dealer="0" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="40"/>
+    <player bet="20" chips="803" dealer="1" name="supaseba42" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="supaseba42" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SJ C3</cards>
+   <cards player="supaseba42" type="Pocket">X X</cards>
+   <action no="3" player="supaseba42" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728545463">
+  <general>
+   <startdate>2026-01-01 22:03:33</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="717" chips="717" dealer="1" name="80CEV9Tabling" reg_code="5802157018" seat="6" win="0"/>
+    <player bet="717" chips="783" dealer="0" name="supaseba42" reg_code="" seat="10" win="1 434"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="supaseba42" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SA S2</cards>
+   <action no="3" player="80CEV9Tabling" sum="717" type="23"/>
+   <cards player="supaseba42" type="Pocket">SJ HA</cards>
+   <action no="4" player="supaseba42" sum="677" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C2 D3 S4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">DJ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S10</cards>
+  </round>
+ </game>
+</session>

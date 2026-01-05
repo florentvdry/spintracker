@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802230493">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143486306</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:03</duration>
+  <gamecount>16</gamecount>
+  <startdate>2026-01-02 01:15:51</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 130</bets>
+  <wins>220</wins>
+  <chipsin>500</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143486305</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728872360">
+  <general>
+   <startdate>2026-01-02 01:15:51</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="500" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="60" chips="500" dealer="0" name="Ls83" reg_code="" seat="10" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ls83" sum="10" type="1"/>
+   <action no="2" player="labyteabrigitte" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C4 H10</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="4" player="Ls83" sum="40" type="23"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="5" player="labyteabrigitte" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C6 H3 S3</cards>
+   <action no="6" player="Ls83" sum="20" type="5"/>
+   <action no="7" player="labyteabrigitte" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728872434">
+  <general>
+   <startdate>2026-01-02 01:16:07</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="160" chips="460" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="60"/>
+    <player bet="20" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="20" chips="540" dealer="1" name="Ls83" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="labyteabrigitte" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="3" player="Ls83" sum="20" type="3"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="4" player="labyteabrigitte" sum="160" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C9 SJ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="6" player="Ls83" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728872509">
+  <general>
+   <startdate>2026-01-02 01:16:24</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="500" dealer="1" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="100" chips="480" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="100" chips="520" dealer="0" name="Ls83" reg_code="" seat="10" win="200"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Ls83" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="3" player="labyteabrigitte" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C2 C10</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="Ls83" type="Pocket">S4 D7</cards>
+   <action no="5" player="Ls83" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C9 H9 C7</cards>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="Ls83" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D5</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="Ls83" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">DA</cards>
+   <action no="10" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="11" player="Ls83" sum="60" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728872631">
+  <general>
+   <startdate>2026-01-02 01:16:52</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="500" chips="500" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="60"/>
+    <player bet="0" chips="380" dealer="1" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="30" chips="620" dealer="0" name="Ls83" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ls83" sum="15" type="1"/>
+   <action no="2" player="labyteabrigitte" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H8 S5</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="4" player="Ls83" sum="15" type="3"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="5" player="labyteabrigitte" sum="500" type="23"/>
+   <action no="6" player="Ls83" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728872689">
+  <general>
+   <startdate>2026-01-02 01:17:05</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="530" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="380" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="60" chips="590" dealer="1" name="Ls83" reg_code="" seat="10" win="75"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="labyteabrigitte" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="3" player="Ls83" sum="60" type="23"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="4" player="labyteabrigitte" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H4 D5</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728872746">
+  <general>
+   <startdate>2026-01-02 01:17:17</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="515" chips="515" dealer="1" name="labyteabrigitte" reg_code="" seat="3" win="75"/>
+    <player bet="15" chips="350" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="30" chips="635" dealer="0" name="Ls83" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Ls83" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="3" player="labyteabrigitte" sum="515" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H6 S9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="5" player="Ls83" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728872780">
+  <general>
+   <startdate>2026-01-02 01:17:26</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="560" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="335" dealer="1" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="60" chips="605" dealer="0" name="Ls83" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ls83" sum="15" type="1"/>
+   <action no="2" player="labyteabrigitte" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HK C9</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="4" player="Ls83" sum="15" type="3"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="5" player="labyteabrigitte" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D3 H7 H4</cards>
+   <action no="6" player="Ls83" sum="30" type="5"/>
+   <action no="7" player="labyteabrigitte" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728872845">
+  <general>
+   <startdate>2026-01-02 01:17:41</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="530" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="335" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="60" chips="635" dealer="1" name="Ls83" reg_code="" seat="10" win="75"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="labyteabrigitte" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="3" player="Ls83" sum="60" type="23"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="4" player="labyteabrigitte" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">S5 D8</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728872894">
+  <general>
+   <startdate>2026-01-02 01:17:54</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="515" chips="515" dealer="1" name="labyteabrigitte" reg_code="" seat="3" win="100"/>
+    <player bet="20" chips="305" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="40" chips="680" dealer="0" name="Ls83" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Ls83" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="3" player="labyteabrigitte" sum="515" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 S4</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="5" player="Ls83" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728872949">
+  <general>
+   <startdate>2026-01-02 01:18:07</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="575" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="285" chips="285" dealer="1" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="100"/>
+    <player bet="20" chips="640" dealer="0" name="Ls83" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ls83" sum="20" type="1"/>
+   <action no="2" player="labyteabrigitte" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CQ DQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="285" type="23"/>
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="4" player="Ls83" sum="0" type="0"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="5" player="labyteabrigitte" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873001">
+  <general>
+   <startdate>2026-01-02 01:18:19</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="20" chips="535" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="345" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="120" chips="620" dealer="1" name="Ls83" reg_code="" seat="10" win="100"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="labyteabrigitte" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="3" player="Ls83" sum="40" type="3"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="4" player="labyteabrigitte" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">DJ S6</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HK S8 CQ</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="Ls83" sum="80" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873085">
+  <general>
+   <startdate>2026-01-02 01:18:38</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="515" dealer="1" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="20" chips="305" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="40" chips="680" dealer="0" name="Ls83" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Ls83" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="3" player="labyteabrigitte" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C2 C4</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873147">
+  <general>
+   <startdate>2026-01-02 01:18:50</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="180" chips="515" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="240"/>
+    <player bet="0" chips="285" dealer="1" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="120" chips="700" dealer="0" name="Ls83" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ls83" sum="30" type="1"/>
+   <action no="2" player="labyteabrigitte" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S6 D4</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="4" player="Ls83" sum="30" type="3"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="5" player="labyteabrigitte" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D9 S5 C3</cards>
+   <action no="6" player="Ls83" sum="60" type="5"/>
+   <action no="7" player="labyteabrigitte" sum="120" type="23"/>
+   <action no="8" player="Ls83" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873249">
+  <general>
+   <startdate>2026-01-02 01:19:15</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="30" chips="635" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="285" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="120" chips="580" dealer="1" name="Ls83" reg_code="" seat="10" win="150"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="labyteabrigitte" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="3" player="Ls83" sum="120" type="23"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="4" player="labyteabrigitte" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H10 C8</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873288">
+  <general>
+   <startdate>2026-01-02 01:19:24</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="0" chips="605" dealer="1" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="225" chips="225" dealer="0" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="120"/>
+    <player bet="60" chips="670" dealer="0" name="Ls83" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Ls83" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="3" player="labyteabrigitte" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">S9 D7</cards>
+   <action no="4" player="80CEV9Tabling" sum="225" type="23"/>
+   <cards player="Ls83" type="Pocket">X X</cards>
+   <action no="5" player="Ls83" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728873346">
+  <general>
+   <startdate>2026-01-02 01:19:38</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="605" dealer="0" name="labyteabrigitte" reg_code="" seat="3" win="0"/>
+    <player bet="285" chips="285" dealer="1" name="80CEV9Tabling" reg_code="5802230493" seat="6" win="0"/>
+    <player bet="285" chips="610" dealer="0" name="Ls83" reg_code="" seat="10" win="630"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ls83" sum="30" type="1"/>
+   <action no="2" player="labyteabrigitte" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SK H9</cards>
+   <action no="3" player="80CEV9Tabling" sum="285" type="23"/>
+   <cards player="Ls83" type="Pocket">CJ CK</cards>
+   <action no="4" player="Ls83" sum="255" type="3"/>
+   <cards player="labyteabrigitte" type="Pocket">X X</cards>
+   <action no="5" player="labyteabrigitte" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DK H10 S4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C6</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C8</cards>
+  </round>
+ </game>
+</session>

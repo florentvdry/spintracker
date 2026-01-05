@@ -1,0 +1,601 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320989145636798465-1-1760786786 - Holdem no limit (10/20) - 2025/10/18 11:26:26 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Fold or Push (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Fold or Push posts big blind 20
+Dealt to Nelfrot-YT [As 8h]
+*** PRE-FLOP *** 
+Stoykof raises 480 to 500 and is all-in
+Nelfrot-YT folds
+Fold or Push calls 480 and is all-in
+*** FLOP *** [Qs 9h Kd]
+*** TURN *** [Qs 9h Kd][Kc]
+*** RIVER *** [Qs 9h Kd Kc][6c]
+*** SHOW DOWN ***
+Fold or Push shows [Ac 7d] (One pair : Kings)
+Stoykof shows [Ah Ts] (One pair : Kings)
+Stoykof collected 1010 from pot
+*** SUMMARY ***
+Total pot 1010 | No rake
+Board: [Qs 9h Kd Kc 6c]
+Seat 1: Stoykof (button) showed [Ah Ts] and won 1010 with One pair : Kings
+Seat 3: Fold or Push (big blind) showed [Ac 7d] and lost with One pair : Kings
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320989145636798465-2-1760786800 - Holdem no limit (10/20) - 2025/10/18 11:26:40 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (1010)
+Seat 2: Nelfrot-YT (490)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Qc 2c]
+*** PRE-FLOP *** 
+Stoykof calls 10
+Nelfrot-YT checks
+*** FLOP *** [8c Tc 3s]
+Nelfrot-YT checks
+Stoykof checks
+*** TURN *** [8c Tc 3s][Kd]
+Nelfrot-YT bets 20
+Stoykof folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [8c Tc 3s Kd]
+Seat 2: Nelfrot-YT (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320989145636798465-3-1760786819 - Holdem no limit (10/20) - 2025/10/18 11:26:59 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (990)
+Seat 2: Nelfrot-YT (510)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Stoykof posts big blind 20
+Dealt to Nelfrot-YT [Kd 7s]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+Stoykof folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320989145636798465-4-1760786828 - Holdem no limit (10/20) - 2025/10/18 11:27:08 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (970)
+Seat 2: Nelfrot-YT (530)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Js Qh]
+*** PRE-FLOP *** 
+Stoykof calls 10
+Nelfrot-YT raises 30 to 50
+Stoykof folds
+Nelfrot-YT collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 2: Nelfrot-YT (big blind) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320989145636798465-5-1760786836 - Holdem no limit (10/20) - 2025/10/18 11:27:16 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (950)
+Seat 2: Nelfrot-YT (550)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Stoykof posts big blind 20
+Dealt to Nelfrot-YT [6s Qh]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 10
+Stoykof checks
+*** FLOP *** [7s Th 3s]
+Stoykof bets 20
+Nelfrot-YT folds
+Stoykof collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [7s Th 3s]
+Seat 1: Stoykof (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320989145636798465-6-1760786849 - Holdem no limit (10/20) - 2025/10/18 11:27:29 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (970)
+Seat 2: Nelfrot-YT (530)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [5d Ad]
+*** PRE-FLOP *** 
+Stoykof calls 10
+Nelfrot-YT raises 160 to 180
+Stoykof folds
+Nelfrot-YT collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Seat 2: Nelfrot-YT (big blind) won 200
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320989145636798465-7-1760786862 - Holdem no limit (10/20) - 2025/10/18 11:27:42 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (950)
+Seat 2: Nelfrot-YT (550)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Stoykof posts big blind 20
+Dealt to Nelfrot-YT [Th 7h]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+Stoykof raises 20 to 60
+Nelfrot-YT calls 20
+*** FLOP *** [8d 2c 3s]
+Stoykof checks
+Nelfrot-YT bets 20
+Stoykof calls 20
+*** TURN *** [8d 2c 3s][4d]
+Stoykof checks
+Nelfrot-YT checks
+*** RIVER *** [8d 2c 3s 4d][3d]
+Stoykof bets 128
+Nelfrot-YT folds
+Stoykof collected 288 from pot
+*** SUMMARY ***
+Total pot 288 | No rake
+Board: [8d 2c 3s 4d 3d]
+Seat 1: Stoykof (big blind) won 288
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320989145636798465-8-1760786892 - Holdem no limit (15/30) - 2025/10/18 11:28:12 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (1030)
+Seat 2: Nelfrot-YT (470)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Th 4s]
+*** PRE-FLOP *** 
+Stoykof raises 30 to 60
+Nelfrot-YT folds
+Stoykof collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 1: Stoykof (small blind) (button) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320989145636798465-9-1760786899 - Holdem no limit (15/30) - 2025/10/18 11:28:19 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (1060)
+Seat 2: Nelfrot-YT (440)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Stoykof posts big blind 30
+Dealt to Nelfrot-YT [4d Qd]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 15
+Stoykof checks
+*** FLOP *** [3c 2s 4h]
+Stoykof checks
+Nelfrot-YT bets 30
+Stoykof folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [3c 2s 4h]
+Seat 2: Nelfrot-YT (small blind) (button) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320989145636798465-10-1760786910 - Holdem no limit (15/30) - 2025/10/18 11:28:30 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (1030)
+Seat 2: Nelfrot-YT (470)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [As 5h]
+*** PRE-FLOP *** 
+Stoykof calls 15
+Nelfrot-YT raises 440 to 470 and is all-in
+Stoykof folds
+Nelfrot-YT collected 500 from pot
+*** SUMMARY ***
+Total pot 500 | No rake
+Seat 2: Nelfrot-YT (big blind) won 500
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320989145636798465-11-1760786919 - Holdem no limit (15/30) - 2025/10/18 11:28:39 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (1000)
+Seat 2: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Stoykof posts big blind 30
+Dealt to Nelfrot-YT [Kh 3d]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 30 to 60
+Stoykof calls 30
+*** FLOP *** [Ts 4s 7h]
+Stoykof checks
+Nelfrot-YT bets 30
+Stoykof calls 30
+*** TURN *** [Ts 4s 7h][Th]
+Stoykof checks
+Nelfrot-YT checks
+*** RIVER *** [Ts 4s 7h Th][3s]
+Stoykof checks
+Nelfrot-YT checks
+*** SHOW DOWN ***
+Stoykof shows [9d Jh] (One pair : Tens)
+Nelfrot-YT shows [Kh 3d] (Two pairs : Tens and 3)
+Nelfrot-YT collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Board: [Ts 4s 7h Th 3s]
+Seat 1: Stoykof (big blind) showed [9d Jh] and lost with One pair : Tens
+Seat 2: Nelfrot-YT (small blind) (button) showed [Kh 3d] and won 180 with Two pairs : Tens and 3
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320989145636798465-12-1760786950 - Holdem no limit (15/30) - 2025/10/18 11:29:10 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (910)
+Seat 2: Nelfrot-YT (590)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [5c 9s]
+*** PRE-FLOP *** 
+Stoykof raises 30 to 60
+Nelfrot-YT folds
+Stoykof collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 1: Stoykof (small blind) (button) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320989145636798465-13-1760786957 - Holdem no limit (15/30) - 2025/10/18 11:29:17 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (940)
+Seat 2: Nelfrot-YT (560)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Stoykof posts big blind 30
+Dealt to Nelfrot-YT [5c Th]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 15
+Stoykof checks
+*** FLOP *** [6d 8h 4c]
+Stoykof bets 30
+Nelfrot-YT folds
+Stoykof collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [6d 8h 4c]
+Seat 1: Stoykof (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320989145636798465-14-1760786968 - Holdem no limit (20/40) - 2025/10/18 11:29:28 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (970)
+Seat 2: Nelfrot-YT (530)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [4h 6h]
+*** PRE-FLOP *** 
+Stoykof raises 40 to 80
+Nelfrot-YT calls 40
+*** FLOP *** [4d 3d 7c]
+Nelfrot-YT checks
+Stoykof bets 40
+Nelfrot-YT calls 40
+*** TURN *** [4d 3d 7c][Jd]
+Nelfrot-YT checks
+Stoykof bets 40
+Nelfrot-YT calls 40
+*** RIVER *** [4d 3d 7c Jd][4c]
+Nelfrot-YT checks
+Stoykof bets 40
+Nelfrot-YT raises 200 to 240
+Stoykof folds
+Nelfrot-YT collected 600 from pot
+*** SUMMARY ***
+Total pot 600 | No rake
+Board: [4d 3d 7c Jd 4c]
+Seat 2: Nelfrot-YT (big blind) won 600
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320989145636798465-15-1760786993 - Holdem no limit (20/40) - 2025/10/18 11:29:53 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (770)
+Seat 2: Nelfrot-YT (730)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Stoykof posts big blind 40
+Dealt to Nelfrot-YT [Qh 3d]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+Stoykof checks
+*** FLOP *** [7d 6d Td]
+Stoykof bets 40
+Nelfrot-YT calls 40
+*** TURN *** [7d 6d Td][7c]
+Stoykof bets 40
+Nelfrot-YT calls 40
+*** RIVER *** [7d 6d Td 7c][Ac]
+Stoykof bets 40
+Nelfrot-YT folds
+Stoykof collected 280 from pot
+*** SUMMARY ***
+Total pot 280 | No rake
+Board: [7d 6d Td 7c Ac]
+Seat 1: Stoykof (big blind) won 280
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320989145636798465-16-1760787011 - Holdem no limit (20/40) - 2025/10/18 11:30:11 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (890)
+Seat 2: Nelfrot-YT (610)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Ac Ks]
+*** PRE-FLOP *** 
+Stoykof calls 20
+Nelfrot-YT raises 570 to 610 and is all-in
+Stoykof folds
+Nelfrot-YT collected 650 from pot
+*** SUMMARY ***
+Total pot 650 | No rake
+Seat 2: Nelfrot-YT (big blind) won 650
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320989145636798465-17-1760787025 - Holdem no limit (20/40) - 2025/10/18 11:30:25 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (850)
+Seat 2: Nelfrot-YT (650)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Stoykof posts big blind 40
+Dealt to Nelfrot-YT [7d 7h]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 610 to 650 and is all-in
+Stoykof calls 610
+*** FLOP *** [4c Kh Ad]
+*** TURN *** [4c Kh Ad][8s]
+*** RIVER *** [4c Kh Ad 8s][9d]
+*** SHOW DOWN ***
+Stoykof shows [3d 6d] (High card : Ace)
+Nelfrot-YT shows [7d 7h] (One pair : 7)
+Nelfrot-YT collected 1300 from pot
+*** SUMMARY ***
+Total pot 1300 | No rake
+Board: [4c Kh Ad 8s 9d]
+Seat 1: Stoykof (big blind) showed [3d 6d] and lost with High card : Ace
+Seat 2: Nelfrot-YT (small blind) (button) showed [7d 7h] and won 1300 with One pair : 7
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320989145636798465-18-1760787036 - Holdem no limit (20/40) - 2025/10/18 11:30:36 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (200)
+Seat 2: Nelfrot-YT (1300)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [3d 7h]
+*** PRE-FLOP *** 
+Stoykof raises 160 to 200 and is all-in
+Nelfrot-YT folds
+Stoykof collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Seat 1: Stoykof (small blind) (button) won 240
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320989145636798465-19-1760787042 - Holdem no limit (20/40) - 2025/10/18 11:30:42 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (240)
+Seat 2: Nelfrot-YT (1260)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Stoykof posts big blind 40
+Dealt to Nelfrot-YT [8s Ah]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1220 to 1260 and is all-in
+Stoykof folds
+Nelfrot-YT collected 1300 from pot
+*** SUMMARY ***
+Total pot 1300 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 1300
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320989145636798465-20-1760787048 - Holdem no limit (20/40) - 2025/10/18 11:30:48 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (200)
+Seat 2: Nelfrot-YT (1300)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [8s Ah]
+*** PRE-FLOP *** 
+Stoykof folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 2: Nelfrot-YT (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320989145636798465-21-1760787052 - Holdem no limit (20/40) - 2025/10/18 11:30:52 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (180)
+Seat 2: Nelfrot-YT (1320)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Stoykof posts big blind 40
+Dealt to Nelfrot-YT [6s 7c]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1280 to 1320 and is all-in
+Stoykof calls 140 and is all-in
+*** FLOP *** [Qd 4d Qh]
+*** TURN *** [Qd 4d Qh][8d]
+*** RIVER *** [Qd 4d Qh 8d][Jc]
+*** SHOW DOWN ***
+Stoykof shows [Jd Th] (Two pairs : Queens and Jacks)
+Nelfrot-YT shows [6s 7c] (One pair : Queens)
+Nelfrot-YT collected 1140 from side pot 1
+Stoykof collected 360 from main pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [Qd 4d Qh 8d Jc]
+Seat 1: Stoykof (big blind) showed [Jd Th] and won 360 with Two pairs : Queens and Jacks
+Seat 2: Nelfrot-YT (small blind) (button) showed [6s 7c] and won 1140 with One pair : Queens
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320989145636798465-22-1760787064 - Holdem no limit (30/60) - 2025/10/18 11:31:04 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (360)
+Seat 2: Nelfrot-YT (1140)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [7h 3s]
+*** PRE-FLOP *** 
+Stoykof raises 300 to 360 and is all-in
+Nelfrot-YT folds
+Stoykof collected 420 from pot
+*** SUMMARY ***
+Total pot 420 | No rake
+Seat 1: Stoykof (small blind) (button) won 420
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320989145636798465-23-1760787072 - Holdem no limit (30/60) - 2025/10/18 11:31:12 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (420)
+Seat 2: Nelfrot-YT (1080)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+Stoykof posts big blind 60
+Dealt to Nelfrot-YT [Th Qs]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1020 to 1080 and is all-in
+Stoykof folds
+Nelfrot-YT collected 1140 from pot
+*** SUMMARY ***
+Total pot 1140 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 1140
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320989145636798465-24-1760787077 - Holdem no limit (30/60) - 2025/10/18 11:31:17 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (360)
+Seat 2: Nelfrot-YT (1140)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Jh 8h]
+*** PRE-FLOP *** 
+Stoykof calls 30
+Nelfrot-YT raises 1080 to 1140 and is all-in
+Stoykof folds
+Nelfrot-YT collected 1200 from pot
+*** SUMMARY ***
+Total pot 1200 | No rake
+Seat 2: Nelfrot-YT (big blind) won 1200
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320989145636798465-25-1760787084 - Holdem no limit (30/60) - 2025/10/18 11:31:24 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (300)
+Seat 2: Nelfrot-YT (1200)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+Stoykof posts big blind 60
+Dealt to Nelfrot-YT [6s 6d]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1140 to 1200 and is all-in
+Stoykof folds
+Nelfrot-YT collected 1260 from pot
+*** SUMMARY ***
+Total pot 1260 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 1260
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320989145636798465-26-1760787089 - Holdem no limit (30/60) - 2025/10/18 11:31:29 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (240)
+Seat 2: Nelfrot-YT (1260)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Ts 8h]
+*** PRE-FLOP *** 
+Stoykof folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 2: Nelfrot-YT (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320989145636798465-27-1760787093 - Holdem no limit (30/60) - 2025/10/18 11:31:33 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (210)
+Seat 2: Nelfrot-YT (1290)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+Stoykof posts big blind 60
+Dealt to Nelfrot-YT [7c 9d]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1230 to 1290 and is all-in
+Stoykof folds
+Nelfrot-YT collected 1350 from pot
+*** SUMMARY ***
+Total pot 1350 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 1350
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320989145636798465-28-1760787099 - Holdem no limit (30/60) - 2025/10/18 11:31:39 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Stoykof (150)
+Seat 2: Nelfrot-YT (1350)
+*** ANTE/BLINDS ***
+Stoykof posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [5d 9h]
+*** PRE-FLOP *** 
+Stoykof folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 2: Nelfrot-YT (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320989145636798465-29-1760787103 - Holdem no limit (30/60) - 2025/10/18 11:31:43 UTC
+Table: 'Expresso(1006058684)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Stoykof (120)
+Seat 2: Nelfrot-YT (1380)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+Stoykof posts big blind 60
+Dealt to Nelfrot-YT [Jd Kd]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1320 to 1380 and is all-in
+Stoykof calls 60 and is all-in
+*** FLOP *** [3h Qc 6h]
+*** TURN *** [3h Qc 6h][Ks]
+*** RIVER *** [3h Qc 6h Ks][2c]
+*** SHOW DOWN ***
+Stoykof shows [Td 8d] (High card : King)
+Nelfrot-YT shows [Jd Kd] (One pair : Kings)
+Nelfrot-YT collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [3h Qc 6h Ks 2c]
+Seat 1: Stoykof (big blind) showed [Td 8d] and lost with High card : King
+Seat 2: Nelfrot-YT (small blind) (button) showed [Jd Kd] and won 1500 with One pair : Kings
+
+

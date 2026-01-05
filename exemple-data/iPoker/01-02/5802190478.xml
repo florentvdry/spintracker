@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802190478">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143456766</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:01</duration>
+  <gamecount>12</gamecount>
+  <startdate>2026-01-01 23:16:05</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 470</bets>
+  <wins>135</wins>
+  <chipsin>480</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143456765</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728692238">
+  <general>
+   <startdate>2026-01-01 23:16:05</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="20" chips="500" dealer="1" name="Amazonian" reg_code="" seat="6" win="0"/>
+    <player bet="80" chips="500" dealer="0" name="Belindaphenix" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Belindaphenix" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="3" player="Amazonian" sum="20" type="3"/>
+   <cards player="Belindaphenix" type="Pocket">X X</cards>
+   <action no="4" player="Belindaphenix" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SJ S4</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D9 C6 SK</cards>
+   <action no="6" player="Belindaphenix" sum="60" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="8" player="Amazonian" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728692444">
+  <general>
+   <startdate>2026-01-01 23:16:30</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="480" dealer="0" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="40" chips="480" dealer="0" name="Amazonian" reg_code="" seat="6" win="120"/>
+    <player bet="40" chips="540" dealer="1" name="Belindaphenix" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Amazonian" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Belindaphenix" type="Pocket">S3 DQ</cards>
+   <action no="3" player="Belindaphenix" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ D9</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="Amazonian" type="Pocket">DJ S6</cards>
+   <action no="5" player="Amazonian" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C3 H7 D6</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="Amazonian" sum="0" type="4"/>
+   <action no="8" player="Belindaphenix" sum="20" type="5"/>
+   <action no="9" player="80CEV9Tabling" sum="20" type="3"/>
+   <action no="10" player="Amazonian" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H5</cards>
+   <action no="11" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="12" player="Amazonian" sum="0" type="4"/>
+   <action no="13" player="Belindaphenix" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">D2</cards>
+   <action no="14" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="15" player="Amazonian" sum="0" type="4"/>
+   <action no="16" player="Belindaphenix" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728692729">
+  <general>
+   <startdate>2026-01-01 23:17:07</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="440" chips="440" dealer="1" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="75"/>
+    <player bet="15" chips="560" dealer="0" name="Amazonian" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="500" dealer="0" name="Belindaphenix" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Amazonian" sum="15" type="1"/>
+   <action no="2" player="Belindaphenix" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H7 CA</cards>
+   <action no="3" player="80CEV9Tabling" sum="440" type="23"/>
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="4" player="Amazonian" sum="0" type="0"/>
+   <cards player="Belindaphenix" type="Pocket">X X</cards>
+   <action no="5" player="Belindaphenix" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728692955">
+  <general>
+   <startdate>2026-01-01 23:17:37</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="485" dealer="0" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="0" chips="545" dealer="1" name="Amazonian" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="470" dealer="0" name="Belindaphenix" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Belindaphenix" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="3" player="Amazonian" sum="0" type="0"/>
+   <cards player="Belindaphenix" type="Pocket">X X</cards>
+   <action no="4" player="Belindaphenix" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D3 S10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693057">
+  <general>
+   <startdate>2026-01-01 23:17:50</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="455" chips="455" dealer="0" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="60"/>
+    <player bet="30" chips="545" dealer="0" name="Amazonian" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="Belindaphenix" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Amazonian" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Belindaphenix" type="Pocket">X X</cards>
+   <action no="3" player="Belindaphenix" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C9 DA</cards>
+   <action no="4" player="80CEV9Tabling" sum="455" type="23"/>
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="5" player="Amazonian" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693153">
+  <general>
+   <startdate>2026-01-01 23:18:03</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="485" dealer="1" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="20" chips="515" dealer="0" name="Amazonian" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="500" dealer="0" name="Belindaphenix" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Amazonian" sum="20" type="1"/>
+   <action no="2" player="Belindaphenix" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Belindaphenix" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">C4 H9</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="4" player="Amazonian" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693233">
+  <general>
+   <startdate>2026-01-01 23:18:14</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="485" dealer="0" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="80" chips="495" dealer="1" name="Amazonian" reg_code="" seat="6" win="0"/>
+    <player bet="180" chips="520" dealer="0" name="Belindaphenix" reg_code="" seat="10" win="200"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Belindaphenix" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="3" player="Amazonian" sum="80" type="23"/>
+   <cards player="Belindaphenix" type="Pocket">X X</cards>
+   <action no="4" player="Belindaphenix" sum="60" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S2 HK</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C3 D7 S4</cards>
+   <action no="6" player="Belindaphenix" sum="100" type="5"/>
+   <action no="7" player="Amazonian" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693337">
+  <general>
+   <startdate>2026-01-01 23:18:29</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="20" chips="445" dealer="0" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="80" chips="415" dealer="0" name="Amazonian" reg_code="" seat="6" win="180"/>
+    <player bet="80" chips="640" dealer="1" name="Belindaphenix" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Amazonian" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Belindaphenix" type="Pocket">DJ C7</cards>
+   <action no="3" player="Belindaphenix" sum="40" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S9 H3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Amazonian" type="Pocket">D7 C8</cards>
+   <action no="5" player="Amazonian" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S2 S8 D10</cards>
+   <action no="6" player="Amazonian" sum="0" type="4"/>
+   <action no="7" player="Belindaphenix" sum="40" type="5"/>
+   <action no="8" player="Amazonian" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C2</cards>
+   <action no="9" player="Amazonian" sum="0" type="4"/>
+   <action no="10" player="Belindaphenix" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H7</cards>
+   <action no="11" player="Amazonian" sum="0" type="4"/>
+   <action no="12" player="Belindaphenix" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728693569">
+  <general>
+   <startdate>2026-01-01 23:18:59</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="0" chips="425" dealer="1" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="20" chips="515" dealer="0" name="Amazonian" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="560" dealer="0" name="Belindaphenix" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Amazonian" sum="20" type="1"/>
+   <action no="2" player="Belindaphenix" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Belindaphenix" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">D3 HK</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="4" player="Amazonian" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693620">
+  <general>
+   <startdate>2026-01-01 23:19:06</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="425" dealer="0" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="60" chips="495" dealer="1" name="Amazonian" reg_code="" seat="6" win="0"/>
+    <player bet="150" chips="580" dealer="0" name="Belindaphenix" reg_code="" seat="10" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Belindaphenix" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="3" player="Amazonian" sum="60" type="3"/>
+   <cards player="Belindaphenix" type="Pocket">X X</cards>
+   <action no="4" player="Belindaphenix" sum="150" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D5 S9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="6" player="Amazonian" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693743">
+  <general>
+   <startdate>2026-01-01 23:19:23</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="30" chips="365" dealer="0" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="435" chips="435" dealer="0" name="Amazonian" reg_code="" seat="6" win="450"/>
+    <player bet="210" chips="700" dealer="1" name="Belindaphenix" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Amazonian" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Belindaphenix" type="Pocket">X X</cards>
+   <action no="3" player="Belindaphenix" sum="150" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C6 S9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="5" player="Amazonian" sum="90" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H8 S3 H9</cards>
+   <action no="6" player="Amazonian" sum="0" type="4"/>
+   <action no="7" player="Belindaphenix" sum="60" type="5"/>
+   <action no="8" player="Amazonian" sum="285" type="23"/>
+   <action no="9" player="Belindaphenix" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728693935">
+  <general>
+   <startdate>2026-01-01 23:19:50</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="335" chips="335" dealer="1" name="80CEV9Tabling" reg_code="5802190478" seat="3" win="0"/>
+    <player bet="30" chips="675" dealer="0" name="Amazonian" reg_code="" seat="6" win="0"/>
+    <player bet="335" chips="490" dealer="0" name="Belindaphenix" reg_code="" seat="10" win="700"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Amazonian" sum="30" type="1"/>
+   <action no="2" player="Belindaphenix" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D10 HQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="335" type="23"/>
+   <cards player="Amazonian" type="Pocket">X X</cards>
+   <action no="4" player="Amazonian" sum="0" type="0"/>
+   <cards player="Belindaphenix" type="Pocket">DA C5</cards>
+   <action no="5" player="Belindaphenix" sum="275" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SA SQ HA</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S6</cards>
+  </round>
+  <round no="4">
+   <cards type="River">DK</cards>
+  </round>
+ </game>
+</session>

@@ -1,0 +1,451 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985589403877377-1-1760786625 - Holdem no limit (10/20) - 2025/10/18 11:23:45 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #2 is the button
+Seat 1: aquamarine8 (500)
+Seat 2: Havaneo (500)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+aquamarine8 posts big blind 20
+Dealt to Nelfrot-YT [2d Qc]
+*** PRE-FLOP *** 
+Havaneo calls 20
+Nelfrot-YT folds
+aquamarine8 checks
+*** FLOP *** [3d Jc 6c]
+aquamarine8 checks
+Havaneo checks
+*** TURN *** [3d Jc 6c][Jd]
+aquamarine8 checks
+Havaneo checks
+*** RIVER *** [3d Jc 6c Jd][7d]
+aquamarine8 checks
+Havaneo bets 50
+aquamarine8 folds
+Havaneo collected 100 from pot
+*** SUMMARY ***
+Total pot 100 | No rake
+Board: [3d Jc 6c Jd 7d]
+Seat 2: Havaneo (button) won 100
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985589403877377-2-1760786651 - Holdem no limit (10/20) - 2025/10/18 11:24:11 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #3 is the button
+Seat 1: aquamarine8 (480)
+Seat 2: Havaneo (530)
+Seat 3: Nelfrot-YT (490)
+*** ANTE/BLINDS ***
+aquamarine8 posts small blind 10
+Havaneo posts big blind 20
+Dealt to Nelfrot-YT [7s 4h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+aquamarine8 folds
+Havaneo collected 30 from pot
+*** SUMMARY ***
+Total pot 30 | No rake
+Seat 2: Havaneo (big blind) won 30
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985589403877377-3-1760786658 - Holdem no limit (10/20) - 2025/10/18 11:24:18 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #1 is the button
+Seat 1: aquamarine8 (470)
+Seat 2: Havaneo (540)
+Seat 3: Nelfrot-YT (490)
+*** ANTE/BLINDS ***
+Havaneo posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [9s 8h]
+*** PRE-FLOP *** 
+aquamarine8 folds
+Havaneo calls 10
+Nelfrot-YT checks
+*** FLOP *** [7h 3c 5c]
+Havaneo checks
+Nelfrot-YT bets 20
+Havaneo calls 20
+*** TURN *** [7h 3c 5c][3s]
+Havaneo checks
+Nelfrot-YT checks
+*** RIVER *** [7h 3c 5c 3s][Qs]
+Havaneo checks
+Nelfrot-YT bets 60
+Havaneo calls 60
+*** SHOW DOWN ***
+Nelfrot-YT shows [9s 8h] (One pair : 3)
+Havaneo shows [8c Js] (One pair : 3)
+Havaneo collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [7h 3c 5c 3s Qs]
+Seat 2: Havaneo (small blind) showed [8c Js] and won 200 with One pair : 3
+Seat 3: Nelfrot-YT (big blind) showed [9s 8h] and lost with One pair : 3
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320985589403877377-4-1760786688 - Holdem no limit (10/20) - 2025/10/18 11:24:48 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #2 is the button
+Seat 1: aquamarine8 (470)
+Seat 2: Havaneo (640)
+Seat 3: Nelfrot-YT (390)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+aquamarine8 posts big blind 20
+Dealt to Nelfrot-YT [Td Ah]
+*** PRE-FLOP *** 
+Havaneo calls 20
+Nelfrot-YT raises 110 to 130
+aquamarine8 folds
+Havaneo calls 110
+*** FLOP *** [8d 4s 9h]
+Nelfrot-YT bets 260 and is all-in
+Havaneo calls 260
+*** TURN *** [8d 4s 9h][Ac]
+*** RIVER *** [8d 4s 9h Ac][Ts]
+*** SHOW DOWN ***
+Havaneo shows [As 5d] (One pair : Aces)
+Nelfrot-YT shows [Td Ah] (Two pairs : Aces and Tens)
+Nelfrot-YT collected 800 from pot
+*** SUMMARY ***
+Total pot 800 | No rake
+Board: [8d 4s 9h Ac Ts]
+Seat 2: Havaneo (button) showed [As 5d] and lost with One pair : Aces
+Seat 3: Nelfrot-YT (small blind) showed [Td Ah] and won 800 with Two pairs : Aces and Tens
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320985589403877377-5-1760786723 - Holdem no limit (15/30) - 2025/10/18 11:25:23 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #3 is the button
+Seat 1: aquamarine8 (450)
+Seat 2: Havaneo (250)
+Seat 3: Nelfrot-YT (800)
+*** ANTE/BLINDS ***
+aquamarine8 posts small blind 15
+Havaneo posts big blind 30
+Dealt to Nelfrot-YT [3d Jd]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+aquamarine8 calls 15
+Havaneo checks
+*** FLOP *** [Qh 5d 4s]
+aquamarine8 bets 30
+Havaneo calls 30
+*** TURN *** [Qh 5d 4s][Jc]
+aquamarine8 checks
+Havaneo bets 190 and is all-in
+aquamarine8 folds
+Havaneo collected 310 from pot
+*** SUMMARY ***
+Total pot 310 | No rake
+Board: [Qh 5d 4s Jc]
+Seat 2: Havaneo (big blind) won 310
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320985589403877377-6-1760786754 - Holdem no limit (15/30) - 2025/10/18 11:25:54 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #1 is the button
+Seat 1: aquamarine8 (390)
+Seat 2: Havaneo (310)
+Seat 3: Nelfrot-YT (800)
+*** ANTE/BLINDS ***
+Havaneo posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Th 2d]
+*** PRE-FLOP *** 
+aquamarine8 folds
+Havaneo calls 15
+Nelfrot-YT checks
+*** FLOP *** [Qc Qd 3h]
+Havaneo checks
+Nelfrot-YT bets 30
+Havaneo folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [Qc Qd 3h]
+Seat 3: Nelfrot-YT (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320985589403877377-7-1760786780 - Holdem no limit (15/30) - 2025/10/18 11:26:20 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #2 is the button
+Seat 1: aquamarine8 (390)
+Seat 2: Havaneo (280)
+Seat 3: Nelfrot-YT (830)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+aquamarine8 posts big blind 30
+Dealt to Nelfrot-YT [2s Jh]
+*** PRE-FLOP *** 
+Havaneo calls 30
+Nelfrot-YT folds
+aquamarine8 raises 360 to 390 and is all-in
+Havaneo folds
+aquamarine8 collected 435 from pot
+*** SUMMARY ***
+Total pot 435 | No rake
+Seat 1: aquamarine8 (big blind) won 435
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320985589403877377-8-1760786795 - Holdem no limit (15/30) - 2025/10/18 11:26:35 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #3 is the button
+Seat 1: aquamarine8 (435)
+Seat 2: Havaneo (250)
+Seat 3: Nelfrot-YT (815)
+*** ANTE/BLINDS ***
+aquamarine8 posts small blind 15
+Havaneo posts big blind 30
+Dealt to Nelfrot-YT [9s 7h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+aquamarine8 folds
+Havaneo collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 2: Havaneo (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985589403877377-9-1760786808 - Holdem no limit (20/40) - 2025/10/18 11:26:48 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #1 is the button
+Seat 1: aquamarine8 (420)
+Seat 2: Havaneo (265)
+Seat 3: Nelfrot-YT (815)
+*** ANTE/BLINDS ***
+Havaneo posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [8h Qc]
+*** PRE-FLOP *** 
+aquamarine8 folds
+Havaneo calls 20
+Nelfrot-YT raises 775 to 815 and is all-in
+Havaneo calls 225 and is all-in
+*** FLOP *** [2s Kc 5h]
+*** TURN *** [2s Kc 5h][Js]
+*** RIVER *** [2s Kc 5h Js][8d]
+*** SHOW DOWN ***
+Havaneo shows [9s Qh] (High card : King)
+Nelfrot-YT shows [8h Qc] (One pair : 8)
+Nelfrot-YT collected 1080 from pot
+*** SUMMARY ***
+Total pot 1080 | No rake
+Board: [2s Kc 5h Js 8d]
+Seat 2: Havaneo (small blind) showed [9s Qh] and lost with High card : King
+Seat 3: Nelfrot-YT (big blind) showed [8h Qc] and won 1080 with One pair : 8
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985589403877377-10-1760786828 - Holdem no limit (20/40) - 2025/10/18 11:27:08 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #3 is the button
+Seat 1: aquamarine8 (420)
+Seat 3: Nelfrot-YT (1080)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+aquamarine8 posts big blind 40
+Dealt to Nelfrot-YT [Kc 4s]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1040 to 1080 and is all-in
+aquamarine8 folds
+Nelfrot-YT collected 1120 from pot
+*** SUMMARY ***
+Total pot 1120 | No rake
+Seat 3: Nelfrot-YT (small blind) (button) won 1120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985589403877377-11-1760786837 - Holdem no limit (20/40) - 2025/10/18 11:27:17 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #1 is the button
+Seat 1: aquamarine8 (380)
+Seat 3: Nelfrot-YT (1120)
+*** ANTE/BLINDS ***
+aquamarine8 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Th Td]
+*** PRE-FLOP *** 
+aquamarine8 calls 20
+Nelfrot-YT raises 1080 to 1120 and is all-in
+aquamarine8 folds
+Nelfrot-YT collected 1160 from pot
+*** SUMMARY ***
+Total pot 1160 | No rake
+Seat 3: Nelfrot-YT (big blind) won 1160
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985589403877377-12-1760786848 - Holdem no limit (20/40) - 2025/10/18 11:27:28 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #3 is the button
+Seat 1: aquamarine8 (340)
+Seat 3: Nelfrot-YT (1160)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+aquamarine8 posts big blind 40
+Dealt to Nelfrot-YT [Ks 8c]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1120 to 1160 and is all-in
+aquamarine8 folds
+Nelfrot-YT collected 1200 from pot
+*** SUMMARY ***
+Total pot 1200 | No rake
+Seat 3: Nelfrot-YT (small blind) (button) won 1200
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985589403877377-13-1760786856 - Holdem no limit (20/40) - 2025/10/18 11:27:36 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #1 is the button
+Seat 1: aquamarine8 (300)
+Seat 3: Nelfrot-YT (1200)
+*** ANTE/BLINDS ***
+aquamarine8 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Ac 5h]
+*** PRE-FLOP *** 
+aquamarine8 raises 260 to 300 and is all-in
+Nelfrot-YT calls 260
+*** FLOP *** [9d 7c Kh]
+*** TURN *** [9d 7c Kh][4d]
+*** RIVER *** [9d 7c Kh 4d][7s]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Ac 5h] (One pair : 7)
+aquamarine8 shows [Kc As] (Two pairs : Kings and 7)
+aquamarine8 collected 600 from pot
+*** SUMMARY ***
+Total pot 600 | No rake
+Board: [9d 7c Kh 4d 7s]
+Seat 1: aquamarine8 (small blind) (button) showed [Kc As] and won 600 with Two pairs : Kings and 7
+Seat 3: Nelfrot-YT (big blind) showed [Ac 5h] and lost with One pair : 7
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985589403877377-14-1760786872 - Holdem no limit (20/40) - 2025/10/18 11:27:52 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #3 is the button
+Seat 1: aquamarine8 (600)
+Seat 3: Nelfrot-YT (900)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+aquamarine8 posts big blind 40
+Dealt to Nelfrot-YT [8s 3c]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+aquamarine8 raises 560 to 600 and is all-in
+Nelfrot-YT folds
+aquamarine8 collected 640 from pot
+*** SUMMARY ***
+Total pot 640 | No rake
+Seat 1: aquamarine8 (big blind) won 640
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320985589403877377-15-1760786882 - Holdem no limit (20/40) - 2025/10/18 11:28:02 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #1 is the button
+Seat 1: aquamarine8 (640)
+Seat 3: Nelfrot-YT (860)
+*** ANTE/BLINDS ***
+aquamarine8 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [9h Ks]
+*** PRE-FLOP *** 
+aquamarine8 calls 20
+Nelfrot-YT raises 60 to 100
+aquamarine8 calls 60
+*** FLOP *** [5c Qs 3d]
+Nelfrot-YT checks
+aquamarine8 bets 100
+Nelfrot-YT folds
+aquamarine8 collected 300 from pot
+*** SUMMARY ***
+Total pot 300 | No rake
+Board: [5c Qs 3d]
+Seat 1: aquamarine8 (small blind) (button) won 300
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985589403877377-16-1760786903 - Holdem no limit (30/60) - 2025/10/18 11:28:23 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #3 is the button
+Seat 1: aquamarine8 (740)
+Seat 3: Nelfrot-YT (760)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+aquamarine8 posts big blind 60
+Dealt to Nelfrot-YT [2h 3s]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+aquamarine8 checks
+*** FLOP *** [Qs 2c Kh]
+aquamarine8 checks
+Nelfrot-YT bets 60
+aquamarine8 folds
+Nelfrot-YT collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Board: [Qs 2c Kh]
+Seat 3: Nelfrot-YT (small blind) (button) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985589403877377-17-1760786919 - Holdem no limit (30/60) - 2025/10/18 11:28:39 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #1 is the button
+Seat 1: aquamarine8 (680)
+Seat 3: Nelfrot-YT (820)
+*** ANTE/BLINDS ***
+aquamarine8 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [5h Qs]
+*** PRE-FLOP *** 
+aquamarine8 folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 3: Nelfrot-YT (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985589403877377-18-1760786925 - Holdem no limit (30/60) - 2025/10/18 11:28:45 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #3 is the button
+Seat 1: aquamarine8 (650)
+Seat 3: Nelfrot-YT (850)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+aquamarine8 posts big blind 60
+Dealt to Nelfrot-YT [3c 4h]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+aquamarine8 raises 590 to 650 and is all-in
+Nelfrot-YT folds
+aquamarine8 collected 710 from pot
+*** SUMMARY ***
+Total pot 710 | No rake
+Seat 1: aquamarine8 (big blind) won 710
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985589403877377-19-1760786933 - Holdem no limit (30/60) - 2025/10/18 11:28:53 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #1 is the button
+Seat 1: aquamarine8 (710)
+Seat 3: Nelfrot-YT (790)
+*** ANTE/BLINDS ***
+aquamarine8 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [4d 7c]
+*** PRE-FLOP *** 
+aquamarine8 raises 650 to 710 and is all-in
+Nelfrot-YT folds
+aquamarine8 collected 770 from pot
+*** SUMMARY ***
+Total pot 770 | No rake
+Seat 1: aquamarine8 (small blind) (button) won 770
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320985589403877377-20-1760786942 - Holdem no limit (30/60) - 2025/10/18 11:29:02 UTC
+Table: 'Expresso(1006057856)#0' 3-max (real money) Seat #3 is the button
+Seat 1: aquamarine8 (770)
+Seat 3: Nelfrot-YT (730)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+aquamarine8 posts big blind 60
+Dealt to Nelfrot-YT [4d 7s]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+aquamarine8 raises 90 to 150
+Nelfrot-YT calls 90
+*** FLOP *** [Ah 7c 4h]
+aquamarine8 checks
+Nelfrot-YT bets 75
+aquamarine8 raises 545 to 620 and is all-in
+Nelfrot-YT calls 505 and is all-in
+*** TURN *** [Ah 7c 4h][Th]
+*** RIVER *** [Ah 7c 4h Th][5c]
+*** SHOW DOWN ***
+Nelfrot-YT shows [4d 7s] (Two pairs : 7 and 4)
+aquamarine8 shows [As Ad] (Trips of Aces)
+aquamarine8 collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [Ah 7c 4h Th 5c]
+Seat 1: aquamarine8 (big blind) showed [As Ad] and won 1500 with Trips of Aces
+Seat 3: Nelfrot-YT (small blind) (button) showed [4d 7s] and lost with Two pairs : 7 and 4
+
+

@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802213599">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143473528</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:03:19</duration>
+  <gamecount>15</gamecount>
+  <startdate>2026-01-02 00:17:32</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>2 502</bets>
+  <wins>610</wins>
+  <chipsin>490</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143473527</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728795140">
+  <general>
+   <startdate>2026-01-02 00:17:32</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="0"/>
+    <player bet="100" chips="500" dealer="0" name="rainbowisland6" reg_code="" seat="6" win="210"/>
+    <player bet="100" chips="500" dealer="1" name="ninix72160" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="rainbowisland6" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="ninix72160" type="Pocket">CQ CK</cards>
+   <action no="3" player="ninix72160" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">DK S10</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="rainbowisland6" type="Pocket">S7 S9</cards>
+   <action no="5" player="rainbowisland6" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H10 C9 CA</cards>
+   <action no="6" player="rainbowisland6" sum="0" type="4"/>
+   <action no="7" player="ninix72160" sum="60" type="5"/>
+   <action no="8" player="rainbowisland6" sum="60" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H5</cards>
+   <action no="9" player="rainbowisland6" sum="0" type="4"/>
+   <action no="10" player="ninix72160" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H4</cards>
+   <action no="11" player="rainbowisland6" sum="0" type="4"/>
+   <action no="12" player="ninix72160" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728795264">
+  <general>
+   <startdate>2026-01-02 00:17:53</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="62" chips="490" dealer="1" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="90"/>
+    <player bet="10" chips="610" dealer="0" name="rainbowisland6" reg_code="" seat="6" win="0"/>
+    <player bet="40" chips="400" dealer="0" name="ninix72160" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rainbowisland6" sum="10" type="1"/>
+   <action no="2" player="ninix72160" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S7 S9</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="4" player="rainbowisland6" sum="0" type="0"/>
+   <cards player="ninix72160" type="Pocket">X X</cards>
+   <action no="5" player="ninix72160" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DQ S6 H8</cards>
+   <action no="6" player="ninix72160" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="22" type="5"/>
+   <action no="8" player="ninix72160" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728795367">
+  <general>
+   <startdate>2026-01-02 00:18:09</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="540" dealer="0" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="0"/>
+    <player bet="0" chips="600" dealer="1" name="rainbowisland6" reg_code="" seat="6" win="0"/>
+    <player bet="60" chips="360" dealer="0" name="ninix72160" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="ninix72160" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="3" player="rainbowisland6" sum="0" type="0"/>
+   <cards player="ninix72160" type="Pocket">X X</cards>
+   <action no="4" player="ninix72160" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H9 C10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728795423">
+  <general>
+   <startdate>2026-01-02 00:18:18</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="60" chips="520" dealer="0" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="80"/>
+    <player bet="40" chips="600" dealer="0" name="rainbowisland6" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="380" dealer="1" name="ninix72160" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="rainbowisland6" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="ninix72160" type="Pocket">X X</cards>
+   <action no="3" player="ninix72160" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">HK H7</cards>
+   <action no="4" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="5" player="rainbowisland6" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D3 SA SQ</cards>
+   <action no="6" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="7" player="rainbowisland6" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728795543">
+  <general>
+   <startdate>2026-01-02 00:18:37</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="560" dealer="1" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="0"/>
+    <player bet="240" chips="560" dealer="0" name="rainbowisland6" reg_code="" seat="6" win="360"/>
+    <player bet="180" chips="380" dealer="0" name="ninix72160" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rainbowisland6" sum="15" type="1"/>
+   <action no="2" player="ninix72160" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H5 SQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="4" player="rainbowisland6" sum="60" type="23"/>
+   <cards player="ninix72160" type="Pocket">X X</cards>
+   <action no="5" player="ninix72160" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C4 SA C2</cards>
+   <action no="6" player="rainbowisland6" sum="30" type="5"/>
+   <action no="7" player="ninix72160" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DJ</cards>
+   <action no="8" player="rainbowisland6" sum="30" type="5"/>
+   <action no="9" player="ninix72160" sum="90" type="23"/>
+   <action no="10" player="rainbowisland6" sum="150" type="23"/>
+   <action no="11" player="ninix72160" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728795654">
+  <general>
+   <startdate>2026-01-02 00:18:53</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="560" dealer="0" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="0"/>
+    <player bet="200" chips="740" dealer="1" name="rainbowisland6" reg_code="" seat="6" win="430"/>
+    <player bet="200" chips="200" dealer="0" name="ninix72160" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="ninix72160" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rainbowisland6" type="Pocket">S4 H4</cards>
+   <action no="3" player="rainbowisland6" sum="30" type="3"/>
+   <cards player="ninix72160" type="Pocket">H10 H3</cards>
+   <action no="4" player="ninix72160" sum="200" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D3 H7</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="6" player="rainbowisland6" sum="170" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S9 C3 DK</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C2</cards>
+  </round>
+  <round no="4">
+   <cards type="River">SA</cards>
+  </round>
+ </game>
+ <game gamecode="8728795785">
+  <general>
+   <startdate>2026-01-02 00:19:13</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="530" dealer="1" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="0"/>
+    <player bet="60" chips="970" dealer="0" name="rainbowisland6" reg_code="" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="rainbowisland6" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D2 H9</cards>
+   <action no="3" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="4" player="rainbowisland6" sum="60" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728795855">
+  <general>
+   <startdate>2026-01-02 00:19:22</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="0"/>
+    <player bet="60" chips="1 000" dealer="1" name="rainbowisland6" reg_code="" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rainbowisland6" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="3" player="rainbowisland6" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C4 D9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728795922">
+  <general>
+   <startdate>2026-01-02 00:19:33</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="200" chips="470" dealer="1" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="160"/>
+    <player bet="80" chips="1 030" dealer="0" name="rainbowisland6" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="rainbowisland6" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C2 H7</cards>
+   <action no="3" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="4" player="rainbowisland6" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D8 H4 SA</cards>
+   <action no="5" player="rainbowisland6" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="rainbowisland6" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S3</cards>
+   <action no="8" player="rainbowisland6" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="120" type="5"/>
+   <action no="10" player="rainbowisland6" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728796046">
+  <general>
+   <startdate>2026-01-02 00:19:54</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="550" chips="550" dealer="0" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="80"/>
+    <player bet="40" chips="950" dealer="1" name="rainbowisland6" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rainbowisland6" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="3" player="rainbowisland6" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HA C6</cards>
+   <action no="4" player="80CEV9Tabling" sum="550" type="23"/>
+   <action no="5" player="rainbowisland6" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728796097">
+  <general>
+   <startdate>2026-01-02 00:20:02</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="120" chips="590" dealer="1" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="0"/>
+    <player bet="160" chips="910" dealer="0" name="rainbowisland6" reg_code="" seat="6" win="240"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="rainbowisland6" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H6 HJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="4" player="rainbowisland6" sum="120" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DK S10 S2</cards>
+   <action no="6" player="rainbowisland6" sum="40" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728796170">
+  <general>
+   <startdate>2026-01-02 00:20:13</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="470" dealer="0" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="0"/>
+    <player bet="120" chips="1 030" dealer="1" name="rainbowisland6" reg_code="" seat="6" win="160"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rainbowisland6" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="3" player="rainbowisland6" sum="80" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D2 D6</cards>
+   <action no="4" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK H4 CK</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="rainbowisland6" sum="40" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728796233">
+  <general>
+   <startdate>2026-01-02 00:20:24</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="390" chips="390" dealer="1" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="80"/>
+    <player bet="40" chips="1 110" dealer="0" name="rainbowisland6" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="rainbowisland6" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HK SA</cards>
+   <action no="3" player="80CEV9Tabling" sum="390" type="23"/>
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="4" player="rainbowisland6" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728796271">
+  <general>
+   <startdate>2026-01-02 00:20:31</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="430" chips="430" dealer="0" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="120"/>
+    <player bet="60" chips="1 070" dealer="1" name="rainbowisland6" reg_code="" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="rainbowisland6" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="rainbowisland6" type="Pocket">X X</cards>
+   <action no="3" player="rainbowisland6" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C4 HK</cards>
+   <action no="4" player="80CEV9Tabling" sum="430" type="23"/>
+   <action no="5" player="rainbowisland6" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728796320">
+  <general>
+   <startdate>2026-01-02 00:20:39</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="490" chips="490" dealer="1" name="80CEV9Tabling" reg_code="5802213599" seat="3" win="0"/>
+    <player bet="490" chips="1 010" dealer="0" name="rainbowisland6" reg_code="" seat="6" win="980"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="rainbowisland6" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SK D7</cards>
+   <action no="3" player="80CEV9Tabling" sum="490" type="23"/>
+   <cards player="rainbowisland6" type="Pocket">SQ HK</cards>
+   <action no="4" player="rainbowisland6" sum="430" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C10 D9 SA</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C4</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H4</cards>
+  </round>
+ </game>
+</session>

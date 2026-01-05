@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802196059">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143460657</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:30</duration>
+  <gamecount>14</gamecount>
+  <startdate>2026-01-01 23:29:39</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>2 721</bets>
+  <wins>2 538</wins>
+  <chipsin>540</chipsin>
+  <chipsout>1 500</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143460656</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>1</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>15€</win>
+ </general>
+ <game gamecode="8728717555">
+  <general>
+   <startdate>2026-01-01 23:29:39</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="500" dealer="1" name="citizenwave163" reg_code="" seat="3" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="60"/>
+    <player bet="20" chips="500" dealer="0" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Minautore1977" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="citizenwave163" type="Pocket">X X</cards>
+   <action no="3" player="citizenwave163" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D5 HA</cards>
+   <action no="4" player="80CEV9Tabling" sum="500" type="23"/>
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="5" player="Minautore1977" sum="0" type="0"/>
+   <action no="6" player="citizenwave163" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728717630">
+  <general>
+   <startdate>2026-01-01 23:29:50</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="480" dealer="0" name="citizenwave163" reg_code="" seat="3" win="20"/>
+    <player bet="0" chips="540" dealer="1" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="0"/>
+    <player bet="10" chips="480" dealer="0" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Minautore1977" sum="10" type="1"/>
+   <action no="2" player="citizenwave163" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="citizenwave163" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">S10 C7</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="4" player="Minautore1977" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728717695">
+  <general>
+   <startdate>2026-01-01 23:29:59</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="162" chips="490" dealer="0" name="citizenwave163" reg_code="" seat="3" win="0"/>
+    <player bet="540" chips="540" dealer="0" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="324"/>
+    <player bet="0" chips="470" dealer="1" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="citizenwave163" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="3" player="Minautore1977" sum="0" type="0"/>
+   <cards player="citizenwave163" type="Pocket">X X</cards>
+   <action no="4" player="citizenwave163" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H9 H10</cards>
+   <action no="5" player="80CEV9Tabling" sum="60" type="23"/>
+   <action no="6" player="citizenwave163" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DK H3 D8</cards>
+   <action no="7" player="citizenwave163" sum="0" type="4"/>
+   <action no="8" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="9" player="citizenwave163" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DQ</cards>
+   <action no="10" player="citizenwave163" sum="0" type="4"/>
+   <action no="11" player="80CEV9Tabling" sum="72" type="5"/>
+   <action no="12" player="citizenwave163" sum="72" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">CQ</cards>
+   <action no="13" player="citizenwave163" sum="0" type="4"/>
+   <action no="14" player="80CEV9Tabling" sum="378" type="5"/>
+   <action no="15" player="citizenwave163" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728717942">
+  <general>
+   <startdate>2026-01-01 23:30:31</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="328" dealer="1" name="citizenwave163" reg_code="" seat="3" win="0"/>
+    <player bet="40" chips="702" dealer="0" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="60"/>
+    <player bet="20" chips="470" dealer="0" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Minautore1977" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="citizenwave163" type="Pocket">X X</cards>
+   <action no="3" player="citizenwave163" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H7 HJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="5" player="Minautore1977" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SA CQ HK</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="Minautore1977" sum="0" type="4"/>
+   <action no="8" player="citizenwave163" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CK</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="Minautore1977" sum="0" type="4"/>
+   <action no="11" player="citizenwave163" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">S3</cards>
+   <action no="12" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="13" player="Minautore1977" sum="0" type="0"/>
+   <action no="14" player="citizenwave163" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718199">
+  <general>
+   <startdate>2026-01-01 23:31:09</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="308" dealer="0" name="citizenwave163" reg_code="" seat="3" win="30"/>
+    <player bet="0" chips="742" dealer="1" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="0"/>
+    <player bet="15" chips="450" dealer="0" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Minautore1977" sum="15" type="1"/>
+   <action no="2" player="citizenwave163" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="citizenwave163" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">D7 SJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="4" player="Minautore1977" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718276">
+  <general>
+   <startdate>2026-01-01 23:31:17</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="180" chips="323" dealer="0" name="citizenwave163" reg_code="" seat="3" win="120"/>
+    <player bet="60" chips="742" dealer="0" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="0"/>
+    <player bet="0" chips="435" dealer="1" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="citizenwave163" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="3" player="Minautore1977" sum="0" type="0"/>
+   <cards player="citizenwave163" type="Pocket">X X</cards>
+   <action no="4" player="citizenwave163" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ C9</cards>
+   <action no="5" player="80CEV9Tabling" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DJ D5 H10</cards>
+   <action no="6" player="citizenwave163" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C3</cards>
+   <action no="8" player="citizenwave163" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H5</cards>
+   <action no="10" player="citizenwave163" sum="120" type="5"/>
+   <action no="11" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718426">
+  <general>
+   <startdate>2026-01-01 23:31:39</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="383" chips="383" dealer="1" name="citizenwave163" reg_code="" seat="3" win="398"/>
+    <player bet="682" chips="682" dealer="0" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="398"/>
+    <player bet="30" chips="435" dealer="0" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Minautore1977" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="citizenwave163" type="Pocket">DA S5</cards>
+   <action no="3" player="citizenwave163" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H2 HA</cards>
+   <action no="4" player="80CEV9Tabling" sum="682" type="23"/>
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="5" player="Minautore1977" sum="0" type="0"/>
+   <action no="6" player="citizenwave163" sum="323" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SK H6 D9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C6</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H4</cards>
+  </round>
+ </game>
+ <game gamecode="8728718608">
+  <general>
+   <startdate>2026-01-01 23:32:04</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="398" dealer="0" name="citizenwave163" reg_code="" seat="3" win="30"/>
+    <player bet="0" chips="697" dealer="1" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="0"/>
+    <player bet="15" chips="405" dealer="0" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Minautore1977" sum="15" type="1"/>
+   <action no="2" player="citizenwave163" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="citizenwave163" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">S9 D3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="4" player="Minautore1977" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728718665">
+  <general>
+   <startdate>2026-01-01 23:32:12</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="390" chips="413" dealer="0" name="citizenwave163" reg_code="" seat="3" win="0"/>
+    <player bet="30" chips="697" dealer="0" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="0"/>
+    <player bet="390" chips="390" dealer="1" name="Minautore1977" reg_code="" seat="10" win="810"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="citizenwave163" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Minautore1977" type="Pocket">H6 D6</cards>
+   <action no="3" player="Minautore1977" sum="390" type="23"/>
+   <cards player="citizenwave163" type="Pocket">C6 C8</cards>
+   <action no="4" player="citizenwave163" sum="375" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H8 H4</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DQ S5 D3</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S6</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H2</cards>
+  </round>
+ </game>
+ <game gamecode="8728718814">
+  <general>
+   <startdate>2026-01-01 23:32:31</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="23" chips="23" dealer="1" name="citizenwave163" reg_code="" seat="3" win="61"/>
+    <player bet="15" chips="667" dealer="0" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="0"/>
+    <player bet="30" chips="810" dealer="0" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Minautore1977" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Minautore1977" type="Pocket">H2 D5</cards>
+   <cards player="citizenwave163" type="Pocket">D2 HQ</cards>
+   <action no="3" player="citizenwave163" sum="23" type="7"/>
+   <cards player="80CEV9Tabling" type="Pocket">H7 C2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SQ DK C8</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S10</cards>
+  </round>
+ </game>
+ <game gamecode="8728718958">
+  <general>
+   <startdate>2026-01-01 23:32:52</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="61" dealer="0" name="citizenwave163" reg_code="" seat="3" win="40"/>
+    <player bet="0" chips="652" dealer="1" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="0"/>
+    <player bet="20" chips="787" dealer="0" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Minautore1977" sum="20" type="1"/>
+   <action no="2" player="citizenwave163" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="citizenwave163" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">C4 H9</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="4" player="Minautore1977" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728719070">
+  <general>
+   <startdate>2026-01-01 23:33:07</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="81" chips="81" dealer="0" name="citizenwave163" reg_code="" seat="3" win="0"/>
+    <player bet="81" chips="652" dealer="0" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="162"/>
+    <player bet="0" chips="767" dealer="1" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="citizenwave163" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Minautore1977" type="Pocket">X X</cards>
+   <action no="3" player="Minautore1977" sum="0" type="0"/>
+   <cards player="citizenwave163" type="Pocket">H3 D5</cards>
+   <action no="4" player="citizenwave163" sum="81" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D9 C6</cards>
+   <action no="5" player="80CEV9Tabling" sum="41" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D10 S6 C3</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H8</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S4</cards>
+  </round>
+ </game>
+ <game gamecode="8728719200">
+  <general>
+   <startdate>2026-01-01 23:33:26</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="733" chips="733" dealer="1" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="1 466"/>
+    <player bet="767" chips="767" dealer="0" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Minautore1977" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CJ CA</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="Minautore1977" type="Pocket">S9 S8</cards>
+   <action no="4" player="Minautore1977" sum="40" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D2 C9 C10</cards>
+   <action no="5" player="Minautore1977" sum="160" type="5"/>
+   <action no="6" player="80CEV9Tabling" sum="160" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C3</cards>
+   <action no="7" player="Minautore1977" sum="527" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="493" type="7"/>
+  </round>
+  <round no="4">
+   <cards type="River">HQ</cards>
+  </round>
+ </game>
+ <game gamecode="8728719425">
+  <general>
+   <startdate>2026-01-01 23:33:58</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="1 466" dealer="0" name="80CEV9Tabling" reg_code="5802196059" seat="6" win="68"/>
+    <player bet="34" chips="34" dealer="1" name="Minautore1977" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Minautore1977" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S4 D7</cards>
+   <cards player="Minautore1977" type="Pocket">C10 SK</cards>
+   <action no="3" player="Minautore1977" sum="14" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DJ S7 S9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H6</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S3</cards>
+  </round>
+ </game>
+</session>

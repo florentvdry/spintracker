@@ -1,0 +1,414 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321002511575023617-1-1760787391 - Holdem no limit (10/20) - 2025/10/18 11:36:31 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ROCHETI06 (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Brice6262 (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Brice6262 posts big blind 20
+Dealt to Nelfrot-YT [2d 4s]
+*** PRE-FLOP *** 
+ROCHETI06 calls 20
+Nelfrot-YT folds
+Brice6262 checks
+*** FLOP *** [8h 9c 9s]
+Brice6262 checks
+ROCHETI06 checks
+*** TURN *** [8h 9c 9s][Jc]
+Brice6262 checks
+ROCHETI06 bets 20
+Brice6262 folds
+ROCHETI06 collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Board: [8h 9c 9s Jc]
+Seat 1: ROCHETI06 (button) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321002511575023617-2-1760787415 - Holdem no limit (10/20) - 2025/10/18 11:36:55 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ROCHETI06 (530)
+Seat 2: Nelfrot-YT (490)
+Seat 3: Brice6262 (480)
+*** ANTE/BLINDS ***
+Brice6262 posts small blind 10
+ROCHETI06 posts big blind 20
+Dealt to Nelfrot-YT [Ad 6d]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+Brice6262 folds
+ROCHETI06 folds
+Nelfrot-YT collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 2: Nelfrot-YT (button) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321002511575023617-3-1760787424 - Holdem no limit (10/20) - 2025/10/18 11:37:04 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ROCHETI06 (510)
+Seat 2: Nelfrot-YT (520)
+Seat 3: Brice6262 (470)
+*** ANTE/BLINDS ***
+ROCHETI06 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Ts 8c]
+*** PRE-FLOP *** 
+Brice6262 folds
+ROCHETI06 folds
+Nelfrot-YT collected 30 from pot
+*** SUMMARY ***
+Total pot 30 | No rake
+Seat 2: Nelfrot-YT (big blind) won 30
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321002511575023617-4-1760787431 - Holdem no limit (10/20) - 2025/10/18 11:37:11 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ROCHETI06 (500)
+Seat 2: Nelfrot-YT (530)
+Seat 3: Brice6262 (470)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Brice6262 posts big blind 20
+Dealt to Nelfrot-YT [8d Ks]
+*** PRE-FLOP *** 
+ROCHETI06 folds
+Nelfrot-YT raises 20 to 40
+Brice6262 calls 20
+*** FLOP *** [4d 6s 5c]
+Nelfrot-YT bets 20
+Brice6262 calls 20
+*** TURN *** [4d 6s 5c][2c]
+Nelfrot-YT checks
+Brice6262 checks
+*** RIVER *** [4d 6s 5c 2c][8c]
+Nelfrot-YT bets 90
+Brice6262 calls 90
+*** SHOW DOWN ***
+Brice6262 shows [Qh 6h] (One pair : 6)
+Nelfrot-YT shows [8d Ks] (One pair : 8)
+Nelfrot-YT collected 300 from pot
+*** SUMMARY ***
+Total pot 300 | No rake
+Board: [4d 6s 5c 2c 8c]
+Seat 2: Nelfrot-YT (small blind) showed [8d Ks] and won 300 with One pair : 8
+Seat 3: Brice6262 (big blind) showed [Qh 6h] and lost with One pair : 6
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4321002511575023617-5-1760787459 - Holdem no limit (10/20) - 2025/10/18 11:37:39 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ROCHETI06 (500)
+Seat 2: Nelfrot-YT (680)
+Seat 3: Brice6262 (320)
+*** ANTE/BLINDS ***
+Brice6262 posts small blind 10
+ROCHETI06 posts big blind 20
+Dealt to Nelfrot-YT [9c 4s]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Brice6262 calls 10
+ROCHETI06 checks
+*** FLOP *** [6d 6s Jd]
+Brice6262 checks
+ROCHETI06 checks
+*** TURN *** [6d 6s Jd][2s]
+Brice6262 checks
+ROCHETI06 checks
+*** RIVER *** [6d 6s Jd 2s][Qc]
+Brice6262 bets 40
+ROCHETI06 raises 88 to 128
+Brice6262 calls 88
+*** SHOW DOWN ***
+ROCHETI06 shows [9h Qs] (Two pairs : Queens and 6)
+Brice6262 shows [8s 6h] (Trips of 6)
+Brice6262 collected 296 from pot
+*** SUMMARY ***
+Total pot 296 | No rake
+Board: [6d 6s Jd 2s Qc]
+Seat 1: ROCHETI06 (big blind) showed [9h Qs] and lost with Two pairs : Queens and 6
+Seat 3: Brice6262 (small blind) showed [8s 6h] and won 296 with Trips of 6
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4321002511575023617-6-1760787496 - Holdem no limit (15/30) - 2025/10/18 11:38:16 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ROCHETI06 (352)
+Seat 2: Nelfrot-YT (680)
+Seat 3: Brice6262 (468)
+*** ANTE/BLINDS ***
+ROCHETI06 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [5s Ks]
+*** PRE-FLOP *** 
+Brice6262 calls 30
+ROCHETI06 calls 15
+Nelfrot-YT checks
+*** FLOP *** [2c Js Jh]
+ROCHETI06 checks
+Nelfrot-YT checks
+Brice6262 checks
+*** TURN *** [2c Js Jh][8c]
+ROCHETI06 checks
+Nelfrot-YT checks
+Brice6262 checks
+*** RIVER *** [2c Js Jh 8c][8h]
+ROCHETI06 checks
+Nelfrot-YT checks
+Brice6262 checks
+*** SHOW DOWN ***
+ROCHETI06 shows [3d Th] (Two pairs : Jacks and 8)
+Brice6262 shows [7c Qh] (Two pairs : Jacks and 8)
+Nelfrot-YT shows [5s Ks] (Two pairs : Jacks and 8)
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [2c Js Jh 8c 8h]
+Seat 1: ROCHETI06 (small blind) showed [3d Th] and lost with Two pairs : Jacks and 8
+Seat 2: Nelfrot-YT (big blind) showed [5s Ks] and won 90 with Two pairs : Jacks and 8
+Seat 3: Brice6262 (button) showed [7c Qh] and lost with Two pairs : Jacks and 8
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4321002511575023617-7-1760787529 - Holdem no limit (15/30) - 2025/10/18 11:38:49 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ROCHETI06 (322)
+Seat 2: Nelfrot-YT (740)
+Seat 3: Brice6262 (438)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Brice6262 posts big blind 30
+Dealt to Nelfrot-YT [5h Qs]
+*** PRE-FLOP *** 
+ROCHETI06 calls 30
+Nelfrot-YT folds
+Brice6262 checks
+*** FLOP *** [7c 8c Kc]
+Brice6262 checks
+ROCHETI06 bets 30
+Brice6262 folds
+ROCHETI06 collected 105 from pot
+*** SUMMARY ***
+Total pot 105 | No rake
+Board: [7c 8c Kc]
+Seat 1: ROCHETI06 (button) won 105
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4321002511575023617-8-1760787548 - Holdem no limit (15/30) - 2025/10/18 11:39:08 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ROCHETI06 (367)
+Seat 2: Nelfrot-YT (725)
+Seat 3: Brice6262 (408)
+*** ANTE/BLINDS ***
+Brice6262 posts small blind 15
+ROCHETI06 posts big blind 30
+Dealt to Nelfrot-YT [7h 5h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Brice6262 folds
+ROCHETI06 collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 1: ROCHETI06 (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4321002511575023617-9-1760787553 - Holdem no limit (15/30) - 2025/10/18 11:39:13 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ROCHETI06 (382)
+Seat 2: Nelfrot-YT (725)
+Seat 3: Brice6262 (393)
+*** ANTE/BLINDS ***
+ROCHETI06 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [7c 6c]
+*** PRE-FLOP *** 
+Brice6262 folds
+ROCHETI06 folds
+Nelfrot-YT collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 2: Nelfrot-YT (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4321002511575023617-10-1760787560 - Holdem no limit (15/30) - 2025/10/18 11:39:20 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ROCHETI06 (367)
+Seat 2: Nelfrot-YT (740)
+Seat 3: Brice6262 (393)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Brice6262 posts big blind 30
+Dealt to Nelfrot-YT [7s 4d]
+*** PRE-FLOP *** 
+ROCHETI06 folds
+Nelfrot-YT calls 15
+Brice6262 checks
+*** FLOP *** [4s Ad 6d]
+Nelfrot-YT bets 30
+Brice6262 folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [4s Ad 6d]
+Seat 2: Nelfrot-YT (small blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4321002511575023617-11-1760787574 - Holdem no limit (20/40) - 2025/10/18 11:39:34 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ROCHETI06 (367)
+Seat 2: Nelfrot-YT (770)
+Seat 3: Brice6262 (363)
+*** ANTE/BLINDS ***
+Brice6262 posts small blind 20
+ROCHETI06 posts big blind 40
+Dealt to Nelfrot-YT [5d 3c]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Brice6262 folds
+ROCHETI06 collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 1: ROCHETI06 (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4321002511575023617-12-1760787581 - Holdem no limit (20/40) - 2025/10/18 11:39:41 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ROCHETI06 (387)
+Seat 2: Nelfrot-YT (770)
+Seat 3: Brice6262 (343)
+*** ANTE/BLINDS ***
+ROCHETI06 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Th Qd]
+*** PRE-FLOP *** 
+Brice6262 calls 40
+ROCHETI06 calls 20
+Nelfrot-YT checks
+*** FLOP *** [9h 7h 7d]
+ROCHETI06 checks
+Nelfrot-YT checks
+Brice6262 checks
+*** TURN *** [9h 7h 7d][4c]
+ROCHETI06 checks
+Nelfrot-YT checks
+Brice6262 checks
+*** RIVER *** [9h 7h 7d 4c][6c]
+ROCHETI06 bets 40
+Nelfrot-YT folds
+Brice6262 calls 40
+*** SHOW DOWN ***
+ROCHETI06 shows [Ad 4d] (Two pairs : 7 and 4)
+Brice6262 shows [Ks 9d] (Two pairs : 9 and 7)
+Brice6262 collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [9h 7h 7d 4c 6c]
+Seat 1: ROCHETI06 (small blind) showed [Ad 4d] and lost with Two pairs : 7 and 4
+Seat 3: Brice6262 (button) showed [Ks 9d] and won 200 with Two pairs : 9 and 7
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4321002511575023617-13-1760787615 - Holdem no limit (20/40) - 2025/10/18 11:40:15 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ROCHETI06 (307)
+Seat 2: Nelfrot-YT (730)
+Seat 3: Brice6262 (463)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Brice6262 posts big blind 40
+Dealt to Nelfrot-YT [Qd 3d]
+*** PRE-FLOP *** 
+ROCHETI06 folds
+Nelfrot-YT calls 20
+Brice6262 checks
+*** FLOP *** [2h As 9c]
+Nelfrot-YT bets 40
+Brice6262 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [2h As 9c]
+Seat 2: Nelfrot-YT (small blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4321002511575023617-14-1760787639 - Holdem no limit (20/40) - 2025/10/18 11:40:39 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ROCHETI06 (307)
+Seat 2: Nelfrot-YT (770)
+Seat 3: Brice6262 (423)
+*** ANTE/BLINDS ***
+Brice6262 posts small blind 20
+ROCHETI06 posts big blind 40
+Dealt to Nelfrot-YT [Th 4h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Brice6262 calls 20
+ROCHETI06 checks
+*** FLOP *** [2d Qs Ks]
+Brice6262 checks
+ROCHETI06 bets 40
+Brice6262 calls 40
+*** TURN *** [2d Qs Ks][Tc]
+Brice6262 checks
+ROCHETI06 bets 40
+Brice6262 raises 303 to 343 and is all-in
+ROCHETI06 calls 187 and is all-in
+*** RIVER *** [2d Qs Ks Tc][9h]
+*** SHOW DOWN ***
+ROCHETI06 shows [Qh 6c] (One pair : Queens)
+Brice6262 shows [Jd 9d] (Straight King high)
+Brice6262 collected 730 from pot
+*** SUMMARY ***
+Total pot 730 | No rake
+Board: [2d Qs Ks Tc 9h]
+Seat 1: ROCHETI06 (big blind) showed [Qh 6c] and lost with One pair : Queens
+Seat 3: Brice6262 (small blind) showed [Jd 9d] and won 730 with Straight King high
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4321002511575023617-15-1760787679 - Holdem no limit (30/60) - 2025/10/18 11:41:19 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (770)
+Seat 3: Brice6262 (730)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+Brice6262 posts big blind 60
+Dealt to Nelfrot-YT [2d Jh]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+Brice6262 checks
+*** FLOP *** [Qs Ad 5d]
+Brice6262 checks
+Nelfrot-YT checks
+*** TURN *** [Qs Ad 5d][3s]
+Brice6262 checks
+Nelfrot-YT bets 60
+Brice6262 folds
+Nelfrot-YT collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Board: [Qs Ad 5d 3s]
+Seat 2: Nelfrot-YT (small blind) (button) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4321002511575023617-16-1760787710 - Holdem no limit (30/60) - 2025/10/18 11:41:50 UTC
+Table: 'Expresso(1006061796)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (830)
+Seat 3: Brice6262 (670)
+*** ANTE/BLINDS ***
+Brice6262 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Kh 8h]
+*** PRE-FLOP *** 
+Brice6262 calls 30
+Nelfrot-YT raises 770 to 830 and is all-in
+Brice6262 calls 610 and is all-in
+*** FLOP *** [7h Ks 9c]
+*** TURN *** [7h Ks 9c][4c]
+*** RIVER *** [7h Ks 9c 4c][9h]
+*** SHOW DOWN ***
+Brice6262 shows [Jh Ah] (One pair : 9)
+Nelfrot-YT shows [Kh 8h] (Two pairs : Kings and 9)
+Nelfrot-YT collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [7h Ks 9c 4c 9h]
+Seat 2: Nelfrot-YT (big blind) showed [Kh 8h] and won 1500 with Two pairs : Kings and 9
+Seat 3: Brice6262 (small blind) (button) showed [Jh Ah] and lost with One pair : 9
+
+

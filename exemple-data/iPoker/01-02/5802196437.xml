@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802196437">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143460987</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:15</duration>
+  <gamecount>8</gamecount>
+  <startdate>2026-01-01 23:30:42</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>950</bets>
+  <wins>80</wins>
+  <chipsin>490</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143460985</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728720587">
+  <general>
+   <startdate>2026-01-01 23:30:42</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802196437" seat="3" win="0"/>
+    <player bet="40" chips="500" dealer="0" name="Chichowan89" reg_code="" seat="6" win="50"/>
+    <player bet="20" chips="500" dealer="1" name="mercuryable38" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="Chichowan89" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="mercuryable38" type="Pocket">X X</cards>
+   <action no="3" player="mercuryable38" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S5 D3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Chichowan89" type="Pocket">X X</cards>
+   <action no="5" player="Chichowan89" sum="40" type="23"/>
+   <action no="6" player="mercuryable38" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728720825">
+  <general>
+   <startdate>2026-01-01 23:31:15</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="490" dealer="1" name="80CEV9Tabling" reg_code="5802196437" seat="3" win="0"/>
+    <player bet="10" chips="530" dealer="0" name="Chichowan89" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="480" dealer="0" name="mercuryable38" reg_code="" seat="10" win="20"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Chichowan89" sum="10" type="1"/>
+   <action no="2" player="mercuryable38" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="mercuryable38" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">C5 DK</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Chichowan89" type="Pocket">X X</cards>
+   <action no="4" player="Chichowan89" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728720985">
+  <general>
+   <startdate>2026-01-01 23:31:38</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="490" dealer="0" name="80CEV9Tabling" reg_code="5802196437" seat="3" win="0"/>
+    <player bet="40" chips="520" dealer="1" name="Chichowan89" reg_code="" seat="6" win="60"/>
+    <player bet="20" chips="490" dealer="0" name="mercuryable38" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="mercuryable38" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Chichowan89" type="Pocket">X X</cards>
+   <action no="3" player="Chichowan89" sum="20" type="3"/>
+   <cards player="mercuryable38" type="Pocket">X X</cards>
+   <action no="4" player="mercuryable38" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D3 D4</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SA S4 S10</cards>
+   <action no="6" player="mercuryable38" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="Chichowan89" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">SK</cards>
+   <action no="9" player="mercuryable38" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="Chichowan89" sum="20" type="5"/>
+   <action no="12" player="mercuryable38" sum="0" type="0"/>
+   <action no="13" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728721304">
+  <general>
+   <startdate>2026-01-01 23:32:31</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="470" dealer="0" name="80CEV9Tabling" reg_code="5802196437" seat="3" win="0"/>
+    <player bet="560" chips="560" dealer="0" name="Chichowan89" reg_code="" seat="6" win="90"/>
+    <player bet="30" chips="470" dealer="1" name="mercuryable38" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Chichowan89" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="mercuryable38" type="Pocket">X X</cards>
+   <action no="3" player="mercuryable38" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HQ H4</cards>
+   <action no="4" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="Chichowan89" type="Pocket">X X</cards>
+   <action no="5" player="Chichowan89" sum="560" type="23"/>
+   <action no="6" player="mercuryable38" sum="0" type="0"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728721439">
+  <general>
+   <startdate>2026-01-01 23:32:52</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="440" dealer="1" name="80CEV9Tabling" reg_code="5802196437" seat="3" win="0"/>
+    <player bet="60" chips="620" dealer="0" name="Chichowan89" reg_code="" seat="6" win="0"/>
+    <player bet="120" chips="440" dealer="0" name="mercuryable38" reg_code="" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Chichowan89" sum="15" type="1"/>
+   <action no="2" player="mercuryable38" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C9 S8</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="Chichowan89" type="Pocket">X X</cards>
+   <action no="4" player="Chichowan89" sum="15" type="3"/>
+   <cards player="mercuryable38" type="Pocket">X X</cards>
+   <action no="5" player="mercuryable38" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CJ S5 C8</cards>
+   <action no="6" player="Chichowan89" sum="0" type="4"/>
+   <action no="7" player="mercuryable38" sum="30" type="5"/>
+   <action no="8" player="Chichowan89" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+   <action no="9" player="Chichowan89" sum="0" type="4"/>
+   <action no="10" player="mercuryable38" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">CK</cards>
+   <action no="11" player="Chichowan89" sum="0" type="4"/>
+   <action no="12" player="mercuryable38" sum="60" type="5"/>
+   <action no="13" player="Chichowan89" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728721667">
+  <general>
+   <startdate>2026-01-01 23:33:27</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="440" dealer="0" name="80CEV9Tabling" reg_code="5802196437" seat="3" win="0"/>
+    <player bet="30" chips="560" dealer="1" name="Chichowan89" reg_code="" seat="6" win="90"/>
+    <player bet="30" chips="500" dealer="0" name="mercuryable38" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="mercuryable38" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Chichowan89" type="Pocket">HA D2</cards>
+   <action no="3" player="Chichowan89" sum="30" type="3"/>
+   <cards player="mercuryable38" type="Pocket">C8 D6</cards>
+   <action no="4" player="mercuryable38" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">CJ H7</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S9 H4 SK</cards>
+   <action no="6" player="mercuryable38" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="Chichowan89" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+   <action no="9" player="mercuryable38" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="Chichowan89" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">D4</cards>
+   <action no="12" player="mercuryable38" sum="0" type="4"/>
+   <action no="13" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="14" player="Chichowan89" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728721997">
+  <general>
+   <startdate>2026-01-01 23:34:19</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="410" chips="410" dealer="0" name="80CEV9Tabling" reg_code="5802196437" seat="3" win="80"/>
+    <player bet="40" chips="620" dealer="0" name="Chichowan89" reg_code="" seat="6" win="0"/>
+    <player bet="0" chips="470" dealer="1" name="mercuryable38" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Chichowan89" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="mercuryable38" type="Pocket">X X</cards>
+   <action no="3" player="mercuryable38" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">CK C7</cards>
+   <action no="4" player="80CEV9Tabling" sum="410" type="23"/>
+   <cards player="Chichowan89" type="Pocket">X X</cards>
+   <action no="5" player="Chichowan89" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728722131">
+  <general>
+   <startdate>2026-01-01 23:34:39</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="450" chips="450" dealer="1" name="80CEV9Tabling" reg_code="5802196437" seat="3" win="0"/>
+    <player bet="450" chips="580" dealer="0" name="Chichowan89" reg_code="" seat="6" win="940"/>
+    <player bet="40" chips="470" dealer="0" name="mercuryable38" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Chichowan89" sum="20" type="1"/>
+   <action no="2" player="mercuryable38" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SQ D10</cards>
+   <action no="3" player="80CEV9Tabling" sum="450" type="23"/>
+   <cards player="Chichowan89" type="Pocket">H8 SA</cards>
+   <action no="4" player="Chichowan89" sum="430" type="3"/>
+   <cards player="mercuryable38" type="Pocket">X X</cards>
+   <action no="5" player="mercuryable38" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CK S3 H4</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D2</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C7</cards>
+  </round>
+ </game>
+</session>

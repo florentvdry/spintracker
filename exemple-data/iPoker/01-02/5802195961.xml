@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802195961">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143460549</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:01:16</duration>
+  <gamecount>3</gamecount>
+  <startdate>2026-01-01 23:29:31</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>660</bets>
+  <wins>40</wins>
+  <chipsin>415</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143460548</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728720123">
+  <general>
+   <startdate>2026-01-01 23:29:31</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="85" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802195961" seat="3" win="0"/>
+    <player bet="85" chips="500" dealer="0" name="Ingenioushuge8" reg_code="" seat="6" win="190"/>
+    <player bet="20" chips="500" dealer="0" name="monsterunique55" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Ingenioushuge8" sum="10" type="1"/>
+   <action no="2" player="monsterunique55" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SK S5</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="Ingenioushuge8" type="Pocket">H5 D6</cards>
+   <action no="4" player="Ingenioushuge8" sum="30" type="3"/>
+   <cards player="monsterunique55" type="Pocket">X X</cards>
+   <action no="5" player="monsterunique55" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S10 S8 C5</cards>
+   <action no="6" player="Ingenioushuge8" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="25" type="5"/>
+   <action no="8" player="Ingenioushuge8" sum="25" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H6</cards>
+   <action no="9" player="Ingenioushuge8" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">CA</cards>
+   <action no="11" player="Ingenioushuge8" sum="20" type="5"/>
+   <action no="12" player="80CEV9Tabling" sum="20" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728720389">
+  <general>
+   <startdate>2026-01-01 23:30:13</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="140" chips="415" dealer="0" name="80CEV9Tabling" reg_code="5802195961" seat="3" win="40"/>
+    <player bet="0" chips="605" dealer="1" name="Ingenioushuge8" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="480" dealer="0" name="monsterunique55" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="monsterunique55" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Ingenioushuge8" type="Pocket">X X</cards>
+   <action no="3" player="Ingenioushuge8" sum="0" type="0"/>
+   <cards player="monsterunique55" type="Pocket">X X</cards>
+   <action no="4" player="monsterunique55" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">CA HQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="140" type="23"/>
+   <action no="6" player="monsterunique55" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728720500">
+  <general>
+   <startdate>2026-01-01 23:30:30</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="435" chips="435" dealer="0" name="80CEV9Tabling" reg_code="5802195961" seat="3" win="0"/>
+    <player bet="435" chips="605" dealer="0" name="Ingenioushuge8" reg_code="" seat="6" win="870"/>
+    <player bet="0" chips="460" dealer="1" name="monsterunique55" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Ingenioushuge8" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="monsterunique55" type="Pocket">X X</cards>
+   <action no="3" player="monsterunique55" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">C6 SA</cards>
+   <action no="4" player="80CEV9Tabling" sum="435" type="23"/>
+   <cards player="Ingenioushuge8" type="Pocket">C3 HJ</cards>
+   <action no="5" player="Ingenioushuge8" sum="405" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CK HK DQ</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">CJ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">DK</cards>
+  </round>
+ </game>
+</session>

@@ -1,0 +1,364 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320975238532694017-1-1760786148 - Holdem no limit (10/20) - 2025/10/18 11:15:48 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #3 is the button
+Seat 1: D SAEZ (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Cayman86 (500)
+*** ANTE/BLINDS ***
+D SAEZ posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [2d Ts]
+*** PRE-FLOP *** 
+Cayman86 calls 20
+D SAEZ calls 10
+Nelfrot-YT checks
+*** FLOP *** [Tc 7c 6d]
+D SAEZ checks
+Nelfrot-YT checks
+Cayman86 bets 60
+D SAEZ folds
+Nelfrot-YT calls 60
+*** TURN *** [Tc 7c 6d][3h]
+Nelfrot-YT checks
+Cayman86 bets 63
+Nelfrot-YT calls 63
+*** RIVER *** [Tc 7c 6d 3h][Ah]
+Nelfrot-YT checks
+Cayman86 bets 107
+Nelfrot-YT calls 107
+*** SHOW DOWN ***
+Nelfrot-YT shows [2d Ts] (One pair : Tens)
+Cayman86 shows [7h 6s] (Two pairs : 7 and 6)
+Cayman86 collected 520 from pot
+*** SUMMARY ***
+Total pot 520 | No rake
+Board: [Tc 7c 6d 3h Ah]
+Seat 2: Nelfrot-YT (big blind) showed [2d Ts] and lost with One pair : Tens
+Seat 3: Cayman86 (button) showed [7h 6s] and won 520 with Two pairs : 7 and 6
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320975238532694017-2-1760786184 - Holdem no limit (10/20) - 2025/10/18 11:16:24 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #1 is the button
+Seat 1: D SAEZ (480)
+Seat 2: Nelfrot-YT (250)
+Seat 3: Cayman86 (770)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Cayman86 posts big blind 20
+Dealt to Nelfrot-YT [8s Td]
+*** PRE-FLOP *** 
+D SAEZ folds
+Nelfrot-YT raises 20 to 40
+Cayman86 calls 20
+*** FLOP *** [4c 8d 6c]
+Nelfrot-YT bets 20
+Cayman86 calls 20
+*** TURN *** [4c 8d 6c][Qh]
+Nelfrot-YT bets 48
+Cayman86 folds
+Nelfrot-YT collected 168 from pot
+*** SUMMARY ***
+Total pot 168 | No rake
+Board: [4c 8d 6c Qh]
+Seat 2: Nelfrot-YT (small blind) won 168
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320975238532694017-3-1760786200 - Holdem no limit (10/20) - 2025/10/18 11:16:40 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #2 is the button
+Seat 1: D SAEZ (480)
+Seat 2: Nelfrot-YT (310)
+Seat 3: Cayman86 (710)
+*** ANTE/BLINDS ***
+Cayman86 posts small blind 10
+D SAEZ posts big blind 20
+Dealt to Nelfrot-YT [Kh 2s]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Cayman86 calls 10
+D SAEZ checks
+*** FLOP *** [9s Th 3h]
+Cayman86 bets 26
+D SAEZ calls 26
+*** TURN *** [9s Th 3h][8h]
+Cayman86 checks
+D SAEZ checks
+*** RIVER *** [9s Th 3h 8h][Kc]
+Cayman86 checks
+D SAEZ bets 92
+Cayman86 calls 92
+*** SHOW DOWN ***
+D SAEZ shows [As Jh] (High card : Ace)
+Cayman86 shows [Ts Kd] (Two pairs : Kings and Tens)
+Cayman86 collected 276 from pot
+*** SUMMARY ***
+Total pot 276 | No rake
+Board: [9s Th 3h 8h Kc]
+Seat 1: D SAEZ (big blind) showed [As Jh] and lost with High card : Ace
+Seat 3: Cayman86 (small blind) showed [Ts Kd] and won 276 with Two pairs : Kings and Tens
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320975238532694017-4-1760786217 - Holdem no limit (10/20) - 2025/10/18 11:16:57 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #3 is the button
+Seat 1: D SAEZ (342)
+Seat 2: Nelfrot-YT (310)
+Seat 3: Cayman86 (848)
+*** ANTE/BLINDS ***
+D SAEZ posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [8s 7s]
+*** PRE-FLOP *** 
+Cayman86 calls 20
+D SAEZ calls 10
+Nelfrot-YT checks
+*** FLOP *** [5d Jc 8c]
+D SAEZ checks
+Nelfrot-YT checks
+Cayman86 bets 39
+D SAEZ folds
+Nelfrot-YT calls 39
+*** TURN *** [5d Jc 8c][3c]
+Nelfrot-YT checks
+Cayman86 checks
+*** RIVER *** [5d Jc 8c 3c][Tc]
+Nelfrot-YT checks
+Cayman86 bets 48
+Nelfrot-YT calls 48
+*** SHOW DOWN ***
+Nelfrot-YT shows [8s 7s] (One pair : 8)
+Cayman86 shows [9c Js] (Flush Jack high)
+Cayman86 collected 234 from pot
+*** SUMMARY ***
+Total pot 234 | No rake
+Board: [5d Jc 8c 3c Tc]
+Seat 2: Nelfrot-YT (big blind) showed [8s 7s] and lost with One pair : 8
+Seat 3: Cayman86 (button) showed [9c Js] and won 234 with Flush Jack high
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320975238532694017-5-1760786280 - Holdem no limit (15/30) - 2025/10/18 11:18:00 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #1 is the button
+Seat 1: D SAEZ (322)
+Seat 2: Nelfrot-YT (203)
+Seat 3: Cayman86 (975)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Cayman86 posts big blind 30
+Dealt to Nelfrot-YT [Js 8h]
+*** PRE-FLOP *** 
+D SAEZ folds
+Nelfrot-YT raises 173 to 203 and is all-in
+Cayman86 folds
+Nelfrot-YT collected 233 from pot
+*** SUMMARY ***
+Total pot 233 | No rake
+Seat 2: Nelfrot-YT (small blind) won 233
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320975238532694017-6-1760786294 - Holdem no limit (15/30) - 2025/10/18 11:18:14 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #2 is the button
+Seat 1: D SAEZ (322)
+Seat 2: Nelfrot-YT (233)
+Seat 3: Cayman86 (945)
+*** ANTE/BLINDS ***
+Cayman86 posts small blind 15
+D SAEZ posts big blind 30
+Dealt to Nelfrot-YT [Ac 7d]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 203 to 233 and is all-in
+Cayman86 folds
+D SAEZ calls 203
+*** FLOP *** [9c 3s 4h]
+*** TURN *** [9c 3s 4h][5c]
+*** RIVER *** [9c 3s 4h 5c][Qc]
+*** SHOW DOWN ***
+D SAEZ shows [Js Kc] (High card : King)
+Nelfrot-YT shows [Ac 7d] (High card : Ace)
+Nelfrot-YT collected 481 from pot
+*** SUMMARY ***
+Total pot 481 | No rake
+Board: [9c 3s 4h 5c Qc]
+Seat 1: D SAEZ (big blind) showed [Js Kc] and lost with High card : King
+Seat 2: Nelfrot-YT (button) showed [Ac 7d] and won 481 with High card : Ace
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320975238532694017-7-1760786317 - Holdem no limit (15/30) - 2025/10/18 11:18:37 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #3 is the button
+Seat 1: D SAEZ (89)
+Seat 2: Nelfrot-YT (481)
+Seat 3: Cayman86 (930)
+*** ANTE/BLINDS ***
+D SAEZ posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Qs 5c]
+*** PRE-FLOP *** 
+Cayman86 calls 30
+D SAEZ calls 15
+Nelfrot-YT checks
+*** FLOP *** [Ad 6d Qh]
+D SAEZ bets 59 and is all-in
+Nelfrot-YT calls 59
+Cayman86 calls 59
+*** TURN *** [Ad 6d Qh][4s]
+Nelfrot-YT checks
+Cayman86 checks
+*** RIVER *** [Ad 6d Qh 4s][5h]
+Nelfrot-YT bets 200
+Cayman86 folds
+*** SHOW DOWN ***
+D SAEZ shows [2h 6c] (One pair : 6)
+Nelfrot-YT shows [Qs 5c] (Two pairs : Queens and 5)
+Nelfrot-YT collected 467 from pot
+*** SUMMARY ***
+Total pot 467 | No rake
+Board: [Ad 6d Qh 4s 5h]
+Seat 1: D SAEZ (small blind) showed [2h 6c] and lost with One pair : 6
+Seat 2: Nelfrot-YT (big blind) showed [Qs 5c] and won 467 with Two pairs : Queens and 5
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320975238532694017-8-1760786366 - Holdem no limit (20/40) - 2025/10/18 11:19:26 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (659)
+Seat 3: Cayman86 (841)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Cayman86 posts big blind 40
+Dealt to Nelfrot-YT [6c Kd]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 40 to 80
+Cayman86 calls 40
+*** FLOP *** [2s 7d 8c]
+Cayman86 checks
+Nelfrot-YT bets 40
+Cayman86 calls 40
+*** TURN *** [2s 7d 8c][8s]
+Cayman86 checks
+Nelfrot-YT checks
+*** RIVER *** [2s 7d 8c 8s][2c]
+Cayman86 bets 84
+Nelfrot-YT folds
+Cayman86 collected 324 from pot
+*** SUMMARY ***
+Total pot 324 | No rake
+Board: [2s 7d 8c 8s 2c]
+Seat 3: Cayman86 (big blind) won 324
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320975238532694017-9-1760786380 - Holdem no limit (20/40) - 2025/10/18 11:19:40 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (539)
+Seat 3: Cayman86 (961)
+*** ANTE/BLINDS ***
+Cayman86 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [2d 9s]
+*** PRE-FLOP *** 
+Cayman86 calls 20
+Nelfrot-YT checks
+*** FLOP *** [Ah Ad 5s]
+Nelfrot-YT checks
+Cayman86 checks
+*** TURN *** [Ah Ad 5s][4h]
+Nelfrot-YT checks
+Cayman86 checks
+*** RIVER *** [Ah Ad 5s 4h][As]
+Nelfrot-YT bets 80
+Cayman86 folds
+Nelfrot-YT collected 160 from pot
+*** SUMMARY ***
+Total pot 160 | No rake
+Board: [Ah Ad 5s 4h As]
+Seat 2: Nelfrot-YT (big blind) won 160
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320975238532694017-10-1760786393 - Holdem no limit (20/40) - 2025/10/18 11:19:53 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (579)
+Seat 3: Cayman86 (921)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Cayman86 posts big blind 40
+Dealt to Nelfrot-YT [3h Ac]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 539 to 579 and is all-in
+Cayman86 folds
+Nelfrot-YT collected 619 from pot
+*** SUMMARY ***
+Total pot 619 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 619
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320975238532694017-11-1760786398 - Holdem no limit (20/40) - 2025/10/18 11:19:58 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (619)
+Seat 3: Cayman86 (881)
+*** ANTE/BLINDS ***
+Cayman86 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [6c Ah]
+*** PRE-FLOP *** 
+Cayman86 calls 20
+Nelfrot-YT raises 579 to 619 and is all-in
+Cayman86 folds
+Nelfrot-YT collected 659 from pot
+*** SUMMARY ***
+Total pot 659 | No rake
+Seat 2: Nelfrot-YT (big blind) won 659
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320975238532694017-12-1760786409 - Holdem no limit (20/40) - 2025/10/18 11:20:09 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (659)
+Seat 3: Cayman86 (841)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+Cayman86 posts big blind 40
+Dealt to Nelfrot-YT [5c 3c]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 40 to 80
+Cayman86 calls 40
+*** FLOP *** [As Ts 7d]
+Cayman86 checks
+Nelfrot-YT bets 40
+Cayman86 calls 40
+*** TURN *** [As Ts 7d][6h]
+Cayman86 checks
+Nelfrot-YT checks
+*** RIVER *** [As Ts 7d 6h][Jh]
+Cayman86 checks
+Nelfrot-YT bets 120
+Cayman86 calls 120
+*** SHOW DOWN ***
+Nelfrot-YT shows [5c 3c] (High card : Ace)
+Cayman86 shows [Jd 8c] (One pair : Jacks)
+Cayman86 collected 480 from pot
+*** SUMMARY ***
+Total pot 480 | No rake
+Board: [As Ts 7d 6h Jh]
+Seat 2: Nelfrot-YT (small blind) (button) showed [5c 3c] and lost with High card : Ace
+Seat 3: Cayman86 (big blind) showed [Jd 8c] and won 480 with One pair : Jacks
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 4 - HandId: #4320975238532694017-13-1760786435 - Holdem no limit (30/60) - 2025/10/18 11:20:35 UTC
+Table: 'Expresso(1006055446)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (419)
+Seat 3: Cayman86 (1081)
+*** ANTE/BLINDS ***
+Cayman86 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [6c 5c]
+*** PRE-FLOP *** 
+Cayman86 calls 30
+Nelfrot-YT raises 359 to 419 and is all-in
+Cayman86 calls 359
+*** FLOP *** [2h Kd Ah]
+*** TURN *** [2h Kd Ah][Qc]
+*** RIVER *** [2h Kd Ah Qc][8s]
+*** SHOW DOWN ***
+Nelfrot-YT shows [6c 5c] (High card : Ace)
+Cayman86 shows [7d 7h] (One pair : 7)
+Cayman86 collected 838 from pot
+*** SUMMARY ***
+Total pot 838 | No rake
+Board: [2h Kd Ah Qc 8s]
+Seat 2: Nelfrot-YT (big blind) showed [6c 5c] and lost with High card : Ace
+Seat 3: Cayman86 (small blind) (button) showed [7d 7h] and won 838 with One pair : 7
+
+

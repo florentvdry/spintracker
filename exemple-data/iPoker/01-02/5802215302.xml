@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802215302">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143474717</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:04:27</duration>
+  <gamecount>10</gamecount>
+  <startdate>2026-01-02 00:22:50</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>1 040</bets>
+  <wins>495</wins>
+  <chipsin>425</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143474716</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>15€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728797090">
+  <general>
+   <startdate>2026-01-02 00:22:50</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="75" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="spoonfunny9" reg_code="" seat="6" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="pistolspear249" reg_code="" seat="10" win="150"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolspear249" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="spoonfunny9" type="Pocket">X X</cards>
+   <action no="3" player="spoonfunny9" sum="0" type="0"/>
+   <cards player="pistolspear249" type="Pocket">X X</cards>
+   <action no="4" player="pistolspear249" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S6 DQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="50" type="23"/>
+   <action no="6" player="pistolspear249" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S8 S2 D6</cards>
+   <action no="7" player="pistolspear249" sum="0" type="4"/>
+   <action no="8" player="80CEV9Tabling" sum="25" type="5"/>
+   <action no="9" player="pistolspear249" sum="450" type="23"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728803952">
+  <general>
+   <startdate>2026-01-02 00:23:14</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="425" dealer="0" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="60"/>
+    <player bet="20" chips="500" dealer="0" name="spoonfunny9" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="575" dealer="1" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="spoonfunny9" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolspear249" type="Pocket">X X</cards>
+   <action no="3" player="pistolspear249" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S4 S5</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="spoonfunny9" type="Pocket">X X</cards>
+   <action no="5" player="spoonfunny9" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D7 D4 DQ</cards>
+   <action no="6" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="7" player="spoonfunny9" sum="0" type="4"/>
+   <action no="8" player="pistolspear249" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CK</cards>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="10" player="spoonfunny9" sum="0" type="4"/>
+   <action no="11" player="pistolspear249" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">CA</cards>
+   <action no="12" player="80CEV9Tabling" sum="20" type="5"/>
+   <action no="13" player="spoonfunny9" sum="0" type="0"/>
+   <action no="14" player="pistolspear249" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728804246">
+  <general>
+   <startdate>2026-01-02 00:24:02</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="0" chips="465" dealer="1" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="0"/>
+    <player bet="20" chips="480" dealer="0" name="spoonfunny9" reg_code="" seat="6" win="0"/>
+    <player bet="20" chips="555" dealer="0" name="pistolspear249" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="spoonfunny9" sum="10" type="1"/>
+   <action no="2" player="pistolspear249" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SJ H2</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="spoonfunny9" type="Pocket">C6 D8</cards>
+   <action no="4" player="spoonfunny9" sum="10" type="3"/>
+   <cards player="pistolspear249" type="Pocket">DK C7</cards>
+   <action no="5" player="pistolspear249" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CJ H4 S5</cards>
+   <action no="6" player="spoonfunny9" sum="0" type="4"/>
+   <action no="7" player="pistolspear249" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DA</cards>
+   <action no="8" player="spoonfunny9" sum="0" type="4"/>
+   <action no="9" player="pistolspear249" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">SQ</cards>
+   <action no="10" player="spoonfunny9" sum="0" type="4"/>
+   <action no="11" player="pistolspear249" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728804455">
+  <general>
+   <startdate>2026-01-02 00:24:36</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="465" dealer="0" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="0"/>
+    <player bet="165" chips="460" dealer="1" name="spoonfunny9" reg_code="" seat="6" win="360"/>
+    <player bet="165" chips="575" dealer="0" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolspear249" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="spoonfunny9" type="Pocket">DK SA</cards>
+   <action no="3" player="spoonfunny9" sum="75" type="23"/>
+   <cards player="pistolspear249" type="Pocket">S7 S6</cards>
+   <action no="4" player="pistolspear249" sum="60" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 S8</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SQ D3 D5</cards>
+   <action no="6" player="pistolspear249" sum="0" type="4"/>
+   <action no="7" player="spoonfunny9" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C3</cards>
+   <action no="8" player="pistolspear249" sum="0" type="4"/>
+   <action no="9" player="spoonfunny9" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H10</cards>
+   <action no="10" player="pistolspear249" sum="90" type="5"/>
+   <action no="11" player="spoonfunny9" sum="90" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728804632">
+  <general>
+   <startdate>2026-01-02 00:25:06</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="435" chips="435" dealer="0" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="0"/>
+    <player bet="30" chips="655" dealer="0" name="spoonfunny9" reg_code="" seat="6" win="0"/>
+    <player bet="410" chips="410" dealer="1" name="pistolspear249" reg_code="" seat="10" win="850"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="spoonfunny9" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolspear249" type="Pocket">H4 SK</cards>
+   <action no="3" player="pistolspear249" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SA D8</cards>
+   <action no="4" player="80CEV9Tabling" sum="435" type="23"/>
+   <cards player="spoonfunny9" type="Pocket">X X</cards>
+   <action no="5" player="spoonfunny9" sum="0" type="0"/>
+   <action no="6" player="pistolspear249" sum="380" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D3 HK S8</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H10</cards>
+  </round>
+  <round no="4">
+   <cards type="River">CJ</cards>
+  </round>
+ </game>
+ <game gamecode="8728804776">
+  <general>
+   <startdate>2026-01-02 00:25:32</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="25" chips="25" dealer="1" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="65"/>
+    <player bet="15" chips="625" dealer="0" name="spoonfunny9" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="850" dealer="0" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="spoonfunny9" sum="15" type="1"/>
+   <action no="2" player="pistolspear249" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolspear249" type="Pocket">D6 CJ</cards>
+   <cards player="80CEV9Tabling" type="Pocket">D5 D4</cards>
+   <action no="3" player="80CEV9Tabling" sum="25" type="7"/>
+   <cards player="spoonfunny9" type="Pocket">X X</cards>
+   <action no="4" player="spoonfunny9" sum="0" type="0"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D10 C6 S3</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">H2</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C10</cards>
+  </round>
+ </game>
+ <game gamecode="8728804896">
+  <general>
+   <startdate>2026-01-02 00:25:50</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="65" chips="65" dealer="0" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="130"/>
+    <player bet="0" chips="610" dealer="1" name="spoonfunny9" reg_code="" seat="6" win="0"/>
+    <player bet="65" chips="825" dealer="0" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolspear249" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="spoonfunny9" type="Pocket">X X</cards>
+   <action no="3" player="spoonfunny9" sum="0" type="0"/>
+   <cards player="pistolspear249" type="Pocket">S8 DQ</cards>
+   <action no="4" player="pistolspear249" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D3 S9</cards>
+   <action no="5" player="80CEV9Tabling" sum="25" type="7"/>
+   <action no="6" player="pistolspear249" sum="25" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C9 S2 H7</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">C8</cards>
+  </round>
+  <round no="4">
+   <cards type="River">HA</cards>
+  </round>
+ </game>
+ <game gamecode="8728804998">
+  <general>
+   <startdate>2026-01-02 00:26:09</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="20" chips="130" dealer="0" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="0"/>
+    <player bet="106" chips="610" dealer="0" name="spoonfunny9" reg_code="" seat="6" win="100"/>
+    <player bet="40" chips="760" dealer="1" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="spoonfunny9" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="pistolspear249" type="Pocket">X X</cards>
+   <action no="3" player="pistolspear249" sum="40" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D6 C9</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="spoonfunny9" type="Pocket">X X</cards>
+   <action no="5" player="spoonfunny9" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DQ C3 D10</cards>
+   <action no="6" player="spoonfunny9" sum="66" type="5"/>
+   <action no="7" player="pistolspear249" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728805120">
+  <general>
+   <startdate>2026-01-02 00:26:30</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="110" chips="110" dealer="1" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="240"/>
+    <player bet="20" chips="670" dealer="0" name="spoonfunny9" reg_code="" seat="6" win="0"/>
+    <player bet="110" chips="720" dealer="0" name="pistolspear249" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="spoonfunny9" sum="20" type="1"/>
+   <action no="2" player="pistolspear249" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SJ D10</cards>
+   <action no="3" player="80CEV9Tabling" sum="110" type="23"/>
+   <cards player="spoonfunny9" type="Pocket">X X</cards>
+   <action no="4" player="spoonfunny9" sum="0" type="0"/>
+   <cards player="pistolspear249" type="Pocket">HA HQ</cards>
+   <action no="5" player="pistolspear249" sum="70" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HJ D4 DQ</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D7</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D8</cards>
+  </round>
+ </game>
+ <game gamecode="8728805250">
+  <general>
+   <startdate>2026-01-02 00:26:53</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="240" chips="240" dealer="0" name="80CEV9Tabling" reg_code="5802215302" seat="3" win="0"/>
+    <player bet="0" chips="650" dealer="1" name="spoonfunny9" reg_code="" seat="6" win="0"/>
+    <player bet="240" chips="610" dealer="0" name="pistolspear249" reg_code="" seat="10" win="480"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="pistolspear249" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="spoonfunny9" type="Pocket">X X</cards>
+   <action no="3" player="spoonfunny9" sum="0" type="0"/>
+   <cards player="pistolspear249" type="Pocket">S8 SQ</cards>
+   <action no="4" player="pistolspear249" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HK S4</cards>
+   <action no="5" player="80CEV9Tabling" sum="240" type="23"/>
+   <action no="6" player="pistolspear249" sum="200" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H5 DA D5</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D3</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C8</cards>
+  </round>
+ </game>
+</session>

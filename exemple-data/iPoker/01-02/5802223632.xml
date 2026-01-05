@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802223632">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143481096</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:02:06</duration>
+  <gamecount>7</gamecount>
+  <startdate>2026-01-02 00:50:33</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>500</bets>
+  <wins>0</wins>
+  <chipsin>460</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143481094</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728836133">
+  <general>
+   <startdate>2026-01-02 00:50:33</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802223632" seat="3" win="0"/>
+    <player bet="500" chips="500" dealer="0" name="LETC9" reg_code="" seat="6" win="120"/>
+    <player bet="40" chips="500" dealer="0" name="titanbook552" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="LETC9" sum="10" type="1"/>
+   <action no="2" player="titanbook552" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S10 HQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="LETC9" type="Pocket">X X</cards>
+   <action no="4" player="LETC9" sum="30" type="3"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="5" player="titanbook552" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HJ H6 SA</cards>
+   <action no="6" player="LETC9" sum="460" type="5"/>
+   <action no="7" player="titanbook552" sum="0" type="0"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728836200">
+  <general>
+   <startdate>2026-01-02 00:50:49</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="50" chips="460" dealer="0" name="80CEV9Tabling" reg_code="5802223632" seat="3" win="0"/>
+    <player bet="70" chips="580" dealer="1" name="LETC9" reg_code="" seat="6" win="120"/>
+    <player bet="20" chips="460" dealer="0" name="titanbook552" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="titanbook552" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="LETC9" type="Pocket">X X</cards>
+   <action no="3" player="LETC9" sum="20" type="3"/>
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="4" player="titanbook552" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H6 H2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CK DJ HK</cards>
+   <action no="6" player="titanbook552" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="LETC9" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C6</cards>
+   <action no="9" player="titanbook552" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="LETC9" sum="30" type="5"/>
+   <action no="12" player="titanbook552" sum="0" type="0"/>
+   <action no="13" player="80CEV9Tabling" sum="30" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">SA</cards>
+   <action no="14" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="15" player="LETC9" sum="20" type="5"/>
+   <action no="16" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728836339">
+  <general>
+   <startdate>2026-01-02 00:51:18</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="20" chips="410" dealer="0" name="80CEV9Tabling" reg_code="5802223632" seat="3" win="0"/>
+    <player bet="650" chips="650" dealer="0" name="LETC9" reg_code="" seat="6" win="40"/>
+    <player bet="0" chips="440" dealer="1" name="titanbook552" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="LETC9" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="titanbook552" type="Pocket">X X</cards>
+   <action no="3" player="titanbook552" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">S9 C2</cards>
+   <action no="4" player="80CEV9Tabling" sum="10" type="3"/>
+   <cards player="LETC9" type="Pocket">X X</cards>
+   <action no="5" player="LETC9" sum="650" type="23"/>
+   <action no="6" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728836397">
+  <general>
+   <startdate>2026-01-02 00:51:31</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="390" dealer="1" name="80CEV9Tabling" reg_code="5802223632" seat="3" win="0"/>
+    <player bet="670" chips="670" dealer="0" name="LETC9" reg_code="" seat="6" win="880"/>
+    <player bet="440" chips="440" dealer="0" name="titanbook552" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="LETC9" sum="15" type="1"/>
+   <action no="2" player="titanbook552" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SQ D4</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="LETC9" type="Pocket">DK H10</cards>
+   <action no="4" player="LETC9" sum="670" type="23"/>
+   <cards player="titanbook552" type="Pocket">D10 D9</cards>
+   <action no="5" player="titanbook552" sum="410" type="7"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HK C10 SA</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">CK</cards>
+  </round>
+  <round no="4">
+   <cards type="River">HJ</cards>
+  </round>
+ </game>
+ <game gamecode="8728836503">
+  <general>
+   <startdate>2026-01-02 00:51:54</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="390" dealer="0" name="80CEV9Tabling" reg_code="5802223632" seat="3" win="0"/>
+    <player bet="60" chips="1 110" dealer="1" name="LETC9" reg_code="" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="LETC9" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="LETC9" type="Pocket">X X</cards>
+   <action no="3" player="LETC9" sum="60" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C7 D5</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728836545">
+  <general>
+   <startdate>2026-01-02 00:52:02</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="360" dealer="1" name="80CEV9Tabling" reg_code="5802223632" seat="3" win="0"/>
+    <player bet="180" chips="1 140" dealer="0" name="LETC9" reg_code="" seat="6" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="LETC9" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">HQ HJ</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="LETC9" type="Pocket">X X</cards>
+   <action no="4" player="LETC9" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D7 C7 D3</cards>
+   <action no="5" player="LETC9" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="LETC9" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C4</cards>
+   <action no="8" player="LETC9" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">C8</cards>
+   <action no="10" player="LETC9" sum="90" type="5"/>
+   <action no="11" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728836654">
+  <general>
+   <startdate>2026-01-02 00:52:25</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="270" chips="270" dealer="0" name="80CEV9Tabling" reg_code="5802223632" seat="3" win="0"/>
+    <player bet="270" chips="1 230" dealer="1" name="LETC9" reg_code="" seat="6" win="540"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="LETC9" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="LETC9" type="Pocket">H8 HJ</cards>
+   <action no="3" player="LETC9" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S3 HQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="270" type="23"/>
+   <action no="5" player="LETC9" sum="240" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S10 H9 C6</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">SQ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H2</cards>
+  </round>
+ </game>
+</session>

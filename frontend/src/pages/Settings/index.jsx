@@ -1,0 +1,166 @@
+import { useState } from 'react';
+import { Trash2, RefreshCw, Database, Calculator, Download, Upload } from 'lucide-react';
+import { Card } from '@components/ui';
+import { ipcService } from '@services/ipcService';
+import { pythonService } from '@services/pythonService';
+import { useNotificationStore } from '@stores/notificationStore';
+import { useAppStore } from '@stores/appStore';
+
+export default function Settings() {
+  const [isRecalculating, setIsRecalculating] = useState(false);
+  const addNotification = useNotificationStore(state => state.addNotification);
+  const refreshAll = useAppStore(state => state.refreshAll);
+
+  const handleDeleteAll = async () => {
+    const result = await ipcService.deleteAllHands();
+    if (result.success) {
+      addNotification({
+        type: 'success',
+        title: 'Données supprimées',
+        message: result.message || 'Toutes les mains ont été supprimées',
+      });
+      await refreshAll();
+    } else {
+      addNotification({
+        type: 'error',
+        message: result.message,
+      });
+    }
+  };
+
+  const handleRecalculateEV = async () => {
+    setIsRecalculating(true);
+    try {
+      const result = await pythonService.recalculateAllEV();
+      if (result.success) {
+        addNotification({
+          type: 'success',
+          title: 'Recalcul terminé',
+          message: `${result.handsProcessed} mains recalculées`,
+        });
+        await refreshAll();
+      } else {
+        addNotification({
+          type: 'error',
+          message: result.message,
+        });
+      }
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        message: error.message,
+      });
+    } finally {
+      setIsRecalculating(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6 max-w-4xl">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-white">Paramètres</h1>
+        <p className="text-gray-400 mt-1">Configuration de l'application</p>
+      </div>
+
+      {/* Database section */}
+      <Card title="Base de données" subtitle="Gestion des données">
+        <div className="space-y-4">
+          <SettingRow
+            icon={Calculator}
+            title="Recalculer toutes les EV"
+            description="Utilise Python pour recalculer l'équité de toutes les mains (peut prendre plusieurs minutes)"
+            action={
+              <button
+                onClick={handleRecalculateEV}
+                disabled={isRecalculating}
+                className="btn-secondary flex items-center gap-2"
+              >
+                <RefreshCw className={`w-4 h-4 ${isRecalculating ? 'animate-spin' : ''}`} />
+                {isRecalculating ? 'En cours...' : 'Recalculer'}
+              </button>
+            }
+          />
+
+          <SettingRow
+            icon={Download}
+            title="Exporter les données"
+            description="Télécharger toutes vos mains au format JSON"
+            action={
+              <button className="btn-secondary flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                Exporter
+              </button>
+            }
+          />
+
+          <SettingRow
+            icon={Trash2}
+            title="Supprimer toutes les données"
+            description="Supprime définitivement toutes les mains et statistiques"
+            action={
+              <button
+                onClick={handleDeleteAll}
+                className="btn-danger flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Supprimer tout
+              </button>
+            }
+          />
+        </div>
+      </Card>
+
+      {/* Python backend */}
+      <Card title="Backend Python" subtitle="Calculs d'équité avancés">
+        <div className="space-y-4">
+          <SettingRow
+            icon={Database}
+            title="État du serveur Python"
+            description="Le backend Python effectue les calculs d'équité en parallèle"
+            action={
+              <span className="badge badge-success">Actif</span>
+            }
+          />
+
+          <div className="p-4 bg-dark-200 rounded-lg">
+            <h4 className="text-white font-medium mb-2">Librairies utilisées</h4>
+            <ul className="text-sm text-gray-400 space-y-1">
+              <li>• <span className="text-primary-400">treys</span> - Évaluation rapide des mains</li>
+              <li>• <span className="text-primary-400">pokertools</span> - Calculs d'équité Monte Carlo</li>
+              <li>• <span className="text-primary-400">numpy</span> - Calculs vectorisés</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      {/* About */}
+      <Card title="À propos">
+        <div className="space-y-2 text-sm text-gray-400">
+          <p><span className="text-white">Poker Tracker Pro</span> v1.0.0</p>
+          <p>Application de suivi et d'analyse pour le poker Spin & Go</p>
+          <p className="text-xs mt-4">
+            Développé avec Electron, React et Python
+          </p>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function SettingRow({ icon: Icon, title, description, action }) {
+  return (
+    <div className="flex items-center justify-between py-3 border-b border-dark-100/30 last:border-b-0">
+      <div className="flex items-center gap-4">
+        <div className="w-10 h-10 rounded-lg bg-dark-200 flex items-center justify-center">
+          <Icon className="w-5 h-5 text-gray-400" />
+        </div>
+        <div>
+          <p className="text-white font-medium">{title}</p>
+          <p className="text-sm text-gray-400">{description}</p>
+        </div>
+      </div>
+      {action}
+    </div>
+  );
+}

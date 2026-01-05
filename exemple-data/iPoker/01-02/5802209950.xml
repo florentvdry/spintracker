@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802209950">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143470785</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:08:03</duration>
+  <gamecount>22</gamecount>
+  <startdate>2026-01-02 00:07:05</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>4 915</bets>
+  <wins>1 741</wins>
+  <chipsin>480</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143470784</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>20€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728775254">
+  <general>
+   <startdate>2026-01-02 00:07:05</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="80" chips="500" dealer="0" name="Vasilec" reg_code="" seat="3" win="60"/>
+    <player bet="20" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+    <player bet="20" chips="500" dealer="1" name="R411" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="R411" type="Pocket">X X</cards>
+   <action no="3" player="R411" sum="20" type="3"/>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="4" player="Vasilec" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C9 CJ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 DK C7</cards>
+   <action no="6" player="Vasilec" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="R411" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S8</cards>
+   <action no="9" player="Vasilec" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="R411" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H4</cards>
+   <action no="12" player="Vasilec" sum="60" type="5"/>
+   <action no="13" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="14" player="R411" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728775520">
+  <general>
+   <startdate>2026-01-02 00:07:46</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="152" chips="540" dealer="1" name="Vasilec" reg_code="" seat="3" win="314"/>
+    <player bet="10" chips="480" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+    <player bet="152" chips="480" dealer="0" name="R411" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="R411" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">S10 S7</cards>
+   <action no="3" player="Vasilec" sum="46" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">DA S3</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="R411" type="Pocket">S4 HQ</cards>
+   <action no="5" player="R411" sum="26" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D10 DQ C8</cards>
+   <action no="6" player="R411" sum="46" type="5"/>
+   <action no="7" player="Vasilec" sum="46" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D7</cards>
+   <action no="8" player="R411" sum="60" type="5"/>
+   <action no="9" player="Vasilec" sum="60" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">DJ</cards>
+   <action no="10" player="R411" sum="0" type="4"/>
+   <action no="11" player="Vasilec" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728775824">
+  <general>
+   <startdate>2026-01-02 00:08:35</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="702" dealer="0" name="Vasilec" reg_code="" seat="3" win="40"/>
+    <player bet="0" chips="470" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+    <player bet="20" chips="328" dealer="0" name="R411" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="R411" sum="10" type="1"/>
+   <action no="2" player="Vasilec" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D4 S8</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="R411" type="Pocket">X X</cards>
+   <action no="4" player="R411" sum="10" type="3"/>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="5" player="Vasilec" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 S2 S4</cards>
+   <action no="6" player="R411" sum="0" type="4"/>
+   <action no="7" player="Vasilec" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">C3</cards>
+   <action no="8" player="R411" sum="0" type="4"/>
+   <action no="9" player="Vasilec" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">CQ</cards>
+   <action no="10" player="R411" sum="0" type="4"/>
+   <action no="11" player="Vasilec" sum="20" type="5"/>
+   <action no="12" player="R411" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728781069">
+  <general>
+   <startdate>2026-01-02 00:08:58</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="308" chips="722" dealer="0" name="Vasilec" reg_code="" seat="3" win="636"/>
+    <player bet="20" chips="470" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+    <player bet="308" chips="308" dealer="1" name="R411" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="R411" type="Pocket">CA CQ</cards>
+   <action no="3" player="R411" sum="20" type="3"/>
+   <cards player="Vasilec" type="Pocket">SA S7</cards>
+   <action no="4" player="Vasilec" sum="80" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D6 S4</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="6" player="R411" sum="308" type="23"/>
+   <action no="7" player="Vasilec" sum="228" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C7 S2 S9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">S8</cards>
+  </round>
+  <round no="4">
+   <cards type="River">C6</cards>
+  </round>
+ </game>
+ <game gamecode="8728781249">
+  <general>
+   <startdate>2026-01-02 00:09:27</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="90" chips="1 050" dealer="1" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="270" chips="450" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="3" player="Vasilec" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C9 D4</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H2 D2 H7</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Vasilec" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S8</cards>
+   <action no="7" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="8" player="Vasilec" sum="60" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">H10</cards>
+   <action no="9" player="80CEV9Tabling" sum="180" type="5"/>
+   <action no="10" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728781485">
+  <general>
+   <startdate>2026-01-02 00:10:06</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="960" dealer="0" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="150" chips="540" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Vasilec" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H3 S5</cards>
+   <action no="3" player="80CEV9Tabling" sum="15" type="3"/>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="4" player="Vasilec" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SA D6 DK</cards>
+   <action no="5" player="Vasilec" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="Vasilec" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HJ</cards>
+   <action no="8" player="Vasilec" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">S2</cards>
+   <action no="10" player="Vasilec" sum="0" type="4"/>
+   <action no="11" player="80CEV9Tabling" sum="90" type="5"/>
+   <action no="12" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728781653">
+  <general>
+   <startdate>2026-01-02 00:10:34</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="114" chips="900" dealer="1" name="Vasilec" reg_code="" seat="3" win="138"/>
+    <player bet="69" chips="600" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="3" player="Vasilec" sum="69" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H9 H3</cards>
+   <action no="4" player="80CEV9Tabling" sum="39" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">DJ D7 D4</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Vasilec" sum="45" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728781756">
+  <general>
+   <startdate>2026-01-02 00:10:49</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="60" chips="969" dealer="0" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="90" chips="531" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="Vasilec" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C8 SQ</cards>
+   <action no="3" player="80CEV9Tabling" sum="60" type="23"/>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="4" player="Vasilec" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SA H10 S7</cards>
+   <action no="5" player="Vasilec" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="7" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728781852">
+  <general>
+   <startdate>2026-01-02 00:11:02</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="909" dealer="1" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="591" chips="591" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="3" player="Vasilec" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">HA H7</cards>
+   <action no="4" player="80CEV9Tabling" sum="591" type="23"/>
+   <action no="5" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728781934">
+  <general>
+   <startdate>2026-01-02 00:11:16</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="160" chips="879" dealer="0" name="Vasilec" reg_code="" seat="3" win="80"/>
+    <player bet="40" chips="621" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Vasilec" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">C2 S6</cards>
+   <action no="3" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="4" player="Vasilec" sum="160" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728782035">
+  <general>
+   <startdate>2026-01-02 00:11:30</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="919" dealer="1" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="581" chips="581" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="3" player="Vasilec" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">CA D5</cards>
+   <action no="4" player="80CEV9Tabling" sum="581" type="23"/>
+   <action no="5" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728782107">
+  <general>
+   <startdate>2026-01-02 00:11:40</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="879" dealer="0" name="Vasilec" reg_code="" seat="3" win="40"/>
+    <player bet="20" chips="621" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Vasilec" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">C5 S2</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728782150">
+  <general>
+   <startdate>2026-01-02 00:11:47</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="601" chips="899" dealer="1" name="Vasilec" reg_code="" seat="3" win="601"/>
+    <player bet="601" chips="601" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="601"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">C7 S5</cards>
+   <action no="3" player="Vasilec" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H7 D5</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S8 S9 D10</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Vasilec" sum="40" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H6</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="Vasilec" sum="80" type="5"/>
+   <action no="10" player="80CEV9Tabling" sum="220" type="23"/>
+   <action no="11" player="Vasilec" sum="140" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">C5</cards>
+   <action no="12" player="80CEV9Tabling" sum="301" type="5"/>
+   <action no="13" player="Vasilec" sum="301" type="3"/>
+  </round>
+ </game>
+ <game gamecode="8728782395">
+  <general>
+   <startdate>2026-01-02 00:12:28</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="899" dealer="0" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="80" chips="601" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Vasilec" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S8 C4</cards>
+   <action no="3" player="80CEV9Tabling" sum="20" type="3"/>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="4" player="Vasilec" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">SQ D3 C2</cards>
+   <action no="5" player="Vasilec" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="40" type="5"/>
+   <action no="7" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728782549">
+  <general>
+   <startdate>2026-01-02 00:12:55</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="100" chips="859" dealer="1" name="Vasilec" reg_code="" seat="3" win="80"/>
+    <player bet="40" chips="641" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="3" player="Vasilec" sum="100" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">D7 S2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728782591">
+  <general>
+   <startdate>2026-01-02 00:13:02</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="40" chips="899" dealer="0" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="601" chips="601" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="80"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="Vasilec" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CJ HA</cards>
+   <action no="3" player="80CEV9Tabling" sum="601" type="23"/>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="4" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728782649">
+  <general>
+   <startdate>2026-01-02 00:13:11</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="60" chips="859" dealer="1" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="641" chips="641" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="3" player="Vasilec" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D8 HQ</cards>
+   <action no="4" player="80CEV9Tabling" sum="641" type="23"/>
+   <action no="5" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728782737">
+  <general>
+   <startdate>2026-01-02 00:13:26</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="120" chips="799" dealer="0" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="180" chips="701" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="240"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Vasilec" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H6 H2</cards>
+   <action no="3" player="80CEV9Tabling" sum="120" type="23"/>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="4" player="Vasilec" sum="60" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S2 H4 CQ</cards>
+   <action no="5" player="Vasilec" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="7" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728782819">
+  <general>
+   <startdate>2026-01-02 00:13:39</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="360" chips="679" dealer="1" name="Vasilec" reg_code="" seat="3" win="240"/>
+    <player bet="120" chips="821" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="3" player="Vasilec" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">H4 D2</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S9 D10 S4</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="Vasilec" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">DJ</cards>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="Vasilec" sum="60" type="5"/>
+   <action no="9" player="80CEV9Tabling" sum="60" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">C5</cards>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="11" player="Vasilec" sum="240" type="5"/>
+   <action no="12" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728782983">
+  <general>
+   <startdate>2026-01-02 00:14:07</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="799" chips="799" dealer="0" name="Vasilec" reg_code="" seat="3" win="780"/>
+    <player bet="390" chips="701" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Vasilec" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">S5 S10</cards>
+   <action no="3" player="80CEV9Tabling" sum="120" type="23"/>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="4" player="Vasilec" sum="60" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S7 C7 CJ</cards>
+   <action no="5" player="Vasilec" sum="0" type="4"/>
+   <action no="6" player="80CEV9Tabling" sum="60" type="5"/>
+   <action no="7" player="Vasilec" sum="60" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D8</cards>
+   <action no="8" player="Vasilec" sum="0" type="4"/>
+   <action no="9" player="80CEV9Tabling" sum="210" type="5"/>
+   <action no="10" player="Vasilec" sum="619" type="23"/>
+   <action no="11" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728783247">
+  <general>
+   <startdate>2026-01-02 00:14:50</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="30" chips="1 189" dealer="1" name="Vasilec" reg_code="" seat="3" win="0"/>
+    <player bet="60" chips="311" dealer="0" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="Vasilec" sum="30" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H6 H7</cards>
+   <cards player="Vasilec" type="Pocket">X X</cards>
+   <action no="3" player="Vasilec" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728783281">
+  <general>
+   <startdate>2026-01-02 00:14:55</startdate>
+   <smallblind>30</smallblind>
+   <bigblind>60</bigblind>
+   <players>
+    <player bet="341" chips="1 159" dealer="0" name="Vasilec" reg_code="" seat="3" win="682"/>
+    <player bet="341" chips="341" dealer="1" name="80CEV9Tabling" reg_code="5802209950" seat="6" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="30" type="1"/>
+   <action no="2" player="Vasilec" sum="60" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SQ S3</cards>
+   <action no="3" player="80CEV9Tabling" sum="341" type="23"/>
+   <cards player="Vasilec" type="Pocket">CK H3</cards>
+   <action no="4" player="Vasilec" sum="281" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S4 HJ H5</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">DJ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">DK</cards>
+  </round>
+ </game>
+</session>

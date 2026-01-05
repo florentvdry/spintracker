@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802154878">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143430600</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:03:58</duration>
+  <gamecount>9</gamecount>
+  <startdate>2026-01-01 21:53:21</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>683</bets>
+  <wins>60</wins>
+  <chipsin>460</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143430599</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>20€</rewarddrawn>
+  <place>3</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728534463">
+  <general>
+   <startdate>2026-01-01 21:53:21</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="40" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802154878" seat="3" win="0"/>
+    <player bet="40" chips="500" dealer="0" name="professorruby15" reg_code="" seat="6" win="0"/>
+    <player bet="124" chips="500" dealer="0" name="luffy02" reg_code="" seat="10" win="120"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="professorruby15" sum="10" type="1"/>
+   <action no="2" player="luffy02" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">H9 SK</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="professorruby15" type="Pocket">X X</cards>
+   <action no="4" player="professorruby15" sum="30" type="3"/>
+   <cards player="luffy02" type="Pocket">X X</cards>
+   <action no="5" player="luffy02" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D6 H7 C7</cards>
+   <action no="6" player="professorruby15" sum="0" type="4"/>
+   <action no="7" player="luffy02" sum="84" type="5"/>
+   <action no="8" player="80CEV9Tabling" sum="0" type="0"/>
+   <action no="9" player="professorruby15" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728534603">
+  <general>
+   <startdate>2026-01-01 21:53:39</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="110" chips="460" dealer="0" name="80CEV9Tabling" reg_code="5802154878" seat="3" win="0"/>
+    <player bet="460" chips="460" dealer="1" name="professorruby15" reg_code="" seat="6" win="240"/>
+    <player bet="20" chips="580" dealer="0" name="luffy02" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="luffy02" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="professorruby15" type="Pocket">X X</cards>
+   <action no="3" player="professorruby15" sum="20" type="3"/>
+   <cards player="luffy02" type="Pocket">X X</cards>
+   <action no="4" player="luffy02" sum="10" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D10 S9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S10 CQ D3</cards>
+   <action no="6" player="luffy02" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="professorruby15" sum="30" type="5"/>
+   <action no="9" player="luffy02" sum="0" type="0"/>
+   <action no="10" player="80CEV9Tabling" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H9</cards>
+   <action no="11" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="12" player="professorruby15" sum="60" type="5"/>
+   <action no="13" player="80CEV9Tabling" sum="60" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">S4</cards>
+   <action no="14" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="15" player="professorruby15" sum="350" type="5"/>
+   <action no="16" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728534922">
+  <general>
+   <startdate>2026-01-01 21:54:20</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="10" chips="350" dealer="0" name="80CEV9Tabling" reg_code="5802154878" seat="3" win="0"/>
+    <player bet="590" chips="590" dealer="0" name="professorruby15" reg_code="" seat="6" win="50"/>
+    <player bet="20" chips="560" dealer="1" name="luffy02" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="professorruby15" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="luffy02" type="Pocket">X X</cards>
+   <action no="3" player="luffy02" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">D3 CJ</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="professorruby15" type="Pocket">X X</cards>
+   <action no="5" player="professorruby15" sum="590" type="23"/>
+   <action no="6" player="luffy02" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728535055">
+  <general>
+   <startdate>2026-01-01 21:54:37</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="142" chips="340" dealer="1" name="80CEV9Tabling" reg_code="5802154878" seat="3" win="0"/>
+    <player bet="304" chips="620" dealer="0" name="professorruby15" reg_code="" seat="6" win="324"/>
+    <player bet="40" chips="540" dealer="0" name="luffy02" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="professorruby15" sum="10" type="1"/>
+   <action no="2" player="luffy02" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">CK C6</cards>
+   <action no="3" player="80CEV9Tabling" sum="40" type="23"/>
+   <cards player="professorruby15" type="Pocket">X X</cards>
+   <action no="4" player="professorruby15" sum="30" type="3"/>
+   <cards player="luffy02" type="Pocket">X X</cards>
+   <action no="5" player="luffy02" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">S4 SK D7</cards>
+   <action no="6" player="professorruby15" sum="0" type="4"/>
+   <action no="7" player="luffy02" sum="0" type="4"/>
+   <action no="8" player="80CEV9Tabling" sum="30" type="5"/>
+   <action no="9" player="professorruby15" sum="30" type="3"/>
+   <action no="10" player="luffy02" sum="0" type="0"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S10</cards>
+   <action no="11" player="professorruby15" sum="0" type="4"/>
+   <action no="12" player="80CEV9Tabling" sum="72" type="5"/>
+   <action no="13" player="professorruby15" sum="72" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">C3</cards>
+   <action no="14" player="professorruby15" sum="162" type="5"/>
+   <action no="15" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728535459">
+  <general>
+   <startdate>2026-01-01 21:55:31</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="198" dealer="0" name="80CEV9Tabling" reg_code="5802154878" seat="3" win="0"/>
+    <player bet="75" chips="802" dealer="1" name="professorruby15" reg_code="" seat="6" win="180"/>
+    <player bet="75" chips="500" dealer="0" name="luffy02" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="luffy02" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="professorruby15" type="Pocket">H4 C4</cards>
+   <action no="3" player="professorruby15" sum="30" type="3"/>
+   <cards player="luffy02" type="Pocket">HQ HJ</cards>
+   <action no="4" player="luffy02" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S2 D9</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H5 CK S6</cards>
+   <action no="6" player="luffy02" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="8" player="professorruby15" sum="45" type="5"/>
+   <action no="9" player="luffy02" sum="45" type="3"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">HA</cards>
+   <action no="11" player="luffy02" sum="0" type="4"/>
+   <action no="12" player="professorruby15" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">D2</cards>
+   <action no="13" player="luffy02" sum="0" type="4"/>
+   <action no="14" player="professorruby15" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728535704">
+  <general>
+   <startdate>2026-01-01 21:56:04</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="15" chips="168" dealer="0" name="80CEV9Tabling" reg_code="5802154878" seat="3" win="0"/>
+    <player bet="207" chips="907" dealer="0" name="professorruby15" reg_code="" seat="6" win="429"/>
+    <player bet="207" chips="425" dealer="1" name="luffy02" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="professorruby15" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="luffy02" type="Pocket">D7 H7</cards>
+   <action no="3" player="luffy02" sum="30" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S5 D8</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="professorruby15" type="Pocket">D10 DA</cards>
+   <action no="5" player="professorruby15" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C2 HK SA</cards>
+   <action no="6" player="professorruby15" sum="0" type="4"/>
+   <action no="7" player="luffy02" sum="52" type="5"/>
+   <action no="8" player="professorruby15" sum="52" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">CK</cards>
+   <action no="9" player="professorruby15" sum="0" type="4"/>
+   <action no="10" player="luffy02" sum="125" type="5"/>
+   <action no="11" player="professorruby15" sum="125" type="3"/>
+  </round>
+  <round no="4">
+   <cards type="River">H4</cards>
+   <action no="12" player="professorruby15" sum="0" type="4"/>
+   <action no="13" player="luffy02" sum="0" type="4"/>
+  </round>
+ </game>
+ <game gamecode="8728535865">
+  <general>
+   <startdate>2026-01-01 21:56:28</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="0" chips="153" dealer="1" name="80CEV9Tabling" reg_code="5802154878" seat="3" win="0"/>
+    <player bet="90" chips="1 129" dealer="0" name="professorruby15" reg_code="" seat="6" win="0"/>
+    <player bet="180" chips="218" dealer="0" name="luffy02" reg_code="" seat="10" win="180"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="professorruby15" sum="15" type="1"/>
+   <action no="2" player="luffy02" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D7 H9</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="professorruby15" type="Pocket">X X</cards>
+   <action no="4" player="professorruby15" sum="15" type="3"/>
+   <cards player="luffy02" type="Pocket">X X</cards>
+   <action no="5" player="luffy02" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">HQ S5 C6</cards>
+   <action no="6" player="professorruby15" sum="30" type="5"/>
+   <action no="7" player="luffy02" sum="60" type="23"/>
+   <action no="8" player="professorruby15" sum="30" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">H2</cards>
+   <action no="9" player="professorruby15" sum="0" type="4"/>
+   <action no="10" player="luffy02" sum="90" type="5"/>
+   <action no="11" player="professorruby15" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728536025">
+  <general>
+   <startdate>2026-01-01 21:56:48</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="153" chips="153" dealer="0" name="80CEV9Tabling" reg_code="5802154878" seat="3" win="60"/>
+    <player bet="0" chips="1 039" dealer="1" name="professorruby15" reg_code="" seat="6" win="0"/>
+    <player bet="30" chips="308" dealer="0" name="luffy02" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="luffy02" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="professorruby15" type="Pocket">X X</cards>
+   <action no="3" player="professorruby15" sum="0" type="0"/>
+   <cards player="luffy02" type="Pocket">X X</cards>
+   <action no="4" player="luffy02" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SQ HQ</cards>
+   <action no="5" player="80CEV9Tabling" sum="153" type="23"/>
+   <action no="6" player="luffy02" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728536130">
+  <general>
+   <startdate>2026-01-01 21:57:05</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="183" chips="183" dealer="0" name="80CEV9Tabling" reg_code="5802154878" seat="3" win="0"/>
+    <player bet="183" chips="1 039" dealer="0" name="professorruby15" reg_code="" seat="6" win="366"/>
+    <player bet="0" chips="278" dealer="1" name="luffy02" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="professorruby15" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="luffy02" type="Pocket">X X</cards>
+   <action no="3" player="luffy02" sum="0" type="0"/>
+   <cards player="80CEV9Tabling" type="Pocket">H3 D3</cards>
+   <action no="4" player="80CEV9Tabling" sum="183" type="23"/>
+   <cards player="professorruby15" type="Pocket">DA H6</cards>
+   <action no="5" player="professorruby15" sum="153" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 CA C8</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">DK</cards>
+  </round>
+  <round no="4">
+   <cards type="River">D8</cards>
+  </round>
+ </game>
+</session>

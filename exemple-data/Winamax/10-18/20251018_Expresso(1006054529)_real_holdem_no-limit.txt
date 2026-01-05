@@ -1,0 +1,311 @@
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971300047683585-1-1760785975 - Holdem no limit (10/20) - 2025/10/18 11:12:55 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (500)
+Seat 2: SoniaWolf597 (500)
+Seat 3: red 93 (500)
+*** ANTE/BLINDS ***
+SoniaWolf597 posts small blind 10
+red 93 posts big blind 20
+Dealt to Nelfrot-YT [3h Kd]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+SoniaWolf597 folds
+red 93 collected 30 from pot
+*** SUMMARY ***
+Total pot 30 | No rake
+Seat 3: red 93 (big blind) won 30
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971300047683585-2-1760785987 - Holdem no limit (10/20) - 2025/10/18 11:13:07 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (500)
+Seat 2: SoniaWolf597 (490)
+Seat 3: red 93 (510)
+*** ANTE/BLINDS ***
+red 93 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [2d 3c]
+*** PRE-FLOP *** 
+SoniaWolf597 calls 20
+red 93 calls 10
+Nelfrot-YT checks
+*** FLOP *** [Ad 7c 7d]
+red 93 checks
+Nelfrot-YT checks
+SoniaWolf597 checks
+*** TURN *** [Ad 7c 7d][6h]
+red 93 checks
+Nelfrot-YT checks
+SoniaWolf597 bets 60
+red 93 folds
+Nelfrot-YT folds
+SoniaWolf597 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [Ad 7c 7d 6h]
+Seat 2: SoniaWolf597 (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971300047683585-3-1760786011 - Holdem no limit (10/20) - 2025/10/18 11:13:31 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (480)
+Seat 2: SoniaWolf597 (530)
+Seat 3: red 93 (490)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+SoniaWolf597 posts big blind 20
+Dealt to Nelfrot-YT [Kc Kh]
+*** PRE-FLOP *** 
+red 93 folds
+Nelfrot-YT raises 20 to 40
+SoniaWolf597 calls 20
+*** FLOP *** [4c 5c Ad]
+Nelfrot-YT bets 20
+SoniaWolf597 calls 20
+*** TURN *** [4c 5c Ad][Kd]
+Nelfrot-YT bets 90
+SoniaWolf597 folds
+Nelfrot-YT collected 210 from pot
+*** SUMMARY ***
+Total pot 210 | No rake
+Board: [4c 5c Ad Kd]
+Seat 1: Nelfrot-YT (small blind) won 210
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971300047683585-4-1760786039 - Holdem no limit (10/20) - 2025/10/18 11:13:59 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (540)
+Seat 2: SoniaWolf597 (470)
+Seat 3: red 93 (490)
+*** ANTE/BLINDS ***
+SoniaWolf597 posts small blind 10
+red 93 posts big blind 20
+Dealt to Nelfrot-YT [3s 7h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+SoniaWolf597 calls 10
+red 93 checks
+*** FLOP *** [Kh 5h 5s]
+SoniaWolf597 checks
+red 93 checks
+*** TURN *** [Kh 5h 5s][7s]
+SoniaWolf597 checks
+red 93 checks
+*** RIVER *** [Kh 5h 5s 7s][Jd]
+SoniaWolf597 checks
+red 93 bets 40
+SoniaWolf597 folds
+red 93 collected 80 from pot
+*** SUMMARY ***
+Total pot 80 | No rake
+Board: [Kh 5h 5s 7s Jd]
+Seat 3: red 93 (big blind) won 80
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 1 - HandId: #4320971300047683585-5-1760786062 - Holdem no limit (10/20) - 2025/10/18 11:14:22 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (540)
+Seat 2: SoniaWolf597 (450)
+Seat 3: red 93 (510)
+*** ANTE/BLINDS ***
+red 93 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Qh Ac]
+*** PRE-FLOP *** 
+SoniaWolf597 calls 20
+red 93 calls 10
+Nelfrot-YT raises 140 to 160
+SoniaWolf597 folds
+red 93 folds
+Nelfrot-YT collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Seat 1: Nelfrot-YT (big blind) won 200
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320971300047683585-6-1760786079 - Holdem no limit (15/30) - 2025/10/18 11:14:39 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (580)
+Seat 2: SoniaWolf597 (430)
+Seat 3: red 93 (490)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+SoniaWolf597 posts big blind 30
+Dealt to Nelfrot-YT [Ts 7h]
+*** PRE-FLOP *** 
+red 93 calls 30
+Nelfrot-YT folds
+SoniaWolf597 checks
+*** FLOP *** [9s 4h 2c]
+SoniaWolf597 checks
+red 93 checks
+*** TURN *** [9s 4h 2c][Qd]
+SoniaWolf597 checks
+red 93 checks
+*** RIVER *** [9s 4h 2c Qd][4d]
+SoniaWolf597 checks
+red 93 bets 460 and is all-in
+SoniaWolf597 folds
+red 93 collected 535 from pot
+*** SUMMARY ***
+Total pot 535 | No rake
+Board: [9s 4h 2c Qd 4d]
+Seat 3: red 93 (button) won 535
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320971300047683585-7-1760786101 - Holdem no limit (15/30) - 2025/10/18 11:15:01 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (565)
+Seat 2: SoniaWolf597 (400)
+Seat 3: red 93 (535)
+*** ANTE/BLINDS ***
+SoniaWolf597 posts small blind 15
+red 93 posts big blind 30
+Dealt to Nelfrot-YT [Js 4c]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+SoniaWolf597 folds
+red 93 collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 3: red 93 (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320971300047683585-8-1760786106 - Holdem no limit (15/30) - 2025/10/18 11:15:06 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (565)
+Seat 2: SoniaWolf597 (385)
+Seat 3: red 93 (550)
+*** ANTE/BLINDS ***
+red 93 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [2s 4h]
+*** PRE-FLOP *** 
+SoniaWolf597 folds
+red 93 calls 15
+Nelfrot-YT checks
+*** FLOP *** [6h Ts Kd]
+red 93 checks
+Nelfrot-YT bets 30
+red 93 calls 30
+*** TURN *** [6h Ts Kd][7c]
+red 93 checks
+Nelfrot-YT checks
+*** RIVER *** [6h Ts Kd 7c][7h]
+red 93 checks
+Nelfrot-YT bets 120
+red 93 raises 370 to 490 and is all-in
+Nelfrot-YT folds
+red 93 collected 730 from pot
+*** SUMMARY ***
+Total pot 730 | No rake
+Board: [6h Ts Kd 7c 7h]
+Seat 3: red 93 (small blind) won 730
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 2 - HandId: #4320971300047683585-9-1760786143 - Holdem no limit (15/30) - 2025/10/18 11:15:43 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (385)
+Seat 2: SoniaWolf597 (385)
+Seat 3: red 93 (730)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+SoniaWolf597 posts big blind 30
+Dealt to Nelfrot-YT [Js 5h]
+*** PRE-FLOP *** 
+red 93 folds
+Nelfrot-YT calls 15
+SoniaWolf597 raises 355 to 385 and is all-in
+Nelfrot-YT folds
+SoniaWolf597 collected 415 from pot
+*** SUMMARY ***
+Total pot 415 | No rake
+Seat 2: SoniaWolf597 (big blind) won 415
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320971300047683585-10-1760786153 - Holdem no limit (20/40) - 2025/10/18 11:15:53 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (355)
+Seat 2: SoniaWolf597 (415)
+Seat 3: red 93 (730)
+*** ANTE/BLINDS ***
+SoniaWolf597 posts small blind 20
+red 93 posts big blind 40
+Dealt to Nelfrot-YT [Ac 4c]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 315 to 355 and is all-in
+SoniaWolf597 calls 335
+red 93 folds
+*** FLOP *** [Jc Ks Qh]
+*** TURN *** [Jc Ks Qh][Td]
+*** RIVER *** [Jc Ks Qh Td][Ah]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Ac 4c] (Straight Ace high)
+SoniaWolf597 shows [4s As] (Straight Ace high)
+SoniaWolf597 collected 375 from pot
+Nelfrot-YT collected 375 from pot
+*** SUMMARY ***
+Total pot 750 | No rake
+Board: [Jc Ks Qh Td Ah]
+Seat 1: Nelfrot-YT (button) showed [Ac 4c] and won 375 with Straight Ace high
+Seat 2: SoniaWolf597 (small blind) showed [4s As] and won 375 with Straight Ace high
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320971300047683585-11-1760786179 - Holdem no limit (20/40) - 2025/10/18 11:16:19 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Nelfrot-YT (375)
+Seat 2: SoniaWolf597 (435)
+Seat 3: red 93 (690)
+*** ANTE/BLINDS ***
+red 93 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [7d Ks]
+*** PRE-FLOP *** 
+SoniaWolf597 raises 40 to 80
+red 93 calls 60
+Nelfrot-YT folds
+*** FLOP *** [2h Ts Kc]
+red 93 checks
+SoniaWolf597 checks
+*** TURN *** [2h Ts Kc][4d]
+red 93 checks
+SoniaWolf597 checks
+*** RIVER *** [2h Ts Kc 4d][Ad]
+red 93 checks
+SoniaWolf597 bets 355 and is all-in
+red 93 folds
+SoniaWolf597 collected 555 from pot
+*** SUMMARY ***
+Total pot 555 | No rake
+Board: [2h Ts Kc 4d Ad]
+Seat 2: SoniaWolf597 (button) won 555
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 1.86€ + 0.14€ level: 3 - HandId: #4320971300047683585-12-1760786220 - Holdem no limit (20/40) - 2025/10/18 11:17:00 UTC
+Table: 'Expresso(1006054529)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Nelfrot-YT (335)
+Seat 2: SoniaWolf597 (555)
+Seat 3: red 93 (610)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SoniaWolf597 posts big blind 40
+Dealt to Nelfrot-YT [5c 5s]
+*** PRE-FLOP *** 
+red 93 raises 40 to 80
+Nelfrot-YT raises 255 to 335 and is all-in
+SoniaWolf597 folds
+red 93 calls 255
+*** FLOP *** [2s Ad Ts]
+*** TURN *** [2s Ad Ts][Qh]
+*** RIVER *** [2s Ad Ts Qh][3d]
+*** SHOW DOWN ***
+Nelfrot-YT shows [5c 5s] (One pair : 5)
+red 93 shows [Th Ac] (Two pairs : Aces and Tens)
+red 93 collected 710 from pot
+*** SUMMARY ***
+Total pot 710 | No rake
+Board: [2s Ad Ts Qh 3d]
+Seat 1: Nelfrot-YT (small blind) showed [5c 5s] and lost with One pair : 5
+Seat 3: red 93 (button) showed [Th Ac] and won 710 with Two pairs : Aces and Tens
+
+

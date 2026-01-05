@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<session sessioncode="5802217516">
+ <general>
+  <client_version>25.7.1.48</client_version>
+  <mode>real</mode>
+  <gametype>Holdem NL</gametype>
+  <tablename>Twister 5€, 1143476519</tablename>
+  <tournamentcurrency>EUR</tournamentcurrency>
+  <duration>00:03:12</duration>
+  <gamecount>9</gamecount>
+  <startdate>2026-01-02 00:29:52</startdate>
+  <currency>EUR</currency>
+  <nickname>80CEV9Tabling</nickname>
+  <bets>762</bets>
+  <wins>150</wins>
+  <chipsin>450</chipsin>
+  <chipsout>0</chipsout>
+  <statuspoints>0,35AP</statuspoints>
+  <awardpoints>0,35AP</awardpoints>
+  <ipoints>0,35AP</ipoints>
+  <tablesize>3</tablesize>
+  <tournamentcode>1143476518</tournamentcode>
+  <tournamentname>Twister 5€</tournamentname>
+  <rewarddrawn>10€</rewarddrawn>
+  <place>2</place>
+  <buyin>0€ + 0,35€ + 4,65€</buyin>
+  <totalbuyin>5€</totalbuyin>
+  <win>0€</win>
+ </general>
+ <game gamecode="8728806287">
+  <general>
+   <startdate>2026-01-02 00:29:52</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="110" chips="500" dealer="0" name="VIXI3" reg_code="" seat="3" win="100"/>
+    <player bet="50" chips="500" dealer="0" name="80CEV9Tabling" reg_code="5802217516" seat="6" win="0"/>
+    <player bet="0" chips="500" dealer="1" name="G2LOQ69" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="VIXI3" sum="10" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="G2LOQ69" type="Pocket">X X</cards>
+   <action no="3" player="G2LOQ69" sum="0" type="0"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="4" player="VIXI3" sum="50" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">C2 CA</cards>
+   <action no="5" player="80CEV9Tabling" sum="30" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D8 C8 D3</cards>
+   <action no="6" player="VIXI3" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D10</cards>
+   <action no="8" player="VIXI3" sum="60" type="5"/>
+   <action no="9" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728806423">
+  <general>
+   <startdate>2026-01-02 00:30:16</startdate>
+   <smallblind>10</smallblind>
+   <bigblind>20</bigblind>
+   <players>
+    <player bet="60" chips="550" dealer="1" name="VIXI3" reg_code="" seat="3" win="0"/>
+    <player bet="10" chips="450" dealer="0" name="80CEV9Tabling" reg_code="5802217516" seat="6" win="0"/>
+    <player bet="120" chips="500" dealer="0" name="G2LOQ69" reg_code="" seat="10" win="130"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="10" type="1"/>
+   <action no="2" player="G2LOQ69" sum="20" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="3" player="VIXI3" sum="40" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">S5 C6</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="G2LOQ69" type="Pocket">X X</cards>
+   <action no="5" player="G2LOQ69" sum="20" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C4 S8 S2</cards>
+   <action no="6" player="G2LOQ69" sum="20" type="5"/>
+   <action no="7" player="VIXI3" sum="20" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D8</cards>
+   <action no="8" player="G2LOQ69" sum="0" type="4"/>
+   <action no="9" player="VIXI3" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">DJ</cards>
+   <action no="10" player="G2LOQ69" sum="60" type="5"/>
+   <action no="11" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728815522">
+  <general>
+   <startdate>2026-01-02 00:30:55</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="30" chips="490" dealer="0" name="VIXI3" reg_code="" seat="3" win="0"/>
+    <player bet="0" chips="440" dealer="1" name="80CEV9Tabling" reg_code="5802217516" seat="6" win="0"/>
+    <player bet="60" chips="570" dealer="0" name="G2LOQ69" reg_code="" seat="10" win="60"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="G2LOQ69" sum="15" type="1"/>
+   <action no="2" player="VIXI3" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">SJ D3</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="G2LOQ69" type="Pocket">X X</cards>
+   <action no="4" player="G2LOQ69" sum="15" type="3"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="5" player="VIXI3" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">CA D8 C7</cards>
+   <action no="6" player="G2LOQ69" sum="30" type="5"/>
+   <action no="7" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728815594">
+  <general>
+   <startdate>2026-01-02 00:31:09</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="75" chips="460" dealer="0" name="VIXI3" reg_code="" seat="3" win="0"/>
+    <player bet="187" chips="440" dealer="0" name="80CEV9Tabling" reg_code="5802217516" seat="6" win="150"/>
+    <player bet="0" chips="600" dealer="1" name="G2LOQ69" reg_code="" seat="10" win="0"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="VIXI3" sum="15" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="G2LOQ69" type="Pocket">X X</cards>
+   <action no="3" player="G2LOQ69" sum="0" type="0"/>
+   <cards player="VIXI3" type="Pocket">X X</cards>
+   <action no="4" player="VIXI3" sum="15" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">S4 H2</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D8 H7 DK</cards>
+   <action no="6" player="VIXI3" sum="0" type="4"/>
+   <action no="7" player="80CEV9Tabling" sum="45" type="5"/>
+   <action no="8" player="VIXI3" sum="45" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">S2</cards>
+   <action no="9" player="VIXI3" sum="0" type="4"/>
+   <action no="10" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H8</cards>
+   <action no="11" player="VIXI3" sum="0" type="4"/>
+   <action no="12" player="80CEV9Tabling" sum="112" type="5"/>
+   <action no="13" player="VIXI3" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728815759">
+  <general>
+   <startdate>2026-01-02 00:31:37</startdate>
+   <smallblind>15</smallblind>
+   <bigblind>30</bigblind>
+   <players>
+    <player bet="385" chips="385" dealer="1" name="VIXI3" reg_code="" seat="3" win="0"/>
+    <player bet="15" chips="515" dealer="0" name="80CEV9Tabling" reg_code="5802217516" seat="6" win="0"/>
+    <player bet="385" chips="600" dealer="0" name="G2LOQ69" reg_code="" seat="10" win="785"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="15" type="1"/>
+   <action no="2" player="G2LOQ69" sum="30" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="VIXI3" type="Pocket">H9 HA</cards>
+   <action no="3" player="VIXI3" sum="385" type="23"/>
+   <cards player="80CEV9Tabling" type="Pocket">H8 DA</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="0"/>
+   <cards player="G2LOQ69" type="Pocket">SK SA</cards>
+   <action no="5" player="G2LOQ69" sum="355" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">D8 D2 H10</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">SJ</cards>
+  </round>
+  <round no="4">
+   <cards type="River">H6</cards>
+  </round>
+ </game>
+ <game gamecode="8728815874">
+  <general>
+   <startdate>2026-01-02 00:31:56</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="80" chips="500" dealer="1" name="80CEV9Tabling" reg_code="5802217516" seat="6" win="0"/>
+    <player bet="240" chips="1 000" dealer="0" name="G2LOQ69" reg_code="" seat="10" win="160"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="G2LOQ69" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="80CEV9Tabling" type="Pocket">D7 D4</cards>
+   <action no="3" player="80CEV9Tabling" sum="80" type="23"/>
+   <cards player="G2LOQ69" type="Pocket">X X</cards>
+   <action no="4" player="G2LOQ69" sum="240" type="23"/>
+   <action no="5" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728815967">
+  <general>
+   <startdate>2026-01-02 00:32:13</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="200" chips="420" dealer="0" name="80CEV9Tabling" reg_code="5802217516" seat="6" win="0"/>
+    <player bet="320" chips="1 080" dealer="1" name="G2LOQ69" reg_code="" seat="10" win="400"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="G2LOQ69" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="G2LOQ69" type="Pocket">X X</cards>
+   <action no="3" player="G2LOQ69" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">C6 C8</cards>
+   <action no="4" player="80CEV9Tabling" sum="0" type="4"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">C5 S4 DJ</cards>
+   <action no="5" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="6" player="G2LOQ69" sum="40" type="5"/>
+   <action no="7" player="80CEV9Tabling" sum="40" type="3"/>
+  </round>
+  <round no="3">
+   <cards type="Turn">D3</cards>
+   <action no="8" player="80CEV9Tabling" sum="0" type="4"/>
+   <action no="9" player="G2LOQ69" sum="0" type="4"/>
+  </round>
+  <round no="4">
+   <cards type="River">H4</cards>
+   <action no="10" player="80CEV9Tabling" sum="120" type="5"/>
+   <action no="11" player="G2LOQ69" sum="240" type="23"/>
+   <action no="12" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728816122">
+  <general>
+   <startdate>2026-01-02 00:32:42</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="20" chips="220" dealer="1" name="80CEV9Tabling" reg_code="5802217516" seat="6" win="0"/>
+    <player bet="40" chips="1 280" dealer="0" name="G2LOQ69" reg_code="" seat="10" win="40"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="80CEV9Tabling" sum="20" type="1"/>
+   <action no="2" player="G2LOQ69" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="G2LOQ69" type="Pocket">X X</cards>
+   <cards player="80CEV9Tabling" type="Pocket">S2 H4</cards>
+   <action no="3" player="80CEV9Tabling" sum="0" type="0"/>
+  </round>
+ </game>
+ <game gamecode="8728816166">
+  <general>
+   <startdate>2026-01-02 00:32:49</startdate>
+   <smallblind>20</smallblind>
+   <bigblind>40</bigblind>
+   <players>
+    <player bet="200" chips="200" dealer="0" name="80CEV9Tabling" reg_code="5802217516" seat="6" win="0"/>
+    <player bet="200" chips="1 300" dealer="1" name="G2LOQ69" reg_code="" seat="10" win="400"/>
+   </players>
+  </general>
+  <round no="0">
+   <action no="1" player="G2LOQ69" sum="20" type="1"/>
+   <action no="2" player="80CEV9Tabling" sum="40" type="2"/>
+  </round>
+  <round no="1">
+   <cards player="G2LOQ69" type="Pocket">DQ C4</cards>
+   <action no="3" player="G2LOQ69" sum="20" type="3"/>
+   <cards player="80CEV9Tabling" type="Pocket">SJ S4</cards>
+   <action no="4" player="80CEV9Tabling" sum="200" type="23"/>
+   <action no="5" player="G2LOQ69" sum="160" type="3"/>
+  </round>
+  <round no="2">
+   <cards type="Flop">H7 HA C9</cards>
+  </round>
+  <round no="3">
+   <cards type="Turn">D5</cards>
+  </round>
+  <round no="4">
+   <cards type="River">S6</cards>
+  </round>
+ </game>
+</session>
