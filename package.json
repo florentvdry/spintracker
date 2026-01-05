@@ -11,7 +11,7 @@
     "react:build": "cd frontend && npm run build",
     "react:install": "cd frontend && npm install",
     "python:install": "pip install -r backend/requirements.txt",
-    "postinstall": "electron-builder install-app-deps && npm run react:install",
+    "postinstall": "npm run react:install",
     "setup": "npm install && npm run react:install && npm run python:install"
   },
   "keywords": [
@@ -25,17 +25,13 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "better-sqlite3": "^11.8.0",
     "electron-store": "^8.1.0",
-    "node-fetch": "^3.3.2",
-    "pokersolver": "^2.1.4"
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "@electron/rebuild": "^3.7.2",
     "concurrently": "^8.2.2",
     "electron": "^28.1.0",
     "electron-builder": "^24.9.1",
-    "electron-rebuild": "^3.2.9",
     "wait-on": "^7.2.0"
   },
   "build": {

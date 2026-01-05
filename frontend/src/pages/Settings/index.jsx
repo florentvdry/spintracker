@@ -122,15 +122,6 @@ export default function Settings() {
               <span className="badge badge-success">Actif</span>
             }
           />
-
-          <div className="p-4 bg-dark-200 rounded-lg">
-            <h4 className="text-white font-medium mb-2">Librairies utilisées</h4>
-            <ul className="text-sm text-gray-400 space-y-1">
-              <li>• <span className="text-primary-400">treys</span> - Évaluation rapide des mains</li>
-              <li>• <span className="text-primary-400">pokertools</span> - Calculs d'équité Monte Carlo</li>
-              <li>• <span className="text-primary-400">numpy</span> - Calculs vectorisés</li>
-            </ul>
-          </div>
         </div>
       </Card>
 
