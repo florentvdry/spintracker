@@ -107,22 +107,27 @@ class PythonService {
     });
 
     try {
-      const unsubscribe = ipcService.on('ev-recalc-progress', ({ progress, message, processed, total, error, inserted, success }) => {
+      const unsubscribe = ipcService.on('ev-recalc-progress', ({ progress, message }) => {
         progressStore.updateProgress({ progress: progress ?? 0, message: message ?? '' });
-        if (progress === 100 || success || error) {
-          // finish will be handled after the invoke resolves
-        }
       });
 
-      const result = await ipcService.invoke('python-recalculate-analytics');
-
+      const rawResult = await ipcService.invoke('python-recalculate-analytics');
       unsubscribe();
       progressStore.finishProgress();
-      
-      return result;
+
+      // Normalize result shape to { success, handsProcessed, totalHands, message, raw }
+      const normalized = {
+        success: rawResult && (rawResult.success === true || rawResult.processed || rawResult.inserted) ? true : (rawResult && rawResult.success === false ? false : true),
+        handsProcessed: (rawResult && (rawResult.processed || rawResult.inserted)) || 0,
+        totalHands: rawResult && rawResult.total || null,
+        message: rawResult && (rawResult.message || rawResult.msg || rawResult.error) || '',
+        raw: rawResult,
+      };
+
+      return normalized;
     } catch (error) {
       progressStore.finishProgress();
-      throw error;
+      throw new Error(error && error.message ? error.message : String(error));
     }
   }
 

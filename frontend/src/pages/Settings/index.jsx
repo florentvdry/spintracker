@@ -32,23 +32,25 @@ export default function Settings() {
     setIsRecalculating(true);
     try {
       const result = await pythonService.recalculateAllEV();
-      if (result.success) {
+      if (result && result.success) {
+        const count = result.handsProcessed || (result.raw && (result.raw.processed || result.raw.inserted)) || 0;
         addNotification({
           type: 'success',
           title: 'Recalcul terminé',
-          message: `${result.handsProcessed} mains recalculées`,
+          message: `${count} mains recalculées`,
         });
         await refreshAll();
       } else {
+        const msg = (result && (result.message || result.error || JSON.stringify(result))) || 'Erreur inconnue';
         addNotification({
           type: 'error',
-          message: result.message,
+          message: msg,
         });
       }
     } catch (error) {
       addNotification({
         type: 'error',
-        message: error.message,
+        message: error && error.message ? error.message : String(error),
       });
     } finally {
       setIsRecalculating(false);

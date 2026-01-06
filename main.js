@@ -346,9 +346,19 @@ ipcMain.handle('python-recalculate-analytics', async () => {
     });
 
     if (!res.ok || !res.body) {
-      const json = await res.json().catch(() => ({}));
-      mainWindow.webContents.send('ev-recalc-progress', { progress: 100, message: json.error || 'Failed to start recalculation', error: true });
-      return { success: false, error: json.error || 'Failed to start stream' };
+      // Try fallback: call the non-streaming endpoint to get a result object
+      console.error('SSE stream not available, falling back to non-streaming call', { status: res.status, ok: res.ok });
+      try {
+        const fallback = await callPythonAPI('/recalculate-analytics', {});
+        // Relay a final progress message
+        mainWindow.webContents.send('ev-recalc-progress', { progress: 100, message: fallback && (fallback.message || fallback.error || 'Terminé'), ...fallback });
+        return fallback;
+      } catch (fbErr) {
+        console.error('Fallback recalc call failed:', fbErr);
+        const json = await res.json().catch(() => ({}));
+        mainWindow.webContents.send('ev-recalc-progress', { progress: 100, message: json.error || 'Failed to start recalculation', error: true });
+        return { success: false, error: json.error || 'Failed to start stream' };
+      }
     }
 
     return await new Promise((resolve, reject) => {
