@@ -282,7 +282,7 @@ class EquityCalculator:
         board: str,
         iterations: int
     ) -> Dict:
-        """Calculate equity using Treys library (supports multi-way pots)"""
+        """Calculate equity using Treys library with exact enumeration (supports multi-way pots)"""
         
         # Parse hero cards
         hero = self._parse_cards(hero_cards)
@@ -327,16 +327,33 @@ class EquityCalculator:
         full_deck = Deck()
         available_cards = [c for c in full_deck.cards if c not in dead_cards]
         
-        # Monte Carlo simulation
+        cards_needed = 5 - len(board_cards)
+        
+        # Use exact enumeration for better precision
+        return self._exact_enumeration(hero, villain_hands, board_cards, available_cards, cards_needed)
+    
+    def _exact_enumeration(
+        self,
+        hero: List,
+        villain_hands: List[List],
+        board_cards: List,
+        available_cards: List,
+        cards_needed: int
+    ) -> Dict:
+        """
+        Perform exact enumeration over all possible runouts.
+        This calculates exact equity by evaluating every possible combination.
+        """
+        from itertools import combinations
+        
         wins = 0
         ties = 0
         losses = 0
-        cards_needed = 5 - len(board_cards)
+        total = 0
         
-        for _ in range(iterations):
-            # Shuffle and draw
-            random.shuffle(available_cards)
-            sim_board = board_cards + available_cards[:cards_needed]
+        # Enumerate all possible board completions
+        for runout in combinations(available_cards, cards_needed):
+            sim_board = board_cards + list(runout)
             
             # Evaluate hero's hand
             hero_score = self.evaluator.evaluate(sim_board, hero)
@@ -352,18 +369,22 @@ class EquityCalculator:
             else:
                 # Tie with at least one villain
                 ties += 1
+            total += 1
         
-        total = wins + ties + losses
+        if total == 0:
+            return {'equity': 50.0, 'win': 50.0, 'tie': 0.0, 'lose': 50.0}
+        
         win_pct = (wins / total) * 100
         tie_pct = (ties / total) * 100
         loss_pct = (losses / total) * 100
         equity = win_pct + (tie_pct / 2)
         
         return {
-            'equity': round(equity, 2),
-            'win': round(win_pct, 2),
-            'tie': round(tie_pct, 2),
-            'lose': round(loss_pct, 2)
+            'equity': round(equity, 4),  # Higher precision for exact enumeration
+            'win': round(win_pct, 4),
+            'tie': round(tie_pct, 4),
+            'lose': round(loss_pct, 4),
+            'method': 'exact'
         }
     
     def _calculate_fallback(

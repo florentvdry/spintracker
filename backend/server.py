@@ -8,6 +8,7 @@ from flask_cors import CORS
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from equity_calculator import EquityCalculator
+from analytics_calculator import AnalyticsCalculator
 from analysis_engine import AnalysisEngine
 from database import get_database
 from parsers import ParserFactory
@@ -21,10 +22,11 @@ CORS(app)
 
 # Initialize components
 equity_calc = EquityCalculator()
+analytics_calc = AnalyticsCalculator()
 analysis_engine = AnalysisEngine()
 
-# Thread pool for parallel EV calculations
-ev_executor = ThreadPoolExecutor(max_workers=8)
+# Thread pool for parallel calculations
+calc_executor = ThreadPoolExecutor(max_workers=8)
 
 
 def get_db():
@@ -100,24 +102,16 @@ def detect_format():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
-def _calculate_ev_for_hand(hand: dict) -> dict:
-    """Calculate EV for a single hand (for parallel processing)"""
-    # Skip if already calculated
-    if hand.get('ev_chips') is not None:
-        return hand
-
-    if (hand.get('hero_all_in') or hand.get('villain_all_in')):
-        if hand.get('hero_cards') and hand.get('villain_cards'):
-            ev = equity_calc.calculate_all_in_ev(hand)
-            hand['ev_chips'] = ev
-    return hand
+def _calculate_analytics_for_hand(hand: dict) -> dict:
+    """Calculate analytics for a single hand (for parallel processing)"""
+    return analytics_calc.calculate_hand_analytics(hand)
 
 
 # ============ Database Endpoints ============
 
 @app.route('/db/insert-hands', methods=['POST'])
 def insert_hands():
-    """Insert hands into database with parallel EV calculation"""
+    """Insert hands into database and calculate analytics in parallel"""
     try:
         data = request.json
         hands = data.get('hands', [])
@@ -125,29 +119,36 @@ def insert_hands():
         if not hands:
             return jsonify({'success': True, 'inserted': 0})
         
-        # Filter hands that need EV calculation
-        all_in_hands = [h for h in hands if 
-                        (h.get('hero_all_in') or h.get('villain_all_in')) and
-                        h.get('hero_cards') and h.get('villain_cards') and
-                        h.get('ev_chips') is None]
-        
-        # Calculate EV in parallel for all-in hands
-        if all_in_hands:
-            # Process in batches for better memory management
-            batch_size = 500
-            for i in range(0, len(all_in_hands), batch_size):
-                batch = all_in_hands[i:i + batch_size]
-                futures = {ev_executor.submit(_calculate_ev_for_hand, h): h for h in batch}
-                for future in as_completed(futures):
-                    try:
-                        future.result()
-                    except Exception as e:
-                        logger.warning(f"EV calculation error: {e}")
-        
+        # First, insert raw hand data (parsing results only)
         db = get_db()
         inserted = db.insert_hands_batch(hands)
         
-        return jsonify({'success': True, 'inserted': inserted, 'total': len(hands)})
+        # Then calculate and insert analytics separately
+        # This allows us to recalculate analytics later without re-parsing
+        analytics_list = []
+        
+        # Calculate analytics in parallel
+        batch_size = 100
+        for i in range(0, len(hands), batch_size):
+            batch = hands[i:i + batch_size]
+            futures = {calc_executor.submit(_calculate_analytics_for_hand, h): h for h in batch}
+            for future in as_completed(futures):
+                try:
+                    analytics = future.result()
+                    analytics_list.append(analytics)
+                except Exception as e:
+                    logger.warning(f"Analytics calculation error: {e}")
+        
+        # Insert analytics
+        if analytics_list:
+            db.insert_analytics_batch(analytics_list)
+        
+        return jsonify({
+            'success': True,
+            'inserted': inserted,
+            'total': len(hands),
+            'analytics_calculated': len(analytics_list)
+        })
     except Exception as e:
         logger.error(f"Insert error: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -404,59 +405,57 @@ def analyze_range():
         }), 500
 
 
-def _recalc_ev_batch(hands_batch: list, db) -> list:
-    """Recalculate EV for a batch of hands"""
-    results = []
-    for hand in hands_batch:
-        if hand.get('hero_all_in') or hand.get('villain_all_in'):
-            if hand.get('hero_cards') and hand.get('villain_cards'):
-                ev = equity_calc.calculate_all_in_ev(hand)
-                if ev is not None:
-                    results.append({'id': hand['id'], 'ev_chips': ev})
-    return results
-
-
-@app.route('/recalculate-ev', methods=['POST'])
-def recalculate_ev():
-    """Recalculate EV for all hands with parallel processing"""
+@app.route('/recalculate-analytics', methods=['POST'])
+def recalculate_analytics():
+    """Recalculate all analytics from raw hand data with parallel processing"""
     try:
         db = get_db()
+        
+        # Delete existing analytics
+        db.delete_all_analytics()
+        
+        # Get all raw hands
         hands = db.get_all_hands_for_analysis()
         
-        # Filter hands that need EV calculation
-        all_in_hands = [h for h in hands if 
-                        (h.get('hero_all_in') or h.get('villain_all_in')) and
-                        h.get('hero_cards') and h.get('villain_cards')]
-        
-        if not all_in_hands:
+        if not hands:
             return jsonify({'success': True, 'data': [], 'processed': 0})
         
-        results = []
+        logger.info(f"Recalculating analytics for {len(hands)} hands...")
+        
+        analytics_list = []
         
         # Process in parallel batches
-        batch_size = 200
-        futures = []
+        batch_size = 100
+        processed = 0
         
-        for i in range(0, len(all_in_hands), batch_size):
-            batch = all_in_hands[i:i + batch_size]
-            future = ev_executor.submit(_recalc_ev_batch, batch, db)
-            futures.append(future)
+        for i in range(0, len(hands), batch_size):
+            batch = hands[i:i + batch_size]
+            futures = {calc_executor.submit(_calculate_analytics_for_hand, h): h for h in batch}
+            
+            for future in as_completed(futures):
+                try:
+                    analytics = future.result()
+                    analytics_list.append(analytics)
+                    processed += 1
+                    
+                    # Log progress every 100 hands
+                    if processed % 100 == 0:
+                        logger.info(f"Progress: {processed}/{len(hands)} hands processed")
+                except Exception as e:
+                    logger.warning(f"Analytics calculation error: {e}")
         
-        # Collect results
-        for future in as_completed(futures):
-            try:
-                batch_results = future.result()
-                results.extend(batch_results)
-            except Exception as e:
-                logger.warning(f"Batch EV recalc error: {e}")
+        # Insert all analytics
+        if analytics_list:
+            inserted = db.insert_analytics_batch(analytics_list)
+            logger.info(f"Inserted {inserted} analytics records")
         
-        # Update database
-        for result in results:
-            db.update_hand_ev(result['id'], result['ev_chips'])
-        
-        return jsonify({'success': True, 'data': results, 'processed': len(results)})
+        return jsonify({
+            'success': True,
+            'processed': len(analytics_list),
+            'total_hands': len(hands)
+        })
     except Exception as e:
-        logger.error(f"EV recalculation error: {e}")
+        logger.error(f"Analytics recalculation error: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 

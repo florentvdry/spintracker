@@ -68,7 +68,7 @@ export default function Settings() {
         <div className="space-y-4">
           <SettingRow
             icon={Calculator}
-            title="Recalculer toutes les EV"
+            title="Recalculer toutes les statistiques"
             description="Utilise Python pour recalculer l'équité de toutes les mains (peut prendre plusieurs minutes)"
             action={
               <button

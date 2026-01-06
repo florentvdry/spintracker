@@ -95,28 +95,20 @@ class PythonService {
   }
 
   /**
-   * Recalcul de toutes les EV avec progression
+   * Recalcul de tous les analytics (EV, CEV, equity) depuis les données brutes
    */
   async recalculateAllEV() {
     const progressStore = useProgressStore.getState();
     
     progressStore.startProgress({
-      title: 'Recalcul des EV',
-      message: 'Préparation...',
+      title: 'Recalcul des statistiques',
+      message: 'Recalcul des EV, CEV et équités...',
       canCancel: false,
     });
 
     try {
-      const unsubscribe = ipcService.on('ev-recalc-progress', ({ progress, message, handsProcessed, totalHands }) => {
-        progressStore.updateProgress({ 
-          progress, 
-          message: `${handsProcessed}/${totalHands} mains traitées`,
-        });
-      });
+      const result = await ipcService.invoke('python-recalculate-analytics');
 
-      const result = await ipcService.invoke('python-recalculate-ev');
-
-      unsubscribe();
       progressStore.finishProgress();
       
       return result;

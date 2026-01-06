@@ -5,9 +5,12 @@ SQLite database management for hand history storage and analysis
 
 import sqlite3
 import os
+import logging
 from pathlib import Path
 from typing import Optional, Dict, List, Any
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 
 class Database:
@@ -16,20 +19,17 @@ class Database:
     def __init__(self, db_path: Optional[str] = None):
         """Initialize database connection"""
         if db_path is None:
-            # Default to user's app data folder
-            if os.name == 'nt':  # Windows
-                app_data = os.environ.get('APPDATA', os.path.expanduser('~'))
-                db_dir = Path(app_data) / 'poker-tracker-pro'
-            else:  # Linux/Mac
-                db_dir = Path.home() / '.poker-tracker-pro'
-            
-            db_dir.mkdir(parents=True, exist_ok=True)
-            db_path = str(db_dir / 'poker_tracker.db')
+            # Use backend/poker_tracker.db by default
+            db_path = os.path.join(os.path.dirname(__file__), 'poker_tracker.db')
         
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
         self._initialize_tables()
+    
+    def get_connection(self):
+        """Get the database connection"""
+        return self.conn
     
     def _initialize_tables(self):
         """Create database tables if they don't exist"""
@@ -94,11 +94,29 @@ class Database:
                 hero_profit REAL,
                 hero_all_in BOOLEAN DEFAULT 0,
                 villain_all_in BOOLEAN DEFAULT 0,
-                ev_chips REAL,
+                went_to_showdown BOOLEAN DEFAULT 0,
                 leak_detected TEXT,
                 error_type TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (session_id) REFERENCES sessions(id)
+            )
+        """)
+        
+        # Hands analytics table - calculated statistics separate from raw hand data
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS hands_analytics (
+                hand_id TEXT PRIMARY KEY,
+                ev_chips REAL,
+                net_won_adjusted REAL,
+                equity_preflop REAL,
+                equity_flop REAL,
+                equity_turn REAL,
+                equity_river REAL,
+                chips_won_showdown REAL,
+                chips_won_no_showdown REAL,
+                cev_contribution REAL,
+                calculated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (hand_id) REFERENCES hands(id)
             )
         """)
         
@@ -144,6 +162,7 @@ class Database:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_hands_game_id ON hands(game_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_leaks_hand ON leaks(hand_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_leaks_player ON leaks(player_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_analytics_hand ON hands_analytics(hand_id)")
         
         self.conn.commit()
     
@@ -158,14 +177,14 @@ class Database:
                     total_pot, rake, hero_position, hero_stack, hero_cards,
                     villain_position, villain_stack, villain_cards, preflop_action,
                     flop, flop_action, turn, turn_action, river, river_action,
-                    showdown, result, hero_profit, hero_all_in, villain_all_in, ev_chips
+                    showdown, result, hero_profit, hero_all_in, villain_all_in, went_to_showdown
                 ) VALUES (
                     :id, :game_id, :hand_id, :room, :game_mode, :game_type, :game_name,
                     :prize_pool, :multiplier, :buy_in, :date_time, :table_id, :blinds,
                     :total_pot, :rake, :hero_position, :hero_stack, :hero_cards,
                     :villain_position, :villain_stack, :villain_cards, :preflop_action,
                     :flop, :flop_action, :turn, :turn_action, :river, :river_action,
-                    :showdown, :result, :hero_profit, :hero_all_in, :villain_all_in, :ev_chips
+                    :showdown, :result, :hero_profit, :hero_all_in, :villain_all_in, :went_to_showdown
                 )
             """, {
                 'id': hand.get('id'),
@@ -201,7 +220,7 @@ class Database:
                 'hero_profit': hand.get('hero_profit', 0),
                 'hero_all_in': 1 if hand.get('hero_all_in') else 0,
                 'villain_all_in': 1 if hand.get('villain_all_in') else 0,
-                'ev_chips': hand.get('ev_chips')
+                'went_to_showdown': 1 if hand.get('went_to_showdown') else 0
             })
             return True
         except sqlite3.IntegrityError:
@@ -358,18 +377,20 @@ class Database:
                 }
             }
         
-        # Get hands ordered by date
+        # Get hands ordered by date with analytics
         cursor.execute(f"""
             SELECT 
-                id, hand_id, hero_profit, showdown, hero_position, hero_cards,
-                villain_cards, total_pot, rake, preflop_action, flop, flop_action,
-                turn, turn_action, river, river_action, hero_all_in, game_id,
-                buy_in, prize_pool, result, ev_chips
-            FROM hands
+                h.id, h.hand_id, h.hero_profit, h.showdown, h.went_to_showdown, h.hero_position, h.hero_cards,
+                h.villain_cards, h.total_pot, h.rake, h.preflop_action, h.flop, h.flop_action,
+                h.turn, h.turn_action, h.river, h.river_action, h.hero_all_in, h.game_id,
+                h.buy_in, h.prize_pool, h.result,
+                a.ev_chips, a.net_won_adjusted, a.chips_won_showdown, a.chips_won_no_showdown
+            FROM hands h
+            LEFT JOIN hands_analytics a ON h.id = a.hand_id
             {where_sql}
             ORDER BY 
-                CASE WHEN date_time IS NULL OR date_time = '' THEN 1 ELSE 0 END,
-                date_time ASC, rowid ASC
+                CASE WHEN h.date_time IS NULL OR h.date_time = '' THEN 1 ELSE 0 END,
+                h.date_time ASC, h.rowid ASC
         """, params)
         
         labels = []
@@ -396,18 +417,24 @@ class Database:
             
             cumulative_real += profit
             
-            # Determine showdown
-            # If the parser extracted a showdown section, then the hand went to showdown.
-            is_showdown = bool(hand['showdown'] and hand['showdown'].strip())
+            # Determine if went to showdown (PT4/Hand2Note standard)
+            # went_to_showdown = True when hero showed cards at showdown
+            is_showdown = bool(hand.get('went_to_showdown'))
             
-            if not is_showdown:
-                cumulative_no_sd += profit
-            else:
+            # Split chips won by showdown vs no showdown
+            if is_showdown:
                 cumulative_sd += profit
+            else:
+                cumulative_no_sd += profit
             
-            # EV calculation
-            ev_profit = hand['ev_chips'] if (hand['hero_all_in'] and 
-                                              hand['ev_chips'] is not None) else profit
+            # For EV calculation (Net Won Adjusted):
+            # Use net_won_adjusted from analytics if available, otherwise use actual profit
+            # net_won_adjusted already handles:
+            # - All-in with known villain cards: EV-based calculation
+            # - All-in with unknown villain cards: actual profit
+            # - Non all-in: actual profit
+            ev_profit = hand['net_won_adjusted'] if hand['net_won_adjusted'] is not None else profit
+            
             cumulative_ev += ev_profit
             
             # Only push data points according to step
@@ -436,28 +463,19 @@ class Database:
             processed_count += 1
         
         # Calculate final stats
-        total_net_won = 0
-        total_net_adjusted = 0
-        total_buy_ins = 0
-        total_chips = 1500
+        total_tournaments = len(tournaments)
         
-        for t in tournament_results.values():
-            total_buy_ins += t['buyIn']
-            total_payout = t['prizePool']
-            total_net_won += t['won']
-            
-            chip_delta = t['evChips'] - t['profitChips']
-            chip_value = total_payout / total_chips if total_chips > 0 else 0
-            total_net_adjusted += t['won'] + chip_delta * chip_value
-        
-        total_net_won -= total_buy_ins
-        total_net_adjusted -= total_buy_ins
+        # Stats calculation
+        # CEV SpinnPro = average EV per tournament
+        cev_spin_pro = round(cumulative_ev / total_tournaments) if total_tournaments > 0 else 0
         
         stats = {
-            'tournaments': len(tournaments),
-            'cevSpinPro': round(cumulative_ev / len(tournaments)) if tournaments else 0,
-            'netWon': total_net_won,
-            'netAdjusted': total_net_adjusted
+            'tournaments': total_tournaments,
+            'cevSpinPro': cev_spin_pro,
+            'netWon': round(cumulative_real),  # Actual chips won
+            'netAdjusted': round(cumulative_ev),  # EV-adjusted chips won
+            'chipsWonShowdown': round(cumulative_sd),
+            'chipsWonNoShowdown': round(cumulative_no_sd)
         }
         
         return {
@@ -588,6 +606,7 @@ class Database:
             count = cursor.fetchone()['count']
             
             cursor.execute("DELETE FROM hands")
+            cursor.execute("DELETE FROM hands_analytics")
             cursor.execute("DELETE FROM sessions")
             cursor.execute("DELETE FROM leaks")
             cursor.execute("""
@@ -605,10 +624,84 @@ class Database:
         except Exception as e:
             return {'success': False, 'error': str(e)}
     
-    def update_hand_ev(self, hand_id: str, ev_chips: float):
-        """Update EV chips for a hand"""
+    def insert_hand_analytics(self, analytics: Dict[str, Any]) -> bool:
+        """Insert or update analytics for a hand"""
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("""
+                INSERT OR REPLACE INTO hands_analytics (
+                    hand_id, ev_chips, net_won_adjusted, equity_preflop,
+                    equity_flop, equity_turn, equity_river,
+                    chips_won_showdown, chips_won_no_showdown, cev_contribution,
+                    calculated_at
+                ) VALUES (
+                    :hand_id, :ev_chips, :net_won_adjusted, :equity_preflop,
+                    :equity_flop, :equity_turn, :equity_river,
+                    :chips_won_showdown, :chips_won_no_showdown, :cev_contribution,
+                    CURRENT_TIMESTAMP
+                )
+            """, {
+                'hand_id': analytics.get('hand_id'),
+                'ev_chips': analytics.get('ev_chips'),
+                'net_won_adjusted': analytics.get('net_won_adjusted'),
+                'equity_preflop': analytics.get('equity_preflop'),
+                'equity_flop': analytics.get('equity_flop'),
+                'equity_turn': analytics.get('equity_turn'),
+                'equity_river': analytics.get('equity_river'),
+                'chips_won_showdown': analytics.get('chips_won_showdown'),
+                'chips_won_no_showdown': analytics.get('chips_won_no_showdown'),
+                'cev_contribution': analytics.get('cev_contribution')
+            })
+            self.conn.commit()
+            return True
+        except Exception as e:
+            logger.error(f"Error inserting analytics: {e}")
+            return False
+    
+    def insert_analytics_batch(self, analytics_list: List[Dict[str, Any]]) -> int:
+        """Insert multiple hand analytics in a transaction"""
+        inserted = 0
         cursor = self.conn.cursor()
-        cursor.execute("UPDATE hands SET ev_chips = ? WHERE id = ?", (ev_chips, hand_id))
+        
+        try:
+            for analytics in analytics_list:
+                cursor.execute("""
+                    INSERT OR REPLACE INTO hands_analytics (
+                        hand_id, ev_chips, net_won_adjusted, equity_preflop,
+                        equity_flop, equity_turn, equity_river,
+                        chips_won_showdown, chips_won_no_showdown, cev_contribution,
+                        calculated_at
+                    ) VALUES (
+                        :hand_id, :ev_chips, :net_won_adjusted, :equity_preflop,
+                        :equity_flop, :equity_turn, :equity_river,
+                        :chips_won_showdown, :chips_won_no_showdown, :cev_contribution,
+                        CURRENT_TIMESTAMP
+                    )
+                """, {
+                    'hand_id': analytics.get('hand_id'),
+                    'ev_chips': analytics.get('ev_chips'),
+                    'net_won_adjusted': analytics.get('net_won_adjusted'),
+                    'equity_preflop': analytics.get('equity_preflop'),
+                    'equity_flop': analytics.get('equity_flop'),
+                    'equity_turn': analytics.get('equity_turn'),
+                    'equity_river': analytics.get('equity_river'),
+                    'chips_won_showdown': analytics.get('chips_won_showdown'),
+                    'chips_won_no_showdown': analytics.get('chips_won_no_showdown'),
+                    'cev_contribution': analytics.get('cev_contribution')
+                })
+                inserted += 1
+            self.conn.commit()
+        except Exception as e:
+            self.conn.rollback()
+            logger.error(f"Error inserting analytics batch: {e}")
+            raise e
+        
+        return inserted
+    
+    def delete_all_analytics(self):
+        """Delete all analytics data"""
+        cursor = self.conn.cursor()
+        cursor.execute("DELETE FROM hands_analytics")
         self.conn.commit()
     
     def get_all_hands_for_analysis(self) -> List[Dict[str, Any]]:
