@@ -4,6 +4,7 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 
 let mainWindow;
+let splashWindow;
 let pythonProcess = null;
 const PYTHON_PORT = 5050;
 
@@ -78,6 +79,7 @@ function createWindow() {
   const isDev = process.argv.includes('--dev');
   
   mainWindow = new BrowserWindow({
+    show: false,
     width: 1400,
     height: 900,
     minWidth: 1200,
@@ -118,6 +120,28 @@ function createWindow() {
 
 app.whenReady().then(() => {
   startPythonBackend();
+
+  // Create a lightweight splash window
+  splashWindow = new BrowserWindow({
+    width: 420,
+    height: 320,
+    resizable: false,
+    frame: false,
+    transparent: false,
+    alwaysOnTop: true,
+    center: true,
+    show: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+    }
+  });
+
+  const splashPath = path.join(__dirname, 'assets', 'splash.html');
+  if (fs.existsSync(splashPath)) {
+    splashWindow.loadFile(splashPath);
+  }
+
   createWindow();
 
   app.on('activate', () => {
@@ -154,53 +178,66 @@ ipcMain.handle('import-hand-history', async () => {
   }
 
   try {
-    let totalHandsImported = 0;
-    let errors = [];
-    let processedFiles = 0;
+    // First phase: parse all files to estimate total hands
+    let parseResults = [];
+    let parseErrors = [];
 
     for (const filePath of result.filePaths) {
       try {
         const content = fs.readFileSync(filePath, 'utf8');
-        
-        // Send to Python for parsing
         const parseResult = await callPythonAPI('/parse/file', { content });
-        
+
         if (!parseResult.success) {
-          errors.push({ file: path.basename(filePath), error: parseResult.error });
-          continue;
+          parseErrors.push({ file: path.basename(filePath), error: parseResult.error });
+          parseResults.push({ file: path.basename(filePath), hands: [] });
+        } else {
+          parseResults.push({ file: path.basename(filePath), hands: parseResult.hands || [], count: parseResult.count || (parseResult.hands || []).length });
         }
-        
-        // Insert parsed hands into database
-        if (parseResult.hands && parseResult.hands.length > 0) {
-          const insertResult = await callPythonAPI('/db/insert-hands', { 
-            hands: parseResult.hands 
-          });
-          
-          if (insertResult.success) {
-            totalHandsImported += insertResult.inserted;
-          }
-        }
-        
-        processedFiles++;
-        
-        // Send progress update
-        const percent = Math.round((processedFiles / result.filePaths.length) * 100);
-        mainWindow.webContents.send('import-progress', {
-          processed: processedFiles,
-          total: result.filePaths.length,
-          percent: percent,
-          handsImported: totalHandsImported
-        });
-        
       } catch (err) {
-        errors.push({ file: path.basename(filePath), error: err.message });
+        parseErrors.push({ file: path.basename(filePath), error: err.message });
+        parseResults.push({ file: path.basename(filePath), hands: [] });
       }
     }
+
+    const totalHandsToImport = parseResults.reduce((s, r) => s + (r.count || (r.hands || []).length), 0);
+
+    // Second phase: insert parsed hands and send progress based on hands
+    let totalHandsImported = 0;
+    let insertErrors = [];
+    let filesProcessed = 0;
+
+    for (const pr of parseResults) {
+      try {
+        if (pr.hands && pr.hands.length > 0) {
+          const insertResult = await callPythonAPI('/db/insert-hands', { hands: pr.hands });
+          if (insertResult.success) {
+            totalHandsImported += insertResult.inserted || 0;
+          } else {
+            insertErrors.push({ file: pr.file, error: insertResult.error });
+          }
+        }
+
+        filesProcessed++;
+
+        const percent = totalHandsToImport > 0 ? Math.round((totalHandsImported / totalHandsToImport) * 100) : Math.round((filesProcessed / result.filePaths.length) * 100);
+        mainWindow.webContents.send('import-progress', {
+          filesProcessed: filesProcessed,
+          totalFiles: result.filePaths.length,
+          percent: percent,
+          handsImported: totalHandsImported,
+          totalHands: totalHandsToImport
+        });
+      } catch (err) {
+        insertErrors.push({ file: pr.file, error: err.message });
+      }
+    }
+
+    const errors = parseErrors.concat(insertErrors);
 
     return {
       success: true,
       handsImported: totalHandsImported,
-      filesProcessed: processedFiles,
+      filesProcessed: filesProcessed,
       errors: errors
     };
   } catch (error) {
@@ -294,20 +331,88 @@ ipcMain.handle('python-analyze-leaks', async (event, options) => {
   return result;
 });
 
-ipcMain.handle('python-recalculate-ev', async () => {
+ipcMain.handle('python-recalculate-analytics', async () => {
   mainWindow.webContents.send('ev-recalc-progress', {
     progress: 0,
-    message: 'Démarrage...',
+    message: 'Démarrage du recalcul des statistiques...',
   });
 
-  const result = await callPythonAPI('/recalculate-ev', {});
+  try {
+    const fetch = (await import('node-fetch')).default;
+    const res = await fetch(`http://127.0.0.1:${PYTHON_PORT}/recalculate-analytics/stream`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
 
-  mainWindow.webContents.send('ev-recalc-progress', {
-    progress: 100,
-    message: 'Terminé',
-  });
+    if (!res.ok || !res.body) {
+      const json = await res.json().catch(() => ({}));
+      mainWindow.webContents.send('ev-recalc-progress', { progress: 100, message: json.error || 'Failed to start recalculation', error: true });
+      return { success: false, error: json.error || 'Failed to start stream' };
+    }
 
-  return result;
+    return await new Promise((resolve, reject) => {
+      let buffer = '';
+      let finalPayload = null;
+
+      res.body.on('data', (chunk) => {
+        buffer += chunk.toString();
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop();
+
+        parts.forEach((part) => {
+          const lines = part.split('\n');
+          lines.forEach((line) => {
+            if (line.startsWith('data:')) {
+              const jsonText = line.replace(/^data:\s*/,'');
+              try {
+                const payload = JSON.parse(jsonText);
+                finalPayload = payload;
+                mainWindow.webContents.send('ev-recalc-progress', payload);
+              } catch (e) {
+                // ignore parse errors
+              }
+            }
+          });
+        });
+      });
+
+      res.body.on('end', () => {
+        if (finalPayload) {
+          resolve(finalPayload);
+        } else {
+          resolve({ success: true, message: 'Recalculation finished' });
+        }
+      });
+
+      res.body.on('error', (err) => {
+        mainWindow.webContents.send('ev-recalc-progress', { progress: 100, message: err.message, error: true });
+        reject(err);
+      });
+    });
+  } catch (error) {
+    mainWindow.webContents.send('ev-recalc-progress', { progress: 100, message: error.message, error: true });
+    return { success: false, error: error.message };
+  }
+});
+
+// Renderer signals that app initialization is complete
+ipcMain.handle('app-ready', async () => {
+  try {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.show();
+    }
+
+    if (splashWindow) {
+      try { splashWindow.close(); } catch (e) {}
+      splashWindow = null;
+    }
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 });
 
 ipcMain.handle('python-analyze-range', async (event, params) => {

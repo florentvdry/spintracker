@@ -107,8 +107,16 @@ class PythonService {
     });
 
     try {
+      const unsubscribe = ipcService.on('ev-recalc-progress', ({ progress, message, processed, total, error, inserted, success }) => {
+        progressStore.updateProgress({ progress: progress ?? 0, message: message ?? '' });
+        if (progress === 100 || success || error) {
+          // finish will be handled after the invoke resolves
+        }
+      });
+
       const result = await ipcService.invoke('python-recalculate-analytics');
 
+      unsubscribe();
       progressStore.finishProgress();
       
       return result;

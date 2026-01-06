@@ -3,7 +3,8 @@ Poker Tracker Pro - Python Backend
 Fast equity calculations, database operations, and hand parsing
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
+import json
 from flask_cors import CORS
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -457,6 +458,67 @@ def recalculate_analytics():
     except Exception as e:
         logger.error(f"Analytics recalculation error: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/recalculate-analytics/stream', methods=['POST'])
+def recalculate_analytics_stream():
+    """Stream progress via Server-Sent Events while recalculating analytics"""
+    def generate():
+        try:
+            db = get_db()
+
+            # Delete existing analytics
+            db.delete_all_analytics()
+
+            # Get all raw hands
+            hands = db.get_all_hands_for_analysis()
+            total = len(hands)
+
+            if not hands:
+                payload = {'success': True, 'processed': 0, 'total_hands': 0, 'progress': 100, 'message': 'No hands to process'}
+                yield f"data: {json.dumps(payload)}\n\n"
+                return
+
+            analytics_list = []
+            batch_size = 100
+            processed = 0
+
+            for i in range(0, total, batch_size):
+                batch = hands[i:i + batch_size]
+                futures = {calc_executor.submit(_calculate_analytics_for_hand, h): h for h in batch}
+
+                for future in as_completed(futures):
+                    try:
+                        analytics = future.result()
+                        analytics_list.append(analytics)
+                        processed += 1
+
+                        # Stream progress for every processed hand
+                        progress = int((processed / total) * 100)
+                        payload = {
+                            'progress': progress,
+                            'message': f'Processed {processed}/{total} hands',
+                            'processed': processed,
+                            'total': total
+                        }
+                        yield f"data: {json.dumps(payload)}\n\n"
+                    except Exception as e:
+                        logger.warning(f"Analytics calculation error: {e}")
+
+            # Insert all analytics
+            if analytics_list:
+                inserted = db.insert_analytics_batch(analytics_list)
+                payload = {'progress': 100, 'message': 'Terminé', 'processed': len(analytics_list), 'total': total, 'inserted': inserted, 'success': True}
+            else:
+                payload = {'progress': 100, 'message': 'Terminé', 'processed': 0, 'total': total, 'success': True}
+
+            yield f"data: {json.dumps(payload)}\n\n"
+        except Exception as e:
+            logger.error(f"Analytics recalculation stream error: {e}")
+            payload = {'progress': 100, 'message': str(e), 'error': True}
+            yield f"data: {json.dumps(payload)}\n\n"
+
+    return Response(generate(), mimetype='text/event-stream')
 
 
 if __name__ == '__main__':

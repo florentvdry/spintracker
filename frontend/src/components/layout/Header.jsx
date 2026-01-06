@@ -21,16 +21,29 @@ export default function Header() {
 
   const handleImport = async () => {
     // Écouter les mises à jour de progression
-    const unsubscribe = ipcService.onImportProgress(({ percent, processed, total, speed }) => {
-      updateProgress({
-        progress: percent,
-        message: `${processed}/${total} mains (${speed} mains/s)`,
-      });
+    const unsubscribe = ipcService.onImportProgress(({ percent, processed, total, speed, handsImported, totalHands, filesProcessed, totalFiles }) => {
+      const speedText = speed ? ` (${speed} mains/s)` : '';
+      if (typeof handsImported === 'number' && typeof totalHands === 'number' && totalHands > 0) {
+        updateProgress({
+          progress: percent,
+          message: `${handsImported}/${totalHands} mains${speedText}`,
+        });
+      } else if (typeof filesProcessed === 'number' && typeof totalFiles === 'number') {
+        updateProgress({
+          progress: percent,
+          message: `${filesProcessed}/${totalFiles} fichiers${speedText}`,
+        });
+      } else {
+        updateProgress({
+          progress: percent,
+          message: `Traitement...`,
+        });
+      }
     });
 
     startProgress({
       title: 'Import des mains',
-      message: 'Sélection des fichiers...',
+      message: 'Calcul en cours...',
     });
 
     try {

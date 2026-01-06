@@ -34,6 +34,16 @@ export const useAppStore = create((set, get) => ({
       await get().loadSessions();
       
       set({ isInitialized: true });
+
+      // Notify main process that renderer finished initialization so splash can close
+      try {
+        const { ipcRenderer } = window.require ? window.require('electron') : { ipcRenderer: null };
+        if (ipcRenderer && ipcRenderer.invoke) {
+          ipcRenderer.invoke('app-ready');
+        }
+      } catch (e) {
+        // ignore
+      }
     } catch (error) {
       console.error('Failed to initialize app:', error);
     } finally {

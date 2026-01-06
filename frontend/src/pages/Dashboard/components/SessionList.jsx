@@ -23,8 +23,12 @@ export default function SessionList({ sessions = [] }) {
 }
 
 function SessionItem({ session }) {
-  const isPositive = session.profit >= 0;
-  
+  const profitVal = session.profit;
+  const hasProfit = profitVal !== null && profitVal !== undefined && !Number.isNaN(Number(profitVal));
+  const numericProfit = hasProfit ? Number(profitVal) : 0;
+  const isPositive = hasProfit ? numericProfit >= 0 : false;
+  const formattedProfit = hasProfit ? `${numericProfit.toFixed(2)}€` : '—';
+
   return (
     <div className="flex items-center justify-between p-3 bg-dark-200 rounded-lg hover:bg-dark-100 transition cursor-pointer">
       <div>
@@ -34,11 +38,8 @@ function SessionItem({ session }) {
         </p>
       </div>
       <div className="text-right">
-        <p className={clsx(
-          'font-bold text-sm',
-          isPositive ? 'profit-positive' : 'profit-negative'
-        )}>
-          {isPositive ? '+' : ''}{session.profit.toFixed(2)}€
+        <p className={clsx('font-bold text-sm', isPositive ? 'profit-positive' : 'profit-negative')}>
+          {hasProfit && isPositive ? '+' : ''}{formattedProfit}
         </p>
       </div>
     </div>
