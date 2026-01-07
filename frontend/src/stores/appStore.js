@@ -55,7 +55,12 @@ export const useAppStore = create((set, get) => ({
     try {
       const result = await ipcService.getDashboardStats();
       if (result.success) {
-        set({ dashboardStats: result.data });
+        const stats = result.data || {};
+        // Coercer en nombre pour éviter les valeurs string/undefined
+        stats.total_profit = Number(stats.total_profit) || 0;
+        stats.total_hands = Number(stats.total_hands) || 0;
+        stats.total_ev = Number(stats.total_ev) || 0;
+        set({ dashboardStats: stats });
       }
       return result;
     } catch (error) {

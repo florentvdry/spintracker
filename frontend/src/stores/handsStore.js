@@ -24,29 +24,40 @@ export const useHandsStore = create((set, get) => ({
   // Actions
   loadHands: async () => {
     set({ isLoading: true });
-    
-    try {
-      const { currentPage, pageSize, filters } = get();
-      const result = await ipcService.getHands({
-        page: currentPage,
-        limit: pageSize,
-        ...filters,
-      });
-      
-      if (result.success) {
-        set({
-          hands: result.data.hands || [],
-          totalHands: result.data.total || 0,
+
+    const { currentPage, pageSize, filters } = get();
+    let lastError = null;
+
+    // Retry a few times to handle the backend not being ready on app startup
+    for (let attempt = 0; attempt < 5; attempt++) {
+      try {
+        const result = await ipcService.getHands({
+          page: currentPage,
+          limit: pageSize,
+          ...filters,
         });
+
+        if (result && result.success && result.data) {
+          set({
+            hands: result.data.hands || [],
+            totalHands: result.data.total || 0,
+          });
+          set({ isLoading: false });
+          return result;
+        }
+
+        lastError = result && result.error ? result.error : 'Unknown error';
+      } catch (error) {
+        lastError = error;
       }
-      
-      return result;
-    } catch (error) {
-      console.error('Failed to load hands:', error);
-      return { success: false, error };
-    } finally {
-      set({ isLoading: false });
+
+      // Wait longer between attempts
+      await new Promise((res) => setTimeout(res, 300 * (attempt + 1)));
     }
+
+    console.error('Failed to load hands after retries:', lastError);
+    set({ isLoading: false });
+    return { success: false, error: lastError };
   },
 
   setPage: (page) => {

@@ -41,18 +41,37 @@ export default function WinrateChart({ className }) {
     setIsLoading(true);
     try {
       const result = await ipcService.getWinrateChartData({ period });
-      if (result.success && result.data) {
-        const { labels, realWin, theoricalWin, wonWithShowdown, wonWithoutShowdown } = result.data;
-        
-        // Transformer les données pour Recharts
-        const chartData = labels.map((label, index) => ({
-          hand: label,
-          chipsWon: realWin[index] || 0,
-          netExpected: theoricalWin[index] || 0,
-          wonWithShowdown: wonWithShowdown[index] || 0,
-          wonWithoutShowdown: wonWithoutShowdown[index] || 0
-        }));
-        setData(chartData);
+      if (result && result.success && result.data) {
+        const raw = result.data;
+
+        // Supporter deux formats renvoyés par le backend :
+        // - Ancien format : { labels: [], realWin: [], theoricalWin: [], wonWithShowdown: [], wonWithoutShowdown: [] }
+        // - Nouveau format : [{ date, profit, cumulative, ... }, ...]
+        if (Array.isArray(raw)) {
+          const chartData = raw.map((item, index) => ({
+            hand: item.date || `#${index + 1}`,
+            chipsWon: item.profit ?? item.realWin ?? 0,
+            netExpected: item.cumulative ?? item.theoricalWin ?? 0,
+            wonWithShowdown: item.chips_won_showdown ?? item.chipsWonShowdown ?? 0,
+            wonWithoutShowdown: item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0
+          }));
+          setData(chartData);
+        } else if (raw.labels && Array.isArray(raw.labels)) {
+          const { labels, realWin, theoricalWin, wonWithShowdown, wonWithoutShowdown } = raw;
+          const chartData = labels.map((label, index) => ({
+            hand: label,
+            chipsWon: (realWin && realWin[index]) || 0,
+            netExpected: (theoricalWin && theoricalWin[index]) || 0,
+            wonWithShowdown: (wonWithShowdown && wonWithShowdown[index]) || 0,
+            wonWithoutShowdown: (wonWithoutShowdown && wonWithoutShowdown[index]) || 0
+          }));
+          setData(chartData);
+        } else {
+          console.warn('WinrateChart: unexpected data format', raw);
+          setData([]);
+        }
+      } else {
+        setData([]);
       }
     } catch (error) {
       console.error('Failed to load chart data:', error);

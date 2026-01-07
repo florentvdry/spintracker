@@ -5,56 +5,83 @@ const { spawn } = require('child_process');
 
 let mainWindow;
 let splashWindow;
-let pythonProcess = null;
-const PYTHON_PORT = 5050;
+let backendProcess = null;
+const BACKEND_PORT = 5050;
 
-// ============ Python Backend Management ============
+// ============ C# Backend Management ============
 
-function startPythonBackend() {
-  const pythonPath = process.platform === 'win32' ? 'python' : 'python3';
-  const serverPath = path.join(__dirname, 'backend', 'server.py');
+function startBackend() {
+  const dotnetPath = 'dotnet';
+  const backendDir = path.join(__dirname, 'backend');
+  const dllPath = path.join(backendDir, 'bin', 'Debug', 'net8.0', 'PokerTrackerBackend.dll');
 
-  pythonProcess = spawn(pythonPath, [serverPath, PYTHON_PORT.toString()], {
-    cwd: path.join(__dirname, 'backend'),
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
+  // Check if compiled DLL exists
+  if (!fs.existsSync(dllPath)) {
+    console.log('[Backend] DLL not found, building project...');
+    // Try to build the project first
+    const buildProcess = spawn(dotnetPath, ['build'], {
+      cwd: backendDir,
+      stdio: 'inherit'
+    });
 
-  pythonProcess.stdout.on('data', (data) => {
-    const message = data.toString().trim();
-    if (message.includes('ERROR') || message.includes('Starting')) {
-      console.log(`[Python] ${message}`);
-    }
-  });
-
-  pythonProcess.stderr.on('data', (data) => {
-    const message = data.toString().trim();
-    // Filter out Flask's default request logging
-    if (!message.includes('127.0.0.1') && !message.includes('HTTP/1.1')) {
-      console.error(`[Python] ${message}`);
-    }
-  });
-
-  pythonProcess.on('close', (code) => {
-    if (code !== 0 && code !== null) {
-      console.error(`Python backend exited with code ${code}`);
-    }
-    pythonProcess = null;
-  });
-
-  pythonProcess.on('error', (err) => {
-    console.error('Failed to start Python backend:', err.message);
-    pythonProcess = null;
-  });
-}
-
-function stopPythonBackend() {
-  if (pythonProcess) {
-    pythonProcess.kill();
-    pythonProcess = null;
+    buildProcess.on('close', (code) => {
+      if (code === 0) {
+        console.log('[Backend] Build successful, starting backend...');
+        startBackendProcess();
+      } else {
+        console.error('[Backend] Build failed!');
+      }
+    });
+  } else {
+    startBackendProcess();
   }
 }
 
-async function callPythonAPI(endpoint, data = {}, method = 'POST') {
+function startBackendProcess() {
+  const dotnetPath = 'dotnet';
+  const backendDir = path.join(__dirname, 'backend');
+
+  backendProcess = spawn(dotnetPath, ['run', BACKEND_PORT.toString()], {
+    cwd: backendDir,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+
+  backendProcess.stdout.on('data', (data) => {
+    const message = data.toString().trim();
+    if (message.includes('ERROR') || message.includes('Starting') || message.includes('info:') || message.includes('warn:') || message.includes('fail:') || message.includes('API Debug')) {
+      console.log(`[Backend] ${message}`);
+    }
+  });
+
+  backendProcess.stderr.on('data', (data) => {
+    const message = data.toString().trim();
+    // Filter out routine request logging
+    if (!message.includes('127.0.0.1') && !message.includes('HTTP/1.1')) {
+      console.error(`[Backend] ${message}`);
+    }
+  });
+
+  backendProcess.on('close', (code) => {
+    if (code !== 0 && code !== null) {
+      console.error(`Backend exited with code ${code}`);
+    }
+    backendProcess = null;
+  });
+
+  backendProcess.on('error', (err) => {
+    console.error('Failed to start backend:', err.message);
+    backendProcess = null;
+  });
+}
+
+function stopBackend() {
+  if (backendProcess) {
+    backendProcess.kill();
+    backendProcess = null;
+  }
+}
+
+async function callBackendAPI(endpoint, data = {}, method = 'POST') {
   try {
     const fetch = (await import('node-fetch')).default;
     const options = {
@@ -66,7 +93,7 @@ async function callPythonAPI(endpoint, data = {}, method = 'POST') {
       options.body = JSON.stringify(data);
     }
     
-    const response = await fetch(`http://127.0.0.1:${PYTHON_PORT}${endpoint}`, options);
+    const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}${endpoint}`, options);
     return await response.json();
   } catch (error) {
     return { success: false, error: error.message };
@@ -119,7 +146,7 @@ function createWindow() {
 // ============ App Lifecycle ============
 
 app.whenReady().then(() => {
-  startPythonBackend();
+  startBackend();
 
   // Create a lightweight splash window
   splashWindow = new BrowserWindow({
@@ -152,14 +179,14 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
-  stopPythonBackend();
+  stopBackend();
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
 app.on('before-quit', () => {
-  stopPythonBackend();
+  stopBackend();
 });
 
 // ============ IPC Handlers - Import ============
@@ -185,7 +212,7 @@ ipcMain.handle('import-hand-history', async () => {
     for (const filePath of result.filePaths) {
       try {
         const content = fs.readFileSync(filePath, 'utf8');
-        const parseResult = await callPythonAPI('/parse/file', { content });
+        const parseResult = await callBackendAPI('/parse/file', { content });
 
         if (!parseResult.success) {
           parseErrors.push({ file: path.basename(filePath), error: parseResult.error });
@@ -209,7 +236,7 @@ ipcMain.handle('import-hand-history', async () => {
     for (const pr of parseResults) {
       try {
         if (pr.hands && pr.hands.length > 0) {
-          const insertResult = await callPythonAPI('/db/insert-hands', { hands: pr.hands });
+          const insertResult = await callBackendAPI('/db/insert-hands', { hands: pr.hands });
           if (insertResult.success) {
             totalHandsImported += insertResult.inserted || 0;
           } else {
@@ -248,17 +275,17 @@ ipcMain.handle('import-hand-history', async () => {
 // ============ IPC Handlers - Database Queries ============
 
 ipcMain.handle('get-dashboard-stats', async () => {
-  return callPythonAPI('/db/dashboard-stats', {}, 'GET');
+  return callBackendAPI('/db/dashboard-stats', {}, 'GET');
 });
 
 ipcMain.handle('get-session-history', async (event, limit = 50) => {
-  return callPythonAPI('/db/session-history', { limit });
+  return callBackendAPI('/db/session-history', { limit });
 });
 
 ipcMain.handle('get-hand-details', async (event, handId) => {
   const fetch = (await import('node-fetch')).default;
   try {
-    const response = await fetch(`http://127.0.0.1:${PYTHON_PORT}/db/hand/${handId}`);
+    const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/db/hand/${handId}`);
     return await response.json();
   } catch (error) {
     return { success: false, message: error.message };
@@ -266,23 +293,23 @@ ipcMain.handle('get-hand-details', async (event, handId) => {
 });
 
 ipcMain.handle('get-hands', async (event, options = {}) => {
-  return callPythonAPI('/db/hands', options);
+  return callBackendAPI('/db/hands', options);
 });
 
 ipcMain.handle('get-winrate-chart-data', async (event, options = {}) => {
-  return callPythonAPI('/db/winrate-chart', options);
+  return callBackendAPI('/db/winrate-chart', options);
 });
 
 ipcMain.handle('get-range-heatmap', async (event, filters) => {
-  return callPythonAPI('/db/range-heatmap', filters || {});
+  return callBackendAPI('/db/range-heatmap', filters || {});
 });
 
 ipcMain.handle('get-players', async (event, options = {}) => {
-  return callPythonAPI('/db/players', options);
+  return callBackendAPI('/db/players', options);
 });
 
 ipcMain.handle('analyze-leaks', async (event, options) => {
-  return callPythonAPI('/analyze/leaks', { options });
+  return callBackendAPI('/analyze/leaks', { options });
 });
 
 ipcMain.handle('delete-all-hands', async () => {
@@ -297,20 +324,20 @@ ipcMain.handle('delete-all-hands', async () => {
   });
 
   if (result.response === 1) {
-    return callPythonAPI('/db/delete-all', {});
+    return callBackendAPI('/db/delete-all', {});
   } else {
     return { success: false, message: 'Action annulée par l\'utilisateur' };
   }
 });
 
-// ============ IPC Handlers - Python Backend ============
+// ============ IPC Handlers - Backend C# ============
 
 ipcMain.handle('python-health-check', async () => {
-  return callPythonAPI('/health', {}, 'GET');
+  return callBackendAPI('/health', {}, 'GET');
 });
 
 ipcMain.handle('python-calculate-equity', async (event, params) => {
-  return callPythonAPI('/equity', params);
+  return callBackendAPI('/equity', params);
 });
 
 ipcMain.handle('python-analyze-leaks', async (event, options) => {
@@ -320,7 +347,7 @@ ipcMain.handle('python-analyze-leaks', async (event, options) => {
     message: 'Chargement des mains...',
   });
 
-  const result = await callPythonAPI('/analyze/leaks', { options });
+  const result = await callBackendAPI('/analyze/leaks', { options });
 
   mainWindow.webContents.send('analysis-progress', {
     stage: 'Terminé',
@@ -339,7 +366,7 @@ ipcMain.handle('python-recalculate-analytics', async () => {
 
   try {
     const fetch = (await import('node-fetch')).default;
-    const res = await fetch(`http://127.0.0.1:${PYTHON_PORT}/recalculate-analytics/stream`, {
+    const res = await fetch(`http://127.0.0.1:${BACKEND_PORT}/recalculate-analytics/stream`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({}),
@@ -349,7 +376,7 @@ ipcMain.handle('python-recalculate-analytics', async () => {
       // Try fallback: call the non-streaming endpoint to get a result object
       console.error('SSE stream not available, falling back to non-streaming call', { status: res.status, ok: res.ok });
       try {
-        const fallback = await callPythonAPI('/recalculate-analytics', {});
+        const fallback = await callBackendAPI('/recalculate-analytics', {});
         // Relay a final progress message
         mainWindow.webContents.send('ev-recalc-progress', { progress: 100, message: fallback && (fallback.message || fallback.error || 'Terminé'), ...fallback });
         return fallback;
@@ -426,14 +453,14 @@ ipcMain.handle('app-ready', async () => {
 });
 
 ipcMain.handle('python-analyze-range', async (event, params) => {
-  return callPythonAPI('/analyze/range', params);
+  return callBackendAPI('/analyze/range', params);
 });
 
 // ============ IPC Handlers - Export ============
 
 ipcMain.handle('export-data', async (event, format = 'json') => {
   try {
-    const handsResult = await callPythonAPI('/db/hands', { limit: 100000 });
+    const handsResult = await callBackendAPI('/db/hands', { limit: 100000 });
     
     if (!handsResult.success) {
       return { success: false, message: 'Failed to fetch hands' };
