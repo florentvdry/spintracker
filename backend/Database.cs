@@ -35,7 +35,8 @@ public class Database
             { "hero_all_in", "BOOLEAN DEFAULT 0" },
             { "villain_all_in", "BOOLEAN DEFAULT 0" },
             { "all_in_street", "TEXT" },
-            { "went_to_showdown", "BOOLEAN DEFAULT 0" }
+            { "went_to_showdown", "BOOLEAN DEFAULT 0" },
+            { "player_count", "INTEGER DEFAULT 2" }
         };
 
         foreach (var col in columnsToAdd)
@@ -128,6 +129,7 @@ public class Database
                 villain_all_in BOOLEAN DEFAULT 0,
                 all_in_street TEXT,
                 went_to_showdown BOOLEAN DEFAULT 0,
+                player_count INTEGER DEFAULT 2,
                 leak_detected TEXT,
                 error_type TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -224,14 +226,14 @@ public class Database
                     total_pot, rake, hero_position, hero_stack, hero_cards,
                     villain_position, villain_stack, villain_cards, preflop_action,
                     flop, flop_action, turn, turn_action, river, river_action,
-                    showdown, result, hero_investment, hero_profit, hero_net_profit, hero_all_in, villain_all_in, all_in_street, went_to_showdown
+                    showdown, result, hero_investment, hero_profit, hero_net_profit, hero_all_in, villain_all_in, all_in_street, went_to_showdown, player_count
                 ) VALUES (
                     @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
                     @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
                     @total_pot, @rake, @hero_position, @hero_stack, @hero_cards,
                     @villain_position, @villain_stack, @villain_cards, @preflop_action,
                     @flop, @flop_action, @turn, @turn_action, @river, @river_action,
-                    @showdown, @result, @hero_investment, @hero_profit, @hero_net_profit, @hero_all_in, @villain_all_in, @all_in_street, @went_to_showdown
+                    @showdown, @result, @hero_investment, @hero_profit, @hero_net_profit, @hero_all_in, @villain_all_in, @all_in_street, @went_to_showdown, @player_count
                 )";
 
             foreach (var hand in hands)
@@ -276,6 +278,7 @@ public class Database
                     cmd.Parameters.AddWithValue("@villain_all_in", hand.VillainAllIn ? 1 : 0);
                     cmd.Parameters.AddWithValue("@all_in_street", hand.AllInStreet ?? "");
                     cmd.Parameters.AddWithValue("@went_to_showdown", hand.WentToShowdown ? 1 : 0);
+                    cmd.Parameters.AddWithValue("@player_count", hand.PlayerCount);
 
                     await cmd.ExecuteNonQueryAsync();
                     inserted++;
@@ -368,6 +371,62 @@ public class Database
             {
                 whereClauses.Add("date_time <= @dateTo");
                 parameters.Add(new SqliteParameter("@dateTo", options.DateTo));
+            }
+
+            if (!string.IsNullOrEmpty(options.Position))
+            {
+                if (options.Position.Contains("HU"))
+                {
+                    whereClauses.Add("player_count = 2");
+                }
+                else if (options.Position.Contains("3W"))
+                {
+                    whereClauses.Add("player_count >= 3");
+                }
+
+                // Extract actual position (SB, BB, BTN)
+                // "HU SB" -> "SB"
+                // "3W BTN" -> "BTN"
+                var parts = options.Position.Split(' ');
+                var pos = parts.Last(); // Assuming "SB" or "BTN" is always last
+                
+                if (pos == "SB" || pos == "BB" || pos == "BTN")
+                {
+                    // Support "Hero (SB)" format in DB or just "SB"
+                    whereClauses.Add("(hero_position = @position OR hero_position LIKE @posLike)");
+                    parameters.Add(new SqliteParameter("@position", pos));
+                    parameters.Add(new SqliteParameter("@posLike", $"%({pos})%"));
+                }
+            }
+
+            if (!string.IsNullOrEmpty(options.GameType))
+            {
+                whereClauses.Add("game_type = @gameType");
+                parameters.Add(new SqliteParameter("@gameType", options.GameType));
+            }
+
+            if (options.MinPot.HasValue)
+            {
+                whereClauses.Add("total_pot >= @minPot");
+                parameters.Add(new SqliteParameter("@minPot", options.MinPot.Value));
+            }
+
+            if (options.MaxPot.HasValue)
+            {
+                whereClauses.Add("total_pot <= @maxPot");
+                parameters.Add(new SqliteParameter("@maxPot", options.MaxPot.Value));
+            }
+
+            if (!string.IsNullOrEmpty(options.Result))
+            {
+                if (options.Result.ToLower() == "won")
+                {
+                    whereClauses.Add("hero_profit > 0");
+                }
+                else if (options.Result.ToLower() == "lost")
+                {
+                    whereClauses.Add("hero_profit < 0");
+                }
             }
 
             var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
@@ -647,30 +706,97 @@ public class Database
         await connection.OpenAsync();
 
         using var cmd = connection.CreateCommand();
+        // Fetch raw cards and profit, process in C# to normalize
         cmd.CommandText = @"
             SELECT 
                 hero_cards,
-                COUNT(*) as count,
-                SUM(hero_profit) as total_profit,
-                AVG(hero_profit) as avg_profit
+                hero_profit
             FROM hands
-            WHERE hero_cards IS NOT NULL AND hero_cards != ''
-            GROUP BY hero_cards";
+            WHERE hero_cards IS NOT NULL AND hero_cards != ''";
 
-        var heatmapData = new Dictionary<string, object>();
+        var heatmapData = new Dictionary<string, HeatmapEntry>();
+
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
-            var cards = reader.GetString(0);
-            heatmapData[cards] = new
+            var cardsRaw = reader.GetString(0);
+            var profit = reader.GetDouble(1);
+            
+            var normalized = NormalizeCards(cardsRaw);
+            if (normalized == null) continue;
+
+            if (!heatmapData.ContainsKey(normalized))
             {
-                count = reader.GetInt32(1),
-                total_profit = reader.GetDouble(2),
-                avg_profit = reader.GetDouble(3)
+                heatmapData[normalized] = new HeatmapEntry();
+            }
+
+            var entry = heatmapData[normalized];
+            entry.Count++;
+            entry.TotalProfit += profit;
+        }
+
+        // Convert to response format
+        var result = new Dictionary<string, object>();
+        foreach (var kvp in heatmapData)
+        {
+            result[kvp.Key] = new
+            {
+                count = kvp.Value.Count,
+                total_profit = kvp.Value.TotalProfit,
+                avg_profit = kvp.Value.TotalProfit / kvp.Value.Count
             };
         }
 
-        return heatmapData;
+        return result;
+    }
+
+    private class HeatmapEntry
+    {
+        public int Count { get; set; }
+        public double TotalProfit { get; set; }
+    }
+
+    private string? NormalizeCards(string cardsRaw)
+    {
+        // Expected format: "As Kh" or "Ad Ac" etc.
+        var parts = cardsRaw.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 2) return null;
+
+        var c1 = parts[0];
+        var c2 = parts[1];
+
+        if (c1.Length < 2 || c2.Length < 2) return null;
+
+        var r1 = c1[0]; // Rank
+        var s1 = c1[1]; // Suit
+        var r2 = c2[0];
+        var s2 = c2[1];
+
+        var rankOrder = "AKQJT98765432";
+        var i1 = rankOrder.IndexOf(r1);
+        var i2 = rankOrder.IndexOf(r2);
+
+        if (i1 == -1 || i2 == -1) return null;
+
+        // Ensure c1 is higher rank
+        if (i1 > i2) 
+        {
+            (r1, r2) = (r2, r1);
+            (s1, s2) = (s2, s1);
+        }
+
+        if (r1 == r2)
+        {
+            return $"{r1}{r2}"; // Pair: AA
+        }
+        else if (s1 == s2)
+        {
+            return $"{r1}{r2}s"; // Suited: AKs
+        }
+        else
+        {
+            return $"{r1}{r2}o"; // Offsuit: AKo
+        }
     }
 
     public async Task<object> GetPlayersOverviewAsync(PlayersQueryOptions options)
@@ -678,11 +804,13 @@ public class Database
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
+        var whereClause = options.MinHands.HasValue ? $"WHERE total_hands >= {options.MinHands.Value}" : "";
         var limitClause = options.Limit.HasValue ? $"LIMIT {options.Limit.Value}" : "";
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = $@"
             SELECT * FROM players
+            {whereClause}
             ORDER BY total_hands DESC
             {limitClause}";
 
@@ -769,44 +897,45 @@ public class Database
             var hand = new
             {
                 id = reader.GetString(reader.GetOrdinal("id")),
-                gameId = GetStringOrNull(reader, "game_id"),
-                handId = GetStringOrNull(reader, "hand_id"),
+                game_id = GetStringOrNull(reader, "game_id"),
+                hand_id = GetStringOrNull(reader, "hand_id"),
                 room = GetStringOrNull(reader, "room"),
-                gameMode = GetStringOrNull(reader, "game_mode"),
-                gameType = GetStringOrNull(reader, "game_type"),
-                gameName = GetStringOrNull(reader, "game_name"),
-                prizePool = GetDoubleOrNull(reader, "prize_pool"),
+                game_mode = GetStringOrNull(reader, "game_mode"),
+                game_type = GetStringOrNull(reader, "game_type"),
+                game_name = GetStringOrNull(reader, "game_name"),
+                prize_pool = GetDoubleOrNull(reader, "prize_pool"),
                 multiplier = GetInt32OrNull(reader, "multiplier"),
-                buyIn = GetDoubleOrNull(reader, "buy_in"),
-                dateTime = GetStringOrNull(reader, "date_time"),
-                tableId = GetStringOrNull(reader, "table_id"),
+                buy_in = GetDoubleOrNull(reader, "buy_in"),
+                date_time = GetStringOrNull(reader, "date_time"),
+                table_id = GetStringOrNull(reader, "table_id"),
                 blinds = GetStringOrNull(reader, "blinds"),
-                totalPot = GetDoubleOrNull(reader, "total_pot"),
+                total_pot = GetDoubleOrNull(reader, "total_pot"),
                 rake = GetDoubleOrNull(reader, "rake"),
-                heroPosition = GetStringOrNull(reader, "hero_position"),
-                heroStack = GetInt32OrNull(reader, "hero_stack"),
-                heroCards = GetStringOrNull(reader, "hero_cards"),
-                villainPosition = GetStringOrNull(reader, "villain_position"),
-                villainStack = GetInt32OrNull(reader, "villain_stack"),
-                villainCards = GetStringOrNull(reader, "villain_cards"),
-                preflopAction = GetStringOrNull(reader, "preflop_action"),
+                hero_position = GetStringOrNull(reader, "hero_position"),
+                hero_stack = GetInt32OrNull(reader, "hero_stack"),
+                hero_cards = GetStringOrNull(reader, "hero_cards"),
+                villain_position = GetStringOrNull(reader, "villain_position"),
+                villain_stack = GetInt32OrNull(reader, "villain_stack"),
+                villain_cards = GetStringOrNull(reader, "villain_cards"),
+                preflop_action = GetStringOrNull(reader, "preflop_action"),
                 flop = GetStringOrNull(reader, "flop"),
-                flopAction = GetStringOrNull(reader, "flop_action"),
+                flop_action = GetStringOrNull(reader, "flop_action"),
                 turn = GetStringOrNull(reader, "turn"),
-                turnAction = GetStringOrNull(reader, "turn_action"),
+                turn_action = GetStringOrNull(reader, "turn_action"),
                 river = GetStringOrNull(reader, "river"),
-                riverAction = GetStringOrNull(reader, "river_action"),
+                river_action = GetStringOrNull(reader, "river_action"),
                 showdown = GetStringOrNull(reader, "showdown"),
                 result = GetStringOrNull(reader, "result"),
-                heroProfit = GetDoubleOrNull(reader, "hero_profit"),
-                heroAllIn = GetBoolOrNull(reader, "hero_all_in"),
-                villainAllIn = GetBoolOrNull(reader, "villain_all_in"),
-                wentToShowdown = GetBoolOrNull(reader, "went_to_showdown"),
-                evChips = GetDoubleOrNull(reader, "ev_chips"),
-                equityPreflop = GetDoubleOrNull(reader, "equity_preflop"),
-                equityFlop = GetDoubleOrNull(reader, "equity_flop"),
-                equityTurn = GetDoubleOrNull(reader, "equity_turn"),
-                equityRiver = GetDoubleOrNull(reader, "equity_river")
+                hero_profit = GetDoubleOrNull(reader, "hero_profit"),
+                hero_all_in = GetBoolOrNull(reader, "hero_all_in"),
+                villain_all_in = GetBoolOrNull(reader, "villain_all_in"),
+                went_to_showdown = GetBoolOrNull(reader, "went_to_showdown"),
+                player_count = GetInt32OrNull(reader, "player_count"),
+                ev_chips = GetDoubleOrNull(reader, "ev_chips"),
+                equity_preflop = GetDoubleOrNull(reader, "equity_preflop"),
+                equity_flop = GetDoubleOrNull(reader, "equity_flop"),
+                equity_turn = GetDoubleOrNull(reader, "equity_turn"),
+                equity_river = GetDoubleOrNull(reader, "equity_river")
             };
             _logger.LogInformation($"Successfully read hand: {hand.id}");
             return hand;

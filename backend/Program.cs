@@ -6,6 +6,12 @@ using PokerTrackerBackend;
 // Initialize SQLite
 SQLitePCL.Batteries.Init();
 
+if (args.Length > 0 && args[0] == "--benchmark")
+{
+    Benchmark.Run();
+    return;
+}
+
 if (args.Length > 0 && args[0] == "--verify")
 {
     await Verification.Run();
@@ -730,6 +736,11 @@ public record HandsQueryOptions
     public int Limit { get; set; } = 50;
     public string? DateFrom { get; set; }
     public string? DateTo { get; set; }
+    public string? Position { get; set; }
+    public string? Result { get; set; }
+    public string? GameType { get; set; }
+    public double? MinPot { get; set; }
+    public double? MaxPot { get; set; }
 }
 public record SessionHistoryRequest(int Limit = 50);
 public record ChartQueryOptions
@@ -741,6 +752,7 @@ public record RangeHeatmapFilters { }
 public record PlayersQueryOptions
 {
     public int? Limit { get; set; }
+    public int? MinHands { get; set; }
 }
 public record EquityRequest(string? HeroCards, string? VillainCards, string? Board, int? Iterations);
 public record BatchEquityRequest(List<BatchEquityHand> Hands, int? Iterations);

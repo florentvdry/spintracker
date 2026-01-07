@@ -17,10 +17,6 @@ public static class ComparisonTool
 
         var equityCalc = new EquityCalculator(NullLogger<EquityCalculator>.Instance);
         
-        // DEBUG MANUAL EQUITY CHECK
-        var eqRes = equityCalc.Calculate("Ad Ah", "Td 9c", "", 20000);
-        Console.WriteLine($"[DEBUG MANUAL] AA vs T9o Equity: {eqRes.HeroEquity}");
-
         var analyticsCalc = new AnalyticsCalculator(equityCalc, NullLogger<AnalyticsCalculator>.Instance);
 
         // 1. Load and Parse Local Files
@@ -97,9 +93,15 @@ public static class ComparisonTool
         int localShowdownCount = 0;
         int pt4ShowdownCount = 0;
 
-        foreach (var localHand in localHands)
+        object lockObj = new object();
+        int processedCount = 0;
+        int totalToProcess = localHands.Count;
+
+        Console.WriteLine($"Starting Parallel Comparison with {Environment.ProcessorCount} threads...");
+
+        Parallel.ForEach(localHands, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, localHand =>
         {
-            if (string.IsNullOrEmpty(localHand.HandId)) continue;
+            if (string.IsNullOrEmpty(localHand.HandId)) return;
             
             if (pt4Data.TryGetValue(localHand.HandId, out var pt4Hand))
             {
@@ -109,57 +111,65 @@ public static class ComparisonTool
                 // Compare Showdown
                 if (localHand.HeroWentToShowdown != pt4Hand.Showdown)
                 {
-                    Console.WriteLine($"[Mismatch Showdown] Hand {localHand.HandId}: Local={localHand.HeroWentToShowdown}, PT4={pt4Hand.Showdown}");
+                    lock(lockObj) Console.WriteLine($"[Mismatch Showdown] Hand {localHand.HandId}: Local={localHand.HeroWentToShowdown}, PT4={pt4Hand.Showdown}");
                     mismatch = true;
                 }
                 
                 // Compare Profit
                 if (Math.Abs(localHand.HeroProfit - pt4Hand.ChipsWon) > 0.01)
                 {
-                     Console.WriteLine($"[Mismatch Profit] Hand {localHand.HandId}: Local={localHand.HeroProfit}, PT4={pt4Hand.ChipsWon}");
+                     lock(lockObj) Console.WriteLine($"[Mismatch Profit] Hand {localHand.HandId}: Local={localHand.HeroProfit}, PT4={pt4Hand.ChipsWon}");
                      mismatch = true;
                 }
 
                 double pt4Ev = pt4Hand.NetExpectedChipsWon ?? pt4Hand.ChipsWon;
                 double localEv = analytics.NetWonAdjusted ?? localHand.HeroProfit;
                 
-                // Accumulate EV
-                totalLocalEv += localEv;
-                totalPt4Ev += pt4Ev;
-
-                if (Math.Abs(localEv - pt4Ev) > 10.0)
+                if (Math.Abs(localEv - pt4Ev) > 0.05)
                 {
-                     Console.WriteLine($"[Mismatch EV] Hand {localHand.HandId}: Local={localEv:F2}, PT4={pt4Ev:F2} (Diff={localEv-pt4Ev:F2})");
+                     lock(lockObj) Console.WriteLine($"[Mismatch EV] Hand {localHand.HandId}: Local={localEv:F2}, PT4={pt4Ev:F2} (Diff={localEv-pt4Ev:F2})");
                      mismatch = true;
                 }
 
-                if (mismatch)
+                lock (lockObj)
                 {
-                    mismatchCount++;
-                    if (mismatchCount <= 5)
-                    {
-                        Console.WriteLine($"--- RAW LOCAL HAND {localHand.HandId} ---");
-                        Console.WriteLine(localHand.Result);
-                        Console.WriteLine("------------------------------------------");
-                    }
-                }
-                
-                totalLocalWon += localHand.HeroProfit;
-                totalPt4Won += pt4Hand.ChipsWon;
-                
-                if (localHand.HeroWentToShowdown) 
-                {
-                    localShowdownCount++;
-                    localShowdownWon += localHand.HeroProfit;
-                }
-                else
-                {
-                    localNoShowdownWon += localHand.HeroProfit;
-                }
+                    processedCount++;
+                    if (processedCount % 100 == 0) Console.Write($"\rProcessed {processedCount}/{totalToProcess}...");
 
-                if (pt4Hand.Showdown) pt4ShowdownCount++;
+                    // Accumulate EV
+                    totalLocalEv += localEv;
+                    totalPt4Ev += pt4Ev;
+
+                    if (mismatch)
+                    {
+                        mismatchCount++;
+                        if (Math.Abs(localEv - pt4Ev) > 1.0)
+                        {
+                            Console.WriteLine($"\n--- RAW LOCAL HAND {localHand.HandId} ---");
+                            Console.WriteLine(localHand.Result);
+                            Console.WriteLine("------------------------------------------");
+                        }
+                    }
+                    
+                    totalLocalWon += localHand.HeroProfit;
+                    totalPt4Won += pt4Hand.ChipsWon;
+                    
+                    if (localHand.HeroWentToShowdown) 
+                    {
+                        localShowdownCount++;
+                        localShowdownWon += localHand.HeroProfit;
+                    }
+                    else
+                    {
+                        localNoShowdownWon += localHand.HeroProfit;
+                    }
+
+                    if (pt4Hand.Showdown) pt4ShowdownCount++;
+                }
             }
-        }
+        });
+
+        Console.WriteLine("\nComparison Finished.");
 
         Console.WriteLine($"Total Mismatches: {mismatchCount}");
         Console.WriteLine($"Total Local Won: {totalLocalWon:F2}, PT4 Won: {totalPt4Won:F2}");

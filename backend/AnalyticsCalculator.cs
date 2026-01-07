@@ -60,13 +60,26 @@ public class AnalyticsCalculator
             {
                 evChips = null;
             }
-            else if (isMultiway)
-            {
-                evChips = CalculateMultiwayEv(hand);
-            }
             else
             {
-                evChips = CalculateAllInEv(hand);
+                // Use Multiway logic for everything as it handles side pots and dead money correctly
+                bool forceProfit = false;
+                try
+                {
+                    evChips = CalculateMultiwayEv(hand);
+                }
+                catch (VoluntaryFoldException)
+                {
+                    evChips = null;
+                    forceProfit = true;
+                }
+
+                // Fallback to legacy simplistic calculation ONLY if Multiway failed (e.g. parser didn't populate Players)
+                // AND we are not forcing profit
+                if (!evChips.HasValue && !forceProfit)
+                {
+                    evChips = CalculateAllInEv(hand);
+                }
             }
 
             if (evChips.HasValue)
@@ -121,6 +134,36 @@ public class AnalyticsCalculator
         if (checkRiver && HasPlayerAction(hand.RiverAction)) return true;
 
         return false;
+    }
+
+    private bool HasVoluntaryAction(string playerName, ParsedHand hand)
+    {
+        try
+        {
+            var actions = new[] { hand.PreflopAction, hand.FlopAction, hand.TurnAction, hand.RiverAction };
+            foreach (var streetActions in actions)
+            {
+                if (string.IsNullOrEmpty(streetActions)) continue;
+                var lines = streetActions.Split('\n');
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    var m = System.Text.RegularExpressions.Regex.Match(line, "^(?:[0-9:]+\\s*-\\s*)?([^:]+):");
+                    if (!m.Success) continue;
+                    var p = m.Groups[1].Value.Trim();
+                    if (!p.Equals(playerName, StringComparison.OrdinalIgnoreCase)) continue;
+
+                    var lower = line.ToLower();
+                    if (lower.Contains("calls") || lower.Contains("bets") || lower.Contains("raises"))
+                        return true;
+                }
+            }
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private bool HasPlayerAction(string actionText)
@@ -192,6 +235,7 @@ public class AnalyticsCalculator
             var sortedPlayers = activePlayers.OrderBy(p => p.Investment).ToList();
             
             double totalEv = 0;
+            double contestedInvestment = 0;
             double currentLevel = 0;
             
             var board = GetBoardAtAllIn(hand);
@@ -227,32 +271,59 @@ public class AnalyticsCalculator
                     // Calculate Equity for Hero vs Competing Villains in this side pot
                     var villainCardsList = competingPlayers.Where(x => !x.IsHero).Select(x => x.Cards).ToList();
                     
-                    double heroEq = 0;
                     if (villainCardsList.Count == 0)
                     {
-                        // Hero vs no one? (Everyone else folded or lower stack?)
-                        // If no villains left competing for this pot, Hero wins 100%?
-                        // This happens if Hero covers everyone.
-                        // But wait, if Hero covers everyone, the excess is returned?
-                        // `stepPot` includes Hero's excess?
-                        // BetclicParser usually adjusts uncalled bets.
-                        // So stepPot should be real pot.
-                        heroEq = 1.0;
+                        // Uncontested side pot (everyone else folded or lower stack).
+                        // PT4 seems to exclude this from EV calculation entirely.
+                        // So we do NOT add to totalEv, and we do NOT track the investment for this part.
+
+                        // Check if any folded player contributed voluntarily to this pot.
+                        foreach (var player in hand.Players)
+                        {
+                            if (player.Investment > currentLevel)
+                            {
+                                if (player.IsHero) continue;
+                                
+                                bool hasVol = HasVoluntaryAction(player.Name, hand);
+
+                                if (hasVol)
+                                {
+                                    throw new VoluntaryFoldException();
+                                }
+                            }
+                        }
                     }
                     else
                     {
                         var villainCardsStr = string.Join("|", villainCardsList);
-                        var equityResult = _equityCalc.Calculate(heroCards, villainCardsStr, board, 50000);
-                        heroEq = equityResult.HeroEquity / 100.0;
+                        
+                        // Identify dead cards (players with known cards who are NOT competing in this pot slice)
+                        // e.g. players who are All-In for less
+                        var deadCardsList = hand.Players
+                            .Where(p => !string.IsNullOrEmpty(p.Cards) && !p.IsHero && !competingPlayers.Contains(p))
+                            .Select(p => p.Cards);
+                        
+                        var deadCardsStr = string.Join(" ", deadCardsList);
+
+                        var equityResult = _equityCalc.Calculate(heroCards, villainCardsStr, board, 50000, deadCardsStr);
+                        double heroEq = equityResult.HeroEquity / 100.0;
+                        
+                        totalEv += heroEq * stepPot;
+                        
+                        // Track Hero's investment that was used for this contested pot
+                        // Hero contributed 'step' to this pot
+                        contestedInvestment += step;
                     }
-                    
-                    totalEv += heroEq * stepPot;
                 }
                 
                 currentLevel = investment;
             }
             
-            return Math.Round(totalEv - hand.HeroInvestment, 2);
+            return Math.Round(totalEv - contestedInvestment, 2);
+        }
+        catch (VoluntaryFoldException)
+        {
+            throw;
         }
         catch (Exception e)
         {
@@ -503,6 +574,8 @@ public class AnalyticsCalculator
         }
     }
 }
+
+public class VoluntaryFoldException : Exception { }
 
 public class HandAnalytics
 {

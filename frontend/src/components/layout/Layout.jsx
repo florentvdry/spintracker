@@ -10,7 +10,7 @@ export default function Layout({ children }) {
         <Header />
         
         <main className="flex-1 overflow-y-auto bg-dark-500 p-6">
-          <div className="max-w-7xl mx-auto animate-fade-in">
+          <div className="px-4 mx-auto animate-fade-in">
             {children}
           </div>
         </main>

@@ -60,9 +60,11 @@ export default function HandHistory() {
           onChange={(e) => setFilters({ position: e.target.value || null })}
         >
           <option value="">Position</option>
-          <option value="BTN">BTN</option>
-          <option value="SB">SB</option>
-          <option value="BB">BB</option>
+          <option value="HU SB">HU SB</option>
+          <option value="HU BB">HU BB</option>
+          <option value="3W BTN">3W BTN</option>
+          <option value="3W SB">3W SB</option>
+          <option value="3W BB">3W BB</option>
         </select>
 
         <select 

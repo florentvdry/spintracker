@@ -69,10 +69,19 @@ export default function Players() {
           <option value="lastSeen">Par date</option>
         </select>
 
-        <button className="btn-secondary flex items-center gap-2">
-          <Filter className="w-4 h-4" />
-          Filtres
-        </button>
+        <div className="flex items-center gap-2">
+           <span className="text-sm text-gray-400">Min. Mains:</span>
+           <input 
+             type="number" 
+             className="input w-20"
+             value={filters.minHands || 0}
+             onChange={(e) => {
+               const val = parseInt(e.target.value) || 0;
+               setFilters({ minHands: val });
+               loadPlayers({ minHands: val });
+             }}
+           />
+        </div>
       </Card>
 
       {/* Content */}

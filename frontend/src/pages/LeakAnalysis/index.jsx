@@ -28,7 +28,8 @@ export default function LeakAnalysis() {
     try {
       const result = await ipcService.analyzeLeaks(filters);
       if (result.success) {
-        setLeaks(result.data || []);
+        // The backend returns { leaks: [], total: 0 }
+        setLeaks(result.data?.leaks || []);
       }
     } catch (error) {
       console.error('Failed to load leaks:', error);

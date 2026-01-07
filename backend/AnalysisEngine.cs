@@ -20,15 +20,55 @@ public class AnalysisEngine
             // Simplified leak detection
             // In production, implement comprehensive leak analysis
 
-            // Example: Check for obvious mistakes
-            if (hand.HeroProfit < -100)
+            // 1. Large Loss
+            if (hand.HeroProfit < -50) // Lowered threshold
             {
                 leaks.Add(new
                 {
-                    handId = hand.Id,
-                    leakType = "Large Loss",
-                    severity = "High",
-                    description = $"Lost {Math.Abs(hand.HeroProfit)} chips"
+                    id = hand.Id + "_leak_1",
+                    hand_id = hand.Id,
+                    leak_type = "Large Loss",
+                    severity = "critical",
+                    description = $"Lost {Math.Abs(hand.HeroProfit)} chips in a single hand.",
+                    ev_loss = Math.Abs(hand.HeroProfit)
+                });
+            }
+
+            // 2. Passive Play with High Equity (Example)
+            // Assuming we have equity data joined (but ParsedHand might not have it if not filled)
+            // If we had equity, we could check: if (hand.EquityPreflop > 0.7 && hand.HeroProfit < 0) ...
+
+            // 3. Limping Preflop (Heuristic)
+            // Check if Hero's first action was a Call (and not a cold call of a raise, which is also bad but different)
+            // This is a very rough heuristic
+            if (!string.IsNullOrEmpty(hand.PreflopAction) && 
+                hand.PreflopAction.Contains("calls") && 
+                !hand.PreflopAction.Contains("raises"))
+            {
+                 leaks.Add(new
+                {
+                    id = hand.Id + "_leak_3",
+                    hand_id = hand.Id,
+                    leak_type = "Passive Preflop",
+                    severity = "major",
+                    description = "Called preflop without raising. Consider raising to take initiative.",
+                    ev_loss = 0
+                });
+            }
+            
+            // 4. Folded to 3-Bet (Heuristic)
+            if (!string.IsNullOrEmpty(hand.PreflopAction) && 
+                hand.PreflopAction.Contains("raises") && 
+                hand.PreflopAction.Contains("folds"))
+            {
+                 leaks.Add(new
+                {
+                    id = hand.Id + "_leak_4",
+                    hand_id = hand.Id,
+                    leak_type = "Fold to 3-Bet",
+                    severity = "major",
+                    description = "Opened and then folded to a re-raise.",
+                    ev_loss = 0
                 });
             }
         }

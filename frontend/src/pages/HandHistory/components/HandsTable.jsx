@@ -9,6 +9,7 @@ export default function HandsTable({ hands, onSelect, selectedId }) {
             <th>Date</th>
             <th>Cartes</th>
             <th>Position</th>
+            <th className="text-right">EV Chips</th>
             <th className="text-right">Pot</th>
             <th className="text-right">Résultat</th>
           </tr>
@@ -40,6 +41,9 @@ export default function HandsTable({ hands, onSelect, selectedId }) {
                   <span className="badge badge-info">
                     {hand.hero_position}
                   </span>
+                </td>
+                <td className="text-right text-gray-300">
+                  {hand.ev_chips ? hand.ev_chips.toFixed(2) : '—'}
                 </td>
                 <td className="text-right text-gray-300">
                   {hand.total_pot?.toFixed(0) || 0}

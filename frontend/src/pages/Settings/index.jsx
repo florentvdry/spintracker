@@ -71,7 +71,7 @@ export default function Settings() {
           <SettingRow
             icon={Calculator}
             title="Recalculer toutes les statistiques"
-            description="Utilise Python pour recalculer l'équité de toutes les mains (peut prendre plusieurs minutes)"
+            description="Recalcule l'équité de toutes les mains (peut prendre plusieurs minutes)"
             action={
               <button
                 onClick={handleRecalculateEV}
@@ -114,12 +114,12 @@ export default function Settings() {
       </Card>
 
       {/* Python backend */}
-      <Card title="Backend Python" subtitle="Calculs d'équité avancés">
+      <Card title="Serveur" subtitle="Calculs d'équité avancés">
         <div className="space-y-4">
           <SettingRow
             icon={Database}
-            title="État du serveur Python"
-            description="Le backend Python effectue les calculs d'équité en parallèle"
+            title="État du serveur"
+            description="Le backend  effectue les calculs d'équité en parallèle"
             action={
               <span className="badge badge-success">Actif</span>
             }
@@ -132,9 +132,6 @@ export default function Settings() {
         <div className="space-y-2 text-sm text-gray-400">
           <p><span className="text-white">Poker Tracker Pro</span> v1.0.0</p>
           <p>Application de suivi et d'analyse pour le poker Spin & Go</p>
-          <p className="text-xs mt-4">
-            Développé avec Electron, React et Python
-          </p>
         </div>
       </Card>
     </div>

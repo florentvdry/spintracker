@@ -4,17 +4,22 @@ public class EquityCalculator
 {
     private readonly ILogger<EquityCalculator> _logger;
 
+    // Thread-safe cache for preflop results
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, EquityResult> _preflopCache 
+        = new System.Collections.Concurrent.ConcurrentDictionary<string, EquityResult>();
+
     public EquityCalculator(ILogger<EquityCalculator> logger)
     {
         _logger = logger;
     }
 
-    public EquityResult Calculate(string heroCards, string villainCards, string board, int iterations)
+    public EquityResult Calculate(string heroCards, string villainCards, string board, int iterations, string? deadCards = null)
     {
         try
         {
             var heroCardList = ParseCards(heroCards);
             var boardCards = ParseCards(board);
+            var deadCardList = ParseCards(deadCards);
 
             // Support multiway villain hands separated by '|'
             if (!string.IsNullOrWhiteSpace(villainCards) && villainCards.Contains('|'))
@@ -26,13 +31,13 @@ public class EquityCalculator
 
                 // Use exact enumeration for postflop multiway when feasible
                 var cardsNeededMulti = 5 - boardCards.Count;
-                if (cardsNeededMulti <= 2)
+                if (cardsNeededMulti <= 5)
                 {
-                    return RunExactEnumerationMultiway(heroCardList, villainHands, boardCards);
+                    return RunExactEnumerationMultiway(heroCardList, villainHands, boardCards, deadCardList);
                 }
 
                 // Otherwise fall back to Monte Carlo
-                return RunMonteCarloMultiway(heroCardList, villainHands, boardCards, iterations);
+                return RunMonteCarloMultiway(heroCardList, villainHands, boardCards, iterations, deadCardList);
             }
 
             var villainCardList = ParseCards(villainCards);
@@ -44,13 +49,31 @@ public class EquityCalculator
             // Use exact enumeration for postflop (flop/turn/river) when feasible,
             // fallback to Monte Carlo when too many unknown cards remain.
             var cardsNeeded = 5 - boardCards.Count;
-            if (cardsNeeded <= 3) // Changed from 2 to 3 for more accuracy
+            
+            // Use fast exact enumeration for everything up to preflop (5 cards needed)
+            // Preflop: C(48, 5) = 1,712,304 iterations. With fast evaluator, this should be < 1s.
+            if (cardsNeeded <= 5) 
             {
-                return RunExactEnumeration(heroCardList, villainCardList, boardCards);
+                // CACHE CHECK FOR PREFLOP
+                if (cardsNeeded == 5 && (deadCardList == null || deadCardList.Count == 0))
+                {
+                    var cacheKey = GetCacheKey(heroCardList, villainCardList);
+                    if (_preflopCache.TryGetValue(cacheKey, out var cached))
+                    {
+                        return cached;
+                    }
+
+                    var result = RunExactEnumerationFast(heroCardList, villainCardList, boardCards, deadCardList);
+                    _preflopCache[cacheKey] = result;
+                    return result;
+                }
+
+                return RunExactEnumerationFast(heroCardList, villainCardList, boardCards, deadCardList);
             }
 
-            // Monte Carlo simulation for cases with >2 unknown cards or multiway fallthrough
-            return RunMonteCarlo(heroCardList, villainCardList, boardCards, iterations);
+            // Monte Carlo simulation for cases with >2 unknown cards (if we ever support that?)
+            // Or fallback if something goes wrong.
+            return RunMonteCarlo(heroCardList, villainCardList, boardCards, iterations, deadCardList);
         }
         catch (Exception e)
         {
@@ -59,14 +82,383 @@ public class EquityCalculator
         }
     }
 
-    private EquityResult RunMonteCarlo(List<Card> heroCards, List<Card> villainCards, List<Card> boardCards, int iterations)
+    private string GetCacheKey(List<Card> hero, List<Card> villain)
+    {
+        // Normalize cards within hand for consistent key
+        // We use the string representation for simplicity
+        var h = hero.OrderBy(c => c.Rank).ThenBy(c => c.Suit).Select(c => c.ToString());
+        var v = villain.OrderBy(c => c.Rank).ThenBy(c => c.Suit).Select(c => c.ToString());
+        return $"{string.Join("", h)}|{string.Join("", v)}";
+    }
+
+    private EquityResult RunExactEnumerationFast(List<Card> heroCards, List<Card> villainCards, List<Card> boardCards, List<Card>? deadCards = null)
+    {
+        // Convert to ints
+        int hc1 = GetCardInt(heroCards[0]);
+        int hc2 = GetCardInt(heroCards[1]);
+        int vc1 = GetCardInt(villainCards[0]);
+        int vc2 = GetCardInt(villainCards[1]);
+        
+        int b1 = -1, b2 = -1, b3 = -1, b4 = -1, b5 = -1;
+        int boardCount = boardCards.Count;
+        if (boardCount >= 1) b1 = GetCardInt(boardCards[0]);
+        if (boardCount >= 2) b2 = GetCardInt(boardCards[1]);
+        if (boardCount >= 3) b3 = GetCardInt(boardCards[2]);
+        if (boardCount >= 4) b4 = GetCardInt(boardCards[3]);
+        if (boardCount >= 5) b5 = GetCardInt(boardCards[4]); 
+
+        var usedMask = (1UL << hc1) | (1UL << hc2) | (1UL << vc1) | (1UL << vc2);
+        if (b1 != -1) usedMask |= (1UL << b1);
+        if (b2 != -1) usedMask |= (1UL << b2);
+        if (b3 != -1) usedMask |= (1UL << b3);
+        if (b4 != -1) usedMask |= (1UL << b4);
+        if (b5 != -1) usedMask |= (1UL << b5);
+
+        if (deadCards != null)
+        {
+            foreach (var c in deadCards) usedMask |= (1UL << GetCardInt(c));
+        }
+
+        // Pre-calculate available cards
+        // Using an array for fast iteration
+        int[] available = new int[52];
+        int availCount = 0;
+        for (int i = 0; i < 52; i++)
+        {
+            if ((usedMask & (1UL << i)) == 0)
+            {
+                available[availCount++] = i;
+            }
+        }
+
+        long heroWins = 0;
+        long villainWins = 0;
+        long ties = 0;
+
+        int cardsNeeded = 5 - boardCount;
+        
+        // Unrolled loops for performance
+        if (cardsNeeded == 5) // Preflop
+        {
+            for (int i1 = 0; i1 < availCount - 4; i1++)
+            {
+                int c1 = available[i1];
+                for (int i2 = i1 + 1; i2 < availCount - 3; i2++)
+                {
+                    int c2 = available[i2];
+                    for (int i3 = i2 + 1; i3 < availCount - 2; i3++)
+                    {
+                        int c3 = available[i3];
+                        for (int i4 = i3 + 1; i4 < availCount - 1; i4++)
+                        {
+                            int c4 = available[i4];
+                            for (int i5 = i4 + 1; i5 < availCount; i5++)
+                            {
+                                int c5 = available[i5];
+                                
+                                int hScore = Evaluate7(hc1, hc2, c1, c2, c3, c4, c5);
+                                int vScore = Evaluate7(vc1, vc2, c1, c2, c3, c4, c5);
+                                
+                                if (hScore > vScore) heroWins++;
+                                else if (vScore > hScore) villainWins++;
+                                else ties++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (cardsNeeded == 2) // Flop
+        {
+             for (int i1 = 0; i1 < availCount - 1; i1++)
+            {
+                int c1 = available[i1];
+                for (int i2 = i1 + 1; i2 < availCount; i2++)
+                {
+                    int c2 = available[i2];
+                    
+                    int hScore = Evaluate7(hc1, hc2, b1, b2, b3, c1, c2);
+                    int vScore = Evaluate7(vc1, vc2, b1, b2, b3, c1, c2);
+                    
+                    if (hScore > vScore) heroWins++;
+                    else if (vScore > hScore) villainWins++;
+                    else ties++;
+                }
+            }
+        }
+        else if (cardsNeeded == 1) // Turn
+        {
+             for (int i1 = 0; i1 < availCount; i1++)
+            {
+                int c1 = available[i1];
+                
+                int hScore = Evaluate7(hc1, hc2, b1, b2, b3, b4, c1);
+                int vScore = Evaluate7(vc1, vc2, b1, b2, b3, b4, c1);
+                
+                if (hScore > vScore) heroWins++;
+                else if (vScore > hScore) villainWins++;
+                else ties++;
+            }
+        }
+        else if (cardsNeeded == 0) // River
+        {
+            int hScore = Evaluate7(hc1, hc2, b1, b2, b3, b4, b5);
+            int vScore = Evaluate7(vc1, vc2, b1, b2, b3, b4, b5);
+            if (hScore > vScore) heroWins++;
+            else if (vScore > hScore) villainWins++;
+            else ties++;
+        }
+        else
+        {
+            // Generic fallback using slow method if weird case
+            return RunExactEnumeration(heroCards, villainCards, boardCards);
+        }
+
+        var total = (double)(heroWins + villainWins + ties);
+        return new EquityResult
+        {
+            HeroEquity = ((heroWins + (ties * 0.5)) / total) * 100.0,
+            VillainEquity = ((villainWins + (ties * 0.5)) / total) * 100.0,
+            TieEquity = (ties / total) * 100.0
+        };
+    }
+
+    // Fast Evaluator Implementation using Bitmasks and no allocations
+    // Card int representation: 0-51. Rank 0=2, 12=A. Suit 0-3.
+    // Card = Rank * 4 + Suit
+
+    private static int GetCardInt(Card c)
+    {
+        int rank = c.Rank switch
+        {
+            '2' => 0, '3' => 1, '4' => 2, '5' => 3, '6' => 4, '7' => 5, '8' => 6, '9' => 7,
+            'T' => 8, 'J' => 9, 'Q' => 10, 'K' => 11, 'A' => 12,
+            _ => 0
+        };
+        int suit = c.Suit switch { 'h' => 0, 'd' => 1, 'c' => 2, 's' => 3, _ => 0 };
+        return rank * 4 + suit;
+    }
+
+    private static int Evaluate7(int c1, int c2, int c3, int c4, int c5, int c6, int c7)
+    {
+        // Extract ranks and suits
+        int r1 = c1 >> 2; int s1 = c1 & 3;
+        int r2 = c2 >> 2; int s2 = c2 & 3;
+        int r3 = c3 >> 2; int s3 = c3 & 3;
+        int r4 = c4 >> 2; int s4 = c4 & 3;
+        int r5 = c5 >> 2; int s5 = c5 & 3;
+        int r6 = c6 >> 2; int s6 = c6 & 3;
+        int r7 = c7 >> 2; int s7 = c7 & 3;
+
+        // Check Flush
+        int sc0 = 0, sc1 = 0, sc2 = 0, sc3 = 0;
+        if (s1 == 0) sc0++; else if (s1 == 1) sc1++; else if (s1 == 2) sc2++; else sc3++;
+        if (s2 == 0) sc0++; else if (s2 == 1) sc1++; else if (s2 == 2) sc2++; else sc3++;
+        if (s3 == 0) sc0++; else if (s3 == 1) sc1++; else if (s3 == 2) sc2++; else sc3++;
+        if (s4 == 0) sc0++; else if (s4 == 1) sc1++; else if (s4 == 2) sc2++; else sc3++;
+        if (s5 == 0) sc0++; else if (s5 == 1) sc1++; else if (s5 == 2) sc2++; else sc3++;
+        if (s6 == 0) sc0++; else if (s6 == 1) sc1++; else if (s6 == 2) sc2++; else sc3++;
+        if (s7 == 0) sc0++; else if (s7 == 1) sc1++; else if (s7 == 2) sc2++; else sc3++;
+
+        int flushSuit = -1;
+        if (sc0 >= 5) flushSuit = 0;
+        else if (sc1 >= 5) flushSuit = 1;
+        else if (sc2 >= 5) flushSuit = 2;
+        else if (sc3 >= 5) flushSuit = 3;
+
+        if (flushSuit != -1)
+        {
+            // Collect flush cards ranks
+            int mask = 0;
+            if (s1 == flushSuit) mask |= (1 << r1);
+            if (s2 == flushSuit) mask |= (1 << r2);
+            if (s3 == flushSuit) mask |= (1 << r3);
+            if (s4 == flushSuit) mask |= (1 << r4);
+            if (s5 == flushSuit) mask |= (1 << r5);
+            if (s6 == flushSuit) mask |= (1 << r6);
+            if (s7 == flushSuit) mask |= (1 << r7);
+
+            // Check Straight Flush
+            int sfScore = GetStraightHighCardFromMask(mask);
+            if (sfScore > 0) return 8000000 + sfScore;
+
+            // Flush score
+            return 5000000 + GetHighCardScoreFromMask(mask);
+        }
+
+        // Rank Counts & Bitmask
+        int rankMask = (1 << r1) | (1 << r2) | (1 << r3) | (1 << r4) | (1 << r5) | (1 << r6) | (1 << r7);
+        
+        // Count ranks manually
+        int[] counts = new int[13];
+        counts[r1]++; counts[r2]++; counts[r3]++; counts[r4]++; counts[r5]++; counts[r6]++; counts[r7]++;
+        
+        int quads = -1, trips = -1, pairs1 = -1, pairs2 = -1;
+        
+        for (int i = 12; i >= 0; i--)
+        {
+            int c = counts[i];
+            if (c == 4) quads = i;
+            else if (c == 3) 
+            {
+                if (trips == -1) trips = i;
+                else if (pairs1 == -1) pairs1 = i; // Second trips counts as pair for FH
+            }
+            else if (c == 2)
+            {
+                if (pairs1 == -1) pairs1 = i;
+                else if (pairs2 == -1) pairs2 = i;
+            }
+        }
+
+        if (quads != -1)
+        {
+            // 4 of a kind. Kicker is highest other card.
+            int kicker = 0;
+            for (int i = 12; i >= 0; i--) if (i != quads && counts[i] > 0) { kicker = i; break; }
+            return 7000000 + quads * 15 + kicker;
+        }
+
+        if (trips != -1 && (pairs1 != -1 || pairs2 != -1))
+        {
+            // Full House. Trips + Pair.
+            int pair = pairs1; // pairs1 is highest pair or second trips
+            return 6000000 + trips * 15 + pair;
+        }
+
+        // Straight
+        int stScore = GetStraightHighCardFromMask(rankMask);
+        if (stScore > 0) return 4000000 + stScore;
+
+        if (trips != -1)
+        {
+            // Three of a kind
+            // Get 2 kickers
+            int k1 = -1, k2 = -1;
+            for (int i = 12; i >= 0; i--)
+            {
+                if (i != trips && counts[i] > 0)
+                {
+                    if (k1 == -1) k1 = i;
+                    else if (k2 == -1) { k2 = i; break; }
+                }
+            }
+            return 3000000 + trips * 225 + k1 * 15 + k2;
+        }
+
+        if (pairs1 != -1 && pairs2 != -1)
+        {
+            // Two Pair
+            // Kicker
+            int kicker = 0;
+            for (int i = 12; i >= 0; i--) if (i != pairs1 && i != pairs2 && counts[i] > 0) { kicker = i; break; }
+            return 2000000 + pairs1 * 225 + pairs2 * 15 + kicker;
+        }
+
+        if (pairs1 != -1)
+        {
+            // One Pair
+            int k1 = -1, k2 = -1, k3 = -1;
+            for (int i = 12; i >= 0; i--)
+            {
+                if (i != pairs1 && counts[i] > 0)
+                {
+                    if (k1 == -1) k1 = i;
+                    else if (k2 == -1) k2 = i;
+                    else if (k3 == -1) { k3 = i; break; }
+                }
+            }
+            return 1000000 + pairs1 * 3375 + k1 * 225 + k2 * 15 + k3;
+        }
+
+        // High Card
+        return GetHighCardScoreFromMask(rankMask);
+    }
+
+    private static int GetStraightHighCardFromMask(int mask)
+    {
+        // Check for 5 consecutive bits (ranks 0..12)
+        // A(12) ... 2(0)
+        
+        // AKQJT: 1111100000000 -> 0x1F00
+        if ((mask & 0x1F00) == 0x1F00) return 14; // A high
+        if ((mask & 0x0F80) == 0x0F80) return 13; // K high
+        if ((mask & 0x07C0) == 0x07C0) return 12; // Q high
+        if ((mask & 0x03E0) == 0x03E0) return 11; // J high
+        if ((mask & 0x01F0) == 0x01F0) return 10; // T high
+        if ((mask & 0x00F8) == 0x00F8) return 9;  // 9 high
+        if ((mask & 0x007C) == 0x007C) return 8;  // 8 high
+        if ((mask & 0x003E) == 0x003E) return 7;  // 7 high
+        if ((mask & 0x001F) == 0x001F) return 6;  // 6 high
+        
+        // Wheel: A,2,3,4,5 -> Bits 12, 0, 1, 2, 3 -> 0x100F
+        if ((mask & 0x100F) == 0x100F) return 5;  // 5 high
+        
+        return 0;
+    }
+
+    private static int GetHighCardScoreFromMask(int mask)
+    {
+        int score = 0;
+        int mult = 1;
+        
+        // Iterate rank 0..12, we want top 5
+        // We iterate 12 down to 0
+        
+        // We need to process lowest of top 5 first for the multiplier logic:
+        // score += rank * 1
+        // score += next_rank * 15
+        // ...
+        // So we collect top 5, then iterate reverse
+        
+        // Optimized collection:
+        int c1 = -1, c2 = -1, c3 = -1, c4 = -1, c5 = -1;
+        
+        for (int i = 12; i >= 0; i--)
+        {
+            if ((mask & (1 << i)) != 0)
+            {
+                int val = i + 2; // Rank Value
+                if (c1 == -1) c1 = val;
+                else if (c2 == -1) c2 = val;
+                else if (c3 == -1) c3 = val;
+                else if (c4 == -1) c4 = val;
+                else if (c5 == -1) { c5 = val; break; }
+            }
+        }
+        
+        // Calculate: lowest * 1 + ...
+        if (c5 != -1) { score += c5 * mult; mult *= 15; }
+        if (c4 != -1) { score += c4 * mult; mult *= 15; }
+        if (c3 != -1) { score += c3 * mult; mult *= 15; }
+        if (c2 != -1) { score += c2 * mult; mult *= 15; }
+        if (c1 != -1) { score += c1 * mult; mult *= 15; }
+        
+        return score;
+    }
+
+    // Keep old RunMonteCarlo for Multiway and Fallback (updated to use fast evaluate?)
+    // To avoid rewriting huge logic, I will keep old EvaluateHand for MC or update MC to use Fast.
+    // Let's update MC to use Fast Evaluator for consistency.
+    
+    private EquityResult RunMonteCarlo(List<Card> heroCards, List<Card> villainCards, List<Card> boardCards, int iterations, List<Card>? deadCards = null)
     {
         var deck = CreateDeck();
         var usedCards = new HashSet<Card>(heroCards);
         usedCards.UnionWith(villainCards);
         usedCards.UnionWith(boardCards);
+        if (deadCards != null) usedCards.UnionWith(deadCards);
 
         var availableCards = deck.Where(c => !usedCards.Contains(c)).ToList();
+        
+        // Convert to ints for fast eval
+        int hc1 = GetCardInt(heroCards[0]);
+        int hc2 = GetCardInt(heroCards[1]);
+        int vc1 = GetCardInt(villainCards[0]);
+        int vc2 = GetCardInt(villainCards[1]);
+        
+        var boardInts = boardCards.Select(GetCardInt).ToList();
+        var availInts = availableCards.Select(GetCardInt).ToList();
 
         var heroWins = 0;
         var villainWins = 0;
@@ -76,17 +468,45 @@ public class EquityCalculator
 
         for (var i = 0; i < iterations; i++)
         {
-            var simulatedBoard = new List<Card>(boardCards);
+            // Shuffle available (Fisher-Yates for first N items)
+            // Or just random pick
+            // Fast shuffle
+            for (int k = 0; k < cardsNeeded; k++)
+            {
+                int r = Random.Shared.Next(k, availInts.Count);
+                (availInts[k], availInts[r]) = (availInts[r], availInts[k]);
+            }
+            
+            // Build hand
+            // Board + Randoms
+            // We need 7 cards total for Eval
+            // Board has B items. Randoms has N items. Total B+N=5.
+            // Wait, Evaluate7 needs 7 cards.
+            // Hero(2) + Board(B) + Randoms(5-B) = 7.
+            
+            int c1 = -1, c2 = -1, c3 = -1, c4 = -1, c5 = -1;
+            
+            // Fill with board first
+            int bIdx = 0;
+            if (bIdx < boardInts.Count) c1 = boardInts[bIdx++];
+            if (bIdx < boardInts.Count) c2 = boardInts[bIdx++];
+            if (bIdx < boardInts.Count) c3 = boardInts[bIdx++];
+            if (bIdx < boardInts.Count) c4 = boardInts[bIdx++];
+            if (bIdx < boardInts.Count) c5 = boardInts[bIdx++];
+            
+            // Fill rest with randoms
+            int rIdx = 0;
+            if (c1 == -1) c1 = availInts[rIdx++];
+            if (c2 == -1) c2 = availInts[rIdx++];
+            if (c3 == -1) c3 = availInts[rIdx++];
+            if (c4 == -1) c4 = availInts[rIdx++];
+            if (c5 == -1) c5 = availInts[rIdx++];
+            
+            int hScore = Evaluate7(hc1, hc2, c1, c2, c3, c4, c5);
+            int vScore = Evaluate7(vc1, vc2, c1, c2, c3, c4, c5);
 
-            // Draw remaining cards
-            var shuffled = availableCards.OrderBy(_ => Random.Shared.Next()).Take(cardsNeeded).ToList();
-            simulatedBoard.AddRange(shuffled);
-
-            var heroScore = EvaluateHand(heroCards.Concat(simulatedBoard).ToList());
-            var villainScore = EvaluateHand(villainCards.Concat(simulatedBoard).ToList());
-
-            if (heroScore > villainScore) heroWins++;
-            else if (villainScore > heroScore) villainWins++;
+            if (hScore > vScore) heroWins++;
+            else if (vScore > hScore) villainWins++;
             else ties++;
         }
 
@@ -99,124 +519,301 @@ public class EquityCalculator
         };
     }
 
-    private EquityResult RunMonteCarloMultiway(List<Card> heroCards, List<List<Card>> villainHands, List<Card> boardCards, int iterations)
+    private EquityResult RunMonteCarloMultiway(List<Card> heroCards, List<List<Card>> villainHands, List<Card> boardCards, int iterations, List<Card>? deadCards = null)
     {
+        // Keep original slow implementation for Multiway for now, or update it?
+        // Multiway is rare and complex. Let's leave it as is but fix EvaluateHand to use Evaluate7 internally?
+        // Or just leave the old methods?
+        // To save space and cleaner code, I should remove old methods and update this to use Evaluate7.
+        
         var deck = CreateDeck();
         var usedCards = new HashSet<Card>(heroCards);
-        foreach (var vh in villainHands)
-            usedCards.UnionWith(vh);
+        foreach (var vh in villainHands) usedCards.UnionWith(vh);
         usedCards.UnionWith(boardCards);
+        if (deadCards != null) usedCards.UnionWith(deadCards);
 
         var availableCards = deck.Where(c => !usedCards.Contains(c)).ToList();
+        
+        int hc1 = GetCardInt(heroCards[0]);
+        int hc2 = GetCardInt(heroCards[1]);
+        var vHandsInts = villainHands.Select(vh => (GetCardInt(vh[0]), GetCardInt(vh[1]))).ToList();
+        var boardInts = boardCards.Select(GetCardInt).ToList();
+        var availInts = availableCards.Select(GetCardInt).ToList();
 
-        var heroWins = 0;
-        var villainWins = 0;
-        var ties = 0;
+        double heroShare = 0;
+        long heroWins = 0;
+        long villainWins = 0;
+        long ties = 0;
 
         var cardsNeeded = 5 - boardCards.Count;
 
         for (var i = 0; i < iterations; i++)
         {
-            var simulatedBoard = new List<Card>(boardCards);
+            for (int k = 0; k < cardsNeeded; k++)
+            {
+                int r = Random.Shared.Next(k, availInts.Count);
+                (availInts[k], availInts[r]) = (availInts[r], availInts[k]);
+            }
+            
+            int c1 = -1, c2 = -1, c3 = -1, c4 = -1, c5 = -1;
+            int bIdx = 0;
+            if (bIdx < boardInts.Count) c1 = boardInts[bIdx++];
+            if (bIdx < boardInts.Count) c2 = boardInts[bIdx++];
+            if (bIdx < boardInts.Count) c3 = boardInts[bIdx++];
+            if (bIdx < boardInts.Count) c4 = boardInts[bIdx++];
+            if (bIdx < boardInts.Count) c5 = boardInts[bIdx++];
+            int rIdx = 0;
+            if (c1 == -1) c1 = availInts[rIdx++];
+            if (c2 == -1) c2 = availInts[rIdx++];
+            if (c3 == -1) c3 = availInts[rIdx++];
+            if (c4 == -1) c4 = availInts[rIdx++];
+            if (c5 == -1) c5 = availInts[rIdx++];
 
-            // Draw remaining cards
-            var shuffled = availableCards.OrderBy(_ => Random.Shared.Next()).Take(cardsNeeded).ToList();
-            simulatedBoard.AddRange(shuffled);
+            var heroScore = Evaluate7(hc1, hc2, c1, c2, c3, c4, c5);
+            var bestVillain = 0;
+            var villainWinners = 0;
+            foreach (var vh in vHandsInts)
+            {
+                var s = Evaluate7(vh.Item1, vh.Item2, c1, c2, c3, c4, c5);
+                if (s > bestVillain) 
+                {
+                    bestVillain = s;
+                    villainWinners = 1;
+                }
+                else if (s == bestVillain)
+                {
+                    villainWinners++;
+                }
+            }
 
-            var heroScore = EvaluateHand(heroCards.Concat(simulatedBoard).ToList());
-            var villainScores = villainHands.Select(vh => EvaluateHand(vh.Concat(simulatedBoard).ToList())).ToList();
-
-            var bestVillain = villainScores.Max();
-
-            if (heroScore > bestVillain) heroWins++;
-            else if (heroScore == bestVillain) ties++;
-            else villainWins++;
+            if (heroScore > bestVillain) 
+            {
+                heroWins++;
+                heroShare += 1.0;
+            }
+            else if (heroScore == bestVillain) 
+            {
+                ties++;
+                heroShare += 1.0 / (villainWinners + 1);
+            }
+            else 
+            {
+                villainWins++;
+            }
         }
 
         var total = (double)iterations;
         return new EquityResult
         {
-            HeroEquity = ((heroWins + (ties * 0.5)) / total) * 100.0,
-            VillainEquity = (villainWins / total) * 100.0,
+            HeroEquity = (heroShare / total) * 100.0,
+            VillainEquity = (villainWins / total) * 100.0, // Approximation
             TieEquity = (ties / total) * 100.0
         };
     }
 
+    private EquityResult RunExactEnumerationMultiway(List<Card> heroCards, List<List<Card>> villainHands, List<Card> boardCards, List<Card>? deadCards = null)
+    {
+        // Also update this to fast
+        int hc1 = GetCardInt(heroCards[0]);
+        int hc2 = GetCardInt(heroCards[1]);
+        var vHandsInts = villainHands.Select(vh => (GetCardInt(vh[0]), GetCardInt(vh[1]))).ToList();
+        
+        int b1 = -1, b2 = -1, b3 = -1, b4 = -1, b5 = -1;
+        int boardCount = boardCards.Count;
+        if (boardCount >= 1) b1 = GetCardInt(boardCards[0]);
+        if (boardCount >= 2) b2 = GetCardInt(boardCards[1]);
+        if (boardCount >= 3) b3 = GetCardInt(boardCards[2]);
+        if (boardCount >= 4) b4 = GetCardInt(boardCards[3]);
+        if (boardCount >= 5) b5 = GetCardInt(boardCards[4]);
+
+        var usedMask = (1UL << hc1) | (1UL << hc2);
+        foreach (var vh in vHandsInts) usedMask |= (1UL << vh.Item1) | (1UL << vh.Item2);
+        if (b1 != -1) usedMask |= (1UL << b1);
+        if (b2 != -1) usedMask |= (1UL << b2);
+        if (b3 != -1) usedMask |= (1UL << b3);
+        if (b4 != -1) usedMask |= (1UL << b4);
+        if (b5 != -1) usedMask |= (1UL << b5);
+
+        if (deadCards != null)
+        {
+            foreach (var c in deadCards) usedMask |= (1UL << GetCardInt(c));
+        }
+
+        int[] available = new int[52];
+        int availCount = 0;
+        for (int i = 0; i < 52; i++)
+        {
+            if ((usedMask & (1UL << i)) == 0) available[availCount++] = i;
+        }
+
+        double heroShare = 0;
+        long heroWins = 0;
+        long villainWins = 0;
+        long ties = 0;
+
+        int cardsNeeded = 5 - boardCount;
+        
+        if (cardsNeeded == 5)
+        {
+             for (int i1 = 0; i1 < availCount - 4; i1++)
+            {
+                int c1 = available[i1];
+                for (int i2 = i1 + 1; i2 < availCount - 3; i2++)
+                {
+                    int c2 = available[i2];
+                    for (int i3 = i2 + 1; i3 < availCount - 2; i3++)
+                    {
+                        int c3 = available[i3];
+                        for (int i4 = i3 + 1; i4 < availCount - 1; i4++)
+                        {
+                            int c4 = available[i4];
+                            for (int i5 = i4 + 1; i5 < availCount; i5++)
+                            {
+                                int c5 = available[i5];
+                                
+                                int hScore = Evaluate7(hc1, hc2, c1, c2, c3, c4, c5);
+                                int bestVillain = 0;
+                                int villainWinners = 0;
+                                foreach(var vh in vHandsInts)
+                                {
+                                    int s = Evaluate7(vh.Item1, vh.Item2, c1, c2, c3, c4, c5);
+                                    if (s > bestVillain) 
+                                    {
+                                        bestVillain = s;
+                                        villainWinners = 1;
+                                    }
+                                    else if (s == bestVillain) villainWinners++;
+                                }
+                                
+                                if (hScore > bestVillain) 
+                                {
+                                    heroWins++;
+                                    heroShare += 1.0;
+                                }
+                                else if (hScore == bestVillain) 
+                                {
+                                    ties++;
+                                    heroShare += 1.0 / (villainWinners + 1);
+                                }
+                                else villainWins++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (cardsNeeded == 2)
+        {
+            for (int i1 = 0; i1 < availCount - 1; i1++)
+            {
+                int c1 = available[i1];
+                for (int i2 = i1 + 1; i2 < availCount; i2++)
+                {
+                    int c2 = available[i2];
+                    
+                    int hScore = Evaluate7(hc1, hc2, b1, b2, b3, c1, c2);
+                    int bestVillain = 0;
+                    int villainWinners = 0;
+                    foreach (var vh in vHandsInts)
+                    {
+                        int s = Evaluate7(vh.Item1, vh.Item2, b1, b2, b3, c1, c2);
+                        if (s > bestVillain) 
+                        {
+                            bestVillain = s;
+                            villainWinners = 1;
+                        }
+                        else if (s == bestVillain) villainWinners++;
+                    }
+                    
+                    if (hScore > bestVillain) 
+                    {
+                        heroWins++;
+                        heroShare += 1.0;
+                    }
+                    else if (hScore == bestVillain) 
+                    {
+                        ties++;
+                        heroShare += 1.0 / (villainWinners + 1);
+                    }
+                    else villainWins++;
+                }
+            }
+        }
+        else if (cardsNeeded == 1)
+        {
+             for (int i1 = 0; i1 < availCount; i1++)
+            {
+                int c1 = available[i1];
+                
+                int hScore = Evaluate7(hc1, hc2, b1, b2, b3, b4, c1);
+                int bestVillain = 0;
+                int villainWinners = 0;
+                foreach (var vh in vHandsInts)
+                {
+                    int s = Evaluate7(vh.Item1, vh.Item2, b1, b2, b3, b4, c1);
+                    if (s > bestVillain) 
+                    {
+                        bestVillain = s;
+                        villainWinners = 1;
+                    }
+                    else if (s == bestVillain) villainWinners++;
+                }
+                
+                if (hScore > bestVillain) 
+                {
+                    heroWins++;
+                    heroShare += 1.0;
+                }
+                else if (hScore == bestVillain) 
+                {
+                    ties++;
+                    heroShare += 1.0 / (villainWinners + 1);
+                }
+                else villainWins++;
+            }
+        }
+        else if (cardsNeeded == 0)
+        {
+            int hScore = Evaluate7(hc1, hc2, b1, b2, b3, b4, b5);
+            int bestVillain = 0;
+            int villainWinners = 0;
+            foreach (var vh in vHandsInts)
+            {
+                int s = Evaluate7(vh.Item1, vh.Item2, b1, b2, b3, b4, b5);
+                if (s > bestVillain) 
+                {
+                    bestVillain = s;
+                    villainWinners = 1;
+                }
+                else if (s == bestVillain) villainWinners++;
+            }
+            
+            if (hScore > bestVillain) 
+            {
+                heroWins++;
+                heroShare += 1.0;
+            }
+            else if (hScore == bestVillain) 
+            {
+                ties++;
+                heroShare += 1.0 / (villainWinners + 1);
+            }
+            else villainWins++;
+        }
+
+        var total = (double)(heroWins + villainWins + ties);
+        return new EquityResult
+        {
+            HeroEquity = (heroShare / total) * 100.0,
+            VillainEquity = (villainWins / total) * 100.0, 
+            TieEquity = (ties / total) * 100.0
+        };
+    }
+    
     private EquityResult RunExactEnumeration(List<Card> heroCards, List<Card> villainCards, List<Card> boardCards)
     {
-        var deck = CreateDeck();
-        var usedCards = new HashSet<Card>(heroCards);
-        usedCards.UnionWith(villainCards);
-        usedCards.UnionWith(boardCards);
-
-        var availableCards = deck.Where(c => !usedCards.Contains(c)).ToList();
-
-        var heroWins = 0L;
-        var villainWins = 0L;
-        var ties = 0L;
-
-        var cardsNeeded = 5 - boardCards.Count;
-
-        foreach (var combo in GetCombinations(availableCards, cardsNeeded))
-        {
-            var simulatedBoard = new List<Card>(boardCards);
-            simulatedBoard.AddRange(combo);
-
-            var heroScore = EvaluateHand(heroCards.Concat(simulatedBoard).ToList());
-            var villainScore = EvaluateHand(villainCards.Concat(simulatedBoard).ToList());
-
-            if (heroScore > villainScore) heroWins++;
-            else if (villainScore > heroScore) villainWins++;
-            else ties++;
-        }
-
-        var total = (double)(heroWins + villainWins + ties);
-        return new EquityResult
-        {
-            HeroEquity = ((heroWins + (ties * 0.5)) / total) * 100.0,
-            VillainEquity = ((villainWins + (ties * 0.5)) / total) * 100.0,
-            TieEquity = (ties / total) * 100.0
-        };
-    }
-
-    private EquityResult RunExactEnumerationMultiway(List<Card> heroCards, List<List<Card>> villainHands, List<Card> boardCards)
-    {
-        var deck = CreateDeck();
-        var usedCards = new HashSet<Card>(heroCards);
-        foreach (var vh in villainHands)
-            usedCards.UnionWith(vh);
-        usedCards.UnionWith(boardCards);
-
-        var availableCards = deck.Where(c => !usedCards.Contains(c)).ToList();
-
-        var heroWins = 0L;
-        var villainWins = 0L;
-        var ties = 0L;
-
-        var cardsNeeded = 5 - boardCards.Count;
-
-        foreach (var combo in GetCombinations(availableCards, cardsNeeded))
-        {
-            var simulatedBoard = new List<Card>(boardCards);
-            simulatedBoard.AddRange(combo);
-
-            var heroScore = EvaluateHand(heroCards.Concat(simulatedBoard).ToList());
-            var villainScores = villainHands.Select(vh => EvaluateHand(vh.Concat(simulatedBoard).ToList())).ToList();
-
-            var bestVillain = villainScores.Max();
-
-            if (heroScore > bestVillain) heroWins++;
-            else if (heroScore == bestVillain) ties++;
-            else villainWins++;
-        }
-
-        var total = (double)(heroWins + villainWins + ties);
-        return new EquityResult
-        {
-            HeroEquity = ((heroWins + (ties * 0.5)) / total) * 100.0,
-            VillainEquity = (villainWins / total) * 100.0,
-            TieEquity = (ties / total) * 100.0
-        };
+        // Just redirect to Fast, logic is same
+        return RunExactEnumerationFast(heroCards, villainCards, boardCards);
     }
 
     private IEnumerable<List<Card>> GetCombinations(List<Card> list, int k)
@@ -283,440 +880,6 @@ public class EquityCalculator
         }
 
         return cards;
-    }
-
-    private int EvaluateHand(List<Card> cards)
-    {
-        // Hand evaluation that properly ranks hands
-        // Returns a score where higher = better hand
-
-        if (cards.Count < 5) return 0;
-
-        var rankValues = new Dictionary<char, int>
-        {
-            {'A', 14}, {'K', 13}, {'Q', 12}, {'J', 11}, {'T', 10},
-            {'9', 9}, {'8', 8}, {'7', 7}, {'6', 6}, {'5', 5},
-            {'4', 4}, {'3', 3}, {'2', 2}
-        };
-
-        var rankCounts = new Dictionary<char, int>();
-        var suitCounts = new Dictionary<char, int>();
-
-        foreach (var card in cards)
-        {
-            rankCounts[card.Rank] = rankCounts.GetValueOrDefault(card.Rank, 0) + 1;
-            suitCounts[card.Suit] = suitCounts.GetValueOrDefault(card.Suit, 0) + 1;
-        }
-
-        var isFlush = suitCounts.Values.Any(c => c >= 5);
-        var isStraight = CheckStraight(cards);
-
-        // Get ranked counts: list of (rank_value, count) ordered by count desc, then rank desc
-        var rankedCounts = rankCounts
-            .Select(kv => (RankValue: rankValues.GetValueOrDefault(kv.Key, 0), Count: kv.Value))
-            .OrderByDescending(x => x.Count)
-            .ThenByDescending(x => x.RankValue)
-            .ToList();
-
-        var counts = rankedCounts.Select(x => x.Count).ToList();
-
-        // Build score from rank values in priority order
-        // For pairs/trips, the rank of the paired cards matters most
-        int GetCompositeScore()
-        {
-            // Take top 5 rank values weighted by position
-            var score = 0;
-            var multiplier = 1;
-            var topRanks = rankedCounts.Take(5).Select(x => x.RankValue).Reverse().ToList();
-            foreach (var r in topRanks)
-            {
-                score += r * multiplier;
-                multiplier *= 15;
-            }
-            return score;
-        }
-
-        // Straight Flush / Royal Flush
-        if (isFlush && isStraight) return 8000000 + GetStraightHighCard(cards, rankValues);
-
-        // Four of a kind (rank of quads is rankedCounts[0])
-        if (counts.Count > 0 && counts[0] == 4) 
-            return 7000000 + rankedCounts[0].RankValue * 15 + rankedCounts[1].RankValue;
-
-        // Full house (rank of trips, then rank of pair)
-        if (counts.Count >= 2 && counts[0] == 3 && counts[1] >= 2)
-            return 6000000 + rankedCounts[0].RankValue * 15 + rankedCounts[1].RankValue;
-
-        // Flush (compare high cards in flush suit)
-        if (isFlush) return 5000000 + GetFlushScore(cards, suitCounts, rankValues);
-
-        // Straight
-        if (isStraight) return 4000000 + GetStraightHighCard(cards, rankValues);
-
-        // Three of a kind
-        if (counts.Count > 0 && counts[0] == 3) 
-            return 3000000 + rankedCounts[0].RankValue * 225 + GetCompositeScore() % 225;
-
-        // Two pair (compare higher pair, then lower pair, then kicker)
-        if (counts.Count >= 2 && counts[0] == 2 && counts[1] == 2)
-        {
-            var pairList = rankedCounts.Where(x => x.Count == 2).OrderByDescending(x => x.RankValue).Take(2).ToList();
-            int p1 = pairList[0].RankValue;
-            int p2 = pairList[1].RankValue;
-            var kickerList = rankedCounts.Where(x => x.RankValue != p1 && x.RankValue != p2)
-                                        .OrderByDescending(x => x.RankValue).ToList();
-            int kv = kickerList.Count > 0 ? kickerList[0].RankValue : 0;
-            return 2000000 + p1 * 225 + p2 * 15 + kv;
-        }
-
-        // One pair (pair rank, then kickers)
-        if (counts.Count > 0 && counts[0] == 2)
-        {
-            var pairRank = rankedCounts[0].RankValue;
-            var kickers = rankedCounts.Where(x => x.Count == 1 || (x.Count == 2 && x.RankValue != pairRank))
-                                     .OrderByDescending(x => x.RankValue).Take(3).ToList();
-            var kickerScore = 0;
-            var mult = 1;
-            for (int i = kickers.Count - 1; i >= 0; i--)
-            {
-                kickerScore += kickers[i].RankValue * mult;
-                mult *= 15;
-            }
-            return 1000000 + pairRank * 3375 + kickerScore;
-        }
-
-        // High card
-        return GetCompositeScore();
-    }
-
-    private int GetStraightHighCard(List<Card> cards, Dictionary<char, int> rankValues)
-    {
-        var ranks = cards.Select(c => rankValues.GetValueOrDefault(c.Rank, 0)).Distinct().OrderByDescending(x => x).ToList();
-        // Check for wheel (A-2-3-4-5)
-        if (ranks.Contains(14) && ranks.Contains(5) && ranks.Contains(4) && ranks.Contains(3) && ranks.Contains(2))
-            return 5; // Wheel has 5 as high card
-        
-        // Find highest straight
-        for (int i = 0; i <= ranks.Count - 5; i++)
-        {
-            if (ranks[i] - ranks[i + 4] == 4)
-                return ranks[i];
-        }
-        return ranks.FirstOrDefault();
-    }
-
-    private int GetFlushScore(List<Card> cards, Dictionary<char, int> suitCounts, Dictionary<char, int> rankValues)
-    {
-        var flushSuit = suitCounts.FirstOrDefault(kv => kv.Value >= 5).Key;
-        var flushCards = cards.Where(c => c.Suit == flushSuit)
-            .Select(c => rankValues.GetValueOrDefault(c.Rank, 0))
-            .OrderByDescending(x => x)
-            .Take(5)
-            .ToList();
-        
-        var score = 0;
-        var mult = 1;
-        for (int i = 4; i >= 0; i--)
-        {
-            if (i < flushCards.Count)
-                score += flushCards[i] * mult;
-            mult *= 15;
-        }
-        return score;
-    }
-
-    private bool CheckStraight(List<Card> cards)
-    {
-        var rankOrder = "AKQJT98765432A"; // A can be low in A-2-3-4-5
-        var ranks = cards.Select(c => c.Rank).Distinct().ToHashSet();
-
-        for (var i = 0; i <= rankOrder.Length - 5; i++)
-        {
-            var straight = rankOrder.Substring(i, 5);
-            if (straight.All(r => ranks.Contains(r)))
-                return true;
-        }
-
-        return false;
-    }
-
-    private int GetHighCardValue(List<Card> cards)
-    {
-        var rankValues = new Dictionary<char, int>
-        {
-            {'A', 14}, {'K', 13}, {'Q', 12}, {'J', 11}, {'T', 10},
-            {'9', 9}, {'8', 8}, {'7', 7}, {'6', 6}, {'5', 5},
-            {'4', 4}, {'3', 3}, {'2', 2}
-        };
-
-        return cards.Select(c => rankValues.GetValueOrDefault(c.Rank, 0)).OrderByDescending(x => x).FirstOrDefault();
-    }
-
-    private static Dictionary<string, double> InitializePreflopEquityTable()
-    {
-        return new Dictionary<string, double>
-        {
-            ["AA_KK"] = 81.95,
-            ["AA_QQ"] = 82.36,
-            ["AA_JJ"] = 82.64,
-            ["AA_TT"] = 82.91,
-            ["AA_99"] = 83.11,
-            ["AA_88"] = 83.28,
-            ["AA_77"] = 83.41,
-            ["AA_66"] = 83.52,
-            ["AA_55"] = 83.0,
-            ["AA_44"] = 83.11,
-            ["AA_33"] = 83.22,
-            ["AA_22"] = 83.33,
-            ["KK_QQ"] = 81.52,
-            ["KK_JJ"] = 81.84,
-            ["KK_TT"] = 82.14,
-            ["KK_99"] = 82.39,
-            ["KK_88"] = 82.59,
-            ["KK_77"] = 82.75,
-            ["KK_66"] = 82.88,
-            ["KK_55"] = 82.36,
-            ["KK_44"] = 82.48,
-            ["KK_33"] = 82.6,
-            ["KK_22"] = 82.72,
-            ["QQ_JJ"] = 81.1,
-            ["QQ_TT"] = 81.45,
-            ["QQ_99"] = 81.75,
-            ["QQ_88"] = 81.99,
-            ["QQ_77"] = 82.19,
-            ["QQ_66"] = 82.36,
-            ["QQ_55"] = 81.84,
-            ["QQ_44"] = 81.98,
-            ["QQ_33"] = 82.11,
-            ["QQ_22"] = 82.24,
-            ["JJ_TT"] = 80.65,
-            ["JJ_99"] = 81.0,
-            ["JJ_88"] = 81.29,
-            ["JJ_77"] = 81.53,
-            ["JJ_66"] = 81.74,
-            ["JJ_55"] = 81.23,
-            ["JJ_44"] = 81.39,
-            ["JJ_33"] = 81.54,
-            ["JJ_22"] = 81.68,
-            ["TT_99"] = 80.17,
-            ["TT_88"] = 80.51,
-            ["TT_77"] = 80.8,
-            ["TT_66"] = 81.05,
-            ["TT_55"] = 80.55,
-            ["TT_44"] = 80.73,
-            ["TT_33"] = 80.9,
-            ["TT_22"] = 81.05,
-            ["99_88"] = 79.63,
-            ["99_77"] = 79.99,
-            ["99_66"] = 80.3,
-            ["99_55"] = 79.81,
-            ["99_44"] = 80.02,
-            ["99_33"] = 80.21,
-            ["99_22"] = 80.38,
-            ["88_77"] = 79.05,
-            ["88_66"] = 79.42,
-            ["88_55"] = 78.95,
-            ["88_44"] = 79.18,
-            ["88_33"] = 79.39,
-            ["88_22"] = 79.58,
-            ["77_66"] = 78.42,
-            ["77_55"] = 77.97,
-            ["77_44"] = 78.22,
-            ["77_33"] = 78.45,
-            ["77_22"] = 78.66,
-            ["66_55"] = 77.73,
-            ["66_44"] = 78.0,
-            ["66_33"] = 78.25,
-            ["66_22"] = 78.48,
-            ["55_44"] = 77.06,
-            ["55_33"] = 77.34,
-            ["55_22"] = 77.59,
-            ["44_33"] = 76.35,
-            ["44_22"] = 76.63,
-            ["33_22"] = 75.6,
-            ["AA_AKs"] = 87.23,
-            ["AA_AKo"] = 86.69,
-            ["AA_AQs"] = 86.47,
-            ["AA_AQo"] = 85.89,
-            ["AA_AJs"] = 85.74,
-            ["AA_AJo"] = 85.12,
-            ["AA_ATs"] = 85.0,
-            ["AA_ATo"] = 84.33,
-            ["KK_AKs"] = 65.99,
-            ["KK_AKo"] = 65.29,
-            ["KK_AQs"] = 71.42,
-            ["KK_AQo"] = 70.63,
-            ["KK_KQs"] = 85.89,
-            ["KK_KQo"] = 85.28,
-            ["KK_KJs"] = 85.1,
-            ["KK_KJo"] = 84.43,
-            ["QQ_AKs"] = 54.14,
-            ["QQ_AKo"] = 53.29,
-            ["QQ_AQs"] = 66.13,
-            ["QQ_AQo"] = 65.36,
-            ["QQ_KQs"] = 65.75,
-            ["QQ_KQo"] = 64.95,
-            ["QQ_QJs"] = 85.49,
-            ["QQ_QJo"] = 84.86,
-            ["JJ_AKs"] = 53.8,
-            ["JJ_AKo"] = 52.95,
-            ["JJ_AQs"] = 54.23,
-            ["JJ_AQo"] = 53.37,
-            ["JJ_AJs"] = 66.27,
-            ["JJ_AJo"] = 65.5,
-            ["JJ_KQs"] = 54.54,
-            ["JJ_KQo"] = 53.67,
-            ["TT_AKs"] = 53.41,
-            ["TT_AKo"] = 52.55,
-            ["TT_AQs"] = 53.85,
-            ["TT_AQo"] = 52.98,
-            ["TT_AJs"] = 54.25,
-            ["TT_AJo"] = 53.37,
-            ["TT_ATs"] = 66.34,
-            ["TT_ATo"] = 65.56,
-            ["AKs_QQ"] = 45.86,
-            ["AKo_QQ"] = 46.71,
-            ["AKs_JJ"] = 46.2,
-            ["AKo_JJ"] = 47.05,
-            ["AKs_TT"] = 46.59,
-            ["AKo_TT"] = 47.45,
-            ["AKs_99"] = 46.93,
-            ["AKo_99"] = 47.8,
-            ["AKs_88"] = 47.22,
-            ["AKo_88"] = 48.1,
-            ["AKs_77"] = 47.46,
-            ["AKo_77"] = 48.35,
-            ["AKs_66"] = 47.64,
-            ["AKo_66"] = 48.54,
-            ["AKs_55"] = 47.37,
-            ["AKo_55"] = 48.28,
-            ["AKs_44"] = 47.52,
-            ["AKo_44"] = 48.43,
-            ["AKs_33"] = 47.65,
-            ["AKo_33"] = 48.57,
-            ["AKs_22"] = 47.77,
-            ["AKo_22"] = 48.69,
-            ["AQs_KK"] = 28.58,
-            ["AQo_KK"] = 29.37,
-            ["AQs_JJ"] = 45.77,
-            ["AQo_JJ"] = 46.63,
-            ["AQs_TT"] = 46.15,
-            ["AQo_TT"] = 47.02,
-            ["AQs_99"] = 46.49,
-            ["AQo_99"] = 47.37,
-            ["AJs_KK"] = 28.69,
-            ["AJo_KK"] = 29.5,
-            ["AJs_QQ"] = 29.06,
-            ["AJo_QQ"] = 29.88,
-            ["AJs_TT"] = 45.75,
-            ["AJo_TT"] = 46.63,
-            ["AJs_99"] = 46.09,
-            ["AJo_99"] = 46.98,
-            ["ATs_KK"] = 28.77,
-            ["ATo_KK"] = 29.59,
-            ["ATs_QQ"] = 29.14,
-            ["ATo_QQ"] = 29.98,
-            ["ATs_JJ"] = 29.48,
-            ["ATo_JJ"] = 30.32,
-            ["ATs_99"] = 45.64,
-            ["ATo_99"] = 46.53,
-            ["A5s_KK"] = 30.38,
-            ["A5o_KK"] = 29.56,
-            ["A5s_QQ"] = 30.7,
-            ["A5o_QQ"] = 29.86,
-            ["A5s_JJ"] = 30.97,
-            ["A5o_JJ"] = 30.12,
-            ["A5s_TT"] = 31.2,
-            ["A5o_TT"] = 30.33,
-            ["A5s_99"] = 31.41,
-            ["A5o_99"] = 30.52,
-            ["A5s_88"] = 31.58,
-            ["A5o_88"] = 30.68,
-            ["A5s_77"] = 31.73,
-            ["A5o_77"] = 30.82,
-            ["A5s_66"] = 32.04,
-            ["A5o_66"] = 31.12,
-            ["A4s_KK"] = 29.98,
-            ["A4o_KK"] = 29.15,
-            ["A4s_QQ"] = 30.3,
-            ["A4o_QQ"] = 29.46,
-            ["A4s_JJ"] = 30.58,
-            ["A4o_JJ"] = 29.73,
-            ["A4s_TT"] = 30.83,
-            ["A4o_TT"] = 29.96,
-            ["A3s_KK"] = 29.6,
-            ["A3o_KK"] = 28.77,
-            ["A3s_QQ"] = 29.93,
-            ["A3o_QQ"] = 29.08,
-            ["A3s_JJ"] = 30.21,
-            ["A3o_JJ"] = 29.35,
-            ["A3s_TT"] = 30.47,
-            ["A3o_TT"] = 29.6,
-            ["A2s_KK"] = 29.25,
-            ["A2o_KK"] = 28.41,
-            ["A2s_QQ"] = 29.58,
-            ["A2o_QQ"] = 28.73,
-            ["A2s_JJ"] = 29.87,
-            ["A2o_JJ"] = 29.01,
-            ["A2s_TT"] = 30.13,
-            ["A2o_TT"] = 29.25,
-            ["AKs_AQs"] = 70.51,
-            ["AKs_AQo"] = 71.43,
-            ["AKo_AQs"] = 69.6,
-            ["AKo_AQo"] = 70.52,
-            ["AKs_AJs"] = 71.05,
-            ["AKs_AJo"] = 71.97,
-            ["AKo_AJs"] = 70.15,
-            ["AKo_AJo"] = 71.07,
-            ["AKs_ATs"] = 71.53,
-            ["AKs_ATo"] = 72.46,
-            ["AKo_ATs"] = 70.64,
-            ["AKo_ATo"] = 71.56,
-            ["AQs_AJs"] = 69.78,
-            ["AQs_AJo"] = 70.72,
-            ["AQo_AJs"] = 68.86,
-            ["AQo_AJo"] = 69.8,
-            ["AQs_ATs"] = 70.33,
-            ["AQs_ATo"] = 71.27,
-            ["AQo_ATs"] = 69.42,
-            ["AQo_ATo"] = 70.36,
-            ["AJs_ATs"] = 69.01,
-            ["AJs_ATo"] = 69.96,
-            ["AJo_ATs"] = 68.08,
-            ["AJo_ATo"] = 69.03,
-            ["KQs_KJs"] = 69.3,
-            ["KQs_KJo"] = 70.24,
-            ["KQo_KJs"] = 68.38,
-            ["KQo_KJo"] = 69.32,
-            ["KQs_KTs"] = 69.85,
-            ["KQs_KTo"] = 70.8,
-            ["KQo_KTs"] = 68.93,
-            ["KQo_KTo"] = 69.88,
-            ["KJs_KTs"] = 68.51,
-            ["KJs_KTo"] = 69.48,
-            ["KJo_KTs"] = 67.58,
-            ["KJo_KTo"] = 68.54,
-            ["AKs_KQs"] = 72.12,
-            ["AKs_KQo"] = 73.03,
-            ["AKo_KQs"] = 71.23,
-            ["AKo_KQo"] = 72.14,
-            ["AKs_KJs"] = 72.57,
-            ["AKs_KJo"] = 73.48,
-            ["AKo_KJs"] = 71.68,
-            ["AKo_KJo"] = 72.6,
-            ["AQs_QJs"] = 71.36,
-            ["AQs_QJo"] = 72.29,
-            ["AQo_QJs"] = 70.45,
-            ["AQo_QJo"] = 71.38,
-            ["AJs_JTs"] = 70.51,
-            ["AJs_JTo"] = 71.45,
-            ["AJo_JTs"] = 69.59,
-            ["AJo_JTo"] = 70.53,
-            ["KQs_QJs"] = 71.93,
-            ["KQs_QJo"] = 72.85,
-            ["KQo_QJs"] = 71.03,
-            ["KQo_QJo"] = 71.95,
-        };
     }
 }
 
