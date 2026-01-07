@@ -34,7 +34,7 @@ function SessionItem({ session }) {
       <div>
         <p className="text-white font-medium text-sm">{session.session_date}</p>
         <p className="text-gray-400 text-xs">
-          {session.room} • {session.hands_played} mains
+          {session.room} • {session.tournaments || 0} tournois • {session.hands_played} mains
         </p>
       </div>
       <div className="text-right">

@@ -58,10 +58,10 @@ export default function Dashboard() {
           icon={Trophy}
         />
         <StatCard
-          label="EV Total"
-          value={stats.total_ev || 0}
-          format="profit"
-          icon={Target}
+          label="Sessions ce mois"
+          value={stats.sessions_this_month || 0}
+          format="number"
+          icon={Zap}
         />
       </div>
 
@@ -90,41 +90,6 @@ export default function Dashboard() {
           subtitle="Dernières parties"
         >
           <SessionList sessions={sessions} />
-        </Card>
-      </div>
-
-      {/* Quick stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center">
-            <Zap className="w-6 h-6 text-green-400" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">Sessions ce mois</p>
-            <p className="text-xl font-bold text-white">{stats.sessions_this_month || 0}</p>
-          </div>
-        </Card>
-        
-        <Card className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-            <Target className="w-6 h-6 text-blue-400" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">Multiplier moyen</p>
-            <p className="text-xl font-bold text-white">{(stats.avg_multiplier || 0).toFixed(1)}x</p>
-          </div>
-        </Card>
-        
-        <Card className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-            <Trophy className="w-6 h-6 text-purple-400" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">Meilleur gain</p>
-            <p className="text-xl font-bold profit-positive">
-              +{(stats.best_win || 0).toFixed(2)}€
-            </p>
-          </div>
         </Card>
       </div>
     </div>

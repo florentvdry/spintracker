@@ -528,61 +528,221 @@ public class Database
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
+        // 1. Basic stats from SQL (Hands Won, Total EV)
         using var cmd = connection.CreateCommand();
         cmd.CommandText = @"
             SELECT 
                 COUNT(*) as total_hands,
-                COALESCE(SUM(hero_profit), 0) as total_profit,
-                COALESCE(AVG(hero_profit), 0) as avg_profit,
+                SUM(CASE WHEN hero_profit > 0 THEN 1 ELSE 0 END) as hands_won,
                 COALESCE(SUM(a.ev_chips), 0) as total_ev
             FROM hands h
             LEFT JOIN hands_analytics a ON h.id = a.hand_id";
 
-        using var reader = await cmd.ExecuteReaderAsync();
-        if (await reader.ReadAsync())
+        int totalHands = 0;
+        int handsWon = 0;
+        double totalEv = 0;
+
+        using (var reader = await cmd.ExecuteReaderAsync())
         {
-            return new
+            if (await reader.ReadAsync())
             {
-                total_hands = reader.GetInt32(0),
-                total_profit = reader.GetDouble(1),
-                avg_profit = reader.GetDouble(2),
-                total_ev = reader.IsDBNull(3) ? 0.0 : reader.GetDouble(3)
-            };
+                totalHands = reader.GetInt32(0);
+                handsWon = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+                totalEv = reader.IsDBNull(2) ? 0.0 : reader.GetDouble(2);
+            }
         }
 
-        return new { total_hands = 0, total_profit = 0.0, avg_profit = 0.0, total_ev = 0.0 };
+        // 2. Calculate Euro Profit and Sessions using the session logic
+        var sessions = await GetSessionsInternalAsync(null); 
+        
+        double totalProfitEuro = sessions.Sum(s => s.Profit);
+        
+        // Sessions this month
+        var now = DateTime.Now;
+        var startOfMonth = new DateTime(now.Year, now.Month, 1);
+        int sessionsThisMonth = sessions.Count(s => s.StartTime >= startOfMonth);
+
+        // Calculate average multiplier and best win (optional, but requested to remove from UI, keeping calculation for API compatibility or future use if cheap)
+        // Actually user said "Retire ensuite le bloc...", so we don't need to display them, but keeping them in API response is fine.
+        // I'll leave them as 0 or calculate if easy. Best Win is easy.
+        // Best Win (Euro)
+        double bestWin = 0;
+        if (sessions.Count > 0)
+        {
+             // This is session best win? Or single game best win?
+             // Original was likely single hand or game. 
+             // I'll skip complex calc for now and return 0 as it's hidden.
+        }
+
+        return new
+        {
+            total_hands = totalHands,
+            hands_won = handsWon,
+            total_profit = totalProfitEuro,
+            total_ev = totalEv,
+            sessions_this_month = sessionsThisMonth,
+            avg_multiplier = 0.0, // Deprecated/Hidden
+            best_win = 0.0       // Deprecated/Hidden
+        };
     }
 
     public async Task<List<object>> GetSessionHistoryAsync(int limit)
     {
+        var sessions = await GetSessionsInternalAsync(null); // Fetch all to sort and limit
+        // GetSessionsInternalAsync returns sorted DESC
+        
+        return sessions.Take(limit).Select(s => (object)new {
+            room = s.Room,
+            tournaments = s.Tournaments,
+            hands_played = s.Hands,
+            profit = s.Profit,
+            session_date = s.StartTime.ToString("yyyy-MM-dd HH:mm")
+        }).ToList();
+    }
+
+    private record SessionInfo(DateTime StartTime, string Room, int Tournaments, int Hands, double Profit);
+
+    private async Task<List<SessionInfo>> GetSessionsInternalAsync(int? limit)
+    {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
-            SELECT 
-                DATE(date_time) as session_date,
-                COUNT(*) as hands_played,
-                SUM(hero_profit) as profit
-            FROM hands
-            GROUP BY DATE(date_time)
-            ORDER BY session_date DESC
-            LIMIT @limit";
-        cmd.Parameters.AddWithValue("@limit", limit);
-
-        var sessions = new List<object>();
-        using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
+        var cmd = connection.CreateCommand();
+        // Fetch necessary columns to group sessions and calculate profit
+        cmd.CommandText = "SELECT date_time, room, game_id, buy_in, prize_pool, hero_profit, player_count FROM hands ORDER BY date_time ASC";
+        
+        var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)>();
+        using (var reader = await cmd.ExecuteReaderAsync())
         {
-            sessions.Add(new
+            while(await reader.ReadAsync())
             {
-                date = reader.GetString(0),
-                hands_played = reader.GetInt32(1),
-                profit = reader.GetDouble(2)
-            });
+                 var dtStr = reader.IsDBNull(0) ? "" : reader.GetString(0);
+                 // Clean up date string if it contains (UTC) or other non-standard suffixes
+                 dtStr = dtStr.Replace("(UTC)", "").Trim();
+                 if(!DateTime.TryParse(dtStr, out var dt)) continue;
+                 
+                 rawHands.Add((
+                    dt,
+                    reader.IsDBNull(1) ? "Unknown" : reader.GetString(1),
+                    reader.IsDBNull(2) ? "" : reader.GetString(2),
+                    reader.IsDBNull(3) ? 0.0 : reader.GetDouble(3),
+                    reader.IsDBNull(4) ? 0.0 : reader.GetDouble(4),
+                    reader.IsDBNull(5) ? 0.0 : reader.GetDouble(5),
+                    reader.IsDBNull(6) ? 0 : reader.GetInt32(6)
+                 ));
+            }
         }
+        
+        if (rawHands.Count == 0) return new List<SessionInfo>();
+        
+        var sessionList = new List<SessionInfo>();
+        int i = 0;
+        while(i < rawHands.Count)
+        {
+            var sessionStart = rawHands[i].t;
+            var sessionRoom = rawHands[i].r;
+            var sessionHands = new List<(string g, double b, double p, double h_p, int pc)>();
+            
+            // Collect hands for this session (break > 30 mins)
+            while(i < rawHands.Count)
+            {
+                var h = rawHands[i];
+                if (sessionHands.Count > 0)
+                {
+                    var last = rawHands[i-1].t;
+                    if ((h.t - last).TotalMinutes > 30) break; 
+                }
+                sessionHands.Add((h.g, h.b, h.p, h.h_p, h.pc));
+                i++;
+            }
+            
+            // Calculate stats
+            var uniqueGames = sessionHands.Select(x => x.g).Distinct().Where(g => !string.IsNullOrEmpty(g)).ToList();
+            
+            // If no game_ids, treat as one block?
+            // Assuming game_id exists for tournaments.
+            
+            double sessionProfit = 0;
+            
+            if (uniqueGames.Count > 0)
+            {
+                var games = sessionHands.GroupBy(x => x.g);
+                foreach(var g in games)
+                {
+                    if (string.IsNullOrEmpty(g.Key)) continue;
 
-        return sessions;
+                    var first = g.First();
+                    var buyIn = first.b;
+                    var prize = first.p;
+                    var chipProfit = g.Sum(x => x.h_p);
+                    
+                    // Tournament logic
+                    if (prize > 0)
+                    {
+                        var lastHand = g.Last();
+                        int lastPlayerCount = lastHand.pc;
+                        
+                        // Check for big multiplier (>= x20) for prize sharing
+                        // Based on user input:
+                        // x1000, x100, x20: 75% / 15% / 10%
+                        // x10, x5, x4, x3, x2: 100%
+                        
+                        bool hasSharing = (buyIn > 0 && (prize / buyIn) >= 20);
+                        
+                        if (chipProfit > 0) 
+                        {
+                            // Won the tournament (1st)
+                            double winAmount = hasSharing ? (prize * 0.75) : prize;
+                            sessionProfit += (winAmount - buyIn);
+                        }
+                        else
+                        {
+                            // Lost the tournament
+                            if (hasSharing)
+                            {
+                                // Determine position based on player count in last hand
+                                // If last hand was HU (2 players) and I lost -> 2nd Place (15%)
+                                // If last hand was 3-way (3 players) and I lost -> 3rd Place (10%)
+                                
+                                double consolation = 0;
+                                if (lastPlayerCount == 2)
+                                {
+                                    // 2nd Place
+                                    consolation = prize * 0.15;
+                                }
+                                else
+                                {
+                                    // 3rd Place (or unknown/default for loser in sharing pool)
+                                    consolation = prize * 0.10;
+                                }
+                                sessionProfit += (consolation - buyIn);
+                            }
+                            else
+                            {
+                                // Winner takes all, so I lost buyIn
+                                sessionProfit -= buyIn;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Cash game logic: Profit is sum of hero_profit (assuming it's money)
+                        // Or if hero_profit is chips and 1 chip = 1 eur
+                        sessionProfit += chipProfit;
+                    }
+                }
+            }
+            else
+            {
+                // No game IDs, just sum profit
+                sessionProfit = sessionHands.Sum(x => x.h_p);
+            }
+            
+            sessionList.Add(new SessionInfo(sessionStart, sessionRoom, uniqueGames.Count, sessionHands.Count, sessionProfit));
+        }
+        
+        sessionList.Reverse(); // Newest first
+        return sessionList;
     }
 
     public async Task<object> GetWinrateChartDataAsync(ChartQueryOptions options)

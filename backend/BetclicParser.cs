@@ -193,7 +193,7 @@ public class BetclicParser : IHandParser
                     {
                         var parts = line.Split(new[] { ':' }, 2);
                         if (parts.Length > 1)
-                            hand.DateTime = parts[1].Trim();
+                            hand.DateTime = parts[1].Trim().Replace("(UTC)", "").Trim();
                     }
                     else if (line.Contains("Table ID:"))
                     {
