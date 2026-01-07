@@ -3,13 +3,6 @@ namespace PokerTrackerBackend;
 public class EquityCalculator
 {
     private readonly ILogger<EquityCalculator> _logger;
-    // FIXED: Removed non-thread-safe Random instance
-    private static readonly Dictionary<string, double> _preflopEquityTable;
-
-    static EquityCalculator()
-    {
-        _preflopEquityTable = InitializePreflopEquityTable();
-    }
 
     public EquityCalculator(ILogger<EquityCalculator> logger)
     {
@@ -46,21 +39,6 @@ public class EquityCalculator
             if (heroCardList.Count != 2 || villainCardList.Count != 2)
             {
                 throw new ArgumentException("Hero and villain must have exactly 2 cards");
-            }
-
-            // Check for preflop situation (no board cards)
-            if (boardCards.Count == 0)
-            {
-                var preflopEquity = GetPreflopEquity(heroCardList, villainCardList);
-                if (preflopEquity.HasValue)
-                {
-                    return new EquityResult
-                    {
-                        HeroEquity = preflopEquity.Value,
-                        VillainEquity = 100.0 - preflopEquity.Value,
-                        TieEquity = 0.0
-                    };
-                }
             }
 
             // Use exact enumeration for postflop (flop/turn/river) when feasible,
@@ -115,8 +93,8 @@ public class EquityCalculator
         var total = (double)iterations;
         return new EquityResult
         {
-            HeroEquity = (heroWins / total) * 100.0,
-            VillainEquity = (villainWins / total) * 100.0,
+            HeroEquity = ((heroWins + (ties * 0.5)) / total) * 100.0,
+            VillainEquity = ((villainWins + (ties * 0.5)) / total) * 100.0,
             TieEquity = (ties / total) * 100.0
         };
     }
@@ -267,52 +245,6 @@ public class EquityCalculator
             indices[pos]++;
             for (int i = pos + 1; i < k; i++) indices[i] = indices[i - 1] + 1;
         }
-    }
-
-    private double? GetPreflopEquity(List<Card> heroCards, List<Card> villainCards)
-    {
-        var heroHand = NormalizeHandType(heroCards);
-        var villainHand = NormalizeHandType(villainCards);
-
-        var key = $"{heroHand}_{villainHand}";
-        if (_preflopEquityTable.TryGetValue(key, out var equity))
-        {
-            return equity;
-        }
-
-        // Try reverse lookup
-        var reverseKey = $"{villainHand}_{heroHand}";
-        if (_preflopEquityTable.TryGetValue(reverseKey, out var reverseEquity))
-        {
-            return 100.0 - reverseEquity;
-        }
-
-        return null;
-    }
-
-    private string NormalizeHandType(List<Card> cards)
-    {
-        if (cards.Count != 2) return "";
-
-        var c1 = cards[0];
-        var c2 = cards[1];
-
-        var rank1 = c1.Rank;
-        var rank2 = c2.Rank;
-        var suited = c1.Suit == c2.Suit;
-
-        // For pairs, order doesn't matter
-        if (rank1 == rank2)
-        {
-            return $"{rank1}{rank2}";
-        }
-
-        // Order by rank value (higher first)
-        var rankOrder = "AKQJT98765432";
-        var higherRank = rankOrder.IndexOf(rank1) < rankOrder.IndexOf(rank2) ? rank1 : rank2;
-        var lowerRank = higherRank == rank1 ? rank2 : rank1;
-
-        return suited ? $"{higherRank}{lowerRank}s" : $"{higherRank}{lowerRank}o";
     }
 
     private List<Card> CreateDeck()
@@ -688,78 +620,6 @@ public class EquityCalculator
             ["ATo_JJ"] = 30.32,
             ["ATs_99"] = 45.64,
             ["ATo_99"] = 46.53,
-            ["KQs_AA"] = 32.02,
-            ["KQo_AA"] = 31.25,
-            ["KQs_JJ"] = 45.46,
-            ["KQo_JJ"] = 46.33,
-            ["KQs_TT"] = 45.84,
-            ["KQo_TT"] = 46.72,
-            ["KQs_99"] = 46.16,
-            ["KQo_99"] = 47.05,
-            ["KJs_AA"] = 31.95,
-            ["KJo_AA"] = 31.17,
-            ["KJs_QQ"] = 29.16,
-            ["KJo_QQ"] = 30.0,
-            ["KJs_TT"] = 45.37,
-            ["KJo_TT"] = 46.26,
-            ["KJs_99"] = 45.71,
-            ["KJo_99"] = 46.61,
-            ["QJs_AA"] = 31.84,
-            ["QJo_AA"] = 31.05,
-            ["QJs_KK"] = 28.89,
-            ["QJo_KK"] = 29.71,
-            ["QJs_TT"] = 44.87,
-            ["QJo_TT"] = 45.77,
-            ["QJs_99"] = 45.23,
-            ["QJo_99"] = 46.14,
-            ["JTs_AA"] = 31.65,
-            ["JTo_AA"] = 30.85,
-            ["JTs_KK"] = 28.7,
-            ["JTo_KK"] = 29.53,
-            ["JTs_QQ"] = 28.44,
-            ["JTo_QQ"] = 29.27,
-            ["JTs_99"] = 44.8,
-            ["JTo_99"] = 45.71,
-            ["T9s_AA"] = 30.82,
-            ["T9o_AA"] = 30.0,
-            ["T9s_KK"] = 27.88,
-            ["T9o_KK"] = 28.7,
-            ["T9s_QQ"] = 27.62,
-            ["T9o_QQ"] = 28.45,
-            ["T9s_JJ"] = 27.32,
-            ["T9o_JJ"] = 28.16,
-            ["98s_AA"] = 30.31,
-            ["98o_AA"] = 29.47,
-            ["98s_KK"] = 27.38,
-            ["98o_KK"] = 28.2,
-            ["98s_QQ"] = 27.12,
-            ["98o_QQ"] = 27.95,
-            ["98s_JJ"] = 26.82,
-            ["98o_JJ"] = 27.66,
-            ["87s_AA"] = 29.84,
-            ["87o_AA"] = 28.99,
-            ["87s_KK"] = 26.93,
-            ["87o_KK"] = 27.74,
-            ["87s_QQ"] = 26.67,
-            ["87o_QQ"] = 27.49,
-            ["87s_JJ"] = 26.37,
-            ["87o_JJ"] = 27.2,
-            ["76s_AA"] = 29.43,
-            ["76o_AA"] = 28.57,
-            ["76s_KK"] = 26.54,
-            ["76o_KK"] = 27.35,
-            ["76s_QQ"] = 26.28,
-            ["76o_QQ"] = 27.1,
-            ["76s_JJ"] = 25.98,
-            ["76o_JJ"] = 26.81,
-            ["65s_AA"] = 29.07,
-            ["65o_AA"] = 28.2,
-            ["65s_KK"] = 26.19,
-            ["65o_KK"] = 27.01,
-            ["65s_QQ"] = 25.94,
-            ["65o_QQ"] = 26.76,
-            ["65s_JJ"] = 25.64,
-            ["65o_JJ"] = 26.47,
             ["A5s_KK"] = 30.38,
             ["A5o_KK"] = 29.56,
             ["A5s_QQ"] = 30.7,

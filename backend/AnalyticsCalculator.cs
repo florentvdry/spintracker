@@ -19,7 +19,7 @@ public class AnalyticsCalculator
         };
 
         var heroProfit = hand.HeroProfit;
-        var isShowdown = hand.WentToShowdown;
+        var isShowdown = hand.HeroWentToShowdown;
 
         // Classification: exactly match the 'expected_result' logic
         // Chips Won with Showdown should reflect ACTUAL total profit if showdown occurred
@@ -54,7 +54,13 @@ public class AnalyticsCalculator
         {
             double? evChips;
 
-            if (isMultiway)
+            // If there is post-all-in action (side pots developing on later streets), 
+            // PT4 usually falls back to Profit (skips EV). We mimic this.
+            if (HasSideAction(hand))
+            {
+                evChips = null;
+            }
+            else if (isMultiway)
             {
                 evChips = CalculateMultiwayEv(hand);
             }
@@ -90,6 +96,41 @@ public class AnalyticsCalculator
                hand.AllInStreet.Equals("RIVER", StringComparison.OrdinalIgnoreCase);
     }
 
+    private bool HasSideAction(ParsedHand hand)
+    {
+        var allInStreet = hand.AllInStreet;
+        if (string.IsNullOrEmpty(allInStreet)) return false;
+
+        bool checkFlop = false, checkTurn = false, checkRiver = false;
+
+        if (allInStreet.Equals("PREFLOP", StringComparison.OrdinalIgnoreCase))
+        {
+            checkFlop = true; checkTurn = true; checkRiver = true;
+        }
+        else if (allInStreet.Equals("FLOP", StringComparison.OrdinalIgnoreCase))
+        {
+            checkTurn = true; checkRiver = true;
+        }
+        else if (allInStreet.Equals("TURN", StringComparison.OrdinalIgnoreCase))
+        {
+            checkRiver = true;
+        }
+
+        if (checkFlop && HasPlayerAction(hand.FlopAction)) return true;
+        if (checkTurn && HasPlayerAction(hand.TurnAction)) return true;
+        if (checkRiver && HasPlayerAction(hand.RiverAction)) return true;
+
+        return false;
+    }
+
+    private bool HasPlayerAction(string actionText)
+    {
+        if (string.IsNullOrEmpty(actionText)) return false;
+        var lower = actionText.ToLower();
+        return lower.Contains("bets") || lower.Contains("calls") || 
+               lower.Contains("raises") || lower.Contains("checks");
+    }
+
     private double? CalculateAllInEv(ParsedHand hand)
     {
         try
@@ -104,28 +145,11 @@ public class AnalyticsCalculator
             var equity = _equityCalc.Calculate(heroCards, villainCards, board, 10000);
             var totalPot = hand.TotalPot;
 
-            // Use Effective Pot (what Hero is actually eligible for)
-            var heroInvestment = ParseHeroInvestment(hand) ?? (totalPot / 2.0);
-            var villainCardsSplit = villainCards.Split('|');
-            var playersCount = villainCardsSplit.Length + 1;
-            
-            // For 2-way, the effective pot is simply 2 * min(HeroInv, VillainInv) 
-            // plus any "dead money" from folded players.
-            // A simpler/robust way: Hero's EV = Equity * TotalPot, 
-            // but we must subtract what Hero put PLUS any part of the pot they CANNOT win.
-            // Correct formula: EV = (Equity * Hero's Eligible Pot) - Hero Investment
-            
-            var effectiveInvestment = ParseEffectiveInvestment(hand) ?? heroInvestment;
-            // The maximum Hero can win from ONE opponent is their effective investment against that opponent.
-            // In 2-way, Eligible Pot = 2 * effectiveInvestment + Dead Money
-            // Dead Money = TotalPot - (Sum of all active players' total street investments) 
-            // But wait, TotalPot is already the sum. So Eligible Pot = TotalPot - (VillainContribution - HeroContribution) if Villain > Hero.
-            
-            double eligiblePot = totalPot;
-            // If Villain put more than Hero, Hero can't win the excess.
-            // If Hero put more than Villain, the excess was an uncalled bet (already handled by parser usually).
-            
-            var ev = (equity.HeroEquity / 100.0) * eligiblePot - effectiveInvestment;
+            var heroInvestment = hand.HeroInvestment > 0 ? hand.HeroInvestment : (ParseHeroInvestment(hand) ?? (totalPot / 2.0));
+            var perPlayer = ParseInvestmentsPerPlayer(hand);
+            var heroName = hand.HeroName ?? "";
+            var villainInvestment = perPlayer.Where(kv => !kv.Key.Equals(heroName, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Value).DefaultIfEmpty(0.0).Max();
+            var ev = (equity.HeroEquity / 100.0) * totalPot - heroInvestment;
 
             return ev;
         }
@@ -141,50 +165,143 @@ public class AnalyticsCalculator
         try
         {
             var heroCards = hand.HeroCards;
-            var villainCardsStr = hand.VillainCards;
-            if (string.IsNullOrEmpty(heroCards) || string.IsNullOrEmpty(villainCardsStr))
-                return null;
+            if (string.IsNullOrEmpty(heroCards)) return null;
 
-            var board = GetBoardAtAllIn(hand);
-
-            // Let EquityCalculator handle multiway ("|" separated villain hands)
-            var equity = _equityCalc.Calculate(heroCards, villainCardsStr, board, 5000);
-            var totalEquity = equity.HeroEquity / 100.0;
-
-            var totalPot = hand.TotalPot;
-            var heroProfit = hand.HeroProfit;
-
-            if (totalPot == 0)
-                return heroProfit;
-
-            var effectiveInvestment = ParseEffectiveInvestment(hand);
-            if (!effectiveInvestment.HasValue || effectiveInvestment.Value == 0)
+            // Filter players who have cards (Hero + Villains with known cards)
+            // We assume players with known cards are the ones competing for EV (went to showdown or all-in revealed)
+            var activePlayers = hand.Players.Where(p => !string.IsNullOrEmpty(p.Cards) && !p.Folded).ToList();
+            
+            // If we don't have players info (old parser?), fallback to legacy
+            if (activePlayers.Count == 0 && !string.IsNullOrEmpty(hand.VillainCards))
             {
-                // Fallback: use pot / num_players
-                var playersCount = (villainCardsStr?.Split('|').Count(s => !string.IsNullOrEmpty(s)) ?? 1) + 1;
-                effectiveInvestment = totalPot / playersCount;
+                // Fallback to legacy simplistic calculation
+                // return CalculateMultiwayEvLegacy(hand); 
+                // But we want to fix it, so let's try to reconstruct players from VillainCards string if Players is empty?
+                // For now, assume Parser is updated.
+                return null;
             }
 
-            // Calculate precise Heroable Pot using villain stacks
-            // In Spin & Rush (Betclic), stacks in PLAYERS are starting stacks for the hand.
-            // Effective Pot = HeroInvestment + Sum(min(HeroInvestment, VillainStack))
-            double effectivePot = effectiveInvestment.Value;
-            foreach (var vStack in hand.VillainStacks.Values)
+            // Ensure Hero is in activePlayers
+            if (!activePlayers.Any(p => p.IsHero))
             {
-                effectivePot += Math.Min(effectiveInvestment.Value, vStack);
+                // Should not happen if HeroCards is present
+                 return null;
+            }
+
+            // Sort by investment (asc)
+            var sortedPlayers = activePlayers.OrderBy(p => p.Investment).ToList();
+            
+            double totalEv = 0;
+            double currentLevel = 0;
+            
+            var board = GetBoardAtAllIn(hand);
+            
+            for (int i = 0; i < sortedPlayers.Count; i++)
+            {
+                var p = sortedPlayers[i];
+                var investment = p.Investment;
+                
+                if (investment <= currentLevel) continue;
+                
+                var step = investment - currentLevel;
+                
+                // Calculate Pot for this step (Side Pot or Main Pot slice)
+                double stepPot = 0;
+                foreach (var player in hand.Players)
+                {
+                    // Every player contributes to this step up to their investment cap
+                    var contribution = Math.Max(0, Math.Min(step, player.Investment - currentLevel));
+                    stepPot += contribution;
+                }
+                
+                if (stepPot <= 0.01) continue;
+
+                // Who competes for this pot?
+                // All activePlayers with Investment >= investment (which are players from i onwards in sorted list)
+                var competingPlayers = sortedPlayers.Skip(i).ToList();
+                
+                // Check if Hero is competing
+                var heroPlayer = competingPlayers.FirstOrDefault(x => x.IsHero);
+                if (heroPlayer != null)
+                {
+                    // Calculate Equity for Hero vs Competing Villains in this side pot
+                    var villainCardsList = competingPlayers.Where(x => !x.IsHero).Select(x => x.Cards).ToList();
+                    
+                    double heroEq = 0;
+                    if (villainCardsList.Count == 0)
+                    {
+                        // Hero vs no one? (Everyone else folded or lower stack?)
+                        // If no villains left competing for this pot, Hero wins 100%?
+                        // This happens if Hero covers everyone.
+                        // But wait, if Hero covers everyone, the excess is returned?
+                        // `stepPot` includes Hero's excess?
+                        // BetclicParser usually adjusts uncalled bets.
+                        // So stepPot should be real pot.
+                        heroEq = 1.0;
+                    }
+                    else
+                    {
+                        var villainCardsStr = string.Join("|", villainCardsList);
+                        var equityResult = _equityCalc.Calculate(heroCards, villainCardsStr, board, 50000);
+                        heroEq = equityResult.HeroEquity / 100.0;
+                    }
+                    
+                    totalEv += heroEq * stepPot;
+                }
+                
+                currentLevel = investment;
             }
             
-            // Limit to actual totalPot (in case of dead money or multiway complexities)
-            double actualCappedPot = Math.Min(totalPot, effectivePot);
-
-            var evValue = (totalEquity * actualCappedPot) - effectiveInvestment.Value;
-            return Math.Round(evValue, 2);
+            return Math.Round(totalEv - hand.HeroInvestment, 2);
         }
         catch (Exception e)
         {
-            _logger.LogWarning($"Multiway EV calculation error: {e.Message}");
+            _logger.LogWarning($"Multiway Split Pot EV calculation error: {e.Message}");
             return null;
         }
+    }
+
+    private Dictionary<string, double> ParseInvestmentsPerPlayer(ParsedHand hand)
+    {
+        var actions = new[] { hand.PreflopAction, hand.FlopAction, hand.TurnAction, hand.RiverAction };
+        var totalPerPlayer = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+        foreach (var streetActions in actions)
+        {
+            if (string.IsNullOrEmpty(streetActions)) continue;
+            var streetInv = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+            var lines = streetActions.Split('\n');
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                var m = System.Text.RegularExpressions.Regex.Match(line, "^(?:[0-9:]+\\s*-\\s*)?([^:]+):");
+                if (!m.Success) continue;
+                var player = m.Groups[1].Value.Trim();
+                if (!streetInv.ContainsKey(player)) streetInv[player] = 0;
+                var lower = line.ToLower();
+                var mm = System.Text.RegularExpressions.Regex.Match(lower, "posts\\s+\\w+\\s+(\\d+)");
+                if (mm.Success) { streetInv[player] = double.Parse(mm.Groups[1].Value); goto merge; }
+                mm = System.Text.RegularExpressions.Regex.Match(lower, "raises\\s+to\\s+(\\d+)");
+                if (mm.Success) { streetInv[player] = double.Parse(mm.Groups[1].Value); goto merge; }
+                mm = System.Text.RegularExpressions.Regex.Match(lower, "calls\\s+(\\d+)");
+                if (mm.Success) { streetInv[player] += double.Parse(mm.Groups[1].Value); goto merge; }
+                mm = System.Text.RegularExpressions.Regex.Match(lower, "bets\\s+(\\d+)");
+                if (mm.Success) { streetInv[player] = double.Parse(mm.Groups[1].Value); goto merge; }
+                mm = System.Text.RegularExpressions.Regex.Match(lower, "(\\d+)\\s+and\\s+is\\s+all-in");
+                if (mm.Success)
+                {
+                    var amt = double.Parse(mm.Groups[1].Value);
+                    if (lower.Contains("raises to")) streetInv[player] = amt;
+                    else streetInv[player] += amt;
+                }
+            merge: ;
+            }
+            foreach (var kv in streetInv)
+            {
+                if (!totalPerPlayer.ContainsKey(kv.Key)) totalPerPlayer[kv.Key] = 0;
+                totalPerPlayer[kv.Key] += kv.Value;
+            }
+        }
+        return totalPerPlayer;
     }
 
     private string GetBoardAtAllIn(ParsedHand hand)

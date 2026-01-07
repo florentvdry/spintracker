@@ -62,6 +62,19 @@ public class ParsedHand
     public string? AllInStreet { get; set; }
     public int PlayerCount { get; set; } = 2;
     public bool WentToShowdown { get; set; }
+    public bool HeroWentToShowdown { get; set; }
+    public List<PlayerInfo> Players { get; set; } = new();
+}
+
+public class PlayerInfo
+{
+    public string Name { get; set; } = "";
+    public double Stack { get; set; }
+    public double Investment { get; set; }
+    public string Cards { get; set; } = "";
+    public bool IsHero { get; set; }
+    public bool Folded { get; set; }
+    public bool IsAllIn { get; set; }
 }
 
 public static class ParserFactory

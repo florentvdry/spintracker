@@ -18,6 +18,12 @@ if (args.Length > 0 && args[0] == "--audit-showdown")
     return;
 }
 
+if (args.Length > 0 && args[0] == "--compare")
+{
+    await ComparisonTool.Run();
+    return;
+}
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure services

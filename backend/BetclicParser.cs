@@ -243,6 +243,13 @@ public class BetclicParser : IHandParser
                                 ["isHero"] = isHero
                             };
                             players.Add(player);
+                            hand.Players.Add(new PlayerInfo 
+                            { 
+                                Name = name, 
+                                Stack = int.Parse(stack),
+                                IsHero = isHero
+                            });
+
                             if (isHero)
                             {
                                 heroName = name;
@@ -258,8 +265,10 @@ public class BetclicParser : IHandParser
                     }
                 }
                 // Global match for "PlayerName shows/mucks [XX XX]" or "Hero shows/mucks [XX XX]"
-                var showMatch = Regex.Match(line, @"^(.+?) (?:shows|mucks) \[(.*?)\]", RegexOptions.IgnoreCase);
-                var holeMatch = Regex.Match(line, @"^(.+?): \[(.+?)\]", RegexOptions.IgnoreCase);
+                // Support optional timestamp prefix "HH:MM - "
+                var showMatch = Regex.Match(line, @"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+(?:shows|mucks)\s+\[(.*?)\]", RegexOptions.IgnoreCase);
+                // Match "PlayerName: [XX XX]" with optional timestamp prefix
+                var holeMatch = Regex.Match(line, @"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?):\s*\[(.+?)\]", RegexOptions.IgnoreCase);
                 
                 if (showMatch.Success)
                 {
@@ -273,6 +282,7 @@ public class BetclicParser : IHandParser
                     if (IsHeroName(playerName))
                     {
                         hand.HeroCards = cards;
+                        hand.HeroWentToShowdown = true;
                     }
                     else if (!cards.Equals("none", StringComparison.OrdinalIgnoreCase) && !cards.Contains("folded", StringComparison.OrdinalIgnoreCase))
                     {
@@ -287,6 +297,9 @@ public class BetclicParser : IHandParser
                     var playerName = holeMatch.Groups[1].Value.Trim();
                     var cards = holeMatch.Groups[2].Value.Trim();
 
+                    var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+                    if (pInfo != null) pInfo.Cards = cards;
+
                     if (IsHeroName(playerName))
                     {
                         hand.HeroCards = cards;
@@ -295,6 +308,7 @@ public class BetclicParser : IHandParser
                         if (currentSection != "HOLE_CARDS" && currentSection != "PLAYERS" && currentSection != "HEADER")
                         {
                             hand.WentToShowdown = true;
+                            hand.HeroWentToShowdown = true;
                             showdownSectionEncountered = true;
                         }
                     }
@@ -329,6 +343,14 @@ public class BetclicParser : IHandParser
                         if (string.IsNullOrEmpty(hand.AllInStreet))
                         {
                             hand.AllInStreet = currentSection;
+                        }
+
+                        foreach (var p in hand.Players)
+                        {
+                            if (lowerLine.Contains(p.Name.ToLower()))
+                            {
+                                p.IsAllIn = true;
+                            }
                         }
 
                         if (!string.IsNullOrEmpty(heroName) && lowerLine.Contains(heroName.ToLower()))
@@ -374,7 +396,15 @@ public class BetclicParser : IHandParser
                             heroWon = true;
                             heroHasPotRecorded = true;
                             
-                            if (showdownSectionEncountered)
+                            if (showdownSectionEncountered || (hand.HeroAllIn && hand.VillainAllIn))
+                            {
+                                hand.WentToShowdown = true;
+                                hand.HeroWentToShowdown = true;
+                            }
+                        }
+                        else
+                        {
+                            if (hand.HeroAllIn && hand.VillainAllIn)
                                 hand.WentToShowdown = true;
                         }
                     }
@@ -395,7 +425,10 @@ public class BetclicParser : IHandParser
                             
                             // If it's a "finished 1st" hand after an all-in, it's usually a showdown
                             if (showdownSectionEncountered || hand.HeroAllIn || hand.VillainAllIn)
+                            {
                                 hand.WentToShowdown = true;
+                                hand.HeroWentToShowdown = true;
+                            }
                         }
                     }
                 }
@@ -408,8 +441,13 @@ public class BetclicParser : IHandParser
             string? maxInvestor = null;
             foreach (var player in players)
             {
-                var inv = CalculatePlayerInvestment(actions, player["name"].ToString()!);
-                playerInvestments[player["name"].ToString()!] = inv;
+                var pName = player["name"].ToString()!;
+                var inv = CalculatePlayerInvestment(actions, pName);
+                
+                var pInfo = hand.Players.FirstOrDefault(x => x.Name == pName);
+                if (pInfo != null) pInfo.Investment = inv;
+
+                playerInvestments[pName] = inv;
                 totalInvestment += inv;
                 if (inv > maxInvestment)
                 {
@@ -423,6 +461,9 @@ public class BetclicParser : IHandParser
                 var excess = totalInvestment - hand.TotalPot;
                 // Console.WriteLine($"[Parser Debug] Adjusting uncalled bet: TotalInv={totalInvestment} Pot={hand.TotalPot} Excess={excess} Player={maxInvestor}");
                 playerInvestments[maxInvestor] -= excess;
+
+                var pInfo = hand.Players.FirstOrDefault(x => x.Name == maxInvestor);
+                if (pInfo != null) pInfo.Investment -= excess;
             }
             
             var heroInvestment = playerInvestments.GetValueOrDefault(heroName ?? "", 0.0);

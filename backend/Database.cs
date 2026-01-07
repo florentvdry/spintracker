@@ -540,8 +540,34 @@ public class Database
             SELECT 
                 h.date_time,
                 SUM(h.hero_profit) OVER (ORDER BY h.date_time) as cumulative_profit,
-                SUM(COALESCE(a.chips_won_showdown, CASE WHEN h.went_to_showdown = 1 THEN h.hero_profit ELSE 0 END)) OVER (ORDER BY h.date_time) as cumulative_showdown,
-                SUM(COALESCE(a.chips_won_no_showdown, CASE WHEN h.went_to_showdown = 0 THEN h.hero_profit ELSE 0 END)) OVER (ORDER BY h.date_time) as cumulative_no_showdown,
+                SUM(
+                    COALESCE(
+                        a.chips_won_showdown,
+                        CASE 
+                            WHEN (COALESCE(h.showdown,'') != '' 
+                                  OR h.result LIKE '%*** SHOWDOWN ***%' 
+                                  OR h.result LIKE '%shows [%' 
+                                  OR h.result LIKE '%: [%'
+                                  OR (h.hero_all_in = 1 AND h.villain_all_in = 1))
+                            THEN h.hero_profit 
+                            ELSE 0 
+                        END
+                    )
+                ) OVER (ORDER BY h.date_time) as cumulative_showdown,
+                SUM(
+                    COALESCE(
+                        a.chips_won_no_showdown,
+                        CASE 
+                            WHEN NOT (COALESCE(h.showdown,'') != '' 
+                                      OR h.result LIKE '%*** SHOWDOWN ***%' 
+                                      OR h.result LIKE '%shows [%' 
+                                      OR h.result LIKE '%: [%'
+                                      OR (h.hero_all_in = 1 AND h.villain_all_in = 1))
+                            THEN h.hero_profit 
+                            ELSE 0 
+                        END
+                    )
+                ) OVER (ORDER BY h.date_time) as cumulative_no_showdown,
                 SUM(COALESCE(a.net_won_adjusted, h.hero_profit)) OVER (ORDER BY h.date_time) as cumulative_ev,
                 ROW_NUMBER() OVER (ORDER BY h.date_time) as hand_number
             FROM hands h
