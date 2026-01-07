@@ -26,12 +26,22 @@ export const useAppStore = create((set, get) => ({
     
     set({ isLoading: true });
     
+    // Helper pour réessayer les appels si le backend n'est pas encore prêt
+    const retry = async (fn, retries = 5, delay = 1000) => {
+      for (let i = 0; i < retries; i++) {
+        const result = await fn();
+        if (result && result.success) return result;
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+      return { success: false, error: 'Max retries exceeded' };
+    };
+    
     try {
       // Charger les stats du dashboard
-      await get().loadDashboardStats();
+      await retry(() => get().loadDashboardStats());
       
       // Charger l'historique des sessions
-      await get().loadSessions();
+      await retry(() => get().loadSessions());
       
       set({ isInitialized: true });
 

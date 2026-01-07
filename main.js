@@ -438,6 +438,7 @@ ipcMain.handle('app-ready', async () => {
   try {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.maximize();
       mainWindow.show();
     }
 
