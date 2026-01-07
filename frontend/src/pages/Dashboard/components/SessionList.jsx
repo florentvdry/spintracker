@@ -14,7 +14,7 @@ export default function SessionList({ sessions = [] }) {
   }
 
   return (
-    <div className="space-y-2 max-h-80 overflow-y-auto">
+    <div className="space-y-2 flex-1 overflow-y-auto min-h-0 pr-2">
       {sessions.map((session, index) => (
         <SessionItem key={session.id || index} session={session} />
       ))}
@@ -28,11 +28,21 @@ function SessionItem({ session }) {
   const numericProfit = hasProfit ? Number(profitVal) : 0;
   const isPositive = hasProfit ? numericProfit >= 0 : false;
   const formattedProfit = hasProfit ? `${numericProfit.toFixed(2)}€` : '—';
+  
+  // Date formatting
+  const dateObj = new Date(session.session_date);
+  const formattedDate = !isNaN(dateObj.getTime()) 
+    ? dateObj.toLocaleDateString('fr-FR', { 
+        day: '2-digit', 
+        month: 'long', 
+        year: 'numeric' 
+      })
+    : session.session_date;
 
   return (
     <div className="flex items-center justify-between p-3 bg-dark-200 rounded-lg hover:bg-dark-100 transition cursor-pointer">
       <div>
-        <p className="text-white font-medium text-sm">{session.session_date}</p>
+        <p className="text-white font-medium text-sm capitalize">{formattedDate}</p>
         <p className="text-gray-400 text-xs">
           {session.room} • {session.tournaments || 0} tournois • {session.hands_played} mains
         </p>

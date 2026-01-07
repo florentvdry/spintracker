@@ -71,7 +71,7 @@ export default function Dashboard() {
         <Card 
           title="Evolution des jetons" 
           subtitle="Profit et EV"
-          className="lg:col-span-2"
+          className="lg:col-span-2 h-full"
         >
           {stats.total_hands > 0 ? (
             <WinrateChart />
@@ -88,6 +88,7 @@ export default function Dashboard() {
         <Card 
           title="Sessions Récentes"
           subtitle="Dernières parties"
+          className="h-full flex flex-col"
         >
           <SessionList sessions={sessions} />
         </Card>
