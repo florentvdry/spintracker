@@ -12,18 +12,35 @@ export default function Settings() {
   const refreshAll = useAppStore(state => state.refreshAll);
 
   const handleDeleteAll = async () => {
-    const result = await ipcService.deleteAllHands();
-    if (result.success) {
-      addNotification({
-        type: 'success',
-        title: 'Données supprimées',
-        message: result.message || 'Toutes les mains ont été supprimées',
-      });
-      await refreshAll();
-    } else {
+    try {
+      const result = await ipcService.deleteAllHands();
+      console.log('Delete result:', result); // Debug log
+
+      if (result.success) {
+        addNotification({
+          type: 'success',
+          title: 'Données supprimées',
+          message: result.message || 'Toutes les mains ont été supprimées',
+        });
+        await refreshAll();
+      } else {
+        // Handle cancelled action specifically to avoid error notification
+        if (result.message && result.message.includes('annulée')) {
+           return; 
+        }
+
+        addNotification({
+          type: 'error',
+          title: 'Erreur',
+          message: result.message || 'Une erreur inconnue est survenue',
+        });
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
       addNotification({
         type: 'error',
-        message: result.message,
+        title: 'Erreur critique',
+        message: error.message || 'Impossible de contacter le serveur',
       });
     }
   };

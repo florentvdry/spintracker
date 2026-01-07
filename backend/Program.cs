@@ -183,7 +183,7 @@ app.MapPost("/parse/detect", async (HttpContext context) =>
     }
     catch (Exception e)
     {
-        return Results.Problem(detail: e.Message, statusCode: 500);
+        return Results.Json(new { success = false, message = e.Message, error = e.Message });
     }
 });
 

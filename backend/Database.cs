@@ -18,6 +18,19 @@ public class Database
         var dbPath = Path.Combine(projectRoot, "poker_tracker.db");
         _connectionString = $"Data Source={dbPath}";
         _logger.LogInformation($"Using database at: {dbPath}");
+        
+        // Enable WAL mode and Foreign Keys
+        using (var connection = new SqliteConnection(_connectionString))
+        {
+            connection.Open();
+            using var cmd = connection.CreateCommand();
+            cmd.CommandText = @"
+                PRAGMA journal_mode = WAL;
+                PRAGMA foreign_keys = ON;
+            ";
+            cmd.ExecuteNonQuery();
+        }
+
         InitializeTables();
         UpdateSchema();
     }
@@ -860,32 +873,57 @@ public class Database
 
     public async Task<object> DeleteAllHandsAsync()
     {
-        using var connection = new SqliteConnection(_connectionString);
-        await connection.OpenAsync();
-
-        using var transaction = connection.BeginTransaction();
-
         try
         {
-            using var cmd = connection.CreateCommand();
-            cmd.Transaction = transaction;
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
 
-            cmd.CommandText = "DELETE FROM hands_analytics";
-            await cmd.ExecuteNonQueryAsync();
+            // Disable foreign keys to ensure we can delete everything without constraint issues
+            using (var cmdPragma = connection.CreateCommand())
+            {
+                cmdPragma.CommandText = "PRAGMA foreign_keys = OFF;";
+                await cmdPragma.ExecuteNonQueryAsync();
+            }
 
-            cmd.CommandText = "DELETE FROM hands";
-            await cmd.ExecuteNonQueryAsync();
+            using var transaction = connection.BeginTransaction();
 
-            cmd.CommandText = "DELETE FROM sessions";
-            await cmd.ExecuteNonQueryAsync();
+            try
+            {
+                using var cmd = connection.CreateCommand();
+                cmd.Transaction = transaction;
 
-            await transaction.CommitAsync();
-            return new { success = true, message = "All hands deleted" };
+                cmd.CommandText = "DELETE FROM hands_analytics";
+                await cmd.ExecuteNonQueryAsync();
+
+                cmd.CommandText = "DELETE FROM leaks";
+                await cmd.ExecuteNonQueryAsync();
+
+                cmd.CommandText = "DELETE FROM hands";
+                await cmd.ExecuteNonQueryAsync();
+
+                cmd.CommandText = "DELETE FROM sessions";
+                await cmd.ExecuteNonQueryAsync();
+
+                cmd.CommandText = "DELETE FROM players";
+                await cmd.ExecuteNonQueryAsync();
+
+                // Reset auto-increment counters
+                cmd.CommandText = "DELETE FROM sqlite_sequence";
+                await cmd.ExecuteNonQueryAsync();
+
+                await transaction.CommitAsync();
+                return new { success = true, message = "All hands deleted" };
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
-        catch
+        catch (Exception ex)
         {
-            await transaction.RollbackAsync();
-            throw;
+            _logger.LogError(ex, "Failed to delete all hands");
+            return new { success = false, message = $"Failed to delete data: {ex.Message}" };
         }
     }
 
