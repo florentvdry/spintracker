@@ -69,8 +69,8 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main chart */}
         <Card 
-          title="Évolution du Winrate" 
-          subtitle="Profit cumulé vs EV"
+          title="Evolution des jetons" 
+          subtitle="Profit et EV"
           className="lg:col-span-2"
         >
           {stats.total_hands > 0 ? (
