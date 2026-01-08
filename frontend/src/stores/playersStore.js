@@ -28,8 +28,11 @@ export const usePlayersStore = create((set, get) => ({
       });
       
       if (result.success) {
+        // Handle both formats: array directly or object with players property
+        const playersList = Array.isArray(result.data) ? result.data : (result.data.players || []);
+        
         set({
-          players: result.data.players || [],
+          players: playersList,
           heroName: result.data.heroName || null,
         });
       }

@@ -356,6 +356,14 @@ ipcMain.handle('get-range-heatmap', async (event, filters) => {
   return callBackendAPI('/db/range-heatmap', filters || {});
 });
 
+ipcMain.handle('get-analysis-stats', async (event, filters) => {
+  return callBackendAPI('/analysis/stats', filters || {});
+});
+
+ipcMain.handle('get-analysis-hands', async (event, request) => {
+  return callBackendAPI('/analysis/hands', request || {});
+});
+
 ipcMain.handle('get-players', async (event, options = {}) => {
   return callBackendAPI('/db/players', options);
 });

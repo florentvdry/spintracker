@@ -115,6 +115,14 @@ class IPCService {
     return this.invoke('get-range-heatmap', filters);
   }
 
+  async getAnalysisStats(filters = {}) {
+    return this.invoke('get-analysis-stats', filters);
+  }
+
+  async getAnalysisHands(request = {}) {
+    return this.invoke('get-analysis-hands', request);
+  }
+
   // Python Calculations
   async calculateEquity(params) {
     return this.invoke('python-calculate-equity', params);

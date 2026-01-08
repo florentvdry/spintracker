@@ -165,6 +165,7 @@ public class BetclicParser : IHandParser
             }
 
             // Post-Processing Calculations
+            BuildActionStrings(hand, actions); // Build action strings before calculations
             CalculateInvestmentsAndProfits(hand, players, actions, heroName, totalPotWon);
             NormalizeHandData(hand, players, heroName);
             GenerateHandId(hand);
@@ -625,6 +626,13 @@ public class BetclicParser : IHandParser
                     villainPos = "SB";
                 
                 hand.VillainPosition = $"Villain ({villainPos})";
+
+                // Update all players positions for consistency in DB
+                foreach (var p in hand.Players)
+                {
+                    if (p.Position == "BTN SB" || p.Position == "BTN")
+                        p.Position = "SB";
+                }
             }
             else
             {

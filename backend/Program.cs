@@ -29,6 +29,7 @@ builder.Services.AddSingleton<Database>();
 builder.Services.AddSingleton<EquityCalculator>();
 builder.Services.AddSingleton<AnalyticsCalculator>();
 builder.Services.AddSingleton<AnalysisEngine>();
+builder.Services.AddSingleton<AnalysisService>();
 builder.Services.AddSingleton<ImporterService>();
 
 var app = builder.Build();
@@ -395,7 +396,7 @@ app.MapMethods("/db/winrate-chart", new[] { "GET", "POST" }, async (HttpContext 
             }
         });
 
-app.MapMethods("/db/range-heatmap", new[] { "GET", "POST" }, async (HttpContext context, Database db) =>
+        app.MapMethods("/db/range-heatmap", new[] { "GET", "POST" }, async (HttpContext context, Database db) =>
 {
     try
     {
@@ -544,6 +545,52 @@ app.MapPost("/equity/batch", async (HttpContext context, EquityCalculator equity
 });
 
 // ============ Analysis Endpoints ============
+app.MapPost("/analysis/stats", async (HttpContext context, AnalysisService analysisService) =>
+{
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        var filters = JsonSerializer.Deserialize<PokerTrackerBackend.AnalysisFilters>(body, jsonOptions);
+
+        if (filters == null)
+        {
+             return Results.BadRequest(new { success = false, error = "No filters provided" });
+        }
+
+        var result = await analysisService.GetAnalysisStatsAsync(filters);
+        return Results.Json(new { success = true, data = result });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Analysis error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapPost("/analysis/hands", async (HttpContext context, AnalysisService analysisService) =>
+{
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        var request = JsonSerializer.Deserialize<AnalysisHandsRequest>(body, jsonOptions);
+
+        if (request == null)
+        {
+             return Results.BadRequest(new { success = false, error = "Invalid request" });
+        }
+
+        var result = await analysisService.GetAnalysisHandsAsync(request);
+        return Results.Json(new { success = true, data = result });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Analysis hands error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
 app.MapPost("/analyze/leaks", async (HttpContext context, Database db, AnalysisEngine analysisEngine) =>
 {
     try
@@ -783,3 +830,6 @@ public record BatchEquityRequest(List<BatchEquityHand> Hands, int? Iterations);
 public record BatchEquityHand(string? Id, string? HeroCards, string? VillainCards, string? Board);
 public record AnalyzeLeaksRequest(Dictionary<string, object>? Options);
 public record AnalyzeRangeRequest(string? Position, string? Action, int? Stack);
+// AnalysisFilters record removed to use class from AnalysisModels.cs
+
+// ... existing code ...

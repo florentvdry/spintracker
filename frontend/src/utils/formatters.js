@@ -18,6 +18,14 @@ export function formatNumber(value, options = {}) {
 }
 
 /**
+ * Formate un montant en devise (ex: 10,00€)
+ */
+export function formatCurrency(value, currency = '€') {
+  if (value === null || value === undefined) return '—';
+  return `${value.toFixed(2)}${currency}`;
+}
+
+/**
  * Formate un profit avec signe et devise
  */
 export function formatProfit(value, currency = '€') {

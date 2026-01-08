@@ -578,6 +578,195 @@ public class Database
         }
     }
 
+    public async Task<List<AnalysisHandData>> GetHandsForAnalysisAsync(AnalysisFilters filters)
+    {
+        _logger.LogInformation($"GetHandsForAnalysisAsync called for hero={filters.HeroName}");
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+
+            var whereClauses = new List<string>();
+            var parameters = new List<SqliteParameter>();
+            var joinClause = "";
+            
+            // If HeroName is provided, join specific player.
+            // If NOT provided (Field analysis), join with is_hero=1 to identify the hero of the hand.
+            if (!string.IsNullOrEmpty(filters.HeroName))
+            {
+                joinClause += " JOIN player_hands ph ON h.id = ph.hand_id";
+                whereClauses.Add("ph.player_name = @heroName");
+                parameters.Add(new SqliteParameter("@heroName", filters.HeroName));
+            }
+            else
+            {
+                joinClause += " LEFT JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
+            }
+
+            if (!string.IsNullOrEmpty(filters.DateFrom))
+            {
+                whereClauses.Add("h.date_time >= @dateFrom");
+                parameters.Add(new SqliteParameter("@dateFrom", filters.DateFrom));
+            }
+
+            if (!string.IsNullOrEmpty(filters.DateTo))
+            {
+                whereClauses.Add("h.date_time <= @dateTo");
+                parameters.Add(new SqliteParameter("@dateTo", filters.DateTo));
+            }
+
+            if (filters.Positions != null && filters.Positions.Length > 0)
+            {
+                var posClauses = new List<string>();
+                for (int i = 0; i < filters.Positions.Length; i++)
+                {
+                    var pParam = $"@pos{i}";
+                    var pParamLike = $"@posLike{i}";
+                    
+                    string baseClause;
+                    if (!string.IsNullOrEmpty(filters.HeroName))
+                    {
+                        baseClause = $"(ph.position = {pParam} OR ph.position LIKE {pParamLike})";
+                    }
+                    else
+                    {
+                        baseClause = $"(hero_position = {pParam} OR hero_position LIKE {pParamLike})";
+                    }
+                    
+                    parameters.Add(new SqliteParameter(pParam, filters.Positions[i]));
+                    parameters.Add(new SqliteParameter(pParamLike, $"%({filters.Positions[i]})%"));
+
+                    // Special Handling for Heads Up: SB includes BTN and BTN SB
+                    if (filters.PlayerCount == 2 && filters.Positions[i] == "SB")
+                    {
+                        var btnParam = $"@posBtn{i}";
+                        var btnSbParam = $"@posBtnSb{i}";
+                        
+                        string extraClause;
+                        if (!string.IsNullOrEmpty(filters.HeroName))
+                        {
+                            extraClause = $" OR ph.position = {btnParam} OR ph.position = {btnSbParam}";
+                        }
+                        else
+                        {
+                            extraClause = $" OR hero_position = {btnParam} OR hero_position = {btnSbParam}";
+                        }
+                        
+                        baseClause = $"({baseClause}{extraClause})";
+                        parameters.Add(new SqliteParameter(btnParam, "BTN"));
+                        parameters.Add(new SqliteParameter(btnSbParam, "BTN SB"));
+                    }
+
+                    posClauses.Add(baseClause);
+                }
+                whereClauses.Add($"({string.Join(" OR ", posClauses)})");
+            }
+
+            if (filters.PlayerCount.HasValue)
+            {
+                whereClauses.Add("h.player_count = @playerCount");
+                parameters.Add(new SqliteParameter("@playerCount", filters.PlayerCount.Value));
+            }
+
+            var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
+
+            using var cmd = connection.CreateCommand();
+            
+            _logger.LogInformation($"GetHandsForAnalysisAsync: whereClauses count = {whereClauses.Count}");
+            _logger.LogInformation($"PlayerCount filter: {filters.PlayerCount}");
+            if (whereClauses.Count > 0) _logger.LogInformation($"Where: {whereClause}");
+
+            // Select necessary columns
+            var profitCol = "COALESCE(ph.net_profit, hero_profit)";
+            var stackCol = "COALESCE(ph.stack, hero_stack)";
+            var posCol = "COALESCE(ph.position, hero_position)";
+            var investCol = "COALESCE(ph.investment, hero_investment)";
+            var showdownCol = "COALESCE(ph.went_to_showdown, h.went_to_showdown)";
+
+            // Also join analytics for EV
+            var joinAnalytics = " LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+
+            // Subquery to get all players and positions for each hand
+            var playerPositionsSubquery = @"
+                (SELECT GROUP_CONCAT(player_name || ':' || position, '|') 
+                 FROM player_hands ph_inner 
+                 WHERE ph_inner.hand_id = h.id) as player_positions_map";
+
+            cmd.CommandText = $@"
+                SELECT 
+                    h.id, 
+                    h.date_time, 
+                    {profitCol}, 
+                    h.preflop_action, 
+                    h.flop_action, 
+                    h.turn_action, 
+                    h.river_action, 
+                    {posCol}, 
+                    {stackCol}, 
+                    h.blinds,
+                    {showdownCol},
+                    h.total_pot,
+                    {investCol},
+                    ph.player_name,
+                    h.flop,
+                    h.turn,
+                    h.river,
+                    a.ev_chips,
+                    {playerPositionsSubquery}
+                FROM hands h
+                {joinClause}
+                {joinAnalytics}
+                {whereClause}
+                ORDER BY h.date_time ASC"; // ASC for graph
+
+            foreach (var param in parameters)
+            {
+                cmd.Parameters.Add(param);
+            }
+            
+            _logger.LogInformation($"SQL: {cmd.CommandText}");
+
+            var results = new List<AnalysisHandData>();
+            using var reader = await cmd.ExecuteReaderAsync();
+            int rowCount = 0;
+            while (await reader.ReadAsync())
+            {
+                rowCount++;
+                results.Add(new AnalysisHandData
+                {
+                    HandId = reader.GetString(0),
+                    Date = DateTime.Parse(reader.GetString(1)),
+                    Profit = reader.IsDBNull(2) ? 0.0 : reader.GetDouble(2),
+                    PreflopAction = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                    FlopAction = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                    TurnAction = reader.IsDBNull(5) ? "" : reader.GetString(5),
+                    RiverAction = reader.IsDBNull(6) ? "" : reader.GetString(6),
+                    HeroPosition = reader.IsDBNull(7) ? "" : reader.GetString(7),
+                    HeroStack = reader.IsDBNull(8) ? 0.0 : reader.GetDouble(8),
+                    Blinds = reader.IsDBNull(9) ? "" : reader.GetString(9),
+                    WentToShowdown = !reader.IsDBNull(10) && (reader.GetFieldType(10) == typeof(long) ? reader.GetInt64(10) == 1 : reader.GetBoolean(10)),
+                    TotalPot = reader.IsDBNull(11) ? 0.0 : reader.GetDouble(11),
+                    Investment = reader.IsDBNull(12) ? 0.0 : reader.GetDouble(12),
+                    HeroName = reader.IsDBNull(13) ? null : reader.GetString(13),
+                    Flop = reader.IsDBNull(14) ? null : reader.GetString(14),
+                    Turn = reader.IsDBNull(15) ? null : reader.GetString(15),
+                    River = reader.IsDBNull(16) ? null : reader.GetString(16),
+                    EvChips = reader.IsDBNull(17) ? null : reader.GetDouble(17),
+                    PlayerPositionsMap = reader.IsDBNull(18) ? "" : reader.GetString(18)
+                });
+            }
+            
+            _logger.LogInformation($"GetHandsForAnalysisAsync: Read {rowCount} rows");
+
+            return results;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error in GetHandsForAnalysisAsync: {ex.Message}");
+            throw;
+        }
+    }
+
     public async Task<object> GetHandsAsync(HandsQueryOptions options)
     {
         _logger.LogInformation($"GetHandsAsync called with limit={options.Limit}, page={options.Page}, hero={options.HeroName}");
@@ -749,6 +938,62 @@ public class Database
         }
 
         return null;
+    }
+
+    public async Task<List<object>> GetHandsByIdsAsync(List<string> handIds, string? heroName = null)
+    {
+        if (handIds == null || handIds.Count == 0) return new List<object>();
+
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+        var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
+        
+        if (!string.IsNullOrEmpty(heroName))
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
+        }
+
+        // Generate parameter names
+        var parameters = new List<SqliteParameter>();
+        var idParams = new List<string>();
+        for (int i = 0; i < handIds.Count; i++)
+        {
+            var pName = $"@id{i}";
+            idParams.Add(pName);
+            parameters.Add(new SqliteParameter(pName, handIds[i]));
+        }
+
+        if (!string.IsNullOrEmpty(heroName))
+        {
+            parameters.Add(new SqliteParameter("@heroName", heroName));
+        }
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = $@"
+            SELECT {selectFields}
+            FROM hands h
+            {joinClause}
+            WHERE h.id IN ({string.Join(",", idParams)})
+            ORDER BY h.date_time DESC"; // Default sort, though caller might re-sort
+
+        foreach (var p in parameters) cmd.Parameters.Add(p);
+        
+        _logger.LogInformation($"GetHandsByIdsAsync: Fetching {handIds.Count} hands. SQL: {cmd.CommandText.Substring(0, Math.Min(200, cmd.CommandText.Length))}...");
+
+        var hands = new List<object>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        int rowCount = 0;
+        while (await reader.ReadAsync())
+        {
+            rowCount++;
+            hands.Add(ReadHandFromReader(reader));
+        }
+        _logger.LogInformation($"GetHandsByIdsAsync: Read {rowCount} rows");
+
+        return hands;
     }
 
     public async Task<object> GetDashboardStatsAsync(string? heroName = null)
@@ -1269,6 +1514,245 @@ public class Database
         }
 
         return players;
+    }
+
+    public async Task<object> GetAnalysisStatsAsync(AnalysisFilters filters)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var whereClauses = new List<string>();
+        var parameters = new List<SqliteParameter>();
+
+        // Base join
+        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+        var profitCol = "hero_profit";
+        
+        if (!string.IsNullOrEmpty(filters.HeroName))
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            profitCol = "ph.net_profit";
+            parameters.Add(new SqliteParameter("@heroName", filters.HeroName));
+        }
+
+        // Date Filters
+        if (!string.IsNullOrEmpty(filters.DateFrom))
+        {
+            whereClauses.Add("h.date_time >= @dateFrom");
+            parameters.Add(new SqliteParameter("@dateFrom", filters.DateFrom));
+        }
+        if (!string.IsNullOrEmpty(filters.DateTo))
+        {
+            whereClauses.Add("h.date_time <= @dateTo");
+            parameters.Add(new SqliteParameter("@dateTo", filters.DateTo));
+        }
+
+        // Position Filter
+        if (filters.Positions != null && filters.Positions.Length > 0)
+        {
+            var posConditions = new List<string>();
+            for (int i = 0; i < filters.Positions.Length; i++)
+            {
+                var p = filters.Positions[i];
+                var paramName = $"@pos{i}";
+                // Handle different position formats if needed, or strict match
+                if (!string.IsNullOrEmpty(filters.HeroName))
+                {
+                    posConditions.Add($"(ph.position = {paramName} OR ph.position LIKE {paramName} || ' %' OR ph.position LIKE '% ' || {paramName})");
+                }
+                else
+                {
+                    posConditions.Add($"(h.hero_position = {paramName} OR h.hero_position LIKE {paramName} || ' %' OR h.hero_position LIKE '% ' || {paramName})");
+                }
+                parameters.Add(new SqliteParameter(paramName, p));
+            }
+            whereClauses.Add($"({string.Join(" OR ", posConditions)})");
+        }
+
+        // Situation & Action Filters
+            if (!string.IsNullOrEmpty(filters.Situation))
+            {
+                var col = filters.Situation.ToLower() switch
+                {
+                    "preflop" => "preflop_action",
+                    "flop" => "flop_action",
+                    "turn" => "turn_action",
+                    "river" => "river_action",
+                    _ => null
+                };
+
+                if (col != null)
+                {
+                    if (!string.IsNullOrEmpty(filters.Action))
+                    {
+                        var action = filters.Action.ToLower();
+                        // Basic text matching for actions
+                        var verb = action switch {
+                            "check" => "checks",
+                            "bet" => "bets",
+                            "raise" => "raises",
+                            "call" => "calls",
+                            "fold" => "folds",
+                            _ => action
+                        };
+                        whereClauses.Add($"h.{col} LIKE @actionLike");
+                        parameters.Add(new SqliteParameter("@actionLike", $"%{verb}%"));
+                    }
+                }
+            }
+            else if (!string.IsNullOrEmpty(filters.Action))
+            {
+                // Action anywhere
+                var action = filters.Action.ToLower();
+                var verb = action switch {
+                    "check" => "checks",
+                    "bet" => "bets",
+                    "raise" => "raises",
+                    "call" => "calls",
+                    "fold" => "folds",
+                    _ => action
+                };
+                whereClauses.Add($"(h.preflop_action LIKE @actionGlobal OR h.flop_action LIKE @actionGlobal OR h.turn_action LIKE @actionGlobal OR h.river_action LIKE @actionGlobal)");
+                parameters.Add(new SqliteParameter("@actionGlobal", $"%{verb}%"));
+            }
+
+            // Per-street Action Filters (Done in memory for detailed Hero/Villain logic)
+            // SQL filtering for specific actions is removed to avoid complexity with Hero identification in SQL.
+            // If needed, we can add basic LIKE filters if the user wants "Any Check" etc. but current UI splits Hero/Villain.
+
+            // Stack Filter (Approximate in SQL)
+            if (filters.MinStackBB.HasValue || filters.MaxStackBB.HasValue)
+            {
+                // Try to parse BB from blinds string "100/200" -> 200
+                // SQL: CAST(substr(blinds, instr(blinds, '/') + 1) AS INTEGER)
+                // Stack BB = stack / BB
+                var stackCol = !string.IsNullOrEmpty(filters.HeroName) ? "ph.stack" : "h.hero_stack";
+                
+                if (filters.MinStackBB.HasValue)
+                {
+                    whereClauses.Add($"({stackCol} * 1.0 / CAST(substr(h.blinds, instr(h.blinds, '/') + 1) AS INTEGER)) >= @minStack");
+                    parameters.Add(new SqliteParameter("@minStack", filters.MinStackBB.Value));
+                }
+                if (filters.MaxStackBB.HasValue)
+                {
+                    whereClauses.Add($"({stackCol} * 1.0 / CAST(substr(h.blinds, instr(h.blinds, '/') + 1) AS INTEGER)) <= @maxStack");
+                    parameters.Add(new SqliteParameter("@maxStack", filters.MaxStackBB.Value));
+                }
+            }
+
+            // Player Count Filter
+            if (filters.PlayerCount.HasValue)
+            {
+                whereClauses.Add("h.player_count = @playerCount");
+                parameters.Add(new SqliteParameter("@playerCount", filters.PlayerCount.Value));
+            }
+
+            var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
+
+        // Main Query
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = $@"
+            SELECT 
+                COUNT(*) as count,
+                SUM(CASE WHEN {profitCol} > 0 THEN 1 ELSE 0 END) as won_hands,
+                SUM({profitCol}) as total_profit,
+                AVG({profitCol}) as avg_profit,
+                SUM(CASE WHEN h.preflop_action LIKE '%raises%' OR h.preflop_action LIKE '%bets%' OR h.preflop_action LIKE '%calls%' THEN 1 ELSE 0 END) as vpip_count,
+                SUM(CASE WHEN h.preflop_action LIKE '%raises%' THEN 1 ELSE 0 END) as pfr_count,
+                SUM(CASE WHEN h.preflop_action LIKE '%raises%' AND h.preflop_action LIKE '%raises%' THEN 1 ELSE 0 END) as three_bet_count, -- Approximate
+                SUM(CASE WHEN h.went_to_showdown = 1 THEN 1 ELSE 0 END) as wtsd_count,
+                SUM(CASE WHEN h.went_to_showdown = 1 AND {profitCol} > 0 THEN 1 ELSE 0 END) as wsd_count,
+                SUM(CASE WHEN h.preflop_action LIKE '%bets%' OR h.preflop_action LIKE '%raises%' OR h.flop_action LIKE '%bets%' OR h.flop_action LIKE '%raises%' OR h.turn_action LIKE '%bets%' OR h.turn_action LIKE '%raises%' OR h.river_action LIKE '%bets%' OR h.river_action LIKE '%raises%' THEN 1 ELSE 0 END) as agg_count,
+                SUM(CASE WHEN h.preflop_action LIKE '%calls%' OR h.flop_action LIKE '%calls%' OR h.turn_action LIKE '%calls%' OR h.river_action LIKE '%calls%' THEN 1 ELSE 0 END) as passive_count
+            FROM hands h
+            {joinClause}
+            {whereClause}";
+
+        foreach (var p in parameters) cmd.Parameters.Add(p);
+
+        var stats = new AnalysisStats();
+        
+        using (var reader = await cmd.ExecuteReaderAsync())
+        {
+            if (await reader.ReadAsync())
+            {
+                stats.TotalHands = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
+                stats.WonHands = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+                stats.TotalProfit = reader.IsDBNull(2) ? 0.0 : reader.GetDouble(2);
+                
+                if (stats.TotalHands > 0)
+                {
+                    var vpipCount = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
+                    var pfrCount = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
+                    var wtsdCount = reader.IsDBNull(7) ? 0 : reader.GetInt32(7);
+                    var wsdCount = reader.IsDBNull(8) ? 0 : reader.GetInt32(8);
+                    
+                    stats.Vpip = (double)vpipCount / stats.TotalHands * 100;
+                    stats.Pfr = (double)pfrCount / stats.TotalHands * 100;
+                    stats.Wtsd = (double)wtsdCount / stats.TotalHands * 100;
+                    stats.Wsd = wtsdCount > 0 ? (double)wsdCount / wtsdCount * 100 : 0;
+                    
+                    // Aggression Frequency: (Bet + Raise) / (Bet + Raise + Call + Fold) 
+                    // Simplified here: (Bet + Raise) / (Bet + Raise + Call)
+                    var aggCount = reader.IsDBNull(9) ? 0 : reader.GetInt32(9);
+                    var passiveCount = reader.IsDBNull(10) ? 0 : reader.GetInt32(10);
+                    stats.AggressionFreq = (aggCount + passiveCount) > 0 ? (double)aggCount / (aggCount + passiveCount) * 100 : 0;
+                }
+            }
+        }
+
+        // Get Graph Data (Group by Date)
+        // Simplified to top 100 data points for performance if needed, or all points
+        using var cmdGraph = connection.CreateCommand();
+        cmdGraph.CommandText = $@"
+            SELECT 
+                h.date_time, 
+                SUM({profitCol}) as profit
+            FROM hands h
+            {joinClause}
+            {whereClause}
+            GROUP BY date(h.date_time)
+            ORDER BY h.date_time";
+        foreach (var p in parameters) cmdGraph.Parameters.Add(p);
+
+        using (var reader = await cmdGraph.ExecuteReaderAsync())
+        {
+            double cumProfit = 0;
+            while (await reader.ReadAsync())
+            {
+                var profit = reader.IsDBNull(1) ? 0.0 : reader.GetDouble(1);
+                cumProfit += profit;
+                stats.GraphData.Add(new AnalysisGraphPoint 
+                { 
+                    Date = reader.GetString(0), 
+                    Profit = profit,
+                    CumulativeProfit = cumProfit 
+                });
+            }
+        }
+
+        return stats;
+    }
+
+    public class AnalysisStats
+    {
+        public int TotalHands { get; set; }
+        public int WonHands { get; set; }
+        public double TotalProfit { get; set; }
+        public double Vpip { get; set; }
+        public double Pfr { get; set; }
+        public double ThreeBet { get; set; }
+        public double Wtsd { get; set; }
+        public double Wsd { get; set; }
+        public double AggressionFreq { get; set; }
+        public List<AnalysisGraphPoint> GraphData { get; set; } = new();
+    }
+
+    public class AnalysisGraphPoint
+    {
+        public string Date { get; set; } = "";
+        public double Profit { get; set; }
+        public double CumulativeProfit { get; set; }
     }
 
     public async Task<List<ParsedHand>> GetAllHandsForAnalysisAsync(string? heroName = null)

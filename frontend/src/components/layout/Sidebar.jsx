@@ -7,7 +7,8 @@ import {
   AlertTriangle, 
   Grid3X3, 
   Settings,
-  Database
+  Database,
+  BarChart2
 } from 'lucide-react';
 import clsx from 'clsx';
 import logo from '../../assets/logo.png';
@@ -21,6 +22,7 @@ export default function Sidebar() {
     { name: t('navigation.history'), href: '/hands', icon: History },
     { name: t('navigation.leaks'), href: '/leaks', icon: AlertTriangle },
     { name: t('navigation.ranges'), href: '/ranges', icon: Grid3X3 },
+    { name: t('navigation.analysis', 'Analysis'), href: '/analysis', icon: BarChart2 },
     { name: t('navigation.settings'), href: '/settings', icon: Settings },
   ];
 
