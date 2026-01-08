@@ -82,13 +82,14 @@ function stopBackend() {
   }
 }
 
-async function callBackendAPI(endpoint, data = {}, method = 'POST', timeoutMs = 300000) {
+async function callBackendAPI(endpoint, data = {}, method = 'POST', timeoutMs = 86400000) {
   try {
     const fetch = (await import('node-fetch')).default;
     const AbortController = global.AbortController || (await import('abort-controller')).AbortController;
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs); // Default 5 min timeout
+    // Default 24h timeout to allow long operations
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     const options = {
       method,
@@ -151,15 +152,7 @@ function createWindow() {
   }
 
   mainWindow.webContents.on('did-finish-load', async () => {
-    console.log('[Main] Window finished loading');
-    try {
-      const isRequireDefined = await mainWindow.webContents.executeJavaScript('typeof window.require');
-      console.log(`[Main] window.require type: ${isRequireDefined}`);
-      const isIpcRendererDefined = await mainWindow.webContents.executeJavaScript('typeof window.require("electron").ipcRenderer');
-      console.log(`[Main] ipcRenderer type: ${isIpcRendererDefined}`);
-    } catch (e) {
-      console.error('[Main] Error checking require/ipcRenderer:', e);
-    }
+    // Window loaded
   });
 
   mainWindow.on('closed', () => {

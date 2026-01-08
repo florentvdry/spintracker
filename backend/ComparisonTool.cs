@@ -13,8 +13,6 @@ public static class ComparisonTool
 
     public static async Task Run()
     {
-        Console.WriteLine("Starting Comparison Tool...");
-
         var equityCalc = new EquityCalculator(NullLogger<EquityCalculator>.Instance);
         
         var analyticsCalc = new AnalyticsCalculator(equityCalc, NullLogger<AnalyticsCalculator>.Instance);
@@ -32,7 +30,6 @@ public static class ComparisonTool
             var result = parser.ParseFile(content);
             localHands.AddRange(result.Hands);
         }
-        Console.WriteLine($"Loaded {localHands.Count} local hands.");
 
         // 2. Connect to PT4 DB and Fetch Data
         var pt4Data = new Dictionary<string, Pt4HandData>();
@@ -41,7 +38,6 @@ public static class ComparisonTool
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
             await conn.OpenAsync();
-            Console.WriteLine("Connected to PT4 Database.");
 
             var sql = @"
                 SELECT 
@@ -73,7 +69,6 @@ public static class ComparisonTool
                     NetExpectedChipsWon = amtExpectedWon
                 };
             }
-            Console.WriteLine($"Loaded {pt4Data.Count} PT4 hands for hero 'jmenfouu'.");
         }
         catch (Exception ex)
         {
@@ -97,8 +92,6 @@ public static class ComparisonTool
         int processedCount = 0;
         int totalToProcess = localHands.Count;
 
-        Console.WriteLine($"Starting Parallel Comparison with {Environment.ProcessorCount} threads...");
-
         Parallel.ForEach(localHands, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, localHand =>
         {
             if (string.IsNullOrEmpty(localHand.HandId)) return;
@@ -112,15 +105,7 @@ public static class ComparisonTool
                  var heroP = localHand.Players.FirstOrDefault(p => p.IsHero || p.Name == "jmenfouu");
                  bool heroWentToSd = heroP?.WentToShowdown ?? localHand.HeroWentToShowdown;
                  
-                 if (localHand.HandId == "01KE0NSQZ45HD84BD9VFZPH4WP")
-                 {
-                     lock(lockObj) {
-                         Console.WriteLine($"DEBUG Comparison: Hand={localHand.HandId}");
-                         Console.WriteLine($"  heroP found? {heroP != null}");
-                         if (heroP != null) Console.WriteLine($"  heroP.WentToShowdown={heroP.WentToShowdown}");
-                         Console.WriteLine($"  localHand.HeroWentToShowdown={localHand.HeroWentToShowdown}");
-                     }
-                 }
+
  
                  // Compare Showdown
                 if (heroWentToSd != pt4Hand.Showdown)

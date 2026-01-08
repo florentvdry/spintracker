@@ -33,7 +33,6 @@ export default function Settings() {
   const handleDeleteAll = async () => {
     try {
       const result = await ipcService.deleteAllHands();
-      console.log('Delete result:', result); // Debug log
 
       if (result.success) {
         addNotification({
@@ -41,6 +40,8 @@ export default function Settings() {
           title: 'Données supprimées',
           message: result.message || 'Toutes les mains ont été supprimées',
         });
+        // Refresh stats first so Header sees 0 hands
+        await refreshAll();
         setHeroName(null);
         await loadPlayers();
       } else {
@@ -56,7 +57,6 @@ export default function Settings() {
         });
       }
     } catch (error) {
-      console.error('Delete error:', error);
       addNotification({
         type: 'error',
         title: 'Erreur critique',

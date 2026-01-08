@@ -27,7 +27,7 @@ export default function Header() {
   const dashboardStats = useAppStore(state => state.dashboardStats);
 
   useEffect(() => {
-    if (!heroName && players.length > 0) {
+    if (!heroName && players.length > 0 && dashboardStats?.total_hands > 0) {
         const best = players.reduce((prev, current) => (prev.total_hands > current.total_hands) ? prev : current);
         setHeroName(best.name);
         addNotification({
@@ -37,7 +37,7 @@ export default function Header() {
             duration: 5000
         });
     }
-  }, [players, heroName, setHeroName, addNotification]);
+  }, [players, heroName, setHeroName, addNotification, dashboardStats]);
 
   const loadPlayers = async () => {
       try {
@@ -57,7 +57,7 @@ export default function Header() {
               }
           }
       } catch (e) {
-          console.error("Failed to load players", e);
+          // Silent error
       }
   };
 

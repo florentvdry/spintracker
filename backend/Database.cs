@@ -196,6 +196,9 @@ public class Database
 
         using var transaction = connection.BeginTransaction();
         var inserted = 0;
+        
+        // Dictionary to aggregate player stats
+        var playerStats = new Dictionary<string, (int Hands, double Profit)>();
 
         try
         {
@@ -216,6 +219,18 @@ public class Database
                     @villain_position, @villain_stack, @villain_cards, @preflop_action,
                     @flop, @flop_action, @turn, @turn_action, @river, @river_action,
                     @showdown, @result, @hero_investment, @hero_profit, @hero_net_profit, @hero_all_in, @villain_all_in, @all_in_street, @went_to_showdown, @player_count
+                )";
+            
+            // Re-use command for player hands
+            using var cmdPlayers = connection.CreateCommand();
+            cmdPlayers.Transaction = transaction;
+            cmdPlayers.CommandText = @"
+                INSERT OR REPLACE INTO player_hands (
+                    hand_id, player_name, position, stack, cards, investment, 
+                    chips_won, net_profit, is_hero, is_all_in, went_to_showdown
+                ) VALUES (
+                    @hand_id, @player_name, @position, @stack, @cards, @investment,
+                    @chips_won, @net_profit, @is_hero, @is_all_in, @went_to_showdown
                 )";
 
             foreach (var hand in hands)
@@ -265,24 +280,8 @@ public class Database
                     await cmd.ExecuteNonQueryAsync();
                     inserted++;
 
-                    // Insert Player Hands
-                    using var cmdPlayers = connection.CreateCommand();
-                    cmdPlayers.Transaction = transaction;
-                    cmdPlayers.CommandText = @"
-                        INSERT OR REPLACE INTO player_hands (
-                            hand_id, player_name, position, stack, cards, investment, 
-                            chips_won, net_profit, is_hero, is_all_in, went_to_showdown
-                        ) VALUES (
-                            @hand_id, @player_name, @position, @stack, @cards, @investment,
-                            @chips_won, @net_profit, @is_hero, @is_all_in, @went_to_showdown
-                        )";
-                    
                     foreach(var p in hand.Players)
                     {
-                        if (p.Name == "jmenfouu" && p.WentToShowdown)
-                        {
-                            _logger.LogWarning($"[DB Insert] jmenfouu went to showdown in hand {hand.Id}. Profit: {p.NetProfit}");
-                        }
                         cmdPlayers.Parameters.Clear();
                         cmdPlayers.Parameters.AddWithValue("@hand_id", hand.Id);
                         cmdPlayers.Parameters.AddWithValue("@player_name", p.Name);
@@ -296,26 +295,14 @@ public class Database
                         cmdPlayers.Parameters.AddWithValue("@is_all_in", p.IsAllIn ? 1 : 0);
                         cmdPlayers.Parameters.AddWithValue("@went_to_showdown", p.WentToShowdown ? 1 : 0);
                         await cmdPlayers.ExecuteNonQueryAsync();
-                    }
 
-                    // Update Players Stats
-                    using var cmdUpdatePlayers = connection.CreateCommand();
-                    cmdUpdatePlayers.Transaction = transaction;
-                    cmdUpdatePlayers.CommandText = @"
-                        INSERT OR IGNORE INTO players (name, created_at, updated_at) VALUES (@name, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-                        UPDATE players 
-                        SET total_hands = total_hands + 1, 
-                            total_profit = total_profit + @profit,
-                            updated_at = CURRENT_TIMESTAMP
-                        WHERE name = @name;
-                    ";
-
-                    foreach(var p in hand.Players)
-                    {
-                        cmdUpdatePlayers.Parameters.Clear();
-                        cmdUpdatePlayers.Parameters.AddWithValue("@name", p.Name);
-                        cmdUpdatePlayers.Parameters.AddWithValue("@profit", p.NetProfit);
-                        await cmdUpdatePlayers.ExecuteNonQueryAsync();
+                        // Aggregate stats
+                        if (!playerStats.ContainsKey(p.Name))
+                        {
+                            playerStats[p.Name] = (0, 0);
+                        }
+                        var (h, pr) = playerStats[p.Name];
+                        playerStats[p.Name] = (h + 1, pr + p.NetProfit);
                     }
                 }
                 catch (Exception ex)
@@ -323,6 +310,27 @@ public class Database
                     _logger.LogWarning($"Failed to insert hand {hand.Id}: {ex.Message}");
                     throw;
                 }
+            }
+
+            // Batch update players
+            using var cmdUpdatePlayers = connection.CreateCommand();
+            cmdUpdatePlayers.Transaction = transaction;
+            cmdUpdatePlayers.CommandText = @"
+                INSERT OR IGNORE INTO players (name, created_at, updated_at) VALUES (@name, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+                UPDATE players 
+                SET total_hands = total_hands + @hands, 
+                    total_profit = total_profit + @profit,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE name = @name;
+            ";
+
+            foreach(var kvp in playerStats)
+            {
+                cmdUpdatePlayers.Parameters.Clear();
+                cmdUpdatePlayers.Parameters.AddWithValue("@name", kvp.Key);
+                cmdUpdatePlayers.Parameters.AddWithValue("@hands", kvp.Value.Hands);
+                cmdUpdatePlayers.Parameters.AddWithValue("@profit", kvp.Value.Profit);
+                await cmdUpdatePlayers.ExecuteNonQueryAsync();
             }
 
             await transaction.CommitAsync();
