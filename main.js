@@ -5,7 +5,6 @@ const { spawn } = require('child_process');
 const AdmZip = require('adm-zip');
 
 let mainWindow;
-let splashWindow;
 let backendProcess = null;
 const BACKEND_PORT = 5050;
 
@@ -222,76 +221,93 @@ ipcMain.handle('import-hand-history', async () => {
   }
 
   try {
-    // First phase: parse all files to estimate total hands
-    let parseResults = [];
-    let parseErrors = [];
+    const fetch = (await import('node-fetch')).default;
+    let totalHandsImported = 0;
+    let totalFiles = result.filePaths.length;
+    let filesProcessed = 0;
+    let errors = [];
 
     for (const filePath of result.filePaths) {
       try {
-        const content = fs.readFileSync(filePath, 'utf8');
-        const parseResult = await callBackendAPI('/parse/file', { content });
+        console.log(`[Import] Starting optimized import for: ${filePath}`);
+        
+        const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/import/file`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filePath })
+        });
 
-        if (!parseResult.success) {
-          parseErrors.push({ file: path.basename(filePath), error: parseResult.error });
-          parseResults.push({ file: path.basename(filePath), hands: [] });
-        } else {
-          parseResults.push({ file: path.basename(filePath), hands: parseResult.hands || [], count: parseResult.count || (parseResult.hands || []).length });
+        if (!response.ok) {
+           throw new Error(`Backend returned ${response.status}`);
         }
-      } catch (err) {
-        parseErrors.push({ file: path.basename(filePath), error: err.message });
-        parseResults.push({ file: path.basename(filePath), hands: [] });
-      }
-    }
 
-    const totalHandsToImport = parseResults.reduce((s, r) => s + (r.count || (r.hands || []).length), 0);
+        // Handle SSE stream
+        await new Promise((resolve, reject) => {
+          let buffer = '';
+          
+          response.body.on('data', (chunk) => {
+            buffer += chunk.toString();
+            const parts = buffer.split('\n\n');
+            buffer = parts.pop(); // Keep incomplete chunk
 
-    // Second phase: insert parsed hands and send progress based on hands
-    let totalHandsImported = 0;
-    let insertErrors = [];
-    let filesProcessed = 0;
+            parts.forEach((part) => {
+              const lines = part.split('\n');
+              lines.forEach((line) => {
+                if (line.startsWith('data:')) {
+                  const jsonText = line.replace(/^data:\s*/,'');
+                  try {
+                    const progress = JSON.parse(jsonText);
+                    
+                    if (progress.error) {
+                        errors.push({ file: path.basename(filePath), error: progress.error });
+                    }
+                    
+                    // Update UI with progress
+                    // We might need to track accumulated hands if multiple files
+                    // For simplicity, let's say TotalHands is per file.
+                    // But the UI expects global progress.
+                    
+                    // Current file percent
+                    const filePercent = progress.Percent || 0;
+                    // Global percent (approximate)
+                    const globalPercent = Math.round(((filesProcessed * 100) + filePercent) / totalFiles);
+                    
+                    mainWindow.webContents.send('import-progress', {
+                      filesProcessed: filesProcessed,
+                      totalFiles: totalFiles,
+                      percent: globalPercent,
+                      handsImported: totalHandsImported + (progress.HandsImported || 0),
+                      totalHands: 'Calculating...' // Backend gives estimate per file, hard to sum up front
+                    });
 
-    for (const pr of parseResults) {
-      try {
-        if (pr.hands && pr.hands.length > 0) {
-          const batchSize = 50;
-          for (let i = 0; i < pr.hands.length; i += batchSize) {
-            const batch = pr.hands.slice(i, i + batchSize);
-            const insertResult = await callBackendAPI('/db/insert-hands', { hands: batch });
-            
-            if (insertResult.success) {
-              totalHandsImported += insertResult.inserted || 0;
-            } else {
-              insertErrors.push({ file: pr.file, error: insertResult.error, batch: `${i}-${i+batch.length}` });
-            }
-
-            // Update progress frequently
-            const percent = totalHandsToImport > 0 ? Math.round((totalHandsImported / totalHandsToImport) * 100) : 0;
-            mainWindow.webContents.send('import-progress', {
-              filesProcessed: filesProcessed,
-              totalFiles: result.filePaths.length,
-              percent: percent,
-              handsImported: totalHandsImported,
-              totalHands: totalHandsToImport
+                    if (progress.Success) {
+                        totalHandsImported += (progress.HandsImported || 0);
+                    }
+                  } catch (e) {
+                    console.error('[Import] Parse error:', e);
+                  }
+                }
+              });
             });
-          }
-        }
+          });
+
+          response.body.on('end', () => {
+            resolve();
+          });
+
+          response.body.on('error', (err) => {
+            reject(err);
+          });
+        });
 
         filesProcessed++;
 
-        const percent = totalHandsToImport > 0 ? Math.round((totalHandsImported / totalHandsToImport) * 100) : Math.round((filesProcessed / result.filePaths.length) * 100);
-        mainWindow.webContents.send('import-progress', {
-          filesProcessed: filesProcessed,
-          totalFiles: result.filePaths.length,
-          percent: percent,
-          handsImported: totalHandsImported,
-          totalHands: totalHandsToImport
-        });
       } catch (err) {
-        insertErrors.push({ file: pr.file, error: err.message });
+        console.error(`[Import] Error processing ${filePath}:`, err);
+        errors.push({ file: path.basename(filePath), error: err.message });
+        filesProcessed++;
       }
     }
-
-    const errors = parseErrors.concat(insertErrors);
 
     return {
       success: true,
@@ -478,8 +494,8 @@ ipcMain.handle('app-ready', async () => {
       mainWindow.show();
     }
 
-    if (splashWindow) {
-      try { splashWindow.close(); } catch (e) {}
+    if (splashWindow && !splashWindow.isDestroyed()) {
+      splashWindow.close();
       splashWindow = null;
     }
 

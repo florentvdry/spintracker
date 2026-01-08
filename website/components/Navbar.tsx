@@ -1,0 +1,89 @@
+"use client";
+
+import Link from "next/link";
+import { Button } from "./ui/Button";
+import { useState, useEffect } from "react";
+import { Menu, X, BarChart3 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <nav
+      className={cn(
+        "fixed top-0 w-full z-50 transition-all duration-300",
+        scrolled ? "bg-black/80 backdrop-blur-md border-b border-white/10" : "bg-transparent"
+      )}
+    >
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="flex items-center justify-between h-16 md:h-20">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2">
+            <BarChart3 className="h-8 w-8 text-blue-500" />
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+              PokerTracker
+            </span>
+          </Link>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link href="/#features" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+              Features
+            </Link>
+            <Link href="/#screenshots" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+              Screenshots
+            </Link>
+            <Link href="/download">
+              <Button variant="primary" size="sm" className="rounded-full px-6">
+                Download Now
+              </Button>
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 text-gray-400 hover:text-white"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X /> : <Menu />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="md:hidden bg-black/95 backdrop-blur-xl border-b border-white/10 absolute w-full">
+          <div className="px-4 py-6 space-y-4">
+            <Link
+              href="/#features"
+              className="block text-base font-medium text-gray-300 hover:text-white"
+              onClick={() => setIsOpen(false)}
+            >
+              Features
+            </Link>
+            <Link
+              href="/#screenshots"
+              className="block text-base font-medium text-gray-300 hover:text-white"
+              onClick={() => setIsOpen(false)}
+            >
+              Screenshots
+            </Link>
+            <Link href="/download" onClick={() => setIsOpen(false)}>
+              <Button className="w-full mt-4">Download Now</Button>
+            </Link>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}

@@ -6,6 +6,7 @@ import { pythonService } from '@services/pythonService';
 import { useNotificationStore } from '@stores/notificationStore';
 import { useAppStore } from '@stores/appStore';
 import { usePlayersStore } from '@stores/playersStore';
+import logo from '../../assets/logo.png';
 
 export default function Settings() {
   const [isRecalculating, setIsRecalculating] = useState(false);

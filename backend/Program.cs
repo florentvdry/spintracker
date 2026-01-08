@@ -29,6 +29,7 @@ builder.Services.AddSingleton<Database>();
 builder.Services.AddSingleton<EquityCalculator>();
 builder.Services.AddSingleton<AnalyticsCalculator>();
 builder.Services.AddSingleton<AnalysisEngine>();
+builder.Services.AddSingleton<ImporterService>();
 
 var app = builder.Build();
 
@@ -88,6 +89,40 @@ app.MapGet("/health", () =>
 });
 
 // ============ Parser Endpoints ============
+app.MapPost("/import/file", async (HttpContext context, ImporterService importer) =>
+{
+    context.Response.ContentType = "text/event-stream";
+    context.Response.Headers.Append("Cache-Control", "no-cache");
+    context.Response.Headers.Append("Connection", "keep-alive");
+
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        var data = JsonSerializer.Deserialize<ImportFileRequest>(body, jsonOptions);
+
+        if (data == null || string.IsNullOrEmpty(data.FilePath))
+        {
+            var errorPayload = JsonSerializer.Serialize(new { success = false, error = "No file path provided" });
+            await context.Response.WriteAsync($"data: {errorPayload}\n\n");
+            return;
+        }
+
+        await importer.ImportFileAsync(data.FilePath, async (progress) =>
+        {
+            var payload = JsonSerializer.Serialize(progress);
+            await context.Response.WriteAsync($"data: {payload}\n\n");
+            await context.Response.Body.FlushAsync();
+        }, context.RequestAborted);
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Import error: {e.Message}");
+        var errorPayload = JsonSerializer.Serialize(new { success = false, error = e.Message });
+        await context.Response.WriteAsync($"data: {errorPayload}\n\n");
+    }
+});
+
 app.MapPost("/parse/file", async (HttpContext context) =>
 {
     try
@@ -710,6 +745,7 @@ logger.LogInformation("Available parsers: Betclic");
 app.Run($"http://127.0.0.1:{port}");
 
 // ============ Request/Response Models ============
+public record ImportFileRequest(string FilePath);
 public record ParseFileRequest(string? Content, string? Room);
 public record ParseDetectRequest(string? Content);
 public class InsertHandsRequest { public List<ParsedHand> Hands { get; set; } = new(); }

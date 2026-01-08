@@ -4,17 +4,32 @@ import {
   RefreshCw, 
   Bell,
   Search,
-  ChevronDown
+  ChevronDown,
+  Check,
+  X,
+  Trash2
 } from 'lucide-react';
 import { useAppStore } from '@stores/appStore';
 import { useNotificationStore } from '@stores/notificationStore';
 import { useProgressStore } from '@stores/progressStore';
 import { ipcService } from '@services/ipcService';
+import { formatDate } from '@utils/formatters';
 
 export default function Header() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshAll = useAppStore(state => state.refreshAll);
   const addNotification = useNotificationStore(state => state.addNotification);
+  
+  // Notification history hooks
+  const history = useNotificationStore(state => state.history) || [];
+  const markAsRead = useNotificationStore(state => state.markAsRead);
+  const markAllAsRead = useNotificationStore(state => state.markAllAsRead);
+  const removeHistoryItem = useNotificationStore(state => state.removeHistoryItem);
+  const clearHistory = useNotificationStore(state => state.clearHistory);
+  
+  const unreadCount = history.filter(n => !n.read).length;
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
   const startProgress = useProgressStore(state => state.startProgress);
   const updateProgress = useProgressStore(state => state.updateProgress);
   const finishProgress = useProgressStore(state => state.finishProgress);
@@ -238,10 +253,101 @@ export default function Header() {
         </button>
 
         {/* Notifications */}
-        <button className="btn-icon relative">
-          <Bell className="w-5 h-5" />
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary-500 rounded-full" />
-        </button>
+        <div className="relative">
+          <button 
+            className="btn-icon relative"
+            onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+          >
+            <Bell className="w-5 h-5" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] flex items-center justify-center text-white font-bold">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </button>
+
+          {/* Dropdown Notifications */}
+          {isNotificationsOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)}></div>
+              <div className="absolute top-full mt-1 right-0 w-80 bg-dark-300 border border-dark-200 rounded shadow-xl z-50 flex flex-col max-h-[400px]">
+                {/* Header */}
+                <div className="p-3 border-b border-dark-200 flex items-center justify-between">
+                  <h3 className="font-medium text-gray-200">Notifications</h3>
+                  {unreadCount > 0 && (
+                    <button 
+                      onClick={markAllAsRead}
+                      className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1"
+                    >
+                      <Check className="w-3 h-3" /> Tout lire
+                    </button>
+                  )}
+                </div>
+
+                {/* List */}
+                <div className="overflow-y-auto flex-1">
+                  {history.length === 0 ? (
+                    <div className="p-8 text-center text-gray-500 text-sm">
+                      Aucune notification
+                    </div>
+                  ) : (
+                    history.map(item => (
+                      <div 
+                        key={item.id}
+                        className={`p-3 border-b border-dark-100/10 hover:bg-dark-400 group relative ${!item.read ? 'bg-primary-500/5' : ''}`}
+                        onClick={() => markAsRead(item.id)}
+                      >
+                        <div className="flex gap-3 pr-6">
+                          <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${
+                            item.type === 'success' ? 'bg-green-500' :
+                            item.type === 'error' ? 'bg-red-500' :
+                            item.type === 'warning' ? 'bg-yellow-500' :
+                            'bg-blue-500'
+                          }`} />
+                          
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-sm font-medium ${!item.read ? 'text-gray-100' : 'text-gray-400'}`}>
+                              {item.title || 'Notification'}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-0.5 line-clamp-2">
+                              {item.message}
+                            </p>
+                            <p className="text-[10px] text-gray-500 mt-1">
+                              {formatDate(item.timestamp, { format: 'relative' })}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); removeHistoryItem(item.id); }}
+                            className="p-1 hover:bg-dark-200 rounded text-gray-400 hover:text-red-400"
+                            title="Supprimer"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Footer */}
+                {history.length > 0 && (
+                  <div className="p-2 border-t border-dark-200 bg-dark-400/50">
+                    <button 
+                      onClick={clearHistory}
+                      className="w-full py-1.5 text-xs text-center text-gray-500 hover:text-gray-300 flex items-center justify-center gap-2"
+                    >
+                      <Trash2 className="w-3 h-3" /> Tout effacer
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

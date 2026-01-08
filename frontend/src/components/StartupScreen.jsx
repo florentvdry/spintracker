@@ -14,8 +14,8 @@ export default function StartupScreen() {
   return (
     <div className="startup-overlay">
       <div className="startup-card">
-        <div className="startup-logo-bg">
-          <TrendingUp className="startup-logo" />
+        <div className="w-[84px] h-[84px] flex items-center justify-center">
+          <img src={logo} alt="Logo" className="w-full h-full object-contain" />
         </div>
         <div className="startup-message">
           {error ? (

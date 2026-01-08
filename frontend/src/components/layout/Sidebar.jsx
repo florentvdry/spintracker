@@ -6,10 +6,10 @@ import {
   AlertTriangle, 
   Grid3X3, 
   Settings,
-  TrendingUp,
   Database
 } from 'lucide-react';
 import clsx from 'clsx';
+import logo from '../../assets/logo.png';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -27,9 +27,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="h-16 flex items-center px-6 border-b border-dark-100/30">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
-            <TrendingUp className="w-6 h-6 text-dark-500" />
-          </div>
+          <img src={logo} alt="Poker Tracker" className="w-10 h-10 object-contain" />
           <div>
             <h1 className="text-lg font-bold gradient-text">Poker Tracker</h1>
             <span className="text-xs text-gray-500">Pro Edition</span>

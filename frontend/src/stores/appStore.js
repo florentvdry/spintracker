@@ -7,7 +7,7 @@ import { ipcService } from '@services/ipcService';
  */
 export const useAppStore = create((set, get) => ({
   // État
-  isLoading: false,
+  isLoading: true,
   isInitialized: false,
   dashboardStats: null,
   sessions: [],
@@ -33,10 +33,18 @@ export const useAppStore = create((set, get) => ({
     set({ isLoading: true, error: null, loadingMessage: 'Démarrage du serveur...' });
     
     // Helper pour réessayer les appels si le backend n'est pas encore prêt
-    const retry = async (fn, retries = 15, delay = 1000) => {
+    const retry = async (fn, retries = 5, delay = 1000) => {
       for (let i = 0; i < retries; i++) {
-        const result = await fn();
-        if (result && result.success) return result;
+        try {
+          // Timeout de 2s par tentative pour ne pas bloquer indéfiniment
+          const result = await Promise.race([
+            fn(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000))
+          ]);
+          if (result && result.success) return result;
+        } catch (e) {
+          // Continue to next retry
+        }
         await new Promise(resolve => setTimeout(resolve, delay));
       }
       return { success: false, error: 'Le serveur ne répond pas après plusieurs tentatives.' };
@@ -48,24 +56,21 @@ export const useAppStore = create((set, get) => ({
       const statsResult = await retry(async () => {
         const res = await get().loadDashboardStats();
         return res;
-      }, 15, 1000);
+      }, 5, 1000);
       
+      // Si échec des stats, on considère que l'init a échoué mais on laisse l'app s'ouvrir quand même
+      // pour afficher l'erreur à l'utilisateur plutôt que de rester bloqué sur le splash.
       if (!statsResult || !statsResult.success) {
-        throw new Error(statsResult?.error || 'Impossible de charger les statistiques');
+        set({ error: statsResult?.error || 'Impossible de charger les statistiques. Vérifiez que le backend tourne.' });
+      } else {
+        set({ isInitialized: true, loadingMessage: 'Prêt !' });
       }
-      
-      // 2. Charger l'historique des sessions
-      set({ loadingMessage: 'Chargement des sessions...' });
-      const sessionsResult = await retry(() => get().loadSessions(), 3, 1000);
-      
-      // On est moins strict sur les sessions, si ça échoue on continue mais on log
-      if (!sessionsResult?.success) {
-        console.warn('Failed to load sessions, continuing anyway', sessionsResult?.error);
-      }
-      
-      set({ isInitialized: true, loadingMessage: 'Prêt !' });
+
+      // 2. Charger l'historique des sessions (non-bloquant pour le splash)
+      get().loadSessions();
 
       // Notify main process that renderer finished initialization so splash can close
+      // IMPORTANT: On le fait DANS TOUS LES CAS pour ne jamais bloquer le splash
       try {
         const { ipcRenderer } = window.require ? window.require('electron') : { ipcRenderer: null };
         if (ipcRenderer && ipcRenderer.invoke) {

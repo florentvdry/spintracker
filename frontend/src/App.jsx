@@ -10,7 +10,6 @@ import { useAppStore } from '@stores/appStore';
 import { useNotificationStore } from '@stores/notificationStore';
 import NotificationContainer from '@components/ui/NotificationContainer';
 import ProgressModal from '@components/ui/ProgressModal';
-import StartupScreen from '@components/StartupScreen';
 
 function App() {
   const initializeApp = useAppStore(state => state.initialize);
@@ -21,7 +20,6 @@ function App() {
 
   return (
     <>
-      <StartupScreen />
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
