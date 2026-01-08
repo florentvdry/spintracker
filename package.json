@@ -25,6 +25,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "adm-zip": "^0.5.16",
     "electron-store": "^8.1.0",
     "node-fetch": "^3.3.2"
   },

@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { Calendar, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useHandsStore } from '@stores/handsStore';
+import { useAppStore } from '@stores/appStore';
 import { Card, EmptyState, LoadingSpinner } from '@components/ui';
 import HandsTable from './components/HandsTable';
 import HandDetails from './components/HandDetails';
 
 export default function HandHistory() {
+  const heroName = useAppStore(state => state.heroName);
   const {
     hands,
     totalHands,
@@ -23,7 +25,7 @@ export default function HandHistory() {
 
   useEffect(() => {
     loadHands();
-  }, []);
+  }, [heroName]);
 
   const totalPages = Math.ceil(totalHands / pageSize);
 

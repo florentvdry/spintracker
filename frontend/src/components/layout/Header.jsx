@@ -19,10 +19,19 @@ export default function Header() {
   const updateProgress = useProgressStore(state => state.updateProgress);
   const finishProgress = useProgressStore(state => state.finishProgress);
   const [players, setPlayers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const heroName = useAppStore(state => state.heroName);
   const setHeroName = useAppStore(state => state.setHeroName);
   const isInitialized = useAppStore(state => state.isInitialized);
   const dashboardStats = useAppStore(state => state.dashboardStats);
+
+  useEffect(() => {
+    if (!heroName && players.length > 0) {
+        const best = players.reduce((prev, current) => (prev.total_hands > current.total_hands) ? prev : current);
+        setHeroName(best.name);
+    }
+  }, [players, heroName, setHeroName]);
 
   const loadPlayers = async () => {
       try {
@@ -119,6 +128,10 @@ export default function Header() {
     });
   };
 
+  const filteredPlayers = players.filter(p => 
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <header className="h-16 bg-dark-400 border-b border-dark-100/30 flex items-center justify-between px-6">
       {/* Search bar */}
@@ -136,19 +149,73 @@ export default function Header() {
       {/* Actions */}
       <div className="flex items-center gap-3">
         {/* Hero Selector */}
-        <div className="flex items-center gap-2 mr-2">
-            <span className="text-xs text-gray-400">Hero:</span>
-            <select
-                value={heroName || ''}
-                onChange={(e) => setHeroName(e.target.value || null)}
-                className="bg-dark-300 border border-dark-200 rounded px-2 py-1 text-xs text-gray-200 focus:outline-none focus:border-primary-500 max-w-[150px]"
+        <div className="relative mr-2">
+            <div 
+                className="flex items-center gap-2 cursor-pointer bg-dark-300 border border-dark-200 rounded px-3 py-1.5 min-w-[180px] hover:border-primary-500 transition-colors"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-                <option value="">Auto (Default)</option>
-                {players.map(p => (
-                    <option key={p.id} value={p.name}>{p.name}</option>
-                ))}
-            </select>
+                <span className="text-xs text-gray-400">Hero:</span>
+                <span className="text-sm text-gray-200 flex-1 truncate">{heroName || 'Sélectionner...'}</span>
+                <ChevronDown className="w-4 h-4 text-gray-400" />
+            </div>
+
+            {isDropdownOpen && (
+                <div className="absolute top-full mt-1 left-0 w-64 bg-dark-300 border border-dark-200 rounded shadow-xl z-50 flex flex-col max-h-[400px]">
+                    <div className="p-2 border-b border-dark-200">
+                        <div className="relative">
+                            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500" />
+                            <input 
+                                type="text" 
+                                placeholder="Rechercher..." 
+                                className="w-full bg-dark-400 border border-dark-200 rounded pl-8 pr-2 py-1 text-xs text-gray-200 focus:outline-none focus:border-primary-500"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                autoFocus
+                                onClick={(e) => e.stopPropagation()}
+                            />
+                        </div>
+                    </div>
+                    <div className="overflow-y-auto flex-1">
+                        <div 
+                            className={`px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 flex items-center justify-between ${!heroName ? 'bg-primary-500/10 text-primary-400' : 'text-gray-300'}`}
+                            onClick={() => {
+                                setHeroName(null);
+                                setIsDropdownOpen(false);
+                            }}
+                        >
+                            <span>Aucun (Vue globale)</span>
+                            {!heroName && <div className="w-2 h-2 rounded-full bg-primary-500"></div>}
+                        </div>
+                        {filteredPlayers.map(p => (
+                            <div 
+                                key={p.id} 
+                                className={`px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 flex items-center justify-between ${heroName === p.name ? 'bg-primary-500/10 text-primary-400' : 'text-gray-300'}`}
+                                onClick={() => {
+                                    setHeroName(p.name);
+                                    setIsDropdownOpen(false);
+                                }}
+                            >
+                                <div className="flex flex-col">
+                                    <span className="font-medium">{p.name}</span>
+                                    <span className="text-xs text-gray-500">{p.total_hands} mains</span>
+                                </div>
+                                {heroName === p.name && <div className="w-2 h-2 rounded-full bg-primary-500"></div>}
+                            </div>
+                        ))}
+                        {filteredPlayers.length === 0 && (
+                            <div className="px-3 py-4 text-center text-xs text-gray-500">
+                                Aucun joueur trouvé
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
+        
+        {/* Overlay to close dropdown */}
+        {isDropdownOpen && (
+            <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>
+        )}
 
         {/* Import button */}
         <button

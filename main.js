@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
+const AdmZip = require('adm-zip');
 
 let mainWindow;
 let splashWindow;
@@ -286,8 +287,11 @@ ipcMain.handle('import-hand-history', async () => {
 // ============ IPC Handlers - Database Queries ============
 
 ipcMain.handle('get-dashboard-stats', async (event, heroName) => {
+  console.log('[Main] get-dashboard-stats called for:', heroName);
   const query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
-  return callBackendAPI(`/db/dashboard-stats${query}`, {}, 'GET');
+  const result = await callBackendAPI(`/db/dashboard-stats${query}`, {}, 'GET');
+  console.log('[Main] get-dashboard-stats result:', result.success ? 'Success' : result.error);
+  return result;
 });
 
 ipcMain.handle('get-session-history', async (event, limit = 50, heroName = null) => {
@@ -471,29 +475,74 @@ ipcMain.handle('python-analyze-range', async (event, params) => {
 
 // ============ IPC Handlers - Export ============
 
+ipcMain.handle('check-server-status', async () => {
+  try {
+    const fetch = (await import('node-fetch')).default;
+    const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/health`);
+    if (response.ok) {
+        return { success: true, status: 'running' };
+    }
+    return { success: false, status: 'error', message: response.statusText };
+  } catch (error) {
+    return { success: false, status: 'stopped', message: error.message };
+  }
+});
+
 ipcMain.handle('export-data', async (event, format = 'json') => {
   try {
-    const handsResult = await callBackendAPI('/db/hands', { limit: 100000 });
+    const handsResult = await callBackendAPI('/db/hands', { limit: 1000000 }); // Large limit to get all
     
     if (!handsResult.success) {
       return { success: false, message: 'Failed to fetch hands' };
     }
     
     const hands = handsResult.data?.hands || [];
-    const data = JSON.stringify(hands, null, 2);
-
-    const saveResult = await dialog.showSaveDialog(mainWindow, {
-      defaultPath: `poker_data_${Date.now()}.json`,
-      filters: [{ name: 'JSON Files', extensions: ['json'] }],
-    });
-
-    if (!saveResult.canceled && saveResult.filePath) {
-      fs.writeFileSync(saveResult.filePath, data);
-      return { success: true, message: `Exported ${hands.length} hands` };
+    
+    if (hands.length === 0) {
+      return { success: false, message: 'No hands to export' };
     }
 
-    return { success: false, message: 'Export cancelled' };
+    // Group hands by date
+    const handsByDate = {};
+    hands.forEach(hand => {
+      if (!hand.result) return; // Skip if no raw content
+      
+      const date = new Date(hand.date_time);
+      const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`; // YYYY-M-D format like Betclic example
+      
+      if (!handsByDate[dateStr]) {
+        handsByDate[dateStr] = [];
+      }
+      handsByDate[dateStr].push(hand.result);
+    });
+
+    const zip = new AdmZip();
+    
+    // Create text files for each date
+    Object.keys(handsByDate).forEach(dateStr => {
+      const content = handsByDate[dateStr].join('\n\n');
+      zip.addFile(`ExportHH_${dateStr}.txt`, Buffer.from(content, 'utf8'));
+    });
+
+    // Show save dialog
+    const { filePath } = await dialog.showSaveDialog(mainWindow, {
+      title: 'Exporter les mains',
+      defaultPath: `PokerTracker_Export_${new Date().toISOString().split('T')[0]}.zip`,
+      filters: [
+        { name: 'Zip Files', extensions: ['zip'] }
+      ]
+    });
+
+    if (filePath) {
+      zip.writeZip(filePath);
+      return { success: true, message: `Export réussi : ${Object.keys(handsByDate).length} fichiers créés` };
+    } else {
+      return { success: false, message: 'Export cancelled' };
+    }
+
   } catch (error) {
+    console.error('Export error:', error);
     return { success: false, message: error.message };
   }
 });
+

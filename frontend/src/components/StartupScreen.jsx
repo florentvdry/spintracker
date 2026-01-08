@@ -6,8 +6,10 @@ import { TrendingUp } from 'lucide-react';
 export default function StartupScreen() {
   const isLoading = useAppStore(state => state.isLoading);
   const isInitialized = useAppStore(state => state.isInitialized);
+  const error = useAppStore(state => state.error);
+  const loadingMessage = useAppStore(state => state.loadingMessage);
 
-  if (!isLoading || isInitialized) return null;
+  if ((!isLoading || isInitialized) && !error) return null;
 
   return (
     <div className="startup-overlay">
@@ -15,7 +17,21 @@ export default function StartupScreen() {
         <div className="startup-logo-bg">
           <TrendingUp className="startup-logo" />
         </div>
-        <div className="startup-message">Chargement des mains...</div>
+        <div className="startup-message">
+          {error ? (
+            <span className="text-red-500 text-sm text-center px-4">{error}</span>
+          ) : (
+            loadingMessage || "Chargement..."
+          )}
+        </div>
+        {error && (
+            <button 
+                className="mt-4 px-4 py-2 bg-dark-200 hover:bg-dark-100 rounded text-sm transition-colors"
+                onClick={() => window.location.reload()}
+            >
+                Réessayer
+            </button>
+        )}
       </div>
     </div>
   );

@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
 import Layout from '@components/layout/Layout';
 import Dashboard from '@pages/Dashboard';
-import Players from '@pages/Players';
 import HandHistory from '@pages/HandHistory';
 import LeakAnalysis from '@pages/LeakAnalysis';
 import RangeAnalysis from '@pages/RangeAnalysis';
@@ -26,7 +25,6 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/players" element={<Players />} />
           <Route path="/hands" element={<HandHistory />} />
           <Route path="/leaks" element={<LeakAnalysis />} />
           <Route path="/ranges" element={<RangeAnalysis />} />

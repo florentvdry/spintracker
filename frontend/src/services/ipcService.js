@@ -128,6 +128,11 @@ class IPCService {
     return this.on('analysis-progress', callback);
   }
 
+  // System
+  async checkServerStatus() {
+    return this.invoke('check-server-status');
+  }
+
   // Data Management
   async deleteAllHands() {
     return this.invoke('delete-all-hands');

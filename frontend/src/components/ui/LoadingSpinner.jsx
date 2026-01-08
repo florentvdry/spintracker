@@ -24,7 +24,7 @@ export function LoadingPage() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center py-20">
       <LoadingSpinner size="xl" />
-      <p className="mt-6 text-gray-400">Chargement des données...</p>
+      <p className="mt-6 text-gray-400">Chargement du tableau de bord...</p>
     </div>
   );
 }

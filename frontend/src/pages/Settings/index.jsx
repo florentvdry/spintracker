@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, RefreshCw, Database, Calculator, Download, Upload } from 'lucide-react';
 import { Card } from '@components/ui';
 import { ipcService } from '@services/ipcService';
@@ -10,6 +10,22 @@ export default function Settings() {
   const [isRecalculating, setIsRecalculating] = useState(false);
   const addNotification = useNotificationStore(state => state.addNotification);
   const refreshAll = useAppStore(state => state.refreshAll);
+  const [serverStatus, setServerStatus] = useState('checking');
+
+  useEffect(() => {
+    checkStatus();
+    const interval = setInterval(checkStatus, 30000); // Check every 30s
+    return () => clearInterval(interval);
+  }, []);
+
+  const checkStatus = async () => {
+    try {
+      const result = await ipcService.checkServerStatus();
+      setServerStatus(result.success ? 'active' : 'inactive');
+    } catch (error) {
+      setServerStatus('inactive');
+    }
+  };
 
   const handleDeleteAll = async () => {
     try {
@@ -104,9 +120,27 @@ export default function Settings() {
           <SettingRow
             icon={Download}
             title="Exporter les données"
-            description="Télécharger toutes vos mains au format JSON"
+            description="Télécharger toutes vos mains au format ZIP (groupées par date)"
             action={
-              <button className="btn-secondary flex items-center gap-2">
+              <button 
+                onClick={async () => {
+                  const result = await ipcService.exportData();
+                  if (result.success) {
+                    addNotification({
+                      type: 'success',
+                      title: 'Export réussi',
+                      message: result.message
+                    });
+                  } else if (result.message !== 'Export cancelled') {
+                    addNotification({
+                      type: 'error',
+                      title: 'Erreur',
+                      message: result.message
+                    });
+                  }
+                }}
+                className="btn-secondary flex items-center gap-2"
+              >
                 <Download className="w-4 h-4" />
                 Exporter
               </button>
@@ -136,9 +170,11 @@ export default function Settings() {
           <SettingRow
             icon={Database}
             title="État du serveur"
-            description="Le backend  effectue les calculs d'équité en parallèle"
+            description="Le backend effectue les calculs d'équité en parallèle"
             action={
-              <span className="badge badge-success">Actif</span>
+              <span className={`badge ${serverStatus === 'active' ? 'badge-success' : 'badge-danger'}`}>
+                {serverStatus === 'active' ? 'Actif' : 'Inactif'}
+              </span>
             }
           />
         </div>

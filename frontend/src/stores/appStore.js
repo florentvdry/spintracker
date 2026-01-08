@@ -29,26 +29,43 @@ export const useAppStore = create((set, get) => ({
   initialize: async () => {
     if (get().isInitialized) return;
     
-    set({ isLoading: true });
+    set({ isLoading: true, error: null, loadingMessage: 'Démarrage du serveur...' });
     
     // Helper pour réessayer les appels si le backend n'est pas encore prêt
-    const retry = async (fn, retries = 5, delay = 1000) => {
+    const retry = async (fn, retries = 15, delay = 1000) => {
       for (let i = 0; i < retries; i++) {
         const result = await fn();
         if (result && result.success) return result;
         await new Promise(resolve => setTimeout(resolve, delay));
       }
-      return { success: false, error: 'Max retries exceeded' };
+      return { success: false, error: 'Le serveur ne répond pas après plusieurs tentatives.' };
     };
     
     try {
-      // Charger les stats du dashboard
-      await retry(() => get().loadDashboardStats());
+      // 1. Charger les stats du dashboard
+      console.log('[AppStore] Loading dashboard stats...');
+      set({ loadingMessage: 'Chargement des statistiques...' });
+      const statsResult = await retry(async () => {
+        console.log('[AppStore] Calling getDashboardStats...');
+        const res = await get().loadDashboardStats();
+        console.log('[AppStore] getDashboardStats result:', res);
+        return res;
+      }, 15, 1000);
       
-      // Charger l'historique des sessions
-      await retry(() => get().loadSessions());
+      if (!statsResult || !statsResult.success) {
+        throw new Error(statsResult?.error || 'Impossible de charger les statistiques');
+      }
       
-      set({ isInitialized: true });
+      // 2. Charger l'historique des sessions
+      set({ loadingMessage: 'Chargement des sessions...' });
+      const sessionsResult = await retry(() => get().loadSessions(), 3, 1000);
+      
+      // On est moins strict sur les sessions, si ça échoue on continue mais on log
+      if (!sessionsResult?.success) {
+        console.warn('Failed to load sessions, continuing anyway', sessionsResult?.error);
+      }
+      
+      set({ isInitialized: true, loadingMessage: 'Prêt !' });
 
       // Notify main process that renderer finished initialization so splash can close
       try {
@@ -61,6 +78,7 @@ export const useAppStore = create((set, get) => ({
       }
     } catch (error) {
       console.error('Failed to initialize app:', error);
+      set({ error: typeof error === 'string' ? error : error.message || 'Erreur inconnue lors de l\'initialisation' });
     } finally {
       set({ isLoading: false });
     }

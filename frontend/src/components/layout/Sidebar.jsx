@@ -13,7 +13,6 @@ import clsx from 'clsx';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Joueurs', href: '/players', icon: Users },
   { name: 'Historique', href: '/hands', icon: History },
   { name: 'Analyse Leaks', href: '/leaks', icon: AlertTriangle },
   { name: 'Ranges', href: '/ranges', icon: Grid3X3 },
