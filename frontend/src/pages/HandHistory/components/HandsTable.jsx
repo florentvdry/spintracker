@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { formatDate, formatCards } from '../../../utils/formatters';
 
 export default function HandsTable({ hands, onSelect, selectedId }) {
   return (
@@ -61,27 +62,4 @@ export default function HandsTable({ hands, onSelect, selectedId }) {
       </table>
     </div>
   );
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  try {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } catch {
-    return dateStr;
-  }
-}
-
-function formatCards(cards) {
-  if (!cards) return '—';
-  return cards.replace(/([AKQJT2-9])([shdc])/gi, (match, rank, suit) => {
-    const suitSymbols = { s: '♠', h: '♥', d: '♦', c: '♣' };
-    return rank + (suitSymbols[suit.toLowerCase()] || suit);
-  });
 }

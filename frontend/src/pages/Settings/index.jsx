@@ -5,11 +5,14 @@ import { ipcService } from '@services/ipcService';
 import { pythonService } from '@services/pythonService';
 import { useNotificationStore } from '@stores/notificationStore';
 import { useAppStore } from '@stores/appStore';
+import { usePlayersStore } from '@stores/playersStore';
 
 export default function Settings() {
   const [isRecalculating, setIsRecalculating] = useState(false);
   const addNotification = useNotificationStore(state => state.addNotification);
   const refreshAll = useAppStore(state => state.refreshAll);
+  const setHeroName = useAppStore(state => state.setHeroName);
+  const loadPlayers = usePlayersStore(state => state.loadPlayers);
   const [serverStatus, setServerStatus] = useState('checking');
 
   useEffect(() => {
@@ -38,7 +41,8 @@ export default function Settings() {
           title: 'Données supprimées',
           message: result.message || 'Toutes les mains ont été supprimées',
         });
-        await refreshAll();
+        setHeroName(null);
+        await loadPlayers();
       } else {
         // Handle cancelled action specifically to avoid error notification
         if (result.message && result.message.includes('annulée')) {

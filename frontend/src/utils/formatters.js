@@ -98,34 +98,20 @@ export function formatRelativeDate(date) {
     return `il y a ${hours}h`;
   }
   if (minutes > 0) {
-    return `il y a ${minutes}min`;
+    return `il y a ${minutes}m`;
   }
+  
   return 'à l\'instant';
 }
 
 /**
- * Formate les cartes avec symboles
+ * Formate les cartes (remplace les lettres par des symboles)
  */
 export function formatCards(cards) {
   if (!cards) return '—';
-  
-  const suitSymbols = {
-    s: '♠',
-    h: '♥',
-    d: '♦',
-    c: '♣',
-  };
-  
-  const suitColors = {
-    s: 'text-gray-300',
-    h: 'text-red-400',
-    d: 'text-blue-400',
-    c: 'text-green-400',
-  };
-  
   return cards.replace(/([AKQJT2-9])([shdc])/gi, (match, rank, suit) => {
-    const symbol = suitSymbols[suit.toLowerCase()] || suit;
-    return `${rank}${symbol}`;
+    const suitSymbols = { s: '♠', h: '♥', d: '♦', c: '♣' };
+    return rank + (suitSymbols[suit.toLowerCase()] || suit);
   });
 }
 
@@ -138,71 +124,3 @@ export function getProfitClass(value) {
   return 'text-gray-400';
 }
 
-/**
- * Escape HTML pour prévenir XSS
- */
-export function escapeHtml(text) {
-  if (!text) return '';
-  
-  const map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
-  };
-  
-  return String(text).replace(/[&<>"']/g, (m) => map[m]);
-}
-
-/**
- * Debounce function
- */
-export function debounce(fn, delay) {
-  let timeoutId;
-  return (...args) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn(...args), delay);
-  };
-}
-
-/**
- * Throttle function
- */
-export function throttle(fn, limit) {
-  let inThrottle;
-  return (...args) => {
-    if (!inThrottle) {
-      fn(...args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
-    }
-  };
-}
-
-/**
- * Convertit des cartes en notation de main
- */
-export function cardsToNotation(cards) {
-  if (!cards) return '';
-  
-  const parts = cards.trim().split(/\s+/);
-  if (parts.length !== 2) return cards;
-  
-  const rank1 = parts[0][0].toUpperCase();
-  const suit1 = parts[0].slice(-1).toLowerCase();
-  const rank2 = parts[1][0].toUpperCase();
-  const suit2 = parts[1].slice(-1).toLowerCase();
-  
-  const rankOrder = 'AKQJT98765432';
-  
-  let r1 = rank1, r2 = rank2, s1 = suit1, s2 = suit2;
-  if (rankOrder.indexOf(r1) > rankOrder.indexOf(r2)) {
-    [r1, r2] = [r2, r1];
-    [s1, s2] = [s2, s1];
-  }
-  
-  if (r1 === r2) return `${r1}${r2}`;
-  if (s1 === s2) return `${r1}${r2}s`;
-  return `${r1}${r2}o`;
-}

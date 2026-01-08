@@ -12,6 +12,7 @@ export const useAppStore = create((set, get) => ({
   dashboardStats: null,
   sessions: [],
   heroName: null,
+  lastUpdate: 0,
   
   // Configuration
   config: {
@@ -43,12 +44,9 @@ export const useAppStore = create((set, get) => ({
     
     try {
       // 1. Charger les stats du dashboard
-      console.log('[AppStore] Loading dashboard stats...');
       set({ loadingMessage: 'Chargement des statistiques...' });
       const statsResult = await retry(async () => {
-        console.log('[AppStore] Calling getDashboardStats...');
         const res = await get().loadDashboardStats();
-        console.log('[AppStore] getDashboardStats result:', res);
         return res;
       }, 15, 1000);
       
@@ -79,6 +77,16 @@ export const useAppStore = create((set, get) => ({
     } catch (error) {
       console.error('Failed to initialize app:', error);
       set({ error: typeof error === 'string' ? error : error.message || 'Erreur inconnue lors de l\'initialisation' });
+      
+      // Also notify app-ready so the user can see the error on the main window
+      try {
+        const { ipcRenderer } = window.require ? window.require('electron') : { ipcRenderer: null };
+        if (ipcRenderer && ipcRenderer.invoke) {
+          ipcRenderer.invoke('app-ready');
+        }
+      } catch (e) {
+        // ignore
+      }
     } finally {
       set({ isLoading: false });
     }
@@ -130,6 +138,7 @@ export const useAppStore = create((set, get) => ({
         get().loadDashboardStats(),
         get().loadSessions(),
       ]);
+      set({ lastUpdate: Date.now() });
     } finally {
       set({ isLoading: false });
     }

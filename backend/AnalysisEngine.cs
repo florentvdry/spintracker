@@ -5,6 +5,8 @@ public class AnalysisEngine
     private readonly ILogger<AnalysisEngine> _logger;
     private readonly Dictionary<string, List<string>> _gtoRanges;
 
+    private const double LargeLossThreshold = -50.0;
+    
     public AnalysisEngine(ILogger<AnalysisEngine> logger)
     {
         _logger = logger;
@@ -17,60 +19,10 @@ public class AnalysisEngine
 
         foreach (var hand in hands)
         {
-            // Simplified leak detection
-            // In production, implement comprehensive leak analysis
-
-            // 1. Large Loss
-            if (hand.HeroProfit < -50) // Lowered threshold
-            {
-                leaks.Add(new
-                {
-                    id = hand.Id + "_leak_1",
-                    hand_id = hand.Id,
-                    leak_type = "Large Loss",
-                    severity = "critical",
-                    description = $"Lost {Math.Abs(hand.HeroProfit)} chips in a single hand.",
-                    ev_loss = Math.Abs(hand.HeroProfit)
-                });
-            }
-
-            // 2. Passive Play with High Equity (Example)
-            // Assuming we have equity data joined (but ParsedHand might not have it if not filled)
-            // If we had equity, we could check: if (hand.EquityPreflop > 0.7 && hand.HeroProfit < 0) ...
-
-            // 3. Limping Preflop (Heuristic)
-            // Check if Hero's first action was a Call (and not a cold call of a raise, which is also bad but different)
-            // This is a very rough heuristic
-            if (!string.IsNullOrEmpty(hand.PreflopAction) && 
-                hand.PreflopAction.Contains("calls") && 
-                !hand.PreflopAction.Contains("raises"))
-            {
-                 leaks.Add(new
-                {
-                    id = hand.Id + "_leak_3",
-                    hand_id = hand.Id,
-                    leak_type = "Passive Preflop",
-                    severity = "major",
-                    description = "Called preflop without raising. Consider raising to take initiative.",
-                    ev_loss = 0
-                });
-            }
-            
-            // 4. Folded to 3-Bet (Heuristic)
-            if (!string.IsNullOrEmpty(hand.PreflopAction) && 
-                hand.PreflopAction.Contains("raises") && 
-                hand.PreflopAction.Contains("folds"))
-            {
-                 leaks.Add(new
-                {
-                    id = hand.Id + "_leak_4",
-                    hand_id = hand.Id,
-                    leak_type = "Fold to 3-Bet",
-                    severity = "major",
-                    description = "Opened and then folded to a re-raise.",
-                    ev_loss = 0
-                });
-            }
+            // Simplified leak detection - Modularized for clarity
+            CheckLargeLoss(hand, leaks);
+            CheckPassivePreflop(hand, leaks);
+            CheckFoldTo3Bet(hand, leaks);
         }
 
         return new
@@ -78,6 +30,68 @@ public class AnalysisEngine
             leaks,
             total = leaks.Count
         };
+    }
+
+    /// <summary>
+    /// Detects if the player lost a significant amount of chips in a single hand.
+    /// </summary>
+    private void CheckLargeLoss(ParsedHand hand, List<object> leaks)
+    {
+        if (hand.HeroProfit < LargeLossThreshold)
+        {
+            leaks.Add(new
+            {
+                id = hand.Id + "_leak_large_loss",
+                hand_id = hand.Id,
+                leak_type = "Large Loss",
+                severity = "critical",
+                description = $"Lost {Math.Abs(hand.HeroProfit)} chips in a single hand.",
+                ev_loss = Math.Abs(hand.HeroProfit)
+            });
+        }
+    }
+
+    /// <summary>
+    /// Detects passive play preflop (calling instead of raising).
+    /// </summary>
+    private void CheckPassivePreflop(ParsedHand hand, List<object> leaks)
+    {
+        // Heuristic: Check if Hero's first action was a Call (and not a cold call of a raise)
+        if (!string.IsNullOrEmpty(hand.PreflopAction) && 
+            hand.PreflopAction.Contains("calls") && 
+            !hand.PreflopAction.Contains("raises"))
+        {
+            leaks.Add(new
+            {
+                id = hand.Id + "_leak_passive_preflop",
+                hand_id = hand.Id,
+                leak_type = "Passive Preflop",
+                severity = "major",
+                description = "Called preflop without raising. Consider raising to take initiative.",
+                ev_loss = 0
+            });
+        }
+    }
+
+    /// <summary>
+    /// Detects folding to a 3-bet after opening.
+    /// </summary>
+    private void CheckFoldTo3Bet(ParsedHand hand, List<object> leaks)
+    {
+        if (!string.IsNullOrEmpty(hand.PreflopAction) && 
+            hand.PreflopAction.Contains("raises") && 
+            hand.PreflopAction.Contains("folds"))
+        {
+            leaks.Add(new
+            {
+                id = hand.Id + "_leak_fold_to_3bet",
+                hand_id = hand.Id,
+                leak_type = "Fold to 3-Bet",
+                severity = "major",
+                description = "Opened and then folded to a re-raise.",
+                ev_loss = 0
+            });
+        }
     }
 
     public object AnalyzeRange(string? position, string? action, int stack)

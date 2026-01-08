@@ -6,24 +6,6 @@ using PokerTrackerBackend;
 // Initialize SQLite
 SQLitePCL.Batteries.Init();
 
-if (args.Length > 0 && args[0] == "--benchmark")
-{
-    Benchmark.Run();
-    return;
-}
-
-if (args.Length > 0 && args[0] == "--verify")
-{
-    await Verification.Run();
-    return;
-}
-
-if (args.Length > 0 && args[0] == "--audit-showdown")
-{
-    await AuditShowdown.Run();
-    return;
-}
-
 if (args.Length > 0 && args[0] == "--compare")
 {
     await ComparisonTool.Run();
@@ -194,24 +176,13 @@ app.MapPost("/db/insert-hands", async (HttpContext context, Database db, Analyti
     {
         using var reader = new StreamReader(context.Request.Body);
         var body = await reader.ReadToEndAsync();
-        // DEBUG: Log body length and start
-        var snippet = body.Length > 200 ? body.Substring(0, 200) : body;
-        app.Logger.LogWarning($"[API Debug] Body Length: {body.Length} Start: {snippet}");
-
+        
         var data = JsonSerializer.Deserialize<InsertHandsRequest>(body, jsonOptions);
-
-        if (data == null) app.Logger.LogWarning("[API Debug] Data object is NULL");
-        else if (data.Hands == null) app.Logger.LogWarning("[API Debug] Data.Hands is NULL");
-        else if (data.Hands.Count == 0) app.Logger.LogWarning("[API Debug] Data.Hands count is 0");
 
         if (data == null || data.Hands == null || data.Hands.Count == 0)
         {
             return Results.Json(new { success = true, inserted = 0 });
         }
-
-        // DEBUG: Check first hand for Villain Cards
-        var first = data.Hands[0];
-        app.Logger.LogWarning($"[API Debug] Inserting {data.Hands.Count}. First Hand ID: {first.Id} Hero: {first.HeroCards} Villain: '{first.VillainCards}' AllIn: {first.HeroAllIn || first.VillainAllIn}");
 
         // Insert raw hand data
         var inserted = await db.InsertHandsBatchAsync(data.Hands);

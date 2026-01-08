@@ -9,11 +9,41 @@ public class BetclicParser : IHandParser
     public int ParserVersion => 3;
     private const string HandSeparator = "------------";
 
-    // private static int foldDebugCount = 0;
+    // Section Headers
+    private const string SectionHeader = "*** HEADER ***";
+    private const string SectionPlayers = "*** PLAYERS ***";
+    private const string SectionHoleCards = "*** HOLE CARDS ***";
+    private const string SectionPreFlop = "*** PRE-FLOP ***";
+    private const string SectionFlop = "*** FLOP ***";
+    private const string SectionTurn = "*** TURN ***";
+    private const string SectionRiver = "*** RIVER ***";
+    private const string SectionShowdown = "*** SHOWDOWN ***";
+    private const string SectionSummary = "*** SUMMARY ***";
+
+    // Regex Patterns
+    private static readonly Regex FlopRegex = new(@"\[(.*?)\]", RegexOptions.Compiled);
+    private static readonly Regex TurnRiverRegex = new(@"\[(.*?)\]", RegexOptions.Compiled);
+    private static readonly Regex PrizePoolRegex = new(@"[\d.]+", RegexOptions.Compiled);
+    private static readonly Regex MultiplierRegex = new(@"x(\d+)", RegexOptions.Compiled);
+    private static readonly Regex BuyInRegex = new(@"[\d.]+", RegexOptions.Compiled);
+    private static readonly Regex SeatRegex = new(@"Seat (\d+): (.+?) \((\d+)\)(.*)", RegexOptions.Compiled);
+    private static readonly Regex ShowMatchRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+(?:shows|mucks)\s+\[(.*?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex HoleMatchRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?):\s*\[(.+?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex NoShowMatchRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+does not show", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex SummaryShowMatchRegex = new(@"Seat \d+: (.+?) .*showed \[(.+?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex PotWinRegex = new(@"^(.+?) wins .*?pot (?:of )?(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex TotalPotSummaryRegex = new(@"(\d+\.?\d*)", RegexOptions.Compiled);
+
+    // Investment Regex Patterns
+    private static readonly Regex PostsSbRegex = new(@"Posts SB (\d+)", RegexOptions.Compiled);
+    private static readonly Regex PostsBbRegex = new(@"Posts BB (\d+)", RegexOptions.Compiled);
+    private static readonly Regex RaisesToRegex = new(@"Raises to (\d+)", RegexOptions.Compiled);
+    private static readonly Regex CallsRegex = new(@"Calls (\d+)", RegexOptions.Compiled);
+    private static readonly Regex BetsRegex = new(@"Bets (\d+)", RegexOptions.Compiled);
 
     public bool DetectFormat(string content)
     {
-        return content.Contains("Site: Betclic") || content.Contains("*** HEADER ***");
+        return content.Contains("Site: Betclic") || content.Contains(SectionHeader);
     }
 
     public ParseResult ParseFile(string fileContent)
@@ -65,8 +95,9 @@ public class BetclicParser : IHandParser
                                .ToList();
 
             var hand = new ParsedHand { Room = "Betclic.fr" };
-
-            string currentSection = "HEADER"; // Initialize to HEADER as first lines are usually header info
+            
+            // Context variables used across sections
+            string currentSection = "HEADER";
             string? heroName = null;
             var players = new List<Dictionary<string, object>>();
             bool heroWon = false;
@@ -74,11 +105,6 @@ public class BetclicParser : IHandParser
             bool heroHasPotRecorded = false;
             bool explicitPotWinFound = false;
             bool showdownSectionEncountered = false;
-
-            // Health check name comparison helper
-            bool IsHeroName(string name) => 
-                (!string.IsNullOrEmpty(heroName) && name.Equals(heroName, StringComparison.OrdinalIgnoreCase)) ||
-                name.Equals("Hero", StringComparison.OrdinalIgnoreCase);
 
             var actions = new Dictionary<string, List<string>>
             {
@@ -90,568 +116,59 @@ public class BetclicParser : IHandParser
 
             foreach (var line in lines)
             {
-                // Record the line in Result for auditing/debugging
+                // Normalize hero name for the result log
                 string resultLine = !string.IsNullOrEmpty(heroName) ? line.Replace(heroName, "Hero") : line;
                 hand.Result += resultLine + "\n";
 
-                // Detect sections
-                if (line.Contains("*** HEADER ***")) currentSection = "HEADER";
-                else if (line.Contains("*** PLAYERS ***")) currentSection = "PLAYERS";
-                else if (line.Contains("*** HOLE CARDS ***")) currentSection = "HOLE_CARDS";
-                else if (line.Contains("*** PRE-FLOP ***")) currentSection = "PREFLOP";
-                else if (line.Contains("*** FLOP ***"))
+                // Detect Section Change
+                var newSection = DetectSection(line);
+                if (newSection != null)
                 {
-                    currentSection = "FLOP";
-                    var match = Regex.Match(line, @"\[(.*?)\]");
-                    if (match.Success)
-                        hand.Flop = match.Groups[1].Value;
-                }
-                else if (line.Contains("*** TURN ***"))
-                {
-                    currentSection = "TURN";
-                    var match = Regex.Match(line, @"\[(.*?)\]");
-                    if (match.Success)
-                    {
-                        var cards = match.Groups[1].Value.Split(' ');
-                        hand.Turn = cards.Length > 0 ? cards[^1] : null;
-                    }
-                }
-                else if (line.Contains("*** RIVER ***"))
-                {
-                    currentSection = "RIVER";
-                    var match = Regex.Match(line, @"\[(.*?)\]");
-                    if (match.Success)
-                    {
-                        var cards = match.Groups[1].Value.Split(' ');
-                        hand.River = cards.Length > 0 ? cards[^1] : null;
-                    }
-                }
-                else if (line.Contains("*** SHOWDOWN ***")) 
-                {
-                    currentSection = "SHOWDOWN";
-                    hand.WentToShowdown = true;
-                    showdownSectionEncountered = true;
-                }
-                else if (line.Contains("*** SUMMARY ***")) currentSection = "SUMMARY";
-
-                // Parse HEADER
-                if (currentSection == "HEADER")
-                {
-                    if (line.Contains("Site:"))
-                    {
-                        var parts = line.Split(new[] { ':' }, 2);
-                        if (parts.Length > 1)
-                            hand.Room = parts[1].Trim();
-                    }
-                    else if (line.Contains("Game Mode:"))
-                    {
-                        var parts = line.Split(new[] { ':' }, 2);
-                        if (parts.Length > 1)
-                            hand.GameMode = parts[1].Trim();
-                    }
-                    else if (line.Contains("Game Type:"))
-                    {
-                        var parts = line.Split(new[] { ':' }, 2);
-                        if (parts.Length > 1)
-                            hand.GameType = parts[1].Trim();
-                    }
-                    else if (line.Contains("Game Name:"))
-                    {
-                        var parts = line.Split(new[] { ':' }, 2);
-                        if (parts.Length > 1)
-                            hand.GameName = parts[1].Trim();
-                    }
-                    else if (line.Contains("Game ID:"))
-                    {
-                        var parts = line.Split(new[] { ':' }, 2);
-                        if (parts.Length > 1)
-                            hand.GameId = parts[1].Trim();
-                    }
-                    else if (line.Contains("Hand ID:"))
-                    {
-                        var parts = line.Split(new[] { ':' }, 2);
-                        if (parts.Length > 1)
-                            hand.HandId = parts[1].Trim();
-                    }
-                    else if (line.Contains("Prize pool:"))
-                    {
-                        var match = Regex.Match(line, @"[\d.]+");
-                        if (match.Success)
-                            hand.PrizePool = double.Parse(match.Value, CultureInfo.InvariantCulture);
-                    }
-                    else if (line.Contains("Multiplier:"))
-                    {
-                        var match = Regex.Match(line, @"x(\d+)");
-                        if (match.Success)
-                            hand.Multiplier = int.Parse(match.Groups[1].Value);
-                    }
-                    else if (line.Contains("Buy In:"))
-                    {
-                        var match = Regex.Match(line, @"[\d.]+");
-                        if (match.Success)
-                            hand.BuyIn = double.Parse(match.Value, CultureInfo.InvariantCulture);
-                    }
-                    else if (line.Contains("Date & Time:"))
-                    {
-                        var parts = line.Split(new[] { ':' }, 2);
-                        if (parts.Length > 1)
-                            hand.DateTime = parts[1].Trim().Replace("(UTC)", "").Trim();
-                    }
-                    else if (line.Contains("Table ID:"))
-                    {
-                        var parts = line.Split(new[] { ':' }, 2);
-                        if (parts.Length > 1)
-                            hand.TableId = parts[1].Trim();
-                    }
-                    else if (line.Contains("Blinds:"))
-                    {
-                        var parts = line.Split(new[] { ':' }, 2);
-                        if (parts.Length > 1)
-                            hand.Blinds = parts[1].Trim();
-                    }
-                    else if (line.Contains("Total Pot:"))
-                    {
-                        var match = Regex.Match(line, @"[\d.]+");
-                        if (match.Success)
-                            hand.TotalPot = double.Parse(match.Value, CultureInfo.InvariantCulture);
-                    }
-                    else if (line.Contains("Rake:"))
-                    {
-                        var match = Regex.Match(line, @"[\d.]+");
-                        if (match.Success)
-                            hand.Rake = double.Parse(match.Value, CultureInfo.InvariantCulture);
-                    }
-                }
-
-                // Parse PLAYERS
-                else if (currentSection == "PLAYERS")
-                {
-                    if (line.Contains("Seat "))
-                    {
-                        var match = Regex.Match(line, @"Seat (\d+): (.+?) \((\d+)\)(.*)");
-                        if (match.Success)
-                        {
-                            var seat = match.Groups[1].Value;
-                            var name = match.Groups[2].Value;
-                            var stack = match.Groups[3].Value;
-                            var positions = match.Groups[4].Value;
-                            bool isHero = positions.Contains("Hero");
-                            var player = new Dictionary<string, object>
-                            {
-                                ["seat"] = int.Parse(seat),
-                                ["name"] = name,
-                                ["stack"] = int.Parse(stack),
-                                ["position"] = ExtractPosition(positions),
-                                ["isHero"] = isHero
-                            };
-                            players.Add(player);
-                            hand.Players.Add(new PlayerInfo 
-                            { 
-                                Name = name, 
-                                Stack = int.Parse(stack),
-                                IsHero = isHero,
-                                Position = ExtractPosition(positions)
-                            });
-
-                            if (isHero)
-                            {
-                                heroName = name;
-                                hand.HeroStack = (int)player["stack"];
-                                hand.HeroPosition = player["position"].ToString();
-                                hand.HeroName = heroName;
-                            }
-                            else
-                            {
-                                hand.VillainStacks[name] = (int)player["stack"];
-                            }
-                        }
-                    }
-                }
-                // Global match for "PlayerName shows/mucks [XX XX]" or "Hero shows/mucks [XX XX]"
-                var showMatch = Regex.Match(line, @"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+(?:shows|mucks)\s+\[(.*?)\]", RegexOptions.IgnoreCase);
-                var holeMatch = Regex.Match(line, @"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?):\s*\[(.+?)\]", RegexOptions.IgnoreCase);
-                var noShowMatch = Regex.Match(line, @"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+does not show", RegexOptions.IgnoreCase);
-                var summaryShowMatch = Regex.Match(line, @"Seat \d+: (.+?) .*showed \[(.+?)\]", RegexOptions.IgnoreCase);
-                
-                if (showMatch.Success)
-                {
-                    var playerName = showMatch.Groups[1].Value.Trim();
-                    var cards = showMatch.Groups[2].Value.Trim();
-
-                    hand.WentToShowdown = true;
-                    showdownSectionEncountered = true;
-
-                    var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
-                    if (pInfo != null) 
-                    {
-                        if (!string.IsNullOrEmpty(cards)) 
-                        {
-                            if (string.IsNullOrEmpty(pInfo.Cards))
-                                pInfo.Cards = cards;
-                            else if (!pInfo.Cards.Contains(cards))
-                                pInfo.Cards += "|" + cards;
-                        }
-                    }
-
-                    if (IsHeroName(playerName))
-                    {
-                        hand.HeroCards = cards;
-                    }
-                    else if (!cards.Equals("none", StringComparison.OrdinalIgnoreCase) && !cards.Contains("folded", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (string.IsNullOrEmpty(hand.VillainCards))
-                            hand.VillainCards = cards;
-                        else if (!hand.VillainCards.Contains(cards))
-                            hand.VillainCards += "|" + cards;
-                    }
-                }
-                else if (holeMatch.Success || summaryShowMatch.Success)
-                {
-                    var match = holeMatch.Success ? holeMatch : summaryShowMatch;
-                    var playerName = match.Groups[1].Value.Trim();
-                    var cards = match.Groups[2].Value.Trim();
-
-                    var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
-                    if (pInfo != null) 
-                    {
-                        pInfo.Cards = cards;
-                        // If we are in SHOWDOWN section, or if cards are revealed, it counts as showdown participation
-                        if (currentSection == "SHOWDOWN" || currentSection == "SUMMARY") 
-                        {
-                            pInfo.WentToShowdown = true;
-                        }
-                    }
-
-                    if (IsHeroName(playerName))
-                    {
-                        hand.HeroCards = cards;
-                        if (summaryShowMatch.Success)
-                        {
-                             hand.WentToShowdown = true;
-                             showdownSectionEncountered = true;
-                             if (pInfo != null) pInfo.WentToShowdown = true;
-                        }
-                    }
-                    else if (!cards.Equals("none", StringComparison.OrdinalIgnoreCase) && !cards.Contains("folded", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (summaryShowMatch.Success || currentSection == "SHOWDOWN")
-                        {
-                            hand.WentToShowdown = true;
-                            showdownSectionEncountered = true;
-                            if (pInfo != null) pInfo.WentToShowdown = true;
-                        }
-                        
-                        if (string.IsNullOrEmpty(hand.VillainCards))
-                            hand.VillainCards = cards;
-                        else if (!hand.VillainCards.Contains(cards))
-                            hand.VillainCards += "|" + cards;
-                    }
-                }
-                else if (noShowMatch.Success)
-                {
-                    var playerName = noShowMatch.Groups[1].Value.Trim();
-                    hand.WentToShowdown = true;
-                    showdownSectionEncountered = true;
+                    currentSection = newSection;
                     
-                    var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
-                    if (pInfo != null) 
+                    // Extract board cards immediately upon section detection
+                    ParseBoardCards(line, currentSection, hand);
+                    
+                    if (currentSection == "SHOWDOWN")
                     {
-                        pInfo.WentToShowdown = true;
+                        hand.WentToShowdown = true;
+                        showdownSectionEncountered = true;
                     }
+                    continue; 
                 }
 
-                if (hand.HandId == "01KDZZZY2WYWA83GK1QF6VH1B6")
+                // Process Line based on Section
+                switch (currentSection)
                 {
-                     // Console.WriteLine($"DEBUG TRACE: {line}");
-                }
+                    case "HEADER":
+                        ParseHeaderLine(line, hand);
+                        break;
 
-                // Parse actions
-                // Normalize action keyword detection (case-insensitive)
-                var lowerLine = line.ToLower();
+                    case "PLAYERS":
+                        ParsePlayerLine(line, hand, players, ref heroName);
+                        break;
 
-                if (line.IndexOf("folds", StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    // Fallback: if Contains("folds") and it's an action line, try to parse it even if EndsWith fails
-                    if (!lowerLine.EndsWith("folds") && !lowerLine.Contains(" folds "))
-                    {
-                        // Check if it really is a fold action
-                        var foldMatch = Regex.Match(line, @"(?:^|:\s*)Folds\b", RegexOptions.IgnoreCase);
-                        if (foldMatch.Success)
-                        {
-                             // Console.WriteLine($"DEBUG REGEX FOLD RECOVERY: '{line}'");
-                             // Logic to extract name...
-                             var preFold = line.Substring(0, line.LastIndexOf("folds", StringComparison.OrdinalIgnoreCase)).Trim();
-                             if (preFold.EndsWith(":")) preFold = preFold.Substring(0, preFold.Length - 1).Trim();
-                             var dashIndex = preFold.LastIndexOf("- ");
-                             var pName = (dashIndex >= 0) ? preFold.Substring(dashIndex + 1).Trim() : preFold;
-                             
-                             var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(pName, StringComparison.OrdinalIgnoreCase));
-                             if (pInfo != null) pInfo.Folded = true;
-                        }
-                    }
-                }
+                    case "HOLE_CARDS":
+                    case "PREFLOP":
+                    case "FLOP":
+                    case "TURN":
+                    case "RIVER":
+                    case "SHOWDOWN":
+                        // Actions and Card Reveals happen in these sections
+                        ParseGamePlayLine(line, hand, currentSection, actions, heroName, ref showdownSectionEncountered);
+                        break;
 
-                if (lowerLine.Contains("posts") || lowerLine.Contains("raises") || lowerLine.Contains("calls") || lowerLine.Contains("bets") || lowerLine.Contains("folds") || lowerLine.Contains("checks") || lowerLine.Contains("all-in"))
-                {
-                    // Update Fold status
-                    if (lowerLine.EndsWith("folds") || lowerLine.Contains(" folds "))
-                    {
-                         // Format: "HH:MM:SS - PlayerName: Folds" or "PlayerName: Folds"
-                         var parts = line.Split(':');
-                         if (parts.Length >= 2)
-                         {
-                             // The part before the last colon usually contains the name
-                             // But be careful with timestamps containing colons
-                             // Strategy: Take the part before "Folds" (case insensitive)
-                             var preFold = line.Substring(0, line.LastIndexOf("folds", StringComparison.OrdinalIgnoreCase)).Trim();
-                             if (preFold.EndsWith(":")) preFold = preFold.Substring(0, preFold.Length - 1).Trim();
-                             
-                             // Remove timestamp if present "HH:MM:SS - "
-                             var dashIndex = preFold.LastIndexOf("- ");
-                             var pName = (dashIndex >= 0) ? preFold.Substring(dashIndex + 1).Trim() : preFold;
-
-                             var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(pName, StringComparison.OrdinalIgnoreCase));
-                             if (pInfo != null) 
-                             {
-                                 pInfo.Folded = true;
-                             }
-                         }
-                    }
-
-                    if (currentSection == "PREFLOP")
-                        actions["preflop"].Add(line);
-                    else if (currentSection == "FLOP")
-                        actions["flop"].Add(line);
-                    else if (currentSection == "TURN")
-                        actions["turn"].Add(line);
-                    else if (currentSection == "RIVER")
-                        actions["river"].Add(line);
-                    // Detect all-in (case-insensitive)
-                    if (lowerLine.Contains("all-in"))
-                    {
-                        if (string.IsNullOrEmpty(hand.AllInStreet))
-                        {
-                            hand.AllInStreet = currentSection;
-                        }
-
-                        foreach (var p in hand.Players)
-                        {
-                            if (lowerLine.Contains(p.Name.ToLower()))
-                            {
-                                p.IsAllIn = true;
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(heroName) && lowerLine.Contains(heroName.ToLower()))
-                            hand.HeroAllIn = true;
-                        else
-                            hand.VillainAllIn = true;
-                    }
-                }
-
-                // Parse SHOWDOWN
-                else if (currentSection == "SHOWDOWN")
-                {
-                    hand.Showdown += line + "\n";
-                }
-
-                // Parse SUMMARY
-                else if (currentSection == "SUMMARY")
-                {
-                    if (lowerLine.Contains("total pot"))
-                    {
-                        var match = Regex.Match(line, @"(\d+\.?\d*)");
-                        if (match.Success)
-                            hand.TotalPot = double.Parse(match.Groups[1].Value);
-                    }
-
-                    // Match any "<player> wins ... pot of <amount>" and attribute to that player
-                    var potWinMatch = Regex.Match(line, @"^(.+?) wins .*?pot (?:of )?(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase);
-                    if (potWinMatch.Success)
-                    {
-                        explicitPotWinFound = true;
-                        var winner = potWinMatch.Groups[1].Value.Trim();
-                        var amountStr = potWinMatch.Groups[2].Value;
-                        double amount = double.Parse(amountStr, CultureInfo.InvariantCulture);
-
-                        bool isHeroWin = IsHeroName(winner);
-
-                        var pWin = hand.Players.FirstOrDefault(x => x.Name.Equals(winner, StringComparison.OrdinalIgnoreCase));
-                        if (pWin == null && isHeroWin)
-                        {
-                            pWin = hand.Players.FirstOrDefault(x => x.IsHero);
-                        }
-
-                        if (pWin != null) pWin.ChipsWon += amount;
-                        
-                        // if (hand.HandId == "01KE07GK7BGA0VGNA694AB9XD1")
-                        //    Console.WriteLine($"[Parser Debug] PotWin: Winner='{winner}' Amount={amount} IsHero={isHeroWin} HeroName='{heroName}'");
-
-                        if (isHeroWin)
-                        {
-                            totalPotWon += amount;
-                            heroWon = true;
-                            heroHasPotRecorded = true;
-                            
-                            if (showdownSectionEncountered || (pWin.IsAllIn && hand.Players.Any(p => p.Name != pWin.Name && p.IsAllIn)))
-                            {
-                                hand.WentToShowdown = true;
-                                if (pWin != null) pWin.WentToShowdown = true;
-                            }
-                        }
-                        else
-                        {
-                            if (pWin != null && (showdownSectionEncountered || (pWin.IsAllIn && hand.Players.Any(p => p.Name != pWin.Name && p.IsAllIn))))
-                            {
-                                hand.WentToShowdown = true;
-                                pWin.WentToShowdown = true;
-                            }
-                        }
-                    }
-
-                    // If hero appears in a "finished ... wins" line but no pot amounts were recorded for him,
-                    // fall back to using the hand.TotalPot (this covers lines like "finished 1st and wins 4.00 EUR").
-                    // Only fallback to attributing the whole TotalPot to hero when there is no explicit
-                    // "wins ... pot of <amount>" line anywhere in the summary. If explicit pot wins
-                    // are present (as in normal SUMMARY blocks), do not assume the hero won the full pot
-                    // based solely on a "finished ... wins" line (which often reports cash payouts in EUR).
-                    if (!heroHasPotRecorded && !explicitPotWinFound && !string.IsNullOrEmpty(heroName) && lowerLine.Contains("finished") && lowerLine.Contains("wins") && lowerLine.Contains(heroName.ToLower()))
-                    {
-                        if (hand.TotalPot > 0)
-                        {
-                            var pHero = hand.Players.FirstOrDefault(x => x.IsHero);
-                            if (pHero != null) pHero.ChipsWon += hand.TotalPot;
-
-                            totalPotWon += hand.TotalPot;
-                            heroWon = true;
-                            heroHasPotRecorded = true;
-                            
-                            // If it's a "finished 1st" hand after an all-in, it's usually a showdown
-                            if (showdownSectionEncountered || (pHero != null && pHero.IsAllIn && hand.Players.Any(p => p.Name != pHero.Name && p.IsAllIn)))
-                            {
-                                hand.WentToShowdown = true;
-                                if (pHero != null) pHero.WentToShowdown = true;
-                            }
-                        }
-                    }
+                    case "SUMMARY":
+                        ParseSummaryLine(line, hand, ref explicitPotWinFound, ref heroHasPotRecorded, ref totalPotWon, ref heroWon, heroName, showdownSectionEncountered);
+                        break;
                 }
             }
 
-            // Calculate profit
-            var playerInvestments = new Dictionary<string, double>();
-            double totalInvestment = 0;
-            double maxInvestment = 0;
-            string? maxInvestor = null;
-            foreach (var player in players)
-            {
-                var pName = player["name"].ToString()!;
-                var inv = CalculatePlayerInvestment(actions, pName);
-                
-                var pInfo = hand.Players.FirstOrDefault(x => x.Name == pName);
-                if (pInfo != null) pInfo.Investment = inv;
-
-                playerInvestments[pName] = inv;
-                totalInvestment += inv;
-                if (inv > maxInvestment)
-                {
-                    maxInvestment = inv;
-                    maxInvestor = player["name"].ToString();
-                }
-            }
-            // Adjust for uncalled bets
-            if (totalInvestment > hand.TotalPot && !string.IsNullOrEmpty(maxInvestor))
-            {
-                var excess = totalInvestment - hand.TotalPot;
-                // Console.WriteLine($"[Parser Debug] Adjusting uncalled bet: TotalInv={totalInvestment} Pot={hand.TotalPot} Excess={excess} Player={maxInvestor}");
-                playerInvestments[maxInvestor] -= excess;
-
-                var pInfo = hand.Players.FirstOrDefault(x => x.Name == maxInvestor);
-                if (pInfo != null) pInfo.Investment -= excess;
-            }
-            
-            // Calculate Net Profit for all players
-            foreach (var p in hand.Players)
-            {
-                p.NetProfit = p.ChipsWon - p.Investment;
-            }
-            
-            var heroInvestment = playerInvestments.GetValueOrDefault(heroName ?? "", 0.0);
-            hand.HeroInvestment = heroInvestment;
-            hand.HeroProfit = totalPotWon - heroInvestment;
-            hand.HeroNetProfit = hand.HeroProfit;
-
-            // Normalize positions
-            hand.PlayerCount = players.Count;
-            var villain = players.FirstOrDefault(p => p["name"].ToString() != heroName);
-            if (villain != null)
-            {
-                hand.VillainPosition = villain["position"].ToString();
-                hand.VillainStack = (int)villain["stack"];
-                // Normalize hero position based on player count
-                var heroPos = hand.HeroPosition;
-                if (hand.PlayerCount == 2)
-                {
-                    if (heroPos == "BTN SB" || heroPos == "BTN")
-                    {
-                        heroPos = "SB";
-                    }
-                }
-                hand.HeroPosition = $"Hero ({heroPos})";
-                var villainPos = villain["position"].ToString();
-                if (hand.PlayerCount == 2)
-                {
-                    if (villainPos == "BTN SB" || villainPos == "BTN")
-                    {
-                        villainPos = "SB";
-                    }
-                }
-                hand.VillainPosition = $"Villain ({villainPos})";
-            }
-
-            // Build action strings
-            hand.PreflopAction = string.Join("\n", actions["preflop"]);
-            hand.FlopAction = string.Join("\n", actions["flop"]);
-            hand.TurnAction = string.Join("\n", actions["turn"]);
-            hand.RiverAction = string.Join("\n", actions["river"]);
-
-            // Generate unique ID — prefer the explicit HandId if present (from the hand history),
-            // otherwise fallback to GameId + DateTime. This avoids collisions when multiple hands
-            // share the same GameId and timestamp precision.
-            if (!string.IsNullOrEmpty(hand.HandId))
-            {
-                hand.Id = hand.HandId;
-            }
-            else if (!string.IsNullOrEmpty(hand.GameId) && !string.IsNullOrEmpty(hand.DateTime))
-            {
-                hand.Id = $"{hand.GameId}_{hand.DateTime}".Replace(":", "").Replace(" ", "_");
-                hand.HandId = hand.GameId;
-            }
-            else
-            {
-                // Last resort: hash of the hand text could be used, but for now use a timestamp-based id
-                hand.Id = Guid.NewGuid().ToString();
-            }
-
-            // Consolidate Showdown
-            if (showdownSectionEncountered)
-            {
-                hand.WentToShowdown = true;
-                foreach (var p in hand.Players)
-                {
-                    // If player hasn't folded, they went to showdown
-                    if (!p.Folded)
-                    {
-                        p.WentToShowdown = true;
-                    }
-                }
-                
-                // Update HeroWentToShowdown based on consolidated player info
-                var heroP = hand.Players.FirstOrDefault(p => p.IsHero);
-                if (heroP != null)
-                {
-                    hand.HeroWentToShowdown = heroP.WentToShowdown;
-                }
-            }
+            // Post-Processing Calculations
+            CalculateInvestmentsAndProfits(hand, players, actions, heroName, totalPotWon);
+            NormalizeHandData(hand, players, heroName);
+            GenerateHandId(hand);
+            ConsolidateShowdownStatus(hand, showdownSectionEncountered);
 
             return hand;
         }
@@ -661,23 +178,552 @@ public class BetclicParser : IHandParser
         }
     }
 
+    private string? DetectSection(string line)
+    {
+        if (line.Contains(SectionHeader)) return "HEADER";
+        if (line.Contains(SectionPlayers)) return "PLAYERS";
+        if (line.Contains(SectionHoleCards)) return "HOLE_CARDS";
+        if (line.Contains(SectionPreFlop)) return "PREFLOP";
+        if (line.Contains(SectionFlop)) return "FLOP";
+        if (line.Contains(SectionTurn)) return "TURN";
+        if (line.Contains(SectionRiver)) return "RIVER";
+        if (line.Contains(SectionShowdown)) return "SHOWDOWN";
+        if (line.Contains(SectionSummary)) return "SUMMARY";
+        return null;
+    }
+
+    private void ParseBoardCards(string line, string section, ParsedHand hand)
+    {
+        if (section == "FLOP")
+        {
+            var match = FlopRegex.Match(line);
+            if (match.Success) hand.Flop = match.Groups[1].Value;
+        }
+        else if (section == "TURN")
+        {
+            var match = TurnRiverRegex.Match(line);
+            if (match.Success)
+            {
+                var cards = match.Groups[1].Value.Split(' ');
+                hand.Turn = cards.Length > 0 ? cards[^1] : null;
+            }
+        }
+        else if (section == "RIVER")
+        {
+            var match = TurnRiverRegex.Match(line);
+            if (match.Success)
+            {
+                var cards = match.Groups[1].Value.Split(' ');
+                hand.River = cards.Length > 0 ? cards[^1] : null;
+            }
+        }
+    }
+
+    private void ParseHeaderLine(string line, ParsedHand hand)
+    {
+        if (line.Contains("Site:"))
+            hand.Room = line.Split(new[] { ':' }, 2)[1].Trim();
+        else if (line.Contains("Game Mode:"))
+            hand.GameMode = line.Split(new[] { ':' }, 2)[1].Trim();
+        else if (line.Contains("Game Type:"))
+            hand.GameType = line.Split(new[] { ':' }, 2)[1].Trim();
+        else if (line.Contains("Game Name:"))
+            hand.GameName = line.Split(new[] { ':' }, 2)[1].Trim();
+        else if (line.Contains("Game ID:"))
+            hand.GameId = line.Split(new[] { ':' }, 2)[1].Trim();
+        else if (line.Contains("Hand ID:"))
+            hand.HandId = line.Split(new[] { ':' }, 2)[1].Trim();
+        else if (line.Contains("Prize pool:"))
+        {
+            var match = PrizePoolRegex.Match(line);
+            if (match.Success) hand.PrizePool = double.Parse(match.Value, CultureInfo.InvariantCulture);
+        }
+        else if (line.Contains("Multiplier:"))
+        {
+            var match = MultiplierRegex.Match(line);
+            if (match.Success) hand.Multiplier = int.Parse(match.Groups[1].Value);
+        }
+        else if (line.Contains("Buy In:"))
+        {
+            var match = BuyInRegex.Match(line);
+            if (match.Success) hand.BuyIn = double.Parse(match.Value, CultureInfo.InvariantCulture);
+        }
+        else if (line.Contains("Date & Time:"))
+            hand.DateTime = line.Split(new[] { ':' }, 2)[1].Trim().Replace("(UTC)", "").Trim();
+        else if (line.Contains("Table ID:"))
+            hand.TableId = line.Split(new[] { ':' }, 2)[1].Trim();
+        else if (line.Contains("Blinds:"))
+            hand.Blinds = line.Split(new[] { ':' }, 2)[1].Trim();
+        else if (line.Contains("Total Pot:"))
+        {
+            var match = PrizePoolRegex.Match(line);
+            if (match.Success) hand.TotalPot = double.Parse(match.Value, CultureInfo.InvariantCulture);
+        }
+        else if (line.Contains("Rake:"))
+        {
+            var match = PrizePoolRegex.Match(line);
+            if (match.Success) hand.Rake = double.Parse(match.Value, CultureInfo.InvariantCulture);
+        }
+    }
+
+    private void ParsePlayerLine(string line, ParsedHand hand, List<Dictionary<string, object>> players, ref string? heroName)
+    {
+        if (line.Contains("Seat "))
+        {
+            var match = SeatRegex.Match(line);
+            if (match.Success)
+            {
+                var seat = int.Parse(match.Groups[1].Value);
+                var name = match.Groups[2].Value;
+                var stack = int.Parse(match.Groups[3].Value);
+                var positions = match.Groups[4].Value;
+                bool isHero = positions.Contains("Hero");
+
+                var player = new Dictionary<string, object>
+                {
+                    ["seat"] = seat,
+                    ["name"] = name,
+                    ["stack"] = stack,
+                    ["position"] = ExtractPosition(positions),
+                    ["isHero"] = isHero
+                };
+                players.Add(player);
+                hand.Players.Add(new PlayerInfo
+                {
+                    Name = name,
+                    Stack = stack,
+                    IsHero = isHero,
+                    Position = ExtractPosition(positions)
+                });
+
+                if (isHero)
+                {
+                    heroName = name;
+                    hand.HeroStack = stack;
+                    hand.HeroPosition = player["position"].ToString();
+                    hand.HeroName = heroName;
+                }
+                else
+                {
+                    hand.VillainStacks[name] = stack;
+                }
+            }
+        }
+    }
+
+    private void ParseGamePlayLine(string line, ParsedHand hand, string currentSection, Dictionary<string, List<string>> actions, string? heroName, ref bool showdownSectionEncountered)
+    {
+        // 1. Check for Card Reveals (Show/Muck/Hole Cards)
+        bool cardsFound = ParseCardReveals(line, hand, currentSection, heroName, ref showdownSectionEncountered);
+        
+        // 2. Parse Actions (Folds, Raises, Calls, etc.)
+        if (!cardsFound)
+        {
+            ParseActionLine(line, hand, currentSection, actions, heroName);
+        }
+    }
+
+    private bool ParseCardReveals(string line, ParsedHand hand, string currentSection, string? heroName, ref bool showdownSectionEncountered)
+    {
+        var showMatch = ShowMatchRegex.Match(line);
+        var holeMatch = HoleMatchRegex.Match(line);
+        var noShowMatch = NoShowMatchRegex.Match(line);
+        var summaryShowMatch = SummaryShowMatchRegex.Match(line);
+
+        if (showMatch.Success)
+        {
+            var playerName = showMatch.Groups[1].Value.Trim();
+            var cards = showMatch.Groups[2].Value.Trim();
+
+            hand.WentToShowdown = true;
+            showdownSectionEncountered = true;
+
+            UpdatePlayerCards(hand, playerName, cards);
+            
+            if (IsHeroName(playerName, heroName))
+            {
+                hand.HeroCards = cards;
+            }
+            else if (IsValidCardString(cards))
+            {
+                UpdateVillainCards(hand, cards);
+            }
+            return true;
+        }
+        else if (holeMatch.Success || summaryShowMatch.Success)
+        {
+            var match = holeMatch.Success ? holeMatch : summaryShowMatch;
+            var playerName = match.Groups[1].Value.Trim();
+            var cards = match.Groups[2].Value.Trim();
+
+            var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+            if (pInfo != null)
+            {
+                pInfo.Cards = cards;
+                if (currentSection == "SHOWDOWN" || currentSection == "SUMMARY")
+                {
+                    pInfo.WentToShowdown = true;
+                }
+            }
+
+            if (IsHeroName(playerName, heroName))
+            {
+                hand.HeroCards = cards;
+                if (summaryShowMatch.Success)
+                {
+                    hand.WentToShowdown = true;
+                    showdownSectionEncountered = true;
+                    if (pInfo != null) pInfo.WentToShowdown = true;
+                }
+            }
+            else if (IsValidCardString(cards))
+            {
+                if (summaryShowMatch.Success || currentSection == "SHOWDOWN")
+                {
+                    hand.WentToShowdown = true;
+                    showdownSectionEncountered = true;
+                    if (pInfo != null) pInfo.WentToShowdown = true;
+                }
+                UpdateVillainCards(hand, cards);
+            }
+            return true;
+        }
+        else if (noShowMatch.Success)
+        {
+            var playerName = noShowMatch.Groups[1].Value.Trim();
+            hand.WentToShowdown = true;
+            showdownSectionEncountered = true;
+
+            var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+            if (pInfo != null)
+            {
+                pInfo.WentToShowdown = true;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    private void ParseActionLine(string line, ParsedHand hand, string currentSection, Dictionary<string, List<string>> actions, string? heroName)
+    {
+        var lowerLine = line.ToLower();
+
+        // Detect Folds
+        if (line.IndexOf("folds", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            HandleFold(line, hand);
+        }
+
+        // Detect Standard Actions
+        if (lowerLine.Contains("posts") || lowerLine.Contains("raises") || lowerLine.Contains("calls") || 
+            lowerLine.Contains("bets") || lowerLine.Contains("folds") || lowerLine.Contains("checks") || 
+            lowerLine.Contains("all-in"))
+        {
+            // Record raw action string for the section
+            if (currentSection == "PREFLOP") actions["preflop"].Add(line);
+            else if (currentSection == "FLOP") actions["flop"].Add(line);
+            else if (currentSection == "TURN") actions["turn"].Add(line);
+            else if (currentSection == "RIVER") actions["river"].Add(line);
+
+            // Detect All-In
+            if (lowerLine.Contains("all-in"))
+            {
+                if (string.IsNullOrEmpty(hand.AllInStreet))
+                {
+                    hand.AllInStreet = currentSection;
+                }
+
+                foreach (var p in hand.Players)
+                {
+                    if (lowerLine.Contains(p.Name.ToLower()))
+                    {
+                        p.IsAllIn = true;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(heroName) && lowerLine.Contains(heroName.ToLower()))
+                    hand.HeroAllIn = true;
+                else
+                    hand.VillainAllIn = true;
+            }
+        }
+    }
+
+    private void HandleFold(string line, ParsedHand hand)
+    {
+        // Try to extract player name who folded
+        // Format: "HH:MM:SS - PlayerName: Folds" or "PlayerName: Folds" or "PlayerName folds"
+        string pName = "";
+        
+        var lowerLine = line.ToLower();
+        if (lowerLine.EndsWith("folds") || lowerLine.Contains(" folds "))
+        {
+             var preFold = line.Substring(0, line.LastIndexOf("folds", StringComparison.OrdinalIgnoreCase)).Trim();
+             if (preFold.EndsWith(":")) preFold = preFold.Substring(0, preFold.Length - 1).Trim();
+             
+             var dashIndex = preFold.LastIndexOf("- ");
+             pName = (dashIndex >= 0) ? preFold.Substring(dashIndex + 1).Trim() : preFold;
+        }
+        else
+        {
+            // Fallback Regex
+            var foldMatch = Regex.Match(line, @"(?:^|:\s*)Folds\b", RegexOptions.IgnoreCase);
+            if (foldMatch.Success)
+            {
+                 var preFold = line.Substring(0, line.LastIndexOf("folds", StringComparison.OrdinalIgnoreCase)).Trim();
+                 if (preFold.EndsWith(":")) preFold = preFold.Substring(0, preFold.Length - 1).Trim();
+                 var dashIndex = preFold.LastIndexOf("- ");
+                 pName = (dashIndex >= 0) ? preFold.Substring(dashIndex + 1).Trim() : preFold;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(pName))
+        {
+             var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(pName, StringComparison.OrdinalIgnoreCase));
+             if (pInfo != null) pInfo.Folded = true;
+        }
+    }
+
+    private void ParseSummaryLine(string line, ParsedHand hand, ref bool explicitPotWinFound, ref bool heroHasPotRecorded, ref double totalPotWon, ref bool heroWon, string? heroName, bool showdownSectionEncountered)
+    {
+        var lowerLine = line.ToLower();
+
+        if (lowerLine.Contains("total pot"))
+        {
+            var match = TotalPotSummaryRegex.Match(line);
+            if (match.Success)
+                hand.TotalPot = double.Parse(match.Groups[1].Value);
+        }
+
+        // Match any "<player> wins ... pot of <amount>"
+        var potWinMatch = PotWinRegex.Match(line);
+        if (potWinMatch.Success)
+        {
+            explicitPotWinFound = true;
+            var winner = potWinMatch.Groups[1].Value.Trim();
+            var amountStr = potWinMatch.Groups[2].Value;
+            double amount = double.Parse(amountStr, CultureInfo.InvariantCulture);
+
+            bool isHeroWin = IsHeroName(winner, heroName);
+
+            var pWin = hand.Players.FirstOrDefault(x => x.Name.Equals(winner, StringComparison.OrdinalIgnoreCase));
+            if (pWin == null && isHeroWin)
+            {
+                pWin = hand.Players.FirstOrDefault(x => x.IsHero);
+            }
+
+            if (pWin != null) pWin.ChipsWon += amount;
+
+            if (isHeroWin)
+            {
+                totalPotWon += amount;
+                heroWon = true;
+                heroHasPotRecorded = true;
+                
+                if (showdownSectionEncountered || (pWin != null && pWin.IsAllIn && hand.Players.Any(p => p.Name != pWin.Name && p.IsAllIn)))
+                {
+                    hand.WentToShowdown = true;
+                    if (pWin != null) pWin.WentToShowdown = true;
+                }
+            }
+            else
+            {
+                if (pWin != null && (showdownSectionEncountered || (pWin.IsAllIn && hand.Players.Any(p => p.Name != pWin.Name && p.IsAllIn))))
+                {
+                    hand.WentToShowdown = true;
+                    pWin.WentToShowdown = true;
+                }
+            }
+        }
+
+        // Fallback for when hero wins but no explicit pot amount line is found
+        if (!heroHasPotRecorded && !explicitPotWinFound && !string.IsNullOrEmpty(heroName) && 
+            lowerLine.Contains("finished") && lowerLine.Contains("wins") && lowerLine.Contains(heroName.ToLower()))
+        {
+            if (hand.TotalPot > 0)
+            {
+                var pHero = hand.Players.FirstOrDefault(x => x.IsHero);
+                if (pHero != null) pHero.ChipsWon += hand.TotalPot;
+
+                totalPotWon += hand.TotalPot;
+                heroWon = true;
+                heroHasPotRecorded = true;
+                
+                if (showdownSectionEncountered || (pHero != null && pHero.IsAllIn && hand.Players.Any(p => p.Name != pHero.Name && p.IsAllIn)))
+                {
+                    hand.WentToShowdown = true;
+                    if (pHero != null) pHero.WentToShowdown = true;
+                }
+            }
+        }
+    }
+
+    private void CalculateInvestmentsAndProfits(ParsedHand hand, List<Dictionary<string, object>> players, Dictionary<string, List<string>> actions, string? heroName, double totalPotWon)
+    {
+        var playerInvestments = new Dictionary<string, double>();
+        double totalInvestment = 0;
+        double maxInvestment = 0;
+        string? maxInvestor = null;
+
+        foreach (var player in players)
+        {
+            var pName = player["name"].ToString()!;
+            var inv = CalculatePlayerInvestment(actions, pName);
+            
+            var pInfo = hand.Players.FirstOrDefault(x => x.Name == pName);
+            if (pInfo != null) pInfo.Investment = inv;
+
+            playerInvestments[pName] = inv;
+            totalInvestment += inv;
+            if (inv > maxInvestment)
+            {
+                maxInvestment = inv;
+                maxInvestor = player["name"].ToString();
+            }
+        }
+
+        // Adjust for uncalled bets
+        if (totalInvestment > hand.TotalPot && !string.IsNullOrEmpty(maxInvestor))
+        {
+            var excess = totalInvestment - hand.TotalPot;
+            playerInvestments[maxInvestor] -= excess;
+
+            var pInfo = hand.Players.FirstOrDefault(x => x.Name == maxInvestor);
+            if (pInfo != null) pInfo.Investment -= excess;
+        }
+        
+        // Calculate Net Profit
+        foreach (var p in hand.Players)
+        {
+            p.NetProfit = p.ChipsWon - p.Investment;
+        }
+        
+        var heroInvestment = playerInvestments.GetValueOrDefault(heroName ?? "", 0.0);
+        hand.HeroInvestment = heroInvestment;
+        hand.HeroProfit = totalPotWon - heroInvestment;
+        hand.HeroNetProfit = hand.HeroProfit;
+    }
+
+    private void NormalizeHandData(ParsedHand hand, List<Dictionary<string, object>> players, string? heroName)
+    {
+        hand.PlayerCount = players.Count;
+        var villain = players.FirstOrDefault(p => p["name"].ToString() != heroName);
+        if (villain != null)
+        {
+            hand.VillainPosition = villain["position"].ToString();
+            hand.VillainStack = (int)villain["stack"];
+            
+            // Normalize Heads-Up positions
+            if (hand.PlayerCount == 2)
+            {
+                if (hand.HeroPosition == "BTN SB" || hand.HeroPosition == "BTN")
+                    hand.HeroPosition = "SB";
+                
+                var villainPos = villain["position"].ToString();
+                if (villainPos == "BTN SB" || villainPos == "BTN")
+                    villainPos = "SB";
+                
+                hand.VillainPosition = $"Villain ({villainPos})";
+            }
+            else
+            {
+                hand.VillainPosition = $"Villain ({hand.VillainPosition})";
+            }
+            
+            hand.HeroPosition = $"Hero ({hand.HeroPosition})";
+        }
+    }
+    
+    private void BuildActionStrings(ParsedHand hand, Dictionary<string, List<string>> actions)
+    {
+        hand.PreflopAction = string.Join("\n", actions["preflop"]);
+        hand.FlopAction = string.Join("\n", actions["flop"]);
+        hand.TurnAction = string.Join("\n", actions["turn"]);
+        hand.RiverAction = string.Join("\n", actions["river"]);
+    }
+
+    private void GenerateHandId(ParsedHand hand)
+    {
+        if (!string.IsNullOrEmpty(hand.HandId))
+        {
+            hand.Id = hand.HandId;
+        }
+        else if (!string.IsNullOrEmpty(hand.GameId) && !string.IsNullOrEmpty(hand.DateTime))
+        {
+            hand.Id = $"{hand.GameId}_{hand.DateTime}".Replace(":", "").Replace(" ", "_");
+            hand.HandId = hand.GameId;
+        }
+        else
+        {
+            hand.Id = Guid.NewGuid().ToString();
+        }
+    }
+
+    private void ConsolidateShowdownStatus(ParsedHand hand, bool showdownSectionEncountered)
+    {
+        if (showdownSectionEncountered)
+        {
+            hand.WentToShowdown = true;
+            foreach (var p in hand.Players)
+            {
+                if (!p.Folded)
+                {
+                    p.WentToShowdown = true;
+                }
+            }
+            
+            var heroP = hand.Players.FirstOrDefault(p => p.IsHero);
+            if (heroP != null)
+            {
+                hand.HeroWentToShowdown = heroP.WentToShowdown;
+            }
+        }
+    }
+
+    // Helpers
+    private bool IsHeroName(string name, string? heroName)
+    {
+        return (!string.IsNullOrEmpty(heroName) && name.Equals(heroName, StringComparison.OrdinalIgnoreCase)) ||
+                name.Equals("Hero", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool IsValidCardString(string cards)
+    {
+        return !cards.Equals("none", StringComparison.OrdinalIgnoreCase) && 
+               !cards.Contains("folded", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void UpdatePlayerCards(ParsedHand hand, string playerName, string cards)
+    {
+        var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+        if (pInfo != null)
+        {
+            if (string.IsNullOrEmpty(pInfo.Cards))
+                pInfo.Cards = cards;
+            else if (!pInfo.Cards.Contains(cards))
+                pInfo.Cards += "|" + cards;
+        }
+    }
+
+    private void UpdateVillainCards(ParsedHand hand, string cards)
+    {
+        if (string.IsNullOrEmpty(hand.VillainCards))
+            hand.VillainCards = cards;
+        else if (!hand.VillainCards.Contains(cards))
+            hand.VillainCards += "|" + cards;
+    }
+
     private string ExtractPosition(string positionString)
     {
         var posUpper = positionString.ToUpper();
-        if (posUpper.Contains("BTN") && posUpper.Contains("SB"))
-            return "BTN SB";
-        if (posUpper.Contains("BTN"))
-            return "BTN";
-        if (posUpper.Contains("SB"))
-            return "SB";
-        if (posUpper.Contains("BB"))
-            return "BB";
-        if (posUpper.Contains("CO"))
-            return "CO";
-        if (posUpper.Contains("MP"))
-            return "MP";
-        if (posUpper.Contains("UTG"))
-            return "UTG";
+        if (posUpper.Contains("BTN") && posUpper.Contains("SB")) return "BTN SB";
+        if (posUpper.Contains("BTN")) return "BTN";
+        if (posUpper.Contains("SB")) return "SB";
+        if (posUpper.Contains("BB")) return "BB";
+        if (posUpper.Contains("CO")) return "CO";
+        if (posUpper.Contains("MP")) return "MP";
+        if (posUpper.Contains("UTG")) return "UTG";
         return "Unknown";
     }
 
@@ -690,36 +736,21 @@ public class BetclicParser : IHandParser
             foreach (var action in actions.GetValueOrDefault(street, new List<string>()))
             {
                 if (!action.Contains(playerName)) continue;
-                if (action.Contains("Posts SB"))
-                {
-                    var match = Regex.Match(action, @"Posts SB (\d+)");
-                    if (match.Success)
-                        streetInvestment += double.Parse(match.Groups[1].Value);
-                }
-                else if (action.Contains("Posts BB"))
-                {
-                    var match = Regex.Match(action, @"Posts BB (\d+)");
-                    if (match.Success)
-                        streetInvestment += double.Parse(match.Groups[1].Value);
-                }
-                else if (action.Contains("Raises to"))
-                {
-                    var match = Regex.Match(action, @"Raises to (\d+)");
-                    if (match.Success)
-                        streetInvestment = double.Parse(match.Groups[1].Value);
-                }
-                else if (action.Contains("Calls"))
-                {
-                    var match = Regex.Match(action, @"Calls (\d+)");
-                    if (match.Success)
-                        streetInvestment += double.Parse(match.Groups[1].Value);
-                }
-                else if (action.Contains("Bets"))
-                {
-                    var match = Regex.Match(action, @"Bets (\d+)");
-                    if (match.Success)
-                        streetInvestment += double.Parse(match.Groups[1].Value);
-                }
+
+                var match = PostsSbRegex.Match(action);
+                if (match.Success) streetInvestment += double.Parse(match.Groups[1].Value);
+
+                match = PostsBbRegex.Match(action);
+                if (match.Success) streetInvestment += double.Parse(match.Groups[1].Value);
+
+                match = RaisesToRegex.Match(action);
+                if (match.Success) streetInvestment = double.Parse(match.Groups[1].Value);
+
+                match = CallsRegex.Match(action);
+                if (match.Success) streetInvestment += double.Parse(match.Groups[1].Value);
+
+                match = BetsRegex.Match(action);
+                if (match.Success) streetInvestment += double.Parse(match.Groups[1].Value);
             }
             total += streetInvestment;
         }

@@ -24,6 +24,7 @@ const LINE_LABELS = {
 export default function WinrateChart({ className }) {
   const chartRef = useRef(null);
   const heroName = useAppStore(state => state.heroName);
+  const lastUpdate = useAppStore(state => state.lastUpdate);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState('all');
@@ -36,6 +37,12 @@ export default function WinrateChart({ className }) {
   });
 
   const loadChartData = async () => {
+    if (!heroName) {
+      setData([]);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const result = await ipcService.getWinrateChartData({ period, heroName });
@@ -77,7 +84,7 @@ export default function WinrateChart({ className }) {
 
   useEffect(() => {
     loadChartData();
-  }, [period, heroName]);
+  }, [period, heroName, lastUpdate]);
 
   // Suppression de l'effet takeGlobalCursor car il est capricieux et dépend de toolbox
   // On va utiliser brush pour un contrôle total
@@ -392,6 +399,7 @@ export default function WinrateChart({ className }) {
             style={{ height: '100%', width: '100%' }}
             notMerge={false}
             lazyUpdate={true}
+            autoResize={false}
             theme={"dark"}
             onEvents={handleChartEvents}
             onChartReady={onChartReady}

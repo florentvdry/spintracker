@@ -13,7 +13,7 @@ import { WinrateChart } from '@components/charts';
 import SessionList from './components/SessionList';
 
 export default function Dashboard() {
-  const { isLoading, dashboardStats, sessions, loadDashboardStats, loadSessions } = useAppStore();
+  const { isLoading, dashboardStats, sessions, loadDashboardStats, loadSessions, heroName } = useAppStore();
 
   useEffect(() => {
     loadDashboardStats();
@@ -73,13 +73,13 @@ export default function Dashboard() {
           subtitle="Profit et EV"
           className="lg:col-span-2 h-full"
         >
-          {stats.total_hands > 0 ? (
+          {heroName && stats.total_hands > 0 ? (
             <WinrateChart />
           ) : (
             <EmptyState
               icon={TrendingUp}
-              title="Aucune donnée"
-              description="Importez des mains pour voir votre courbe de gains"
+              title={!heroName ? "Aucun joueur sélectionné" : "Aucune donnée"}
+              description={!heroName ? "Veuillez sélectionner un joueur ou importer des mains" : "Importez des mains pour voir votre courbe de gains"}
             />
           )}
         </Card>
@@ -90,7 +90,15 @@ export default function Dashboard() {
           subtitle="Dernières parties"
           className="h-full flex flex-col"
         >
-          <SessionList sessions={sessions} />
+          {heroName ? (
+            <SessionList sessions={sessions} />
+          ) : (
+             <EmptyState
+              icon={Zap}
+              title="Aucune session"
+              description="Sélectionnez un joueur pour voir ses sessions"
+            />
+          )}
         </Card>
       </div>
     </div>

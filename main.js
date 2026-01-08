@@ -82,13 +82,13 @@ function stopBackend() {
   }
 }
 
-async function callBackendAPI(endpoint, data = {}, method = 'POST') {
+async function callBackendAPI(endpoint, data = {}, method = 'POST', timeoutMs = 300000) {
   try {
     const fetch = (await import('node-fetch')).default;
     const AbortController = global.AbortController || (await import('abort-controller')).AbortController;
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs); // Default 5 min timeout
 
     const options = {
       method,
@@ -149,6 +149,18 @@ function createWindow() {
       mainWindow.loadFile(reactBuildPath);
     }
   }
+
+  mainWindow.webContents.on('did-finish-load', async () => {
+    console.log('[Main] Window finished loading');
+    try {
+      const isRequireDefined = await mainWindow.webContents.executeJavaScript('typeof window.require');
+      console.log(`[Main] window.require type: ${isRequireDefined}`);
+      const isIpcRendererDefined = await mainWindow.webContents.executeJavaScript('typeof window.require("electron").ipcRenderer');
+      console.log(`[Main] ipcRenderer type: ${isIpcRendererDefined}`);
+    } catch (e) {
+      console.error('[Main] Error checking require/ipcRenderer:', e);
+    }
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -248,11 +260,26 @@ ipcMain.handle('import-hand-history', async () => {
     for (const pr of parseResults) {
       try {
         if (pr.hands && pr.hands.length > 0) {
-          const insertResult = await callBackendAPI('/db/insert-hands', { hands: pr.hands });
-          if (insertResult.success) {
-            totalHandsImported += insertResult.inserted || 0;
-          } else {
-            insertErrors.push({ file: pr.file, error: insertResult.error });
+          const batchSize = 50;
+          for (let i = 0; i < pr.hands.length; i += batchSize) {
+            const batch = pr.hands.slice(i, i + batchSize);
+            const insertResult = await callBackendAPI('/db/insert-hands', { hands: batch });
+            
+            if (insertResult.success) {
+              totalHandsImported += insertResult.inserted || 0;
+            } else {
+              insertErrors.push({ file: pr.file, error: insertResult.error, batch: `${i}-${i+batch.length}` });
+            }
+
+            // Update progress frequently
+            const percent = totalHandsToImport > 0 ? Math.round((totalHandsImported / totalHandsToImport) * 100) : 0;
+            mainWindow.webContents.send('import-progress', {
+              filesProcessed: filesProcessed,
+              totalFiles: result.filePaths.length,
+              percent: percent,
+              handsImported: totalHandsImported,
+              totalHands: totalHandsToImport
+            });
           }
         }
 

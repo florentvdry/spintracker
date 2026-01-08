@@ -30,12 +30,19 @@ export default function Header() {
     if (!heroName && players.length > 0) {
         const best = players.reduce((prev, current) => (prev.total_hands > current.total_hands) ? prev : current);
         setHeroName(best.name);
+        addNotification({
+            type: 'info',
+            title: 'Héro détecté',
+            message: `Le joueur ${best.name} a été sélectionné automatiquement.`,
+            duration: 5000
+        });
     }
-  }, [players, heroName, setHeroName]);
+  }, [players, heroName, setHeroName, addNotification]);
 
   const loadPlayers = async () => {
       try {
-          const res = await ipcService.getPlayers({ limit: 500, minHands: 10 });
+          // On charge tous les joueurs avec au moins 1 main pour être sûr de trouver le héros
+          const res = await ipcService.getPlayers({ limit: 500, minHands: 1 });
           if (res.success) {
               setPlayers(res.data);
               
@@ -98,8 +105,12 @@ export default function Header() {
           message: `${result.handsImported} mains importées depuis ${result.filesProcessed} fichier(s)`,
         });
         
+        // Attendre un peu pour s'assurer que la BDD est bien synchronisée
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
         // Rafraîchir les données
         await refreshAll();
+        await loadPlayers();
       } else if (result.message !== 'Import cancelled') {
         addNotification({
           type: 'error',
@@ -176,16 +187,6 @@ export default function Header() {
                         </div>
                     </div>
                     <div className="overflow-y-auto flex-1">
-                        <div 
-                            className={`px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 flex items-center justify-between ${!heroName ? 'bg-primary-500/10 text-primary-400' : 'text-gray-300'}`}
-                            onClick={() => {
-                                setHeroName(null);
-                                setIsDropdownOpen(false);
-                            }}
-                        >
-                            <span>Aucun (Vue globale)</span>
-                            {!heroName && <div className="w-2 h-2 rounded-full bg-primary-500"></div>}
-                        </div>
                         {filteredPlayers.map(p => (
                             <div 
                                 key={p.id} 

@@ -32,44 +32,6 @@ public class Database
         }
 
         InitializeTables();
-        UpdateSchema();
-    }
-
-    private void UpdateSchema()
-    {
-        using var connection = new SqliteConnection(_connectionString);
-        connection.Open();
-
-        var columnsToAdd = new Dictionary<string, string>
-        {
-            { "hero_investment", "REAL DEFAULT 0" },
-            { "hero_profit", "REAL DEFAULT 0" },
-            { "hero_net_profit", "REAL DEFAULT 0" },
-            { "hero_all_in", "BOOLEAN DEFAULT 0" },
-            { "villain_all_in", "BOOLEAN DEFAULT 0" },
-            { "all_in_street", "TEXT" },
-            { "went_to_showdown", "BOOLEAN DEFAULT 0" },
-            { "player_count", "INTEGER DEFAULT 2" }
-        };
-
-        foreach (var col in columnsToAdd)
-        {
-            try
-            {
-                using var cmd = connection.CreateCommand();
-                cmd.CommandText = $"ALTER TABLE hands ADD COLUMN {col.Key} {col.Value}";
-                cmd.ExecuteNonQuery();
-                _logger.LogInformation($"Added missing column: {col.Key}");
-            }
-            catch (SqliteException ex) when (ex.Message.Contains("duplicate column name"))
-            {
-                // Column already exists, ignore
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning($"Failed to add column {col.Key}: {ex.Message}");
-            }
-        }
     }
 
     private void InitializeTables()
@@ -87,25 +49,10 @@ public class Database
             )";
         cmd.ExecuteNonQuery();
 
-        // Sessions table
-        cmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS sessions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                date TEXT NOT NULL,
-                room TEXT NOT NULL,
-                game_type TEXT NOT NULL,
-                hands_played INTEGER DEFAULT 0,
-                profit REAL DEFAULT 0,
-                ev_profit REAL DEFAULT 0,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            )";
-        cmd.ExecuteNonQuery();
-
         // Hands table
         cmd.CommandText = @"
             CREATE TABLE IF NOT EXISTS hands (
                 id TEXT PRIMARY KEY,
-                session_id INTEGER,
                 game_id TEXT,
                 hand_id TEXT,
                 room TEXT,
@@ -143,10 +90,7 @@ public class Database
                 all_in_street TEXT,
                 went_to_showdown BOOLEAN DEFAULT 0,
                 player_count INTEGER DEFAULT 2,
-                leak_detected TEXT,
-                error_type TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (session_id) REFERENCES sessions(id)
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )";
         cmd.ExecuteNonQuery();
 
@@ -227,8 +171,6 @@ public class Database
         cmd.ExecuteNonQuery();
 
         // Indexes
-        cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_session ON hands(session_id)";
-        cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_date ON hands(date_time)";
         cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_hero_position ON hands(hero_position)";
