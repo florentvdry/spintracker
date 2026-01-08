@@ -185,6 +185,29 @@ public class Database
             )";
         cmd.ExecuteNonQuery();
 
+        // Player Hands table (New)
+        cmd.CommandText = @"
+            CREATE TABLE IF NOT EXISTS player_hands (
+                hand_id TEXT,
+                player_name TEXT,
+                position TEXT,
+                stack INTEGER,
+                cards TEXT,
+                investment REAL DEFAULT 0,
+                chips_won REAL DEFAULT 0,
+                net_profit REAL DEFAULT 0,
+                is_hero BOOLEAN DEFAULT 0,
+                is_all_in BOOLEAN DEFAULT 0,
+                went_to_showdown BOOLEAN DEFAULT 0,
+                ev_chips REAL,
+                showdown_winning REAL,
+                non_showdown_winning REAL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (hand_id, player_name),
+                FOREIGN KEY (hand_id) REFERENCES hands(id)
+            )";
+        cmd.ExecuteNonQuery();
+
         // Leaks table
         cmd.CommandText = @"
             CREATE TABLE IF NOT EXISTS leaks (
@@ -217,6 +240,10 @@ public class Database
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_leaks_player ON leaks(player_id)";
         cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_analytics_hand ON hands_analytics(hand_id)";
+        cmd.ExecuteNonQuery();
+        cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_player_hands_hand ON player_hands(hand_id)";
+        cmd.ExecuteNonQuery();
+        cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_player_hands_player ON player_hands(player_name)";
         cmd.ExecuteNonQuery();
     }
 
@@ -295,6 +322,59 @@ public class Database
 
                     await cmd.ExecuteNonQueryAsync();
                     inserted++;
+
+                    // Insert Player Hands
+                    using var cmdPlayers = connection.CreateCommand();
+                    cmdPlayers.Transaction = transaction;
+                    cmdPlayers.CommandText = @"
+                        INSERT OR REPLACE INTO player_hands (
+                            hand_id, player_name, position, stack, cards, investment, 
+                            chips_won, net_profit, is_hero, is_all_in, went_to_showdown
+                        ) VALUES (
+                            @hand_id, @player_name, @position, @stack, @cards, @investment,
+                            @chips_won, @net_profit, @is_hero, @is_all_in, @went_to_showdown
+                        )";
+                    
+                    foreach(var p in hand.Players)
+                    {
+                        if (p.Name == "jmenfouu" && p.WentToShowdown)
+                        {
+                            _logger.LogWarning($"[DB Insert] jmenfouu went to showdown in hand {hand.Id}. Profit: {p.NetProfit}");
+                        }
+                        cmdPlayers.Parameters.Clear();
+                        cmdPlayers.Parameters.AddWithValue("@hand_id", hand.Id);
+                        cmdPlayers.Parameters.AddWithValue("@player_name", p.Name);
+                        cmdPlayers.Parameters.AddWithValue("@position", p.Position ?? "");
+                        cmdPlayers.Parameters.AddWithValue("@stack", p.Stack);
+                        cmdPlayers.Parameters.AddWithValue("@cards", p.Cards ?? "");
+                        cmdPlayers.Parameters.AddWithValue("@investment", p.Investment);
+                        cmdPlayers.Parameters.AddWithValue("@chips_won", p.ChipsWon);
+                        cmdPlayers.Parameters.AddWithValue("@net_profit", p.NetProfit);
+                        cmdPlayers.Parameters.AddWithValue("@is_hero", p.IsHero ? 1 : 0);
+                        cmdPlayers.Parameters.AddWithValue("@is_all_in", p.IsAllIn ? 1 : 0);
+                        cmdPlayers.Parameters.AddWithValue("@went_to_showdown", p.WentToShowdown ? 1 : 0);
+                        await cmdPlayers.ExecuteNonQueryAsync();
+                    }
+
+                    // Update Players Stats
+                    using var cmdUpdatePlayers = connection.CreateCommand();
+                    cmdUpdatePlayers.Transaction = transaction;
+                    cmdUpdatePlayers.CommandText = @"
+                        INSERT OR IGNORE INTO players (name, created_at, updated_at) VALUES (@name, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+                        UPDATE players 
+                        SET total_hands = total_hands + 1, 
+                            total_profit = total_profit + @profit,
+                            updated_at = CURRENT_TIMESTAMP
+                        WHERE name = @name;
+                    ";
+
+                    foreach(var p in hand.Players)
+                    {
+                        cmdUpdatePlayers.Parameters.Clear();
+                        cmdUpdatePlayers.Parameters.AddWithValue("@name", p.Name);
+                        cmdUpdatePlayers.Parameters.AddWithValue("@profit", p.NetProfit);
+                        await cmdUpdatePlayers.ExecuteNonQueryAsync();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -364,25 +444,32 @@ public class Database
 
     public async Task<object> GetHandsAsync(HandsQueryOptions options)
     {
-        _logger.LogInformation($"GetHandsAsync called with limit={options.Limit}, page={options.Page}");
+        _logger.LogInformation($"GetHandsAsync called with limit={options.Limit}, page={options.Page}, hero={options.HeroName}");
         try
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.OpenAsync();
-            _logger.LogInformation("Database connection opened successfully");
 
             var whereClauses = new List<string>();
             var parameters = new List<SqliteParameter>();
+            var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+            
+            if (!string.IsNullOrEmpty(options.HeroName))
+            {
+                joinClause += " JOIN player_hands ph ON h.id = ph.hand_id";
+                whereClauses.Add("ph.player_name = @heroName");
+                parameters.Add(new SqliteParameter("@heroName", options.HeroName));
+            }
 
             if (!string.IsNullOrEmpty(options.DateFrom))
             {
-                whereClauses.Add("date_time >= @dateFrom");
+                whereClauses.Add("h.date_time >= @dateFrom");
                 parameters.Add(new SqliteParameter("@dateFrom", options.DateFrom));
             }
 
             if (!string.IsNullOrEmpty(options.DateTo))
             {
-                whereClauses.Add("date_time <= @dateTo");
+                whereClauses.Add("h.date_time <= @dateTo");
                 parameters.Add(new SqliteParameter("@dateTo", options.DateTo));
             }
 
@@ -397,16 +484,20 @@ public class Database
                     whereClauses.Add("player_count >= 3");
                 }
 
-                // Extract actual position (SB, BB, BTN)
-                // "HU SB" -> "SB"
-                // "3W BTN" -> "BTN"
                 var parts = options.Position.Split(' ');
-                var pos = parts.Last(); // Assuming "SB" or "BTN" is always last
+                var pos = parts.Last(); 
                 
                 if (pos == "SB" || pos == "BB" || pos == "BTN")
                 {
-                    // Support "Hero (SB)" format in DB or just "SB"
-                    whereClauses.Add("(hero_position = @position OR hero_position LIKE @posLike)");
+                    if (!string.IsNullOrEmpty(options.HeroName))
+                    {
+                        // ph.position stores "SB", "BTN", "BTN SB" etc.
+                        whereClauses.Add("(ph.position = @position OR ph.position LIKE @posLike)");
+                    }
+                    else
+                    {
+                        whereClauses.Add("(hero_position = @position OR hero_position LIKE @posLike)");
+                    }
                     parameters.Add(new SqliteParameter("@position", pos));
                     parameters.Add(new SqliteParameter("@posLike", $"%({pos})%"));
                 }
@@ -432,67 +523,68 @@ public class Database
 
             if (!string.IsNullOrEmpty(options.Result))
             {
+                var profitCol = !string.IsNullOrEmpty(options.HeroName) ? "ph.net_profit" : "hero_profit";
                 if (options.Result.ToLower() == "won")
                 {
-                    whereClauses.Add("hero_profit > 0");
+                    whereClauses.Add($"{profitCol} > 0");
                 }
                 else if (options.Result.ToLower() == "lost")
                 {
-                    whereClauses.Add("hero_profit < 0");
+                    whereClauses.Add($"{profitCol} < 0");
                 }
             }
 
             var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
-            _logger.LogInformation($"Built where clause: {whereClause}");
 
             // Get total count
             using var countCmd = connection.CreateCommand();
-            countCmd.CommandText = $"SELECT COUNT(*) FROM hands {whereClause}";
+            countCmd.CommandText = $"SELECT COUNT(*) FROM hands h {joinClause} {whereClause}";
             foreach (var param in parameters)
             {
                 countCmd.Parameters.Add(new SqliteParameter(param.ParameterName, param.Value));
             }
             var total = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
-            _logger.LogInformation($"Total hands count: {total}");
 
-        // Get paginated hands
-        var offset = (options.Page - 1) * options.Limit;
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = $@"
-            SELECT h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river
-            FROM hands h
-            LEFT JOIN hands_analytics a ON h.id = a.hand_id
-            {whereClause}
-            ORDER BY h.date_time DESC
-            LIMIT @limit OFFSET @offset";
+            // Get paginated hands
+            var offset = (options.Page - 1) * options.Limit;
+            using var cmd = connection.CreateCommand();
+            
+            var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
+            if (!string.IsNullOrEmpty(options.HeroName))
+            {
+                selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
+            }
 
-        foreach (var param in parameters)
-        {
-            cmd.Parameters.Add(new SqliteParameter(param.ParameterName, param.Value));
-        }
-        cmd.Parameters.AddWithValue("@limit", options.Limit);
-        cmd.Parameters.AddWithValue("@offset", offset);
-        
-        _logger.LogInformation($"Executing query to fetch {options.Limit} hands at offset {offset}");
+            cmd.CommandText = $@"
+                SELECT {selectFields}
+                FROM hands h
+                {joinClause}
+                {whereClause}
+                ORDER BY h.date_time DESC
+                LIMIT @limit OFFSET @offset";
 
-        var hands = new List<object>();
-        using var reader = await cmd.ExecuteReaderAsync();
-        _logger.LogInformation("Query executed, reading results...");
-        while (await reader.ReadAsync())
-        {
-            _logger.LogInformation("Reading hand from reader...");
-            hands.Add(ReadHandFromReader(reader));
-        }
-        _logger.LogInformation($"Successfully read {hands.Count} hands");
+            foreach (var param in parameters)
+            {
+                cmd.Parameters.Add(new SqliteParameter(param.ParameterName, param.Value));
+            }
+            cmd.Parameters.AddWithValue("@limit", options.Limit);
+            cmd.Parameters.AddWithValue("@offset", offset);
 
-        return new
-        {
-            hands,
-            total,
-            page = options.Page,
-            limit = options.Limit,
-            pages = (int)Math.Ceiling(total / (double)options.Limit)
-        };
+            var hands = new List<object>();
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                hands.Add(ReadHandFromReader(reader));
+            }
+
+            return new
+            {
+                hands,
+                total,
+                page = options.Page,
+                limit = options.Limit,
+                pages = (int)Math.Ceiling(total / (double)options.Limit)
+            };
         }
         catch (Exception ex)
         {
@@ -523,20 +615,34 @@ public class Database
         return null;
     }
 
-    public async Task<object> GetDashboardStatsAsync()
+    public async Task<object> GetDashboardStatsAsync(string? heroName = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
+        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+        var profitCol = "hero_profit";
+        
+        if (!string.IsNullOrEmpty(heroName))
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            profitCol = "ph.net_profit";
+        }
+
         // 1. Basic stats from SQL (Hands Won, Total EV)
         using var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
+        cmd.CommandText = $@"
             SELECT 
                 COUNT(*) as total_hands,
-                SUM(CASE WHEN hero_profit > 0 THEN 1 ELSE 0 END) as hands_won,
+                SUM(CASE WHEN {profitCol} > 0 THEN 1 ELSE 0 END) as hands_won,
                 COALESCE(SUM(a.ev_chips), 0) as total_ev
             FROM hands h
-            LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+            {joinClause}";
+
+        if (!string.IsNullOrEmpty(heroName))
+        {
+            cmd.Parameters.AddWithValue("@heroName", heroName);
+        }
 
         int totalHands = 0;
         int handsWon = 0;
@@ -553,7 +659,7 @@ public class Database
         }
 
         // 2. Calculate Euro Profit and Sessions using the session logic
-        var sessions = await GetSessionsInternalAsync(null); 
+        var sessions = await GetSessionsInternalAsync(null, heroName); 
         
         double totalProfitEuro = sessions.Sum(s => s.Profit);
         
@@ -562,18 +668,6 @@ public class Database
         var startOfMonth = new DateTime(now.Year, now.Month, 1);
         int sessionsThisMonth = sessions.Count(s => s.StartTime >= startOfMonth);
 
-        // Calculate average multiplier and best win (optional, but requested to remove from UI, keeping calculation for API compatibility or future use if cheap)
-        // Actually user said "Retire ensuite le bloc...", so we don't need to display them, but keeping them in API response is fine.
-        // I'll leave them as 0 or calculate if easy. Best Win is easy.
-        // Best Win (Euro)
-        double bestWin = 0;
-        if (sessions.Count > 0)
-        {
-             // This is session best win? Or single game best win?
-             // Original was likely single hand or game. 
-             // I'll skip complex calc for now and return 0 as it's hidden.
-        }
-
         return new
         {
             total_hands = totalHands,
@@ -581,15 +675,14 @@ public class Database
             total_profit = totalProfitEuro,
             total_ev = totalEv,
             sessions_this_month = sessionsThisMonth,
-            avg_multiplier = 0.0, // Deprecated/Hidden
-            best_win = 0.0       // Deprecated/Hidden
+            avg_multiplier = 0.0,
+            best_win = 0.0
         };
     }
 
-    public async Task<List<object>> GetSessionHistoryAsync(int limit)
+    public async Task<List<object>> GetSessionHistoryAsync(int limit, string? heroName = null)
     {
-        var sessions = await GetSessionsInternalAsync(null); // Fetch all to sort and limit
-        // GetSessionsInternalAsync returns sorted DESC
+        var sessions = await GetSessionsInternalAsync(null, heroName); 
         
         return sessions.Take(limit).Select(s => (object)new {
             room = s.Room,
@@ -602,14 +695,29 @@ public class Database
 
     private record SessionInfo(DateTime StartTime, string Room, int Tournaments, int Hands, double Profit);
 
-    private async Task<List<SessionInfo>> GetSessionsInternalAsync(int? limit)
+    private async Task<List<SessionInfo>> GetSessionsInternalAsync(int? limit, string? heroName = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
         var cmd = connection.CreateCommand();
+        
+        var joinClause = "";
+        var profitCol = "hero_profit";
+        
+        if (!string.IsNullOrEmpty(heroName))
+        {
+            joinClause = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            profitCol = "ph.net_profit";
+            cmd.Parameters.AddWithValue("@heroName", heroName);
+        }
+
         // Fetch necessary columns to group sessions and calculate profit
-        cmd.CommandText = "SELECT date_time, room, game_id, buy_in, prize_pool, hero_profit, player_count FROM hands ORDER BY date_time ASC";
+        cmd.CommandText = $@"
+            SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, {profitCol}, h.player_count 
+            FROM hands h 
+            {joinClause}
+            ORDER BY h.date_time ASC";
         
         var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)>();
         using (var reader = await cmd.ExecuteReaderAsync())
@@ -753,6 +861,26 @@ public class Database
         var whereClauses = new List<string>();
         var parameters = new List<SqliteParameter>();
 
+        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+        var profitCol = "h.hero_profit";
+        var evCol = "COALESCE(a.net_won_adjusted, h.hero_profit)";
+        var showdownCondition = @"(COALESCE(h.showdown,'') != '' 
+                                  OR h.result LIKE '%*** SHOWDOWN ***%' 
+                                  OR h.result LIKE '%shows [%' 
+                                  OR h.result LIKE '%: [%'
+                                  OR (h.hero_all_in = 1 AND h.villain_all_in = 1))";
+
+        if (!string.IsNullOrEmpty(options.HeroName))
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            profitCol = "ph.net_profit";
+            // Use analytics (NetWonAdjusted) only if the selected player is the Hero of the hand.
+            // Otherwise (for villains), fallback to NetProfit.
+            evCol = "CASE WHEN ph.is_hero = 1 THEN COALESCE(a.net_won_adjusted, ph.net_profit) ELSE ph.net_profit END";
+            showdownCondition = "ph.went_to_showdown = 1";
+            parameters.Add(new SqliteParameter("@heroName", options.HeroName));
+        }
+
         if (!string.IsNullOrEmpty(options.DateFrom))
         {
             whereClauses.Add("h.date_time >= @dateFrom");
@@ -771,39 +899,29 @@ public class Database
         cmd.CommandText = $@"
             SELECT 
                 h.date_time,
-                SUM(h.hero_profit) OVER (ORDER BY h.date_time) as cumulative_profit,
+                SUM({profitCol}) OVER (ORDER BY h.date_time) as cumulative_profit,
                 SUM(
                     COALESCE(
-                        a.chips_won_showdown,
                         CASE 
-                            WHEN (COALESCE(h.showdown,'') != '' 
-                                  OR h.result LIKE '%*** SHOWDOWN ***%' 
-                                  OR h.result LIKE '%shows [%' 
-                                  OR h.result LIKE '%: [%'
-                                  OR (h.hero_all_in = 1 AND h.villain_all_in = 1))
-                            THEN h.hero_profit 
+                            WHEN {showdownCondition}
+                            THEN {profitCol} 
                             ELSE 0 
-                        END
+                        END, 0
                     )
                 ) OVER (ORDER BY h.date_time) as cumulative_showdown,
                 SUM(
                     COALESCE(
-                        a.chips_won_no_showdown,
                         CASE 
-                            WHEN NOT (COALESCE(h.showdown,'') != '' 
-                                      OR h.result LIKE '%*** SHOWDOWN ***%' 
-                                      OR h.result LIKE '%shows [%' 
-                                      OR h.result LIKE '%: [%'
-                                      OR (h.hero_all_in = 1 AND h.villain_all_in = 1))
-                            THEN h.hero_profit 
+                            WHEN NOT ({showdownCondition})
+                            THEN {profitCol} 
                             ELSE 0 
-                        END
+                        END, 0
                     )
                 ) OVER (ORDER BY h.date_time) as cumulative_no_showdown,
-                SUM(COALESCE(a.net_won_adjusted, h.hero_profit)) OVER (ORDER BY h.date_time) as cumulative_ev,
+                SUM({evCol}) OVER (ORDER BY h.date_time) as cumulative_ev,
                 ROW_NUMBER() OVER (ORDER BY h.date_time) as hand_number
             FROM hands h
-            LEFT JOIN hands_analytics a ON h.id = a.hand_id
+            {joinClause}
             {whereClause}
             ORDER BY h.date_time";
 
@@ -879,13 +997,27 @@ public class Database
         await connection.OpenAsync();
 
         using var cmd = connection.CreateCommand();
+        
+        var cardsCol = "hero_cards";
+        var profitCol = "hero_profit";
+        var joinClause = "";
+        
+        if (!string.IsNullOrEmpty(filters.HeroName))
+        {
+            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
+            cardsCol = "ph.cards";
+            profitCol = "ph.net_profit";
+            cmd.Parameters.AddWithValue("@heroName", filters.HeroName);
+        }
+
         // Fetch raw cards and profit, process in C# to normalize
-        cmd.CommandText = @"
+        cmd.CommandText = $@"
             SELECT 
-                hero_cards,
-                hero_profit
+                {cardsCol},
+                {profitCol}
             FROM hands
-            WHERE hero_cards IS NOT NULL AND hero_cards != ''";
+            {joinClause}
+            WHERE {cardsCol} IS NOT NULL AND {cardsCol} != ''";
 
         var heatmapData = new Dictionary<string, HeatmapEntry>();
 
@@ -1003,13 +1135,24 @@ public class Database
         return players;
     }
 
-    public async Task<List<ParsedHand>> GetAllHandsForAnalysisAsync()
+    public async Task<List<ParsedHand>> GetAllHandsForAnalysisAsync(string? heroName = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
         using var cmd = connection.CreateCommand();
-        cmd.CommandText = "SELECT * FROM hands ORDER BY date_time";
+        
+        var selectFields = "*";
+        var joinClause = "";
+        
+        if (!string.IsNullOrEmpty(heroName))
+        {
+            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
+            selectFields = "hands.*, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
+            cmd.Parameters.AddWithValue("@heroName", heroName);
+        }
+
+        cmd.CommandText = $"SELECT {selectFields} FROM hands {joinClause} ORDER BY date_time";
 
         var hands = new List<ParsedHand>();
         using var reader = await cmd.ExecuteReaderAsync();
@@ -1053,6 +1196,9 @@ public class Database
                 cmd.Transaction = transaction;
 
                 cmd.CommandText = "DELETE FROM hands_analytics";
+                await cmd.ExecuteNonQueryAsync();
+
+                cmd.CommandText = "DELETE FROM player_hands";
                 await cmd.ExecuteNonQueryAsync();
 
                 cmd.CommandText = "DELETE FROM leaks";
@@ -1109,9 +1255,9 @@ public class Database
                 blinds = GetStringOrNull(reader, "blinds"),
                 total_pot = GetDoubleOrNull(reader, "total_pot"),
                 rake = GetDoubleOrNull(reader, "rake"),
-                hero_position = GetStringOrNull(reader, "hero_position"),
+                hero_position = GetStringOrNull(reader, "dyn_hero_position") ?? GetStringOrNull(reader, "hero_position"),
                 hero_stack = GetInt32OrNull(reader, "hero_stack"),
-                hero_cards = GetStringOrNull(reader, "hero_cards"),
+                hero_cards = GetStringOrNull(reader, "dyn_hero_cards") ?? GetStringOrNull(reader, "hero_cards"),
                 villain_position = GetStringOrNull(reader, "villain_position"),
                 villain_stack = GetInt32OrNull(reader, "villain_stack"),
                 villain_cards = GetStringOrNull(reader, "villain_cards"),
@@ -1124,10 +1270,10 @@ public class Database
                 river_action = GetStringOrNull(reader, "river_action"),
                 showdown = GetStringOrNull(reader, "showdown"),
                 result = GetStringOrNull(reader, "result"),
-                hero_profit = GetDoubleOrNull(reader, "hero_profit"),
-                hero_all_in = GetBoolOrNull(reader, "hero_all_in"),
+                hero_profit = GetDoubleOrNull(reader, "dyn_hero_profit") ?? GetDoubleOrNull(reader, "hero_profit"),
+                hero_all_in = GetBoolOrNull(reader, "dyn_hero_all_in") ?? GetBoolOrNull(reader, "hero_all_in"),
                 villain_all_in = GetBoolOrNull(reader, "villain_all_in"),
-                went_to_showdown = GetBoolOrNull(reader, "went_to_showdown"),
+                went_to_showdown = GetBoolOrNull(reader, "dyn_went_to_showdown") ?? GetBoolOrNull(reader, "went_to_showdown"),
                 player_count = GetInt32OrNull(reader, "player_count"),
                 ev_chips = GetDoubleOrNull(reader, "ev_chips"),
                 equity_preflop = GetDoubleOrNull(reader, "equity_preflop"),
@@ -1164,9 +1310,9 @@ public class Database
             Blinds = GetStringOrNull(reader, "blinds"),
             TotalPot = GetDoubleOrNull(reader, "total_pot") ?? 0,
             Rake = GetDoubleOrNull(reader, "rake") ?? 0,
-            HeroPosition = GetStringOrNull(reader, "hero_position"),
+            HeroPosition = GetStringOrNull(reader, "dyn_hero_position") ?? GetStringOrNull(reader, "hero_position"),
             HeroStack = GetInt32OrNull(reader, "hero_stack") ?? 0,
-            HeroCards = GetStringOrNull(reader, "hero_cards"),
+            HeroCards = GetStringOrNull(reader, "dyn_hero_cards") ?? GetStringOrNull(reader, "hero_cards"),
             VillainPosition = GetStringOrNull(reader, "villain_position"),
             VillainStack = GetInt32OrNull(reader, "villain_stack") ?? 0,
             VillainCards = GetStringOrNull(reader, "villain_cards"),
@@ -1180,12 +1326,12 @@ public class Database
             Showdown = GetStringOrNull(reader, "showdown") ?? "",
             Result = GetStringOrNull(reader, "result") ?? "",
             HeroInvestment = GetDoubleOrNull(reader, "hero_investment") ?? 0,
-            HeroProfit = GetDoubleOrNull(reader, "hero_profit") ?? 0,
+            HeroProfit = GetDoubleOrNull(reader, "dyn_hero_profit") ?? GetDoubleOrNull(reader, "hero_profit") ?? 0,
             HeroNetProfit = GetDoubleOrNull(reader, "hero_net_profit") ?? 0,
-            HeroAllIn = GetBoolOrNull(reader, "hero_all_in") ?? false,
+            HeroAllIn = GetBoolOrNull(reader, "dyn_hero_all_in") ?? GetBoolOrNull(reader, "hero_all_in") ?? false,
             VillainAllIn = GetBoolOrNull(reader, "villain_all_in") ?? false,
             AllInStreet = GetStringOrNull(reader, "all_in_street"),
-            WentToShowdown = GetBoolOrNull(reader, "went_to_showdown") ?? false
+            WentToShowdown = GetBoolOrNull(reader, "dyn_went_to_showdown") ?? GetBoolOrNull(reader, "went_to_showdown") ?? false
         };
     }
 

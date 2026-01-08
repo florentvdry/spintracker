@@ -262,7 +262,8 @@ app.MapMethods("/db/hands", new[] { "GET", "POST" }, async (HttpContext context,
                 Page = int.TryParse(context.Request.Query["page"], out var p) ? p : 1,
                 Limit = int.TryParse(context.Request.Query["limit"], out var l) ? l : 50,
                 DateFrom = context.Request.Query["dateFrom"],
-                DateTo = context.Request.Query["dateTo"]
+                DateTo = context.Request.Query["dateTo"],
+                HeroName = context.Request.Query["heroName"]
             };
         }
 
@@ -297,11 +298,12 @@ app.MapGet("/db/hand/{handId}", async (string handId, Database db) =>
     }
 });
 
-app.MapGet("/db/dashboard-stats", async (Database db) =>
+app.MapGet("/db/dashboard-stats", async (HttpContext context, Database db) =>
 {
     try
     {
-        var stats = await db.GetDashboardStatsAsync();
+        var heroName = context.Request.Query["heroName"].ToString();
+        var stats = await db.GetDashboardStatsAsync(string.IsNullOrEmpty(heroName) ? null : heroName);
         return Results.Json(new { success = true, data = stats });
     }
     catch (Exception e)
@@ -316,19 +318,22 @@ app.MapMethods("/db/session-history", new[] { "GET", "POST" }, async (HttpContex
     try
     {
         var limit = 50;
+        string? heroName = null;
         if (context.Request.Method == "POST")
         {
             using var reader = new StreamReader(context.Request.Body);
             var body = await reader.ReadToEndAsync();
             var data = JsonSerializer.Deserialize<SessionHistoryRequest>(body, jsonOptions);
             limit = data?.Limit ?? 50;
+            heroName = data?.HeroName;
         }
         else
         {
             limit = int.TryParse(context.Request.Query["limit"], out var l) ? l : 50;
+            heroName = context.Request.Query["heroName"];
         }
 
-        var sessions = await db.GetSessionHistoryAsync(limit);
+        var sessions = await db.GetSessionHistoryAsync(limit, heroName);
         return Results.Json(new { success = true, data = sessions });
     }
     catch (Exception e)
@@ -354,7 +359,8 @@ app.MapMethods("/db/winrate-chart", new[] { "GET", "POST" }, async (HttpContext 
             options = new ChartQueryOptions
             {
                 DateFrom = context.Request.Query["dateFrom"],
-                DateTo = context.Request.Query["dateTo"]
+                DateTo = context.Request.Query["dateTo"],
+                HeroName = context.Request.Query["heroName"]
             };
         }
 
@@ -540,7 +546,13 @@ app.MapPost("/analyze/leaks", async (HttpContext context, Database db, AnalysisE
         var body = await reader.ReadToEndAsync();
         var data = JsonSerializer.Deserialize<AnalyzeLeaksRequest>(body, jsonOptions);
 
-        var hands = await db.GetAllHandsForAnalysisAsync();
+        string? heroName = null;
+        if (data?.Options != null && data.Options.ContainsKey("heroName"))
+        {
+            heroName = data.Options["heroName"]?.ToString();
+        }
+
+        var hands = await db.GetAllHandsForAnalysisAsync(heroName);
         var result = analysisEngine.DetectLeaks(hands, data?.Options ?? new Dictionary<string, object>());
 
         return Results.Json(new { success = true, data = result });
@@ -741,14 +753,19 @@ public record HandsQueryOptions
     public string? GameType { get; set; }
     public double? MinPot { get; set; }
     public double? MaxPot { get; set; }
+    public string? HeroName { get; set; }
 }
-public record SessionHistoryRequest(int Limit = 50);
+public record SessionHistoryRequest(int Limit = 50, string? HeroName = null);
 public record ChartQueryOptions
 {
     public string? DateFrom { get; set; }
     public string? DateTo { get; set; }
+    public string? HeroName { get; set; }
 }
-public record RangeHeatmapFilters { }
+public record RangeHeatmapFilters 
+{ 
+    public string? HeroName { get; set; }
+}
 public record PlayersQueryOptions
 {
     public int? Limit { get; set; }

@@ -84,18 +84,29 @@ function stopBackend() {
 async function callBackendAPI(endpoint, data = {}, method = 'POST') {
   try {
     const fetch = (await import('node-fetch')).default;
+    const AbortController = global.AbortController || (await import('abort-controller')).AbortController;
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
     const options = {
       method,
       headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal
     };
     
     if (method === 'POST') {
       options.body = JSON.stringify(data);
     }
     
-    const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}${endpoint}`, options);
-    return await response.json();
+    try {
+      const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}${endpoint}`, options);
+      return await response.json();
+    } finally {
+      clearTimeout(timeoutId);
+    }
   } catch (error) {
+    console.error(`API Call failed (${endpoint}):`, error.message);
     return { success: false, error: error.message };
   }
 }
@@ -274,12 +285,13 @@ ipcMain.handle('import-hand-history', async () => {
 
 // ============ IPC Handlers - Database Queries ============
 
-ipcMain.handle('get-dashboard-stats', async () => {
-  return callBackendAPI('/db/dashboard-stats', {}, 'GET');
+ipcMain.handle('get-dashboard-stats', async (event, heroName) => {
+  const query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
+  return callBackendAPI(`/db/dashboard-stats${query}`, {}, 'GET');
 });
 
-ipcMain.handle('get-session-history', async (event, limit = 50) => {
-  return callBackendAPI('/db/session-history', { limit });
+ipcMain.handle('get-session-history', async (event, limit = 50, heroName = null) => {
+  return callBackendAPI('/db/session-history', { limit, heroName });
 });
 
 ipcMain.handle('get-hand-details', async (event, handId) => {

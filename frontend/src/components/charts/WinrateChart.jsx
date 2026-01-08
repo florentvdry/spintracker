@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { ipcService } from '@services/ipcService';
+import { useAppStore } from '@stores/appStore';
 import { LoadingSpinner } from '@components/ui';
 import clsx from 'clsx';
 import * as echarts from 'echarts';
@@ -22,6 +23,7 @@ const LINE_LABELS = {
 
 export default function WinrateChart({ className }) {
   const chartRef = useRef(null);
+  const heroName = useAppStore(state => state.heroName);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState('all');
@@ -36,7 +38,7 @@ export default function WinrateChart({ className }) {
   const loadChartData = async () => {
     setIsLoading(true);
     try {
-      const result = await ipcService.getWinrateChartData({ period });
+      const result = await ipcService.getWinrateChartData({ period, heroName });
       if (result && result.success && result.data) {
         const raw = result.data;
         let chartData = [];
@@ -75,7 +77,7 @@ export default function WinrateChart({ className }) {
 
   useEffect(() => {
     loadChartData();
-  }, [period]);
+  }, [period, heroName]);
 
   // Suppression de l'effet takeGlobalCursor car il est capricieux et dépend de toolbox
   // On va utiliser brush pour un contrôle total
@@ -276,6 +278,15 @@ export default function WinrateChart({ className }) {
     return (
       <div className={clsx('flex items-center justify-center h-[500px]', className)}>
         <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className={clsx('flex flex-col items-center justify-center h-[500px] text-gray-400', className)}>
+        <p className="mb-2">Aucune donnée disponible pour le graphique</p>
+        <p className="text-sm opacity-70">Importez des mains pour voir votre progression</p>
       </div>
     );
   }

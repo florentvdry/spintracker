@@ -71,10 +71,14 @@ public class PlayerInfo
     public string Name { get; set; } = "";
     public double Stack { get; set; }
     public double Investment { get; set; }
+    public double ChipsWon { get; set; }
+    public double NetProfit { get; set; }
     public string Cards { get; set; } = "";
     public bool IsHero { get; set; }
     public bool Folded { get; set; }
     public bool IsAllIn { get; set; }
+    public string Position { get; set; } = "";
+    public bool WentToShowdown { get; set; }
 }
 
 public static class ParserFactory

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { ipcService } from '@services/ipcService';
+import { useAppStore } from './appStore';
 
 /**
  * Store pour l'historique des mains et les analyses
@@ -31,9 +32,11 @@ export const useHandsStore = create((set, get) => ({
     // Retry a few times to handle the backend not being ready on app startup
     for (let attempt = 0; attempt < 5; attempt++) {
       try {
+        const heroName = useAppStore.getState().heroName;
         const result = await ipcService.getHands({
           page: currentPage,
           limit: pageSize,
+          heroName,
           ...filters,
         });
 

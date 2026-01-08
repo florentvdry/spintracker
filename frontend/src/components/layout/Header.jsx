@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Upload, 
   RefreshCw, 
@@ -18,6 +18,36 @@ export default function Header() {
   const startProgress = useProgressStore(state => state.startProgress);
   const updateProgress = useProgressStore(state => state.updateProgress);
   const finishProgress = useProgressStore(state => state.finishProgress);
+  const [players, setPlayers] = useState([]);
+  const heroName = useAppStore(state => state.heroName);
+  const setHeroName = useAppStore(state => state.setHeroName);
+  const isInitialized = useAppStore(state => state.isInitialized);
+  const dashboardStats = useAppStore(state => state.dashboardStats);
+
+  const loadPlayers = async () => {
+      try {
+          const res = await ipcService.getPlayers({ limit: 500, minHands: 10 });
+          if (res.success) {
+              setPlayers(res.data);
+              
+              // Warning if we have hands but no players (legacy data)
+              if (res.data.length === 0 && dashboardStats?.total_hands > 0) {
+                  addNotification({
+                      type: 'warning',
+                      title: 'Mise à jour requise',
+                      message: 'Veuillez réimporter vos mains pour activer la sélection du Héro et les nouvelles statistiques.',
+                      duration: 10000
+                  });
+              }
+          }
+      } catch (e) {
+          console.error("Failed to load players", e);
+      }
+  };
+
+  useEffect(() => {
+    loadPlayers();
+  }, [isInitialized, dashboardStats]);
 
   const handleImport = async () => {
     // Écouter les mises à jour de progression
@@ -105,6 +135,21 @@ export default function Header() {
 
       {/* Actions */}
       <div className="flex items-center gap-3">
+        {/* Hero Selector */}
+        <div className="flex items-center gap-2 mr-2">
+            <span className="text-xs text-gray-400">Hero:</span>
+            <select
+                value={heroName || ''}
+                onChange={(e) => setHeroName(e.target.value || null)}
+                className="bg-dark-300 border border-dark-200 rounded px-2 py-1 text-xs text-gray-200 focus:outline-none focus:border-primary-500 max-w-[150px]"
+            >
+                <option value="">Auto (Default)</option>
+                {players.map(p => (
+                    <option key={p.id} value={p.name}>{p.name}</option>
+                ))}
+            </select>
+        </div>
+
         {/* Import button */}
         <button
           onClick={handleImport}

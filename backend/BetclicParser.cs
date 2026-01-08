@@ -9,6 +9,8 @@ public class BetclicParser : IHandParser
     public int ParserVersion => 3;
     private const string HandSeparator = "------------";
 
+    // private static int foldDebugCount = 0;
+
     public bool DetectFormat(string content)
     {
         return content.Contains("Site: Betclic") || content.Contains("*** HEADER ***");
@@ -247,7 +249,8 @@ public class BetclicParser : IHandParser
                             { 
                                 Name = name, 
                                 Stack = int.Parse(stack),
-                                IsHero = isHero
+                                IsHero = isHero,
+                                Position = ExtractPosition(positions)
                             });
 
                             if (isHero)
@@ -265,24 +268,34 @@ public class BetclicParser : IHandParser
                     }
                 }
                 // Global match for "PlayerName shows/mucks [XX XX]" or "Hero shows/mucks [XX XX]"
-                // Support optional timestamp prefix "HH:MM - "
                 var showMatch = Regex.Match(line, @"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+(?:shows|mucks)\s+\[(.*?)\]", RegexOptions.IgnoreCase);
-                // Match "PlayerName: [XX XX]" with optional timestamp prefix
                 var holeMatch = Regex.Match(line, @"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?):\s*\[(.+?)\]", RegexOptions.IgnoreCase);
+                var noShowMatch = Regex.Match(line, @"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+does not show", RegexOptions.IgnoreCase);
+                var summaryShowMatch = Regex.Match(line, @"Seat \d+: (.+?) .*showed \[(.+?)\]", RegexOptions.IgnoreCase);
                 
                 if (showMatch.Success)
                 {
                     var playerName = showMatch.Groups[1].Value.Trim();
                     var cards = showMatch.Groups[2].Value.Trim();
 
-                    // Any explicit show/muck sets showdown flag
                     hand.WentToShowdown = true;
                     showdownSectionEncountered = true;
+
+                    var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+                    if (pInfo != null) 
+                    {
+                        if (!string.IsNullOrEmpty(cards)) 
+                        {
+                            if (string.IsNullOrEmpty(pInfo.Cards))
+                                pInfo.Cards = cards;
+                            else if (!pInfo.Cards.Contains(cards))
+                                pInfo.Cards += "|" + cards;
+                        }
+                    }
 
                     if (IsHeroName(playerName))
                     {
                         hand.HeroCards = cards;
-                        hand.HeroWentToShowdown = true;
                     }
                     else if (!cards.Equals("none", StringComparison.OrdinalIgnoreCase) && !cards.Contains("folded", StringComparison.OrdinalIgnoreCase))
                     {
@@ -292,43 +305,119 @@ public class BetclicParser : IHandParser
                             hand.VillainCards += "|" + cards;
                     }
                 }
-                else if (holeMatch.Success)
+                else if (holeMatch.Success || summaryShowMatch.Success)
                 {
-                    var playerName = holeMatch.Groups[1].Value.Trim();
-                    var cards = holeMatch.Groups[2].Value.Trim();
+                    var match = holeMatch.Success ? holeMatch : summaryShowMatch;
+                    var playerName = match.Groups[1].Value.Trim();
+                    var cards = match.Groups[2].Value.Trim();
 
                     var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
-                    if (pInfo != null) pInfo.Cards = cards;
+                    if (pInfo != null) 
+                    {
+                        pInfo.Cards = cards;
+                        // If we are in SHOWDOWN section, or if cards are revealed, it counts as showdown participation
+                        if (currentSection == "SHOWDOWN" || currentSection == "SUMMARY") 
+                        {
+                            pInfo.WentToShowdown = true;
+                        }
+                    }
 
                     if (IsHeroName(playerName))
                     {
                         hand.HeroCards = cards;
-                        // Hero cards in SUMMARY section (like "Hero: [As Ad]") is a showdown.
-                        // Hero cards in HOLE_CARDS section is just the deal.
-                        if (currentSection != "HOLE_CARDS" && currentSection != "PLAYERS" && currentSection != "HEADER")
+                        if (summaryShowMatch.Success)
                         {
-                            hand.WentToShowdown = true;
-                            hand.HeroWentToShowdown = true;
-                            showdownSectionEncountered = true;
+                             hand.WentToShowdown = true;
+                             showdownSectionEncountered = true;
+                             if (pInfo != null) pInfo.WentToShowdown = true;
                         }
                     }
                     else if (!cards.Equals("none", StringComparison.OrdinalIgnoreCase) && !cards.Contains("folded", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Villain showing cards ALWAYS implies a showdown in Betclic HH
-                        hand.WentToShowdown = true;
-                        showdownSectionEncountered = true;
+                        if (summaryShowMatch.Success || currentSection == "SHOWDOWN")
+                        {
+                            hand.WentToShowdown = true;
+                            showdownSectionEncountered = true;
+                            if (pInfo != null) pInfo.WentToShowdown = true;
+                        }
+                        
                         if (string.IsNullOrEmpty(hand.VillainCards))
                             hand.VillainCards = cards;
                         else if (!hand.VillainCards.Contains(cards))
                             hand.VillainCards += "|" + cards;
                     }
+                }
+                else if (noShowMatch.Success)
+                {
+                    var playerName = noShowMatch.Groups[1].Value.Trim();
+                    hand.WentToShowdown = true;
+                    showdownSectionEncountered = true;
+                    
+                    var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+                    if (pInfo != null) 
+                    {
+                        pInfo.WentToShowdown = true;
+                    }
+                }
+
+                if (hand.HandId == "01KDZZZY2WYWA83GK1QF6VH1B6")
+                {
+                     // Console.WriteLine($"DEBUG TRACE: {line}");
                 }
 
                 // Parse actions
                 // Normalize action keyword detection (case-insensitive)
                 var lowerLine = line.ToLower();
+
+                if (line.IndexOf("folds", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    // Fallback: if Contains("folds") and it's an action line, try to parse it even if EndsWith fails
+                    if (!lowerLine.EndsWith("folds") && !lowerLine.Contains(" folds "))
+                    {
+                        // Check if it really is a fold action
+                        var foldMatch = Regex.Match(line, @"(?:^|:\s*)Folds\b", RegexOptions.IgnoreCase);
+                        if (foldMatch.Success)
+                        {
+                             // Console.WriteLine($"DEBUG REGEX FOLD RECOVERY: '{line}'");
+                             // Logic to extract name...
+                             var preFold = line.Substring(0, line.LastIndexOf("folds", StringComparison.OrdinalIgnoreCase)).Trim();
+                             if (preFold.EndsWith(":")) preFold = preFold.Substring(0, preFold.Length - 1).Trim();
+                             var dashIndex = preFold.LastIndexOf("- ");
+                             var pName = (dashIndex >= 0) ? preFold.Substring(dashIndex + 1).Trim() : preFold;
+                             
+                             var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(pName, StringComparison.OrdinalIgnoreCase));
+                             if (pInfo != null) pInfo.Folded = true;
+                        }
+                    }
+                }
+
                 if (lowerLine.Contains("posts") || lowerLine.Contains("raises") || lowerLine.Contains("calls") || lowerLine.Contains("bets") || lowerLine.Contains("folds") || lowerLine.Contains("checks") || lowerLine.Contains("all-in"))
                 {
+                    // Update Fold status
+                    if (lowerLine.EndsWith("folds") || lowerLine.Contains(" folds "))
+                    {
+                         // Format: "HH:MM:SS - PlayerName: Folds" or "PlayerName: Folds"
+                         var parts = line.Split(':');
+                         if (parts.Length >= 2)
+                         {
+                             // The part before the last colon usually contains the name
+                             // But be careful with timestamps containing colons
+                             // Strategy: Take the part before "Folds" (case insensitive)
+                             var preFold = line.Substring(0, line.LastIndexOf("folds", StringComparison.OrdinalIgnoreCase)).Trim();
+                             if (preFold.EndsWith(":")) preFold = preFold.Substring(0, preFold.Length - 1).Trim();
+                             
+                             // Remove timestamp if present "HH:MM:SS - "
+                             var dashIndex = preFold.LastIndexOf("- ");
+                             var pName = (dashIndex >= 0) ? preFold.Substring(dashIndex + 1).Trim() : preFold;
+
+                             var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(pName, StringComparison.OrdinalIgnoreCase));
+                             if (pInfo != null) 
+                             {
+                                 pInfo.Folded = true;
+                             }
+                         }
+                    }
+
                     if (currentSection == "PREFLOP")
                         actions["preflop"].Add(line);
                     else if (currentSection == "FLOP")
@@ -386,9 +475,17 @@ public class BetclicParser : IHandParser
                         double amount = double.Parse(amountStr, CultureInfo.InvariantCulture);
 
                         bool isHeroWin = IsHeroName(winner);
+
+                        var pWin = hand.Players.FirstOrDefault(x => x.Name.Equals(winner, StringComparison.OrdinalIgnoreCase));
+                        if (pWin == null && isHeroWin)
+                        {
+                            pWin = hand.Players.FirstOrDefault(x => x.IsHero);
+                        }
+
+                        if (pWin != null) pWin.ChipsWon += amount;
                         
-                        if (hand.HandId == "01KE07GK7BGA0VGNA694AB9XD1")
-                            Console.WriteLine($"[Parser Debug] PotWin: Winner='{winner}' Amount={amount} IsHero={isHeroWin} HeroName='{heroName}'");
+                        // if (hand.HandId == "01KE07GK7BGA0VGNA694AB9XD1")
+                        //    Console.WriteLine($"[Parser Debug] PotWin: Winner='{winner}' Amount={amount} IsHero={isHeroWin} HeroName='{heroName}'");
 
                         if (isHeroWin)
                         {
@@ -396,16 +493,19 @@ public class BetclicParser : IHandParser
                             heroWon = true;
                             heroHasPotRecorded = true;
                             
-                            if (showdownSectionEncountered || (hand.HeroAllIn && hand.VillainAllIn))
+                            if (showdownSectionEncountered || (pWin.IsAllIn && hand.Players.Any(p => p.Name != pWin.Name && p.IsAllIn)))
                             {
                                 hand.WentToShowdown = true;
-                                hand.HeroWentToShowdown = true;
+                                if (pWin != null) pWin.WentToShowdown = true;
                             }
                         }
                         else
                         {
-                            if (hand.HeroAllIn && hand.VillainAllIn)
+                            if (pWin != null && (showdownSectionEncountered || (pWin.IsAllIn && hand.Players.Any(p => p.Name != pWin.Name && p.IsAllIn))))
+                            {
                                 hand.WentToShowdown = true;
+                                pWin.WentToShowdown = true;
+                            }
                         }
                     }
 
@@ -419,15 +519,18 @@ public class BetclicParser : IHandParser
                     {
                         if (hand.TotalPot > 0)
                         {
+                            var pHero = hand.Players.FirstOrDefault(x => x.IsHero);
+                            if (pHero != null) pHero.ChipsWon += hand.TotalPot;
+
                             totalPotWon += hand.TotalPot;
                             heroWon = true;
                             heroHasPotRecorded = true;
                             
                             // If it's a "finished 1st" hand after an all-in, it's usually a showdown
-                            if (showdownSectionEncountered || hand.HeroAllIn || hand.VillainAllIn)
+                            if (showdownSectionEncountered || (pHero != null && pHero.IsAllIn && hand.Players.Any(p => p.Name != pHero.Name && p.IsAllIn)))
                             {
                                 hand.WentToShowdown = true;
-                                hand.HeroWentToShowdown = true;
+                                if (pHero != null) pHero.WentToShowdown = true;
                             }
                         }
                     }
@@ -464,6 +567,12 @@ public class BetclicParser : IHandParser
 
                 var pInfo = hand.Players.FirstOrDefault(x => x.Name == maxInvestor);
                 if (pInfo != null) pInfo.Investment -= excess;
+            }
+            
+            // Calculate Net Profit for all players
+            foreach (var p in hand.Players)
+            {
+                p.NetProfit = p.ChipsWon - p.Investment;
             }
             
             var heroInvestment = playerInvestments.GetValueOrDefault(heroName ?? "", 0.0);
@@ -521,6 +630,27 @@ public class BetclicParser : IHandParser
             {
                 // Last resort: hash of the hand text could be used, but for now use a timestamp-based id
                 hand.Id = Guid.NewGuid().ToString();
+            }
+
+            // Consolidate Showdown
+            if (showdownSectionEncountered)
+            {
+                hand.WentToShowdown = true;
+                foreach (var p in hand.Players)
+                {
+                    // If player hasn't folded, they went to showdown
+                    if (!p.Folded)
+                    {
+                        p.WentToShowdown = true;
+                    }
+                }
+                
+                // Update HeroWentToShowdown based on consolidated player info
+                var heroP = hand.Players.FirstOrDefault(p => p.IsHero);
+                if (heroP != null)
+                {
+                    hand.HeroWentToShowdown = heroP.WentToShowdown;
+                }
             }
 
             return hand;

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { ipcService } from '@services/ipcService';
+import { useAppStore } from '@stores/appStore';
 import { Card, LoadingSpinner } from '@components/ui';
 import { RangeHeatmap } from '@components/charts';
 
 export default function RangeAnalysis() {
+  const heroName = useAppStore(state => state.heroName);
   const [rangeData, setRangeData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -15,12 +17,12 @@ export default function RangeAnalysis() {
 
   useEffect(() => {
     loadRangeData();
-  }, [filters]);
+  }, [filters, heroName]);
 
   const loadRangeData = async () => {
     setIsLoading(true);
     try {
-      const result = await ipcService.getRangeHeatmap(filters);
+      const result = await ipcService.getRangeHeatmap({ ...filters, heroName });
       if (result.success) {
         setRangeData(result.data || {});
       }

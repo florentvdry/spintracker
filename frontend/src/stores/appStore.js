@@ -21,6 +21,11 @@ export const useAppStore = create((set, get) => ({
   },
 
   // Actions
+  setHeroName: (name) => {
+    set({ heroName: name });
+    get().refreshAll();
+  },
+
   initialize: async () => {
     if (get().isInitialized) return;
     
@@ -63,7 +68,8 @@ export const useAppStore = create((set, get) => ({
 
   loadDashboardStats: async () => {
     try {
-      const result = await ipcService.getDashboardStats();
+      const heroName = get().heroName;
+      const result = await ipcService.getDashboardStats(heroName);
       if (result.success) {
         const stats = result.data || {};
         // Coercer en nombre pour éviter les valeurs string/undefined
@@ -81,7 +87,8 @@ export const useAppStore = create((set, get) => ({
 
   loadSessions: async (limit = 50) => {
     try {
-      const result = await ipcService.getSessionHistory(limit);
+      const heroName = get().heroName;
+      const result = await ipcService.getSessionHistory(limit, heroName);
       if (result.success) {
         set({ sessions: result.data });
       }

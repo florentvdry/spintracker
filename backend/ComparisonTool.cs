@@ -108,10 +108,24 @@ public static class ComparisonTool
                 var analytics = analyticsCalc.CalculateHandAnalytics(localHand);
                 bool mismatch = false;
                 
-                // Compare Showdown
-                if (localHand.HeroWentToShowdown != pt4Hand.Showdown)
+                // Check if using pInfo makes a difference
+                 var heroP = localHand.Players.FirstOrDefault(p => p.IsHero || p.Name == "jmenfouu");
+                 bool heroWentToSd = heroP?.WentToShowdown ?? localHand.HeroWentToShowdown;
+                 
+                 if (localHand.HandId == "01KE0NSQZ45HD84BD9VFZPH4WP")
+                 {
+                     lock(lockObj) {
+                         Console.WriteLine($"DEBUG Comparison: Hand={localHand.HandId}");
+                         Console.WriteLine($"  heroP found? {heroP != null}");
+                         if (heroP != null) Console.WriteLine($"  heroP.WentToShowdown={heroP.WentToShowdown}");
+                         Console.WriteLine($"  localHand.HeroWentToShowdown={localHand.HeroWentToShowdown}");
+                     }
+                 }
+ 
+                 // Compare Showdown
+                if (heroWentToSd != pt4Hand.Showdown)
                 {
-                    lock(lockObj) Console.WriteLine($"[Mismatch Showdown] Hand {localHand.HandId}: Local={localHand.HeroWentToShowdown}, PT4={pt4Hand.Showdown}");
+                    lock(lockObj) Console.WriteLine($"[Mismatch Showdown] Hand {localHand.HandId}: Local={heroWentToSd}, PT4={pt4Hand.Showdown}");
                     mismatch = true;
                 }
                 
@@ -143,18 +157,12 @@ public static class ComparisonTool
                     if (mismatch)
                     {
                         mismatchCount++;
-                        if (Math.Abs(localEv - pt4Ev) > 1.0)
-                        {
-                            Console.WriteLine($"\n--- RAW LOCAL HAND {localHand.HandId} ---");
-                            Console.WriteLine(localHand.Result);
-                            Console.WriteLine("------------------------------------------");
-                        }
                     }
                     
                     totalLocalWon += localHand.HeroProfit;
                     totalPt4Won += pt4Hand.ChipsWon;
                     
-                    if (localHand.HeroWentToShowdown) 
+                    if (heroWentToSd) 
                     {
                         localShowdownCount++;
                         localShowdownWon += localHand.HeroProfit;
@@ -176,6 +184,90 @@ public static class ComparisonTool
         Console.WriteLine($"Local Showdown Won: {localShowdownWon:F2}, NoShowdown Won: {localNoShowdownWon:F2}");
         Console.WriteLine($"Total Local EV:  {totalLocalEv:F2}, PT4 EV:  {totalPt4Ev:F2}");
         Console.WriteLine($"Total Local Showdowns: {localShowdownCount}, PT4 Showdowns: {pt4ShowdownCount}");
+
+        // 4. Check SQLite DB Consistency
+        Console.WriteLine("\n--- Checking SQLite DB Consistency ---");
+        try
+        {
+            var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "poker_tracker.db");
+            var connStr = $"Data Source={dbPath}";
+            using var conn = new Microsoft.Data.Sqlite.SqliteConnection(connStr);
+            await conn.OpenAsync();
+            
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                SELECT 
+                    SUM(ph.net_profit) as total_profit,
+                    SUM(CASE WHEN ph.went_to_showdown = 1 THEN ph.net_profit ELSE 0 END) as showdown_profit,
+                    SUM(CASE WHEN ph.went_to_showdown = 0 THEN ph.net_profit ELSE 0 END) as no_showdown_profit,
+                    SUM(CASE WHEN ph.is_hero = 1 THEN COALESCE(a.net_won_adjusted, ph.net_profit) ELSE ph.net_profit END) as total_ev,
+                    COUNT(*) as total_hands
+                FROM player_hands ph
+                LEFT JOIN hands_analytics a ON ph.hand_id = a.hand_id
+                WHERE ph.player_name = 'jmenfouu'";
+            
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                var dbProfit = reader.IsDBNull(0) ? 0 : reader.GetDouble(0);
+                var dbShowdown = reader.IsDBNull(1) ? 0 : reader.GetDouble(1);
+                var dbNoShowdown = reader.IsDBNull(2) ? 0 : reader.GetDouble(2);
+                var dbEv = reader.IsDBNull(3) ? 0 : reader.GetDouble(3);
+                var dbCount = reader.GetInt32(4);
+
+                Console.WriteLine($"SQLite DB Stats for 'jmenfouu':");
+                Console.WriteLine($"Total Hands: {dbCount}");
+                Console.WriteLine($"Total Profit: {dbProfit:F2} (Local Parsed: {totalLocalWon:F2})");
+                Console.WriteLine($"Showdown: {dbShowdown:F2} (Local Parsed: {localShowdownWon:F2})");
+                Console.WriteLine($"No Showdown: {dbNoShowdown:F2} (Local Parsed: {localNoShowdownWon:F2})");
+                Console.WriteLine($"Total EV: {dbEv:F2} (Local Parsed: {totalLocalEv:F2})");
+
+                if (Math.Abs(dbProfit - totalLocalWon) > 1 || Math.Abs(dbShowdown - localShowdownWon) > 1)
+                {
+                    Console.WriteLine("CRITICAL: SQLite DB does not match Local Parsing! You must re-import hands.");
+                    
+                    // Find mismatches
+                    Console.WriteLine("\n--- Checking specific hands for mismatches ---");
+                    using var allCmd = conn.CreateCommand();
+                    allCmd.CommandText = "SELECT hand_id, went_to_showdown FROM player_hands WHERE player_name = 'jmenfouu'";
+                    var dbHands = new Dictionary<string, bool>();
+                    using var allReader = await allCmd.ExecuteReaderAsync();
+                    while (await allReader.ReadAsync())
+                    {
+                        var hid = allReader.GetString(0);
+                        var wtsd = allReader.GetInt32(1) == 1;
+                        dbHands[hid] = wtsd;
+                    }
+                    Console.WriteLine($"DB Loaded {dbHands.Count} hands for checking.");
+
+                    int misCount = 0;
+                    int checkedCount = 0;
+                    foreach (var lh in localHands)
+                    {
+                        if (lh.HeroName != "jmenfouu") continue;
+                        checkedCount++;
+                        if (dbHands.TryGetValue(lh.Id, out var dbWtsd))
+                        {
+                            if (lh.HeroWentToShowdown != dbWtsd)
+                            {
+                                Console.WriteLine($"Mismatch Hand {lh.Id}: Local={lh.HeroWentToShowdown}, DB={dbWtsd}");
+                                misCount++;
+                                if (misCount >= 5) break;
+                            }
+                        }
+                    }
+                    Console.WriteLine($"Checked {checkedCount} local hands against DB.");
+                }
+                else
+                {
+                    Console.WriteLine("SUCCESS: SQLite DB matches Local Parsing.");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking SQLite DB: {ex.Message}");
+        }
     }
 
     class Pt4HandData

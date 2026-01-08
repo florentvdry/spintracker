@@ -3,11 +3,13 @@ import { AlertTriangle, Play, Loader } from 'lucide-react';
 import { Card, EmptyState, LoadingSpinner } from '@components/ui';
 import { ipcService } from '@services/ipcService';
 import { pythonService } from '@services/pythonService';
+import { useAppStore } from '@stores/appStore';
 import { useNotificationStore } from '@stores/notificationStore';
 import LeaksList from './components/LeaksList';
 import LeakDetails from './components/LeakDetails';
 
 export default function LeakAnalysis() {
+  const heroName = useAppStore(state => state.heroName);
   const [leaks, setLeaks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -21,12 +23,12 @@ export default function LeakAnalysis() {
 
   useEffect(() => {
     loadLeaks();
-  }, []);
+  }, [heroName]);
 
   const loadLeaks = async () => {
     setIsLoading(true);
     try {
-      const result = await ipcService.analyzeLeaks(filters);
+      const result = await ipcService.analyzeLeaks({ ...filters, heroName });
       if (result.success) {
         // The backend returns { leaks: [], total: 0 }
         setLeaks(result.data?.leaks || []);
@@ -43,6 +45,7 @@ export default function LeakAnalysis() {
     try {
       const result = await pythonService.analyzeLeaks({
         fullRecalculation: true,
+        heroName
       });
       
       if (result.success) {

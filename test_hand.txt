@@ -1,0 +1,42 @@
+
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 2€
+Game ID: 01KDZZT15GZYZXK2S73BR1SKRA
+Prize pool: 4.00€
+Multiplier: x2
+Buy In: 2.00€
+Hand ID: 01KDZZZY2WYWA83GK1QF6VH1B6
+Date & Time: 2026-01-02 18:37:20 (UTC)
+Table ID: 01KDZZT15WRZQT5GB4NYZBXS24
+Blinds: 20/40
+Total Pot: 580
+Rake: 0
+*** PLAYERS ***
+Seat 1: maoskosto (640) [SB]
+Seat 2: neggers (290) [BB]
+Seat 3: jmenfouu (570) [BTN Hero]
+*** HOLE CARDS ***
+maoskosto: [Ac Tc]
+neggers: [9d 2h]
+jmenfouu: [5s Qh]
+*** PRE-FLOP ***
+18:37:20 - maoskosto: Posts SB 20
+18:37:20 - neggers: Posts BB 40
+18:37:23 - jmenfouu: Folds
+18:37:23 - maoskosto: Calls 20
+18:37:29 - neggers: Checks
+*** FLOP *** [4c Kd 2d]
+18:37:35 - maoskosto: Checks
+18:37:40 - neggers: Bets 250 and is all-in
+18:37:45 - maoskosto: Calls 250
+*** TURN *** [4c Kd 2d 4s]
+*** RIVER *** [4c Kd 2d 4s Jc]
+*** SHOWDOWN ***
+maoskosto shows [Ac Tc] (Pair) [4s 4c Ac Kd Jc]
+neggers shows [9d 2h] (Two Pair) [4s 4c 2h 2d Kd]
+*** SUMMARY ***
+neggers wins main pot of 580
