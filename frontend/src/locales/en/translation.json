@@ -1,0 +1,170 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "history": "History",
+    "leaks": "Leak Analysis",
+    "ranges": "Ranges",
+    "settings": "Settings"
+  },
+  "sidebar": {
+    "pro_edition": "Pro Edition",
+    "sqlite_local": "SQLite Local"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search...",
+    "no_data": "No data",
+    "refresh": "Refresh",
+    "import": "Import",
+    "date": "Date",
+    "position": "Position",
+    "result": "Result",
+    "won": "Won",
+    "lost": "Lost",
+    "details": "Details",
+    "cards": "Cards",
+    "chips": "Chips",
+    "profit": "Profit",
+    "hands": "Hands",
+    "tournaments": "Tournaments",
+    "sessions": "Sessions",
+    "player": "Player",
+    "hero": "Hero",
+    "retry": "Retry",
+    "all_read": "Mark all as read",
+    "clear_all": "Clear all",
+    "notifications": "Notifications",
+    "no_notifications": "No notifications"
+  },
+  "header": {
+    "search_placeholder": "Search hand, player...",
+    "select_hero": "Select...",
+    "hero_detected": "Hero detected",
+    "hero_selected_auto": "Player {{name}} was automatically selected.",
+    "update_required": "Update required",
+    "reimport_needed": "Please re-import your hands to enable Hero selection and new statistics.",
+    "import_hands": "Importing hands",
+    "calculating": "Calculating...",
+    "processing": "Processing...",
+    "import_success": "Import successful",
+    "import_stats": "{{hands}} hands imported from {{files}} file(s)",
+    "import_error": "Import error",
+    "data_refreshed": "Data refreshed",
+    "no_player_found": "No player found"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Overview of your performance",
+    "total_profit": "Total Profit",
+    "played_hands": "Hands Played",
+    "win_rate": "Win Rate",
+    "sessions_month": "Sessions this month",
+    "chip_evolution": "Chip Evolution",
+    "profit_ev": "Profit and EV",
+    "recent_sessions": "Recent Sessions",
+    "latest_games": "Latest games",
+    "no_hero": "No player selected",
+    "select_hero_prompt": "Please select a player or import hands",
+    "no_data_chart": "Import hands to see your winnings graph",
+    "no_sessions": "No sessions",
+    "select_hero_sessions": "Select a player to see their sessions",
+    "sessions_placeholder": "Your sessions will appear here"
+  },
+  "hand_history": {
+    "title": "Hand History",
+    "total_hands": "{{count}} hands total",
+    "from": "From",
+    "to": "To",
+    "more_filters": "More filters",
+    "page_info": "Page {{current}} of {{total}}",
+    "no_hands": "No hands",
+    "import_prompt": "Import history files to see your hands",
+    "hand_details": "Hand Details",
+    "select_prompt": "Select a hand to see details",
+    "table": {
+      "ev_chips": "EV Chips",
+      "pot": "Pot"
+    }
+  },
+  "leak_analysis": {
+    "title": "Leak Analysis",
+    "subtitle": "Identify and correct your game mistakes",
+    "run_analysis": "Run Analysis",
+    "analyzing": "Analyzing...",
+    "analysis_complete": "Analysis complete",
+    "leaks_detected": "{{count}} leaks detected",
+    "analysis_error": "Analysis error",
+    "critical": "Critical",
+    "major": "Major",
+    "minor": "Minor",
+    "detected_leaks": "Detected Leaks",
+    "errors_found": "{{count}} errors found",
+    "no_leaks": "No leaks detected",
+    "run_prompt": "Run an analysis to detect your game mistakes",
+    "select_prompt": "Select a leak to see details"
+  },
+  "range_analysis": {
+    "title": "Range Analysis",
+    "subtitle": "Visualize your playing frequencies by position",
+    "position": "Position",
+    "action": "Action",
+    "vs_position": "Vs Position",
+    "matrix": "Range Matrix",
+    "hand_details": "Hand Details",
+    "select_prompt": "Click a hand to see details",
+    "statistics": "Statistics",
+    "total_hands": "Total hands",
+    "unique_hands": "Unique hands",
+    "frequency": "Frequency",
+    "occurrences": "Occurrences"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Application configuration",
+    "general": {
+      "title": "General",
+      "language": "Language",
+      "language_desc": "Choose your preferred language"
+    },
+    "database": {
+      "title": "Database",
+      "subtitle": "Data management",
+      "recalc": {
+        "title": "Recalculate all stats",
+        "desc": "Recalculates equity for all hands (may take several minutes)",
+        "button": "Recalculate",
+        "button_loading": "In progress..."
+      },
+      "export": {
+        "title": "Export data",
+        "desc": "Download all your hands as ZIP (grouped by date)",
+        "button": "Export"
+      },
+      "delete": {
+        "title": "Delete all data",
+        "desc": "Permanently deletes all hands and stats",
+        "button": "Delete all"
+      }
+    },
+    "server": {
+      "title": "Server",
+      "subtitle": "Advanced equity calculations",
+      "status": {
+        "title": "Server status",
+        "desc": "The backend performs equity calculations in parallel",
+        "active": "Active",
+        "inactive": "Inactive"
+      }
+    },
+    "about": {
+      "title": "About",
+      "description": "Tracking and analysis application for Spin & Go poker"
+    }
+  }
+}

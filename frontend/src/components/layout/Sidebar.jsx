@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { 
   LayoutDashboard, 
   Users, 
@@ -11,16 +12,17 @@ import {
 import clsx from 'clsx';
 import logo from '../../assets/logo.png';
 
-const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Historique', href: '/hands', icon: History },
-  { name: 'Analyse Leaks', href: '/leaks', icon: AlertTriangle },
-  { name: 'Ranges', href: '/ranges', icon: Grid3X3 },
-  { name: 'Paramètres', href: '/settings', icon: Settings },
-];
-
 export default function Sidebar() {
+  const { t } = useTranslation();
   const location = useLocation();
+
+  const navigation = [
+    { name: t('navigation.dashboard'), href: '/', icon: LayoutDashboard },
+    { name: t('navigation.history'), href: '/hands', icon: History },
+    { name: t('navigation.leaks'), href: '/leaks', icon: AlertTriangle },
+    { name: t('navigation.ranges'), href: '/ranges', icon: Grid3X3 },
+    { name: t('navigation.settings'), href: '/settings', icon: Settings },
+  ];
 
   return (
     <aside className="w-64 bg-dark-400 border-r border-dark-100/30 flex flex-col">
@@ -30,7 +32,7 @@ export default function Sidebar() {
           <img src={logo} alt="Poker Tracker" className="w-10 h-10 object-contain" />
           <div>
             <h1 className="text-lg font-bold gradient-text">Poker Tracker</h1>
-            <span className="text-xs text-gray-500">Pro Edition</span>
+            <span className="text-xs text-gray-500">{t('sidebar.pro_edition')}</span>
           </div>
         </div>
       </div>
@@ -43,7 +45,7 @@ export default function Sidebar() {
           
           return (
             <NavLink
-              key={item.name}
+              key={item.href}
               to={item.href}
               className={clsx(
                 'nav-item',
@@ -61,7 +63,7 @@ export default function Sidebar() {
       <div className="p-4 border-t border-dark-100/30">
         <div className="flex items-center gap-3 text-sm text-gray-500">
           <Database className="w-4 h-4" />
-          <span>SQLite Local</span>
+          <span>{t('sidebar.sqlite_local')}</span>
         </div>
       </div>
     </aside>

@@ -7,8 +7,10 @@ import { useAppStore } from '@stores/appStore';
 import { useNotificationStore } from '@stores/notificationStore';
 import LeaksList from './components/LeaksList';
 import LeakDetails from './components/LeakDetails';
+import { useTranslation } from 'react-i18next';
 
 export default function LeakAnalysis() {
+  const { t } = useTranslation();
   const heroName = useAppStore(state => state.heroName);
   const [leaks, setLeaks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,14 +53,14 @@ export default function LeakAnalysis() {
       if (result.success) {
         addNotification({
           type: 'success',
-          title: 'Analyse terminée',
-          message: `${result.leaksFound || 0} leaks détectés`,
+          title: t('leak_analysis.analysis_complete'),
+          message: t('leak_analysis.leaks_detected', { count: result.leaksFound || 0 }),
         });
         await loadLeaks();
       } else {
         addNotification({
           type: 'error',
-          title: 'Erreur d\'analyse',
+          title: t('leak_analysis.analysis_error'),
           message: result.message,
         });
       }
@@ -89,9 +91,9 @@ export default function LeakAnalysis() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Analyse des Leaks</h1>
+          <h1 className="text-2xl font-bold text-white">{t('leak_analysis.title')}</h1>
           <p className="text-gray-400 mt-1">
-            Identifiez et corrigez vos erreurs de jeu
+            {t('leak_analysis.subtitle')}
           </p>
         </div>
         
@@ -105,7 +107,7 @@ export default function LeakAnalysis() {
           ) : (
             <Play className="w-4 h-4" />
           )}
-          {isAnalyzing ? 'Analyse en cours...' : 'Lancer l\'analyse'}
+          {isAnalyzing ? t('leak_analysis.analyzing') : t('leak_analysis.run_analysis')}
         </button>
       </div>
 
@@ -114,7 +116,7 @@ export default function LeakAnalysis() {
         <Card className="border-l-4 border-l-red-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Critiques</p>
+              <p className="text-sm text-gray-400">{t('leak_analysis.critical')}</p>
               <p className="text-2xl font-bold text-red-400">{severityStats.critical}</p>
             </div>
             <AlertTriangle className="w-8 h-8 text-red-500/30" />
@@ -124,7 +126,7 @@ export default function LeakAnalysis() {
         <Card className="border-l-4 border-l-yellow-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Majeurs</p>
+              <p className="text-sm text-gray-400">{t('leak_analysis.major')}</p>
               <p className="text-2xl font-bold text-yellow-400">{severityStats.major}</p>
             </div>
             <AlertTriangle className="w-8 h-8 text-yellow-500/30" />
@@ -134,7 +136,7 @@ export default function LeakAnalysis() {
         <Card className="border-l-4 border-l-blue-500">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-400">Mineurs</p>
+              <p className="text-sm text-gray-400">{t('leak_analysis.minor')}</p>
               <p className="text-2xl font-bold text-blue-400">{severityStats.minor}</p>
             </div>
             <AlertTriangle className="w-8 h-8 text-blue-500/30" />
@@ -147,8 +149,8 @@ export default function LeakAnalysis() {
         {/* Leaks list */}
         <div className="lg:col-span-2">
           <Card 
-            title="Leaks détectés" 
-            subtitle={`${leaks.length} erreurs trouvées`}
+            title={t('leak_analysis.detected_leaks')} 
+            subtitle={t('leak_analysis.errors_found', { count: leaks.length })}
             padding={false}
           >
             {isLoading ? (
@@ -164,8 +166,8 @@ export default function LeakAnalysis() {
             ) : (
               <EmptyState
                 icon={AlertTriangle}
-                title="Aucun leak détecté"
-                description="Lancez une analyse pour détecter vos erreurs de jeu"
+                title={t('leak_analysis.no_leaks')}
+                description={t('leak_analysis.run_prompt')}
               />
             )}
           </Card>
@@ -173,12 +175,12 @@ export default function LeakAnalysis() {
 
         {/* Leak details */}
         <div>
-          <Card title="Détails">
+          <Card title={t('common.details')}>
             {selectedLeak ? (
               <LeakDetails leak={selectedLeak} onClose={() => setSelectedLeak(null)} />
             ) : (
               <p className="text-gray-400 text-center py-8">
-                Sélectionnez un leak pour voir les détails
+                {t('leak_analysis.select_prompt')}
               </p>
             )}
           </Card>

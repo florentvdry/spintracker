@@ -11,8 +11,10 @@ import { useAppStore } from '@stores/appStore';
 import { StatCard, Card, EmptyState, LoadingPage } from '@components/ui';
 import { WinrateChart } from '@components/charts';
 import SessionList from './components/SessionList';
+import { useTranslation } from 'react-i18next';
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { isLoading, dashboardStats, sessions, loadDashboardStats, loadSessions, heroName } = useAppStore();
 
   useEffect(() => {
@@ -33,32 +35,32 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-gray-400 mt-1">Vue d'ensemble de vos performances</p>
+        <h1 className="text-2xl font-bold text-white">{t('dashboard.title')}</h1>
+        <p className="text-gray-400 mt-1">{t('dashboard.subtitle')}</p>
       </div>
 
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          label="Profit Total"
+          label={t('dashboard.total_profit')}
           value={stats.total_profit || 0}
           format="profit"
           icon={DollarSign}
         />
         <StatCard
-          label="Mains Jouées"
+          label={t('dashboard.played_hands')}
           value={stats.total_hands || 0}
           format="number"
           icon={Hash}
         />
         <StatCard
-          label="Taux de Victoire"
+          label={t('dashboard.win_rate')}
           value={winRate}
           format="percent"
           icon={Trophy}
         />
         <StatCard
-          label="Sessions ce mois"
+          label={t('dashboard.sessions_month')}
           value={stats.sessions_this_month || 0}
           format="number"
           icon={Zap}
@@ -69,8 +71,8 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main chart */}
         <Card 
-          title="Evolution des jetons" 
-          subtitle="Profit et EV"
+          title={t('dashboard.chip_evolution')} 
+          subtitle={t('dashboard.profit_ev')}
           className="lg:col-span-2 h-full"
         >
           {heroName && stats.total_hands > 0 ? (
@@ -78,16 +80,16 @@ export default function Dashboard() {
           ) : (
             <EmptyState
               icon={TrendingUp}
-              title={!heroName ? "Aucun joueur sélectionné" : "Aucune donnée"}
-              description={!heroName ? "Veuillez sélectionner un joueur ou importer des mains" : "Importez des mains pour voir votre courbe de gains"}
+              title={!heroName ? t('dashboard.no_hero') : t('dashboard.no_data')}
+              description={!heroName ? t('dashboard.select_hero_prompt') : t('dashboard.no_data_chart')}
             />
           )}
         </Card>
 
         {/* Recent sessions */}
         <Card 
-          title="Sessions Récentes"
-          subtitle="Dernières parties"
+          title={t('dashboard.recent_sessions')}
+          subtitle={t('dashboard.latest_games')}
           className="h-full flex flex-col"
         >
           {heroName ? (
@@ -95,8 +97,8 @@ export default function Dashboard() {
           ) : (
              <EmptyState
               icon={Zap}
-              title="Aucune session"
-              description="Sélectionnez un joueur pour voir ses sessions"
+              title={t('dashboard.no_sessions')}
+              description={t('dashboard.select_hero_sessions')}
             />
           )}
         </Card>

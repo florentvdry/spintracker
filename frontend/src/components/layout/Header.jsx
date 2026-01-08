@@ -14,8 +14,10 @@ import { useNotificationStore } from '@stores/notificationStore';
 import { useProgressStore } from '@stores/progressStore';
 import { ipcService } from '@services/ipcService';
 import { formatDate } from '@utils/formatters';
+import { useTranslation } from 'react-i18next';
 
 export default function Header() {
+  const { t } = useTranslation();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshAll = useAppStore(state => state.refreshAll);
   const addNotification = useNotificationStore(state => state.addNotification);
@@ -47,12 +49,12 @@ export default function Header() {
         setHeroName(best.name);
         addNotification({
             type: 'info',
-            title: 'Héro détecté',
-            message: `Le joueur ${best.name} a été sélectionné automatiquement.`,
+            title: t('header.hero_detected'),
+            message: t('header.hero_selected_auto', { name: best.name }),
             duration: 5000
         });
     }
-  }, [players, heroName, setHeroName, addNotification, dashboardStats]);
+  }, [players, heroName, setHeroName, addNotification, dashboardStats, t]);
 
   const loadPlayers = async () => {
       try {
@@ -65,8 +67,8 @@ export default function Header() {
               if (res.data.length === 0 && dashboardStats?.total_hands > 0) {
                   addNotification({
                       type: 'warning',
-                      title: 'Mise à jour requise',
-                      message: 'Veuillez réimporter vos mains pour activer la sélection du Héro et les nouvelles statistiques.',
+                      title: t('header.update_required'),
+                      message: t('header.reimport_needed'),
                       duration: 10000
                   });
               }
@@ -83,11 +85,11 @@ export default function Header() {
   const handleImport = async () => {
     // Écouter les mises à jour de progression
     const unsubscribe = ipcService.onImportProgress(({ percent, processed, total, speed, handsImported, totalHands, filesProcessed, totalFiles }) => {
-      const speedText = speed ? ` (${speed} mains/s)` : '';
+      const speedText = speed ? ` (${speed} ${t('common.hands')}/s)` : '';
       if (typeof handsImported === 'number' && typeof totalHands === 'number' && totalHands > 0) {
         updateProgress({
           progress: percent,
-          message: `${handsImported}/${totalHands} mains${speedText}`,
+          message: `${handsImported}/${totalHands} ${t('common.hands')}${speedText}`,
         });
       } else if (typeof filesProcessed === 'number' && typeof totalFiles === 'number') {
         updateProgress({
@@ -97,14 +99,14 @@ export default function Header() {
       } else {
         updateProgress({
           progress: percent,
-          message: `Traitement...`,
+          message: t('header.processing'),
         });
       }
     });
 
     startProgress({
-      title: 'Import des mains',
-      message: 'Calcul en cours...',
+      title: t('header.import_hands'),
+      message: t('header.calculating'),
     });
 
     try {
@@ -116,8 +118,8 @@ export default function Header() {
       if (result.success) {
         addNotification({
           type: 'success',
-          title: 'Import réussi',
-          message: `${result.handsImported} mains importées depuis ${result.filesProcessed} fichier(s)`,
+          title: t('header.import_success'),
+          message: t('header.import_stats', { hands: result.handsImported, files: result.filesProcessed }),
         });
         
         // Attendre un peu pour s'assurer que la BDD est bien synchronisée
@@ -129,7 +131,7 @@ export default function Header() {
       } else if (result.message !== 'Import cancelled') {
         addNotification({
           type: 'error',
-          title: 'Erreur d\'import',
+          title: t('header.import_error'),
           message: result.message,
         });
       }
@@ -138,7 +140,7 @@ export default function Header() {
       unsubscribe();
       addNotification({
         type: 'error',
-        title: 'Erreur',
+        title: t('common.error'),
         message: error.message,
       });
     }
@@ -150,7 +152,7 @@ export default function Header() {
     setIsRefreshing(false);
     addNotification({
       type: 'info',
-      message: 'Données actualisées',
+      message: t('header.data_refreshed'),
     });
   };
 
@@ -166,7 +168,7 @@ export default function Header() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input
             type="text"
-            placeholder="Rechercher une main, joueur..."
+            placeholder={t('header.search_placeholder')}
             className="input pl-10 py-2 text-sm"
           />
         </div>
@@ -181,7 +183,7 @@ export default function Header() {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
                 <span className="text-xs text-gray-400">Hero:</span>
-                <span className="text-sm text-gray-200 flex-1 truncate">{heroName || 'Sélectionner...'}</span>
+                <span className="text-sm text-gray-200 flex-1 truncate">{heroName || t('header.select_hero')}</span>
                 <ChevronDown className="w-4 h-4 text-gray-400" />
             </div>
 
@@ -192,7 +194,7 @@ export default function Header() {
                             <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500" />
                             <input 
                                 type="text" 
-                                placeholder="Rechercher..." 
+                                placeholder={t('common.search')} 
                                 className="w-full bg-dark-400 border border-dark-200 rounded pl-8 pr-2 py-1 text-xs text-gray-200 focus:outline-none focus:border-primary-500"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -213,14 +215,14 @@ export default function Header() {
                             >
                                 <div className="flex flex-col">
                                     <span className="font-medium">{p.name}</span>
-                                    <span className="text-xs text-gray-500">{p.total_hands} mains</span>
+                                    <span className="text-xs text-gray-500">{p.total_hands} {t('common.hands')}</span>
                                 </div>
                                 {heroName === p.name && <div className="w-2 h-2 rounded-full bg-primary-500"></div>}
                             </div>
                         ))}
                         {filteredPlayers.length === 0 && (
                             <div className="px-3 py-4 text-center text-xs text-gray-500">
-                                Aucun joueur trouvé
+                                {t('header.no_player_found')}
                             </div>
                         )}
                     </div>
@@ -239,7 +241,7 @@ export default function Header() {
           className="btn-primary flex items-center gap-2"
         >
           <Upload className="w-4 h-4" />
-          <span>Importer</span>
+          <span>{t('common.import')}</span>
         </button>
 
         {/* Refresh button */}
@@ -247,7 +249,7 @@ export default function Header() {
           onClick={handleRefresh}
           disabled={isRefreshing}
           className="btn-icon"
-          title="Actualiser"
+          title={t('common.refresh')}
         >
           <RefreshCw className={`w-5 h-5 ${isRefreshing ? 'animate-spin' : ''}`} />
         </button>
@@ -273,13 +275,13 @@ export default function Header() {
               <div className="absolute top-full mt-1 right-0 w-80 bg-dark-300 border border-dark-200 rounded shadow-xl z-50 flex flex-col max-h-[400px]">
                 {/* Header */}
                 <div className="p-3 border-b border-dark-200 flex items-center justify-between">
-                  <h3 className="font-medium text-gray-200">Notifications</h3>
+                  <h3 className="font-medium text-gray-200">{t('common.notifications')}</h3>
                   {unreadCount > 0 && (
                     <button 
                       onClick={markAllAsRead}
                       className="text-xs text-primary-400 hover:text-primary-300 flex items-center gap-1"
                     >
-                      <Check className="w-3 h-3" /> Tout lire
+                      <Check className="w-3 h-3" /> {t('common.all_read')}
                     </button>
                   )}
                 </div>
@@ -288,7 +290,7 @@ export default function Header() {
                 <div className="overflow-y-auto flex-1">
                   {history.length === 0 ? (
                     <div className="p-8 text-center text-gray-500 text-sm">
-                      Aucune notification
+                      {t('common.no_notifications')}
                     </div>
                   ) : (
                     history.map(item => (
@@ -323,7 +325,7 @@ export default function Header() {
                           <button
                             onClick={(e) => { e.stopPropagation(); removeHistoryItem(item.id); }}
                             className="p-1 hover:bg-dark-200 rounded text-gray-400 hover:text-red-400"
-                            title="Supprimer"
+                            title={t('common.delete')}
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -340,7 +342,7 @@ export default function Header() {
                       onClick={clearHistory}
                       className="w-full py-1.5 text-xs text-center text-gray-500 hover:text-gray-300 flex items-center justify-center gap-2"
                     >
-                      <Trash2 className="w-3 h-3" /> Tout effacer
+                      <Trash2 className="w-3 h-3" /> {t('common.clear_all')}
                     </button>
                   </div>
                 )}

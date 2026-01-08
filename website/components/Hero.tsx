@@ -2,10 +2,12 @@
 
 import { motion } from "framer-motion";
 import { Button } from "./ui/Button";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { ArrowRight, Download } from "lucide-react";
 
 export function Hero() {
+  const t = useTranslations('Hero');
   return (
     <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
       {/* Background Gradient */}
@@ -18,23 +20,23 @@ export function Hero() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
-            Master Your Poker Game <br className="hidden md:block" />
-            With Precision Data.
+            {t('title')} <br className="hidden md:block" />
+            {t('subtitle')}
           </h1>
           <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            The most advanced poker tracking software. Real-time HUD, deep analysis, and population tendencies at your fingertips.
+            {t('description')}
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/download">
               <Button size="lg" className="group">
                 <Download className="mr-2 h-5 w-5" />
-                Download for Free
+                {t('download_free')}
               </Button>
             </Link>
             <Link href="#features">
               <Button variant="secondary" size="lg" className="group">
-                Explore Features
+                {t('explore_features')}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>

@@ -1,18 +1,21 @@
 import clsx from 'clsx';
 import { formatDate, formatCards } from '../../../utils/formatters';
+import { useTranslation } from 'react-i18next';
 
 export default function HandsTable({ hands, onSelect, selectedId }) {
+  const { t } = useTranslation();
+
   return (
     <div className="table-container">
       <table className="table">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Cartes</th>
-            <th>Position</th>
-            <th className="text-right">EV Chips</th>
-            <th className="text-right">Pot</th>
-            <th className="text-right">Résultat</th>
+            <th>{t('common.date')}</th>
+            <th>{t('common.cards')}</th>
+            <th>{t('common.position')}</th>
+            <th className="text-right">{t('hand_history.table.ev_chips')}</th>
+            <th className="text-right">{t('hand_history.table.pot')}</th>
+            <th className="text-right">{t('common.result')}</th>
           </tr>
         </thead>
         <tbody>

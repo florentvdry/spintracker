@@ -26,6 +26,8 @@ public class Database
             using var cmd = connection.CreateCommand();
             cmd.CommandText = @"
                 PRAGMA journal_mode = WAL;
+                PRAGMA synchronous = NORMAL;
+                PRAGMA temp_store = MEMORY;
                 PRAGMA foreign_keys = ON;
             ";
             cmd.ExecuteNonQuery();

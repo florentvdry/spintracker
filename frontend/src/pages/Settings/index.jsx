@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Trash2, RefreshCw, Database, Calculator, Download, Upload } from 'lucide-react';
+import { Trash2, RefreshCw, Database, Calculator, Download, Upload, Globe } from 'lucide-react';
 import { Card } from '@components/ui';
 import { ipcService } from '@services/ipcService';
 import { pythonService } from '@services/pythonService';
 import { useNotificationStore } from '@stores/notificationStore';
 import { useAppStore } from '@stores/appStore';
 import { usePlayersStore } from '@stores/playersStore';
+import { useTranslation } from 'react-i18next';
 import logo from '../../assets/logo.png';
 
 export default function Settings() {
+  const { t, i18n } = useTranslation();
   const [isRecalculating, setIsRecalculating] = useState(false);
   const addNotification = useNotificationStore(state => state.addNotification);
   const refreshAll = useAppStore(state => state.refreshAll);
@@ -21,6 +23,10 @@ export default function Settings() {
     const interval = setInterval(checkStatus, 30000); // Check every 30s
     return () => clearInterval(interval);
   }, []);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
   const checkStatus = async () => {
     try {
@@ -99,17 +105,50 @@ export default function Settings() {
     <div className="space-y-6 max-w-4xl">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Paramètres</h1>
-        <p className="text-gray-400 mt-1">Configuration de l'application</p>
+        <h1 className="text-2xl font-bold text-white">{t('settings.title')}</h1>
+        <p className="text-gray-400 mt-1">{t('settings.subtitle')}</p>
       </div>
 
+      {/* General Section */}
+      <Card title={t('settings.general.title')}>
+        <SettingRow
+          icon={Globe}
+          title={t('settings.general.language')}
+          description={t('settings.general.language_desc')}
+          action={
+            <div className="flex bg-dark-200 rounded-lg p-1 border border-dark-100/50">
+              <button
+                onClick={() => changeLanguage('en')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  i18n.language.startsWith('en') 
+                    ? 'bg-blue-600 text-white shadow-lg' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                English
+              </button>
+              <button
+                onClick={() => changeLanguage('fr')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                  i18n.language.startsWith('fr') 
+                    ? 'bg-blue-600 text-white shadow-lg' 
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                Français
+              </button>
+            </div>
+          }
+        />
+      </Card>
+
       {/* Database section */}
-      <Card title="Base de données" subtitle="Gestion des données">
+      <Card title={t('settings.database.title')} subtitle={t('settings.database.subtitle')}>
         <div className="space-y-4">
           <SettingRow
             icon={Calculator}
-            title="Recalculer toutes les statistiques"
-            description="Recalcule l'équité de toutes les mains (peut prendre plusieurs minutes)"
+            title={t('settings.database.recalc.title')}
+            description={t('settings.database.recalc.desc')}
             action={
               <button
                 onClick={handleRecalculateEV}
@@ -117,15 +156,15 @@ export default function Settings() {
                 className="btn-secondary flex items-center gap-2"
               >
                 <RefreshCw className={`w-4 h-4 ${isRecalculating ? 'animate-spin' : ''}`} />
-                {isRecalculating ? 'En cours...' : 'Recalculer'}
+                {isRecalculating ? t('settings.database.recalc.button_loading') : t('settings.database.recalc.button')}
               </button>
             }
           />
 
           <SettingRow
             icon={Download}
-            title="Exporter les données"
-            description="Télécharger toutes vos mains au format ZIP (groupées par date)"
+            title={t('settings.database.export.title')}
+            description={t('settings.database.export.desc')}
             action={
               <button 
                 onClick={async () => {
@@ -147,22 +186,22 @@ export default function Settings() {
                 className="btn-secondary flex items-center gap-2"
               >
                 <Download className="w-4 h-4" />
-                Exporter
+                {t('settings.database.export.button')}
               </button>
             }
           />
 
           <SettingRow
             icon={Trash2}
-            title="Supprimer toutes les données"
-            description="Supprime définitivement toutes les mains et statistiques"
+            title={t('settings.database.delete.title')}
+            description={t('settings.database.delete.desc')}
             action={
               <button
                 onClick={handleDeleteAll}
                 className="btn-danger flex items-center gap-2"
               >
                 <Trash2 className="w-4 h-4" />
-                Supprimer tout
+                {t('settings.database.delete.button')}
               </button>
             }
           />
@@ -170,15 +209,15 @@ export default function Settings() {
       </Card>
 
       {/* Python backend */}
-      <Card title="Serveur" subtitle="Calculs d'équité avancés">
+      <Card title={t('settings.server.title')} subtitle={t('settings.server.subtitle')}>
         <div className="space-y-4">
           <SettingRow
             icon={Database}
-            title="État du serveur"
-            description="Le backend effectue les calculs d'équité en parallèle"
+            title={t('settings.server.status.title')}
+            description={t('settings.server.status.desc')}
             action={
               <span className={`badge ${serverStatus === 'active' ? 'badge-success' : 'badge-danger'}`}>
-                {serverStatus === 'active' ? 'Actif' : 'Inactif'}
+                {serverStatus === 'active' ? t('settings.server.status.active') : t('settings.server.status.inactive')}
               </span>
             }
           />
@@ -186,10 +225,10 @@ export default function Settings() {
       </Card>
 
       {/* About */}
-      <Card title="À propos">
+      <Card title={t('settings.about.title')}>
         <div className="space-y-2 text-sm text-gray-400">
           <p><span className="text-white">Poker Tracker Pro</span> v1.0.0</p>
-          <p>Application de suivi et d'analyse pour le poker Spin & Go</p>
+          <p>{t('settings.about.description')}</p>
         </div>
       </Card>
     </div>

@@ -9,7 +9,7 @@ public class ImporterService
     private readonly Database _db;
     private readonly AnalyticsCalculator _analyticsCalc;
     private readonly ILogger<ImporterService> _logger;
-    private const int BatchSize = 200; // Increased batch size for better throughput
+    private const int BatchSize = 1000; // Increased batch size for better throughput
 
     public ImporterService(Database db, AnalyticsCalculator analyticsCalc, ILogger<ImporterService> logger)
     {

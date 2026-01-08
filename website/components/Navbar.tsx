@@ -1,12 +1,15 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "./ui/Button";
 import { useState, useEffect } from "react";
 import { Menu, X, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function Navbar() {
+  const t = useTranslations('Navbar');
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -38,25 +41,29 @@ export function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <Link href="/#features" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-              Features
+              {t('features')}
             </Link>
             <Link href="/#screenshots" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-              Screenshots
+              {t('screenshots')}
             </Link>
             <Link href="/download">
               <Button variant="primary" size="sm" className="rounded-full px-6">
-                Download Now
+                {t('download')}
               </Button>
             </Link>
+            <LanguageSwitcher />
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-gray-400 hover:text-white"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X /> : <Menu />}
-          </button>
+          <div className="flex items-center space-x-4 md:hidden">
+            <LanguageSwitcher />
+            <button
+              className="p-2 text-gray-400 hover:text-white"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -69,17 +76,17 @@ export function Navbar() {
               className="block text-base font-medium text-gray-300 hover:text-white"
               onClick={() => setIsOpen(false)}
             >
-              Features
+              {t('features')}
             </Link>
             <Link
               href="/#screenshots"
               className="block text-base font-medium text-gray-300 hover:text-white"
               onClick={() => setIsOpen(false)}
             >
-              Screenshots
+              {t('screenshots')}
             </Link>
             <Link href="/download" onClick={() => setIsOpen(false)}>
-              <Button className="w-full mt-4">Download Now</Button>
+              <Button className="w-full mt-4">{t('download')}</Button>
             </Link>
           </div>
         </div>

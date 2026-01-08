@@ -1,0 +1,105 @@
+{
+  "Navbar": {
+    "features": "Features",
+    "screenshots": "Screenshots",
+    "download": "Download Now"
+  },
+  "Hero": {
+    "title": "Master Your Poker Game",
+    "subtitle": "With Precision Data.",
+    "description": "The most advanced poker tracking software. Range analysis, leak detection, and performance tracking at your fingertips.",
+    "download_free": "Download for Free",
+    "explore_features": "Explore Features"
+  },
+  "Features": {
+    "title": "Built for Professional Grinders",
+    "subtitle": "Everything you need to take your poker career to the next level.",
+    "items": {
+      "analytics": {
+        "title": "Advanced Analytics",
+        "description": "Deep dive into your game with customizable reports and interactive graphs."
+      },
+      "range": {
+        "title": "Range Analysis",
+        "description": "Visualize and analyze hand ranges to understand your strategy better."
+      },
+      "leaks": {
+        "title": "Leak Finder",
+        "description": "Automated analysis to identify and plug your biggest leaks instantly."
+      },
+      "performance": {
+        "title": "High Performance",
+        "description": "Optimized for large databases. Import millions of hands in minutes."
+      }
+    }
+  },
+  "Screenshots": {
+    "title": "See it in Action",
+    "subtitle": "A clean, intuitive interface designed to keep you focused on the action.",
+    "hud": {
+      "title": "Dynamic HUD",
+      "description": "Our HUD adapts to the game state, showing you only the relevant stats when you need them. Fully customizable via drag-and-drop editor.",
+      "list": {
+        "positional": "Positional stats",
+        "vs_hero": "Vs Hero stats",
+        "pot_odds": "Live pot odds"
+      },
+      "alt": "HUD Interface Screenshot"
+    },
+    "replayer": {
+      "title": "Interactive Replayer",
+      "description": "Review your sessions with our sleek hand replayer. Analyze every street, check equities, and take notes on opponents.",
+      "list": {
+        "equity": "Instant equity calculation",
+        "range": "Range visualizer"
+      },
+      "alt": "Hand Replayer Screenshot"
+    }
+  },
+  "Footer": {
+    "description": "Next-generation poker tracking software for professional players. Analyze, adapt, and crush the games.",
+    "product": "Product",
+    "support": "Support",
+    "legal": "Legal",
+    "links": {
+      "features": "Features",
+      "download": "Download",
+      "changelog": "Changelog",
+      "docs": "Documentation",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    },
+    "rights": "All rights reserved."
+  },
+  "Download": {
+    "title": "Download PokerTracker",
+    "subtitle": "Start your 30-day free trial today. No credit card required.",
+    "windows": {
+      "title": "Windows",
+      "requirements": "Windows 10 or later (64-bit)",
+      "button": "Download for Windows",
+      "info": "Version 1.0.0 • 145 MB"
+    },
+    "mac": {
+      "title": "macOS",
+      "status": "Coming Soon",
+      "button": "Not Available Yet",
+      "info": "Join waitlist for updates"
+    },
+    "requirements": {
+      "title": "System Requirements",
+      "min": "Minimum",
+      "rec": "Recommended",
+      "os_win": "OS: Windows 10 (64-bit)",
+      "os_win11": "OS: Windows 11 (64-bit)",
+      "cpu_i3": "Processor: Intel Core i3 or equivalent",
+      "cpu_i5": "Processor: Intel Core i5 or better",
+      "ram_4gb": "Memory: 4 GB RAM",
+      "ram_8gb": "Memory: 8 GB RAM",
+      "storage_500mb": "Storage: 500 MB available space",
+      "storage_ssd": "Storage: SSD with 1 GB available space"
+    }
+  }
+}

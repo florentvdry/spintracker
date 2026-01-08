@@ -1,0 +1,105 @@
+{
+  "Navbar": {
+    "features": "Fonctionnalités",
+    "screenshots": "Captures d'écran",
+    "download": "Télécharger"
+  },
+  "Hero": {
+    "title": "Maîtrisez Votre Jeu",
+    "subtitle": "Avec des Données Précises.",
+    "description": "Le logiciel de tracking de poker le plus avancé. Analyse de range, détection de fuites et suivi de performance à portée de main.",
+    "download_free": "Télécharger Gratuitement",
+    "explore_features": "Explorer les Fonctionnalités"
+  },
+  "Features": {
+    "title": "Conçu pour les Grinders Pros",
+    "subtitle": "Tout ce dont vous avez besoin pour passer au niveau supérieur.",
+    "items": {
+      "analytics": {
+        "title": "Analyses Avancées",
+        "description": "Plongez dans votre jeu avec des rapports personnalisables et des graphiques interactifs."
+      },
+      "range": {
+        "title": "Analyse de Range",
+        "description": "Visualisez et analysez vos ranges de mains pour mieux comprendre votre stratégie."
+      },
+      "leaks": {
+        "title": "Détecteur de Fuites",
+        "description": "Analyse automatisée pour identifier et combler vos plus grosses faiblesses instantanément."
+      },
+      "performance": {
+        "title": "Haute Performance",
+        "description": "Optimisé pour les grandes bases de données. Importez des millions de mains en quelques minutes."
+      }
+    }
+  },
+  "Screenshots": {
+    "title": "Voir en Action",
+    "subtitle": "Une interface propre et intuitive conçue pour vous garder concentré sur l'action.",
+    "hud": {
+      "title": "HUD Dynamique",
+      "description": "Notre HUD s'adapte à l'état du jeu, affichant uniquement les stats pertinentes quand vous en avez besoin. Entièrement personnalisable via un éditeur drag-and-drop.",
+      "list": {
+        "positional": "Stats positionnelles",
+        "vs_hero": "Stats Vs Hero",
+        "pot_odds": "Cotes du pot en direct"
+      },
+      "alt": "Capture d'écran de l'interface HUD"
+    },
+    "replayer": {
+      "title": "Replayer Interactif",
+      "description": "Revoyez vos sessions avec notre replayer élégant. Analysez chaque street, vérifiez les équités et prenez des notes sur vos adversaires.",
+      "list": {
+        "equity": "Calcul d'équité instantané",
+        "range": "Visualiseur de range"
+      },
+      "alt": "Capture d'écran du Replayer"
+    }
+  },
+  "Footer": {
+    "description": "Logiciel de tracking de poker nouvelle génération pour les joueurs professionnels. Analysez, adaptez-vous et écrasez les parties.",
+    "product": "Produit",
+    "support": "Support",
+    "legal": "Légal",
+    "links": {
+      "features": "Fonctionnalités",
+      "download": "Télécharger",
+      "changelog": "Journal des modifications",
+      "docs": "Documentation",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation"
+    },
+    "rights": "Tous droits réservés."
+  },
+  "Download": {
+    "title": "Télécharger PokerTracker",
+    "subtitle": "Commencez votre essai gratuit de 30 jours. Aucune carte de crédit requise.",
+    "windows": {
+      "title": "Windows",
+      "requirements": "Windows 10 ou ultérieur (64-bit)",
+      "button": "Télécharger pour Windows",
+      "info": "Version 1.0.0 • 145 Mo"
+    },
+    "mac": {
+      "title": "macOS",
+      "status": "Bientôt disponible",
+      "button": "Pas encore disponible",
+      "info": "Rejoignez la liste d'attente"
+    },
+    "requirements": {
+      "title": "Configuration Requise",
+      "min": "Minimum",
+      "rec": "Recommandée",
+      "os_win": "OS : Windows 10 (64-bit)",
+      "os_win11": "OS : Windows 11 (64-bit)",
+      "cpu_i3": "Processeur : Intel Core i3 ou équivalent",
+      "cpu_i5": "Processeur : Intel Core i5 ou supérieur",
+      "ram_4gb": "Mémoire : 4 Go RAM",
+      "ram_8gb": "Mémoire : 8 Go RAM",
+      "storage_500mb": "Stockage : 500 Mo d'espace libre",
+      "storage_ssd": "Stockage : SSD avec 1 Go d'espace libre"
+    }
+  }
+}

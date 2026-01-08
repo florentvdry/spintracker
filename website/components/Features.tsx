@@ -1,51 +1,44 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BarChart2, Shield, Zap, Users, Target, Database } from "lucide-react";
-
-const features = [
-  {
-    icon: BarChart2,
-    title: "Advanced Analytics",
-    description: "Deep dive into your game with customizable reports and interactive graphs.",
-  },
-  {
-    icon: Zap,
-    title: "Real-time HUD",
-    description: "Low-latency Heads-Up Display that works on all major poker sites seamlessly.",
-  },
-  {
-    icon: Users,
-    title: "Population Analysis",
-    description: "Understand field tendencies and exploit population imbalances effectively.",
-  },
-  {
-    icon: Shield,
-    title: "Anti-Cheat Detection",
-    description: "Built-in integrity tools to ensure fair play and detect bot-like behavior.",
-  },
-  {
-    icon: Target,
-    title: "Leak Finder",
-    description: "Automated analysis to identify and plug your biggest leaks instantly.",
-  },
-  {
-    icon: Database,
-    title: "High Performance",
-    description: "Optimized for large databases. Import millions of hands in minutes.",
-  },
-];
+import { BarChart2, Users, Target, Database } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function Features() {
+  const t = useTranslations('Features');
+
+  const features = [
+    {
+      icon: BarChart2,
+      title: t('items.analytics.title'),
+      description: t('items.analytics.description'),
+    },
+    {
+      icon: Users,
+      title: t('items.range.title'),
+      description: t('items.range.description'),
+    },
+    {
+      icon: Target,
+      title: t('items.leaks.title'),
+      description: t('items.leaks.description'),
+    },
+    {
+      icon: Database,
+      title: t('items.performance.title'),
+      description: t('items.performance.description'),
+    },
+  ];
+
   return (
     <section id="features" className="py-20 md:py-32 bg-black relative">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-            Built for Professional Grinders
+            {t('title')}
           </h2>
           <p className="text-gray-400 text-lg">
-            Everything you need to take your poker career to the next level.
+            {t('subtitle')}
           </p>
         </div>
 

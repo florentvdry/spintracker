@@ -1,0 +1,170 @@
+{
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "history": "Historique",
+    "leaks": "Analyse de fuites",
+    "ranges": "Ranges",
+    "settings": "Paramètres"
+  },
+  "sidebar": {
+    "pro_edition": "Édition Pro",
+    "sqlite_local": "SQLite Local"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "search": "Rechercher...",
+    "no_data": "Aucune donnée",
+    "refresh": "Actualiser",
+    "import": "Importer",
+    "date": "Date",
+    "position": "Position",
+    "result": "Résultat",
+    "won": "Gagné",
+    "lost": "Perdu",
+    "details": "Détails",
+    "cards": "Cartes",
+    "chips": "Jetons",
+    "profit": "Profit",
+    "hands": "Mains",
+    "tournaments": "Tournois",
+    "sessions": "Sessions",
+    "player": "Joueur",
+    "hero": "Héro",
+    "retry": "Réessayer",
+    "all_read": "Tout lire",
+    "clear_all": "Tout effacer",
+    "notifications": "Notifications",
+    "no_notifications": "Aucune notification"
+  },
+  "header": {
+    "search_placeholder": "Rechercher une main, joueur...",
+    "select_hero": "Sélectionner...",
+    "hero_detected": "Héro détecté",
+    "hero_selected_auto": "Le joueur {{name}} a été sélectionné automatiquement.",
+    "update_required": "Mise à jour requise",
+    "reimport_needed": "Veuillez réimporter vos mains pour activer la sélection du Héro et les nouvelles statistiques.",
+    "import_hands": "Import des mains",
+    "calculating": "Calcul en cours...",
+    "processing": "Traitement...",
+    "import_success": "Import réussi",
+    "import_stats": "{{hands}} mains importées depuis {{files}} fichier(s)",
+    "import_error": "Erreur d'import",
+    "data_refreshed": "Données actualisées",
+    "no_player_found": "Aucun joueur trouvé"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Vue d'ensemble de vos performances",
+    "total_profit": "Profit Total",
+    "played_hands": "Mains Jouées",
+    "win_rate": "Taux de Victoire",
+    "sessions_month": "Sessions ce mois",
+    "chip_evolution": "Evolution des jetons",
+    "profit_ev": "Profit et EV",
+    "recent_sessions": "Sessions Récentes",
+    "latest_games": "Dernières parties",
+    "no_hero": "Aucun joueur sélectionné",
+    "select_hero_prompt": "Veuillez sélectionner un joueur ou importer des mains",
+    "no_data_chart": "Importez des mains pour voir votre courbe de gains",
+    "no_sessions": "Aucune session",
+    "select_hero_sessions": "Sélectionnez un joueur pour voir ses sessions",
+    "sessions_placeholder": "Vos sessions apparaîtront ici"
+  },
+  "hand_history": {
+    "title": "Historique des Mains",
+    "total_hands": "{{count}} mains au total",
+    "from": "Du",
+    "to": "Au",
+    "more_filters": "Plus de filtres",
+    "page_info": "Page {{current}} sur {{total}}",
+    "no_hands": "Aucune main",
+    "import_prompt": "Importez des fichiers d'historique pour voir vos mains",
+    "hand_details": "Détails de la main",
+    "select_prompt": "Sélectionnez une main pour voir les détails",
+    "table": {
+      "ev_chips": "EV Chips",
+      "pot": "Pot"
+    }
+  },
+  "leak_analysis": {
+    "title": "Analyse des Leaks",
+    "subtitle": "Identifiez et corrigez vos erreurs de jeu",
+    "run_analysis": "Lancer l'analyse",
+    "analyzing": "Analyse en cours...",
+    "analysis_complete": "Analyse terminée",
+    "leaks_detected": "{{count}} leaks détectés",
+    "analysis_error": "Erreur d'analyse",
+    "critical": "Critiques",
+    "major": "Majeurs",
+    "minor": "Mineurs",
+    "detected_leaks": "Leaks détectés",
+    "errors_found": "{{count}} erreurs trouvées",
+    "no_leaks": "Aucun leak détecté",
+    "run_prompt": "Lancez une analyse pour détecter vos erreurs de jeu",
+    "select_prompt": "Sélectionnez un leak pour voir les détails"
+  },
+  "range_analysis": {
+    "title": "Analyse des Ranges",
+    "subtitle": "Visualisez vos fréquences de jeu par position",
+    "position": "Position",
+    "action": "Action",
+    "vs_position": "Vs Position",
+    "matrix": "Matrice de Range",
+    "hand_details": "Détails de la main",
+    "select_prompt": "Cliquez sur une main pour voir les détails",
+    "statistics": "Statistiques",
+    "total_hands": "Total mains",
+    "unique_hands": "Mains différentes",
+    "frequency": "Fréquence",
+    "occurrences": "Occurrences"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Configuration de l'application",
+    "general": {
+      "title": "Général",
+      "language": "Langue",
+      "language_desc": "Choisissez votre langue préférée"
+    },
+    "database": {
+      "title": "Base de données",
+      "subtitle": "Gestion des données",
+      "recalc": {
+        "title": "Recalculer toutes les statistiques",
+        "desc": "Recalcule l'équité de toutes les mains (peut prendre plusieurs minutes)",
+        "button": "Recalculer",
+        "button_loading": "En cours..."
+      },
+      "export": {
+        "title": "Exporter les données",
+        "desc": "Télécharger toutes vos mains au format ZIP (groupées par date)",
+        "button": "Exporter"
+      },
+      "delete": {
+        "title": "Supprimer toutes les données",
+        "desc": "Supprime définitivement toutes les mains et statistiques",
+        "button": "Supprimer tout"
+      }
+    },
+    "server": {
+      "title": "Serveur",
+      "subtitle": "Calculs d'équité avancés",
+      "status": {
+        "title": "État du serveur",
+        "desc": "Le backend effectue les calculs d'équité en parallèle",
+        "active": "Actif",
+        "inactive": "Inactif"
+      }
+    },
+    "about": {
+      "title": "À propos",
+      "description": "Application de suivi et d'analyse pour le poker Spin & Go"
+    }
+  }
+}

@@ -5,8 +5,10 @@ import { useAppStore } from '@stores/appStore';
 import { Card, EmptyState, LoadingSpinner } from '@components/ui';
 import HandsTable from './components/HandsTable';
 import HandDetails from './components/HandDetails';
+import { useTranslation } from 'react-i18next';
 
 export default function HandHistory() {
+  const { t } = useTranslation();
   const heroName = useAppStore(state => state.heroName);
   const {
     hands,
@@ -33,9 +35,9 @@ export default function HandHistory() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Historique des Mains</h1>
+        <h1 className="text-2xl font-bold text-white">{t('hand_history.title')}</h1>
         <p className="text-gray-400 mt-1">
-          {totalHands.toLocaleString()} mains au total
+          {t('hand_history.total_hands', { count: totalHands.toLocaleString() })}
         </p>
       </div>
 
@@ -47,8 +49,9 @@ export default function HandHistory() {
             type="date"
             className="input w-40"
             onChange={(e) => setFilters({ dateFrom: e.target.value })}
+            placeholder={t('hand_history.from')}
           />
-          <span className="text-gray-500">à</span>
+          <span className="text-gray-500">{t('hand_history.to')}</span>
           <input
             type="date"
             className="input w-40"
@@ -61,7 +64,7 @@ export default function HandHistory() {
           value={filters.position || ''}
           onChange={(e) => setFilters({ position: e.target.value || null })}
         >
-          <option value="">Position</option>
+          <option value="">{t('common.position')}</option>
           <option value="HU SB">HU SB</option>
           <option value="HU BB">HU BB</option>
           <option value="3W BTN">3W BTN</option>
@@ -74,14 +77,14 @@ export default function HandHistory() {
           value={filters.result || ''}
           onChange={(e) => setFilters({ result: e.target.value || null })}
         >
-          <option value="">Résultat</option>
-          <option value="won">Gagné</option>
-          <option value="lost">Perdu</option>
+          <option value="">{t('common.result')}</option>
+          <option value="won">{t('common.won')}</option>
+          <option value="lost">{t('common.lost')}</option>
         </select>
 
         <button className="btn-secondary flex items-center gap-2">
           <Filter className="w-4 h-4" />
-          Plus de filtres
+          {t('hand_history.more_filters')}
         </button>
       </Card>
 
@@ -105,7 +108,7 @@ export default function HandHistory() {
                 {/* Pagination */}
                 <div className="flex items-center justify-between p-4 border-t border-dark-100/30">
                   <p className="text-sm text-gray-400">
-                    Page {currentPage} sur {totalPages}
+                    {t('hand_history.page_info', { current: currentPage, total: totalPages })}
                   </p>
                   <div className="flex items-center gap-2">
                     <button
@@ -127,8 +130,8 @@ export default function HandHistory() {
               </>
             ) : (
               <EmptyState
-                title="Aucune main"
-                description="Importez des fichiers d'historique pour voir vos mains"
+                title={t('hand_history.no_hands')}
+                description={t('hand_history.import_prompt')}
               />
             )}
           </Card>
@@ -136,12 +139,12 @@ export default function HandHistory() {
 
         {/* Hand details */}
         <div>
-          <Card title="Détails de la main">
+          <Card title={t('hand_history.hand_details')}>
             {selectedHand ? (
               <HandDetails hand={selectedHand} onClose={clearSelection} />
             ) : (
               <p className="text-gray-400 text-center py-8">
-                Sélectionnez une main pour voir les détails
+                {t('hand_history.select_prompt')}
               </p>
             )}
           </Card>

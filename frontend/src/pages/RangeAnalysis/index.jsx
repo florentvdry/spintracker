@@ -3,8 +3,10 @@ import { ipcService } from '@services/ipcService';
 import { useAppStore } from '@stores/appStore';
 import { Card, LoadingSpinner } from '@components/ui';
 import { RangeHeatmap } from '@components/charts';
+import { useTranslation } from 'react-i18next';
 
 export default function RangeAnalysis() {
+  const { t } = useTranslation();
   const heroName = useAppStore(state => state.heroName);
   const [rangeData, setRangeData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -41,16 +43,16 @@ export default function RangeAnalysis() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Analyse des Ranges</h1>
+        <h1 className="text-2xl font-bold text-white">{t('range_analysis.title')}</h1>
         <p className="text-gray-400 mt-1">
-          Visualisez vos fréquences de jeu par position
+          {t('range_analysis.subtitle')}
         </p>
       </div>
 
       {/* Filters */}
       <Card flat className="flex flex-wrap items-center gap-4">
         <div>
-          <label className="block text-sm text-gray-400 mb-1">Position</label>
+          <label className="block text-sm text-gray-400 mb-1">{t('range_analysis.position')}</label>
           <select
             className="select w-32"
             value={filters.position}
@@ -63,7 +65,7 @@ export default function RangeAnalysis() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-400 mb-1">Action</label>
+          <label className="block text-sm text-gray-400 mb-1">{t('range_analysis.action')}</label>
           <select
             className="select w-32"
             value={filters.action}
@@ -77,7 +79,7 @@ export default function RangeAnalysis() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-400 mb-1">Vs Position</label>
+          <label className="block text-sm text-gray-400 mb-1">{t('range_analysis.vs_position')}</label>
           <select
             className="select w-32"
             value={filters.vsPosition}
@@ -94,7 +96,7 @@ export default function RangeAnalysis() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Heatmap */}
         <div className="lg:col-span-2">
-          <Card title="Matrice de Range">
+          <Card title={t('range_analysis.matrix')}>
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
                 <LoadingSpinner />
@@ -113,7 +115,7 @@ export default function RangeAnalysis() {
 
         {/* Hand details */}
         <div className="space-y-4">
-          <Card title="Détails de la main">
+          <Card title={t('range_analysis.hand_details')}>
             {selectedHand ? (
               <div className="space-y-4">
                 <div className="text-center">
@@ -123,10 +125,10 @@ export default function RangeAnalysis() {
                 </div>
                 
                 <div className="space-y-2">
-                  <InfoRow label="Fréquence" value={`${selectedHand.frequency.toFixed(1)}%`} />
-                  <InfoRow label="Occurrences" value={selectedHand.count} />
+                  <InfoRow label={t('range_analysis.frequency')} value={`${selectedHand.frequency.toFixed(1)}%`} />
+                  <InfoRow label={t('range_analysis.occurrences')} value={selectedHand.count} />
                   <InfoRow 
-                    label="Profit" 
+                    label={t('common.profit')} 
                     value={`${selectedHand.profit >= 0 ? '+' : ''}${selectedHand.profit.toFixed(2)}€`}
                     valueClass={selectedHand.profit >= 0 ? 'profit-positive' : 'profit-negative'}
                   />
@@ -134,20 +136,20 @@ export default function RangeAnalysis() {
               </div>
             ) : (
               <p className="text-gray-400 text-center py-8">
-                Cliquez sur une main pour voir les détails
+                {t('range_analysis.select_prompt')}
               </p>
             )}
           </Card>
 
           {/* Stats */}
-          <Card title="Statistiques">
+          <Card title={t('range_analysis.statistics')}>
             <div className="space-y-2">
               <InfoRow 
-                label="Total mains" 
+                label={t('range_analysis.total_hands')} 
                 value={Object.values(rangeData).reduce((sum, h) => sum + (h.count || 0), 0)} 
               />
               <InfoRow 
-                label="Mains différentes" 
+                label={t('range_analysis.unique_hands')} 
                 value={Object.keys(rangeData).length} 
               />
             </div>

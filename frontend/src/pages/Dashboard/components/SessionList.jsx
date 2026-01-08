@@ -1,57 +1,51 @@
-import clsx from 'clsx';
-import { EmptyState } from '@components/ui';
-import { Calendar } from 'lucide-react';
+import { formatDate, formatCurrency } from '@utils/formatters';
+import { Calendar, Clock, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function SessionList({ sessions = [] }) {
-  if (sessions.length === 0) {
+  const { t } = useTranslation();
+
+  if (!sessions || sessions.length === 0) {
     return (
-      <EmptyState
-        icon={Calendar}
-        title="Aucune session"
-        description="Vos sessions apparaîtront ici"
-      />
+      <div className="flex-1 flex items-center justify-center text-gray-500 text-sm">
+        {t('dashboard.sessions_placeholder')}
+      </div>
     );
   }
 
   return (
-    <div className="space-y-2 flex-1 overflow-y-auto min-h-0 pr-2">
-      {sessions.map((session, index) => (
-        <SessionItem key={session.id || index} session={session} />
-      ))}
-    </div>
-  );
-}
+    <div className="flex-1 overflow-y-auto pr-2 space-y-3">
+      {sessions.map((session, index) => {
+        const isWin = session.profit > 0;
+        
+        return (
+          <div 
+            key={index}
+            className="p-3 bg-dark-300/50 rounded-lg border border-dark-200 hover:border-dark-100 transition-colors"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2 text-sm text-gray-300">
+                <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                <span>{formatDate(session.session_date)}</span>
+              </div>
+              <span className={`text-sm font-bold flex items-center gap-1 ${isWin ? 'text-green-400' : 'text-red-400'}`}>
+                {isWin ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                {formatCurrency(session.profit)}
+              </span>
+            </div>
 
-function SessionItem({ session }) {
-  const profitVal = session.profit;
-  const hasProfit = profitVal !== null && profitVal !== undefined && !Number.isNaN(Number(profitVal));
-  const numericProfit = hasProfit ? Number(profitVal) : 0;
-  const isPositive = hasProfit ? numericProfit >= 0 : false;
-  const formattedProfit = hasProfit ? `${numericProfit.toFixed(2)}€` : '—';
-  
-  // Date formatting
-  const dateObj = new Date(session.session_date);
-  const formattedDate = !isNaN(dateObj.getTime()) 
-    ? dateObj.toLocaleDateString('fr-FR', { 
-        day: '2-digit', 
-        month: 'long', 
-        year: 'numeric' 
-      })
-    : session.session_date;
-
-  return (
-    <div className="flex items-center justify-between p-3 bg-dark-200 rounded-lg hover:bg-dark-100 transition cursor-pointer">
-      <div>
-        <p className="text-white font-medium text-sm capitalize">{formattedDate}</p>
-        <p className="text-gray-400 text-xs">
-          {session.room} • {session.tournaments || 0} tournois • {session.hands_played} mains
-        </p>
-      </div>
-      <div className="text-right">
-        <p className={clsx('font-bold text-sm', isPositive ? 'profit-positive' : 'profit-negative')}>
-          {hasProfit && isPositive ? '+' : ''}{formattedProfit}
-        </p>
-      </div>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="flex items-center gap-1.5 text-gray-400">
+                <Clock className="w-3 h-3" />
+                <span>{session.tournaments || 0} {t('common.tournaments')}</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-gray-400 justify-end">
+                <span>{session.hands_played} {t('common.hands')}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

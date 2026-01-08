@@ -1,18 +1,18 @@
 {
   "name": "poker-tracker-pro",
   "version": "2.0.0",
-  "description": "Professional Poker Tracker with React UI, Python Backend, Leak Detection and EV Analysis",
+  "description": "Professional Poker Tracker with React UI, C# Backend, Leak Detection and EV Analysis",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dev": "concurrently \"npm run react:dev\" \"wait-on http://localhost:3000 && electron . --dev\"",
-    "build": "npm run react:build && electron-builder",
+    "build": "npm run react:build && npm run backend:build && electron-builder --win",
     "react:dev": "cd frontend && npm run dev",
     "react:build": "cd frontend && npm run build",
     "react:install": "cd frontend && npm install",
-    "python:install": "pip install -r backend/requirements.txt",
+    "backend:build": "cd backend && dotnet build -c Release",
     "postinstall": "npm run react:install",
-    "setup": "npm install && npm run react:install && npm run python:install"
+    "setup": "npm install && npm run react:install && npm run backend:build"
   },
   "keywords": [
     "poker",
@@ -20,7 +20,7 @@
     "spin-and-go",
     "electron",
     "react",
-    "python"
+    "csharp"
   ],
   "author": "",
   "license": "MIT",
