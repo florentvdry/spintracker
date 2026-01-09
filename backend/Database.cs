@@ -36,6 +36,90 @@ public class Database
         InitializeTables();
     }
 
+    // --- HUD Profiles CRUD ---
+
+    public async Task<List<Dictionary<string, object>>> GetHudProfilesAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var profiles = new List<Dictionary<string, object>>();
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "SELECT id, name, layout, is_active, created_at, updated_at FROM hud_profiles ORDER BY name";
+
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            var profile = new Dictionary<string, object>
+            {
+                ["id"] = reader.GetString(0),
+                ["name"] = reader.GetString(1),
+                ["layout"] = JsonSerializer.Deserialize<object>(reader.GetString(2)),
+                ["isActive"] = reader.GetBoolean(3),
+                ["createdAt"] = reader.GetDateTime(4),
+                ["updatedAt"] = reader.GetDateTime(5)
+            };
+            profiles.Add(profile);
+        }
+        return profiles;
+    }
+
+    public async Task SaveHudProfileAsync(string id, string name, object layout, bool isActive)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var transaction = connection.BeginTransaction();
+        try
+        {
+            using var cmd = connection.CreateCommand();
+            cmd.Transaction = transaction;
+
+            if (isActive)
+            {
+                // Deactivate others
+                cmd.CommandText = "UPDATE hud_profiles SET is_active = 0";
+                await cmd.ExecuteNonQueryAsync();
+            }
+
+            cmd.Parameters.Clear();
+            cmd.CommandText = @"
+                INSERT INTO hud_profiles (id, name, layout, is_active, updated_at)
+                VALUES (@id, @name, @layout, @isActive, CURRENT_TIMESTAMP)
+                ON CONFLICT(id) DO UPDATE SET
+                    name = excluded.name,
+                    layout = excluded.layout,
+                    is_active = excluded.is_active,
+                    updated_at = excluded.updated_at
+            ";
+
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@layout", JsonSerializer.Serialize(layout));
+            cmd.Parameters.AddWithValue("@isActive", isActive ? 1 : 0);
+
+            await cmd.ExecuteNonQueryAsync();
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task DeleteHudProfileAsync(string id)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "DELETE FROM hud_profiles WHERE id = @id";
+        cmd.Parameters.AddWithValue("@id", id);
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
     private void InitializeTables()
     {
         using var connection = new SqliteConnection(_connectionString);
@@ -188,6 +272,30 @@ public class Database
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_player_hands_hand ON player_hands(hand_id)";
         cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_player_hands_player ON player_hands(player_name)";
+        cmd.ExecuteNonQuery();
+
+        // Custom Stats table
+        cmd.CommandText = @"
+            CREATE TABLE IF NOT EXISTS custom_stats (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                description TEXT,
+                definition TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )";
+        cmd.ExecuteNonQuery();
+
+        // HUD Profiles table
+        cmd.CommandText = @"
+            CREATE TABLE IF NOT EXISTS hud_profiles (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                layout TEXT NOT NULL,
+                is_active BOOLEAN DEFAULT 0,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )";
         cmd.ExecuteNonQuery();
     }
 
@@ -1593,6 +1701,8 @@ public class Database
                             "raise" => "raises",
                             "call" => "calls",
                             "fold" => "folds",
+                            "allin" => "all-in",
+                            "all-in" => "all-in",
                             _ => action
                         };
                         whereClauses.Add($"h.{col} LIKE @actionLike");
@@ -1610,6 +1720,8 @@ public class Database
                     "raise" => "raises",
                     "call" => "calls",
                     "fold" => "folds",
+                    "allin" => "all-in",
+                    "all-in" => "all-in",
                     _ => action
                 };
                 whereClauses.Add($"(h.preflop_action LIKE @actionGlobal OR h.flop_action LIKE @actionGlobal OR h.turn_action LIKE @actionGlobal OR h.river_action LIKE @actionGlobal)");
@@ -1768,11 +1880,164 @@ public class Database
         if (!string.IsNullOrEmpty(heroName))
         {
             joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
-            selectFields = "hands.*, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
+            selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
             cmd.Parameters.AddWithValue("@heroName", heroName);
+        }
+        else
+        {
+            // Field Analysis: Get ALL players for each hand, treating each as a potential hero
+            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id";
+            selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
         }
 
         cmd.CommandText = $"SELECT {selectFields} FROM hands {joinClause} ORDER BY date_time";
+
+        var hands = new List<ParsedHand>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            hands.Add(ReadParsedHandFromReader(reader));
+        }
+
+        return hands;
+    }
+
+    public async Task<List<ParsedHand>> GetFilteredHandsForStatsAsync(AnalysisFilters filters)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var whereClauses = new List<string>();
+        var parameters = new List<SqliteParameter>();
+
+        var selectFields = "*";
+        var joinClause = "";
+        
+        if (!string.IsNullOrEmpty(filters.HeroName))
+        {
+            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
+            selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
+            parameters.Add(new SqliteParameter("@heroName", filters.HeroName));
+        }
+        else
+        {
+            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id";
+            selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
+        }
+
+        // Date Filters
+        if (!string.IsNullOrEmpty(filters.DateFrom))
+        {
+            whereClauses.Add("hands.date_time >= @dateFrom");
+            parameters.Add(new SqliteParameter("@dateFrom", filters.DateFrom));
+        }
+        if (!string.IsNullOrEmpty(filters.DateTo))
+        {
+            whereClauses.Add("hands.date_time <= @dateTo");
+            parameters.Add(new SqliteParameter("@dateTo", filters.DateTo));
+        }
+
+        // Position Filter
+        if (filters.Positions != null && filters.Positions.Length > 0)
+        {
+            var posConditions = new List<string>();
+            for (int i = 0; i < filters.Positions.Length; i++)
+            {
+                var p = filters.Positions[i];
+                var paramName = $"@pos{i}";
+                // Handle different position formats if needed, or strict match
+                if (!string.IsNullOrEmpty(filters.HeroName))
+                {
+                    posConditions.Add($"(ph.position = {paramName} OR ph.position LIKE {paramName} || ' %' OR ph.position LIKE '% ' || {paramName})");
+                }
+                else
+                {
+                    posConditions.Add($"(ph.position = {paramName} OR ph.position LIKE {paramName} || ' %' OR ph.position LIKE '% ' || {paramName})");
+                }
+                parameters.Add(new SqliteParameter(paramName, p));
+            }
+            whereClauses.Add($"({string.Join(" OR ", posConditions)})");
+        }
+
+        // Situation & Action Filters
+        if (!string.IsNullOrEmpty(filters.Situation))
+        {
+            var col = filters.Situation.ToLower() switch
+            {
+                "preflop" => "preflop_action",
+                "flop" => "flop_action",
+                "turn" => "turn_action",
+                "river" => "river_action",
+                _ => null
+            };
+
+            if (col != null)
+            {
+                if (!string.IsNullOrEmpty(filters.Action))
+                {
+                    var action = filters.Action.ToLower();
+                    var verb = action switch {
+                        "check" => "checks",
+                        "bet" => "bets",
+                        "raise" => "raises",
+                        "call" => "calls",
+                        "fold" => "folds",
+                        "allin" => "all-in",
+                        "all-in" => "all-in",
+                        _ => action
+                    };
+                    whereClauses.Add($"hands.{col} LIKE @actionLike");
+                    parameters.Add(new SqliteParameter("@actionLike", $"%{verb}%"));
+                }
+            }
+        }
+        else if (!string.IsNullOrEmpty(filters.Action))
+        {
+            var action = filters.Action.ToLower();
+            var verb = action switch {
+                "check" => "checks",
+                "bet" => "bets",
+                "raise" => "raises",
+                "call" => "calls",
+                "fold" => "folds",
+                "allin" => "all-in",
+                "all-in" => "all-in",
+                _ => action
+            };
+            whereClauses.Add($"(hands.preflop_action LIKE @actionGlobal OR hands.flop_action LIKE @actionGlobal OR hands.turn_action LIKE @actionGlobal OR hands.river_action LIKE @actionGlobal)");
+            parameters.Add(new SqliteParameter("@actionGlobal", $"%{verb}%"));
+        }
+
+        // Stack Filter
+        if (filters.MinStackBB.HasValue || filters.MaxStackBB.HasValue)
+        {
+            var stackCol = !string.IsNullOrEmpty(filters.HeroName) ? "ph.stack" : "hands.hero_stack";
+            
+            if (filters.MinStackBB.HasValue)
+            {
+                whereClauses.Add($"({stackCol} * 1.0 / CAST(substr(hands.blinds, instr(hands.blinds, '/') + 1) AS INTEGER)) >= @minStack");
+                parameters.Add(new SqliteParameter("@minStack", filters.MinStackBB.Value));
+            }
+            if (filters.MaxStackBB.HasValue)
+            {
+                whereClauses.Add($"({stackCol} * 1.0 / CAST(substr(hands.blinds, instr(hands.blinds, '/') + 1) AS INTEGER)) <= @maxStack");
+                parameters.Add(new SqliteParameter("@maxStack", filters.MaxStackBB.Value));
+            }
+        }
+
+        // Player Count Filter
+        if (filters.PlayerCount.HasValue)
+        {
+            whereClauses.Add("hands.player_count = @playerCount");
+            parameters.Add(new SqliteParameter("@playerCount", filters.PlayerCount.Value));
+        }
+
+        var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = $"SELECT {selectFields} FROM hands {joinClause} {whereClause} ORDER BY date_time";
+        
+        foreach (var p in parameters) cmd.Parameters.Add(p);
 
         var hands = new List<ParsedHand>();
         using var reader = await cmd.ExecuteReaderAsync();
@@ -1931,6 +2196,7 @@ public class Database
             TotalPot = GetDoubleOrNull(reader, "total_pot") ?? 0,
             Rake = GetDoubleOrNull(reader, "rake") ?? 0,
             HeroPosition = GetStringOrNull(reader, "dyn_hero_position") ?? GetStringOrNull(reader, "hero_position"),
+            HeroName = GetStringOrNull(reader, "dyn_hero_name"),
             HeroStack = GetInt32OrNull(reader, "hero_stack") ?? 0,
             HeroCards = GetStringOrNull(reader, "dyn_hero_cards") ?? GetStringOrNull(reader, "hero_cards"),
             VillainPosition = GetStringOrNull(reader, "villain_position"),
@@ -2009,5 +2275,94 @@ public class Database
             _logger.LogWarning($"Column '{columnName}' not found or error reading: {ex.Message}");
             return null;
         }
+    }
+
+    // --- Custom Stats CRUD ---
+
+    public async Task<List<Dictionary<string, object>>> GetCustomStatsAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var stats = new List<Dictionary<string, object>>();
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "SELECT id, name, description, definition, created_at, updated_at FROM custom_stats ORDER BY name";
+
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            var stat = new Dictionary<string, object>
+            {
+                ["id"] = reader.GetString(0),
+                ["name"] = reader.GetString(1),
+                ["description"] = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                ["definition"] = JsonSerializer.Deserialize<object>(reader.GetString(3)),
+                ["createdAt"] = reader.GetDateTime(4),
+                ["updatedAt"] = reader.GetDateTime(5)
+            };
+            stats.Add(stat);
+        }
+        return stats;
+    }
+
+    public async Task<Dictionary<string, object>?> GetCustomStatAsync(string id)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "SELECT id, name, description, definition, created_at, updated_at FROM custom_stats WHERE id = @id";
+        cmd.Parameters.AddWithValue("@id", id);
+
+        using var reader = await cmd.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
+        {
+            return new Dictionary<string, object>
+            {
+                ["id"] = reader.GetString(0),
+                ["name"] = reader.GetString(1),
+                ["description"] = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                ["definition"] = JsonSerializer.Deserialize<object>(reader.GetString(3)),
+                ["createdAt"] = reader.GetDateTime(4),
+                ["updatedAt"] = reader.GetDateTime(5)
+            };
+        }
+        return null;
+    }
+
+    public async Task SaveCustomStatAsync(string id, string name, string description, object definition)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+            INSERT INTO custom_stats (id, name, description, definition, updated_at)
+            VALUES (@id, @name, @description, @definition, CURRENT_TIMESTAMP)
+            ON CONFLICT(id) DO UPDATE SET
+                name = excluded.name,
+                description = excluded.description,
+                definition = excluded.definition,
+                updated_at = excluded.updated_at
+        ";
+
+        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.AddWithValue("@name", name);
+        cmd.Parameters.AddWithValue("@description", description ?? "");
+        cmd.Parameters.AddWithValue("@definition", JsonSerializer.Serialize(definition));
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task DeleteCustomStatAsync(string id)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "DELETE FROM custom_stats WHERE id = @id";
+        cmd.Parameters.AddWithValue("@id", id);
+
+        await cmd.ExecuteNonQueryAsync();
     }
 }

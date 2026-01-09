@@ -517,6 +517,10 @@ ipcMain.handle('python-analyze-range', async (event, params) => {
   return callBackendAPI('/analyze/range', params);
 });
 
+ipcMain.handle('stats-builder-evaluate', async (event, stat) => {
+  return callBackendAPI('/stats/builder/evaluate', stat);
+});
+
 // ============ IPC Handlers - Export ============
 
 ipcMain.handle('check-server-status', async () => {

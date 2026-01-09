@@ -29,6 +29,7 @@ public class BetclicParser : IHandParser
     private static readonly Regex SeatRegex = new(@"Seat (\d+): (.+?) \((\d+)\)(.*)", RegexOptions.Compiled);
     private static readonly Regex ShowMatchRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+(?:shows|mucks)\s+\[(.*?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex HoleMatchRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?):\s*\[(.+?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex DealtToRegex = new(@"^Dealt to (.+?) \[(.+?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex NoShowMatchRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+does not show", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex SummaryShowMatchRegex = new(@"Seat \d+: (.+?) .*showed \[(.+?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex PotWinRegex = new(@"^(.+?) wins .*?pot (?:of )?(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -328,8 +329,28 @@ public class BetclicParser : IHandParser
     {
         var showMatch = ShowMatchRegex.Match(line);
         var holeMatch = HoleMatchRegex.Match(line);
+        var dealtToMatch = DealtToRegex.Match(line);
         var noShowMatch = NoShowMatchRegex.Match(line);
         var summaryShowMatch = SummaryShowMatchRegex.Match(line);
+
+        if (dealtToMatch.Success)
+        {
+            var playerName = dealtToMatch.Groups[1].Value.Trim();
+            var cards = dealtToMatch.Groups[2].Value.Trim();
+
+            // This is definitely the Hero
+            hand.HeroName = playerName;
+            hand.HeroCards = cards;
+            
+            var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+            if (pInfo != null)
+            {
+                pInfo.IsHero = true;
+                pInfo.Cards = cards;
+            }
+
+            return true;
+        }
 
         if (showMatch.Success)
         {

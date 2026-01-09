@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using PokerTrackerBackend;
+using PokerTrackerBackend.StatsBuilder;
 
 // Initialize SQLite
 SQLitePCL.Batteries.Init();
@@ -30,6 +31,7 @@ builder.Services.AddSingleton<EquityCalculator>();
 builder.Services.AddSingleton<AnalyticsCalculator>();
 builder.Services.AddSingleton<AnalysisEngine>();
 builder.Services.AddSingleton<AnalysisService>();
+builder.Services.AddSingleton<StatsBuilderEngine>();
 builder.Services.AddSingleton<ImporterService>();
 
 var app = builder.Build();
@@ -591,6 +593,36 @@ app.MapPost("/analysis/hands", async (HttpContext context, AnalysisService analy
     }
 });
 
+app.MapPost("/stats/builder/evaluate", async (HttpContext context, Database db, StatsBuilderEngine engine) =>
+{
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        var stat = JsonSerializer.Deserialize<StatDefinition>(body, jsonOptions);
+
+        if (stat == null)
+        {
+             return Results.BadRequest(new { success = false, error = "Invalid definition" });
+        }
+
+        // 1. Get All Hands (or filtered subset if optimization needed)
+        // For now, fetch all hands to be safe, or maybe last 1000 for quick testing?
+        // Let's fetch all for accuracy, but warn about perf.
+        var hands = await db.GetAllHandsForAnalysisAsync();
+
+        // 2. Evaluate
+        var result = engine.Evaluate(hands, stat);
+
+        return Results.Json(new { success = true, data = result });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Stats Builder error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
 app.MapPost("/analyze/leaks", async (HttpContext context, Database db, AnalysisEngine analysisEngine) =>
 {
     try
@@ -789,6 +821,207 @@ var port = args.Length > 0 && int.TryParse(args[0], out var p) ? p : 5050;
 logger.LogInformation($"Starting C# backend on port {port}");
 logger.LogInformation("Available parsers: Betclic");
 
+
+// ============ Custom Stats Endpoints ============
+app.MapGet("/stats", async (Database db) =>
+{
+    try
+    {
+        var stats = await db.GetCustomStatsAsync();
+        return Results.Json(new { success = true, data = stats });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Get stats error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapGet("/stats/{id}", async (string id, Database db) =>
+{
+    try
+    {
+        var stat = await db.GetCustomStatAsync(id);
+        if (stat != null)
+        {
+            return Results.Json(new { success = true, data = stat });
+        }
+        return Results.NotFound(new { success = false, error = "Stat not found" });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Get stat error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapPost("/stats", async (HttpContext context, Database db) =>
+{
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        var data = JsonSerializer.Deserialize<CustomStatRequest>(body, jsonOptions);
+
+        if (data == null || string.IsNullOrEmpty(data.Name) || data.Definition == null)
+        {
+            return Results.BadRequest(new { success = false, error = "Name and Definition are required" });
+        }
+
+        var id = string.IsNullOrEmpty(data.Id) ? Guid.NewGuid().ToString() : data.Id;
+
+        await db.SaveCustomStatAsync(id, data.Name, data.Description ?? "", data.Definition);
+
+        return Results.Json(new { success = true, id });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Save stat error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapDelete("/stats/{id}", async (string id, Database db) =>
+{
+    try
+    {
+        await db.DeleteCustomStatAsync(id);
+        return Results.Json(new { success = true });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Delete stat error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapGet("/stats/export", async (Database db) =>
+{
+    try
+    {
+        var stats = await db.GetCustomStatsAsync();
+        return Results.Json(new { success = true, data = stats });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Export stats error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapPost("/stats/import", async (HttpContext context, Database db) =>
+{
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        var stats = JsonSerializer.Deserialize<List<CustomStatRequest>>(body, jsonOptions);
+
+        if (stats == null) return Results.BadRequest(new { success = false, error = "Invalid JSON" });
+
+        int count = 0;
+        foreach (var stat in stats)
+        {
+            var id = string.IsNullOrEmpty(stat.Id) ? Guid.NewGuid().ToString() : stat.Id;
+            await db.SaveCustomStatAsync(id, stat.Name, stat.Description ?? "", stat.Definition);
+            count++;
+        }
+
+        return Results.Json(new { success = true, count });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Import stats error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapPost("/stats/builder/evaluate-batch", async (HttpContext context, Database db, StatsBuilderEngine engine) =>
+{
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        
+        // Expecting: { stats: [StatDefinition], filters: AnalysisFilters }
+        var request = JsonSerializer.Deserialize<EvaluateBatchRequest>(body, jsonOptions);
+
+        if (request == null || request.Stats == null || request.Stats.Count == 0)
+        {
+             return Results.BadRequest(new { success = false, error = "Invalid request" });
+        }
+
+        // 1. Get Hands based on filters
+        var hands = await db.GetFilteredHandsForStatsAsync(request.Filters ?? new PokerTrackerBackend.AnalysisFilters());
+
+        // 2. Evaluate
+        var result = engine.EvaluateBatch(hands, request.Stats);
+
+        return Results.Json(new { success = true, data = result });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Batch Eval error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+// ============ HUD Profile Endpoints ============
+
+app.MapGet("/hud-profiles", async (Database db) =>
+{
+    try
+    {
+        var profiles = await db.GetHudProfilesAsync();
+        return Results.Json(new { success = true, data = profiles });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Get HUD profiles error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapPost("/hud-profiles", async (HttpContext context, Database db) =>
+{
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        var data = JsonSerializer.Deserialize<HudProfileRequest>(body, jsonOptions);
+
+        if (data == null || string.IsNullOrEmpty(data.Name) || data.Layout == null)
+        {
+            return Results.BadRequest(new { success = false, error = "Name and Layout are required" });
+        }
+
+        var id = string.IsNullOrEmpty(data.Id) ? Guid.NewGuid().ToString() : data.Id;
+
+        await db.SaveHudProfileAsync(id, data.Name, data.Layout, data.IsActive);
+
+        return Results.Json(new { success = true, id });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Save HUD profile error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapDelete("/hud-profiles/{id}", async (string id, Database db) =>
+{
+    try
+    {
+        await db.DeleteHudProfileAsync(id);
+        return Results.Json(new { success = true });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Delete HUD profile error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
 app.Run($"http://127.0.0.1:{port}");
 
 // ============ Request/Response Models ============
@@ -833,3 +1066,25 @@ public record AnalyzeRangeRequest(string? Position, string? Action, int? Stack);
 // AnalysisFilters record removed to use class from AnalysisModels.cs
 
 // ... existing code ...
+
+public class CustomStatRequest
+{
+    public string? Id { get; set; }
+    public string Name { get; set; } = "";
+    public string? Description { get; set; }
+    public object? Definition { get; set; }
+}
+
+public class HudProfileRequest
+{
+    public string? Id { get; set; }
+    public string Name { get; set; } = "";
+    public object? Layout { get; set; }
+    public bool IsActive { get; set; }
+}
+
+public class EvaluateBatchRequest
+{
+    public List<StatDefinition> Stats { get; set; } = new();
+    public PokerTrackerBackend.AnalysisFilters? Filters { get; set; }
+}

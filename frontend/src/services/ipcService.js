@@ -149,6 +149,15 @@ class IPCService {
   async exportData(format = 'json') {
     return this.invoke('export-data', format);
   }
+
+  async analyzeRange({ position, stack, action }) {
+    return this.invoke('python-analyze-range', { position, stack, action });
+  }
+
+  // Stats Builder
+  async evaluateStat(stat) {
+    return this.invoke('stats-builder-evaluate', stat);
+  }
 }
 
 export const ipcService = new IPCService();

@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import AnalysisFilters from './components/AnalysisFilters';
 import AnalysisDashboard from './components/AnalysisDashboard';
 import AnalysisHandsList from './components/AnalysisHandsList';
-import { Save, Upload, FileText, LayoutDashboard, List } from 'lucide-react';
+import AnalysisHUD from './components/AnalysisHUD';
+import { Save, Upload, FileText, LayoutDashboard, List, Grid } from 'lucide-react';
 import { usePlayersStore } from '@stores/playersStore';
 import { ipcService } from '@services/ipcService';
 import clsx from 'clsx';
@@ -165,6 +166,16 @@ export default function Analysis() {
           {/* Tabs */}
           <div className="flex bg-dark-300 rounded-lg p-1 mr-4 border border-dark-100">
              <button
+                onClick={() => setActiveTab('hud')}
+                className={clsx(
+                    "px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-all",
+                    activeTab === 'hud' ? "bg-primary-500 text-white shadow" : "text-gray-400 hover:text-white"
+                )}
+             >
+                <Grid className="w-4 h-4" />
+                HUD
+             </button>
+             <button
                 onClick={() => setActiveTab('dashboard')}
                 className={clsx(
                     "px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-all",
@@ -217,9 +228,14 @@ export default function Analysis() {
 
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 flex flex-col">
-          {activeTab === 'dashboard' ? (
+          {/* HUD Grid is now the primary dashboard view */}
+          {activeTab === 'hud' && (
+              <AnalysisHUD filters={filters} />
+          )}
+          {activeTab === 'dashboard' && (
               <AnalysisDashboard data={dashboardData} loading={dashboardLoading} />
-          ) : (
+          )}
+          {activeTab === 'hands' && (
               <AnalysisHandsList 
                 hands={handsData.hands} 
                 loading={handsLoading}
@@ -229,7 +245,7 @@ export default function Analysis() {
                 sortBy={handsSort}
                 onPageChange={setHandsPage}
                 onSortChange={setHandsSort}
-                onSelectHand={(id) => console.log("Selected hand", id)} // Todo: open hand details
+                onSelectHand={(id) => console.log("Selected hand", id)} 
               />
           )}
         </div>

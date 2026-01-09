@@ -8,7 +8,8 @@ import {
   Grid3X3, 
   Settings,
   Database,
-  BarChart2
+  BarChart2,
+  Hammer
 } from 'lucide-react';
 import clsx from 'clsx';
 import logo from '../../assets/logo.png';
@@ -23,6 +24,7 @@ export default function Sidebar() {
     { name: t('navigation.leaks'), href: '/leaks', icon: AlertTriangle },
     { name: t('navigation.ranges'), href: '/ranges', icon: Grid3X3 },
     { name: t('navigation.analysis', 'Analysis'), href: '/analysis', icon: BarChart2 },
+    { name: 'Stats Builder', href: '/stats-builder', icon: Hammer },
     { name: t('navigation.settings'), href: '/settings', icon: Settings },
   ];
 

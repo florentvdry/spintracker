@@ -1,0 +1,35 @@
+{
+  "name": "Spin & Go Pro",
+  "isActive": true,
+  "layout": [
+    { "type": "text", "content": "SB", "row": 0, "col": 0 },
+    { "type": "text", "content": "VPIP", "row": 0, "col": 1 },
+    { "type": "text", "content": "PFR", "row": 0, "col": 2 },
+    { "type": "text", "content": "All-In", "row": 0, "col": 3 },
+    
+    { "type": "text", "content": "14+", "row": 1, "col": 0 },
+    { "type": "stat", "row": 1, "col": 1, "name": "SB VPIP 14+", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "SB", "MinStackBB": 14 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "VPIP", "Parameters": { "Position": "SB", "MinStackBB": 14 } }] } } },
+    { "type": "stat", "row": 1, "col": 2, "name": "SB PFR 14+", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "SB", "MinStackBB": 14 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "PFR", "Parameters": { "Position": "SB", "MinStackBB": 14 } }] } } },
+    { "type": "stat", "row": 1, "col": 3, "name": "SB AI 14+", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "SB", "MinStackBB": 14 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "AllIn", "Parameters": { "Position": "SB", "MinStackBB": 14 } }] } } },
+
+    { "type": "text", "content": "8-14", "row": 2, "col": 0 },
+    { "type": "stat", "row": 2, "col": 1, "name": "SB VPIP 8-14", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "SB", "MinStackBB": 8, "MaxStackBB": 14 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "VPIP", "Parameters": { "Position": "SB", "MinStackBB": 8, "MaxStackBB": 14 } }] } } },
+    { "type": "stat", "row": 2, "col": 2, "name": "SB PFR 8-14", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "SB", "MinStackBB": 8, "MaxStackBB": 14 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "PFR", "Parameters": { "Position": "SB", "MinStackBB": 8, "MaxStackBB": 14 } }] } } },
+    { "type": "stat", "row": 2, "col": 3, "name": "SB AI 8-14", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "SB", "MinStackBB": 8, "MaxStackBB": 14 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "AllIn", "Parameters": { "Position": "SB", "MinStackBB": 8, "MaxStackBB": 14 } }] } } },
+
+    { "type": "text", "content": "0-8", "row": 3, "col": 0 },
+    { "type": "stat", "row": 3, "col": 1, "name": "SB VPIP 0-8", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "SB", "MaxStackBB": 8 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "VPIP", "Parameters": { "Position": "SB", "MaxStackBB": 8 } }] } } },
+    { "type": "stat", "row": 3, "col": 2, "name": "SB PFR 0-8", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "SB", "MaxStackBB": 8 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "PFR", "Parameters": { "Position": "SB", "MaxStackBB": 8 } }] } } },
+    { "type": "stat", "row": 3, "col": 3, "name": "SB AI 0-8", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "SB", "MaxStackBB": 8 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "AllIn", "Parameters": { "Position": "SB", "MaxStackBB": 8 } }] } } },
+
+    { "type": "text", "content": "BB", "row": 5, "col": 0 },
+    { "type": "text", "content": "VPIP", "row": 5, "col": 1 },
+    { "type": "text", "content": "3Bet", "row": 5, "col": 2 },
+    { "type": "text", "content": "All-In", "row": 5, "col": 3 },
+
+    { "type": "text", "content": "14+", "row": 6, "col": 0 },
+    { "type": "stat", "row": 6, "col": 1, "name": "BB VPIP 14+", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "BB", "MinStackBB": 14 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "VPIP", "Parameters": { "Position": "BB", "MinStackBB": 14 } }] } } },
+    { "type": "stat", "row": 6, "col": 2, "name": "BB 3B 14+", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "BB", "MinStackBB": 14 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "Raise", "Parameters": { "Position": "BB", "MinStackBB": 14 } }] } } },
+    { "type": "stat", "row": 6, "col": 3, "name": "BB AI 14+", "definition": { "Denominator": { "Conditions": [{ "Street": "Preflop", "Action": "Any", "Parameters": { "Position": "BB", "MinStackBB": 14 } }] }, "Numerator": { "Conditions": [{ "Street": "Preflop", "Action": "AllIn", "Parameters": { "Position": "BB", "MinStackBB": 14 } }] } } }
+  ]
+}
