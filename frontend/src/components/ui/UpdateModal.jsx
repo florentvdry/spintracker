@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { X, Download, RefreshCw, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import ipcService from '../../services/ipcService';
 
 export default function UpdateModal() {
+  const { t } = useTranslation();
   const [status, setStatus] = useState('idle'); // idle, checking, available, downloading, downloaded, error
   const [version, setVersion] = useState('');
   const [releaseNotes, setReleaseNotes] = useState('');
@@ -70,10 +72,10 @@ export default function UpdateModal() {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold text-white flex items-center gap-2">
             <RefreshCw className="w-5 h-5 text-primary-400" />
-            {status === 'available' && 'Update Available'}
-            {status === 'downloading' && 'Downloading Update...'}
-            {status === 'downloaded' && 'Update Ready'}
-            {status === 'error' && 'Update Error'}
+            {status === 'available' && t('header.update_required')}
+            {status === 'downloading' && t('common.loading')}
+            {status === 'downloaded' && t('header.import_success')}
+            {status === 'error' && t('common.error')}
           </h3>
           <button
             onClick={handleClose}
@@ -88,10 +90,10 @@ export default function UpdateModal() {
           {status === 'available' && (
             <div className="space-y-4">
               <p className="text-gray-300">
-                A new version <span className="font-mono text-primary-400 font-bold">{version}</span> is available.
+                {t('header.new_version_available', 'A new version')} <span className="font-mono text-primary-400 font-bold">{version}</span> {t('header.is_available', 'is available.')}
               </p>
               <div className="bg-dark-300 rounded-lg p-3 max-h-48 overflow-y-auto">
-                <p className="text-sm text-gray-400 font-medium mb-1">Changes:</p>
+                <p className="text-sm text-gray-400 font-medium mb-1">{t('common.details')}:</p>
                 <div className="text-sm text-gray-300 whitespace-pre-wrap">
                   {typeof releaseNotes === 'string' ? releaseNotes : JSON.stringify(releaseNotes)}
                 </div>
@@ -108,7 +110,7 @@ export default function UpdateModal() {
                 />
               </div>
               <div className="flex justify-between text-sm text-gray-400">
-                <span>Downloading...</span>
+                <span>{t('common.loading')}...</span>
                 <span>{Math.round(progress)}%</span>
               </div>
             </div>
@@ -116,8 +118,7 @@ export default function UpdateModal() {
 
           {status === 'downloaded' && (
             <div className="text-gray-300">
-              Update <span className="font-mono text-primary-400">{version}</span> has been downloaded.
-              Restart the application to apply changes.
+              {t('header.update_downloaded', 'Update {{version}} has been downloaded. Restart to apply.', { version })}
             </div>
           )}
 
@@ -137,14 +138,14 @@ export default function UpdateModal() {
                         onClick={handleClose}
                         className="px-4 py-2 text-gray-400 hover:text-white hover:bg-dark-300 rounded-lg transition-colors"
                     >
-                        Later
+                        {t('common.cancel')}
                     </button>
                     <button 
                         onClick={handleDownload}
                         className="px-4 py-2 bg-primary-600 hover:bg-primary-500 text-white rounded-lg flex items-center gap-2 transition-colors font-medium shadow-lg shadow-primary-900/20"
                     >
                         <Download className="w-4 h-4" />
-                        Download Update
+                        {t('common.import', 'Download')}
                     </button>
                 </>
             )}
@@ -155,14 +156,14 @@ export default function UpdateModal() {
                         onClick={handleClose}
                         className="px-4 py-2 text-gray-400 hover:text-white hover:bg-dark-300 rounded-lg transition-colors"
                     >
-                        Later
+                        {t('common.cancel')}
                     </button>
                     <button 
                         onClick={handleInstall}
                         className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg flex items-center gap-2 transition-colors font-medium shadow-lg shadow-green-900/20"
                     >
                         <RefreshCw className="w-4 h-4" />
-                        Restart & Install
+                        {t('common.retry', 'Restart')}
                     </button>
                 </>
             )}
@@ -171,7 +172,7 @@ export default function UpdateModal() {
                     onClick={handleClose}
                     className="px-4 py-2 bg-dark-300 hover:bg-dark-200 text-white rounded-lg transition-colors"
                 >
-                    Close
+                    {t('common.cancel', 'Close')}
                 </button>
              )}
         </div>

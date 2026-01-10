@@ -251,7 +251,18 @@ public class BetclicParser : IHandParser
             if (match.Success) hand.BuyIn = double.Parse(match.Value, CultureInfo.InvariantCulture);
         }
         else if (line.Contains("Date & Time:"))
-            hand.DateTime = line.Split(new[] { ':' }, 2)[1].Trim().Replace("(UTC)", "").Trim();
+        {
+            var rawDateTime = line.Split(new[] { ':' }, 2)[1].Trim().Replace("(UTC)", "").Trim();
+            // Try to parse and re-format to ISO for consistent sorting/filtering
+            if (DateTime.TryParse(rawDateTime, out var dt))
+            {
+                hand.DateTime = dt.ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            else
+            {
+                hand.DateTime = rawDateTime;
+            }
+        }
         else if (line.Contains("Table ID:"))
             hand.TableId = line.Split(new[] { ':' }, 2)[1].Trim();
         else if (line.Contains("Blinds:"))

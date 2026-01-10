@@ -5,6 +5,7 @@ import { useNotificationStore } from '../../stores/notificationStore';
 import { useReplayerStore } from '../../stores/replayerStore';
 import Card from '../../components/ui/Card';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 const PRESETS = [
   { label: 'Hero Raises', actor: 'Hero', action: 'Raise', color: 'bg-red-500/10 text-red-400 border-red-500/20' },
@@ -28,6 +29,7 @@ const StatsBuilder = () => {
   const [currentStatId, setCurrentStatId] = useState(null);
   const notify = useNotificationStore();
   const loadHand = useReplayerStore(state => state.loadHand);
+  const { t } = useTranslation();
   
   const [activeMode, setActiveMode] = useState('numerator'); // 'numerator' | 'denominator'
 
@@ -287,6 +289,37 @@ const StatsBuilder = () => {
     }
   };
 
+  const updateConditionParameter = (path, index, param, value) => {
+    const targetKey = activeMode;
+    const targetGroup = stat[targetKey];
+
+    const updateFn = (group) => {
+      const newConds = [...(group.conditions || group.Conditions || [])];
+      const parameters = { ...(newConds[index].parameters || newConds[index].Parameters || {}) };
+      
+      if (value === '' || value === null || value === undefined) {
+        delete parameters[param];
+      } else {
+        const numValue = Number(value);
+        parameters[param] = isNaN(numValue) || value === '' ? value : numValue;
+      }
+      
+      newConds[index] = {
+        ...newConds[index],
+        parameters
+      };
+      
+      return { ...group, conditions: newConds };
+    };
+
+    if (path.length === 0) {
+      setStat({ ...stat, [targetKey]: updateFn(targetGroup) });
+    } else {
+      const updatedRoot = updateGroup(targetGroup, path, updateFn);
+      setStat({ ...stat, [targetKey]: updatedRoot });
+    }
+  };
+
   const handleTest = async () => {
     setLoading(true);
     try {
@@ -399,16 +432,72 @@ const StatsBuilder = () => {
               <React.Fragment key={`${item.type}-${item.originalIndex}`}>
                 {item.type === 'condition' ? (
                   <div className={clsx(
-                    "flex items-center justify-between px-2 py-1 rounded border text-[11px] font-medium shadow-sm transition-all hover:brightness-110",
+                    "flex flex-col rounded border shadow-sm transition-all hover:brightness-105",
                     PRESETS.find(p => p.actor === item.actor && p.action === item.action)?.color || 'bg-dark-300 text-gray-300 border-dark-100'
                   )}>
-                    <div className="flex items-center gap-1.5">
-                      <span className="opacity-70">{item.actor}</span>
-                      <span className="font-bold">{item.action}</span>
+                    <div className="flex items-center justify-between px-2 py-1">
+                      <div className="flex items-center gap-1.5 text-[11px] font-medium">
+                        <span className="opacity-70">{item.actor}</span>
+                        <span className="font-bold">{item.action}</span>
+                      </div>
+                      <button onClick={(e) => { e.stopPropagation(); removeConditionAt(path, item.originalIndex); }} className="hover:bg-black/10 p-0.5 rounded">
+                        <X size={10} />
+                      </button>
                     </div>
-                    <button onClick={(e) => { e.stopPropagation(); removeConditionAt(path, item.originalIndex); }} className="hover:bg-black/10 p-0.5 rounded">
-                      <X size={10} />
-                    </button>
+                    
+                    {/* Parameters Section */}
+                    <div className="px-2 pb-2 pt-1 border-t border-white/5 bg-black/10 flex flex-wrap gap-2">
+                      <div className="flex flex-col gap-0.5">
+                        <label className="text-[8px] uppercase opacity-50 font-bold">Pos</label>
+                        <select 
+                          value={(item.parameters || item.Parameters)?.Position || ''}
+                          onChange={(e) => updateConditionParameter(path, item.originalIndex, 'Position', e.target.value)}
+                          className="w-11 bg-dark-900/50 border border-white/10 rounded px-0.5 py-0.5 text-[9px] text-white outline-none focus:border-primary-500/50 appearance-none text-center"
+                        >
+                          <option value="">Any</option>
+                          <option value="SB">SB</option>
+                          <option value="BB">BB</option>
+                          <option value="BTN">BTN</option>
+                          <option value="CO">CO</option>
+                          <option value="MP">MP</option>
+                          <option value="UTG">UTG</option>
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <label className="text-[8px] uppercase opacity-50 font-bold">Players</label>
+                        <input 
+                          type="number" 
+                          min="2" 
+                          max="10"
+                          value={(item.parameters || item.Parameters)?.PlayerCount || ''}
+                          onChange={(e) => updateConditionParameter(path, item.originalIndex, 'PlayerCount', e.target.value)}
+                          className="w-10 bg-dark-900/50 border border-white/10 rounded px-1 py-0.5 text-[9px] text-white outline-none focus:border-primary-500/50"
+                          placeholder="All"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <label className="text-[8px] uppercase opacity-50 font-bold">Min BB</label>
+                        <input 
+                          type="number" 
+                          min="0"
+                          value={(item.parameters || item.Parameters)?.MinStackBB ?? ''}
+                          onChange={(e) => updateConditionParameter(path, item.originalIndex, 'MinStackBB', e.target.value)}
+                          className="w-12 bg-dark-900/50 border border-white/10 rounded px-1 py-0.5 text-[9px] text-white outline-none focus:border-primary-500/50"
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <label className="text-[8px] uppercase opacity-50 font-bold">Max BB</label>
+                        <input 
+                          type="number" 
+                          min="0"
+                          value={(item.parameters || item.Parameters)?.MaxStackBB ?? ''}
+                          onChange={(e) => updateConditionParameter(path, item.originalIndex, 'MaxStackBB', e.target.value)}
+                          className="w-12 bg-dark-900/50 border border-white/10 rounded px-1 py-0.5 text-[9px] text-white outline-none focus:border-primary-500/50"
+                          placeholder="∞"
+                        />
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <RenderGroup 
@@ -451,8 +540,8 @@ const StatsBuilder = () => {
       {/* 1. Stats Manager Sidebar */}
       <div className="col-span-3 flex flex-col gap-4">
         <Card 
-          title="Stats Library" 
-          subtitle="Manage your saved statistics"
+          title={t('stats_builder.library')} 
+          subtitle={t('stats_builder.manage')}
           padding={false}
           className="min-h-[600px] h-[calc(100vh-140px)]"
           action={
@@ -481,7 +570,7 @@ const StatsBuilder = () => {
               </div>
             ))}
             {statsList.length === 0 && (
-              <div className="p-8 text-center text-xs text-gray-500 italic">No stats found</div>
+              <div className="p-8 text-center text-xs text-gray-500 italic">{t('common.no_data')}</div>
             )}
           </div>
         </Card>
@@ -494,7 +583,7 @@ const StatsBuilder = () => {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <label className="text-[10px] uppercase font-bold text-gray-500 mb-1 block tracking-wider">Stat Name</label>
+                <label className="text-[10px] uppercase font-bold text-gray-500 mb-1 block tracking-wider">{t('common.name', 'Name')}</label>
                 <input 
                   type="text" 
                   value={stat.name}
@@ -505,11 +594,11 @@ const StatsBuilder = () => {
               </div>
               <div className="flex gap-2 pt-5">
                 <button onClick={handleSaveStat} className="btn-secondary flex items-center gap-2 text-xs py-1.5">
-                  <Save size={14} /> Save
+                  <Save size={14} /> {t('stats_builder.save')}
                 </button>
                 <button onClick={handleTest} disabled={loading} className="btn-primary flex items-center gap-2 text-xs py-1.5">
                   {loading ? <div className="animate-spin rounded-full h-3 w-3 border-2 border-dark-500 border-t-transparent" /> : <Play size={14} />}
-                  Test
+                  {t('stats_builder.test')}
                 </button>
               </div>
             </div>
@@ -526,8 +615,8 @@ const StatsBuilder = () => {
                     )}
                 >
                     <Activity size={16} />
-                    <span>1. Opportunity</span>
-                    <span className="text-[8px] opacity-60 font-medium">(When to count)</span>
+                    <span>{t('stats_builder.opportunity')}</span>
+                    <span className="text-[8px] opacity-60 font-medium">{t('stats_builder.opportunity_desc')}</span>
                 </button>
                 <div className="w-px bg-dark-100 my-2 mx-1"></div>
                 <button 
@@ -540,8 +629,8 @@ const StatsBuilder = () => {
                     )}
                 >
                     <Play size={16} />
-                    <span>2. Success</span>
-                    <span className="text-[8px] opacity-60 font-medium">(The action to track)</span>
+                    <span>{t('stats_builder.success')}</span>
+                    <span className="text-[8px] opacity-60 font-medium">{t('stats_builder.success_desc')}</span>
                 </button>
             </div>
           </div>
@@ -552,9 +641,9 @@ const StatsBuilder = () => {
           <div className="px-3 py-2 border-b border-dark-100/30 flex items-center justify-between bg-dark-300/30">
             <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
               <GripVertical size={12} className="text-primary-500" />
-              Action Palette
+              {t('stats_builder.palette')}
             </h3>
-            <span className="text-[9px] text-gray-500 italic uppercase">Drag to timeline</span>
+            <span className="text-[9px] text-gray-500 italic uppercase">{t('stats_builder.drag_guide')}</span>
           </div>
           <div className="p-3 flex flex-wrap gap-1.5">
             {PRESETS.map((preset, idx) => (
@@ -591,7 +680,7 @@ const StatsBuilder = () => {
                   <div className="px-4 py-2 flex items-center justify-between border-b border-dark-100/30 bg-dark-300/50">
                     <div className="flex items-center gap-3">
                        <h3 className={clsx("text-sm font-bold tracking-tight", isSelectedRoot ? "text-primary-400" : "text-gray-400")}>{street}</h3>
-                       {isSelectedRoot && <span className="badge-info text-[9px] uppercase tracking-tighter px-2">Selected</span>}
+                       {isSelectedRoot && <span className="badge-info text-[9px] uppercase tracking-tighter px-2">{t('common.selected', 'Selected')}</span>}
                     </div>
                     <div className="flex gap-1">
                       {isSelectedRoot && (
@@ -620,8 +709,8 @@ const StatsBuilder = () => {
       {/* 3. Results Sidebar */}
       <div className="col-span-3">
         <Card 
-          title="Results" 
-          subtitle="Evaluation metrics"
+          title={t('stats_builder.results')} 
+          subtitle={t('stats_builder.metrics')}
           padding={false}
           className="min-h-[600px] h-[calc(100vh-140px)]"
         >
@@ -638,7 +727,7 @@ const StatsBuilder = () => {
               
               <div className="space-y-3">
                 <div className="flex justify-between items-center px-1">
-                  <h4 className="font-bold text-gray-500 text-[10px] uppercase tracking-widest">Matching Hands</h4>
+                  <h4 className="font-bold text-gray-500 text-[10px] uppercase tracking-widest">{t('stats_builder.matching_hands')}</h4>
                   <span className="badge-info">{result.matchingHands?.length || 0}</span>
                 </div>
                 <div className="bg-dark-900/50 rounded-lg border border-dark-100/30 overflow-hidden">
@@ -657,7 +746,7 @@ const StatsBuilder = () => {
                       </div>
                       ))}
                       {(!result.matchingHands || result.matchingHands.length === 0) && (
-                        <div className="p-8 text-center text-gray-500 text-xs italic">No matching hands</div>
+                        <div className="p-8 text-center text-gray-500 text-xs italic">{t('common.no_data')}</div>
                       )}
                   </div>
                 </div>
@@ -668,8 +757,8 @@ const StatsBuilder = () => {
               <div className="w-12 h-12 bg-dark-400 rounded-full flex items-center justify-center mb-4 opacity-50 border border-dark-100 animate-pulse">
                   <Activity size={24} />
               </div>
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">No Data</p>
-              <p className="text-[10px] mt-2 opacity-60">Build your stat and click Test to evaluate</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('stats_builder.no_data')}</p>
+              <p className="text-[10px] mt-2 opacity-60">{t('stats_builder.eval_guide')}</p>
             </div>
           )}
         </Card>

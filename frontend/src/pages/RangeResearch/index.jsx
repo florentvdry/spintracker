@@ -54,6 +54,7 @@ export default function RangeResearch() {
   const [rangeLoading, setRangeLoading] = useState(false);
   const [selectedRangeHand, setSelectedRangeHand] = useState(null);
   const [selectedRangeStats, setSelectedRangeStats] = useState(null);
+  const [selectedActionFilter, setSelectedActionFilter] = useState(null);
 
   // Calculate Global Frequencies
   const globalStats = useMemo(() => {
@@ -113,6 +114,34 @@ export default function RangeResearch() {
   const handleOpenReplayer = async (handIds) => {
     if (!handIds || handIds.length === 0) return;
     loadHandQueue(handIds);
+  };
+
+  const normalizeKey = (v) => {
+    if (!v && v !== 0) return '';
+    // Remove non-alphanum, strip digits to match 'Raise 2' -> 'raise'
+    return String(v).replace(/[^a-z0-9]/gi, '').replace(/[0-9]/g, '').toLowerCase();
+  };
+
+  const handMatchesAction = (hand, action) => {
+    if (!action) return true;
+    const normAction = normalizeKey(action);
+    // Try direct properties first
+    const candidates = [hand && hand.action, hand && hand.Action, hand && hand.PreflopAction, hand && hand.ActionType, hand && hand.SummaryAction];
+    for (const c of candidates) {
+      if (c === undefined || c === null) continue;
+      const n = normalizeKey(c);
+      if (n === normAction || n.includes(normAction) || normAction.includes(n)) return true;
+    }
+
+    // Fallback: stringify the whole hand object and search for the action token
+    try {
+      const s = JSON.stringify(hand).toLowerCase();
+      if (s.includes(normAction)) return true;
+    } catch (e) {
+      // ignore
+    }
+
+    return false;
   };
 
   const saveConfig = () => {
@@ -267,40 +296,48 @@ export default function RangeResearch() {
                      
                      <div className="space-y-3">
                        <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider border-b border-dark-100 pb-2">Action Distribution</h4>
-                       {Object.entries(selectedRangeStats?.Actions || selectedRangeStats?.actions || {})
-                         .sort((a, b) => b[1] - a[1])
-                         .map(([action, count]) => {
-                           // Normalize total count access
-                           const total = selectedRangeStats.TotalCount !== undefined ? selectedRangeStats.TotalCount : (selectedRangeStats.totalCount || 0);
-                           const percent = total > 0 ? (count / total) * 100 : 0;
-                           return (
-                             <div key={action} className="space-y-1">
-                               <div className="flex justify-between text-sm">
-                                 <span className="font-medium text-gray-300">{action}</span>
-                                 <span className="font-bold text-white">{percent.toFixed(1)}%</span>
-                               </div>
-                               <div className="h-3 bg-dark-300 rounded-full overflow-hidden relative">
-                                 <div 
-                                   className="h-full rounded-full absolute left-0 top-0 transition-all duration-500"
-                                   style={{ 
-                                     width: `${percent}%`,
-                                     backgroundColor: ACTION_COLORS[action] || ACTION_COLORS.None
-                                   }} 
-                                 />
-                               </div>
-                               <div className="text-right text-xs text-gray-500">{count} combos</div>
-                             </div>
-                           );
-                       })}
+                       <div className="grid grid-cols-3 gap-3">
+                         {Object.entries(selectedRangeStats?.Actions || selectedRangeStats?.actions || {})
+                           .sort((a, b) => b[1] - a[1])
+                           .map(([action, count]) => {
+                             const total = selectedRangeStats.TotalCount !== undefined ? selectedRangeStats.TotalCount : (selectedRangeStats.totalCount || 0);
+                             const percent = total > 0 ? (count / total) * 100 : 0;
+                             const selected = selectedActionFilter === action;
+                             return (
+                               <button
+                                 key={action}
+                                 type="button"
+                                 onClick={() => setSelectedActionFilter(prev => prev === action ? null : action)}
+                                 className={clsx("p-3 rounded-lg text-white flex flex-col justify-between shadow-sm transition-colors", selected ? "opacity-100" : "opacity-95")}
+                                 style={{ backgroundColor: ACTION_COLORS[action] || ACTION_COLORS.None, border: selected ? '2px solid rgba(255,255,255,0.18)' : '1px solid rgba(0,0,0,0.08)' }}
+                               >
+                                 <div className="flex items-center justify-between">
+                                   <div className="text-sm font-semibold">{action}</div>
+                                   <div className="text-xs">{count} combos</div>
+                                 </div>
+                                 <div className="mt-2 flex items-end justify-between">
+                                   <div className="text-lg font-bold">{percent.toFixed(1)}%</div>
+                                   <div className="h-3 flex-1 ml-3 bg-black/20 rounded overflow-hidden" style={{maxWidth: '40%'}}>
+                                     <div style={{width: `${Math.max(6, percent)}%`, height: '100%', backgroundColor: 'rgba(0,0,0,0.12)'}} />
+                                   </div>
+                                 </div>
+                               </button>
+                             );
+                         })}
+                       </div>
                      </div>
 
-                     {/* Hands List for Replayer */}
+                     {/* Hands List for Replayer (filtered by selectedActionFilter when set) */}
                      {(selectedRangeStats?.Hands || selectedRangeStats?.hands) && (
                         <div className="pt-4 border-t border-dark-100">
                            <div className="flex justify-between items-center mb-2">
                                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Hands</h4>
                                <button 
-                                 onClick={() => handleOpenReplayer((selectedRangeStats.Hands || selectedRangeStats.hands).map(h => h.id || h.Id))}
+                                 onClick={() => {
+                                   const list = (selectedRangeStats.Hands || selectedRangeStats.hands) || [];
+                                   const filtered = selectedActionFilter ? list.filter(h => handMatchesAction(h, selectedActionFilter)) : list;
+                                   handleOpenReplayer(filtered.map(h => h.id || h.Id));
+                                 }}
                                  className="text-xs flex items-center gap-1 text-primary-400 hover:text-primary-300 transition-colors"
                                >
                                   <Play className="w-3 h-3" />
@@ -308,7 +345,7 @@ export default function RangeResearch() {
                                </button>
                            </div>
                            <div className="space-y-1 max-h-60 overflow-y-auto custom-scrollbar">
-                              {(selectedRangeStats.Hands || selectedRangeStats.hands).map((hand, idx) => {
+                              {((selectedRangeStats.Hands || selectedRangeStats.hands) || []).filter(h => handMatchesAction(h, selectedActionFilter)).map((hand, idx) => {
                                   const handId = hand.id || hand.Id;
                                   const profit = hand.profit !== undefined ? hand.profit : hand.Profit;
                                   const ev = hand.ev !== undefined ? hand.ev : hand.Ev;

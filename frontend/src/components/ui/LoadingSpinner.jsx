@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 export default function LoadingSpinner({ size = 'md', className = '' }) {
   const sizes = {
     sm: 'w-4 h-4 border',
@@ -21,10 +23,11 @@ export function LoadingOverlay({ message = 'Chargement...' }) {
 }
 
 export function LoadingPage() {
+  const { t } = useTranslation();
   return (
     <div className="flex-1 flex flex-col items-center justify-center py-20">
       <LoadingSpinner size="xl" />
-      <p className="mt-6 text-gray-400">Chargement du tableau de bord...</p>
+      <p className="mt-6 text-gray-400">{t('common.loading')}</p>
     </div>
   );
 }

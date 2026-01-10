@@ -47,6 +47,28 @@ public class AnalysisHandsResult
     public int Pages { get; set; }
 }
 
+public class TournamentSummary
+{
+    public string GameId { get; set; } = "";
+    public string Room { get; set; } = "";
+    public DateTime DateTime { get; set; }
+    public double BuyIn { get; set; }
+    public double PrizePool { get; set; }
+    public double NetProfit { get; set; }
+    public double ChipProfit { get; set; }
+    public double AvgCev { get; set; }
+    public int HandCount { get; set; }
+}
+
+public class TournamentsResult
+{
+    public List<TournamentSummary> Tournaments { get; set; } = new();
+    public int Total { get; set; }
+    public int Page { get; set; }
+    public int Limit { get; set; }
+    public int Pages { get; set; }
+}
+
 public class AnalysisHandData
 {
     public string HandId { get; set; } = "";

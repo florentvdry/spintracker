@@ -33,7 +33,6 @@ builder.Services.AddSingleton<Database>(sp =>
     new Database(sp.GetRequiredService<ILogger<Database>>(), dbPath));
 builder.Services.AddSingleton<EquityCalculator>();
 builder.Services.AddSingleton<AnalyticsCalculator>();
-builder.Services.AddSingleton<AnalysisEngine>();
 builder.Services.AddSingleton<AnalysisService>();
 builder.Services.AddSingleton<StatsBuilderEngine>();
 builder.Services.AddSingleton<ImporterService>();
@@ -276,7 +275,8 @@ app.MapMethods("/db/hands", new[] { "GET", "POST" }, async (HttpContext context,
                 Limit = int.TryParse(context.Request.Query["limit"], out var l) ? l : 50,
                 DateFrom = context.Request.Query["dateFrom"],
                 DateTo = context.Request.Query["dateTo"],
-                HeroName = context.Request.Query["heroName"]
+                HeroName = context.Request.Query["heroName"],
+                SortBy = context.Request.Query["sortBy"]
             };
         }
 
@@ -286,6 +286,53 @@ app.MapMethods("/db/hands", new[] { "GET", "POST" }, async (HttpContext context,
     catch (Exception e)
     {
         logger.LogError($"Get hands error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapMethods("/db/tournaments", new[] { "GET", "POST" }, async (HttpContext context, Database db, ILogger<Program> logger) =>
+{
+    try
+    {
+        HandsQueryOptions options;
+        if (context.Request.Method == "POST")
+        {
+            using var reader = new StreamReader(context.Request.Body);
+            var body = await reader.ReadToEndAsync();
+            options = JsonSerializer.Deserialize<HandsQueryOptions>(body, jsonOptions) ?? new HandsQueryOptions();
+        }
+        else
+        {
+            options = new HandsQueryOptions
+            {
+                Page = int.TryParse(context.Request.Query["page"], out var p) ? p : 1,
+                Limit = int.TryParse(context.Request.Query["limit"], out var l) ? l : 50,
+                DateFrom = context.Request.Query["dateFrom"],
+                DateTo = context.Request.Query["dateTo"],
+                HeroName = context.Request.Query["heroName"],
+                SortBy = context.Request.Query["sortBy"]
+            };
+        }
+
+        var result = await db.GetTournamentsAsync(options);
+        return Results.Json(new { success = true, data = result });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Get tournaments error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapGet("/db/tournament-hands", async (string gameId, string? heroName, Database db) =>
+{
+    try
+    {
+        var result = await db.GetTournamentHandsAsync(gameId, heroName);
+        return Results.Json(new { success = true, data = result });
+    }
+    catch (Exception e)
+    {
         return Results.Problem(detail: e.Message, statusCode: 500);
     }
 });
@@ -652,33 +699,7 @@ app.MapPost("/stats/builder/evaluate", async (HttpContext context, Database db, 
     }
 });
 
-app.MapPost("/analyze/leaks", async (HttpContext context, Database db, AnalysisEngine analysisEngine) =>
-{
-    try
-    {
-        using var reader = new StreamReader(context.Request.Body);
-        var body = await reader.ReadToEndAsync();
-        var data = JsonSerializer.Deserialize<AnalyzeLeaksRequest>(body, jsonOptions);
-
-        string? heroName = null;
-        if (data?.Options != null && data.Options.ContainsKey("heroName"))
-        {
-            heroName = data.Options["heroName"]?.ToString();
-        }
-
-        var hands = await db.GetAllHandsForAnalysisAsync(heroName);
-        var result = analysisEngine.DetectLeaks(hands, data?.Options ?? new Dictionary<string, object>());
-
-        return Results.Json(new { success = true, data = result });
-    }
-    catch (Exception e)
-    {
-        logger.LogError($"Leak analysis error: {e.Message}");
-        return Results.Problem(detail: e.Message, statusCode: 500);
-    }
-});
-
-app.MapPost("/analyze/range", async (HttpContext context, AnalysisEngine analysisEngine) =>
+app.MapPost("/analyze/range", async (HttpContext context, AnalysisService analysisService) =>
 {
     try
     {
@@ -691,7 +712,7 @@ app.MapPost("/analyze/range", async (HttpContext context, AnalysisEngine analysi
             return Results.BadRequest(new { success = false, error = "Invalid request" });
         }
 
-        var result = analysisEngine.AnalyzeRange(data.Position, data.Action, data.Stack ?? 20);
+        var result = analysisService.AnalyzeRange(data.Position, data.Action, data.Stack ?? 20);
 
         return Results.Json(new { success = true, data = result });
     }
@@ -1070,6 +1091,7 @@ public record HandsQueryOptions
     public double? MinPot { get; set; }
     public double? MaxPot { get; set; }
     public string? HeroName { get; set; }
+    public string? SortBy { get; set; }
 }
 public record SessionHistoryRequest(int Limit = 50, string? HeroName = null);
 public record ChartQueryOptions
@@ -1089,11 +1111,9 @@ public record PlayersQueryOptions
 }
 public record EquityRequest(string? HeroCards, string? VillainCards, string? Board, int? Iterations);
 public record BatchEquityRequest(List<BatchEquityHand> Hands, int? Iterations);
-public record BatchEquityHand(string? Id, string? HeroCards, string? VillainCards, string? Board);
-public record AnalyzeLeaksRequest(Dictionary<string, object>? Options);
+public record BatchEquityHand(string? Id, string? HeroCards, string? VillainCards, string? Board);        
 public record AnalyzeRangeRequest(string? Position, string? Action, int? Stack);
 // AnalysisFilters record removed to use class from AnalysisModels.cs
-
 // ... existing code ...
 
 public class CustomStatRequest

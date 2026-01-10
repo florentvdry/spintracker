@@ -99,19 +99,19 @@ export default function AnalysisDashboard({ data, loading }) {
       {/* Secondary Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
          <div className="card p-4">
-            <div className="text-gray-400 text-xs uppercase mb-1">3-Bet</div>
+            <div className="text-gray-400 text-xs uppercase mb-1">{t('analysis.stats.three_bet')}</div>
             <div className="text-xl font-bold">{data.ThreeBet?.toFixed(1)}%</div>
          </div>
          <div className="card p-4">
-            <div className="text-gray-400 text-xs uppercase mb-1">WTSD</div>
+            <div className="text-gray-400 text-xs uppercase mb-1">{t('analysis.stats.wtsd')}</div>
             <div className="text-xl font-bold">{data.Wtsd?.toFixed(1)}%</div>
          </div>
          <div className="card p-4">
-            <div className="text-gray-400 text-xs uppercase mb-1">W$SD</div>
+            <div className="text-gray-400 text-xs uppercase mb-1">{t('analysis.stats.wsd')}</div>
             <div className="text-xl font-bold">{data.Wsd?.toFixed(1)}%</div>
          </div>
          <div className="card p-4">
-            <div className="text-gray-400 text-xs uppercase mb-1">Won Hands</div>
+            <div className="text-gray-400 text-xs uppercase mb-1">{t('analysis.stats.won_hands')}</div>
             <div className="text-xl font-bold">{data.WonHands} <span className="text-gray-500 text-sm font-normal">({((data.WonHands/data.TotalHands)*100 || 0).toFixed(1)}%)</span></div>
          </div>
       </div>

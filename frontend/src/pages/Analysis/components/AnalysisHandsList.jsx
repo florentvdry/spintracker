@@ -119,7 +119,7 @@ export default function AnalysisHandsList({
             </tr>
           </thead>
           <tbody className="divide-y divide-dark-100/50">
-            {hands.map((hand) => {
+            {hands.map((hand, idx) => {
               const profit = hand.hero_profit || hand.dyn_hero_profit || 0;
               const isPositive = profit > 0;
               const isZero = profit === 0;
@@ -129,7 +129,7 @@ export default function AnalysisHandsList({
 
               return (
                 <tr 
-                  key={hand.id} 
+                  key={`${hand.id}-${idx}`} 
                   className="hover:bg-dark-200/50 transition-colors cursor-pointer"
                   onClick={() => onSelectHand && onSelectHand(hand.id)}
                 >

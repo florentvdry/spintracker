@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import Layout from '@components/layout/Layout';
 import Dashboard from '@pages/Dashboard';
 import HandHistory from '@pages/HandHistory';
-import LeakAnalysis from '@pages/LeakAnalysis';
 import RangeAnalysis from '@pages/RangeAnalysis';
 import RangeResearch from '@pages/RangeResearch';
 import Analysis from '@pages/Analysis';
@@ -27,11 +26,10 @@ function App() {
     <>
       <Layout>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/hands" element={<HandHistory />} />
-          <Route path="/leaks" element={<LeakAnalysis />} />
-          <Route path="/ranges" element={<RangeResearch />} />
-          <Route path="/analysis" element={<Analysis />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/hands" element={<HandHistory />} />
+            <Route path="/analysis" element={<Analysis />} />
+            <Route path="/ranges" element={<RangeResearch />} />
           <Route path="/stats-builder" element={<StatsBuilder />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>

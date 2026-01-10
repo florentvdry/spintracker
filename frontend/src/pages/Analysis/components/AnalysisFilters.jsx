@@ -111,7 +111,7 @@ export default function AnalysisFilters({ filters, onChange }) {
       
       {/* Player Count Filter */}
       <div className="space-y-2">
-        <label className="text-xs uppercase tracking-wider text-gray-500 font-semibold">Players in Hand</label>
+        <label className="text-xs uppercase tracking-wider text-gray-500 font-semibold">{t('analysis.filters.players_in_hand')}</label>
         <div className="flex bg-dark-400 p-1 rounded-lg border border-dark-200">
           {[
             { value: 2, label: 'Heads Up (2)' },
@@ -149,7 +149,7 @@ export default function AnalysisFilters({ filters, onChange }) {
 
       {/* Hero Position */}
       <div className="space-y-2">
-        <label className="text-xs uppercase tracking-wider text-gray-500 font-semibold">{t('common.position', 'Hero Position')}</label>
+        <label className="text-xs uppercase tracking-wider text-gray-500 font-semibold">{t('analysis.filters.hero_position')}</label>
         <div className={clsx("grid gap-2", filters.PlayerCount === 2 ? "grid-cols-3" : "grid-cols-4")}>
             <button
                 onClick={() => handleChange('Positions', [])}
@@ -160,7 +160,7 @@ export default function AnalysisFilters({ filters, onChange }) {
                     : "bg-dark-400 border-dark-200 text-gray-400 hover:border-gray-500"
                 )}
             >
-                Any
+                {t('common.any', 'Any')}
             </button>
             {['BTN', 'SB', 'BB'].map(pos => {
                 // If HU (2 players), disable BTN selection if desired, or handle logic
@@ -190,7 +190,7 @@ export default function AnalysisFilters({ filters, onChange }) {
 
       {/* Street Actions */}
       <div className="space-y-3">
-        <label className="text-xs uppercase tracking-wider text-gray-500 font-semibold">{t('analysis.filters.street_actions', 'Street Actions (By Position)')}</label>
+        <label className="text-xs uppercase tracking-wider text-gray-500 font-semibold">{t('analysis.filters.street_actions')}</label>
         
         {/* Preflop */}
         <div className="bg-dark-400/30 p-2 rounded border border-dark-200/50">

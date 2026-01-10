@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useReplayerStore, STREETS } from '../../stores/replayerStore';
 import { Play, Pause, SkipBack, SkipForward, FastForward, Rewind, Eye, EyeOff } from 'lucide-react';
 
 const ReplayerControls = () => {
+  const { t } = useTranslation();
   const { 
     isPlaying, 
     togglePlay, 
@@ -43,12 +45,12 @@ const ReplayerControls = () => {
           onClick={prevHand} 
           disabled={!hasPrevHand}
           className={`p-2 rounded-full transition-colors ${!hasPrevHand ? 'text-gray-700 cursor-not-allowed' : 'hover:bg-gray-800 hover:text-white'}`}
-          title="Previous Hand"
+          title={t('replayer.prev_hand', 'Previous Hand')}
         >
           <Rewind size={20} />
         </button>
 
-        <button onClick={prevStep} className="p-2 hover:bg-gray-800 rounded-full hover:text-white transition-colors" title="Previous Action">
+        <button onClick={prevStep} className="p-2 hover:bg-gray-800 rounded-full hover:text-white transition-colors" title={t('replayer.prev_action', 'Previous Action')}>
           <SkipBack size={20} />
         </button>
         
@@ -59,7 +61,7 @@ const ReplayerControls = () => {
           {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
         </button>
 
-        <button onClick={nextStep} className="p-2 hover:bg-gray-800 rounded-full hover:text-white transition-colors" title="Next Action">
+        <button onClick={nextStep} className="p-2 hover:bg-gray-800 rounded-full hover:text-white transition-colors" title={t('replayer.next_action', 'Next Action')}>
           <SkipForward size={20} />
         </button>
 
@@ -68,7 +70,7 @@ const ReplayerControls = () => {
           onClick={nextHand} 
           disabled={!hasNextHand}
           className={`p-2 rounded-full transition-colors ${!hasNextHand ? 'text-gray-700 cursor-not-allowed' : 'hover:bg-gray-800 hover:text-white'}`}
-          title="Next Hand"
+          title={t('replayer.next_hand', 'Next Hand')}
         >
           <FastForward size={20} />
         </button>
@@ -87,13 +89,13 @@ const ReplayerControls = () => {
         <button 
           onClick={toggleShowVillainHands}
           className={`p-1.5 rounded hover:bg-gray-800 transition-colors ${!showVillainHands ? 'text-red-400' : 'text-gray-400'}`}
-          title={showVillainHands ? "Hide Villain Hands" : "Show Villain Hands"}
+          title={showVillainHands ? t('replayer.hide_hands', "Hide Villain Hands") : t('replayer.show_hands', "Show Villain Hands")}
         >
           {showVillainHands ? <Eye size={18} /> : <EyeOff size={18} />}
         </button>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 font-mono">SPEED</span>
+          <span className="text-xs text-gray-500 font-mono">{t('replayer.speed')}</span>
           <div className="flex bg-gray-800 rounded p-0.5">
             {speeds.map(speed => (
               <button

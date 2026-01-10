@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useReplayerStore, selectReplayerState } from '../../stores/replayerStore';
 import { formatNumber } from '../../utils/formatters';
 import PlayingCard from '../common/PlayingCard';
@@ -39,9 +40,10 @@ const SEAT_POSITIONS_3 = [
 ];
 
 const ReplayerTable = () => {
+  const { t } = useTranslation();
   const state = useReplayerStore(selectReplayerState);
   
-  if (!state) return <div className="flex items-center justify-center h-full text-gray-500">Loading Hand...</div>;
+  if (!state) return <div className="flex items-center justify-center h-full text-gray-500">{t('replayer.loading')}</div>;
 
   const { players, pot, communityCards, dealerSeat, showVillainHands, currentStreet, showInBB, bbSize } = state;
   

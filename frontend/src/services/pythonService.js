@@ -62,37 +62,6 @@ class PythonService {
     }
   }
 
-  /**
-   * Analyse complète des leaks avec progression
-   */
-  async analyzeLeaks(options = {}) {
-    const progressStore = useProgressStore.getState();
-    
-    progressStore.startProgress({
-      title: 'Analyse des leaks',
-      message: 'Chargement des données...',
-      canCancel: true,
-    });
-
-    try {
-      const unsubscribe = ipcService.on('analysis-progress', ({ progress, message, stage }) => {
-        progressStore.updateProgress({ 
-          progress, 
-          message: `${stage}: ${message}`,
-        });
-      });
-
-      const result = await ipcService.invoke('python-analyze-leaks', options);
-
-      unsubscribe();
-      progressStore.finishProgress();
-      
-      return result;
-    } catch (error) {
-      progressStore.finishProgress();
-      throw error;
-    }
-  }
 
   /**
    * Recalcul de tous les analytics (EV, CEV, equity) depuis les données brutes

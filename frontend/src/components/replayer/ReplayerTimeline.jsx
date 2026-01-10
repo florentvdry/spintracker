@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useReplayerStore, STREETS, selectReplayerState } from '../../stores/replayerStore';
 import { formatNumber } from '../../utils/formatters';
 
@@ -11,6 +12,7 @@ const STREET_LABELS = {
 };
 
 const ReplayerTimeline = () => {
+  const { t } = useTranslation();
   const { hand, currentActionIndex, jumpToStep } = useReplayerStore();
   const state = useReplayerStore(selectReplayerState);
   const activeItemRef = useRef(null);
@@ -47,8 +49,8 @@ const ReplayerTimeline = () => {
           onClick={() => jumpToStep(-1)}
           ref={currentActionIndex === -1 ? activeItemRef : null}
         >
-          <div className="font-mono text-gray-500 text-xs">START</div>
-          <div className="text-gray-300">New Hand</div>
+          <div className="font-mono text-gray-500 text-xs">{t('replayer.start')}</div>
+          <div className="text-gray-300">{t('replayer.new_hand')}</div>
         </div>
 
         {hand.actions.map((action, index) => {

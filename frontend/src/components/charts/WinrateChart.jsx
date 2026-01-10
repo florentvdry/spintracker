@@ -3,6 +3,7 @@ import ReactECharts from 'echarts-for-react';
 import { ipcService } from '@services/ipcService';
 import { useAppStore } from '@stores/appStore';
 import { LoadingSpinner } from '@components/ui';
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import * as echarts from 'echarts';
 
@@ -14,15 +15,16 @@ const LINE_COLORS = {
   wonWithoutShowdown: '#ef4444' // Rouge - Won Without Showdown
 };
 
-const LINE_LABELS = {
-  chipsWon: 'Chips Won',
-  netExpected: 'Net Expected',
-  wonWithShowdown: 'Won With Showdown',
-  wonWithoutShowdown: 'Won Without Showdown'
-};
-
 export default function WinrateChart({ className }) {
+  const { t } = useTranslation();
   const chartRef = useRef(null);
+
+  const LINE_LABELS = {
+    chipsWon: t('common.chips_won', 'Chips Won'),
+    netExpected: t('hand_history.table.ev_chips', 'EV Chips'),
+    wonWithShowdown: t('common.showdown_winning', 'Showdown Won'),
+    wonWithoutShowdown: t('common.non_showdown_winning', 'Non-Showdown Won')
+  };
   const heroName = useAppStore(state => state.heroName);
   const lastUpdate = useAppStore(state => state.lastUpdate);
   const [data, setData] = useState([]);
@@ -292,8 +294,7 @@ export default function WinrateChart({ className }) {
   if (!data || data.length === 0) {
     return (
       <div className={clsx('flex flex-col items-center justify-center h-[500px] text-gray-400', className)}>
-        <p className="mb-2">Aucune donnée disponible pour le graphique</p>
-        <p className="text-sm opacity-70">Importez des mains pour voir votre progression</p>
+        <p className="mb-2">{t('dashboard.no_data_chart')}</p>
       </div>
     );
   }
@@ -360,7 +361,7 @@ export default function WinrateChart({ className }) {
                   : 'text-gray-400 hover:bg-dark-200'
               )}
             >
-              {p === 'all' ? 'Tout' : p}
+              {p === 'all' ? t('common.all', 'All') : p}
             </button>
           ))}
         </div>

@@ -1,7 +1,9 @@
 import { X } from 'lucide-react';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 export default function HandDetails({ hand, onClose }) {
+  const { t } = useTranslation();
   if (!hand) return null;
 
   const profit = hand.hero_profit || 0;
@@ -24,7 +26,7 @@ export default function HandDetails({ hand, onClose }) {
 
       {/* Result */}
       <div className="p-4 bg-dark-200 rounded-lg text-center">
-        <p className="text-sm text-gray-400 mb-1">Résultat</p>
+        <p className="text-sm text-gray-400 mb-1">{t('common.result')}</p>
         <p className={clsx(
           'text-2xl font-bold',
           isPositive ? 'profit-positive' : 'profit-negative'
@@ -40,11 +42,11 @@ export default function HandDetails({ hand, onClose }) {
 
       {/* Info */}
       <div className="space-y-2">
-        <InfoRow label="Position" value={hand.hero_position} />
-        <InfoRow label="Stack" value={`${hand.hero_stack || 0} chips`} />
-        <InfoRow label="Vilain" value={hand.villain_position} />
-        <InfoRow label="Cartes Vilain" value={formatCards(hand.villain_cards) || '—'} />
-        <InfoRow label="Pot Total" value={`${hand.total_pot || 0} chips`} />
+        <InfoRow label={t('common.position')} value={hand.hero_position} />
+        <InfoRow label="Stack" value={`${hand.hero_stack || 0} ${t('common.chips')}`} />
+        <InfoRow label={t('common.villain', 'Villain')} value={hand.villain_position} />
+        <InfoRow label={t('common.villain_cards', 'Villain Cards')} value={formatCards(hand.villain_cards) || '—'} />
+        <InfoRow label={t('hand_history.table.pot')} value={`${hand.total_pot || 0} ${t('common.chips')}`} />
         <InfoRow label="Multiplier" value={`${hand.multiplier || 1}x`} />
       </div>
 

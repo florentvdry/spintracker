@@ -1,8 +1,7 @@
 {
   "navigation": {
     "dashboard": "Dashboard",
-    "history": "History",
-    "leaks": "Leak Analysis",
+    "history": "Tournament History",
     "ranges": "Ranges",
     "settings": "Settings"
   },
@@ -35,6 +34,8 @@
     "sessions": "Sessions",
     "player": "Player",
     "hero": "Hero",
+    "villain": "Villain",
+    "villain_cards": "Villain Cards",
     "retry": "Retry",
     "all_read": "Mark all as read",
     "clear_all": "Clear all",
@@ -76,37 +77,100 @@
     "sessions_placeholder": "Your sessions will appear here"
   },
   "hand_history": {
-    "title": "Hand History",
-    "total_hands": "{{count}} hands total",
+    "title": "Tournament History",
+    "total_tournaments": "{{count}} tournaments total",
     "from": "From",
     "to": "To",
     "more_filters": "More filters",
     "page_info": "Page {{current}} of {{total}}",
-    "no_hands": "No hands",
-    "import_prompt": "Import history files to see your hands",
+    "no_hands": "No tournaments",
+    "import_prompt": "Import history files to see your tournaments",
     "hand_details": "Hand Details",
-    "select_prompt": "Select a hand to see details",
+    "select_prompt": "Select a tournament to see details",
+    "loading_hands": "Loading hands...",
+    "time": "Time",
+    "avg_cev": "Avg CEV",
     "table": {
       "ev_chips": "EV Chips",
       "pot": "Pot"
     }
   },
-  "leak_analysis": {
-    "title": "Leak Analysis",
-    "subtitle": "Identify and correct your game mistakes",
-    "run_analysis": "Run Analysis",
-    "analyzing": "Analyzing...",
-    "analysis_complete": "Analysis complete",
-    "leaks_detected": "{{count}} leaks detected",
-    "analysis_error": "Analysis error",
-    "critical": "Critical",
-    "major": "Major",
-    "minor": "Minor",
-    "detected_leaks": "Detected Leaks",
-    "errors_found": "{{count}} errors found",
-    "no_leaks": "No leaks detected",
-    "run_prompt": "Run an analysis to detect your game mistakes",
-    "select_prompt": "Select a leak to see details"
+  "analysis": {
+    "title": "Statistical Analysis",
+    "tabs": {
+      "stats": "Stats",
+      "hands": "Hands List"
+    },
+    "config_saved": "Configuration saved",
+    "config_loaded": "Configuration loaded",
+    "profit_graph": "Profit Graph",
+    "next_actions": "Next Actions",
+    "no_suggestions": "Good job! No critical leaks detected based on current filters.",
+    "field_analysis": "Field Analysis (All)",
+    "stats": {
+      "three_bet": "3-Bet",
+      "wtsd": "WTSD",
+      "wsd": "W$SD",
+      "won_hands": "Won Hands"
+    },
+    "filters": {
+      "title": "Filters",
+      "reset": "Reset",
+      "players_in_hand": "Players in Hand",
+      "hero_position": "Hero Position",
+      "street_actions": "Street Actions (By Position)",
+      "stack": "Stack (BB)",
+      "date": "Date"
+    },
+    "hud": {
+      "profile": "Stats Profile",
+      "edit_mode": "Edit Mode",
+      "save_changes": "Save Changes",
+      "no_stats": "No Stats Configured",
+      "editor_guide": "This profile is empty. Switch to Edit Mode to design your layout.",
+      "properties": "Properties",
+      "elements": "Elements",
+      "tools": "Tools",
+      "available_stats": "Available Stats",
+      "text_label": "Text Label",
+      "content": "Content",
+      "appearance": "Appearance",
+      "font_size": "Font Size",
+      "color": "Color",
+      "background": "Background",
+      "alignment": "Alignment",
+      "font_weight": "Font Weight",
+      "format": "Format",
+      "decimals": "Decimals",
+      "remove_element": "Remove Element"
+    }
+  },
+  "replayer": {
+    "title": "Replayer",
+    "speed": "SPEED",
+    "new_hand": "New Hand",
+    "loading": "Loading Hand...",
+    "start": "START"
+  },
+  "stats_builder": {
+    "title": "Stats Builder",
+    "library": "Stats Library",
+    "manage": "Manage your custom statistics",
+    "new_stat": "New Stat",
+    "save": "Save",
+    "test": "Test",
+    "opportunity": "1. Opportunity",
+    "opportunity_desc": "(When to count)",
+    "success": "2. Success",
+    "success_desc": "(Action to track)",
+    "palette": "Action Palette",
+    "drag_guide": "Drag to timeline",
+    "results": "Results",
+    "metrics": "Evaluation Metrics",
+    "no_data": "No Data",
+    "eval_guide": "Build your stat and click Test",
+    "matching_hands": "Matching Hands",
+    "nested_group": "Nested Group"
   },
   "range_analysis": {
     "title": "Range Analysis",

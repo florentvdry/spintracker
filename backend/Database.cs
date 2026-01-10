@@ -243,34 +243,12 @@ public class Database
             )";
         cmd.ExecuteNonQuery();
 
-        // Leaks table
-        cmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS leaks (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                hand_id TEXT,
-                player_id INTEGER,
-                leak_type TEXT,
-                severity TEXT,
-                description TEXT,
-                expected_action TEXT,
-                actual_action TEXT,
-                ev_loss REAL DEFAULT 0,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (hand_id) REFERENCES hands(id),
-                FOREIGN KEY (player_id) REFERENCES players(id)
-            )";
-        cmd.ExecuteNonQuery();
-
         // Indexes
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_date ON hands(date_time)";
         cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_hero_position ON hands(hero_position)";
         cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_game_id ON hands(game_id)";
-        cmd.ExecuteNonQuery();
-        cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_leaks_hand ON leaks(hand_id)";
-        cmd.ExecuteNonQuery();
-        cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_leaks_player ON leaks(player_id)";
         cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_analytics_hand ON hands_analytics(hand_id)";
         cmd.ExecuteNonQuery();
@@ -1115,6 +1093,187 @@ public class Database
         return handData;
     }
 
+    public async Task<TournamentsResult> GetTournamentsAsync(HandsQueryOptions options)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var whereClauses = new List<string>();
+        var parameters = new List<SqliteParameter>();
+
+        if (!string.IsNullOrEmpty(options.HeroName))
+        {
+            whereClauses.Add("EXISTS (SELECT 1 FROM player_hands ph WHERE ph.hand_id = h.id AND ph.player_name = @heroName)");
+            parameters.Add(new SqliteParameter("@heroName", options.HeroName));
+        }
+
+        if (!string.IsNullOrEmpty(options.DateFrom))
+        {
+            whereClauses.Add("h.date_time >= @dateFrom");
+            parameters.Add(new SqliteParameter("@dateFrom", options.DateFrom + " 00:00:00"));
+        }
+
+        if (!string.IsNullOrEmpty(options.DateTo))
+        {
+            whereClauses.Add("h.date_time <= @dateTo");
+            parameters.Add(new SqliteParameter("@dateTo", options.DateTo + " 23:59:59"));
+        }
+
+        var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
+
+        // Main Query: Group by game_id and calculate all stats in one go for performance
+        var profitCol = !string.IsNullOrEmpty(options.HeroName) ? "ph.net_profit" : "h.hero_profit";
+        var joinHero = !string.IsNullOrEmpty(options.HeroName) ? "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName" : "";
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = $@"
+            SELECT 
+                h.game_id, 
+                h.room, 
+                MIN(h.date_time) as start_time, 
+                h.buy_in, 
+                h.prize_pool,
+                COUNT(*) as hand_count,
+                SUM({profitCol}) as chip_profit,
+                AVG(a.ev_chips) as avg_cev,
+                MAX(h.player_count) as max_players
+            FROM hands h
+            {joinHero}
+            LEFT JOIN hands_analytics a ON h.id = a.hand_id
+            {whereClause}
+            GROUP BY h.game_id";
+
+        foreach (var param in parameters) cmd.Parameters.Add(new SqliteParameter(param.ParameterName, param.Value));
+
+        var allTournaments = new List<TournamentSummary>();
+        using (var reader = await cmd.ExecuteReaderAsync())
+        {
+            while (await reader.ReadAsync())
+            {
+                var t = new TournamentSummary
+                {
+                    GameId = reader.GetString(0),
+                    Room = reader.IsDBNull(1) ? "Unknown" : reader.GetString(1),
+                    DateTime = DateTime.TryParse(reader.GetString(2), out var dt) ? dt : DateTime.MinValue,
+                    BuyIn = reader.IsDBNull(3) ? 0 : reader.GetDouble(3),
+                    PrizePool = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
+                    HandCount = reader.GetInt32(5),
+                    ChipProfit = reader.IsDBNull(6) ? 0 : reader.GetDouble(6),
+                    AvgCev = reader.IsDBNull(7) ? 0 : reader.GetDouble(7)
+                };
+
+                int lastPlayerCount = reader.IsDBNull(8) ? 3 : reader.GetInt32(8);
+
+                // Tournament Profit Logic (Prize Sharing handling)
+                if (t.PrizePool > 0)
+                {
+                    bool hasSharing = (t.BuyIn > 0 && (t.PrizePool / t.BuyIn) >= 20);
+                    if (t.ChipProfit > 0) 
+                    {
+                        double winAmount = hasSharing ? (t.PrizePool * 0.75) : t.PrizePool;
+                        t.NetProfit = winAmount - t.BuyIn;
+                    }
+                    else
+                    {
+                        if (hasSharing)
+                        {
+                            double consolation = (lastPlayerCount == 2) ? (t.PrizePool * 0.15) : (t.PrizePool * 0.10);
+                            t.NetProfit = consolation - t.BuyIn;
+                        }
+                        else
+                        {
+                            t.NetProfit = -t.BuyIn;
+                        }
+                    }
+                }
+                else
+                {
+                    t.NetProfit = t.ChipProfit;
+                }
+
+                allTournaments.Add(t);
+            }
+        }
+
+        // 4. Global Sorting
+        var sortedTournaments = allTournaments.AsEnumerable();
+        if (!string.IsNullOrEmpty(options.SortBy))
+        {
+            sortedTournaments = options.SortBy.ToLower() switch
+            {
+                "date_asc" => sortedTournaments.OrderBy(t => t.DateTime),
+                "date_desc" => sortedTournaments.OrderByDescending(t => t.DateTime),
+                "room_asc" => sortedTournaments.OrderBy(t => t.Room),
+                "room_desc" => sortedTournaments.OrderByDescending(t => t.Room),
+                "buyin_asc" => sortedTournaments.OrderBy(t => t.BuyIn),
+                "buyin_desc" => sortedTournaments.OrderByDescending(t => t.BuyIn),
+                "hands_asc" => sortedTournaments.OrderBy(t => t.HandCount),
+                "hands_desc" => sortedTournaments.OrderByDescending(t => t.HandCount),
+                "profit_asc" => sortedTournaments.OrderBy(t => t.NetProfit),
+                "profit_desc" => sortedTournaments.OrderByDescending(t => t.NetProfit),
+                "cev_asc" => sortedTournaments.OrderBy(t => t.AvgCev),
+                "cev_desc" => sortedTournaments.OrderByDescending(t => t.AvgCev),
+                _ => sortedTournaments.OrderByDescending(t => t.DateTime)
+            };
+        }
+        else
+        {
+            sortedTournaments = sortedTournaments.OrderByDescending(t => t.DateTime);
+        }
+
+        // 5. Pagination
+        var total = allTournaments.Count;
+        var page = options.Page < 1 ? 1 : options.Page;
+        var limit = options.Limit < 1 ? 50 : options.Limit;
+        var offset = (page - 1) * limit;
+
+        var pagedTournaments = sortedTournaments.Skip(offset).Take(limit).ToList();
+
+        return new TournamentsResult
+        {
+            Tournaments = pagedTournaments,
+            Total = total,
+            Page = page,
+            Limit = limit,
+            Pages = (int)Math.Ceiling(total / (double)limit)
+        };
+    }
+
+    public async Task<List<object>> GetTournamentHandsAsync(string gameId, string? heroName = null)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+        var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
+        
+        if (!string.IsNullOrEmpty(heroName))
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
+        }
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = $@"
+            SELECT {selectFields}
+            FROM hands h
+            {joinClause}
+            WHERE h.game_id = @gameId
+            ORDER BY h.date_time ASC";
+
+        cmd.Parameters.AddWithValue("@gameId", gameId);
+        if (!string.IsNullOrEmpty(heroName)) cmd.Parameters.AddWithValue("@heroName", heroName);
+
+        var hands = new List<object>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            hands.Add(ReadHandFromReader(reader));
+        }
+
+        return hands;
+    }
+
     public async Task<List<object>> GetHandsByIdsAsync(List<string> handIds, string? heroName = null)
     {
         if (handIds == null || handIds.Count == 0) return new List<object>();
@@ -1440,13 +1599,13 @@ public class Database
         if (!string.IsNullOrEmpty(options.DateFrom))
         {
             whereClauses.Add("h.date_time >= @dateFrom");
-            parameters.Add(new SqliteParameter("@dateFrom", options.DateFrom));
+            parameters.Add(new SqliteParameter("@dateFrom", options.DateFrom + " 00:00:00"));
         }
 
         if (!string.IsNullOrEmpty(options.DateTo))
         {
             whereClauses.Add("h.date_time <= @dateTo");
-            parameters.Add(new SqliteParameter("@dateTo", options.DateTo));
+            parameters.Add(new SqliteParameter("@dateTo", options.DateTo + " 23:59:59"));
         }
 
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
@@ -2151,9 +2310,6 @@ public class Database
                 await cmd.ExecuteNonQueryAsync();
 
                 cmd.CommandText = "DELETE FROM player_hands";
-                await cmd.ExecuteNonQueryAsync();
-
-                cmd.CommandText = "DELETE FROM leaks";
                 await cmd.ExecuteNonQueryAsync();
 
                 cmd.CommandText = "DELETE FROM hands";

@@ -400,6 +400,15 @@ ipcMain.handle('get-hands', async (event, options = {}) => {
   return callBackendAPI('/db/hands', options);
 });
 
+ipcMain.handle('get-tournaments', async (event, options = {}) => {
+  return callBackendAPI('/db/tournaments', options);
+});
+
+ipcMain.handle('get-tournament-hands', async (event, gameId, heroName) => {
+  const query = `?gameId=${encodeURIComponent(gameId)}${heroName ? `&heroName=${encodeURIComponent(heroName)}` : ''}`;
+  return callBackendAPI(`/db/tournament-hands${query}`, {}, 'GET');
+});
+
 ipcMain.handle('get-winrate-chart-data', async (event, options = {}) => {
   return callBackendAPI('/db/winrate-chart', options);
 });
@@ -422,10 +431,6 @@ ipcMain.handle('get-range-breakdown', async (event, filters) => {
 
 ipcMain.handle('get-players', async (event, options = {}) => {
   return callBackendAPI('/db/players', options);
-});
-
-ipcMain.handle('analyze-leaks', async (event, options) => {
-  return callBackendAPI('/analyze/leaks', { options });
 });
 
 ipcMain.handle('delete-all-hands', async () => {
@@ -454,24 +459,6 @@ ipcMain.handle('python-health-check', async () => {
 
 ipcMain.handle('python-calculate-equity', async (event, params) => {
   return callBackendAPI('/equity', params);
-});
-
-ipcMain.handle('python-analyze-leaks', async (event, options) => {
-  mainWindow.webContents.send('analysis-progress', {
-    stage: 'Analyse',
-    progress: 10,
-    message: 'Chargement des mains...',
-  });
-
-  const result = await callBackendAPI('/analyze/leaks', { options });
-
-  mainWindow.webContents.send('analysis-progress', {
-    stage: 'Terminé',
-    progress: 100,
-    message: 'Analyse complète',
-  });
-
-  return result;
 });
 
 ipcMain.handle('python-recalculate-analytics', async () => {

@@ -88,6 +88,14 @@ class IPCService {
     return this.invoke('get-hands', options);
   }
 
+  async getTournaments(options = {}) {
+    return this.invoke('get-tournaments', options);
+  }
+
+  async getTournamentHands(gameId, heroName) {
+    return this.invoke('get-tournament-hands', gameId, heroName);
+  }
+
   async getHandDetails(handId) {
     return this.invoke('get-hand-details', handId);
   }
@@ -107,10 +115,6 @@ class IPCService {
   }
 
   // Analysis
-  async analyzeLeaks(options = {}) {
-    return this.invoke('analyze-leaks', options);
-  }
-
   async getRangeHeatmap(filters = {}) {
     return this.invoke('get-range-heatmap', filters);
   }

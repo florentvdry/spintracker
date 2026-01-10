@@ -560,6 +560,10 @@ namespace PokerTrackerBackend
                     continue;
                 }
 
+                // Determine Action
+                var actionType = DetermineActionType(hand, filters.Situation, heroName);
+                if (actionType == "None") continue;
+
                 if (!rangeData.ContainsKey(cards))
                 {
                     rangeData[cards] = new RangeHandStats { Hand = cards };
@@ -575,11 +579,10 @@ namespace PokerTrackerBackend
                     Id = hand.HandId,
                     Date = hand.Date,
                     Profit = hand.Profit,
-                    Ev = hand.EvChips
+                    Ev = hand.EvChips,
+                    Action = actionType
                 });
 
-                // Determine Action
-                var actionType = DetermineActionType(hand, filters.Situation, heroName);
                 if (!stats.Actions.ContainsKey(actionType))
                 {
                     stats.Actions[actionType] = 0;
@@ -591,6 +594,21 @@ namespace PokerTrackerBackend
             _logger.LogInformation($"GetRangeAnalysisAsync: Processed {processed}. Skipped: NoHeroName={skippedNoHeroName}, NoCards={skippedNoCards}");
 
             return rangeData;
+        }
+
+        public object AnalyzeRange(string? position, string? action, int stack)
+        {
+            // Placeholder logic for range analysis (Nash based)
+            // In a real app, this would query pre-calculated tables
+            return new
+            {
+                position = position ?? "BTN",
+                action = action ?? "Open",
+                stack = stack,
+                range = "22+, A2s+, K5s+, Q8s+, J8s+, T8s+, 98s, A7o+, KTo+, QTo+, JTo",
+                vpip = 24.5,
+                pfr = 18.2
+            };
         }
 
         private string DetermineActionType(AnalysisHandData hand, string? situation, string heroName)
@@ -632,7 +650,8 @@ namespace PokerTrackerBackend
                 if (isHero)
                 {
                     if (act.Contains("all-in")) return "AllIn";
-                    if (act.Contains("raises") || act.Contains("bets")) return "Raise";
+                    if (act.Contains("raises")) return "Raise";
+                    if (act.Contains("bets")) return "Bet";
                     if (act.Contains("calls")) return "Call";
                     if (act.Contains("folds")) return "Fold";
                     if (act.Contains("checks")) return "Check";
@@ -681,6 +700,7 @@ namespace PokerTrackerBackend
             public DateTime Date { get; set; }
             public double Profit { get; set; }
             public double? Ev { get; set; }
+            public string Action { get; set; } = "";
         }
 
         public class RangeHandStats

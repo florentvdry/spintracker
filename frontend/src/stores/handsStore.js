@@ -3,13 +3,16 @@ import { ipcService } from '@services/ipcService';
 import { useAppStore } from './appStore';
 
 /**
- * Store pour l'historique des mains et les analyses
+ * Store pour l'historique des tournois, des mains et les analyses
  */
 export const useHandsStore = create((set, get) => ({
   // État
   hands: [],
+  tournaments: [],
+  totalTournaments: 0,
   totalHands: 0,
   isLoading: false,
+  isLoadingHands: false,
   currentPage: 1,
   pageSize: 50,
   filters: {
@@ -19,53 +22,76 @@ export const useHandsStore = create((set, get) => ({
     result: null, // 'won', 'lost', 'all'
     minPot: null,
     maxPot: null,
+    sortBy: 'date_desc',
   },
   selectedHand: null,
+  selectedTournament: null,
+  tournamentHands: [],
 
   // Actions
-  loadHands: async () => {
+  loadTournaments: async () => {
     set({ isLoading: true });
 
     const { currentPage, pageSize, filters } = get();
     let lastError = null;
 
-    // Retry a few times to handle the backend not being ready on app startup
-    for (let attempt = 0; attempt < 5; attempt++) {
-      try {
-        const heroName = useAppStore.getState().heroName;
-        const result = await ipcService.getHands({
-          page: currentPage,
-          limit: pageSize,
-          heroName,
-          ...filters,
+    try {
+      const heroName = useAppStore.getState().heroName;
+      const result = await ipcService.getTournaments({
+        page: currentPage,
+        limit: pageSize,
+        heroName,
+        sortBy: filters.sortBy,
+        ...filters,
+      });
+
+      if (result && result.success && result.data) {
+        set({
+          tournaments: result.data.tournaments || [],
+          totalTournaments: result.data.total || 0,
         });
-
-        if (result && result.success && result.data) {
-          set({
-            hands: result.data.hands || [],
-            totalHands: result.data.total || 0,
-          });
-          set({ isLoading: false });
-          return result;
-        }
-
-        lastError = result && result.error ? result.error : 'Unknown error';
-      } catch (error) {
-        lastError = error;
+        set({ isLoading: false });
+        return result;
       }
 
-      // Wait longer between attempts
-      await new Promise((res) => setTimeout(res, 300 * (attempt + 1)));
+      lastError = result && result.error ? result.error : 'Unknown error';
+    } catch (error) {
+      lastError = error;
     }
 
-    console.error('Failed to load hands after retries:', lastError);
+    console.error('Failed to load tournaments:', lastError);
     set({ isLoading: false });
     return { success: false, error: lastError };
   },
 
+  loadTournamentHands: async (gameId) => {
+    set({ isLoadingHands: true });
+    try {
+      const heroName = useAppStore.getState().heroName;
+      const result = await ipcService.getTournamentHands(gameId, heroName);
+      if (result && result.success) {
+        set({ tournamentHands: result.data || [] });
+      }
+      set({ isLoadingHands: false });
+      return result;
+    } catch (error) {
+      set({ isLoadingHands: false });
+      console.error('Failed to load tournament hands:', error);
+      return { success: false, error };
+    }
+  },
+
   setPage: (page) => {
     set({ currentPage: page });
-    get().loadHands();
+    get().loadTournaments();
+  },
+
+  setSortBy: (sortBy) => {
+    set((state) => ({
+      filters: { ...state.filters, sortBy },
+      currentPage: 1,
+    }));
+    get().loadTournaments();
   },
 
   setFilters: (updates) => {
@@ -73,7 +99,7 @@ export const useHandsStore = create((set, get) => ({
       filters: { ...state.filters, ...updates },
       currentPage: 1, // Reset to first page
     }));
-    get().loadHands();
+    get().loadTournaments();
   },
 
   selectHand: async (handId) => {
@@ -89,7 +115,16 @@ export const useHandsStore = create((set, get) => ({
     }
   },
 
+  selectTournament: (tournament) => {
+    set({ selectedTournament: tournament });
+    if (tournament) {
+      get().loadTournamentHands(tournament.gameId || tournament.GameId);
+    } else {
+      set({ tournamentHands: [] });
+    }
+  },
+
   clearSelection: () => {
-    set({ selectedHand: null });
+    set({ selectedHand: null, selectedTournament: null, tournamentHands: [] });
   },
 }));

@@ -307,18 +307,18 @@ export default function AnalysisHUD({ filters }) {
                     <div className="p-5 border-b border-dark-200 bg-dark-300">
                         <h3 className="font-bold text-white flex items-center gap-2">
                             <Layout size={18} className="text-primary-500" />
-                            Stats Elements
+                            {t('analysis.hud.elements')}
                         </h3>
                     </div>
                     
                     <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                         <div className="mb-6">
-                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-1">Tools</h4>
+                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-1">{t('analysis.hud.tools')}</h4>
                             <DraggableTextTool />
                         </div>
                         
                         <div>
-                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-1">Available Stats</h4>
+                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-1">{t('analysis.hud.available_stats')}</h4>
                             <div className="space-y-1">
                                 {availableStats.map(s => (
                                     <DraggableStat key={s.id} stat={s} />
@@ -363,7 +363,7 @@ export default function AnalysisHUD({ filters }) {
                                         </select>
                                         <ChevronDown size={14} className="text-gray-500 absolute right-0 pointer-events-none group-hover:text-primary-400 transition-colors" />
                                     </div>
-                                    <span className="text-[10px] uppercase text-gray-500 font-bold tracking-wider absolute -top-2 left-0">Stats Profile</span>
+                                    <span className="text-[10px] uppercase text-gray-500 font-bold tracking-wider absolute -top-2 left-0">{t('analysis.hud.profile')}</span>
                                 </div>
                             )}
                         </div>
@@ -377,16 +377,16 @@ export default function AnalysisHUD({ filters }) {
                                 </button>
                                 <div className="h-5 w-px bg-dark-200 mx-1"></div>
                                 <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-dark-400 hover:bg-dark-200 text-gray-200 px-3 py-1.5 rounded-md font-medium text-xs transition-all border border-dark-200 hover:border-dark-100">
-                                    <Edit2 size={14} /> Edit Layout
+                                    <Edit2 size={14} /> {t('analysis.hud.edit_mode')}
                                 </button>
                             </>
                         ) : (
                             <>
                                 <button onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-md text-gray-400 hover:text-white text-xs font-medium transition-colors">
-                                    Cancel
+                                    {t('common.cancel')}
                                 </button>
                                 <button onClick={handleSaveProfile} className="flex items-center gap-2 bg-primary-600 hover:bg-primary-500 text-white px-4 py-1.5 rounded-md font-medium text-xs transition-colors shadow-lg shadow-primary-900/20">
-                                    <Save size={14} /> Save Changes
+                                    <Save size={14} /> {t('analysis.hud.save_changes')}
                                 </button>
                             </>
                         )}
@@ -462,15 +462,15 @@ export default function AnalysisHUD({ filters }) {
                                     <div className="p-3 bg-dark-400 rounded-full mb-4">
                                         <Layout size={32} className="text-primary-500" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-white mb-2">No Stats Configured</h3>
+                                    <h3 className="text-lg font-bold text-white mb-2">{t('analysis.hud.no_stats')}</h3>
                                     <p className="text-sm text-gray-400 mb-6">
-                                        This profile is empty. Switch to <span className="text-white font-medium">Edit Mode</span> to design your stats layout using the drag-and-drop builder.
+                                        {t('analysis.hud.editor_guide')}
                                     </p>
                                     <button 
                                         onClick={() => setIsEditing(true)} 
                                         className="pointer-events-auto flex items-center gap-2 bg-primary-600 hover:bg-primary-500 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg hover:shadow-primary-900/30 hover:-translate-y-0.5"
                                     >
-                                        <Edit2 size={16} /> Open Editor
+                                        <Edit2 size={16} /> {t('analysis.hud.edit_mode')}
                                     </button>
                                 </div>
                             </div>
@@ -485,7 +485,7 @@ export default function AnalysisHUD({ filters }) {
                     <div className="p-4 border-b border-dark-200 flex justify-between items-center bg-dark-300">
                         <h3 className="font-bold text-white flex items-center gap-2">
                             <Settings size={18} className="text-primary-500" />
-                            Properties
+                            {t('analysis.hud.properties')}
                         </h3>
                         <button onClick={() => setSelectedCell(null)} className="text-gray-500 hover:text-white transition-colors">
                             <X size={16} />
@@ -495,7 +495,7 @@ export default function AnalysisHUD({ filters }) {
                     <div className="p-6 space-y-6 overflow-y-auto custom-scrollbar">
                         {/* Content Section */}
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Content</label>
+                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('analysis.hud.content')}</label>
                             {selectedItem.type === 'text' ? (
                                 <input 
                                     value={selectedItem.content || ''}
@@ -518,12 +518,12 @@ export default function AnalysisHUD({ filters }) {
                         {/* Typography Section */}
                         <div className="space-y-4">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
-                                <Palette size={12} /> Appearance
+                                <Palette size={12} /> {t('analysis.hud.appearance')}
                             </label>
                             
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-[10px] text-gray-400 mb-1 block">Font Size</label>
+                                    <label className="text-[10px] text-gray-400 mb-1 block">{t('analysis.hud.font_size')}</label>
                                     <select 
                                         value={selectedItem.style?.fontSize || '16px'}
                                         onChange={(e) => handleUpdateSelectedItem({ style: { ...selectedItem.style, fontSize: e.target.value } })}
@@ -533,7 +533,7 @@ export default function AnalysisHUD({ filters }) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="text-[10px] text-gray-400 mb-1 block">Color</label>
+                                    <label className="text-[10px] text-gray-400 mb-1 block">{t('analysis.hud.color')}</label>
                                     <div className="flex items-center gap-2">
                                         <input 
                                             type="color" 
@@ -547,7 +547,7 @@ export default function AnalysisHUD({ filters }) {
                             </div>
 
                             <div>
-                                <label className="text-[10px] text-gray-400 mb-1 block">Background</label>
+                                <label className="text-[10px] text-gray-400 mb-1 block">{t('analysis.hud.background')}</label>
                                 <div className="flex items-center gap-2">
                                     <input 
                                         type="color" 
@@ -559,13 +559,13 @@ export default function AnalysisHUD({ filters }) {
                                         onClick={() => handleUpdateSelectedItem({ style: { ...selectedItem.style, backgroundColor: 'transparent' } })}
                                         className="text-[10px] text-gray-500 hover:text-white underline"
                                     >
-                                        Clear
+                                        {t('common.clear', 'Clear')}
                                     </button>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="text-[10px] text-gray-400 mb-1 block">Alignment</label>
+                                <label className="text-[10px] text-gray-400 mb-1 block">{t('analysis.hud.alignment')}</label>
                                 <div className="flex bg-dark-300 rounded p-1 border border-dark-200">
                                     {['left', 'center', 'right'].map(align => (
                                         <button
@@ -582,7 +582,7 @@ export default function AnalysisHUD({ filters }) {
                             </div>
                             
                             <div>
-                                <label className="text-[10px] text-gray-400 mb-1 block">Font Weight</label>
+                                <label className="text-[10px] text-gray-400 mb-1 block">{t('analysis.hud.font_weight')}</label>
                                 <div className="flex bg-dark-300 rounded p-1 border border-dark-200">
                                     {['normal', 'bold'].map(weight => (
                                         <button
@@ -602,9 +602,9 @@ export default function AnalysisHUD({ filters }) {
                             <>
                                 <div className="h-px bg-dark-200"></div>
                                 <div className="space-y-3">
-                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Format</label>
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('analysis.hud.format')}</label>
                                     <div>
-                                        <label className="text-[10px] text-gray-400 mb-1 block">Decimals</label>
+                                        <label className="text-[10px] text-gray-400 mb-1 block">{t('analysis.hud.decimals')}</label>
                                         <input 
                                             type="number" 
                                             min="0" max="4"
@@ -622,7 +622,7 @@ export default function AnalysisHUD({ filters }) {
                                 onClick={() => handleRemoveItem(selectedCell.row, selectedCell.col)}
                                 className="w-full py-2 bg-red-500/10 border border-red-500/30 text-red-400 rounded hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
                             >
-                                <Trash2 size={14} /> Remove Element
+                                <Trash2 size={14} /> {t('analysis.hud.remove_element')}
                             </button>
                         </div>
                     </div>

@@ -171,7 +171,7 @@ export default function Header() {
                 className="flex items-center gap-2 cursor-pointer bg-dark-300 border border-dark-200 rounded px-3 py-1.5 min-w-[180px] hover:border-primary-500 transition-colors"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-                <span className="text-xs text-gray-400">Hero:</span>
+                <span className="text-xs text-gray-400">{t('common.hero')}:</span>
                 <span className="text-sm text-gray-200 flex-1 truncate">{heroName || t('header.select_hero')}</span>
                 <ChevronDown className="w-4 h-4 text-gray-400" />
             </div>
