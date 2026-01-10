@@ -21,6 +21,7 @@ public class AnalyticsCalculator
         var hero = hand.Players.FirstOrDefault(p => p.IsHero);
         if (hero == null) return analytics;
 
+        analytics.PlayerName = hero.Name;
         var heroProfit = hero.NetProfit;
         var isShowdown = hero.WentToShowdown;
 
@@ -585,6 +586,7 @@ public class VoluntaryFoldException : Exception { }
 public class HandAnalytics
 {
     public string? HandId { get; set; }
+    public string? PlayerName { get; set; }
     public double? EvChips { get; set; }
     public double? NetWonAdjusted { get; set; }
     public double? EquityPreflop { get; set; }
