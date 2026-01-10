@@ -237,7 +237,10 @@ export default function AnalysisHUD({ filters }) {
             ...item.definition
         }));
 
-    if (statsToEval.length === 0) return;
+    if (statsToEval.length === 0) {
+        console.log('No stats to evaluate');
+        return;
+    }
 
     setLoadingValues(true);
     try {
@@ -245,6 +248,9 @@ export default function AnalysisHUD({ filters }) {
             stats: statsToEval,
             filters: filters
         };
+        
+        console.log('Evaluating stats:', statsToEval.map(s => ({ id: s.id, name: s.name })));
+        console.log('With filters:', filters);
         
         const res = await fetch('http://localhost:5050/stats/builder/evaluate-batch', {
             method: 'POST',
@@ -254,7 +260,21 @@ export default function AnalysisHUD({ filters }) {
         const json = await res.json();
         
         if (json.success) {
-            setStatValues(json.data);
+            // Log pour debug
+            console.log('Stats evaluation results:', json.data);
+            console.log('Result keys:', Object.keys(json.data || {}));
+            console.log('Result count:', Object.keys(json.data || {}).length);
+            
+            // Log quelques exemples de résultats
+            const sampleKeys = Object.keys(json.data || {}).slice(0, 5);
+            sampleKeys.forEach(key => {
+                const result = json.data[key];
+                console.log(`  ${key}: Opportunities=${result?.Opportunities ?? result?.opportunities ?? 0}, Successes=${result?.Successes ?? result?.successes ?? 0}`);
+            });
+            
+            setStatValues(json.data || {});
+        } else {
+            console.error('Stats evaluation failed:', json.error || json);
         }
     } catch (err) {
         console.error("Evaluation failed", err);
@@ -510,7 +530,25 @@ export default function AnalysisHUD({ filters }) {
                                 const key = item.id || item.name;
                                 const result = statValues[key];
                                 if (loadingValues) value = '...';
-                                else if (result) value = result.value;
+                                else if (result) {
+                                    // Calculate value from Opportunities and Successes
+                                    // Handle both camelCase and PascalCase property names
+                                    const opportunities = result.Opportunities ?? result.opportunities ?? 0;
+                                    const successes = result.Successes ?? result.successes ?? 0;
+                                    
+                                    if (opportunities > 0) {
+                                        const calculatedValue = (successes / opportunities * 100);
+                                        const decimals = item?.style?.decimals ?? 1;
+                                        value = calculatedValue.toFixed(decimals);
+                                    } else {
+                                        value = '0.0';
+                                    }
+                                } else {
+                                    // Debug: log when result is not found
+                                    if (Object.keys(statValues).length > 0) {
+                                        console.warn(`Stat result not found for key: ${key}. Available keys:`, Object.keys(statValues));
+                                    }
+                                }
                             }
 
                             return (

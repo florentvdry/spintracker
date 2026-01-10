@@ -1001,17 +1001,44 @@ app.MapPost("/stats/builder/evaluate-batch", async (HttpContext context, Databas
              return Results.BadRequest(new { success = false, error = "Invalid request" });
         }
 
+        logger.LogInformation($"EvaluateBatch: Received {request.Stats.Count} stats to evaluate");
+        logger.LogInformation($"EvaluateBatch: Filters - HeroName='{request.Filters?.HeroName}', PlayerCount={request.Filters?.PlayerCount}");
+
         // 1. Get Hands based on filters
         var hands = await db.GetFilteredHandsForStatsAsync(request.Filters ?? new PokerTrackerBackend.AnalysisFilters());
+        logger.LogInformation($"EvaluateBatch: Retrieved {hands.Count} hands from database");
+
+        if (hands.Count == 0)
+        {
+            logger.LogWarning("EvaluateBatch: No hands found with current filters");
+            // Return empty results for all stats
+            var emptyResults = new Dictionary<string, StatEvaluationResult>();
+            foreach (var stat in request.Stats)
+            {
+                var key = !string.IsNullOrEmpty(stat.Id) ? stat.Id : stat.Name;
+                emptyResults[key] = new StatEvaluationResult { Opportunities = 0, Successes = 0 };
+            }
+            return Results.Json(new { success = true, data = emptyResults });
+        }
 
         // 2. Evaluate
         var result = engine.EvaluateBatch(hands, request.Stats, request.Filters?.HeroName);
+        logger.LogInformation($"EvaluateBatch: Evaluation complete. Result count: {result.Count}");
+
+        // Log some sample results
+        int loggedSamples = 0;
+        foreach (var kvp in result.Take(5))
+        {
+            logger.LogInformation($"EvaluateBatch: {kvp.Key} - Opportunities: {kvp.Value.Opportunities}, Successes: {kvp.Value.Successes}, Value: {kvp.Value.Value:F2}%");
+            loggedSamples++;
+        }
 
         return Results.Json(new { success = true, data = result });
     }
     catch (Exception e)
     {
         logger.LogError($"Batch Eval error: {e.Message}");
+        logger.LogError($"Stack trace: {e.StackTrace}");
         return Results.Problem(detail: e.Message, statusCode: 500);
     }
 });

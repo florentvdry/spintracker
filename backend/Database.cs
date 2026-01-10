@@ -2130,6 +2130,8 @@ public class Database
 
     public async Task<List<ParsedHand>> GetFilteredHandsForStatsAsync(AnalysisFilters filters)
     {
+        _logger.LogInformation($"GetFilteredHandsForStatsAsync: Starting with HeroName='{filters.HeroName}', PlayerCount={filters.PlayerCount}");
+        
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
@@ -2263,15 +2265,55 @@ public class Database
         using var cmd = connection.CreateCommand();
         cmd.CommandText = $"SELECT {selectFields} FROM hands {joinClause} {whereClause} ORDER BY date_time";
         
+        _logger.LogInformation($"GetFilteredHandsForStatsAsync: SQL Query: {cmd.CommandText}");
+        _logger.LogInformation($"GetFilteredHandsForStatsAsync: Where clauses count: {whereClauses.Count}");
+        
         foreach (var p in parameters) cmd.Parameters.Add(p);
 
-        var hands = new List<ParsedHand>();
+        var handsDict = new Dictionary<string, ParsedHand>();
         using var reader = await cmd.ExecuteReaderAsync();
+        int rowCount = 0;
         while (await reader.ReadAsync())
         {
-            hands.Add(ReadParsedHandFromReader(reader));
+            var handId = reader.GetString(reader.GetOrdinal("id"));
+            if (!handsDict.ContainsKey(handId))
+            {
+                handsDict[handId] = ReadParsedHandFromReader(reader);
+                handsDict[handId].Players = new List<PlayerInfo>();
+            }
+            
+            // Add player from current row
+            var playerName = GetStringOrNull(reader, "dyn_hero_name");
+            if (!string.IsNullOrEmpty(playerName))
+            {
+                var existingPlayer = handsDict[handId].Players.FirstOrDefault(p => p.Name == playerName);
+                if (existingPlayer == null)
+                {
+                    handsDict[handId].Players.Add(new PlayerInfo
+                    {
+                        Name = playerName,
+                        Stack = GetInt32OrNull(reader, "hero_stack") ?? 0,
+                        Cards = GetStringOrNull(reader, "dyn_hero_cards") ?? "",
+                        Position = GetStringOrNull(reader, "dyn_hero_position") ?? "",
+                        IsHero = true, // We're evaluating from this player's perspective
+                        NetProfit = GetDoubleOrNull(reader, "dyn_hero_profit") ?? 0,
+                        IsAllIn = GetBoolOrNull(reader, "dyn_hero_all_in") ?? false,
+                        WentToShowdown = GetBoolOrNull(reader, "dyn_went_to_showdown") ?? false
+                    });
+                }
+            }
+            rowCount++;
         }
 
+        var hands = handsDict.Values.ToList();
+        
+        // Now load all players for each hand
+        foreach (var hand in hands)
+        {
+            await LoadPlayersForHand(hand);
+        }
+
+        _logger.LogInformation($"GetFilteredHandsForStatsAsync: Retrieved {hands.Count} hands from database");
         return hands;
     }
 
@@ -2498,6 +2540,43 @@ public class Database
             _logger.LogWarning($"Column '{columnName}' not found or error reading: {ex.Message}");
             return null;
         }
+    }
+
+    private async Task LoadPlayersForHand(ParsedHand hand)
+    {
+        if (string.IsNullOrEmpty(hand.Id)) return;
+        
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+        
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+            SELECT player_name, position, stack, cards, investment, chips_won, net_profit, is_hero, is_all_in, went_to_showdown
+            FROM player_hands
+            WHERE hand_id = @handId";
+        cmd.Parameters.AddWithValue("@handId", hand.Id);
+        
+        hand.Players.Clear();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            hand.Players.Add(new PlayerInfo
+            {
+                Name = reader.GetString(0),
+                Position = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                Stack = reader.IsDBNull(2) ? 0 : reader.GetDouble(2),
+                Cards = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                Investment = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
+                ChipsWon = reader.IsDBNull(5) ? 0 : reader.GetDouble(5),
+                NetProfit = reader.IsDBNull(6) ? 0 : reader.GetDouble(6),
+                IsHero = reader.IsDBNull(7) ? false : reader.GetInt32(7) == 1,
+                IsAllIn = reader.IsDBNull(8) ? false : reader.GetInt32(8) == 1,
+                WentToShowdown = reader.IsDBNull(9) ? false : reader.GetInt32(9) == 1
+            });
+        }
+        
+        // Set PlayerCount
+        hand.PlayerCount = hand.Players.Count;
     }
 
     // --- Custom Stats CRUD ---

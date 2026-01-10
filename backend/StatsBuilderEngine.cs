@@ -118,7 +118,21 @@ namespace PokerTrackerBackend.StatsBuilder
 
             foreach (var condition in group.Conditions)
             {
-                results.Add(EvaluateCondition(hand, condition));
+                var conditionResult = EvaluateCondition(hand, condition);
+                results.Add(conditionResult);
+                
+                // Debug logging for first few evaluations
+                if (_logger != null && results.Count <= 2)
+                {
+                    _logger.LogDebug($"EvaluateGroup: Condition {results.Count} - Street={condition.Street}, Actor={condition.Actor}, Action={condition.Action}, Result={conditionResult}");
+                    if (condition.Parameters != null && condition.Parameters.Count > 0)
+                    {
+                        foreach (var param in condition.Parameters)
+                        {
+                            _logger.LogDebug($"  Parameter: {param.Key}={param.Value}");
+                        }
+                    }
+                }
             }
 
             foreach (var subGroup in group.SubGroups)
@@ -152,6 +166,7 @@ namespace PokerTrackerBackend.StatsBuilder
                     var pos = posObj.ToString();
                     if (!string.IsNullOrEmpty(pos) && !string.Equals(hand.HeroPosition, pos, StringComparison.OrdinalIgnoreCase))
                     {
+                        if (_logger != null) _logger.LogDebug($"EvaluateCondition: Position mismatch - Expected: {pos}, Got: {hand.HeroPosition}");
                         return false;
                     }
                 }
@@ -166,7 +181,11 @@ namespace PokerTrackerBackend.StatsBuilder
                     else if (pcObj is long l) { pc = (int)l; parsed = true; }
                     else if (int.TryParse(pcObj.ToString(), out pc)) { parsed = true; }
 
-                    if (parsed && hand.PlayerCount != pc) return false;
+                    if (parsed && hand.PlayerCount != pc)
+                    {
+                        if (_logger != null) _logger.LogDebug($"EvaluateCondition: PlayerCount mismatch - Expected: {pc}, Got: {hand.PlayerCount}");
+                        return false;
+                    }
                 }
 
                 // Stack Depth (Hero)
@@ -186,7 +205,11 @@ namespace PokerTrackerBackend.StatsBuilder
                             else if (minObj is long l) { min = l; parsed = true; }
                             else if (double.TryParse(minObj.ToString(), out min)) { parsed = true; }
 
-                            if (parsed && stackBB < min) return false;
+                            if (parsed && stackBB < min)
+                            {
+                                if (_logger != null) _logger.LogDebug($"EvaluateCondition: MinStackBB mismatch - Expected: >= {min}, Got: {stackBB:F2} (Stack={hand.HeroStack}, BB={bb})");
+                                return false;
+                            }
                         }
                         
                         if (condition.Parameters.TryGetValue("MaxStackBB", out var maxObj))
@@ -198,8 +221,16 @@ namespace PokerTrackerBackend.StatsBuilder
                             else if (maxObj is long l) { max = l; parsed = true; }
                             else if (double.TryParse(maxObj.ToString(), out max)) { parsed = true; }
 
-                            if (parsed && stackBB > max) return false;
+                            if (parsed && stackBB > max)
+                            {
+                                if (_logger != null) _logger.LogDebug($"EvaluateCondition: MaxStackBB mismatch - Expected: <= {max}, Got: {stackBB:F2}");
+                                return false;
+                            }
                         }
+                    }
+                    else
+                    {
+                        if (_logger != null) _logger.LogDebug($"EvaluateCondition: Cannot parse BB from blinds: {hand.Blinds}");
                     }
                 }
             }
@@ -212,7 +243,11 @@ namespace PokerTrackerBackend.StatsBuilder
             // 2. Get Action Text for Street
             string streetName = condition.Street ?? "Preflop";
             string actionText = GetActionTextForStreet(hand, streetName);
-            if (string.IsNullOrEmpty(actionText)) return false;
+            if (string.IsNullOrEmpty(actionText))
+            {
+                if (_logger != null) _logger.LogDebug($"EvaluateCondition: No action text for street {streetName}");
+                return false;
+            }
 
             // 3. Parse Actions
             var actions = ParseActions(actionText);
