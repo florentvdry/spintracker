@@ -57,16 +57,16 @@ export default function TournamentsTable({
           </tr>
         </thead>
         <tbody>
-          {tournaments.map((t) => {
-            const isSelected = (selectedTournament?.gameId || selectedTournament?.GameId) === (t.gameId || t.GameId);
-            const profit = t.netProfit ?? t.NetProfit ?? 0;
+          {tournaments.map((tourn) => {
+            const isSelected = (selectedTournament?.gameId || selectedTournament?.GameId) === (tourn.gameId || tourn.GameId);
+            const profit = tourn.netProfit ?? tourn.NetProfit ?? 0;
             const isPositive = profit >= 0;
-            const cev = t.avgCev ?? t.AvgCev ?? 0;
+            const cev = tourn.avgCev ?? tourn.AvgCev ?? 0;
 
             return (
               <React.Fragment key={t.gameId || t.GameId}>
                 <tr
-                  onClick={() => onSelectTournament(isSelected ? null : t)}
+                  onClick={() => onSelectTournament(isSelected ? null : tourn)}
                   className={clsx(
                     'cursor-pointer transition-colors hover:bg-dark-300/50',
                     isSelected && 'bg-primary-500/10'
@@ -76,16 +76,16 @@ export default function TournamentsTable({
                     {isSelected ? <ChevronDown className="w-4 h-4 text-primary-400 mx-auto" /> : <ChevronRight className="w-4 h-4 text-gray-500 mx-auto" />}
                   </td>
                   <td className="text-gray-300 text-sm">
-                    {formatDate(t.dateTime || t.DateTime)}
+                    {formatDate(tourn.dateTime || tourn.DateTime)}
                   </td>
                   <td>
-                    <span className="text-gray-400 text-xs uppercase font-bold tracking-wider">{t.room || t.Room}</span>
+                    <span className="text-gray-400 text-xs uppercase font-bold tracking-wider">{tourn.room || tourn.Room}</span>
                   </td>
                   <td>
-                    <span className="text-white font-medium">{t.buyIn || t.BuyIn}€</span>
+                    <span className="text-white font-medium">{tourn.buyIn || tourn.BuyIn}€</span>
                   </td>
                   <td className="text-right text-gray-400 text-sm font-mono">
-                    {t.handCount || t.HandCount}
+                    {tourn.handCount || tourn.HandCount}
                   </td>
                   <td className={clsx(
                     "text-right font-mono text-sm",
@@ -103,7 +103,7 @@ export default function TournamentsTable({
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
-                        onReplayTournament(t.gameId || t.GameId);
+                        onReplayTournament(tourn.gameId || tourn.GameId);
                       }}
                       className="p-1.5 rounded hover:bg-primary-500/20 text-gray-500 hover:text-primary-400 transition-all"
                       title="Replay Tournament"
