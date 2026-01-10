@@ -16,7 +16,7 @@ export default function Home() {
             Ready to crush the competition?
           </h2>
           <p className="text-gray-400 mb-8 max-w-xl mx-auto">
-            Join thousands of professional players who trust PokerTracker to improve their game.
+            Join thousands of professional players who trust SpinTracker to improve their game.
           </p>
           <a href="/download" className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors">
             Start Your Free Trial

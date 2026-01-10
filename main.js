@@ -31,7 +31,7 @@ function startBackend() {
   if (isDev) {
     const dotnetPath = 'dotnet';
     const backendDir = path.join(__dirname, 'backend');
-    const dllPath = path.join(backendDir, 'bin', 'Debug', 'net8.0', 'PokerTrackerBackend.dll');
+    const dllPath = path.join(backendDir, 'bin', 'Debug', 'net8.0', 'SpinTrackerBackend.dll');
 
     // Check if compiled DLL exists
     if (!fs.existsSync(dllPath)) {
@@ -71,13 +71,13 @@ function startBackendProcess() {
   } else {
     // In production, the backend is in the resources folder
     cwd = path.join(process.resourcesPath, 'backend');
-    command = path.join(cwd, 'PokerTrackerBackend.exe');
+    command = path.join(cwd, 'SpinTrackerBackend.exe');
     args = [BACKEND_PORT.toString(), `--db-path=${dbPath}`];
     
     // Fallback for different packaging structures
     if (!fs.existsSync(command)) {
       cwd = path.join(__dirname, '..', 'backend');
-      command = path.join(cwd, 'PokerTrackerBackend.exe');
+      command = path.join(cwd, 'SpinTrackerBackend.exe');
     }
   }
 
@@ -711,7 +711,7 @@ ipcMain.handle('export-data', async (event, format = 'json') => {
     // Show save dialog
     const { filePath } = await dialog.showSaveDialog(mainWindow, {
       title: 'Exporter les mains',
-      defaultPath: `PokerTracker_Export_${new Date().toISOString().split('T')[0]}.zip`,
+      defaultPath: `SpinTracker_Export_${new Date().toISOString().split('T')[0]}.zip`,
       filters: [
         { name: 'Zip Files', extensions: ['zip'] }
       ]

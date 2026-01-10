@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
-using PokerTrackerBackend;
+using SpinTrackerBackend;
 
-namespace PokerTrackerBackend.StatsBuilder
+namespace SpinTrackerBackend.StatsBuilder
 {
     public class StatsBuilderEngine
     {

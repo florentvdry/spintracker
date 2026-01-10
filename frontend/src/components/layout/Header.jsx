@@ -16,7 +16,7 @@ import { ipcService } from '@services/ipcService';
 import { formatDate } from '@utils/formatters';
 import { useTranslation } from 'react-i18next';
 
-const LAST_AUTO_DETECTED_HERO_KEY = 'pokerTracker_lastAutoDetectedHero';
+const LAST_AUTO_DETECTED_HERO_KEY = 'SpinTracker_lastAutoDetectedHero';
 
 export default function Header() {
   const { t } = useTranslation();

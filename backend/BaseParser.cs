@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Globalization;
 
-namespace PokerTrackerBackend;
+namespace SpinTrackerBackend;
 
 public interface IHandParser
 {

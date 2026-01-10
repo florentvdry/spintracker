@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
 
-namespace PokerTrackerBackend;
+namespace SpinTrackerBackend;
 
 public class ImporterService
 {

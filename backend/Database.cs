@@ -2,7 +2,7 @@ using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using System.Text.Json;
 
-namespace PokerTrackerBackend;
+namespace SpinTrackerBackend;
 
 public class Database
 {

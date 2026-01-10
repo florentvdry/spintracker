@@ -12,7 +12,7 @@ export function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
               <BarChart3 className="h-6 w-6 text-blue-500" />
-              <span className="text-lg font-bold text-white">PokerTracker</span>
+              <span className="text-lg font-bold text-white">SpinTracker</span>
             </Link>
             <p className="text-sm text-gray-400 max-w-xs">
               {t('description')}
@@ -48,7 +48,7 @@ export function Footer() {
         
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10">
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} PokerTracker. {t('rights')}
+            © {new Date().getFullYear()} SpinTracker. {t('rights')}
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="#" className="text-gray-400 hover:text-white">

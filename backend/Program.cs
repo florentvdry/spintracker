@@ -1,11 +1,11 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using PokerTrackerBackend;
-using PokerTrackerBackend.StatsBuilder;
+using SpinTrackerBackend;
+using SpinTrackerBackend.StatsBuilder;
 
-// Initialize SQLite
-SQLitePCL.Batteries.Init();
+// Initialize SQLite (use Batteries_V2 to match SQLitePCLRaw.batteries_v2)
+SQLitePCL.Batteries_V2.Init();
 
 if (args.Length > 0 && args[0] == "--compare")
 {
@@ -640,7 +640,7 @@ app.MapPost("/analysis/stats", async (HttpContext context, AnalysisService analy
     {
         using var reader = new StreamReader(context.Request.Body);
         var body = await reader.ReadToEndAsync();
-        var filters = JsonSerializer.Deserialize<PokerTrackerBackend.AnalysisFilters>(body, jsonOptions);
+        var filters = JsonSerializer.Deserialize<SpinTrackerBackend.AnalysisFilters>(body, jsonOptions);
 
         if (filters == null)
         {
@@ -688,7 +688,7 @@ app.MapPost("/analysis/range-breakdown", async (HttpContext context, AnalysisSer
         var body = await reader.ReadToEndAsync();
         // Reuse AnalysisFilters but without strict action filtering? 
         // The service method will use the filters as is.
-        var filters = JsonSerializer.Deserialize<PokerTrackerBackend.AnalysisFilters>(body, jsonOptions);
+        var filters = JsonSerializer.Deserialize<SpinTrackerBackend.AnalysisFilters>(body, jsonOptions);
 
         if (filters == null)
         {
@@ -1041,7 +1041,7 @@ app.MapPost("/stats/builder/evaluate-batch", async (HttpContext context, Databas
         logger.LogInformation($"EvaluateBatch: Filters - HeroName='{request.Filters?.HeroName}', PlayerCount={request.Filters?.PlayerCount}");
 
         // 1. Get Hands based on filters
-        var hands = await db.GetFilteredHandsForStatsAsync(request.Filters ?? new PokerTrackerBackend.AnalysisFilters());
+        var hands = await db.GetFilteredHandsForStatsAsync(request.Filters ?? new SpinTrackerBackend.AnalysisFilters());
         logger.LogInformation($"EvaluateBatch: Retrieved {hands.Count} hands from database");
 
         if (hands.Count == 0)
@@ -1212,5 +1212,5 @@ public class HudProfileRequest
 public class EvaluateBatchRequest
 {
     public List<StatDefinition> Stats { get; set; } = new();
-    public PokerTrackerBackend.AnalysisFilters? Filters { get; set; }
+    public SpinTrackerBackend.AnalysisFilters? Filters { get; set; }
 }

@@ -34,7 +34,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center space-x-2">
             <BarChart3 className="h-8 w-8 text-blue-500" />
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-              PokerTracker
+              SpinTracker
             </span>
           </Link>
 

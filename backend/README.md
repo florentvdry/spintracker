@@ -73,7 +73,7 @@ backend/
 ├── AnalyticsCalculator.cs  # Calculs d'analytics
 ├── AnalysisEngine.cs       # Détection de leaks
 ├── Parsers.cs              # Parsers de hand history
-└── PokerTrackerBackend.csproj
+└── SpinTrackerBackend.csproj
 ```
 
 ## Compatibilité

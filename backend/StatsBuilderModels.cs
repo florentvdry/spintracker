@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace PokerTrackerBackend.StatsBuilder
+namespace SpinTrackerBackend.StatsBuilder
 {
     public class StatDefinition
     {

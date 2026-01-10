@@ -1,4 +1,4 @@
-namespace PokerTrackerBackend;
+namespace SpinTrackerBackend;
 
 public class AnalyticsCalculator
 {

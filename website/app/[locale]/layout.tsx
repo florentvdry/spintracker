@@ -9,7 +9,7 @@ import {getMessages} from 'next-intl/server';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PokerTracker - Advanced Poker Analysis Software",
+  title: "SpinTracker - Advanced Poker Analysis Software",
   description: "Next-generation poker tracking software for professional players.",
 };
 

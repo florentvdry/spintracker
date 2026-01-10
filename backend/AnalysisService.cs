@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace PokerTrackerBackend
+namespace SpinTrackerBackend
 {
     public class AnalysisService
     {
