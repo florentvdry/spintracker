@@ -56,7 +56,13 @@ const StatsBuilder = () => {
       const res = await fetch('http://localhost:5050/stats');
       const json = await res.json();
       if (json.success) {
-        setStatsList(json.data);
+        // Sort stats by name (case-insensitive) to present an ordered library
+        const sorted = (json.data || []).slice().sort((a, b) => {
+          const na = (a.name || '').toString();
+          const nb = (b.name || '').toString();
+          return na.localeCompare(nb, undefined, { sensitivity: 'base' });
+        });
+        setStatsList(sorted);
       }
     } catch (err) {
       console.error("Failed to load stats", err);
