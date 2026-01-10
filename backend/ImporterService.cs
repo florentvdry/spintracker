@@ -18,6 +18,73 @@ public class ImporterService
         _logger = logger;
     }
 
+    public async Task<int> CountHandsInFileAsync(string filePath, CancellationToken cancellationToken)
+    {
+        if (!File.Exists(filePath))
+        {
+            return 0;
+        }
+
+        // Read first chunk to detect format
+        string firstChunk;
+        using (var reader = new StreamReader(filePath))
+        {
+            var buffer = new char[4096];
+            int read = await reader.ReadAsync(buffer, 0, buffer.Length);
+            firstChunk = new string(buffer, 0, read);
+        }
+
+        var parser = ParserFactory.GetParser(firstChunk);
+        if (parser == null)
+        {
+            return 0;
+        }
+
+        string separator = "------------";
+        int count = 0;
+        var handBuffer = new StringBuilder();
+
+        using (var reader = new StreamReader(filePath))
+        {
+            string? line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                if (cancellationToken.IsCancellationRequested) break;
+
+                if (line.Trim() == separator)
+                {
+                    if (handBuffer.Length > 0)
+                    {
+                        var handText = handBuffer.ToString();
+                        var hand = parser.ParseHand(handText);
+                        if (hand != null)
+                        {
+                            count++;
+                        }
+                        handBuffer.Clear();
+                    }
+                }
+                else
+                {
+                    handBuffer.AppendLine(line);
+                }
+            }
+
+            // Count last hand if buffer not empty
+            if (handBuffer.Length > 0)
+            {
+                var handText = handBuffer.ToString();
+                var hand = parser.ParseHand(handText);
+                if (hand != null)
+                {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
     public async Task ImportFileAsync(string filePath, Func<ImportProgress, Task> onProgress, CancellationToken cancellationToken)
     {
         if (!File.Exists(filePath))

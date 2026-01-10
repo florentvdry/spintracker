@@ -15,8 +15,6 @@ export default function UpdateModal() {
   useEffect(() => {
     // Listen for IPC messages
     const removeListener = ipcService.onUpdateStatus((data) => {
-      console.log('Update status:', data);
-      
       switch (data.status) {
         case 'checking':
           // Optional: show a small indicator or nothing

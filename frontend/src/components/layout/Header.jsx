@@ -84,17 +84,25 @@ export default function Header() {
 
   const handleImport = async () => {
     // Écouter les mises à jour de progression
-    const unsubscribe = ipcService.onImportProgress(({ percent, processed, total, speed, handsImported, totalHands, filesProcessed, totalFiles }) => {
+    const unsubscribe = ipcService.onImportProgress(({ percent, processed, total, speed, handsImported, totalHands, filesProcessed, totalFiles, message }) => {
       const speedText = speed ? ` (${speed} ${t('common.hands')}/s)` : '';
-      if (typeof handsImported === 'number' && typeof totalHands === 'number' && totalHands > 0) {
+      
+      // If a custom message is provided, use it
+      if (message) {
+        updateProgress({
+          progress: percent,
+          message: message,
+        });
+      } else if (typeof handsImported === 'number' && typeof totalHands === 'number' && totalHands > 0) {
         updateProgress({
           progress: percent,
           message: `${handsImported}/${totalHands} ${t('common.hands')}${speedText}`,
         });
-      } else if (typeof filesProcessed === 'number' && typeof totalFiles === 'number') {
+      } else if (typeof handsImported === 'number' && handsImported > 0) {
+        // Show hands imported even if total is not yet known
         updateProgress({
           progress: percent,
-          message: `${filesProcessed}/${totalFiles} fichiers${speedText}`,
+          message: `${handsImported} ${t('common.hands')}${speedText}`,
         });
       } else {
         updateProgress({

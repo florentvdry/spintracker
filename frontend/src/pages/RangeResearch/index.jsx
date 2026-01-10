@@ -88,15 +88,12 @@ export default function RangeResearch() {
     const fetchRange = async () => {
       setRangeLoading(true);
       try {
-        console.log("Fetching range with filters:", filters);
-        
         // Ensure filters are clean for range analysis
         // Range analysis is typically "Preflop" unless specified
         const rangeFilters = { ...filters };
         if (!rangeFilters.Situation) rangeFilters.Situation = 'Preflop';
 
         const response = await ipcService.getRangeBreakdown(rangeFilters);
-        console.log("Range response:", response);
         if (mounted && response.success) {
           setRangeData(response.data);
         }

@@ -280,6 +280,171 @@ public class Database
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )";
         cmd.ExecuteNonQuery();
+
+        // Load default stats and profiles on first launch
+        LoadDefaultDataIfNeeded();
+    }
+
+    private void LoadDefaultDataIfNeeded()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        connection.Open();
+
+        using var cmd = connection.CreateCommand();
+        
+        // Check if stats table is empty
+        cmd.CommandText = "SELECT COUNT(*) FROM custom_stats";
+        var statsCount = Convert.ToInt32(cmd.ExecuteScalar());
+        
+        // Check if profiles table is empty
+        cmd.CommandText = "SELECT COUNT(*) FROM hud_profiles";
+        var profilesCount = Convert.ToInt32(cmd.ExecuteScalar());
+
+        // Load default stats if empty
+        if (statsCount == 0)
+        {
+            LoadDefaultStats();
+        }
+
+        // Load default profiles if empty
+        if (profilesCount == 0)
+        {
+            LoadDefaultHudProfiles();
+        }
+    }
+
+    private void LoadDefaultStats()
+    {
+        try
+        {
+            var backendDir = Directory.GetCurrentDirectory();
+            var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
+            var statsFilePath = Path.Combine(projectRoot, "custom_stats_import.json");
+
+            if (!File.Exists(statsFilePath))
+            {
+                _logger.LogWarning($"Default stats file not found: {statsFilePath}");
+                return;
+            }
+
+            var jsonContent = File.ReadAllText(statsFilePath);
+            var stats = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(jsonContent);
+
+            if (stats == null || stats.Count == 0)
+            {
+                _logger.LogWarning("No stats found in default stats file");
+                return;
+            }
+
+            var tasks = new List<Task>();
+            foreach (var stat in stats)
+            {
+                try
+                {
+                    var id = stat.ContainsKey("Id") ? stat["Id"]?.ToString() : 
+                             stat.ContainsKey("id") ? stat["id"]?.ToString() : null;
+                    var name = stat.ContainsKey("Name") ? stat["Name"]?.ToString() : 
+                               stat.ContainsKey("name") ? stat["name"]?.ToString() : "";
+                    var description = stat.ContainsKey("Description") ? stat["Description"]?.ToString() : 
+                                      stat.ContainsKey("description") ? stat["description"]?.ToString() : "";
+                    var definition = stat.ContainsKey("Definition") ? stat["Definition"] : 
+                                     stat.ContainsKey("definition") ? stat["definition"] : null;
+
+                    if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(name) || definition == null)
+                    {
+                        continue;
+                    }
+
+                    // Save the stat with its definition
+                    tasks.Add(SaveCustomStatAsync(id, name, description ?? "", definition));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error loading default stat: {ex.Message}");
+                }
+            }
+
+            Task.WaitAll(tasks.ToArray());
+            _logger.LogInformation($"Loaded {stats.Count} default stats");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error loading default stats: {ex.Message}");
+        }
+    }
+
+    private void LoadDefaultHudProfiles()
+    {
+        try
+        {
+            var backendDir = Directory.GetCurrentDirectory();
+            var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
+            var profileFilePath = Path.Combine(projectRoot, "Minimalist_SpinAndGo_HUD.json");
+
+            if (!File.Exists(profileFilePath))
+            {
+                _logger.LogWarning($"Default HUD profile file not found: {profileFilePath}");
+                return;
+            }
+
+            var jsonContent = File.ReadAllText(profileFilePath);
+            var profileData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonContent);
+
+            if (profileData == null)
+            {
+                _logger.LogWarning("Invalid default HUD profile file");
+                return;
+            }
+
+            var name = profileData.ContainsKey("name") ? profileData["name"]?.ToString() : "Minimalist Spin HUD";
+            var layout = profileData.ContainsKey("layout") ? profileData["layout"] : null;
+
+            if (layout == null)
+            {
+                _logger.LogWarning("No layout found in default HUD profile");
+                return;
+            }
+
+            var id = Guid.NewGuid().ToString();
+            SaveHudProfileAsync(id, name ?? "Minimalist Spin HUD", layout, true).Wait();
+
+            _logger.LogInformation($"Loaded default HUD profile: {name}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error loading default HUD profile: {ex.Message}");
+        }
+    }
+
+    public async Task ResetDefaultStatsAndProfilesAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var transaction = connection.BeginTransaction();
+        try
+        {
+            // Delete all existing stats
+            using var cmd1 = connection.CreateCommand();
+            cmd1.CommandText = "DELETE FROM custom_stats";
+            await cmd1.ExecuteNonQueryAsync();
+
+            // Delete all existing profiles
+            using var cmd2 = connection.CreateCommand();
+            cmd2.CommandText = "DELETE FROM hud_profiles";
+            await cmd2.ExecuteNonQueryAsync();
+
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+
+        // Reload defaults (outside transaction)
+        LoadDefaultStats();
+        LoadDefaultHudProfiles();
     }
 
     public async Task<int> InsertHandsBatchAsync(List<ParsedHand> hands)

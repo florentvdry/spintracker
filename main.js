@@ -35,7 +35,6 @@ function startBackend() {
 
     // Check if compiled DLL exists
     if (!fs.existsSync(dllPath)) {
-      console.log('[Backend] DLL not found, building project...');
       // Try to build the project first
       const buildProcess = spawn(dotnetPath, ['build'], {
         cwd: backendDir,
@@ -44,7 +43,6 @@ function startBackend() {
 
       buildProcess.on('close', (code) => {
         if (code === 0) {
-          console.log('[Backend] Build successful, starting backend...');
           startBackendProcess();
         } else {
           console.error('[Backend] Build failed!');
@@ -83,8 +81,6 @@ function startBackendProcess() {
     }
   }
 
-  console.log(`[Backend] Starting: ${command} in ${cwd}`);
-  console.log(`[Backend] DB Path: ${dbPath}`);
 
   backendProcess = spawn(command, args, {
     cwd: cwd,
@@ -274,15 +270,49 @@ ipcMain.handle('import-hand-history', async () => {
 
   try {
     const fetch = (await import('node-fetch')).default;
-    let totalHandsImported = 0;
+    
+    // First, count all hands in all files to get the total upfront
+    let totalHandsExpected = 0;
     let totalFiles = result.filePaths.length;
+    let filesCounted = 0;
+    
+    for (const filePath of result.filePaths) {
+      try {
+        mainWindow.webContents.send('import-progress', {
+          filesProcessed: filesCounted,
+          totalFiles: totalFiles,
+          percent: Math.round((filesCounted / totalFiles) * 10), // 0-10% for counting phase
+          handsImported: 0,
+          totalHands: null,
+          message: `Comptage des mains... (${filesCounted + 1}/${totalFiles})`
+        });
+
+        const countResponse = await fetch(`http://127.0.0.1:${BACKEND_PORT}/import/count-hands`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filePath })
+        });
+        
+        if (countResponse.ok) {
+          const countResult = await countResponse.json();
+          if (countResult.success && countResult.count) {
+            totalHandsExpected += countResult.count;
+          }
+        }
+        filesCounted++;
+      } catch (err) {
+        // If counting fails, continue anyway - we'll discover the total during import
+        filesCounted++;
+      }
+    }
+
+    // Now start importing with the total known
+    let totalHandsImported = 0;
     let filesProcessed = 0;
     let errors = [];
 
     for (const filePath of result.filePaths) {
       try {
-        console.log(`[Import] Starting optimized import for: ${filePath}`);
-        
         const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/import/file`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -314,22 +344,23 @@ ipcMain.handle('import-hand-history', async () => {
                         errors.push({ file: path.basename(filePath), error: progress.error });
                     }
                     
-                    // Update UI with progress
-                    // We might need to track accumulated hands if multiple files
-                    // For simplicity, let's say TotalHands is per file.
-                    // But the UI expects global progress.
-                    
-                    // Current file percent
+                    // Current file percent (0-100%)
                     const filePercent = progress.Percent || 0;
-                    // Global percent (approximate)
-                    const globalPercent = Math.round(((filesProcessed * 100) + filePercent) / totalFiles);
+                    // Global percent: counting phase was 0-10%, import phase is 10-100%
+                    // Each file's import contributes to the remaining 90% proportionally
+                    const fileContribution = 90 / totalFiles; // Each file contributes this % to total
+                    const currentFileProgress = Math.round((filePercent * fileContribution) / 100);
+                    const globalPercent = 10 + Math.round((filesProcessed * fileContribution) + currentFileProgress);
+                    
+                    // Calculate accumulated totals
+                    const accumulatedHandsImported = totalHandsImported + (progress.HandsImported || 0);
                     
                     mainWindow.webContents.send('import-progress', {
                       filesProcessed: filesProcessed,
                       totalFiles: totalFiles,
-                      percent: globalPercent,
-                      handsImported: totalHandsImported + (progress.HandsImported || 0),
-                      totalHands: 'Calculating...' // Backend gives estimate per file, hard to sum up front
+                      percent: Math.min(100, globalPercent),
+                      handsImported: accumulatedHandsImported,
+                      totalHands: totalHandsExpected > 0 ? totalHandsExpected : null
                     });
 
                     if (progress.Success) {
@@ -375,10 +406,8 @@ ipcMain.handle('import-hand-history', async () => {
 // ============ IPC Handlers - Database Queries ============
 
 ipcMain.handle('get-dashboard-stats', async (event, heroName) => {
-  console.log('[Main] get-dashboard-stats called for:', heroName);
   const query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
   const result = await callBackendAPI(`/db/dashboard-stats${query}`, {}, 'GET');
-  console.log('[Main] get-dashboard-stats result:', result.success ? 'Success' : result.error);
   return result;
 });
 
@@ -445,10 +474,19 @@ ipcMain.handle('delete-all-hands', async () => {
   });
 
   if (result.response === 1) {
-    return callBackendAPI('/db/delete-all', {});
+    const deleteResult = await callBackendAPI('/db/delete-all', {});
+    // Also reset default stats and profiles when resetting data
+    if (deleteResult.success) {
+      await callBackendAPI('/reset-default-stats', {}, 'POST');
+    }
+    return deleteResult;
   } else {
     return { success: false, message: 'Action annulée par l\'utilisateur' };
   }
+});
+
+ipcMain.handle('reset-default-stats', async () => {
+  return callBackendAPI('/reset-default-stats', {}, 'POST');
 });
 
 // ============ IPC Handlers - Backend C# ============
@@ -568,8 +606,7 @@ ipcMain.handle('stats-builder-evaluate', async (event, stat) => {
 
 ipcMain.handle('check-for-updates', () => {
   if (process.env.NODE_ENV === 'development') {
-    // In dev, we can't really check for updates, but we can simulate or log
-    console.log('[Updater] Check for updates triggered (Dev Mode)');
+    // In dev, we can't really check for updates
     return;
   }
   autoUpdater.checkForUpdates();

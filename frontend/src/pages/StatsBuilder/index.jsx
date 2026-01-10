@@ -379,7 +379,7 @@ const StatsBuilder = () => {
         addCondition(data.actor, data.action, path, street);
       }
     } catch (err) {
-      console.error('Drop failed', err);
+      // Drop failed silently
     }
   };
 

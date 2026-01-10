@@ -154,6 +154,10 @@ class IPCService {
     return this.invoke('delete-all-hands');
   }
 
+  async resetDefaultStats() {
+    return this.invoke('reset-default-stats');
+  }
+
   async exportData(format = 'json') {
     return this.invoke('export-data', format);
   }

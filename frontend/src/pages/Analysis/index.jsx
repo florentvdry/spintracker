@@ -91,8 +91,6 @@ export default function Analysis() {
             Limit: 50,
             SortBy: handsSort
         };
-        
-        console.log("Fetching hands with request:", request);
 
         const response = await ipcService.getAnalysisHands(request);
         if (mounted && response.success) {

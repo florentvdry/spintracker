@@ -45,12 +45,14 @@ export default function Settings() {
         addNotification({
           type: 'success',
           title: 'Données supprimées',
-          message: result.message || 'Toutes les mains ont été supprimées',
+          message: result.message || 'Toutes les mains ont été supprimées. Les stats et profils par défaut ont été restaurés.',
         });
         // Refresh stats first so Header sees 0 hands
         await refreshAll();
         setHeroName(null);
         await loadPlayers();
+        // Reload page to refresh stats and profiles
+        window.location.reload();
       } else {
         // Handle cancelled action specifically to avoid error notification
         if (result.message && result.message.includes('annulée')) {

@@ -129,6 +129,29 @@ app.MapPost("/import/file", async (HttpContext context, ImporterService importer
     }
 });
 
+app.MapPost("/import/count-hands", async (HttpContext context, ImporterService importer) =>
+{
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        var data = JsonSerializer.Deserialize<ImportFileRequest>(body, jsonOptions);
+
+        if (data == null || string.IsNullOrEmpty(data.FilePath))
+        {
+            return Results.Json(new { success = false, error = "No file path provided" });
+        }
+
+        var count = await importer.CountHandsInFileAsync(data.FilePath, context.RequestAborted);
+        return Results.Json(new { success = true, count });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Count hands error: {e.Message}");
+        return Results.Json(new { success = false, error = e.Message });
+    }
+});
+
 app.MapPost("/parse/file", async (HttpContext context) =>
 {
     try
@@ -1095,6 +1118,20 @@ app.MapDelete("/hud-profiles/{id}", async (string id, Database db) =>
     catch (Exception e)
     {
         logger.LogError($"Delete HUD profile error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapPost("/reset-default-stats", async (Database db) =>
+{
+    try
+    {
+        await db.ResetDefaultStatsAndProfilesAsync();
+        return Results.Json(new { success = true, message = "Default stats and profiles reloaded" });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Reset default stats error: {e.Message}");
         return Results.Problem(detail: e.Message, statusCode: 500);
     }
 });

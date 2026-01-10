@@ -15,7 +15,6 @@ let customStats = [];
 try {
     const statsPath = path.join(__dirname, 'custom_stats_import.json');
     customStats = JSON.parse(fs.readFileSync(statsPath, 'utf8'));
-    console.log(`✅ ${customStats.length} stats chargées depuis custom_stats_import.json\n`);
 } catch (error) {
     console.error('❌ Erreur lors du chargement de custom_stats_import.json:', error.message);
     process.exit(1);
@@ -35,9 +34,6 @@ const testFilters = {
 };
 
 async function testStatsEvaluation() {
-    console.log('🧪 Test de l\'évaluation des statistiques\n');
-    console.log(`📊 Nombre de stats à tester: ${customStats.length}\n`);
-
     // Prendre seulement les 5 premières stats pour le test initial
     const statsToTest = customStats.slice(0, 5);
     
@@ -52,7 +48,6 @@ async function testStatsEvaluation() {
     };
 
     try {
-        console.log('📤 Envoi de la requête à /stats/builder/evaluate-batch...');
         const response = await fetch(`${API_BASE}/stats/builder/evaluate-batch`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -74,33 +69,7 @@ async function testStatsEvaluation() {
             return;
         }
 
-        console.log('✅ Réponse reçue avec succès\n');
-        console.log('📈 Résultats:\n');
-
-        // Afficher les résultats pour chaque stat
-        for (const stat of statsToTest) {
-            const key = stat.Id || stat.Name;
-            const statResult = result.data[key];
-            
-            if (!statResult) {
-                console.log(`⚠️  ${stat.Name} (${key}): PAS DE RÉSULTAT`);
-                continue;
-            }
-
-            const value = statResult.Opportunities > 0 
-                ? (statResult.Successes / statResult.Opportunities * 100).toFixed(2)
-                : '0.00';
-            
-            console.log(`📊 ${stat.Name}`);
-            console.log(`   ID: ${key}`);
-            console.log(`   Opportunités: ${statResult.Opportunities}`);
-            console.log(`   Succès: ${statResult.Successes}`);
-            console.log(`   Valeur: ${value}%`);
-            console.log('');
-        }
-
         // Test de toutes les stats
-        console.log('\n🔄 Test de toutes les stats...\n');
         const allStatsPayload = {
             stats: customStats.map(stat => ({
                 id: stat.Id,
@@ -129,42 +98,6 @@ async function testStatsEvaluation() {
             return;
         }
 
-        console.log(`✅ Toutes les ${customStats.length} stats ont été évaluées\n`);
-        
-        // Compter les stats avec des résultats
-        let statsWithResults = 0;
-        let statsWithZero = 0;
-        
-        for (const stat of customStats) {
-            const key = stat.Id || stat.Name;
-            const statResult = allStatsResult.data[key];
-            
-            if (statResult && statResult.Opportunities > 0) {
-                statsWithResults++;
-            } else {
-                statsWithZero++;
-            }
-        }
-
-        console.log(`📊 Stats avec résultats: ${statsWithResults}`);
-        console.log(`📊 Stats à 0: ${statsWithZero}`);
-
-        // Afficher quelques exemples de stats avec résultats
-        console.log('\n📋 Exemples de stats avec résultats:\n');
-        let examplesShown = 0;
-        for (const stat of customStats) {
-            if (examplesShown >= 5) break;
-            
-            const key = stat.Id || stat.Name;
-            const statResult = allStatsResult.data[key];
-            
-            if (statResult && statResult.Opportunities > 0) {
-                const value = (statResult.Successes / statResult.Opportunities * 100).toFixed(2);
-                console.log(`  • ${stat.Name}: ${value}% (${statResult.Successes}/${statResult.Opportunities})`);
-                examplesShown++;
-            }
-        }
-
     } catch (error) {
         console.error('❌ Erreur lors du test:', error.message);
         console.error(error.stack);
@@ -176,7 +109,6 @@ async function checkServer() {
     try {
         const response = await fetch(`${API_BASE}/stats`);
         if (response.ok) {
-            console.log('✅ Serveur accessible\n');
             return true;
         }
     } catch (error) {
