@@ -27,9 +27,10 @@ export default function WinrateChart({ className }) {
   };
   const heroName = useAppStore(state => state.heroName);
   const lastUpdate = useAppStore(state => state.lastUpdate);
+  const config = useAppStore(state => state.config);
+  const _getDateRangeParams = useAppStore(state => state._getDateRangeParams);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [period, setPeriod] = useState('all');
   const [isZoomed, setIsZoomed] = useState(false);
   const [visibleLines, setVisibleLines] = useState({
     chipsWon: true,
@@ -47,7 +48,8 @@ export default function WinrateChart({ className }) {
 
     setIsLoading(true);
     try {
-      const result = await ipcService.getWinrateChartData({ period, heroName });
+      const { dateFrom, dateTo } = _getDateRangeParams();
+      const result = await ipcService.getWinrateChartData({ dateFrom, dateTo, heroName });
       if (result && result.success && result.data) {
         const raw = result.data;
         let chartData = [];
@@ -86,7 +88,7 @@ export default function WinrateChart({ className }) {
 
   useEffect(() => {
     loadChartData();
-  }, [period, heroName, lastUpdate]);
+  }, [config.dateRange, heroName, lastUpdate]);
 
   // Suppression de l'effet takeGlobalCursor car il est capricieux et dépend de toolbox
   // On va utiliser brush pour un contrôle total
@@ -347,25 +349,8 @@ export default function WinrateChart({ className }) {
 
   return (
     <div className={className}>
-      {/* Period selector & Legend toggles */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-        <div className="flex gap-2">
-          {['7d', '30d', '90d', 'all'].map((p) => (
-            <button
-              key={p}
-              onClick={() => setPeriod(p)}
-              className={clsx(
-                'px-3 py-1 text-xs font-medium rounded-lg transition-colors',
-                period === p 
-                  ? 'bg-primary-500/20 text-primary-400' 
-                  : 'text-gray-400 hover:bg-dark-200'
-              )}
-            >
-              {p === 'all' ? t('common.all', 'All') : p}
-            </button>
-          ))}
-        </div>
-
+      {/* Legend toggles */}
+      <div className="flex flex-wrap items-center justify-end gap-4 mb-4">
         <div className="flex flex-wrap gap-3">
              {Object.entries(LINE_COLORS).map(([key, color]) => (
                  <button

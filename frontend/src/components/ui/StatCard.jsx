@@ -7,7 +7,9 @@ export default function StatCard({
   trend,
   trendValue,
   format = 'default',
-  className 
+  unit,
+  className,
+  subStats = [] // Array of { label, value, format }
 }) {
   const formattedValue = formatValue(value, format);
   const isPositive = trend === 'up' || (typeof value === 'number' && value >= 0);
@@ -15,14 +17,40 @@ export default function StatCard({
   return (
     <div className={clsx('card', className)}>
       <div className="flex items-start justify-between">
-        <div>
+        <div className="flex-1">
           <p className="stat-label">{label}</p>
-          <p className={clsx(
-            'stat-value mt-1',
-            format === 'profit' && (isPositive ? 'profit-positive' : 'profit-negative')
-          )}>
-            {formattedValue}
-          </p>
+          {value !== null && value !== undefined && (
+            <div className="flex items-baseline gap-2 mt-1">
+              <p className={clsx(
+                'stat-value',
+                format === 'profit' && (isPositive ? 'profit-positive' : 'profit-negative')
+              )}>
+                {formattedValue}
+              </p>
+              {unit && (
+                <span className="text-gray-400 text-sm font-medium uppercase tracking-wider">
+                  {unit}
+                </span>
+              )}
+            </div>
+          )}
+          
+          {subStats.length > 0 && (
+            <div className={clsx(
+              "space-y-1",
+              (value !== null && value !== undefined) ? "mt-3 pt-3 border-t border-white/5" : "mt-2"
+            )}>
+              {subStats.map((stat, idx) => (
+                <div key={idx} className="flex justify-between items-center text-xs">
+                  <span className="text-gray-400">{stat.label}</span>
+                  <span className="text-gray-200 font-mono">
+                    {formatValue(stat.value, stat.format)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
           {trendValue && (
             <p className={clsx(
               'text-xs mt-1',
@@ -33,7 +61,7 @@ export default function StatCard({
           )}
         </div>
         {Icon && (
-          <div className="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center shrink-0 ml-3">
             <Icon className="w-5 h-5 text-primary-400" />
           </div>
         )}

@@ -386,7 +386,13 @@ app.MapGet("/db/dashboard-stats", async (HttpContext context, Database db) =>
     try
     {
         var heroName = context.Request.Query["heroName"].ToString();
-        var stats = await db.GetDashboardStatsAsync(string.IsNullOrEmpty(heroName) ? null : heroName);
+        var dateFrom = context.Request.Query["dateFrom"].ToString();
+        var dateTo = context.Request.Query["dateTo"].ToString();
+        var stats = await db.GetDashboardStatsAsync(
+            string.IsNullOrEmpty(heroName) ? null : heroName,
+            string.IsNullOrEmpty(dateFrom) ? null : dateFrom,
+            string.IsNullOrEmpty(dateTo) ? null : dateTo
+        );
         return Results.Json(new { success = true, data = stats });
     }
     catch (Exception e)
@@ -402,6 +408,9 @@ app.MapMethods("/db/session-history", new[] { "GET", "POST" }, async (HttpContex
     {
         var limit = 50;
         string? heroName = null;
+        string? dateFrom = null;
+        string? dateTo = null;
+
         if (context.Request.Method == "POST")
         {
             using var reader = new StreamReader(context.Request.Body);
@@ -409,14 +418,18 @@ app.MapMethods("/db/session-history", new[] { "GET", "POST" }, async (HttpContex
             var data = JsonSerializer.Deserialize<SessionHistoryRequest>(body, jsonOptions);
             limit = data?.Limit ?? 50;
             heroName = data?.HeroName;
+            dateFrom = data?.DateFrom;
+            dateTo = data?.DateTo;
         }
         else
         {
             limit = int.TryParse(context.Request.Query["limit"], out var l) ? l : 50;
             heroName = context.Request.Query["heroName"];
+            dateFrom = context.Request.Query["dateFrom"];
+            dateTo = context.Request.Query["dateTo"];
         }
 
-        var sessions = await db.GetSessionHistoryAsync(limit, heroName);
+        var sessions = await db.GetSessionHistoryAsync(limit, heroName, dateFrom, dateTo);
         return Results.Json(new { success = true, data = sessions });
     }
     catch (Exception e)
@@ -1157,7 +1170,7 @@ public record HandsQueryOptions
     public string? HeroName { get; set; }
     public string? SortBy { get; set; }
 }
-public record SessionHistoryRequest(int Limit = 50, string? HeroName = null);
+public record SessionHistoryRequest(int Limit = 50, string? HeroName = null, string? DateFrom = null, string? DateTo = null);
 public record ChartQueryOptions
 {
     public string? DateFrom { get; set; }

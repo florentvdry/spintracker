@@ -17,13 +17,22 @@ export const useAppStore = create((set, get) => ({
   // Configuration
   config: {
     theme: 'dark',
-    dateRange: 'all',
+    dateRange: 'all', // 'today', 'week', 'month', 'all'
+    customDateFrom: null,
+    customDateTo: null,
     autoRefresh: true,
   },
 
   // Actions
   setHeroName: (name) => {
     set({ heroName: name });
+    get().refreshAll();
+  },
+
+  setDateRange: (range) => {
+    set((state) => ({
+      config: { ...state.config, dateRange: range }
+    }));
     get().refreshAll();
   },
 
@@ -97,10 +106,49 @@ export const useAppStore = create((set, get) => ({
     }
   },
 
+  _getDateRangeParams: () => {
+    const { dateRange, customDateFrom, customDateTo } = get().config;
+    let dateFrom = null;
+    let dateTo = null;
+
+    if (dateRange === 'all') return { dateFrom, dateTo };
+
+    const now = new Date();
+    const formatDate = (date) => {
+      const pad = (n) => n.toString().padStart(2, '0');
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    };
+
+    const startOfDay = (date) => {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    };
+    
+    if (dateRange === 'today') {
+      dateFrom = formatDate(startOfDay(now));
+    } else if (dateRange === 'week') {
+      // Start of week (Monday)
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1); 
+      const monday = startOfDay(new Date(now.setDate(diff)));
+      dateFrom = formatDate(monday);
+    } else if (dateRange === 'month') {
+      const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      dateFrom = formatDate(firstOfMonth);
+    } else if (dateRange === 'custom') {
+      dateFrom = customDateFrom;
+      dateTo = customDateTo;
+    }
+
+    return { dateFrom, dateTo };
+  },
+
   loadDashboardStats: async () => {
     try {
       const heroName = get().heroName;
-      const result = await ipcService.getDashboardStats(heroName);
+      const { dateFrom, dateTo } = get()._getDateRangeParams();
+      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo);
       if (result.success) {
         const stats = result.data || {};
         // Coercer en nombre pour éviter les valeurs string/undefined
@@ -119,7 +167,8 @@ export const useAppStore = create((set, get) => ({
   loadSessions: async (limit = 50) => {
     try {
       const heroName = get().heroName;
-      const result = await ipcService.getSessionHistory(limit, heroName);
+      const { dateFrom, dateTo } = get()._getDateRangeParams();
+      const result = await ipcService.getSessionHistory(limit, heroName, dateFrom, dateTo);
       if (result.success) {
         set({ sessions: result.data });
       }

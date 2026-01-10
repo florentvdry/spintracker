@@ -406,14 +406,17 @@ ipcMain.handle('import-hand-history', async () => {
 
 // ============ IPC Handlers - Database Queries ============
 
-ipcMain.handle('get-dashboard-stats', async (event, heroName) => {
-  const query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
+ipcMain.handle('get-dashboard-stats', async (event, heroName, dateFrom, dateTo) => {
+  let query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
+  if (dateFrom) query += (query ? '&' : '?') + `dateFrom=${encodeURIComponent(dateFrom)}`;
+  if (dateTo) query += (query ? '&' : '?') + `dateTo=${encodeURIComponent(dateTo)}`;
+  
   const result = await callBackendAPI(`/db/dashboard-stats${query}`, {}, 'GET');
   return result;
 });
 
-ipcMain.handle('get-session-history', async (event, limit = 50, heroName = null) => {
-  return callBackendAPI('/db/session-history', { limit, heroName });
+ipcMain.handle('get-session-history', async (event, limit = 50, heroName = null, dateFrom = null, dateTo = null) => {
+  return callBackendAPI('/db/session-history', { limit, heroName, dateFrom, dateTo });
 });
 
 ipcMain.handle('get-hand-details', async (event, handId) => {

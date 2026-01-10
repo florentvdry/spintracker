@@ -1469,7 +1469,7 @@ public class Database
         return hands;
     }
 
-    public async Task<object> GetDashboardStatsAsync(string? heroName = null)
+    public async Task<object> GetDashboardStatsAsync(string? heroName = null, string? dateFrom = null, string? dateTo = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
@@ -1485,19 +1485,39 @@ public class Database
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)";
         }
 
+        var whereClauses = new List<string>();
+        if (!string.IsNullOrEmpty(dateFrom))
+        {
+            whereClauses.Add("h.date_time >= @dateFrom");
+        }
+        if (!string.IsNullOrEmpty(dateTo))
+        {
+            whereClauses.Add("h.date_time <= @dateTo");
+        }
+        var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
+
         // 1. Basic stats from SQL (Hands Won, Total EV)
         using var cmd = connection.CreateCommand();
         cmd.CommandText = $@"
             SELECT 
                 COUNT(*) as total_hands,
                 SUM(CASE WHEN ph.net_profit > 0 THEN 1 ELSE 0 END) as hands_won,
-                COALESCE(SUM(ph.ev_chips), 0) as total_ev
+                COALESCE(SUM(ph.net_won_adjusted), 0) as total_ev
             FROM hands h
-            {joinClause}";
+            {joinClause}
+            {whereClause}";
 
         if (!string.IsNullOrEmpty(heroName))
         {
             cmd.Parameters.AddWithValue("@heroName", heroName);
+        }
+        if (!string.IsNullOrEmpty(dateFrom))
+        {
+            cmd.Parameters.AddWithValue("@dateFrom", dateFrom);
+        }
+        if (!string.IsNullOrEmpty(dateTo))
+        {
+            cmd.Parameters.AddWithValue("@dateTo", dateTo);
         }
 
         int totalHands = 0;
@@ -1515,9 +1535,11 @@ public class Database
         }
 
         // 2. Calculate Euro Profit and Sessions using the session logic
-        var sessions = await GetSessionsInternalAsync(null, heroName); 
+        var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo); 
         
         double totalProfitEuro = sessions.Sum(s => s.Profit);
+        int totalTournaments = sessions.Sum(s => s.Tournaments);
+        double avgChipsEv = totalTournaments > 0 ? Math.Round(totalEv / totalTournaments, 2) : 0;
         
         // Sessions this month
         var now = DateTime.Now;
@@ -1530,15 +1552,18 @@ public class Database
             hands_won = handsWon,
             total_profit = totalProfitEuro,
             total_ev = totalEv,
+            total_tournaments = totalTournaments,
+            avg_chips_ev = avgChipsEv,
             sessions_this_month = sessionsThisMonth,
+            total_sessions = sessions.Count,
             avg_multiplier = 0.0,
             best_win = 0.0
         };
     }
 
-    public async Task<List<object>> GetSessionHistoryAsync(int limit, string? heroName = null)
+    public async Task<List<object>> GetSessionHistoryAsync(int limit, string? heroName = null, string? dateFrom = null, string? dateTo = null)
     {
-        var sessions = await GetSessionsInternalAsync(null, heroName); 
+        var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo); 
         
         return sessions.Take(limit).Select(s => (object)new {
             room = s.Room,
@@ -1551,7 +1576,7 @@ public class Database
 
     private record SessionInfo(DateTime StartTime, string Room, int Tournaments, int Hands, double Profit);
 
-    private async Task<List<SessionInfo>> GetSessionsInternalAsync(int? limit, string? heroName = null)
+    private async Task<List<SessionInfo>> GetSessionsInternalAsync(int? limit, string? heroName = null, string? dateFrom = null, string? dateTo = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
@@ -1571,11 +1596,26 @@ public class Database
             joinClause = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)";
         }
 
+        var whereClauses = new List<string>();
+        if (!string.IsNullOrEmpty(dateFrom))
+        {
+            whereClauses.Add("h.date_time >= @dateFrom");
+            cmd.Parameters.AddWithValue("@dateFrom", dateFrom);
+        }
+        if (!string.IsNullOrEmpty(dateTo))
+        {
+            whereClauses.Add("h.date_time <= @dateTo");
+            cmd.Parameters.AddWithValue("@dateTo", dateTo);
+        }
+
+        var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
+
         // Fetch necessary columns to group sessions and calculate profit
         cmd.CommandText = $@"
             SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, {profitCol}, h.player_count 
             FROM hands h 
             {joinClause}
+            {whereClause}
             ORDER BY h.date_time ASC";
         
         var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)>();

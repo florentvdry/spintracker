@@ -64,6 +64,9 @@
     "total_profit": "Total Profit",
     "played_hands": "Hands Played",
     "win_rate": "Win Rate",
+    "played_tournaments": "Tournaments Played",
+    "chips_ev_avg": "ChipsEV (Avg)",
+    "activity": "Activity",
     "sessions_month": "Sessions this month",
     "chip_evolution": "Chip Evolution",
     "profit_ev": "Profit and EV",
@@ -71,10 +74,17 @@
     "latest_games": "Latest games",
     "no_hero": "No player selected",
     "select_hero_prompt": "Please select a player or import hands",
+    "no_data": "No data available",
     "no_data_chart": "Import hands to see your winnings graph",
     "no_sessions": "No sessions",
     "select_hero_sessions": "Select a player to see their sessions",
-    "sessions_placeholder": "Your sessions will appear here"
+    "sessions_placeholder": "Your sessions will appear here",
+    "filters": {
+      "today": "Today",
+      "week": "This Week",
+      "month": "This Month",
+      "all": "All"
+    }
   },
   "hand_history": {
     "title": "Tournament History",

@@ -64,6 +64,9 @@
     "total_profit": "Profit Total",
     "played_hands": "Mains Jouées",
     "win_rate": "Taux de Victoire",
+    "played_tournaments": "Tournois Joués",
+    "chips_ev_avg": "ChipsEV (Moy)",
+    "activity": "Activité",
     "sessions_month": "Sessions ce mois",
     "chip_evolution": "Evolution des jetons",
     "profit_ev": "Profit et EV",
@@ -71,10 +74,17 @@
     "latest_games": "Dernières parties",
     "no_hero": "Aucun joueur sélectionné",
     "select_hero_prompt": "Veuillez sélectionner un joueur ou importer des mains",
+    "no_data": "Aucune donnée disponible",
     "no_data_chart": "Importez des mains pour voir votre courbe de gains",
     "no_sessions": "Aucune session",
     "select_hero_sessions": "Sélectionnez un joueur pour voir ses sessions",
-    "sessions_placeholder": "Vos sessions apparaîtront ici"
+    "sessions_placeholder": "Vos sessions apparaîtront ici",
+    "filters": {
+      "today": "Aujourd'hui",
+      "week": "Cette semaine",
+      "month": "Ce mois",
+      "all": "Tout"
+    }
   },
   "hand_history": {
     "title": "Historique des tournois",
