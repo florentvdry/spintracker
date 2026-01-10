@@ -187,48 +187,8 @@ export default function AnalysisHUD({ filters }) {
         };
     }, [currentLayout, isEditing]);
 
-  // Load Initial Data
-  useEffect(() => {
-    loadProfiles();
-    loadStats();
-  }, []);
-
-  // Evaluate Stats when Layout or Filters change (and not editing)
-  useEffect(() => {
-    if (!isEditing && currentLayout.length > 0) {
-      evaluateStats();
-    }
-  }, [isEditing, filters]);
-
   // Debounced evaluation could be better, but explicit refresh is safer for perf
-  const loadProfiles = async () => {
-    try {
-      const res = await fetch('http://localhost:5050/hud-profiles');
-      const json = await res.json();
-      if (json.success) {
-        setProfiles(json.data);
-        const active = json.data.find(p => p.isActive) || json.data[0];
-        if (active) {
-          setActiveProfileId(active.id);
-          setCurrentLayout(active.layout || []);
-        } else {
-            handleNewProfile();
-        }
-      }
-    } catch (err) {
-      console.error("Failed to load profiles", err);
-    }
-  };
-
-  const loadStats = async () => {
-    try {
-      const res = await fetch('http://localhost:5050/stats');
-      const json = await res.json();
-      if (json.success) setAvailableStats(json.data);
-    } catch (err) { console.error(err); }
-  };
-
-  const evaluateStats = async () => {
+  const evaluateStats = useCallback(async () => {
     const statsToEval = currentLayout
         .filter(item => item.type === 'stat')
         .map(item => ({
@@ -265,7 +225,7 @@ export default function AnalysisHUD({ filters }) {
     } finally {
         setLoadingValues(false);
     }
-  };
+  }, [currentLayout, filters]);
 
   const handleNewProfile = () => {
     const newProfile = {
@@ -279,6 +239,46 @@ export default function AnalysisHUD({ filters }) {
     setCurrentLayout([]);
     setIsEditing(true);
   };
+
+  const loadProfiles = async () => {
+    try {
+      const res = await fetch('http://localhost:5050/hud-profiles');
+      const json = await res.json();
+      if (json.success) {
+        setProfiles(json.data);
+        const active = json.data.find(p => p.isActive) || json.data[0];
+        if (active) {
+          setActiveProfileId(active.id);
+          setCurrentLayout(active.layout || []);
+        } else {
+            handleNewProfile();
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load profiles", err);
+    }
+  };
+
+  const loadStats = async () => {
+    try {
+      const res = await fetch('http://localhost:5050/stats');
+      const json = await res.json();
+      if (json.success) setAvailableStats(json.data);
+    } catch (err) { console.error(err); }
+  };
+
+  // Load Initial Data
+  useEffect(() => {
+    loadProfiles();
+    loadStats();
+  }, []);
+
+  // Evaluate Stats when Layout or Filters change (and not editing)
+  useEffect(() => {
+    if (!isEditing && currentLayout.length > 0) {
+      evaluateStats();
+    }
+  }, [isEditing, currentLayout, evaluateStats]);
 
   const handleSaveProfile = async () => {
     const profile = profiles.find(p => p.id === activeProfileId);

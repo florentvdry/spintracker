@@ -16,6 +16,8 @@ import { ipcService } from '@services/ipcService';
 import { formatDate } from '@utils/formatters';
 import { useTranslation } from 'react-i18next';
 
+const LAST_AUTO_DETECTED_HERO_KEY = 'pokerTracker_lastAutoDetectedHero';
+
 export default function Header() {
   const { t } = useTranslation();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -46,13 +48,25 @@ export default function Header() {
   useEffect(() => {
     if (!heroName && players.length > 0 && dashboardStats?.total_hands > 0) {
         const best = players.reduce((prev, current) => (prev.total_hands > current.total_hands) ? prev : current);
+        const lastAutoDetected = localStorage.getItem(LAST_AUTO_DETECTED_HERO_KEY);
+        
+        // Ne pas afficher la notification si c'est le même héros qui était déjà détecté automatiquement
+        const shouldShowNotification = lastAutoDetected !== best.name;
+        
         setHeroName(best.name);
-        addNotification({
-            type: 'info',
-            title: t('header.hero_detected'),
-            message: t('header.hero_selected_auto', { name: best.name }),
-            duration: 5000
-        });
+        
+        // Sauvegarder le héros détecté automatiquement
+        localStorage.setItem(LAST_AUTO_DETECTED_HERO_KEY, best.name);
+        
+        // Afficher la notification seulement si c'est un nouveau héros
+        if (shouldShowNotification) {
+            addNotification({
+                type: 'info',
+                title: t('header.hero_detected'),
+                message: t('header.hero_selected_auto', { name: best.name }),
+                duration: 5000
+            });
+        }
     }
   }, [players, heroName, setHeroName, addNotification, dashboardStats, t]);
 
