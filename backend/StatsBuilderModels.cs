@@ -36,6 +36,13 @@ namespace PokerTrackerBackend.StatsBuilder
         public int Opportunities { get; set; }
         public int Successes { get; set; }
         public double Value => Opportunities > 0 ? (double)Successes / Opportunities * 100 : 0;
-        public List<string> MatchingHandIds { get; set; } = new();
+        public List<HandSummary> MatchingHands { get; set; } = new();
+    }
+
+    public class HandSummary
+    {
+        public string Id { get; set; } = "";
+        public string HandId { get; set; } = "";
+        public string DateTime { get; set; } = "";
     }
 }

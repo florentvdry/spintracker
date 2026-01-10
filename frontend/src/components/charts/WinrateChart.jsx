@@ -399,7 +399,7 @@ export default function WinrateChart({ className }) {
             style={{ height: '100%', width: '100%' }}
             notMerge={false}
             lazyUpdate={true}
-            autoResize={false}
+            autoResize={true}
             theme={"dark"}
             onEvents={handleChartEvents}
             onChartReady={onChartReady}

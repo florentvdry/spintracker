@@ -114,7 +114,7 @@ export default function RangeAnalysis() {
         </div>
 
         {/* Hand details */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           <Card title={t('range_analysis.hand_details')}>
             {selectedHand ? (
               <div className="space-y-4">

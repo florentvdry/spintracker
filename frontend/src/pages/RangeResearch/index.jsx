@@ -22,7 +22,7 @@ const ACTION_COLORS = {
 export default function RangeResearch() {
   const { t } = useTranslation();
   const { loadPlayers } = usePlayersStore();
-  const { openReplayer } = useReplayerStore();
+  const { openReplayer, loadHandQueue } = useReplayerStore();
   
   const [filters, setFilters] = useState({
     HeroName: '',
@@ -112,17 +112,7 @@ export default function RangeResearch() {
 
   const handleOpenReplayer = async (handIds) => {
     if (!handIds || handIds.length === 0) return;
-    
-    try {
-        // Fetch full hand details for the first hand (or list of hands if replayer supports it)
-        // For now, let's open the first hand
-        const res = await ipcService.getHandDetails(handIds[0]);
-        if (res.success) {
-            openReplayer(res.data);
-        }
-    } catch (e) {
-        console.error("Failed to open replayer", e);
-    }
+    loadHandQueue(handIds);
   };
 
   const saveConfig = () => {
@@ -264,12 +254,14 @@ export default function RangeResearch() {
                            <div className="bg-dark-300 p-3 rounded-lg">
                                <div className="text-xs text-gray-400">Net Profit</div>
                                <div className={clsx("text-lg font-bold", ((selectedRangeStats?.TotalProfit !== undefined ? selectedRangeStats.TotalProfit : selectedRangeStats?.totalProfit) || 0) >= 0 ? "text-green-400" : "text-red-400")}>
-                                 {((selectedRangeStats?.TotalProfit !== undefined ? selectedRangeStats.TotalProfit : selectedRangeStats?.totalProfit) || 0).toFixed(2)} BB
+                                 {((selectedRangeStats?.TotalProfit !== undefined ? selectedRangeStats.TotalProfit : selectedRangeStats?.totalProfit) || 0).toFixed(0)} chips
                                </div>
                            </div>
                         <div className="bg-dark-300 p-3 rounded-lg">
                             <div className="text-xs text-gray-400">EV (Chips)</div>
-                            <div className="text-lg font-bold text-yellow-400">--</div>
+                            <div className={clsx("text-lg font-bold", ((selectedRangeStats?.TotalEv !== undefined ? selectedRangeStats.TotalEv : selectedRangeStats?.totalEv) || 0) >= 0 ? "text-yellow-400" : "text-red-400")}>
+                              {((selectedRangeStats?.TotalEv !== undefined ? selectedRangeStats.TotalEv : selectedRangeStats?.totalEv) || 0).toFixed(2)}
+                            </div>
                         </div>
                      </div>
                      
@@ -303,29 +295,55 @@ export default function RangeResearch() {
                      </div>
 
                      {/* Hands List for Replayer */}
-                     {(selectedRangeStats?.HandIds || selectedRangeStats?.handIds) && (
+                     {(selectedRangeStats?.Hands || selectedRangeStats?.hands) && (
                         <div className="pt-4 border-t border-dark-100">
                            <div className="flex justify-between items-center mb-2">
                                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Hands</h4>
                                <button 
-                                 onClick={() => handleOpenReplayer(selectedRangeStats.HandIds || selectedRangeStats.handIds)}
+                                 onClick={() => handleOpenReplayer((selectedRangeStats.Hands || selectedRangeStats.hands).map(h => h.id || h.Id))}
                                  className="text-xs flex items-center gap-1 text-primary-400 hover:text-primary-300 transition-colors"
                                >
                                   <Play className="w-3 h-3" />
                                   Replay All
                                </button>
                            </div>
-                           <div className="space-y-1 max-h-40 overflow-y-auto custom-scrollbar">
-                              {(selectedRangeStats.HandIds || selectedRangeStats.handIds).map((handId, idx) => (
-                                  <div 
-                                    key={handId} 
-                                    className="flex justify-between items-center p-2 bg-dark-300 rounded hover:bg-dark-400 cursor-pointer transition-colors group"
-                                    onClick={() => handleOpenReplayer([handId])}
-                                  >
-                                      <span className="text-xs text-gray-400 font-mono">#{handId.substring(0, 8)}...</span>
-                                      <Play className="w-3 h-3 text-gray-500 group-hover:text-primary-400" />
-                                  </div>
-                              ))}
+                           <div className="space-y-1 max-h-60 overflow-y-auto custom-scrollbar">
+                              {(selectedRangeStats.Hands || selectedRangeStats.hands).map((hand, idx) => {
+                                  const handId = hand.id || hand.Id;
+                                  const profit = hand.profit !== undefined ? hand.profit : hand.Profit;
+                                  const ev = hand.ev !== undefined ? hand.ev : hand.Ev;
+                                  const date = new Date(hand.date || hand.Date);
+                                  
+                                  return (
+                                    <div 
+                                      key={handId + idx} 
+                                      className="flex justify-between items-center p-2 bg-dark-300 rounded hover:bg-dark-400 cursor-pointer transition-colors group"
+                                      onClick={() => handleOpenReplayer([handId])}
+                                    >
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] text-gray-500 font-mono">
+                                                {date.toLocaleDateString()} {date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                            </span>
+                                            <div className="flex gap-2 items-center">
+                                                <span className={clsx("text-xs font-bold", profit >= 0 ? "text-green-400" : "text-red-400")}>
+                                                    {profit >= 0 ? '+' : ''}{profit.toFixed(0)}
+                                                </span>
+                                                <span className="text-[10px] text-gray-400">chips</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="flex items-center gap-3">
+                                            <div className="text-right">
+                                                <div className="text-[9px] text-gray-500 uppercase">EV</div>
+                                                <div className={clsx("text-xs font-semibold", (ev || 0) >= 0 ? "text-yellow-500" : "text-orange-600")}>
+                                                    {ev !== null && ev !== undefined ? ev.toFixed(0) : '—'}
+                                                </div>
+                                            </div>
+                                            <Play className="w-3 h-3 text-gray-500 group-hover:text-primary-400" />
+                                        </div>
+                                    </div>
+                                  );
+                              })}
                            </div>
                         </div>
                      )}

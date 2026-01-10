@@ -31,7 +31,12 @@ namespace PokerTrackerBackend.StatsBuilder
                     if (EvaluateGroup(hand, stat.Numerator))
                     {
                         result.Successes++;
-                        result.MatchingHandIds.Add(hand.Id);
+                        result.MatchingHands.Add(new HandSummary 
+                        { 
+                            Id = hand.Id ?? "", 
+                            HandId = hand.HandId ?? "", 
+                            DateTime = hand.DateTime ?? "" 
+                        });
                     }
                 }
             }
@@ -39,7 +44,7 @@ namespace PokerTrackerBackend.StatsBuilder
             return result;
         }
 
-        public Dictionary<string, StatEvaluationResult> EvaluateBatch(List<ParsedHand> hands, List<StatDefinition> stats)
+        public Dictionary<string, StatEvaluationResult> EvaluateBatch(List<ParsedHand> hands, List<StatDefinition> stats, string? heroName = null)
         {
             var results = new Dictionary<string, StatEvaluationResult>();
             foreach (var stat in stats)
@@ -51,25 +56,47 @@ namespace PokerTrackerBackend.StatsBuilder
                 }
             }
 
-            // Optimization: Cache parsed actions per hand to avoid re-parsing for every stat
-            // But doing it simply first.
-            
             foreach (var hand in hands)
             {
-                foreach (var stat in stats)
+                // If heroName is provided, evaluate only for that player.
+                // If NULL (Field Analysis), evaluate for EVERY player who has cards.
+                var playersToEvaluate = !string.IsNullOrEmpty(heroName) 
+                    ? new List<string> { heroName }
+                    : hand.Players.Where(p => !string.IsNullOrEmpty(p.Cards)).Select(p => p.Name).ToList();
+
+                foreach (var player in playersToEvaluate)
                 {
-                    var key = !string.IsNullOrEmpty(stat.Id) ? stat.Id : stat.Name;
-                    
-                    if (EvaluateGroup(hand, stat.Denominator))
+                    // Create a virtual "perspective" for this player
+                    var pInfo = hand.Players.FirstOrDefault(p => p.Name == player);
+                    if (pInfo == null) continue;
+
+                    // Temporary override of hand properties for this evaluation
+                    var originalHeroName = hand.HeroName;
+                    var originalHeroStack = hand.HeroStack;
+                    var originalHeroPos = hand.HeroPosition;
+
+                    hand.HeroName = player;
+                    hand.HeroStack = (int)pInfo.Stack;
+                    hand.HeroPosition = pInfo.Position;
+
+                    foreach (var stat in stats)
                     {
-                        results[key].Opportunities++;
-                        if (EvaluateGroup(hand, stat.Numerator))
+                        var key = !string.IsNullOrEmpty(stat.Id) ? stat.Id : stat.Name;
+                        
+                        if (EvaluateGroup(hand, stat.Denominator))
                         {
-                            results[key].Successes++;
-                            // Don't store IDs for batch to save memory/bandwidth usually, but ok for now
-                            // results[key].MatchingHandIds.Add(hand.Id); 
+                            results[key].Opportunities++;
+                            if (EvaluateGroup(hand, stat.Numerator))
+                            {
+                                results[key].Successes++;
+                            }
                         }
                     }
+
+                    // Restore original values
+                    hand.HeroName = originalHeroName;
+                    hand.HeroStack = originalHeroStack;
+                    hand.HeroPosition = originalHeroPos;
                 }
             }
 
@@ -129,6 +156,19 @@ namespace PokerTrackerBackend.StatsBuilder
                     }
                 }
 
+                // Player Count
+                if (condition.Parameters.TryGetValue("PlayerCount", out var pcObj))
+                {
+                    int pc = 0;
+                    bool parsed = false;
+                    if (pcObj is int i) { pc = i; parsed = true; }
+                    else if (pcObj is double d) { pc = (int)d; parsed = true; }
+                    else if (pcObj is long l) { pc = (int)l; parsed = true; }
+                    else if (int.TryParse(pcObj.ToString(), out pc)) { parsed = true; }
+
+                    if (parsed && hand.PlayerCount != pc) return false;
+                }
+
                 // Stack Depth (Hero)
                 if (condition.Parameters.ContainsKey("MinStackBB") || condition.Parameters.ContainsKey("MaxStackBB"))
                 {
@@ -137,24 +177,41 @@ namespace PokerTrackerBackend.StatsBuilder
                     {
                         double stackBB = hand.HeroStack / bb;
                         
-                        if (condition.Parameters.TryGetValue("MinStackBB", out var minObj) && double.TryParse(minObj.ToString(), out var min))
+                        if (condition.Parameters.TryGetValue("MinStackBB", out var minObj))
                         {
-                            if (stackBB < min) return false;
+                            double min = 0;
+                            bool parsed = false;
+                            if (minObj is double d) { min = d; parsed = true; }
+                            else if (minObj is int i) { min = i; parsed = true; }
+                            else if (minObj is long l) { min = l; parsed = true; }
+                            else if (double.TryParse(minObj.ToString(), out min)) { parsed = true; }
+
+                            if (parsed && stackBB < min) return false;
                         }
                         
-                        if (condition.Parameters.TryGetValue("MaxStackBB", out var maxObj) && double.TryParse(maxObj.ToString(), out var max))
+                        if (condition.Parameters.TryGetValue("MaxStackBB", out var maxObj))
                         {
-                            if (stackBB > max) return false;
+                            double max = 0;
+                            bool parsed = false;
+                            if (maxObj is double d) { max = d; parsed = true; }
+                            else if (maxObj is int i) { max = i; parsed = true; }
+                            else if (maxObj is long l) { max = l; parsed = true; }
+                            else if (double.TryParse(maxObj.ToString(), out max)) { parsed = true; }
+
+                            if (parsed && stackBB > max) return false;
                         }
                     }
                 }
             }
 
             // 1. Identify Actor
+            // IMPORTANT: hand.HeroName is set dynamically in EvaluateBatch 
+            // to represent the current player being analyzed.
             string heroName = hand.HeroName;
             
             // 2. Get Action Text for Street
-            string actionText = GetActionTextForStreet(hand, condition.Street);
+            string streetName = condition.Street ?? "Preflop";
+            string actionText = GetActionTextForStreet(hand, streetName);
             if (string.IsNullOrEmpty(actionText)) return false;
 
             // 3. Parse Actions
@@ -216,7 +273,7 @@ namespace PokerTrackerBackend.StatsBuilder
 
         private bool IsHero(string playerName, string heroName)
         {
-            if (string.IsNullOrEmpty(heroName)) return false; // Should not happen
+            if (string.IsNullOrEmpty(heroName)) return false; 
             return string.Equals(playerName, heroName, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -242,19 +299,16 @@ namespace PokerTrackerBackend.StatsBuilder
             var results = new List<ParsedAction>();
             if (string.IsNullOrEmpty(actionText)) return results;
 
-            var lines = actionText.Split('\n');
-            var timestampRegex = new Regex(@"^\d{1,2}:\d{2}:\d{2}\s*-\s*");
+            var lines = actionText.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            // Regex more robust for timestamps: matches any "HH:MM:SS - " or "HH:MM - " at start
+            var timestampRegex = new Regex(@"^\d{1,2}:\d{2}(?::\d{2})?\s*-\s*");
 
             foreach (var line in lines)
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
 
-                // Remove timestamp if present (e.g. "22:53:05 - ")
                 var cleanLine = timestampRegex.Replace(line.Trim(), "");
 
-                // "PlayerName: bets 100"
-                // "PlayerName: checks"
-                
                 var parts = cleanLine.Split(new[] { ':' }, 2);
                 if (parts.Length != 2) continue;
 

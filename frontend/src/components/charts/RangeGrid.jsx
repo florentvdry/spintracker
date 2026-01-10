@@ -46,9 +46,10 @@ export default function RangeGrid({
       hand,
       stats: {
         TotalCount: raw.totalCount !== undefined ? raw.totalCount : (raw.TotalCount || 0),
+        TotalProfit: raw.totalProfit !== undefined ? raw.totalProfit : (raw.TotalProfit || 0),
+        TotalEv: raw.totalEv !== undefined ? raw.totalEv : (raw.TotalEv || 0),
         Actions: raw.actions || raw.Actions || {},
-        HandIds: raw.handIds || raw.HandIds || [],
-        HandIds: raw.handIds || raw.HandIds || []
+        Hands: raw.hands || raw.Hands || []
       }
     };
   };

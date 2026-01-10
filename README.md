@@ -1,4 +1,4 @@
-# Poker Tracker Pro v2.0
+# SpinTracker
 
 Application professionnelle de suivi et d'analyse pour le poker Spin & Go.
 

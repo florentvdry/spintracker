@@ -8,6 +8,10 @@ const ReplayerControls = () => {
     togglePlay, 
     nextStep, 
     prevStep, 
+    prevHand,
+    nextHand,
+    handQueue,
+    currentHandIndex,
     jumpToStreet,
     playbackSpeed,
     setPlaybackSpeed,
@@ -18,6 +22,9 @@ const ReplayerControls = () => {
   } = useReplayerStore();
 
   const speeds = [0.5, 1, 2, 4];
+  const hasMultipleHands = handQueue && handQueue.length > 1;
+  const hasPrevHand = hasMultipleHands && currentHandIndex > 0;
+  const hasNextHand = hasMultipleHands && currentHandIndex < handQueue.length - 1;
 
   return (
     <div className="h-full flex items-center justify-between px-4 text-gray-300">
@@ -31,7 +38,17 @@ const ReplayerControls = () => {
 
       {/* Main Controls */}
       <div className="flex items-center gap-4">
-        <button onClick={prevStep} className="p-2 hover:bg-gray-800 rounded-full hover:text-white transition-colors">
+        {/* Prev Hand */}
+        <button 
+          onClick={prevHand} 
+          disabled={!hasPrevHand}
+          className={`p-2 rounded-full transition-colors ${!hasPrevHand ? 'text-gray-700 cursor-not-allowed' : 'hover:bg-gray-800 hover:text-white'}`}
+          title="Previous Hand"
+        >
+          <Rewind size={20} />
+        </button>
+
+        <button onClick={prevStep} className="p-2 hover:bg-gray-800 rounded-full hover:text-white transition-colors" title="Previous Action">
           <SkipBack size={20} />
         </button>
         
@@ -42,8 +59,18 @@ const ReplayerControls = () => {
           {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
         </button>
 
-        <button onClick={nextStep} className="p-2 hover:bg-gray-800 rounded-full hover:text-white transition-colors">
+        <button onClick={nextStep} className="p-2 hover:bg-gray-800 rounded-full hover:text-white transition-colors" title="Next Action">
           <SkipForward size={20} />
+        </button>
+
+        {/* Next Hand */}
+        <button 
+          onClick={nextHand} 
+          disabled={!hasNextHand}
+          className={`p-2 rounded-full transition-colors ${!hasNextHand ? 'text-gray-700 cursor-not-allowed' : 'hover:bg-gray-800 hover:text-white'}`}
+          title="Next Hand"
+        >
+          <FastForward size={20} />
         </button>
       </div>
 

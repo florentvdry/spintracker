@@ -123,7 +123,7 @@ const ReplayerTable = () => {
           ))}
           {communityCards.length === 0 && (
             <div className="text-emerald-900/50 font-bold tracking-widest uppercase mt-2">
-              Poker Tracker
+              SpinTracker
             </div>
           )}
         </div>

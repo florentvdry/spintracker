@@ -1,6 +1,6 @@
-# Poker Tracker Backend - C# Edition
+# SpinTracker Backend - C# Edition
 
-Backend C# haute performance pour le Poker Tracker avec calculs d'équité optimisés et parsing rapide.
+Backend C# haute performance pour le SpinTracker avec calculs d'équité optimisés et parsing rapide.
 
 ## Fonctionnalités
 

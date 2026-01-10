@@ -17,39 +17,77 @@ const BACKEND_PORT = 5050;
 
 // ============ C# Backend Management ============
 
+function getDbPath() {
+  const userDataPath = app.getPath('userData');
+  if (!fs.existsSync(userDataPath)) {
+    fs.mkdirSync(userDataPath, { recursive: true });
+  }
+  return path.join(userDataPath, 'poker_tracker.db');
+}
+
 function startBackend() {
-  const dotnetPath = 'dotnet';
-  const backendDir = path.join(__dirname, 'backend');
-  const dllPath = path.join(backendDir, 'bin', 'Debug', 'net8.0', 'PokerTrackerBackend.dll');
+  const isDev = !app.isPackaged || process.argv.includes('--dev');
+  
+  if (isDev) {
+    const dotnetPath = 'dotnet';
+    const backendDir = path.join(__dirname, 'backend');
+    const dllPath = path.join(backendDir, 'bin', 'Debug', 'net8.0', 'PokerTrackerBackend.dll');
 
-  // Check if compiled DLL exists
-  if (!fs.existsSync(dllPath)) {
-    console.log('[Backend] DLL not found, building project...');
-    // Try to build the project first
-    const buildProcess = spawn(dotnetPath, ['build'], {
-      cwd: backendDir,
-      stdio: 'inherit'
-    });
+    // Check if compiled DLL exists
+    if (!fs.existsSync(dllPath)) {
+      console.log('[Backend] DLL not found, building project...');
+      // Try to build the project first
+      const buildProcess = spawn(dotnetPath, ['build'], {
+        cwd: backendDir,
+        stdio: 'inherit'
+      });
 
-    buildProcess.on('close', (code) => {
-      if (code === 0) {
-        console.log('[Backend] Build successful, starting backend...');
-        startBackendProcess();
-      } else {
-        console.error('[Backend] Build failed!');
-      }
-    });
+      buildProcess.on('close', (code) => {
+        if (code === 0) {
+          console.log('[Backend] Build successful, starting backend...');
+          startBackendProcess();
+        } else {
+          console.error('[Backend] Build failed!');
+        }
+      });
+    } else {
+      startBackendProcess();
+    }
   } else {
     startBackendProcess();
   }
 }
 
 function startBackendProcess() {
-  const dotnetPath = 'dotnet';
-  const backendDir = path.join(__dirname, 'backend');
+  const isDev = !app.isPackaged || process.argv.includes('--dev');
+  const dbPath = getDbPath();
+  
+  let command;
+  let args;
+  let cwd;
 
-  backendProcess = spawn(dotnetPath, ['run', BACKEND_PORT.toString()], {
-    cwd: backendDir,
+  if (isDev) {
+    command = 'dotnet';
+    args = ['run', BACKEND_PORT.toString(), `--db-path=${dbPath}`];
+    cwd = path.join(__dirname, 'backend');
+  } else {
+    // In production, the backend is in the resources folder
+    cwd = path.join(process.resourcesPath, 'backend');
+    command = path.join(cwd, 'PokerTrackerBackend.exe');
+    args = [BACKEND_PORT.toString(), `--db-path=${dbPath}`];
+    
+    // Fallback for different packaging structures
+    if (!fs.existsSync(command)) {
+      cwd = path.join(__dirname, '..', 'backend');
+      command = path.join(cwd, 'PokerTrackerBackend.exe');
+    }
+  }
+
+  console.log(`[Backend] Starting: ${command} in ${cwd}`);
+  console.log(`[Backend] DB Path: ${dbPath}`);
+
+  backendProcess = spawn(command, args, {
+    cwd: cwd,
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
@@ -139,7 +177,7 @@ function createWindow() {
     },
     frame: true,
     titleBarStyle: 'default',
-    icon: path.join(__dirname, 'assets/icon.png'),
+    icon: path.join(__dirname, 'assets/logo.png'),
   });
 
   if (isDev) {

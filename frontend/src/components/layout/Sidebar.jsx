@@ -31,12 +31,11 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-dark-400 border-r border-dark-100/30 flex flex-col">
       {/* Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-dark-100/30">
+      <div className="h-50 flex items-center px-6 border-b border-dark-100/30">
         <div className="flex items-center gap-3">
-          <img src={logo} alt="Poker Tracker" className="w-10 h-10 object-contain" />
+          <img src={logo} alt="SpinTracker" className="w-24 h-24 object-contain py-2" />
           <div>
-            <h1 className="text-lg font-bold gradient-text">Poker Tracker</h1>
-            <span className="text-xs text-gray-500">{t('sidebar.pro_edition')}</span>
+            <h1 className="text-xl font-bold gradient-text">SpinTracker</h1>
           </div>
         </div>
       </div>

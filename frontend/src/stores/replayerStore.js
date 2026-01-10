@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { normalizeHand } from '../utils/handNormalizer';
+import { ipcService } from '@services/ipcService';
 
 export const STREETS = {
   PREFLOP: 0,
@@ -13,14 +14,16 @@ export const useReplayerStore = create((set, get) => ({
   isOpen: false,
   isMinimized: false,
   hand: null,
-  currentActionIndex: -1, // -1 means start of hand (posting blinds usually happens at start, but we might want step 0 to be "seated")
+  currentActionIndex: -1,
   isPlaying: false,
   playbackSpeed: 1, // 1x
   showVillainHands: JSON.parse(localStorage.getItem('replayer_showVillainHands')) ?? true,
   showInBB: JSON.parse(localStorage.getItem('replayer_showInBB')) ?? false,
   
-  // Computed state cache (optional, could just compute in component)
-  // For now we will compute in the component or a selector to keep store clean
+  // Hand Queue State
+  handQueue: [],
+  currentHandIndex: -1,
+  isLoadingHand: false,
 
   // Actions
   toggleShowVillainHands: () => {
@@ -39,7 +42,62 @@ export const useReplayerStore = create((set, get) => ({
     });
   },
 
+  loadHandQueue: async (handIds) => {
+    if (!handIds || handIds.length === 0) return;
+    
+    set({ 
+      handQueue: handIds, 
+      currentHandIndex: 0,
+      isOpen: true,
+      isMinimized: false 
+    });
+
+    await get().loadHand(handIds[0]);
+  },
+
+  loadHand: async (handId) => {
+    set({ isLoadingHand: true });
+    try {
+      const res = await ipcService.getHandDetails(handId);
+      if (res.success) {
+        // We call openReplayer but passing a flag or rely on it not clearing queue if we don't tell it to
+        // Actually openReplayer currently doesn't touch queue, which is good.
+        get().openReplayer(res.data);
+      }
+    } catch (e) {
+      console.error("Failed to load hand", e);
+    } finally {
+      set({ isLoadingHand: false });
+    }
+  },
+
+  nextHand: () => {
+    const { handQueue, currentHandIndex } = get();
+    if (currentHandIndex < handQueue.length - 1) {
+      const newIndex = currentHandIndex + 1;
+      set({ currentHandIndex: newIndex });
+      get().loadHand(handQueue[newIndex]);
+    }
+  },
+
+  prevHand: () => {
+    const { handQueue, currentHandIndex } = get();
+    if (currentHandIndex > 0) {
+      const newIndex = currentHandIndex - 1;
+      set({ currentHandIndex: newIndex });
+      get().loadHand(handQueue[newIndex]);
+    }
+  },
+
   openReplayer: (handData) => {
+    // If openReplayer is called directly (not via loadHandQueue/loadHand), 
+    // we should probably clear the queue effectively treating it as a single hand session
+    // UNLESS it was called by loadHand.
+    // We can distinguish by checking if we are loading from queue?
+    // But loadHand calls openReplayer.
+    // Let's assume openReplayer is just "set current hand state". 
+    // The queue management is separate.
+    
     const normalized = normalizeHand(handData);
     
     // Inject virtual street actions if board exists but actions are missing
@@ -93,13 +151,15 @@ export const useReplayerStore = create((set, get) => ({
       normalized.actions = newActions;
     }
 
-    set({
+    set((state) => ({
       isOpen: true,
       isMinimized: false,
       hand: normalized,
       currentActionIndex: -1,
-      isPlaying: false
-    });
+      isPlaying: false,
+      handQueue: state.isLoadingHand ? state.handQueue : [],
+      currentHandIndex: state.isLoadingHand ? state.currentHandIndex : -1
+    }));
   },
 
   closeReplayer: () => {

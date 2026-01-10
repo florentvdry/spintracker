@@ -568,10 +568,15 @@ namespace PokerTrackerBackend
                 var stats = rangeData[cards];
                 stats.TotalCount++;
                 stats.TotalProfit += hand.Profit;
+                stats.TotalEv += hand.EvChips.GetValueOrDefault();
                 
-                // Keep track of Hand IDs for replayer
-                if (stats.HandIds == null) stats.HandIds = new List<string>();
-                stats.HandIds.Add(hand.HandId);
+                // Add hand summary
+                stats.Hands.Add(new RangeHandSummary {
+                    Id = hand.HandId,
+                    Date = hand.Date,
+                    Profit = hand.Profit,
+                    Ev = hand.EvChips
+                });
 
                 // Determine Action
                 var actionType = DetermineActionType(hand, filters.Situation, heroName);
@@ -670,13 +675,22 @@ namespace PokerTrackerBackend
             else return $"{r1}{r2}o"; // Offsuit
         }
 
+        public class RangeHandSummary
+        {
+            public string Id { get; set; } = "";
+            public DateTime Date { get; set; }
+            public double Profit { get; set; }
+            public double? Ev { get; set; }
+        }
+
         public class RangeHandStats
         {
             public string Hand { get; set; } = "";
             public int TotalCount { get; set; }
             public double TotalProfit { get; set; }
+            public double TotalEv { get; set; }
             public Dictionary<string, int> Actions { get; set; } = new();
-            public List<string> HandIds { get; set; } = new(); // Stores list of hand IDs for this range cell
+            public List<RangeHandSummary> Hands { get; set; } = new();
         }
     }
 }

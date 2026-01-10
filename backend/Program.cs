@@ -15,6 +15,9 @@ if (args.Length > 0 && args[0] == "--compare")
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Extract db-path if provided
+string? dbPath = args.FirstOrDefault(a => a.StartsWith("--db-path="))?.Replace("--db-path=", "");
+
 // Configure services
 builder.Services.AddCors(options =>
 {
@@ -26,7 +29,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddSingleton<Database>();
+builder.Services.AddSingleton<Database>(sp => 
+    new Database(sp.GetRequiredService<ILogger<Database>>(), dbPath));
 builder.Services.AddSingleton<EquityCalculator>();
 builder.Services.AddSingleton<AnalyticsCalculator>();
 builder.Services.AddSingleton<AnalysisEngine>();
@@ -980,7 +984,7 @@ app.MapPost("/stats/builder/evaluate-batch", async (HttpContext context, Databas
         var hands = await db.GetFilteredHandsForStatsAsync(request.Filters ?? new PokerTrackerBackend.AnalysisFilters());
 
         // 2. Evaluate
-        var result = engine.EvaluateBatch(hands, request.Stats);
+        var result = engine.EvaluateBatch(hands, request.Stats, request.Filters?.HeroName);
 
         return Results.Json(new { success = true, data = result });
     }

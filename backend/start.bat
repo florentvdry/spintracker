@@ -1,6 +1,6 @@
 @echo off
 echo ====================================
-echo Poker Tracker - Backend C# Setup
+echo SpinTracker - Backend C# Setup
 echo ====================================
 echo.
 

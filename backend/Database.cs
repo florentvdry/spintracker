@@ -9,13 +9,18 @@ public class Database
     private readonly string _connectionString;
     private readonly ILogger<Database> _logger;
 
-    public Database(ILogger<Database> logger)
+    public Database(ILogger<Database> logger, string? dbPath = null)
     {
         _logger = logger;
-        // Use database at project root (one level up from backend folder)
-        var backendDir = Directory.GetCurrentDirectory();
-        var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
-        var dbPath = Path.Combine(projectRoot, "poker_tracker.db");
+
+        if (string.IsNullOrEmpty(dbPath))
+        {
+            // Use database at project root (one level up from backend folder)
+            var backendDir = Directory.GetCurrentDirectory();
+            var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
+            dbPath = Path.Combine(projectRoot, "poker_tracker.db");
+        }
+
         _connectionString = $"Data Source={dbPath}";
         _logger.LogInformation($"Using database at: {dbPath}");
         
@@ -461,46 +466,32 @@ public class Database
         using var transaction = connection.BeginTransaction();
         var inserted = 0;
         
-        // Dictionary to aggregate player stats
-        var playerStats = new Dictionary<string, (int Hands, double Profit)>();
+        var playerStats = new Dictionary<string, (int Hands, double Profit, double EvProfit)>();
 
         try
         {
-            // 1. Insert Hands
-            using var cmd = connection.CreateCommand();
-            cmd.Transaction = transaction;
-            cmd.CommandText = @"
-                INSERT OR REPLACE INTO hands (
-                    id, game_id, hand_id, room, game_mode, game_type, game_name,
-                    prize_pool, multiplier, buy_in, date_time, table_id, blinds,
-                    total_pot, rake, hero_position, hero_stack, hero_cards,
-                    villain_position, villain_stack, villain_cards, preflop_action,
-                    flop, flop_action, turn, turn_action, river, river_action,
-                    showdown, result, hero_investment, hero_profit, hero_net_profit, hero_all_in, villain_all_in, all_in_street, went_to_showdown, player_count
-                ) VALUES (
-                    @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
-                    @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
-                    @total_pot, @rake, @hero_position, @hero_stack, @hero_cards,
-                    @villain_position, @villain_stack, @villain_cards, @preflop_action,
-                    @flop, @flop_action, @turn, @turn_action, @river, @river_action,
-                    @showdown, @result, @hero_investment, @hero_profit, @hero_net_profit, @hero_all_in, @villain_all_in, @all_in_street, @went_to_showdown, @player_count
-                )";
-            
-            // 2. Insert Player Hands
-            using var cmdPlayers = connection.CreateCommand();
-            cmdPlayers.Transaction = transaction;
-            cmdPlayers.CommandText = @"
-                INSERT OR REPLACE INTO player_hands (
-                    hand_id, player_name, position, stack, cards, investment, 
-                    chips_won, net_profit, is_hero, is_all_in, went_to_showdown
-                ) VALUES (
-                    @hand_id, @player_name, @position, @stack, @cards, @investment,
-                    @chips_won, @net_profit, @is_hero, @is_all_in, @went_to_showdown
-                )";
-
-            foreach (var hand in hands)
+            // Insert hands (reusing logic from InsertHandsBatchAsync)
+            using (var cmd = connection.CreateCommand())
             {
-                try 
+                cmd.Transaction = transaction;
+                cmd.CommandText = @"
+                    INSERT OR REPLACE INTO hands (
+                        id, game_id, hand_id, room, game_mode, game_type, game_name,
+                        prize_pool, multiplier, buy_in, date_time, table_id, blinds,
+                        total_pot, rake, hero_position, hero_stack, hero_cards,
+                        villain_position, villain_stack, villain_cards, preflop_action,
+                        flop, flop_action, turn, turn_action, river, river_action,
+                        showdown, result, hero_investment, hero_profit, hero_net_profit, hero_all_in, villain_all_in, all_in_street, went_to_showdown, player_count
+                    ) VALUES (
+                        @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
+                        @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
+                        @total_pot, @rake, @hero_position, @hero_stack, @hero_cards,
+                        @villain_position, @villain_stack, @villain_cards, @preflop_action,
+                        @flop, @flop_action, @turn, @turn_action, @river, @river_action,
+                        @showdown, @result, @hero_investment, @hero_profit, @hero_net_profit, @hero_all_in, @villain_all_in, @all_in_street, @went_to_showdown, @player_count
+                    )";
+
+                foreach (var hand in hands)
                 {
                     cmd.Parameters.Clear();
                     cmd.Parameters.AddWithValue("@id", hand.Id ?? "");
@@ -541,11 +532,29 @@ public class Database
                     cmd.Parameters.AddWithValue("@all_in_street", hand.AllInStreet ?? "");
                     cmd.Parameters.AddWithValue("@went_to_showdown", hand.WentToShowdown ? 1 : 0);
                     cmd.Parameters.AddWithValue("@player_count", hand.PlayerCount);
-
                     await cmd.ExecuteNonQueryAsync();
                     inserted++;
+                }
+            }
 
-                    foreach(var p in hand.Players)
+            // Insert player_hands
+            using (var cmdPlayers = connection.CreateCommand())
+            {
+                cmdPlayers.Transaction = transaction;
+                cmdPlayers.CommandText = @"
+                    INSERT OR REPLACE INTO player_hands (
+                        hand_id, player_name, position, stack, cards, investment, 
+                        chips_won, net_profit, is_hero, is_all_in, went_to_showdown, ev_chips
+                    ) VALUES (
+                        @hand_id, @player_name, @position, @stack, @cards, @investment,
+                        @chips_won, @net_profit, @is_hero, @is_all_in, @went_to_showdown, @ev_chips
+                    )";
+
+                foreach (var hand in hands)
+                {
+                    var handAnalytics = analytics.FirstOrDefault(a => a.HandId == hand.Id);
+
+                    foreach (var p in hand.Players)
                     {
                         cmdPlayers.Parameters.Clear();
                         cmdPlayers.Parameters.AddWithValue("@hand_id", hand.Id);
@@ -559,72 +568,72 @@ public class Database
                         cmdPlayers.Parameters.AddWithValue("@is_hero", p.IsHero ? 1 : 0);
                         cmdPlayers.Parameters.AddWithValue("@is_all_in", p.IsAllIn ? 1 : 0);
                         cmdPlayers.Parameters.AddWithValue("@went_to_showdown", p.WentToShowdown ? 1 : 0);
+                        
+                        // Assign EV to the player if they are the hero of the hand
+                        var playerEv = (p.IsHero && handAnalytics != null) ? handAnalytics.EvChips : (double?)null;
+                        cmdPlayers.Parameters.AddWithValue("@ev_chips", playerEv ?? (object)DBNull.Value);
+
                         await cmdPlayers.ExecuteNonQueryAsync();
 
                         // Aggregate stats
                         if (!playerStats.ContainsKey(p.Name))
                         {
-                            playerStats[p.Name] = (0, 0);
+                            playerStats[p.Name] = (0, 0, 0);
                         }
-                        var (h, pr) = playerStats[p.Name];
-                        playerStats[p.Name] = (h + 1, pr + p.NetProfit);
+                        var (h, pr, ev) = playerStats[p.Name];
+                        playerStats[p.Name] = (h + 1, pr + p.NetProfit, ev + (playerEv ?? 0));
                     }
                 }
-                catch (Exception ex)
+            }
+
+            // Insert analytics
+            using (var cmdAnalytics = connection.CreateCommand())
+            {
+                cmdAnalytics.Transaction = transaction;
+                cmdAnalytics.CommandText = @"
+                    INSERT OR REPLACE INTO hands_analytics (
+                        hand_id, ev_chips, net_won_adjusted, equity_preflop, equity_flop, equity_turn, equity_river
+                    ) VALUES (
+                        @hand_id, @ev_chips, @net_won_adjusted, @equity_preflop, @equity_flop, @equity_turn, @equity_river
+                    )";
+
+                foreach (var analytic in analytics)
                 {
-                    _logger.LogWarning($"Failed to insert hand {hand.Id}: {ex.Message}");
-                    throw;
+                    cmdAnalytics.Parameters.Clear();
+                    cmdAnalytics.Parameters.AddWithValue("@hand_id", analytic.HandId);
+                    cmdAnalytics.Parameters.AddWithValue("@ev_chips", analytic.EvChips ?? (object)DBNull.Value);
+                    cmdAnalytics.Parameters.AddWithValue("@net_won_adjusted", analytic.NetWonAdjusted ?? (object)DBNull.Value);
+                    cmdAnalytics.Parameters.AddWithValue("@equity_preflop", analytic.EquityPreflop ?? (object)DBNull.Value);
+                    cmdAnalytics.Parameters.AddWithValue("@equity_flop", analytic.EquityFlop ?? (object)DBNull.Value);
+                    cmdAnalytics.Parameters.AddWithValue("@equity_turn", analytic.EquityTurn ?? (object)DBNull.Value);
+                    cmdAnalytics.Parameters.AddWithValue("@equity_river", analytic.EquityRiver ?? (object)DBNull.Value);
+                    await cmdAnalytics.ExecuteNonQueryAsync();
                 }
             }
-
-            // 3. Insert Analytics
-            using var cmdAnalytics = connection.CreateCommand();
-            cmdAnalytics.Transaction = transaction;
-            cmdAnalytics.CommandText = @"
-                INSERT OR REPLACE INTO hands_analytics (
-                    hand_id, ev_chips, net_won_adjusted, equity_preflop, equity_flop,
-                    equity_turn, equity_river, chips_won_showdown, chips_won_no_showdown, cev_contribution
-                ) VALUES (
-                    @hand_id, @ev_chips, @net_won_adjusted, @equity_preflop, @equity_flop,
-                    @equity_turn, @equity_river, @chips_won_showdown, @chips_won_no_showdown, @cev_contribution
-                )";
-
-            foreach (var analytic in analytics)
+            
+            // Batch update players
+            using (var cmdUpdatePlayers = connection.CreateCommand())
             {
-                cmdAnalytics.Parameters.Clear();
-                cmdAnalytics.Parameters.AddWithValue("@hand_id", analytic.HandId ?? "");
-                cmdAnalytics.Parameters.AddWithValue("@ev_chips", analytic.EvChips.HasValue ? (object)analytic.EvChips.Value : DBNull.Value);
-                cmdAnalytics.Parameters.AddWithValue("@net_won_adjusted", analytic.NetWonAdjusted.HasValue ? (object)analytic.NetWonAdjusted.Value : DBNull.Value);
-                cmdAnalytics.Parameters.AddWithValue("@equity_preflop", analytic.EquityPreflop.HasValue ? (object)analytic.EquityPreflop.Value : DBNull.Value);
-                cmdAnalytics.Parameters.AddWithValue("@equity_flop", analytic.EquityFlop.HasValue ? (object)analytic.EquityFlop.Value : DBNull.Value);
-                cmdAnalytics.Parameters.AddWithValue("@equity_turn", analytic.EquityTurn.HasValue ? (object)analytic.EquityTurn.Value : DBNull.Value);
-                cmdAnalytics.Parameters.AddWithValue("@equity_river", analytic.EquityRiver.HasValue ? (object)analytic.EquityRiver.Value : DBNull.Value);
-                cmdAnalytics.Parameters.AddWithValue("@chips_won_showdown", analytic.ChipsWonShowdown.HasValue ? (object)analytic.ChipsWonShowdown.Value : DBNull.Value);
-                cmdAnalytics.Parameters.AddWithValue("@chips_won_no_showdown", analytic.ChipsWonNoShowdown.HasValue ? (object)analytic.ChipsWonNoShowdown.Value : DBNull.Value);
-                cmdAnalytics.Parameters.AddWithValue("@cev_contribution", analytic.CevContribution.HasValue ? (object)analytic.CevContribution.Value : DBNull.Value);
+                cmdUpdatePlayers.Transaction = transaction;
+                cmdUpdatePlayers.CommandText = @"
+                    INSERT OR IGNORE INTO players (name, created_at, updated_at) VALUES (@name, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+                    UPDATE players 
+                    SET total_hands = total_hands + @hands, 
+                        total_profit = total_profit + @profit,
+                        total_ev_profit = total_ev_profit + @ev_profit,
+                        updated_at = CURRENT_TIMESTAMP
+                    WHERE name = @name;
+                ";
 
-                await cmdAnalytics.ExecuteNonQueryAsync();
-            }
-
-            // 4. Batch update players
-            using var cmdUpdatePlayers = connection.CreateCommand();
-            cmdUpdatePlayers.Transaction = transaction;
-            cmdUpdatePlayers.CommandText = @"
-                INSERT OR IGNORE INTO players (name, created_at, updated_at) VALUES (@name, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-                UPDATE players 
-                SET total_hands = total_hands + @hands, 
-                    total_profit = total_profit + @profit,
-                    updated_at = CURRENT_TIMESTAMP
-                WHERE name = @name;
-            ";
-
-            foreach(var kvp in playerStats)
-            {
-                cmdUpdatePlayers.Parameters.Clear();
-                cmdUpdatePlayers.Parameters.AddWithValue("@name", kvp.Key);
-                cmdUpdatePlayers.Parameters.AddWithValue("@hands", kvp.Value.Hands);
-                cmdUpdatePlayers.Parameters.AddWithValue("@profit", kvp.Value.Profit);
-                await cmdUpdatePlayers.ExecuteNonQueryAsync();
+                foreach(var kvp in playerStats)
+                {
+                    cmdUpdatePlayers.Parameters.Clear();
+                    cmdUpdatePlayers.Parameters.AddWithValue("@name", kvp.Key);
+                    cmdUpdatePlayers.Parameters.AddWithValue("@hands", kvp.Value.Hands);
+                    cmdUpdatePlayers.Parameters.AddWithValue("@profit", kvp.Value.Profit);
+                    cmdUpdatePlayers.Parameters.AddWithValue("@ev_profit", kvp.Value.EvProfit);
+                    await cmdUpdatePlayers.ExecuteNonQueryAsync();
+                }
             }
 
             await transaction.CommitAsync();

@@ -112,6 +112,8 @@ const ReplayerModal = () => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowRight') useReplayerStore.getState().nextStep();
       if (e.key === 'ArrowLeft') useReplayerStore.getState().prevStep();
+      if (e.key === 'PageDown') useReplayerStore.getState().nextHand();
+      if (e.key === 'PageUp') useReplayerStore.getState().prevHand();
       if (e.key === ' ') {
         e.preventDefault();
         useReplayerStore.getState().togglePlay();
