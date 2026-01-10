@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Save, Trash2, Edit2, GripVertical, Type, X, Layout, Download, Upload, Settings, Palette, AlignLeft, AlignCenter, AlignRight, RefreshCw, ChevronDown } from 'lucide-react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
@@ -124,6 +124,68 @@ export default function AnalysisHUD({ filters }) {
   
   // Selection for Properties Panel
   const [selectedCell, setSelectedCell] = useState(null); // { row, col }
+
+    // Pan (drag-to-scroll) state for small screens
+    const canvasRef = useRef(null);
+    const panState = useRef({ isDown: false, startX: 0, startY: 0, scrollLeft: 0, scrollTop: 0 });
+    const gridRef = useRef(null);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+
+    const handlePointerDown = (e) => {
+        if (isEditing) return; // disable panning while editing
+        const el = canvasRef.current;
+        if (!el) return;
+        const clientX = e.clientX ?? (e.touches && e.touches[0] && e.touches[0].clientX);
+        const clientY = e.clientY ?? (e.touches && e.touches[0] && e.touches[0].clientY);
+        panState.current.isDown = true;
+        panState.current.startX = clientX;
+        panState.current.startY = clientY;
+        panState.current.scrollLeft = el.scrollLeft;
+        panState.current.scrollTop = el.scrollTop;
+        el.style.cursor = 'grabbing';
+        e.preventDefault();
+    };
+
+    const handlePointerMove = (e) => {
+        if (!panState.current.isDown) return;
+        const el = canvasRef.current;
+        if (!el) return;
+        const clientX = e.clientX ?? (e.touches && e.touches[0] && e.touches[0].clientX);
+        const clientY = e.clientY ?? (e.touches && e.touches[0] && e.touches[0].clientY);
+        const dx = clientX - panState.current.startX;
+        const dy = clientY - panState.current.startY;
+        el.scrollLeft = panState.current.scrollLeft - dx;
+        el.scrollTop = panState.current.scrollTop - dy;
+    };
+
+    const handlePointerUp = () => {
+        const el = canvasRef.current;
+        if (!el) return;
+        panState.current.isDown = false;
+        el.style.cursor = '';
+    };
+
+    // Detect when grid overflows the canvas to left-align it (keeps first column visible)
+    useEffect(() => {
+        const el = canvasRef.current;
+        const grid = gridRef.current;
+        if (!el || !grid) return;
+
+        const check = () => {
+            const overflow = grid.scrollWidth > el.clientWidth || grid.scrollHeight > el.clientHeight;
+            setIsOverflowing(overflow);
+        };
+
+        check();
+        const ro = new ResizeObserver(check);
+        ro.observe(el);
+        ro.observe(grid);
+        window.addEventListener('resize', check);
+        return () => {
+            ro.disconnect();
+            window.removeEventListener('resize', check);
+        };
+    }, [currentLayout, isEditing]);
 
   // Load Initial Data
   useEffect(() => {
@@ -403,8 +465,19 @@ export default function AnalysisHUD({ filters }) {
                 </div>
 
                 {/* Grid Canvas */}
-                <div className="flex-1 p-8 overflow-auto flex justify-center bg-dark-500">
+                <div
+                    ref={canvasRef}
+                    onMouseDown={handlePointerDown}
+                    onMouseMove={handlePointerMove}
+                    onMouseUp={handlePointerUp}
+                    onMouseLeave={handlePointerUp}
+                    onTouchStart={handlePointerDown}
+                    onTouchMove={handlePointerMove}
+                    onTouchEnd={handlePointerUp}
+                    className={clsx("flex-1 p-8 overflow-auto flex bg-dark-500", isOverflowing ? "justify-start" : "justify-center", !isEditing && "cursor-grab")}
+                >
                     <div 
+                        ref={gridRef}
                         className={clsx(
                             "relative grid gap-0 transition-all duration-300",
                             isEditing ? "bg-dark-400/50 border border-dark-200 rounded-xl shadow-2xl p-4" : ""
