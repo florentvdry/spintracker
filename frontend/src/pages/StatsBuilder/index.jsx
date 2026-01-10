@@ -27,6 +27,7 @@ const STREETS = ['Preflop', 'Flop', 'Turn', 'River'];
 const StatsBuilder = () => {
   const [statsList, setStatsList] = useState([]);
   const [currentStatId, setCurrentStatId] = useState(null);
+  const [search, setSearch] = useState('');
   const notify = useNotificationStore();
   const loadHand = useReplayerStore(state => state.loadHand);
   const { t } = useTranslation();
@@ -380,6 +381,8 @@ const StatsBuilder = () => {
     setCollapsedStreets(prev => ({ ...prev, [street]: !prev[street] }));
   };
 
+  const filteredStats = statsList.filter(s => (s.name || '').toLowerCase().includes((search || '').toLowerCase()));
+
   const RenderGroup = ({ group, path, streetFilter }) => {
     if (!group) return null;
     
@@ -538,40 +541,53 @@ const StatsBuilder = () => {
     <div className="grid grid-cols-12 gap-6 items-start pb-10">
       
       {/* 1. Stats Manager Sidebar */}
-      <div className="col-span-3 flex flex-col gap-4">
+      <div className="col-span-3 flex flex-col gap-4 min-h-0 min-w-0">
         <Card 
           title={t('stats_builder.library')} 
           subtitle={t('stats_builder.manage')}
           padding={false}
-          className="min-h-[600px] h-[calc(100vh-140px)]"
+          className="min-h-[600px] h-[calc(100vh-140px)] overflow-hidden"
           action={
             <button onClick={handleNewStat} className="p-1.5 hover:bg-primary-500/10 rounded-md text-primary-400 transition-colors">
               <Plus size={18} />
             </button>
           }
         >
-          <div className="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
-            {statsList.map(s => (
-              <div 
-                key={s.id}
-                onClick={() => handleSelectStat(s.id)}
-                className={clsx(
-                  "p-2.5 rounded-lg cursor-pointer group flex items-center justify-between transition-all border",
-                  currentStatId === s.id ? "bg-primary-500/10 border-primary-500/30 text-primary-400" : "bg-dark-400/30 border-transparent hover:border-dark-100 text-gray-400"
-                )}
-              >
-                <div className="flex items-center gap-2 truncate text-sm">
-                  <FileText size={14} className={currentStatId === s.id ? "text-primary-400" : "text-gray-500"} />
-                  <span className="truncate">{s.name}</span>
+          <div className="flex flex-col h-full min-h-0 min-w-0 p-2 overflow-hidden">
+            <div className="mb-2">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t('common.search') || 'Search...'}
+                className="w-full bg-dark-900/50 border border-white/10 rounded px-2 py-1 text-sm text-white outline-none focus:border-primary-500/50"
+              />
+            </div>
+
+            <div className="flex-1 min-h-0 overflow-y-auto space-y-1 custom-scrollbar">
+              {filteredStats.map(s => (
+                <div 
+                  key={s.id}
+                  onClick={() => handleSelectStat(s.id)}
+                  className={clsx(
+                      "w-full min-w-0 p-2.5 rounded-lg cursor-pointer group flex items-center justify-between transition-all border overflow-hidden",
+                      currentStatId === s.id ? "bg-primary-500/10 border-primary-500/30 text-primary-400" : "bg-dark-400/30 border-transparent hover:border-dark-100 text-gray-400"
+                    )}
+                >
+                    <div className="flex-1 flex items-center gap-2 text-sm min-w-0 overflow-hidden">
+                      <FileText size={14} className={clsx(currentStatId === s.id ? "text-primary-400" : "text-gray-500", "flex-shrink-0")} />
+                      <span className="flex-1 truncate">{s.name}</span>
+                    </div>
+                  <button onClick={(e) => handleDeleteStat(s.id, e)} className="opacity-0 group-hover:opacity-100 hover:text-red-400 p-1 rounded hover:bg-red-500/10 transition-all">
+                    <Trash2 size={12} />
+                  </button>
                 </div>
-                <button onClick={(e) => handleDeleteStat(s.id, e)} className="opacity-0 group-hover:opacity-100 hover:text-red-400 p-1 rounded hover:bg-red-500/10 transition-all">
-                  <Trash2 size={12} />
-                </button>
-              </div>
-            ))}
-            {statsList.length === 0 && (
-              <div className="p-8 text-center text-xs text-gray-500 italic">{t('common.no_data')}</div>
-            )}
+              ))}
+
+              {filteredStats.length === 0 && (
+                <div className="p-8 text-center text-xs text-gray-500 italic">{t('common.no_data')}</div>
+              )}
+            </div>
           </div>
         </Card>
       </div>
