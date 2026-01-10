@@ -1,5 +1,12 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { autoUpdater } = require('electron-updater');
+const log = require('electron-log');
 const path = require('path');
+
+// Configure Updater
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+autoUpdater.autoDownload = false; // Ask user before downloading
 const fs = require('fs');
 const { spawn } = require('child_process');
 const AdmZip = require('adm-zip');
@@ -152,6 +159,13 @@ function createWindow() {
 
   mainWindow.webContents.on('did-finish-load', async () => {
     // Window loaded
+    // Check for updates on startup (production only)
+    if (!process.argv.includes('--dev')) {
+      // Small delay to ensure UI is ready to show notifications/modals
+      setTimeout(() => {
+        autoUpdater.checkForUpdates();
+      }, 3000);
+    }
   });
 
   mainWindow.on('closed', () => {
@@ -364,6 +378,10 @@ ipcMain.handle('get-analysis-hands', async (event, request) => {
   return callBackendAPI('/analysis/hands', request || {});
 });
 
+ipcMain.handle('get-range-breakdown', async (event, filters) => {
+  return callBackendAPI('/analysis/range-breakdown', filters || {});
+});
+
 ipcMain.handle('get-players', async (event, options = {}) => {
   return callBackendAPI('/db/players', options);
 });
@@ -519,6 +537,58 @@ ipcMain.handle('python-analyze-range', async (event, params) => {
 
 ipcMain.handle('stats-builder-evaluate', async (event, stat) => {
   return callBackendAPI('/stats/builder/evaluate', stat);
+});
+
+// ============ IPC Handlers - Updater ============
+
+ipcMain.handle('check-for-updates', () => {
+  if (process.env.NODE_ENV === 'development') {
+    // In dev, we can't really check for updates, but we can simulate or log
+    console.log('[Updater] Check for updates triggered (Dev Mode)');
+    return;
+  }
+  autoUpdater.checkForUpdates();
+});
+
+ipcMain.handle('download-update', () => {
+  autoUpdater.downloadUpdate();
+});
+
+ipcMain.handle('quit-and-install', () => {
+  autoUpdater.quitAndInstall();
+});
+
+// AutoUpdater Events
+autoUpdater.on('checking-for-update', () => {
+  if (mainWindow) mainWindow.webContents.send('update-status', { status: 'checking' });
+});
+
+autoUpdater.on('update-available', (info) => {
+  if (mainWindow) mainWindow.webContents.send('update-status', { 
+    status: 'available', 
+    version: info.version, 
+    releaseNotes: info.releaseNotes 
+  });
+});
+
+autoUpdater.on('update-not-available', (info) => {
+  if (mainWindow) mainWindow.webContents.send('update-status', { status: 'not-available' });
+});
+
+autoUpdater.on('error', (err) => {
+  console.error('[Updater] Error:', err);
+  if (mainWindow) mainWindow.webContents.send('update-status', { status: 'error', error: err.message });
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  if (mainWindow) mainWindow.webContents.send('update-status', { 
+    status: 'downloading', 
+    progress: progressObj 
+  });
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  if (mainWindow) mainWindow.webContents.send('update-status', { status: 'downloaded', version: info.version });
 });
 
 // ============ IPC Handlers - Export ============

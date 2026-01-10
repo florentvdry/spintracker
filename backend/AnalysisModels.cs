@@ -68,6 +68,7 @@ public class AnalysisHandData
     public string? River { get; set; }
     public double? EvChips { get; set; }
     public string PlayerPositionsMap { get; set; } = ""; // "Player1:BTN|Player2:SB"
+    public string? HeroCards { get; set; }
 }
 
 public class AnalysisStatsResult

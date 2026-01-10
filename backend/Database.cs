@@ -699,7 +699,7 @@ public class Database
             var joinClause = "";
             
             // If HeroName is provided, join specific player.
-            // If NOT provided (Field analysis), join with is_hero=1 to identify the hero of the hand.
+            // If NOT provided (Field analysis), join ALL players who have cards so we can analyze the pool's range.
             if (!string.IsNullOrEmpty(filters.HeroName))
             {
                 joinClause += " JOIN player_hands ph ON h.id = ph.hand_id";
@@ -708,7 +708,9 @@ public class Database
             }
             else
             {
-                joinClause += " LEFT JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
+                // Field Analysis: Get all players with known cards
+                joinClause += " JOIN player_hands ph ON h.id = ph.hand_id";
+                whereClauses.Add("(ph.cards IS NOT NULL AND ph.cards != '')");
             }
 
             if (!string.IsNullOrEmpty(filters.DateFrom))
@@ -789,6 +791,7 @@ public class Database
             var stackCol = "COALESCE(ph.stack, hero_stack)";
             var posCol = "COALESCE(ph.position, hero_position)";
             var investCol = "COALESCE(ph.investment, hero_investment)";
+            var cardsCol = "COALESCE(ph.cards, hero_cards)";
             var showdownCol = "COALESCE(ph.went_to_showdown, h.went_to_showdown)";
 
             // Also join analytics for EV
@@ -820,7 +823,8 @@ public class Database
                     h.turn,
                     h.river,
                     a.ev_chips,
-                    {playerPositionsSubquery}
+                    {playerPositionsSubquery},
+                    {cardsCol}
                 FROM hands h
                 {joinClause}
                 {joinAnalytics}
@@ -840,10 +844,17 @@ public class Database
             while (await reader.ReadAsync())
             {
                 rowCount++;
+                var dateStr = reader.IsDBNull(1) ? "" : reader.GetString(1);
+                DateTime dateVal;
+                if (!DateTime.TryParse(dateStr, out dateVal))
+                {
+                    dateVal = DateTime.MinValue;
+                }
+
                 results.Add(new AnalysisHandData
                 {
                     HandId = reader.GetString(0),
-                    Date = DateTime.Parse(reader.GetString(1)),
+                    Date = dateVal,
                     Profit = reader.IsDBNull(2) ? 0.0 : reader.GetDouble(2),
                     PreflopAction = reader.IsDBNull(3) ? "" : reader.GetString(3),
                     FlopAction = reader.IsDBNull(4) ? "" : reader.GetString(4),
@@ -860,7 +871,8 @@ public class Database
                     Turn = reader.IsDBNull(15) ? null : reader.GetString(15),
                     River = reader.IsDBNull(16) ? null : reader.GetString(16),
                     EvChips = reader.IsDBNull(17) ? null : reader.GetDouble(17),
-                    PlayerPositionsMap = reader.IsDBNull(18) ? "" : reader.GetString(18)
+                    PlayerPositionsMap = reader.IsDBNull(18) ? "" : reader.GetString(18),
+                    HeroCards = reader.IsDBNull(19) ? null : reader.GetString(19)
                 });
             }
             
@@ -1031,21 +1043,67 @@ public class Database
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
-        using var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
-            SELECT h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river
-            FROM hands h
-            LEFT JOIN hands_analytics a ON h.id = a.hand_id
-            WHERE h.id = @handId";
-        cmd.Parameters.AddWithValue("@handId", handId);
+        object? handData = null;
 
-        using var reader = await cmd.ExecuteReaderAsync();
-        if (await reader.ReadAsync())
+        // 1. Get Hand Basic Info
+        using (var cmd = connection.CreateCommand())
         {
-            return ReadHandFromReader(reader);
+            cmd.CommandText = @"
+                SELECT h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river
+                FROM hands h
+                LEFT JOIN hands_analytics a ON h.id = a.hand_id
+                WHERE h.id = @handId";
+            cmd.Parameters.AddWithValue("@handId", handId);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                handData = ReadHandFromReader(reader);
+            }
         }
 
-        return null;
+        if (handData == null) return null;
+
+        // 2. Get Players
+        var players = new List<object>();
+        using (var cmdPlayers = connection.CreateCommand())
+        {
+            cmdPlayers.CommandText = @"
+                SELECT player_name, position, stack, cards, investment, chips_won, net_profit, is_hero, is_all_in, went_to_showdown
+                FROM player_hands
+                WHERE hand_id = @handId";
+            cmdPlayers.Parameters.AddWithValue("@handId", handId);
+
+            using (var reader = await cmdPlayers.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    players.Add(new {
+                        Name = reader.GetString(0),
+                        Position = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                        Stack = reader.GetInt32(2),
+                        Cards = reader.IsDBNull(3) ? null : reader.GetString(3),
+                        Investment = reader.GetDouble(4),
+                        ChipsWon = reader.GetDouble(5),
+                        NetProfit = reader.GetDouble(6),
+                        IsHero = reader.GetBoolean(7),
+                        IsAllIn = reader.GetBoolean(8),
+                        WentToShowdown = reader.GetBoolean(9)
+                    });
+                }
+            }
+        }
+
+        // Combine into a dictionary to return merged result
+        var json = JsonSerializer.Serialize(handData);
+        var result = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+        if (result != null)
+        {
+            result["players"] = players;
+            return result;
+        }
+
+        return handData;
     }
 
     public async Task<List<object>> GetHandsByIdsAsync(List<string> handIds, string? heroName = null)

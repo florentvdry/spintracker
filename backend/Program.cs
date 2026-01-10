@@ -593,6 +593,31 @@ app.MapPost("/analysis/hands", async (HttpContext context, AnalysisService analy
     }
 });
 
+app.MapPost("/analysis/range-breakdown", async (HttpContext context, AnalysisService analysisService) =>
+{
+    try
+    {
+        using var reader = new StreamReader(context.Request.Body);
+        var body = await reader.ReadToEndAsync();
+        // Reuse AnalysisFilters but without strict action filtering? 
+        // The service method will use the filters as is.
+        var filters = JsonSerializer.Deserialize<PokerTrackerBackend.AnalysisFilters>(body, jsonOptions);
+
+        if (filters == null)
+        {
+             return Results.BadRequest(new { success = false, error = "Invalid request" });
+        }
+
+        var result = await analysisService.GetRangeAnalysisAsync(filters);
+        return Results.Json(new { success = true, data = result });
+    }
+    catch (Exception e)
+    {
+        logger.LogError($"Range breakdown error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
 app.MapPost("/stats/builder/evaluate", async (HttpContext context, Database db, StatsBuilderEngine engine) =>
 {
     try

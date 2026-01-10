@@ -71,6 +71,14 @@ export function formatDate(dateStr, options = {}) {
         minute: '2-digit',
       });
     }
+
+    if (format === 'date-only') {
+      return date.toLocaleDateString(locale, {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+      });
+    }
     
     return date.toLocaleDateString(locale, {
       day: '2-digit',

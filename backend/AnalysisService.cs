@@ -520,5 +520,163 @@ namespace PokerTrackerBackend
                 }
             }
         }
+
+        public async Task<object> GetRangeAnalysisAsync(AnalysisFilters filters)
+        {
+            _logger.LogInformation($"GetRangeAnalysisAsync: Starting analysis for Hero='{filters.HeroName}', Situation='{filters.Situation}'");
+
+            // 1. Get raw hands from DB
+            var hands = await _db.GetHandsForAnalysisAsync(filters);
+            _logger.LogInformation($"GetRangeAnalysisAsync: DB returned {hands.Count} hands");
+
+            // 2. Filter in memory
+            var filteredHands = FilterHands(hands, filters);
+            _logger.LogInformation($"GetRangeAnalysisAsync: After filtering {filteredHands.Count} hands");
+
+            // 3. Aggregate
+            var rangeData = new Dictionary<string, RangeHandStats>();
+            int skippedNoHeroName = 0;
+            int skippedNoCards = 0;
+            int processed = 0;
+
+            foreach (var hand in filteredHands)
+            {
+                // Fix: Handle empty string in filters.HeroName (Field Analysis) correctly
+                var heroName = !string.IsNullOrEmpty(filters.HeroName) ? filters.HeroName : hand.HeroName;
+                
+                if (string.IsNullOrEmpty(heroName)) 
+                {
+                    skippedNoHeroName++;
+                    if (skippedNoHeroName <= 5) _logger.LogWarning($"Skipped hand {hand.HandId} because HeroName is null/empty. Filter='{filters.HeroName}', Hand='{hand.HeroName}'");
+                    continue;
+                }
+
+                // Normalize cards
+                var cards = NormalizeCards(hand.HeroCards);
+                if (cards == null) 
+                {
+                    skippedNoCards++;
+                    if (skippedNoCards <= 5) _logger.LogWarning($"Skipped hand {hand.HandId} due to invalid cards: '{hand.HeroCards}'");
+                    continue;
+                }
+
+                if (!rangeData.ContainsKey(cards))
+                {
+                    rangeData[cards] = new RangeHandStats { Hand = cards };
+                }
+
+                var stats = rangeData[cards];
+                stats.TotalCount++;
+                stats.TotalProfit += hand.Profit;
+                
+                // Keep track of Hand IDs for replayer
+                if (stats.HandIds == null) stats.HandIds = new List<string>();
+                stats.HandIds.Add(hand.HandId);
+
+                // Determine Action
+                var actionType = DetermineActionType(hand, filters.Situation, heroName);
+                if (!stats.Actions.ContainsKey(actionType))
+                {
+                    stats.Actions[actionType] = 0;
+                }
+                stats.Actions[actionType]++;
+                processed++;
+            }
+
+            _logger.LogInformation($"GetRangeAnalysisAsync: Processed {processed}. Skipped: NoHeroName={skippedNoHeroName}, NoCards={skippedNoCards}");
+
+            return rangeData;
+        }
+
+        private string DetermineActionType(AnalysisHandData hand, string? situation, string heroName)
+        {
+            var actionText = "";
+            if (string.IsNullOrEmpty(situation) || situation.ToLower() == "preflop")
+                actionText = hand.PreflopAction;
+            else if (situation.ToLower() == "flop") actionText = hand.FlopAction;
+            else if (situation.ToLower() == "turn") actionText = hand.TurnAction;
+            else if (situation.ToLower() == "river") actionText = hand.RiverAction;
+
+            if (string.IsNullOrEmpty(actionText)) return "None";
+
+            var lines = actionText.Split('\n');
+            foreach (var line in lines)
+            {
+                // Clean up line if it contains timestamp
+                var processingLine = line.Trim(); 
+                var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
+                if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
+
+                // Try strict Split match first
+                var parts = processingLine.Split(':');
+                bool isHero = false;
+                string act = "";
+
+                if (parts.Length > 1 && parts[0].Trim().Equals(heroName, StringComparison.OrdinalIgnoreCase))
+                {
+                    isHero = true;
+                    act = parts[1].Trim().ToLower();
+                }
+                // Fallback to StartsWith if Split failed (e.g. weird formatting)
+                else if (processingLine.StartsWith(heroName + ":", StringComparison.OrdinalIgnoreCase))
+                {
+                    isHero = true;
+                    act = processingLine.Substring(heroName.Length + 1).Trim().ToLower();
+                }
+
+                if (isHero)
+                {
+                    if (act.Contains("all-in")) return "AllIn";
+                    if (act.Contains("raises") || act.Contains("bets")) return "Raise";
+                    if (act.Contains("calls")) return "Call";
+                    if (act.Contains("folds")) return "Fold";
+                    if (act.Contains("checks")) return "Check";
+                    
+                    // Log if we found hero line but couldn't parse action
+                    _logger.LogWarning($"DetermineActionType: Found hero line but unknown action. Line: '{processingLine}', Act: '{act}'");
+                }
+            }
+
+            return "None";
+        }
+
+        private string? NormalizeCards(string? cardsRaw)
+        {
+            if (string.IsNullOrEmpty(cardsRaw)) return null;
+            
+            // Robust parsing: handle "Ah Kh", "AhKh", "Ah,Kh", etc.
+            var clean = cardsRaw.Replace(" ", "").Replace(",", "").Trim();
+            if (clean.Length != 4) return null;
+
+            var r1 = char.ToUpper(clean[0]);
+            var s1 = clean[1];
+            var r2 = char.ToUpper(clean[2]);
+            var s2 = clean[3];
+
+            var rankOrder = "AKQJT98765432";
+            var i1 = rankOrder.IndexOf(r1);
+            var i2 = rankOrder.IndexOf(r2);
+
+            if (i1 == -1 || i2 == -1) return null;
+
+            if (i1 > i2)
+            {
+                (r1, r2) = (r2, r1);
+                (s1, s2) = (s2, s1);
+            }
+
+            if (r1 == r2) return $"{r1}{r2}"; // Pair
+            else if (s1 == s2) return $"{r1}{r2}s"; // Suited
+            else return $"{r1}{r2}o"; // Offsuit
+        }
+
+        public class RangeHandStats
+        {
+            public string Hand { get; set; } = "";
+            public int TotalCount { get; set; }
+            public double TotalProfit { get; set; }
+            public Dictionary<string, int> Actions { get; set; } = new();
+            public List<string> HandIds { get; set; } = new(); // Stores list of hand IDs for this range cell
+        }
     }
 }

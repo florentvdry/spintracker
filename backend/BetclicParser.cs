@@ -511,6 +511,15 @@ public class BetclicParser : IHandParser
     {
         var lowerLine = line.ToLower();
 
+        // Capture raw showdown/summary lines for the Showdown field
+        if (!string.IsNullOrWhiteSpace(line))
+        {
+            if (string.IsNullOrEmpty(hand.Showdown))
+                hand.Showdown = line;
+            else
+                hand.Showdown += "\n" + line;
+        }
+
         if (lowerLine.Contains("total pot"))
         {
             var match = TotalPotSummaryRegex.Match(line);

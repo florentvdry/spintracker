@@ -2,7 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react';
-import { formatDate, formatCards } from '../../../utils/formatters';
+import { formatDate } from '../../../utils/formatters';
+import PlayingCard from '../../../components/common/PlayingCard';
+import { parseCards } from '../../../utils/handNormalizer';
 
 export default function AnalysisHandsList({ 
   hands, 
@@ -16,6 +18,11 @@ export default function AnalysisHandsList({
   onSelectHand 
 }) {
   const { t } = useTranslation();
+
+  const cleanActionText = (text) => {
+    if (!text) return '';
+    return text.replace(/\d{1,2}:\d{2}:\d{2}\s*-\s*/g, '');
+  };
 
   const columns = [
     { key: 'date_time', label: t('common.date'), sortable: true },
@@ -127,32 +134,40 @@ export default function AnalysisHandsList({
                   onClick={() => onSelectHand && onSelectHand(hand.id)}
                 >
                   <td className="px-4 py-2 text-sm text-gray-300 whitespace-nowrap">
-                    {formatDate(hand.date_time)}
+                    {formatDate(hand.date_time, { format: 'date-only' })}
                   </td>
                   <td className="px-4 py-2">
-                    <span className="font-mono text-white text-sm">
-                      {formatCards(cards)}
-                    </span>
+                    <div className="flex gap-1">
+                      {parseCards(cards).map((c, i) => (
+                        <PlayingCard key={i} card={c} size="sm" />
+                      ))}
+                    </div>
                   </td>
                   <td className="px-4 py-2">
                     <span className="badge badge-info text-xs">
                       {position}
                     </span>
                   </td>
-                  <td className="px-4 py-2 text-xs text-gray-400 max-w-[150px]" title={hand.preflop_action}>
-                    <div className="truncate">{hand.preflop_action?.split('\n')[0]}</div>
+                  <td className="px-4 py-2 text-xs text-gray-400 max-w-[150px]" title={cleanActionText(hand.preflop_action)}>
+                    <div className="truncate">{cleanActionText(hand.preflop_action?.split('\n')[0])}</div>
                   </td>
-                  <td className="px-4 py-2 text-xs text-gray-400 max-w-[150px]" title={hand.flop_action}>
-                    <div className="font-mono text-white mb-0.5">{formatCards(hand.flop)}</div>
-                    <div className="truncate">{hand.flop_action?.split('\n')[0]}</div>
+                  <td className="px-4 py-2 text-xs text-gray-400 max-w-[150px]" title={cleanActionText(hand.flop_action)}>
+                    <div className="flex gap-0.5 mb-1 h-7">
+                      {parseCards(hand.flop).map((c, i) => <PlayingCard key={i} card={c} size="xs" />)}
+                    </div>
+                    <div className="truncate">{cleanActionText(hand.flop_action?.split('\n')[0])}</div>
                   </td>
-                  <td className="px-4 py-2 text-xs text-gray-400 max-w-[150px]" title={hand.turn_action}>
-                    <div className="font-mono text-white mb-0.5">{formatCards(hand.turn)}</div>
-                    <div className="truncate">{hand.turn_action?.split('\n')[0]}</div>
+                  <td className="px-4 py-2 text-xs text-gray-400 max-w-[150px]" title={cleanActionText(hand.turn_action)}>
+                    <div className="flex gap-0.5 mb-1 h-7">
+                      {parseCards(hand.turn).map((c, i) => <PlayingCard key={i} card={c} size="xs" />)}
+                    </div>
+                    <div className="truncate">{cleanActionText(hand.turn_action?.split('\n')[0])}</div>
                   </td>
-                  <td className="px-4 py-2 text-xs text-gray-400 max-w-[150px]" title={hand.river_action}>
-                    <div className="font-mono text-white mb-0.5">{formatCards(hand.river)}</div>
-                    <div className="truncate">{hand.river_action?.split('\n')[0]}</div>
+                  <td className="px-4 py-2 text-xs text-gray-400 max-w-[150px]" title={cleanActionText(hand.river_action)}>
+                    <div className="flex gap-0.5 mb-1 h-7">
+                       {parseCards(hand.river).map((c, i) => <PlayingCard key={i} card={c} size="xs" />)}
+                    </div>
+                    <div className="truncate">{cleanActionText(hand.river_action?.split('\n')[0])}</div>
                   </td>
                   <td className="px-4 py-2 text-sm text-gray-300">
                     {ev !== null && ev !== undefined ? ev.toFixed(2) : '—'}

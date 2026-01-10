@@ -123,6 +123,10 @@ class IPCService {
     return this.invoke('get-analysis-hands', request);
   }
 
+  async getRangeBreakdown(filters = {}) {
+    return this.invoke('get-range-breakdown', filters);
+  }
+
   // Python Calculations
   async calculateEquity(params) {
     return this.invoke('python-calculate-equity', params);
@@ -157,6 +161,19 @@ class IPCService {
   // Stats Builder
   async evaluateStat(stat) {
     return this.invoke('stats-builder-evaluate', stat);
+  }
+
+  // Updater
+  async downloadUpdate() {
+    return this.invoke('download-update');
+  }
+
+  async quitAndInstall() {
+    return this.invoke('quit-and-install');
+  }
+
+  onUpdateStatus(callback) {
+    return this.on('update-status', callback);
   }
 }
 

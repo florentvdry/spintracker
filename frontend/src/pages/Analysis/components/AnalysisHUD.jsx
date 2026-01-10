@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, Save, Trash2, Edit2, GripVertical, Type, X, Layout, Download, Upload } from 'lucide-react';
+import { Plus, Save, Trash2, Edit2, GripVertical, Type, X, Layout, Download, Upload, Settings, Palette, AlignLeft, AlignCenter, AlignRight, RefreshCw } from 'lucide-react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
@@ -21,9 +21,9 @@ const DraggableStat = ({ stat }) => {
   }));
 
   return (
-    <div ref={drag} className={`p-2 bg-slate-800 border border-slate-700 rounded mb-2 cursor-move flex items-center gap-2 ${isDragging ? 'opacity-50' : ''}`}>
-      <GripVertical size={14} className="text-slate-500" />
-      <span className="text-xs font-medium truncate">{stat.name}</span>
+    <div ref={drag} className={`p-3 bg-slate-800 border border-slate-700 rounded-md mb-2 cursor-move flex items-center gap-3 hover:bg-slate-700 transition-colors ${isDragging ? 'opacity-50' : ''}`}>
+      <GripVertical size={16} className="text-slate-500" />
+      <span className="text-sm font-medium truncate text-slate-200">{stat.name}</span>
     </div>
   );
 };
@@ -38,14 +38,14 @@ const DraggableTextTool = () => {
   }));
 
   return (
-    <div ref={drag} className={`p-2 bg-slate-800 border border-slate-700 rounded mb-2 cursor-move flex items-center gap-2 ${isDragging ? 'opacity-50' : ''}`}>
-      <Type size={14} className="text-slate-500" />
-      <span className="text-xs font-medium">Text Label</span>
+    <div ref={drag} className={`p-3 bg-slate-800 border border-slate-700 rounded-md mb-2 cursor-move flex items-center gap-3 hover:bg-slate-700 transition-colors ${isDragging ? 'opacity-50' : ''}`}>
+      <Type size={16} className="text-slate-500" />
+      <span className="text-sm font-medium text-slate-200">Text Label</span>
     </div>
   );
 };
 
-const GridCell = ({ row, col, item, onDrop, onRemove, onUpdate, value }) => {
+const GridCell = ({ row, col, item, onDrop, onSelect, isSelected, value }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: [ItemTypes.STAT, ItemTypes.TEXT],
     drop: (droppedItem) => onDrop(row, col, droppedItem),
@@ -54,65 +54,50 @@ const GridCell = ({ row, col, item, onDrop, onRemove, onUpdate, value }) => {
     }),
   }), [onDrop, row, col]);
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(item?.label || item?.content || '');
-
-  const handleBlur = () => {
-    setIsEditing(false);
-    if (item.type === 'text') onUpdate(row, col, { ...item, content: editValue });
-    else onUpdate(row, col, { ...item, label: editValue });
+  // Styles from item properties
+  const style = {
+    fontSize: item?.style?.fontSize || (item?.type === 'text' ? '14px' : '18px'),
+    color: item?.style?.color || (item?.type === 'text' ? '#cbd5e1' : '#60a5fa'),
+    backgroundColor: item?.style?.backgroundColor || 'transparent',
+    textAlign: item?.style?.textAlign || 'center',
+    fontWeight: item?.style?.fontWeight || 'bold',
   };
 
   return (
     <div 
       ref={drop} 
+      onClick={() => onSelect(row, col)}
       className={`
-        relative border border-slate-700/50 min-h-[60px] flex flex-col items-center justify-center p-1 transition-colors
-        ${isOver ? 'bg-blue-500/20 border-blue-500' : 'bg-slate-900/50 hover:bg-slate-800/50'}
+        relative border min-h-[60px] flex flex-col justify-center p-1 transition-all cursor-pointer overflow-hidden
+        ${isSelected ? 'ring-2 ring-blue-500 z-10 border-blue-500 bg-blue-500/10' : 'border-slate-800/50 hover:bg-slate-800/30'}
+        ${isOver ? 'bg-blue-500/20 border-blue-500 border-dashed' : 'bg-slate-900/50'}
       `}
+      style={{ backgroundColor: style.backgroundColor }}
     >
       {item ? (
-        <div className="w-full h-full flex flex-col items-center justify-center group">
-          {/* Controls */}
-          <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 flex bg-slate-900 rounded border border-slate-700 z-10">
-             <button onClick={() => { setEditValue(item.type === 'text' ? item.content : item.label || item.name); setIsEditing(true); }} className="p-1 hover:text-blue-400"><Edit2 size={10} /></button>
-             <button onClick={() => onRemove(row, col)} className="p-1 hover:text-red-400"><X size={10} /></button>
-          </div>
-
-          {/* Content */}
+        <div className="w-full h-full flex flex-col justify-center pointer-events-none" style={{ textAlign: style.textAlign }}>
           {item.type === 'text' ? (
-            isEditing ? (
-              <input 
-                autoFocus 
-                value={editValue} 
-                onChange={(e) => setEditValue(e.target.value)} 
-                onBlur={handleBlur}
-                className="bg-slate-800 text-xs w-full text-center outline-none border border-blue-500 rounded"
-              />
-            ) : (
-              <span className="text-sm font-bold text-slate-300">{item.content}</span>
-            )
+            <span style={{ ...style }}>{item.content}</span>
           ) : (
             <>
-              {isEditing ? (
-                 <input 
-                    autoFocus 
-                    value={editValue} 
-                    onChange={(e) => setEditValue(e.target.value)} 
-                    onBlur={handleBlur}
-                    className="bg-slate-800 text-[10px] w-full text-center outline-none border border-blue-500 rounded mb-1"
-                  />
-              ) : (
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">{item.label || item.name}</span>
+              {/* Stat Label */}
+              {(item.label || item.name) && (
+                  <span className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5 truncate block">
+                      {item.label || item.name}
+                  </span>
               )}
-              <span className={`text-lg font-bold ${value === '-' ? 'text-slate-600' : 'text-blue-400'}`}>
-                {typeof value === 'number' ? value.toFixed(1) : value}%
+              {/* Stat Value */}
+              <span style={{ ...style }}>
+                {typeof value === 'number' 
+                    ? value.toFixed(item?.style?.decimals || 1) 
+                    : value}
+                {item?.type === 'stat' && typeof value === 'number' && '%'}
               </span>
             </>
           )}
         </div>
       ) : (
-        <div className="text-slate-700 text-xs pointer-events-none">+</div>
+        <div className="text-slate-800 text-xs pointer-events-none flex items-center justify-center opacity-0 hover:opacity-100">+</div>
       )}
     </div>
   );
@@ -127,6 +112,9 @@ export default function AnalysisHUD({ filters }) {
   const [availableStats, setAvailableStats] = useState([]);
   const [statValues, setStatValues] = useState({}); // { statId: { value, opportunities, successes } }
   const [loadingValues, setLoadingValues] = useState(false);
+  
+  // Selection for Properties Panel
+  const [selectedCell, setSelectedCell] = useState(null); // { row, col }
 
   // Load Initial Data
   useEffect(() => {
@@ -139,8 +127,9 @@ export default function AnalysisHUD({ filters }) {
     if (!isEditing && currentLayout.length > 0) {
       evaluateStats();
     }
-  }, [isEditing, currentLayout, filters]);
+  }, [isEditing, filters]);
 
+  // Debounced evaluation could be better, but explicit refresh is safer for perf
   const loadProfiles = async () => {
     try {
       const res = await fetch('http://localhost:5050/hud-profiles');
@@ -152,7 +141,6 @@ export default function AnalysisHUD({ filters }) {
           setActiveProfileId(active.id);
           setCurrentLayout(active.layout || []);
         } else {
-            // Create default if none
             handleNewProfile();
         }
       }
@@ -170,18 +158,13 @@ export default function AnalysisHUD({ filters }) {
   };
 
   const evaluateStats = async () => {
-    // Collect all stats from layout
     const statsToEval = currentLayout
         .filter(item => item.type === 'stat')
-        .map(item => {
-            // Reconstruct definition from saved item or find in availableStats
-            // The item stores 'definition' when dropped
-            return {
-                id: item.id,
-                name: item.name,
-                ...item.definition
-            };
-        });
+        .map(item => ({
+            id: item.id,
+            name: item.name,
+            ...item.definition
+        }));
 
     if (statsToEval.length === 0) return;
 
@@ -189,7 +172,7 @@ export default function AnalysisHUD({ filters }) {
     try {
         const payload = {
             stats: statsToEval,
-            filters: filters // Pass current analysis filters
+            filters: filters
         };
         
         const res = await fetch('http://localhost:5050/stats/builder/evaluate-batch', {
@@ -200,7 +183,6 @@ export default function AnalysisHUD({ filters }) {
         const json = await res.json();
         
         if (json.success) {
-            // Map results by ID or Name
             setStatValues(json.data);
         }
     } catch (err) {
@@ -243,7 +225,6 @@ export default function AnalysisHUD({ filters }) {
         const json = await res.json();
         if (json.success) {
             alert('Profile saved');
-            // Update the profile in the list with the real ID from backend
             const savedId = json.id;
             const updatedProfiles = profiles.map(p => 
                 p.id === profile.id ? { ...payload, id: savedId } : p
@@ -251,9 +232,9 @@ export default function AnalysisHUD({ filters }) {
             setProfiles(updatedProfiles);
             setActiveProfileId(savedId);
             setIsEditing(false);
+            setSelectedCell(null);
         }
     } catch (err) {
-        console.error(err);
         alert('Save failed: ' + err.message);
     }
   };
@@ -266,181 +247,172 @@ export default function AnalysisHUD({ filters }) {
     } catch (err) { alert('Delete failed'); }
   };
 
-  const handleExportProfile = () => {
-      const profile = profiles.find(p => p.id === activeProfileId);
-      if (!profile) return;
-      
-      const dataStr = JSON.stringify({ ...profile, layout: currentLayout }, null, 2);
-      const blob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `hud_profile_${profile.name}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-  };
-
-  const handleImportProfile = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async (ev) => {
-          try {
-              const data = JSON.parse(ev.target.result);
-              if (data.layout) {
-                  // Save as new
-                  const payload = {
-                      name: data.name + ' (Imported)',
-                      layout: data.layout,
-                      isActive: true
-                  };
-                  const res = await fetch('http://localhost:5050/hud-profiles', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                  });
-                  if (await res.json().success) {
-                      loadProfiles();
-                      alert('Imported successfully');
-                  }
-              }
-          } catch (err) { alert('Invalid file'); }
-      };
-      reader.readAsText(file);
-  };
-
-  // Grid Logic
+  // --- Grid Logic ---
   const GRID_ROWS = 8;
   const GRID_COLS = 8;
 
   const handleDropItem = (row, col, item) => {
-    // Check if cell occupied
     const existingIdx = currentLayout.findIndex(i => i.row === row && i.col === col);
     let newLayout = [...currentLayout];
     
-    if (existingIdx >= 0) {
-        newLayout.splice(existingIdx, 1); // Replace
-    }
+    if (existingIdx >= 0) newLayout.splice(existingIdx, 1);
 
     newLayout.push({
         ...item,
         row,
-        col
+        col,
+        style: item.style || {} // Preserve style if moving
     });
     setCurrentLayout(newLayout);
+    setSelectedCell({ row, col });
   };
 
   const handleRemoveItem = (row, col) => {
       setCurrentLayout(currentLayout.filter(i => !(i.row === row && i.col === col)));
+      setSelectedCell(null);
   };
 
-  const handleUpdateItem = (row, col, updatedItem) => {
-      setCurrentLayout(currentLayout.map(i => (i.row === row && i.col === col) ? updatedItem : i));
+  const handleUpdateSelectedItem = (updates) => {
+      if (!selectedCell) return;
+      setCurrentLayout(currentLayout.map(item => {
+          if (item.row === selectedCell.row && item.col === selectedCell.col) {
+              return { ...item, ...updates };
+          }
+          return item;
+      }));
   };
+
+  const getSelectedItem = () => {
+      if (!selectedCell) return null;
+      return currentLayout.find(i => i.row === selectedCell.row && i.col === selectedCell.col);
+  };
+
+  const selectedItem = getSelectedItem();
 
   return (
     <DndProvider backend={HTML5Backend}>
-        <div className="flex h-full gap-4">
-            {/* Sidebar (Editor Only) */}
+        <div className="flex h-full bg-slate-950 text-slate-200">
+            {/* 1. Sidebar (Editor Tools) - Left */}
             {isEditing && (
-                <div className="w-64 bg-slate-900 border-r border-slate-800 p-4 flex flex-col overflow-hidden">
-                    <h3 className="font-bold text-slate-400 mb-4 uppercase text-xs">Tools</h3>
-                    <DraggableTextTool />
+                <div className="w-64 bg-slate-900/50 border-r border-slate-800 flex flex-col overflow-hidden">
+                    <div className="p-4 border-b border-slate-800">
+                        <h3 className="font-bold text-slate-100 flex items-center gap-2">
+                            <Layout size={18} className="text-blue-500" />
+                            HUD Elements
+                        </h3>
+                    </div>
                     
-                    <h3 className="font-bold text-slate-400 mt-4 mb-2 uppercase text-xs">Custom Stats</h3>
-                    <div className="flex-1 overflow-y-auto">
-                        {availableStats.map(s => (
-                            <DraggableStat key={s.id} stat={s} />
-                        ))}
-                        {availableStats.length === 0 && <div className="text-xs text-slate-600">No stats created yet. Go to Stats Builder.</div>}
+                    <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                        <div className="mb-6">
+                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Tools</h4>
+                            <DraggableTextTool />
+                        </div>
+                        
+                        <div>
+                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Custom Stats</h4>
+                            {availableStats.map(s => (
+                                <DraggableStat key={s.id} stat={s} />
+                            ))}
+                            {availableStats.length === 0 && <div className="text-xs text-slate-600 italic">No stats created yet.</div>}
+                        </div>
                     </div>
                 </div>
             )}
 
-            {/* Main Area */}
-            <div className="flex-1 flex flex-col overflow-hidden">
+            {/* 2. Main Area - Center */}
+            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
                 {/* Toolbar */}
-                <div className="h-12 border-b border-slate-800 flex items-center justify-between px-4 bg-slate-900/50">
+                <div className="h-16 border-b border-slate-800 bg-slate-900 px-6 flex items-center justify-between shadow-sm z-20">
                     <div className="flex items-center gap-4">
-                        <Layout className="text-blue-500" size={20} />
-                        <select 
-                            value={activeProfileId || ''} 
-                            onChange={(e) => {
-                                const pid = e.target.value;
-                                setActiveProfileId(pid);
-                                const p = profiles.find(x => x.id === pid);
-                                if (p) setCurrentLayout(p.layout || []);
-                            }}
-                            className="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-sm outline-none focus:border-blue-500"
-                        >
-                            {profiles.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                        </select>
-                        {isEditing && (
-                            <input 
-                                value={profiles.find(p => p.id === activeProfileId)?.name || ''}
-                                onChange={(e) => {
-                                    const newName = e.target.value;
-                                    setProfiles(profiles.map(p => p.id === activeProfileId ? { ...p, name: newName } : p));
-                                }}
-                                className="bg-transparent border-b border-slate-700 text-sm px-2 focus:border-blue-500 outline-none w-48"
-                                placeholder="Profile Name"
-                            />
-                        )}
+                        <div className="flex flex-col">
+                            <span className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Active Profile</span>
+                            <div className="flex items-center gap-2">
+                                {isEditing ? (
+                                    <input 
+                                        value={profiles.find(p => p.id === activeProfileId)?.name || ''}
+                                        onChange={(e) => {
+                                            const newName = e.target.value;
+                                            setProfiles(profiles.map(p => p.id === activeProfileId ? { ...p, name: newName } : p));
+                                        }}
+                                        className="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-sm focus:border-blue-500 outline-none w-48 font-medium text-white"
+                                        placeholder="Profile Name"
+                                    />
+                                ) : (
+                                    <select 
+                                        value={activeProfileId || ''} 
+                                        onChange={(e) => {
+                                            const pid = e.target.value;
+                                            setActiveProfileId(pid);
+                                            const p = profiles.find(x => x.id === pid);
+                                            if (p) setCurrentLayout(p.layout || []);
+                                        }}
+                                        className="bg-transparent text-lg font-bold text-white outline-none cursor-pointer hover:text-blue-400 transition-colors"
+                                    >
+                                        {profiles.map(p => <option key={p.id} value={p.id} className="bg-slate-900">{p.name}</option>)}
+                                    </select>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-3">
                         {!isEditing ? (
-                            <button onClick={() => setIsEditing(true)} className="btn btn-secondary text-xs flex items-center gap-2">
-                                <Edit2 size={14} /> Edit HUD
-                            </button>
+                            <>
+                                <button onClick={() => evaluateStats()} className="p-2 hover:bg-slate-800 rounded-md text-slate-400 hover:text-white transition-colors" title="Refresh Data">
+                                    <RefreshCw size={18} className={loadingValues ? 'animate-spin' : ''} />
+                                </button>
+                                <div className="h-6 w-px bg-slate-700 mx-2"></div>
+                                <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors border border-slate-700">
+                                    <Edit2 size={16} /> Edit HUD
+                                </button>
+                            </>
                         ) : (
                             <>
-                                <button onClick={handleSaveProfile} className="btn bg-green-600 hover:bg-green-500 text-white text-xs flex items-center gap-2">
-                                    <Save size={14} /> Save
-                                </button>
-                                <button onClick={() => setIsEditing(false)} className="btn btn-secondary text-xs">
+                                <button onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-md text-slate-400 hover:text-white text-sm font-medium transition-colors">
                                     Cancel
+                                </button>
+                                <button onClick={handleSaveProfile} className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-md font-medium text-sm transition-colors shadow-lg shadow-emerald-900/20">
+                                    <Save size={16} /> Save Changes
                                 </button>
                             </>
                         )}
                         
                         <div className="h-6 w-px bg-slate-700 mx-2"></div>
 
-                        <button onClick={handleNewProfile} className="p-2 hover:bg-slate-800 rounded text-slate-400 hover:text-white" title="New Profile">
-                            <Plus size={16} />
+                        <button onClick={handleNewProfile} className="p-2 hover:bg-slate-800 rounded-md text-slate-400 hover:text-white transition-colors" title="New Profile">
+                            <Plus size={18} />
                         </button>
-                        <button onClick={handleExportProfile} className="p-2 hover:bg-slate-800 rounded text-slate-400 hover:text-white" title="Export">
-                            <Download size={16} />
-                        </button>
-                        <div className="relative">
-                            <input type="file" accept=".json" onChange={handleImportProfile} className="absolute inset-0 opacity-0 cursor-pointer w-full" />
-                            <button className="p-2 hover:bg-slate-800 rounded text-slate-400 hover:text-white" title="Import">
-                                <Upload size={16} />
-                            </button>
-                        </div>
-                        <button onClick={handleDeleteProfile} className="p-2 hover:bg-slate-800 rounded text-slate-400 hover:text-red-400" title="Delete">
-                            <Trash2 size={16} />
+                        <button onClick={handleDeleteProfile} className="p-2 hover:bg-slate-800 rounded-md text-slate-400 hover:text-red-400 transition-colors" title="Delete Profile">
+                            <Trash2 size={18} />
                         </button>
                     </div>
                 </div>
 
                 {/* Grid Canvas */}
-                <div className="flex-1 p-8 overflow-auto bg-slate-950 flex justify-center">
+                <div className="flex-1 p-8 overflow-auto flex justify-center bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-opacity-5">
                     <div 
-                        className="grid gap-1 bg-slate-900 border border-slate-800 p-1 shadow-2xl rounded-lg"
+                        className="relative grid gap-0 bg-slate-900/80 backdrop-blur-sm border border-slate-700 shadow-2xl rounded-xl overflow-hidden"
                         style={{
-                            gridTemplateColumns: `repeat(${GRID_COLS}, minmax(100px, 1fr))`,
-                            gridTemplateRows: `repeat(${GRID_ROWS}, minmax(60px, 1fr))`,
-                            width: 'fit-content'
+                            gridTemplateColumns: `repeat(${GRID_COLS}, 100px)`,
+                            gridTemplateRows: `repeat(${GRID_ROWS}, 60px)`,
+                            width: 'fit-content',
+                            height: 'fit-content'
                         }}
                     >
+                        {/* Grid Lines Overlay */}
+                        <div className="absolute inset-0 pointer-events-none z-0 opacity-20" 
+                             style={{ 
+                                 backgroundImage: `linear-gradient(to right, #334155 1px, transparent 1px), linear-gradient(to bottom, #334155 1px, transparent 1px)`,
+                                 backgroundSize: '100px 60px'
+                             }}>
+                        </div>
+
                         {Array.from({ length: GRID_ROWS * GRID_COLS }).map((_, idx) => {
                             const row = Math.floor(idx / GRID_COLS);
                             const col = idx % GRID_COLS;
                             const item = currentLayout.find(i => i.row === row && i.col === col);
+                            const isSelected = selectedCell?.row === row && selectedCell?.col === col;
                             
-                            // Get value if stat
                             let value = '-';
                             if (item?.type === 'stat') {
                                 const key = item.id || item.name;
@@ -456,15 +428,150 @@ export default function AnalysisHUD({ filters }) {
                                     col={col} 
                                     item={item} 
                                     value={value}
+                                    isSelected={isSelected && isEditing}
+                                    onSelect={(r, c) => isEditing && setSelectedCell({ row: r, col: c })}
                                     onDrop={handleDropItem}
-                                    onRemove={handleRemoveItem}
-                                    onUpdate={handleUpdateItem}
                                 />
                             );
                         })}
                     </div>
                 </div>
             </div>
+
+            {/* 3. Properties Panel (Right) - Editor Only */}
+            {isEditing && selectedItem && (
+                <div className="w-72 bg-slate-900 border-l border-slate-800 flex flex-col animate-in slide-in-from-right-10 duration-200 shadow-2xl z-30">
+                    <div className="p-4 border-b border-slate-800 flex justify-between items-center">
+                        <h3 className="font-bold text-slate-100 flex items-center gap-2">
+                            <Settings size={18} className="text-blue-500" />
+                            Properties
+                        </h3>
+                        <button onClick={() => setSelectedCell(null)} className="text-slate-500 hover:text-white">
+                            <X size={16} />
+                        </button>
+                    </div>
+
+                    <div className="p-6 space-y-6 overflow-y-auto custom-scrollbar">
+                        {/* Content Section */}
+                        <div className="space-y-3">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Content</label>
+                            {selectedItem.type === 'text' ? (
+                                <input 
+                                    value={selectedItem.content || ''}
+                                    onChange={(e) => handleUpdateSelectedItem({ content: e.target.value })}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:border-blue-500 outline-none text-white"
+                                    placeholder="Text Content"
+                                />
+                            ) : (
+                                <input 
+                                    value={selectedItem.label || selectedItem.name || ''}
+                                    onChange={(e) => handleUpdateSelectedItem({ label: e.target.value })}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:border-blue-500 outline-none text-white"
+                                    placeholder="Label Override"
+                                />
+                            )}
+                        </div>
+
+                        <div className="h-px bg-slate-800"></div>
+
+                        {/* Typography Section */}
+                        <div className="space-y-4">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                                <Palette size={12} /> Appearance
+                            </label>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-[10px] text-slate-400 mb-1 block">Font Size</label>
+                                    <select 
+                                        value={selectedItem.style?.fontSize || '14px'}
+                                        onChange={(e) => handleUpdateSelectedItem({ style: { ...selectedItem.style, fontSize: e.target.value } })}
+                                        className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs outline-none"
+                                    >
+                                        {[10, 12, 14, 16, 18, 20, 24, 32].map(s => <option key={s} value={`${s}px`}>{s}px</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] text-slate-400 mb-1 block">Color</label>
+                                    <div className="flex items-center gap-2">
+                                        <input 
+                                            type="color" 
+                                            value={selectedItem.style?.color || '#ffffff'}
+                                            onChange={(e) => handleUpdateSelectedItem({ style: { ...selectedItem.style, color: e.target.value } })}
+                                            className="w-6 h-6 rounded cursor-pointer bg-transparent border-none p-0"
+                                        />
+                                        <span className="text-xs text-slate-500 font-mono">{selectedItem.style?.color}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-[10px] text-slate-400 mb-1 block">Background</label>
+                                <div className="flex items-center gap-2">
+                                    <input 
+                                        type="color" 
+                                        value={selectedItem.style?.backgroundColor || '#000000'}
+                                        onChange={(e) => handleUpdateSelectedItem({ style: { ...selectedItem.style, backgroundColor: e.target.value } })}
+                                        className="w-6 h-6 rounded cursor-pointer bg-transparent border-none p-0"
+                                    />
+                                    <button 
+                                        onClick={() => handleUpdateSelectedItem({ style: { ...selectedItem.style, backgroundColor: 'transparent' } })}
+                                        className="text-[10px] text-slate-500 hover:text-white underline"
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-[10px] text-slate-400 mb-1 block">Alignment</label>
+                                <div className="flex bg-slate-800 rounded p-1 border border-slate-700">
+                                    {['left', 'center', 'right'].map(align => (
+                                        <button
+                                            key={align}
+                                            onClick={() => handleUpdateSelectedItem({ style: { ...selectedItem.style, textAlign: align } })}
+                                            className={`flex-1 p-1 rounded flex justify-center ${selectedItem.style?.textAlign === align ? 'bg-slate-700 text-blue-400' : 'text-slate-500 hover:text-white'}`}
+                                        >
+                                            {align === 'left' && <AlignLeft size={14} />}
+                                            {align === 'center' && <AlignCenter size={14} />}
+                                            {align === 'right' && <AlignRight size={14} />}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Stat Specific Options */}
+                        {selectedItem.type === 'stat' && (
+                            <>
+                                <div className="h-px bg-slate-800"></div>
+                                <div className="space-y-3">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Format</label>
+                                    <div>
+                                        <label className="text-[10px] text-slate-400 mb-1 block">Decimals</label>
+                                        <input 
+                                            type="number" 
+                                            min="0" max="4"
+                                            value={selectedItem.style?.decimals ?? 1}
+                                            onChange={(e) => handleUpdateSelectedItem({ style: { ...selectedItem.style, decimals: parseInt(e.target.value) } })}
+                                            className="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1.5 text-xs outline-none text-white"
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        <div className="pt-6">
+                            <button 
+                                onClick={() => handleRemoveItem(selectedCell.row, selectedCell.col)}
+                                className="w-full py-2 bg-red-500/10 border border-red-500/30 text-red-400 rounded hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2 text-sm"
+                            >
+                                <Trash2 size={14} /> Remove Element
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     </DndProvider>
   );

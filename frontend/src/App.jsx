@@ -5,6 +5,7 @@ import Dashboard from '@pages/Dashboard';
 import HandHistory from '@pages/HandHistory';
 import LeakAnalysis from '@pages/LeakAnalysis';
 import RangeAnalysis from '@pages/RangeAnalysis';
+import RangeResearch from '@pages/RangeResearch';
 import Analysis from '@pages/Analysis';
 import StatsBuilder from '@pages/StatsBuilder';
 import Settings from '@pages/Settings';
@@ -12,6 +13,8 @@ import { useAppStore } from '@stores/appStore';
 import { useNotificationStore } from '@stores/notificationStore';
 import NotificationContainer from '@components/ui/NotificationContainer';
 import ProgressModal from '@components/ui/ProgressModal';
+import UpdateModal from '@components/ui/UpdateModal';
+import ReplayerModal from '@components/replayer/ReplayerModal';
 
 function App() {
   const initializeApp = useAppStore(state => state.initialize);
@@ -27,7 +30,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/hands" element={<HandHistory />} />
           <Route path="/leaks" element={<LeakAnalysis />} />
-          <Route path="/ranges" element={<RangeAnalysis />} />
+          <Route path="/ranges" element={<RangeResearch />} />
           <Route path="/analysis" element={<Analysis />} />
           <Route path="/stats-builder" element={<StatsBuilder />} />
           <Route path="/settings" element={<Settings />} />
@@ -35,6 +38,8 @@ function App() {
       </Layout>
       <NotificationContainer />
       <ProgressModal />
+      <UpdateModal />
+      <ReplayerModal />
     </>
   );
 }
