@@ -150,7 +150,8 @@
     "speed": "SPEED",
     "new_hand": "New Hand",
     "loading": "Loading Hand...",
-    "start": "START"
+    "start": "START",
+    "action_log": "Action Log"
   },
   "stats_builder": {
     "title": "Stats Builder",
@@ -170,7 +171,13 @@
     "no_data": "No Data",
     "eval_guide": "Build your stat and click Test",
     "matching_hands": "Matching Hands",
-    "nested_group": "Nested Group"
+    "nested_group": "Nested Group",
+    "pos": "Pos",
+    "players": "Players",
+    "min_bb": "Min BB",
+    "max_bb": "Max BB",
+    "all": "All",
+    "drop_here": "Drop here"
   },
   "range_analysis": {
     "title": "Range Analysis",
@@ -227,7 +234,7 @@
     },
     "about": {
       "title": "About",
-      "description": "Tracking and analysis application for Spin & Go poker"
+      "description": "Tracking and analysis application for Spin & Go poker - Developed by Nelfrot"
     }
   }
 }

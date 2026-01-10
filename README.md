@@ -1,6 +1,6 @@
 # SpinTracker
 
-Application professionnelle de suivi et d'analyse pour le poker Spin & Go.
+Application professionnelle de suivi et d'analyse  Spin & Go.
 
 ## 🏗️ Architecture
 
