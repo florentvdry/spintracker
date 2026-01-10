@@ -353,7 +353,8 @@ ipcMain.handle('import-hand-history', async () => {
                     const globalPercent = 10 + Math.round((filesProcessed * fileContribution) + currentFileProgress);
                     
                     // Calculate accumulated totals
-                    const accumulatedHandsImported = totalHandsImported + (progress.HandsImported || 0);
+                    const currentFileHandsImported = progress.HandsImported || 0;
+                    const accumulatedHandsImported = totalHandsImported + currentFileHandsImported;
                     
                     mainWindow.webContents.send('import-progress', {
                       filesProcessed: filesProcessed,
@@ -364,7 +365,7 @@ ipcMain.handle('import-hand-history', async () => {
                     });
 
                     if (progress.Success) {
-                        totalHandsImported += (progress.HandsImported || 0);
+                        totalHandsImported += currentFileHandsImported;
                     }
                   } catch (e) {
                     console.error('[Import] Parse error:', e);

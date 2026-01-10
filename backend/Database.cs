@@ -125,13 +125,28 @@ public class Database
         await cmd.ExecuteNonQueryAsync();
     }
 
-    private void InitializeTables()
+    private void InitializeTables(bool forceRefresh = false)
     {
         using var connection = new SqliteConnection(_connectionString);
         connection.Open();
 
         using var cmd = connection.CreateCommand();
         
+        if (forceRefresh) {
+            _logger.LogInformation("Forced refresh: Dropping all database tables...");
+            cmd.CommandText = "DROP TABLE IF EXISTS hands_analytics"; 
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = "DROP TABLE IF EXISTS player_hands";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = "DROP TABLE IF EXISTS hands";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = "DROP TABLE IF EXISTS players";
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = "DROP TABLE IF EXISTS sessions";
+            cmd.ExecuteNonQuery();
+            _logger.LogInformation("Database tables dropped.");
+        }
+
         // Config table
         cmd.CommandText = @"
             CREATE TABLE IF NOT EXISTS config (
@@ -174,20 +189,31 @@ public class Database
             )";
         cmd.ExecuteNonQuery();
 
-        // Hands analytics table
+        // Player Hands table (New)
         cmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS hands_analytics (
-                hand_id TEXT PRIMARY KEY,
+            CREATE TABLE IF NOT EXISTS player_hands (
+                hand_id TEXT,
+                player_name TEXT,
+                position TEXT,
+                stack INTEGER,
+                cards TEXT,
+                investment REAL DEFAULT 0,
+                chips_won REAL DEFAULT 0,
+                net_profit REAL DEFAULT 0,
+                is_hero BOOLEAN DEFAULT 0,
+                is_all_in BOOLEAN DEFAULT 0,
+                went_to_showdown BOOLEAN DEFAULT 0,
                 ev_chips REAL,
                 net_won_adjusted REAL,
+                showdown_winning REAL,
+                non_showdown_winning REAL,
                 equity_preflop REAL,
                 equity_flop REAL,
                 equity_turn REAL,
                 equity_river REAL,
-                chips_won_showdown REAL,
-                chips_won_no_showdown REAL,
                 cev_contribution REAL,
-                calculated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (hand_id, player_name),
                 FOREIGN KEY (hand_id) REFERENCES hands(id)
             )";
         cmd.ExecuteNonQuery();
@@ -209,35 +235,10 @@ public class Database
             )";
         cmd.ExecuteNonQuery();
 
-        // Player Hands table (New)
-        cmd.CommandText = @"
-            CREATE TABLE IF NOT EXISTS player_hands (
-                hand_id TEXT,
-                player_name TEXT,
-                position TEXT,
-                stack INTEGER,
-                cards TEXT,
-                investment REAL DEFAULT 0,
-                chips_won REAL DEFAULT 0,
-                net_profit REAL DEFAULT 0,
-                is_hero BOOLEAN DEFAULT 0,
-                is_all_in BOOLEAN DEFAULT 0,
-                went_to_showdown BOOLEAN DEFAULT 0,
-                ev_chips REAL,
-                showdown_winning REAL,
-                non_showdown_winning REAL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (hand_id, player_name),
-                FOREIGN KEY (hand_id) REFERENCES hands(id)
-            )";
-        cmd.ExecuteNonQuery();
-
         // Indexes
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_date ON hands(date_time)";
         cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_game_id ON hands(game_id)";
-        cmd.ExecuteNonQuery();
-        cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_analytics_hand ON hands_analytics(hand_id)";
         cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_player_hands_hand ON player_hands(hand_id)";
         cmd.ExecuteNonQuery();
@@ -434,6 +435,27 @@ public class Database
         LoadDefaultHudProfiles();
     }
 
+    public async Task UpdatePlayerStatsAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+            INSERT OR REPLACE INTO players (name, total_hands, total_profit, total_ev_profit, vpip, pfr, three_bet, cbet, updated_at)
+            SELECT 
+                player_name,
+                COUNT(*) as total_hands,
+                SUM(net_profit) as total_profit,
+                SUM(COALESCE(ev_chips, 0)) as total_ev_profit,
+                0, 0, 0, 0, -- Placeholders for stats calculated elsewhere
+                CURRENT_TIMESTAMP
+            FROM player_hands
+            GROUP BY player_name";
+        
+        await cmd.ExecuteNonQueryAsync();
+    }
+
     public async Task<int> InsertHandsBatchAsync(List<ParsedHand> hands)
     {
         using var connection = new SqliteConnection(_connectionString);
@@ -470,10 +492,14 @@ public class Database
             cmdPlayers.CommandText = @"
                 INSERT OR REPLACE INTO player_hands (
                     hand_id, player_name, position, stack, cards, investment, 
-                    chips_won, net_profit, is_hero, is_all_in, went_to_showdown
+                    chips_won, net_profit, is_hero, is_all_in, went_to_showdown,
+                    ev_chips, net_won_adjusted, showdown_winning, non_showdown_winning,
+                    equity_preflop, equity_flop, equity_turn, equity_river, cev_contribution
                 ) VALUES (
                     @hand_id, @player_name, @position, @stack, @cards, @investment,
-                    @chips_won, @net_profit, @is_hero, @is_all_in, @went_to_showdown
+                    @chips_won, @net_profit, @is_hero, @is_all_in, @went_to_showdown,
+                    @ev_chips, @net_won_adjusted, @showdown_winning, @non_showdown_winning,
+                    @equity_preflop, @equity_flop, @equity_turn, @equity_river, @cev_contribution
                 )";
 
             foreach (var hand in hands)
@@ -526,6 +552,18 @@ public class Database
                         cmdPlayers.Parameters.AddWithValue("@is_hero", p.IsHero ? 1 : 0);
                         cmdPlayers.Parameters.AddWithValue("@is_all_in", p.IsAllIn ? 1 : 0);
                         cmdPlayers.Parameters.AddWithValue("@went_to_showdown", p.WentToShowdown ? 1 : 0);
+                        
+                        // Default analytics to null/0 since they are calculated separately
+                        cmdPlayers.Parameters.AddWithValue("@ev_chips", DBNull.Value);
+                        cmdPlayers.Parameters.AddWithValue("@net_won_adjusted", p.NetProfit);
+                        cmdPlayers.Parameters.AddWithValue("@showdown_winning", p.WentToShowdown ? p.NetProfit : 0);
+                        cmdPlayers.Parameters.AddWithValue("@non_showdown_winning", !p.WentToShowdown ? p.NetProfit : 0);
+                        cmdPlayers.Parameters.AddWithValue("@equity_preflop", DBNull.Value);
+                        cmdPlayers.Parameters.AddWithValue("@equity_flop", DBNull.Value);
+                        cmdPlayers.Parameters.AddWithValue("@equity_turn", DBNull.Value);
+                        cmdPlayers.Parameters.AddWithValue("@equity_river", DBNull.Value);
+                        cmdPlayers.Parameters.AddWithValue("@cev_contribution", 0);
+
                         await cmdPlayers.ExecuteNonQueryAsync();
 
                         // Aggregate stats
@@ -544,28 +582,11 @@ public class Database
                 }
             }
 
-            // Batch update players
-            using var cmdUpdatePlayers = connection.CreateCommand();
-            cmdUpdatePlayers.Transaction = transaction;
-            cmdUpdatePlayers.CommandText = @"
-                INSERT OR IGNORE INTO players (name, created_at, updated_at) VALUES (@name, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-                UPDATE players 
-                SET total_hands = total_hands + @hands, 
-                    total_profit = total_profit + @profit,
-                    updated_at = CURRENT_TIMESTAMP
-                WHERE name = @name;
-            ";
-
-            foreach(var kvp in playerStats)
-            {
-                cmdUpdatePlayers.Parameters.Clear();
-                cmdUpdatePlayers.Parameters.AddWithValue("@name", kvp.Key);
-                cmdUpdatePlayers.Parameters.AddWithValue("@hands", kvp.Value.Hands);
-                cmdUpdatePlayers.Parameters.AddWithValue("@profit", kvp.Value.Profit);
-                await cmdUpdatePlayers.ExecuteNonQueryAsync();
-            }
-
             await transaction.CommitAsync();
+            
+            // Recalculate player stats correctly from DB state
+            await UpdatePlayerStatsAsync();
+            
             return inserted;
         }
         catch
@@ -587,26 +608,41 @@ public class Database
 
         try
         {
-            // Insert hands (reusing logic from InsertHandsBatchAsync)
-            using (var cmd = connection.CreateCommand())
-            {
-                cmd.Transaction = transaction;
-                cmd.CommandText = @"
-                    INSERT OR REPLACE INTO hands (
-                        id, game_id, hand_id, room, game_mode, game_type, game_name,
-                        prize_pool, multiplier, buy_in, date_time, table_id, blinds,
-                        total_pot, rake, preflop_action,
-                        flop, flop_action, turn, turn_action, river, river_action,
-                        showdown, result, all_in_street, went_to_showdown, player_count
-                    ) VALUES (
-                        @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
-                        @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
-                        @total_pot, @rake, @preflop_action,
-                        @flop, @flop_action, @turn, @turn_action, @river, @river_action,
-                        @showdown, @result, @all_in_street, @went_to_showdown, @player_count
-                    )";
+            using var cmd = connection.CreateCommand();
+            cmd.Transaction = transaction;
+            cmd.CommandText = @"
+                INSERT OR REPLACE INTO hands (
+                    id, game_id, hand_id, room, game_mode, game_type, game_name,
+                    prize_pool, multiplier, buy_in, date_time, table_id, blinds,
+                    total_pot, rake, preflop_action,
+                    flop, flop_action, turn, turn_action, river, river_action,
+                    showdown, result, all_in_street, went_to_showdown, player_count
+                ) VALUES (
+                    @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
+                    @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
+                    @total_pot, @rake, @preflop_action,
+                    @flop, @flop_action, @turn, @turn_action, @river, @river_action,
+                    @showdown, @result, @all_in_street, @went_to_showdown, @player_count
+                )";
 
-                foreach (var hand in hands)
+            using var cmdPlayers = connection.CreateCommand();
+            cmdPlayers.Transaction = transaction;
+            cmdPlayers.CommandText = @"
+                INSERT OR REPLACE INTO player_hands (
+                    hand_id, player_name, position, stack, cards, investment, 
+                    chips_won, net_profit, is_hero, is_all_in, went_to_showdown,
+                    ev_chips, net_won_adjusted, showdown_winning, non_showdown_winning,
+                    equity_preflop, equity_flop, equity_turn, equity_river, cev_contribution
+                ) VALUES (
+                    @hand_id, @player_name, @position, @stack, @cards, @investment,
+                    @chips_won, @net_profit, @is_hero, @is_all_in, @went_to_showdown,
+                    @ev_chips, @net_won_adjusted, @showdown_winning, @non_showdown_winning,
+                    @equity_preflop, @equity_flop, @equity_turn, @equity_river, @cev_contribution
+                )";
+
+            foreach (var hand in hands)
+            {
+                try
                 {
                     cmd.Parameters.Clear();
                     cmd.Parameters.AddWithValue("@id", hand.Id ?? "");
@@ -636,27 +672,17 @@ public class Database
                     cmd.Parameters.AddWithValue("@all_in_street", hand.AllInStreet ?? "");
                     cmd.Parameters.AddWithValue("@went_to_showdown", hand.WentToShowdown ? 1 : 0);
                     cmd.Parameters.AddWithValue("@player_count", hand.PlayerCount);
-                    await cmd.ExecuteNonQueryAsync();
-                    inserted++;
-                }
-            }
+                    int rows = await cmd.ExecuteNonQueryAsync();
+                    
+                    if (rows == 0) {
+                        _logger.LogWarning($"Hand {hand.Id} was NOT inserted (0 rows affected)");
+                    }
 
-            // Insert player_hands
-            using (var cmdPlayers = connection.CreateCommand())
-            {
-                cmdPlayers.Transaction = transaction;
-                cmdPlayers.CommandText = @"
-                    INSERT OR REPLACE INTO player_hands (
-                        hand_id, player_name, position, stack, cards, investment, 
-                        chips_won, net_profit, is_hero, is_all_in, went_to_showdown, ev_chips
-                    ) VALUES (
-                        @hand_id, @player_name, @position, @stack, @cards, @investment,
-                        @chips_won, @net_profit, @is_hero, @is_all_in, @went_to_showdown, @ev_chips
-                    )";
-
-                foreach (var hand in hands)
-                {
                     var handAnalytics = analytics.FirstOrDefault(a => a.HandId == hand.Id);
+
+                    if (hand.Players.Count == 0) {
+                        _logger.LogWarning($"Hand {hand.Id} has 0 players parsed!");
+                    }
 
                     foreach (var p in hand.Players)
                     {
@@ -664,7 +690,7 @@ public class Database
                         cmdPlayers.Parameters.AddWithValue("@hand_id", hand.Id);
                         cmdPlayers.Parameters.AddWithValue("@player_name", p.Name);
                         cmdPlayers.Parameters.AddWithValue("@position", p.Position ?? "");
-                        cmdPlayers.Parameters.AddWithValue("@stack", p.Stack);
+                        cmdPlayers.Parameters.AddWithValue("@stack", (int)p.Stack);
                         cmdPlayers.Parameters.AddWithValue("@cards", p.Cards ?? "");
                         cmdPlayers.Parameters.AddWithValue("@investment", p.Investment);
                         cmdPlayers.Parameters.AddWithValue("@chips_won", p.ChipsWon);
@@ -673,79 +699,60 @@ public class Database
                         cmdPlayers.Parameters.AddWithValue("@is_all_in", p.IsAllIn ? 1 : 0);
                         cmdPlayers.Parameters.AddWithValue("@went_to_showdown", p.WentToShowdown ? 1 : 0);
                         
-                        // Assign EV to the player if they are the hero of the hand
-                        var playerEv = (p.IsHero && handAnalytics != null) ? handAnalytics.EvChips : (double?)null;
-                        cmdPlayers.Parameters.AddWithValue("@ev_chips", playerEv ?? (object)DBNull.Value);
-
-                        await cmdPlayers.ExecuteNonQueryAsync();
-
-                        // Aggregate stats
-                        if (!playerStats.ContainsKey(p.Name))
+                        if (p.IsHero && handAnalytics != null)
                         {
-                            playerStats[p.Name] = (0, 0, 0);
+                            cmdPlayers.Parameters.AddWithValue("@ev_chips", (object)handAnalytics.EvChips ?? DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@net_won_adjusted", (object)handAnalytics.NetWonAdjusted ?? p.NetProfit);
+                            cmdPlayers.Parameters.AddWithValue("@showdown_winning", (object)handAnalytics.ChipsWonShowdown ?? (p.WentToShowdown ? p.NetProfit : 0));
+                            cmdPlayers.Parameters.AddWithValue("@non_showdown_winning", (object)handAnalytics.ChipsWonNoShowdown ?? (!p.WentToShowdown ? p.NetProfit : 0));
+                            cmdPlayers.Parameters.AddWithValue("@equity_preflop", (object)handAnalytics.EquityPreflop ?? DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@equity_flop", (object)handAnalytics.EquityFlop ?? DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@equity_turn", (object)handAnalytics.EquityTurn ?? DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@equity_river", (object)handAnalytics.EquityRiver ?? DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@cev_contribution", (object)handAnalytics.CevContribution ?? 0);
                         }
+                        else
+                        {
+                            cmdPlayers.Parameters.AddWithValue("@ev_chips", DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@net_won_adjusted", p.NetProfit);
+                            cmdPlayers.Parameters.AddWithValue("@showdown_winning", p.WentToShowdown ? p.NetProfit : 0);
+                            cmdPlayers.Parameters.AddWithValue("@non_showdown_winning", !p.WentToShowdown ? p.NetProfit : 0);
+                            cmdPlayers.Parameters.AddWithValue("@equity_preflop", DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@equity_flop", DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@equity_turn", DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@equity_river", DBNull.Value);
+                            cmdPlayers.Parameters.AddWithValue("@cev_contribution", 0);
+                        }
+
+                        int pRows = await cmdPlayers.ExecuteNonQueryAsync();
+                        if (pRows == 0) {
+                            _logger.LogWarning($"Player {p.Name} in hand {hand.Id} was NOT inserted (0 rows affected)");
+                        }
+
+                        if (!playerStats.ContainsKey(p.Name)) playerStats[p.Name] = (0, 0, 0);
                         var (h, pr, ev) = playerStats[p.Name];
-                        playerStats[p.Name] = (h + 1, pr + p.NetProfit, ev + (playerEv ?? 0));
+                        var playerEvVal = (p.IsHero && handAnalytics != null) ? (handAnalytics.EvChips ?? 0) : 0;
+                        playerStats[p.Name] = (h + 1, pr + p.NetProfit, ev + playerEvVal);
                     }
+                    inserted++;
                 }
-            }
-
-            // Insert analytics
-            using (var cmdAnalytics = connection.CreateCommand())
-            {
-                cmdAnalytics.Transaction = transaction;
-                cmdAnalytics.CommandText = @"
-                    INSERT OR REPLACE INTO hands_analytics (
-                        hand_id, ev_chips, net_won_adjusted, equity_preflop, equity_flop, equity_turn, equity_river
-                    ) VALUES (
-                        @hand_id, @ev_chips, @net_won_adjusted, @equity_preflop, @equity_flop, @equity_turn, @equity_river
-                    )";
-
-                foreach (var analytic in analytics)
+                catch (Exception ex)
                 {
-                    cmdAnalytics.Parameters.Clear();
-                    cmdAnalytics.Parameters.AddWithValue("@hand_id", analytic.HandId);
-                    cmdAnalytics.Parameters.AddWithValue("@ev_chips", analytic.EvChips ?? (object)DBNull.Value);
-                    cmdAnalytics.Parameters.AddWithValue("@net_won_adjusted", analytic.NetWonAdjusted ?? (object)DBNull.Value);
-                    cmdAnalytics.Parameters.AddWithValue("@equity_preflop", analytic.EquityPreflop ?? (object)DBNull.Value);
-                    cmdAnalytics.Parameters.AddWithValue("@equity_flop", analytic.EquityFlop ?? (object)DBNull.Value);
-                    cmdAnalytics.Parameters.AddWithValue("@equity_turn", analytic.EquityTurn ?? (object)DBNull.Value);
-                    cmdAnalytics.Parameters.AddWithValue("@equity_river", analytic.EquityRiver ?? (object)DBNull.Value);
-                    await cmdAnalytics.ExecuteNonQueryAsync();
-                }
-            }
-            
-            // Batch update players
-            using (var cmdUpdatePlayers = connection.CreateCommand())
-            {
-                cmdUpdatePlayers.Transaction = transaction;
-                cmdUpdatePlayers.CommandText = @"
-                    INSERT OR IGNORE INTO players (name, created_at, updated_at) VALUES (@name, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-                    UPDATE players 
-                    SET total_hands = total_hands + @hands, 
-                        total_profit = total_profit + @profit,
-                        total_ev_profit = total_ev_profit + @ev_profit,
-                        updated_at = CURRENT_TIMESTAMP
-                    WHERE name = @name;
-                ";
-
-                foreach(var kvp in playerStats)
-                {
-                    cmdUpdatePlayers.Parameters.Clear();
-                    cmdUpdatePlayers.Parameters.AddWithValue("@name", kvp.Key);
-                    cmdUpdatePlayers.Parameters.AddWithValue("@hands", kvp.Value.Hands);
-                    cmdUpdatePlayers.Parameters.AddWithValue("@profit", kvp.Value.Profit);
-                    cmdUpdatePlayers.Parameters.AddWithValue("@ev_profit", kvp.Value.EvProfit);
-                    await cmdUpdatePlayers.ExecuteNonQueryAsync();
+                    _logger.LogWarning($"Failed to insert hand {hand.Id}: {ex.Message}");
                 }
             }
 
             await transaction.CommitAsync();
+
+            // Recalculate player stats correctly from DB state
+            await UpdatePlayerStatsAsync();
+
             return inserted;
         }
-        catch
+        catch (Exception ex)
         {
             await transaction.RollbackAsync();
+            _logger.LogError($"Transaction failed: {ex.Message}");
             throw;
         }
     }
@@ -763,27 +770,31 @@ public class Database
             using var cmd = connection.CreateCommand();
             cmd.Transaction = transaction;
             cmd.CommandText = @"
-                INSERT OR REPLACE INTO hands_analytics (
-                    hand_id, ev_chips, net_won_adjusted, equity_preflop, equity_flop,
-                    equity_turn, equity_river, chips_won_showdown, chips_won_no_showdown, cev_contribution
-                ) VALUES (
-                    @hand_id, @ev_chips, @net_won_adjusted, @equity_preflop, @equity_flop,
-                    @equity_turn, @equity_river, @chips_won_showdown, @chips_won_no_showdown, @cev_contribution
-                )";
+                UPDATE player_hands 
+                SET ev_chips = @ev_chips, 
+                    net_won_adjusted = @net_won_adjusted, 
+                    equity_preflop = @equity_preflop, 
+                    equity_flop = @equity_flop,
+                    equity_turn = @equity_turn, 
+                    equity_river = @equity_river, 
+                    showdown_winning = @chips_won_showdown, 
+                    non_showdown_winning = @chips_won_no_showdown, 
+                    cev_contribution = @cev_contribution
+                WHERE hand_id = @hand_id AND is_hero = 1";
 
             foreach (var analytic in analytics)
             {
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("@hand_id", analytic.HandId ?? "");
-                cmd.Parameters.AddWithValue("@ev_chips", analytic.EvChips.HasValue ? (object)analytic.EvChips.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@net_won_adjusted", analytic.NetWonAdjusted.HasValue ? (object)analytic.NetWonAdjusted.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@equity_preflop", analytic.EquityPreflop.HasValue ? (object)analytic.EquityPreflop.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@equity_flop", analytic.EquityFlop.HasValue ? (object)analytic.EquityFlop.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@equity_turn", analytic.EquityTurn.HasValue ? (object)analytic.EquityTurn.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@equity_river", analytic.EquityRiver.HasValue ? (object)analytic.EquityRiver.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@chips_won_showdown", analytic.ChipsWonShowdown.HasValue ? (object)analytic.ChipsWonShowdown.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@chips_won_no_showdown", analytic.ChipsWonNoShowdown.HasValue ? (object)analytic.ChipsWonNoShowdown.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@cev_contribution", analytic.CevContribution.HasValue ? (object)analytic.CevContribution.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@ev_chips", (object)analytic.EvChips ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@net_won_adjusted", (object)analytic.NetWonAdjusted ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@equity_preflop", (object)analytic.EquityPreflop ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@equity_flop", (object)analytic.EquityFlop ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@equity_turn", (object)analytic.EquityTurn ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@equity_river", (object)analytic.EquityRiver ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@chips_won_showdown", (object)analytic.ChipsWonShowdown ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@chips_won_no_showdown", (object)analytic.ChipsWonNoShowdown ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@cev_contribution", (object)analytic.CevContribution ?? DBNull.Value);
 
                 await cmd.ExecuteNonQueryAsync();
                 inserted++;
@@ -900,9 +911,6 @@ public class Database
             var cardsCol = "ph.cards";
             var showdownCol = "ph.went_to_showdown";
 
-            // Also join analytics for EV
-            var joinAnalytics = " LEFT JOIN hands_analytics a ON h.id = a.hand_id";
-
             // Subquery to get all players and positions for each hand
             var playerPositionsSubquery = @"
                 (SELECT GROUP_CONCAT(player_name || ':' || position, '|') 
@@ -928,12 +936,11 @@ public class Database
                     h.flop,
                     h.turn,
                     h.river,
-                    a.ev_chips,
+                    ph.ev_chips,
                     {playerPositionsSubquery},
                     {cardsCol}
                 FROM hands h
                 {joinClause}
-                {joinAnalytics}
                 {whereClause}
                 ORDER BY h.date_time ASC"; // ASC for graph
 
@@ -1003,7 +1010,7 @@ public class Database
 
             var whereClauses = new List<string>();
             var parameters = new List<SqliteParameter>();
-            var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+            var joinClause = "";
             
             if (!string.IsNullOrEmpty(options.HeroName))
             {
@@ -1097,7 +1104,7 @@ public class Database
             var offset = (options.Page - 1) * options.Limit;
             using var cmd = connection.CreateCommand();
             
-            var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
+            var selectFields = "h.*, ph.ev_chips, ph.equity_preflop, ph.equity_flop, ph.equity_turn, ph.equity_river";
             selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name";
 
             cmd.CommandText = $@"
@@ -1149,12 +1156,11 @@ public class Database
         using (var cmd = connection.CreateCommand())
         {
             cmd.CommandText = @"
-                SELECT h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river,
+                SELECT h.*, ph.ev_chips, ph.equity_preflop, ph.equity_flop, ph.equity_turn, ph.equity_river,
                        ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, 
                        ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name,
                        ph.stack as dyn_hero_stack
                 FROM hands h
-                LEFT JOIN hands_analytics a ON h.id = a.hand_id
                 LEFT JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1
                 WHERE h.id = @handId";
             cmd.Parameters.AddWithValue("@handId", handId);
@@ -1173,7 +1179,8 @@ public class Database
         using (var cmdPlayers = connection.CreateCommand())
         {
             cmdPlayers.CommandText = @"
-                SELECT player_name, position, stack, cards, investment, chips_won, net_profit, is_hero, is_all_in, went_to_showdown
+                SELECT player_name, position, stack, cards, investment, chips_won, net_profit, is_hero, is_all_in, went_to_showdown,
+                       ev_chips, equity_preflop, equity_flop, equity_turn, equity_river
                 FROM player_hands
                 WHERE hand_id = @handId";
             cmdPlayers.Parameters.AddWithValue("@handId", handId);
@@ -1192,7 +1199,12 @@ public class Database
                         NetProfit = reader.GetDouble(6),
                         IsHero = reader.GetBoolean(7),
                         IsAllIn = reader.GetBoolean(8),
-                        WentToShowdown = reader.GetBoolean(9)
+                        WentToShowdown = reader.GetBoolean(9),
+                        EvChips = reader.IsDBNull(10) ? null : (double?)reader.GetDouble(10),
+                        EquityPreflop = reader.IsDBNull(11) ? null : (double?)reader.GetDouble(11),
+                        EquityFlop = reader.IsDBNull(12) ? null : (double?)reader.GetDouble(12),
+                        EquityTurn = reader.IsDBNull(13) ? null : (double?)reader.GetDouble(13),
+                        EquityRiver = reader.IsDBNull(14) ? null : (double?)reader.GetDouble(14)
                     });
                 }
             }
@@ -1261,11 +1273,10 @@ public class Database
                 h.prize_pool,
                 COUNT(*) as hand_count,
                 SUM({profitCol}) as chip_profit,
-                AVG(a.ev_chips) as avg_cev,
+                AVG(ph.ev_chips) as avg_cev,
                 MAX(h.player_count) as max_players
             FROM hands h
             {joinHero}
-            LEFT JOIN hands_analytics a ON h.id = a.hand_id
             {whereClause}
             GROUP BY h.game_id";
 
@@ -1370,7 +1381,7 @@ public class Database
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
-        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+        var joinClause = "";
         
         if (!string.IsNullOrEmpty(heroName))
         {
@@ -1381,7 +1392,7 @@ public class Database
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
         }
 
-        var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
+        var selectFields = "h.*, ph.ev_chips, ph.equity_preflop, ph.equity_flop, ph.equity_turn, ph.equity_river";
         selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name";
 
         using var cmd = connection.CreateCommand();
@@ -1412,7 +1423,7 @@ public class Database
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
-        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+        var joinClause = "";
         
         if (!string.IsNullOrEmpty(heroName))
         {
@@ -1423,7 +1434,7 @@ public class Database
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
         }
 
-        var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
+        var selectFields = "h.*, ph.ev_chips, ph.equity_preflop, ph.equity_flop, ph.equity_turn, ph.equity_river";
         selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name";
 
         // Generate parameter names
@@ -1471,8 +1482,7 @@ public class Database
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
-        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
-        var profitCol = "ph.net_profit";
+        var joinClause = "";
         
         if (!string.IsNullOrEmpty(heroName))
         {
@@ -1488,8 +1498,8 @@ public class Database
         cmd.CommandText = $@"
             SELECT 
                 COUNT(*) as total_hands,
-                SUM(CASE WHEN {profitCol} > 0 THEN 1 ELSE 0 END) as hands_won,
-                COALESCE(SUM(a.ev_chips), 0) as total_ev
+                SUM(CASE WHEN ph.net_profit > 0 THEN 1 ELSE 0 END) as hands_won,
+                COALESCE(SUM(ph.ev_chips), 0) as total_ev
             FROM hands h
             {joinClause}";
 
@@ -1718,9 +1728,9 @@ public class Database
         var whereClauses = new List<string>();
         var parameters = new List<SqliteParameter>();
 
-        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+        var joinClause = "";
         var profitCol = "ph.net_profit";
-        var evCol = "CASE WHEN ph.is_hero = 1 THEN COALESCE(a.net_won_adjusted, ph.net_profit) ELSE ph.net_profit END";
+        var evCol = "CASE WHEN ph.is_hero = 1 THEN COALESCE(ph.net_won_adjusted, ph.net_profit) ELSE ph.net_profit END";
         var showdownCondition = "ph.went_to_showdown = 1";
 
         if (!string.IsNullOrEmpty(options.HeroName))
@@ -1976,7 +1986,7 @@ public class Database
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = $@"
-            SELECT * FROM players
+            SELECT id, name, total_hands, total_profit FROM players
             {whereClause}
             ORDER BY total_hands DESC
             {limitClause}";
@@ -2006,7 +2016,7 @@ public class Database
         var parameters = new List<SqliteParameter>();
 
         // Base join
-        var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
+        var joinClause = "";
         var profitCol = "ph.net_profit";
         
         if (!string.IsNullOrEmpty(filters.HeroName))
@@ -2457,7 +2467,15 @@ public class Database
         await connection.OpenAsync();
 
         using var cmd = connection.CreateCommand();
-        cmd.CommandText = "DELETE FROM hands_analytics";
+        cmd.CommandText = @"
+            UPDATE player_hands 
+            SET ev_chips = NULL, 
+                net_won_adjusted = net_profit, 
+                equity_preflop = NULL, 
+                equity_flop = NULL, 
+                equity_turn = NULL, 
+                equity_river = NULL, 
+                cev_contribution = 0";
         await cmd.ExecuteNonQueryAsync();
     }
 
@@ -2465,50 +2483,8 @@ public class Database
     {
         try
         {
-            using var connection = new SqliteConnection(_connectionString);
-            await connection.OpenAsync();
-
-            // Disable foreign keys to ensure we can delete everything without constraint issues
-            using (var cmdPragma = connection.CreateCommand())
-            {
-                cmdPragma.CommandText = "PRAGMA foreign_keys = OFF;";
-                await cmdPragma.ExecuteNonQueryAsync();
-            }
-
-            using var transaction = connection.BeginTransaction();
-
-            try
-            {
-                using var cmd = connection.CreateCommand();
-                cmd.Transaction = transaction;
-
-                cmd.CommandText = "DELETE FROM hands_analytics";
-                await cmd.ExecuteNonQueryAsync();
-
-                cmd.CommandText = "DELETE FROM player_hands";
-                await cmd.ExecuteNonQueryAsync();
-
-                cmd.CommandText = "DELETE FROM hands";
-                await cmd.ExecuteNonQueryAsync();
-
-                cmd.CommandText = "DELETE FROM sessions";
-                await cmd.ExecuteNonQueryAsync();
-
-                cmd.CommandText = "DELETE FROM players";
-                await cmd.ExecuteNonQueryAsync();
-
-                // Reset auto-increment counters
-                cmd.CommandText = "DELETE FROM sqlite_sequence";
-                await cmd.ExecuteNonQueryAsync();
-
-                await transaction.CommitAsync();
-                return new { success = true, message = "All hands deleted" };
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            InitializeTables(forceRefresh: true);
+            return new { success = true, message = "All data cleared and schema refreshed" };
         }
         catch (Exception ex)
         {

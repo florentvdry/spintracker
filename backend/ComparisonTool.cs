@@ -186,10 +186,9 @@ public static class ComparisonTool
                     SUM(ph.net_profit) as total_profit,
                     SUM(CASE WHEN ph.went_to_showdown = 1 THEN ph.net_profit ELSE 0 END) as showdown_profit,
                     SUM(CASE WHEN ph.went_to_showdown = 0 THEN ph.net_profit ELSE 0 END) as no_showdown_profit,
-                    SUM(CASE WHEN ph.is_hero = 1 THEN COALESCE(a.net_won_adjusted, ph.net_profit) ELSE ph.net_profit END) as total_ev,
+                    SUM(CASE WHEN ph.is_hero = 1 THEN COALESCE(ph.ev_chips, ph.net_profit) ELSE ph.net_profit END) as total_ev,
                     COUNT(*) as total_hands
                 FROM player_hands ph
-                LEFT JOIN hands_analytics a ON ph.hand_id = a.hand_id
                 WHERE ph.player_name = 'jmenfouu'";
             
             using var reader = await cmd.ExecuteReaderAsync();
