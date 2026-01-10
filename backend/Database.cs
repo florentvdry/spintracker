@@ -226,10 +226,6 @@ public class Database
                 total_hands INTEGER DEFAULT 0,
                 total_profit REAL DEFAULT 0,
                 total_ev_profit REAL DEFAULT 0,
-                vpip REAL DEFAULT 0,
-                pfr REAL DEFAULT 0,
-                three_bet REAL DEFAULT 0,
-                cbet REAL DEFAULT 0,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )";
@@ -442,13 +438,12 @@ public class Database
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = @"
-            INSERT OR REPLACE INTO players (name, total_hands, total_profit, total_ev_profit, vpip, pfr, three_bet, cbet, updated_at)
+            INSERT OR REPLACE INTO players (name, total_hands, total_profit, total_ev_profit, updated_at)
             SELECT 
                 player_name,
                 COUNT(*) as total_hands,
                 SUM(net_profit) as total_profit,
                 SUM(COALESCE(ev_chips, 0)) as total_ev_profit,
-                0, 0, 0, 0, -- Placeholders for stats calculated elsewhere
                 CURRENT_TIMESTAMP
             FROM player_hands
             GROUP BY player_name";
