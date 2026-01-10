@@ -37,13 +37,6 @@ public class ParsedHand
     public string? Blinds { get; set; }
     public double TotalPot { get; set; }
     public double Rake { get; set; }
-    public string? HeroPosition { get; set; }
-    public int HeroStack { get; set; }
-    public string? HeroCards { get; set; }
-    public string? HeroName { get; set; }
-    public string? VillainPosition { get; set; }
-    public int VillainStack { get; set; }
-    public string? VillainCards { get; set; }
     public string PreflopAction { get; set; } = "";
     public string? Flop { get; set; }
     public string FlopAction { get; set; } = "";
@@ -53,16 +46,9 @@ public class ParsedHand
     public string RiverAction { get; set; } = "";
     public string Showdown { get; set; } = "";
     public string Result { get; set; } = "";
-    public double HeroProfit { get; set; }
-    public double HeroInvestment { get; set; }
-    public double HeroNetProfit { get; set; }
-    public bool HeroAllIn { get; set; }
-    public bool VillainAllIn { get; set; }
-    public Dictionary<string, double> VillainStacks { get; set; } = new();
     public string? AllInStreet { get; set; }
     public int PlayerCount { get; set; } = 2;
     public bool WentToShowdown { get; set; }
-    public bool HeroWentToShowdown { get; set; }
     public List<PlayerInfo> Players { get; set; } = new();
 }
 

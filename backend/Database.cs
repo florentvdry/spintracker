@@ -158,12 +158,6 @@ public class Database
                 blinds TEXT,
                 total_pot REAL,
                 rake REAL,
-                hero_position TEXT,
-                hero_stack INTEGER,
-                hero_cards TEXT,
-                villain_position TEXT,
-                villain_stack INTEGER,
-                villain_cards TEXT,
                 preflop_action TEXT,
                 flop TEXT,
                 flop_action TEXT,
@@ -173,11 +167,6 @@ public class Database
                 river_action TEXT,
                 showdown TEXT,
                 result TEXT,
-                hero_investment REAL DEFAULT 0,
-                hero_profit REAL DEFAULT 0,
-                hero_net_profit REAL DEFAULT 0,
-                hero_all_in BOOLEAN DEFAULT 0,
-                villain_all_in BOOLEAN DEFAULT 0,
                 all_in_street TEXT,
                 went_to_showdown BOOLEAN DEFAULT 0,
                 player_count INTEGER DEFAULT 2,
@@ -245,8 +234,6 @@ public class Database
 
         // Indexes
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_date ON hands(date_time)";
-        cmd.ExecuteNonQuery();
-        cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_hero_position ON hands(hero_position)";
         cmd.ExecuteNonQuery();
         cmd.CommandText = "CREATE INDEX IF NOT EXISTS idx_hands_game_id ON hands(game_id)";
         cmd.ExecuteNonQuery();
@@ -466,17 +453,15 @@ public class Database
                 INSERT OR REPLACE INTO hands (
                     id, game_id, hand_id, room, game_mode, game_type, game_name,
                     prize_pool, multiplier, buy_in, date_time, table_id, blinds,
-                    total_pot, rake, hero_position, hero_stack, hero_cards,
-                    villain_position, villain_stack, villain_cards, preflop_action,
+                    total_pot, rake, preflop_action,
                     flop, flop_action, turn, turn_action, river, river_action,
-                    showdown, result, hero_investment, hero_profit, hero_net_profit, hero_all_in, villain_all_in, all_in_street, went_to_showdown, player_count
+                    showdown, result, all_in_street, went_to_showdown, player_count
                 ) VALUES (
                     @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
                     @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
-                    @total_pot, @rake, @hero_position, @hero_stack, @hero_cards,
-                    @villain_position, @villain_stack, @villain_cards, @preflop_action,
+                    @total_pot, @rake, @preflop_action,
                     @flop, @flop_action, @turn, @turn_action, @river, @river_action,
-                    @showdown, @result, @hero_investment, @hero_profit, @hero_net_profit, @hero_all_in, @villain_all_in, @all_in_street, @went_to_showdown, @player_count
+                    @showdown, @result, @all_in_street, @went_to_showdown, @player_count
                 )";
             
             // Re-use command for player hands
@@ -511,12 +496,6 @@ public class Database
                     cmd.Parameters.AddWithValue("@blinds", hand.Blinds ?? "");
                     cmd.Parameters.AddWithValue("@total_pot", hand.TotalPot);
                     cmd.Parameters.AddWithValue("@rake", hand.Rake);
-                    cmd.Parameters.AddWithValue("@hero_position", hand.HeroPosition ?? "");
-                    cmd.Parameters.AddWithValue("@hero_stack", hand.HeroStack);
-                    cmd.Parameters.AddWithValue("@hero_cards", hand.HeroCards ?? "");
-                    cmd.Parameters.AddWithValue("@villain_position", hand.VillainPosition ?? "");
-                    cmd.Parameters.AddWithValue("@villain_stack", hand.VillainStack);
-                    cmd.Parameters.AddWithValue("@villain_cards", hand.VillainCards ?? "");
                     cmd.Parameters.AddWithValue("@preflop_action", hand.PreflopAction ?? "");
                     cmd.Parameters.AddWithValue("@flop", hand.Flop ?? "");
                     cmd.Parameters.AddWithValue("@flop_action", hand.FlopAction ?? "");
@@ -526,11 +505,6 @@ public class Database
                     cmd.Parameters.AddWithValue("@river_action", hand.RiverAction ?? "");
                     cmd.Parameters.AddWithValue("@showdown", hand.Showdown ?? "");
                     cmd.Parameters.AddWithValue("@result", hand.Result ?? "");
-                    cmd.Parameters.AddWithValue("@hero_investment", hand.HeroInvestment);
-                    cmd.Parameters.AddWithValue("@hero_profit", hand.HeroProfit);
-                    cmd.Parameters.AddWithValue("@hero_net_profit", hand.HeroNetProfit);
-                    cmd.Parameters.AddWithValue("@hero_all_in", hand.HeroAllIn ? 1 : 0);
-                    cmd.Parameters.AddWithValue("@villain_all_in", hand.VillainAllIn ? 1 : 0);
                     cmd.Parameters.AddWithValue("@all_in_street", hand.AllInStreet ?? "");
                     cmd.Parameters.AddWithValue("@went_to_showdown", hand.WentToShowdown ? 1 : 0);
                     cmd.Parameters.AddWithValue("@player_count", hand.PlayerCount);
@@ -621,17 +595,15 @@ public class Database
                     INSERT OR REPLACE INTO hands (
                         id, game_id, hand_id, room, game_mode, game_type, game_name,
                         prize_pool, multiplier, buy_in, date_time, table_id, blinds,
-                        total_pot, rake, hero_position, hero_stack, hero_cards,
-                        villain_position, villain_stack, villain_cards, preflop_action,
+                        total_pot, rake, preflop_action,
                         flop, flop_action, turn, turn_action, river, river_action,
-                        showdown, result, hero_investment, hero_profit, hero_net_profit, hero_all_in, villain_all_in, all_in_street, went_to_showdown, player_count
+                        showdown, result, all_in_street, went_to_showdown, player_count
                     ) VALUES (
                         @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
                         @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
-                        @total_pot, @rake, @hero_position, @hero_stack, @hero_cards,
-                        @villain_position, @villain_stack, @villain_cards, @preflop_action,
+                        @total_pot, @rake, @preflop_action,
                         @flop, @flop_action, @turn, @turn_action, @river, @river_action,
-                        @showdown, @result, @hero_investment, @hero_profit, @hero_net_profit, @hero_all_in, @villain_all_in, @all_in_street, @went_to_showdown, @player_count
+                        @showdown, @result, @all_in_street, @went_to_showdown, @player_count
                     )";
 
                 foreach (var hand in hands)
@@ -652,12 +624,6 @@ public class Database
                     cmd.Parameters.AddWithValue("@blinds", hand.Blinds ?? "");
                     cmd.Parameters.AddWithValue("@total_pot", hand.TotalPot);
                     cmd.Parameters.AddWithValue("@rake", hand.Rake);
-                    cmd.Parameters.AddWithValue("@hero_position", hand.HeroPosition ?? "");
-                    cmd.Parameters.AddWithValue("@hero_stack", hand.HeroStack);
-                    cmd.Parameters.AddWithValue("@hero_cards", hand.HeroCards ?? "");
-                    cmd.Parameters.AddWithValue("@villain_position", hand.VillainPosition ?? "");
-                    cmd.Parameters.AddWithValue("@villain_stack", hand.VillainStack);
-                    cmd.Parameters.AddWithValue("@villain_cards", hand.VillainCards ?? "");
                     cmd.Parameters.AddWithValue("@preflop_action", hand.PreflopAction ?? "");
                     cmd.Parameters.AddWithValue("@flop", hand.Flop ?? "");
                     cmd.Parameters.AddWithValue("@flop_action", hand.FlopAction ?? "");
@@ -667,11 +633,6 @@ public class Database
                     cmd.Parameters.AddWithValue("@river_action", hand.RiverAction ?? "");
                     cmd.Parameters.AddWithValue("@showdown", hand.Showdown ?? "");
                     cmd.Parameters.AddWithValue("@result", hand.Result ?? "");
-                    cmd.Parameters.AddWithValue("@hero_investment", hand.HeroInvestment);
-                    cmd.Parameters.AddWithValue("@hero_profit", hand.HeroProfit);
-                    cmd.Parameters.AddWithValue("@hero_net_profit", hand.HeroNetProfit);
-                    cmd.Parameters.AddWithValue("@hero_all_in", hand.HeroAllIn ? 1 : 0);
-                    cmd.Parameters.AddWithValue("@villain_all_in", hand.VillainAllIn ? 1 : 0);
                     cmd.Parameters.AddWithValue("@all_in_street", hand.AllInStreet ?? "");
                     cmd.Parameters.AddWithValue("@went_to_showdown", hand.WentToShowdown ? 1 : 0);
                     cmd.Parameters.AddWithValue("@player_count", hand.PlayerCount);
@@ -892,7 +853,8 @@ public class Database
                     }
                     else
                     {
-                        baseClause = $"(hero_position = {pParam} OR hero_position LIKE {pParamLike})";
+                        // For field analysis, we still filter by the position of the player we are currently looking at (ph.position)
+                        baseClause = $"(ph.position = {pParam} OR ph.position LIKE {pParamLike})";
                     }
                     
                     parameters.Add(new SqliteParameter(pParam, filters.Positions[i]));
@@ -904,15 +866,7 @@ public class Database
                         var btnParam = $"@posBtn{i}";
                         var btnSbParam = $"@posBtnSb{i}";
                         
-                        string extraClause;
-                        if (!string.IsNullOrEmpty(filters.HeroName))
-                        {
-                            extraClause = $" OR ph.position = {btnParam} OR ph.position = {btnSbParam}";
-                        }
-                        else
-                        {
-                            extraClause = $" OR hero_position = {btnParam} OR hero_position = {btnSbParam}";
-                        }
+                        string extraClause = $" OR ph.position = {btnParam} OR ph.position = {btnSbParam}";
                         
                         baseClause = $"({baseClause}{extraClause})";
                         parameters.Add(new SqliteParameter(btnParam, "BTN"));
@@ -939,12 +893,12 @@ public class Database
             if (whereClauses.Count > 0) _logger.LogInformation($"Where: {whereClause}");
 
             // Select necessary columns
-            var profitCol = "COALESCE(ph.net_profit, hero_profit)";
-            var stackCol = "COALESCE(ph.stack, hero_stack)";
-            var posCol = "COALESCE(ph.position, hero_position)";
-            var investCol = "COALESCE(ph.investment, hero_investment)";
-            var cardsCol = "COALESCE(ph.cards, hero_cards)";
-            var showdownCol = "COALESCE(ph.went_to_showdown, h.went_to_showdown)";
+            var profitCol = "ph.net_profit";
+            var stackCol = "ph.stack";
+            var posCol = "ph.position";
+            var investCol = "ph.investment";
+            var cardsCol = "ph.cards";
+            var showdownCol = "ph.went_to_showdown";
 
             // Also join analytics for EV
             var joinAnalytics = " LEFT JOIN hands_analytics a ON h.id = a.hand_id";
@@ -1057,6 +1011,10 @@ public class Database
                 whereClauses.Add("ph.player_name = @heroName");
                 parameters.Add(new SqliteParameter("@heroName", options.HeroName));
             }
+            else
+            {
+                joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
+            }
 
             if (!string.IsNullOrEmpty(options.DateFrom))
             {
@@ -1086,15 +1044,8 @@ public class Database
                 
                 if (pos == "SB" || pos == "BB" || pos == "BTN")
                 {
-                    if (!string.IsNullOrEmpty(options.HeroName))
-                    {
-                        // ph.position stores "SB", "BTN", "BTN SB" etc.
-                        whereClauses.Add("(ph.position = @position OR ph.position LIKE @posLike)");
-                    }
-                    else
-                    {
-                        whereClauses.Add("(hero_position = @position OR hero_position LIKE @posLike)");
-                    }
+                    // ph.position stores "SB", "BTN", "BTN SB" etc.
+                    whereClauses.Add("(ph.position = @position OR ph.position LIKE @posLike)");
                     parameters.Add(new SqliteParameter("@position", pos));
                     parameters.Add(new SqliteParameter("@posLike", $"%({pos})%"));
                 }
@@ -1120,7 +1071,7 @@ public class Database
 
             if (!string.IsNullOrEmpty(options.Result))
             {
-                var profitCol = !string.IsNullOrEmpty(options.HeroName) ? "ph.net_profit" : "hero_profit";
+                var profitCol = "ph.net_profit";
                 if (options.Result.ToLower() == "won")
                 {
                     whereClauses.Add($"{profitCol} > 0");
@@ -1147,10 +1098,7 @@ public class Database
             using var cmd = connection.CreateCommand();
             
             var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
-            if (!string.IsNullOrEmpty(options.HeroName))
-            {
-                selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
-            }
+            selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name";
 
             cmd.CommandText = $@"
                 SELECT {selectFields}
@@ -1201,9 +1149,13 @@ public class Database
         using (var cmd = connection.CreateCommand())
         {
             cmd.CommandText = @"
-                SELECT h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river
+                SELECT h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river,
+                       ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, 
+                       ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name,
+                       ph.stack as dyn_hero_stack
                 FROM hands h
                 LEFT JOIN hands_analytics a ON h.id = a.hand_id
+                LEFT JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1
                 WHERE h.id = @handId";
             cmd.Parameters.AddWithValue("@handId", handId);
 
@@ -1287,8 +1239,17 @@ public class Database
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
 
         // Main Query: Group by game_id and calculate all stats in one go for performance
-        var profitCol = !string.IsNullOrEmpty(options.HeroName) ? "ph.net_profit" : "h.hero_profit";
-        var joinHero = !string.IsNullOrEmpty(options.HeroName) ? "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName" : "";
+        var profitCol = "ph.net_profit";
+        var joinHero = "";
+        
+        if (!string.IsNullOrEmpty(options.HeroName))
+        {
+            joinHero = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+        }
+        else
+        {
+            joinHero = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
+        }
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = $@"
@@ -1410,13 +1371,18 @@ public class Database
         await connection.OpenAsync();
 
         var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
-        var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
         
         if (!string.IsNullOrEmpty(heroName))
         {
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
-            selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
         }
+        else
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
+        }
+
+        var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
+        selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name";
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = $@"
@@ -1447,13 +1413,18 @@ public class Database
         await connection.OpenAsync();
 
         var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
-        var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
         
         if (!string.IsNullOrEmpty(heroName))
         {
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
-            selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
         }
+        else
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
+        }
+
+        var selectFields = "h.*, a.ev_chips, a.equity_preflop, a.equity_flop, a.equity_turn, a.equity_river";
+        selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name";
 
         // Generate parameter names
         var parameters = new List<SqliteParameter>();
@@ -1501,12 +1472,15 @@ public class Database
         await connection.OpenAsync();
 
         var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
-        var profitCol = "hero_profit";
+        var profitCol = "ph.net_profit";
         
         if (!string.IsNullOrEmpty(heroName))
         {
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
-            profitCol = "ph.net_profit";
+        }
+        else
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
         }
 
         // 1. Basic stats from SQL (Hands Won, Total EV)
@@ -1583,13 +1557,16 @@ public class Database
         var cmd = connection.CreateCommand();
         
         var joinClause = "";
-        var profitCol = "hero_profit";
+        var profitCol = "ph.net_profit";
         
         if (!string.IsNullOrEmpty(heroName))
         {
             joinClause = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
-            profitCol = "ph.net_profit";
             cmd.Parameters.AddWithValue("@heroName", heroName);
+        }
+        else
+        {
+            joinClause = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
         }
 
         // Fetch necessary columns to group sessions and calculate profit
@@ -1742,23 +1719,18 @@ public class Database
         var parameters = new List<SqliteParameter>();
 
         var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
-        var profitCol = "h.hero_profit";
-        var evCol = "COALESCE(a.net_won_adjusted, h.hero_profit)";
-        var showdownCondition = @"(COALESCE(h.showdown,'') != '' 
-                                  OR h.result LIKE '%*** SHOWDOWN ***%' 
-                                  OR h.result LIKE '%shows [%' 
-                                  OR h.result LIKE '%: [%'
-                                  OR (h.hero_all_in = 1 AND h.villain_all_in = 1))";
+        var profitCol = "ph.net_profit";
+        var evCol = "CASE WHEN ph.is_hero = 1 THEN COALESCE(a.net_won_adjusted, ph.net_profit) ELSE ph.net_profit END";
+        var showdownCondition = "ph.went_to_showdown = 1";
 
         if (!string.IsNullOrEmpty(options.HeroName))
         {
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
-            profitCol = "ph.net_profit";
-            // Use analytics (NetWonAdjusted) only if the selected player is the Hero of the hand.
-            // Otherwise (for villains), fallback to NetProfit.
-            evCol = "CASE WHEN ph.is_hero = 1 THEN COALESCE(a.net_won_adjusted, ph.net_profit) ELSE ph.net_profit END";
-            showdownCondition = "ph.went_to_showdown = 1";
             parameters.Add(new SqliteParameter("@heroName", options.HeroName));
+        }
+        else
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
         }
 
         if (!string.IsNullOrEmpty(options.DateFrom))
@@ -1834,7 +1806,10 @@ public class Database
         await connection.OpenAsync();
 
         using var cmd = connection.CreateCommand();
-        cmd.CommandText = @"SELECT COALESCE(SUM(hero_profit), 0) as total_profit, COUNT(*) as total_hands FROM hands";
+        cmd.CommandText = @"
+            SELECT COALESCE(SUM(ph.net_profit), 0) as total_profit, COUNT(*) as total_hands 
+            FROM hands h
+            JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
 
         double totalProfit = 0;
         int totalHands = 0;
@@ -1848,7 +1823,12 @@ public class Database
         }
 
         using var sampleCmd = connection.CreateCommand();
-        sampleCmd.CommandText = $@"SELECT id, date_time, hero_profit, buy_in, prize_pool, total_pot, result FROM hands ORDER BY date_time DESC LIMIT {sampleLimit}";
+        sampleCmd.CommandText = $@"
+            SELECT h.id, h.date_time, ph.net_profit, h.buy_in, h.prize_pool, h.total_pot, h.result 
+            FROM hands h
+            JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1
+            ORDER BY h.date_time DESC 
+            LIMIT {sampleLimit}";
 
         var samples = new List<object>();
         using (var sReader = await sampleCmd.ExecuteReaderAsync())
@@ -1878,16 +1858,18 @@ public class Database
 
         using var cmd = connection.CreateCommand();
         
-        var cardsCol = "hero_cards";
-        var profitCol = "hero_profit";
+        var cardsCol = "ph.cards";
+        var profitCol = "ph.net_profit";
         var joinClause = "";
         
         if (!string.IsNullOrEmpty(filters.HeroName))
         {
             joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
-            cardsCol = "ph.cards";
-            profitCol = "ph.net_profit";
             cmd.Parameters.AddWithValue("@heroName", filters.HeroName);
+        }
+        else
+        {
+            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.is_hero = 1";
         }
 
         // Fetch raw cards and profit, process in C# to normalize
@@ -2025,13 +2007,16 @@ public class Database
 
         // Base join
         var joinClause = "LEFT JOIN hands_analytics a ON h.id = a.hand_id";
-        var profitCol = "hero_profit";
+        var profitCol = "ph.net_profit";
         
         if (!string.IsNullOrEmpty(filters.HeroName))
         {
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
-            profitCol = "ph.net_profit";
             parameters.Add(new SqliteParameter("@heroName", filters.HeroName));
+        }
+        else
+        {
+            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.is_hero = 1";
         }
 
         // Date Filters
@@ -2055,14 +2040,7 @@ public class Database
                 var p = filters.Positions[i];
                 var paramName = $"@pos{i}";
                 // Handle different position formats if needed, or strict match
-                if (!string.IsNullOrEmpty(filters.HeroName))
-                {
-                    posConditions.Add($"(ph.position = {paramName} OR ph.position LIKE {paramName} || ' %' OR ph.position LIKE '% ' || {paramName})");
-                }
-                else
-                {
-                    posConditions.Add($"(h.hero_position = {paramName} OR h.hero_position LIKE {paramName} || ' %' OR h.hero_position LIKE '% ' || {paramName})");
-                }
+                posConditions.Add($"(ph.position = {paramName} OR ph.position LIKE {paramName} || ' %' OR ph.position LIKE '% ' || {paramName})");
                 parameters.Add(new SqliteParameter(paramName, p));
             }
             whereClauses.Add($"({string.Join(" OR ", posConditions)})");
@@ -2129,7 +2107,7 @@ public class Database
                 // Try to parse BB from blinds string "100/200" -> 200
                 // SQL: CAST(substr(blinds, instr(blinds, '/') + 1) AS INTEGER)
                 // Stack BB = stack / BB
-                var stackCol = !string.IsNullOrEmpty(filters.HeroName) ? "ph.stack" : "h.hero_stack";
+                var stackCol = "ph.stack";
                 
                 if (filters.MinStackBB.HasValue)
                 {
@@ -2309,14 +2287,12 @@ public class Database
         if (!string.IsNullOrEmpty(filters.HeroName))
         {
             joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
-            selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
-            parameters.Add(new SqliteParameter("@heroName", filters.HeroName));
         }
         else
         {
-            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id";
-            selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
+            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.is_hero = 1";
         }
+        selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.stack as dyn_hero_stack";
 
         // Date Filters
         if (!string.IsNullOrEmpty(filters.DateFrom))
@@ -2339,14 +2315,7 @@ public class Database
                 var p = filters.Positions[i];
                 var paramName = $"@pos{i}";
                 // Handle different position formats if needed, or strict match
-                if (!string.IsNullOrEmpty(filters.HeroName))
-                {
-                    posConditions.Add($"(ph.position = {paramName} OR ph.position LIKE {paramName} || ' %' OR ph.position LIKE '% ' || {paramName})");
-                }
-                else
-                {
-                    posConditions.Add($"(ph.position = {paramName} OR ph.position LIKE {paramName} || ' %' OR ph.position LIKE '% ' || {paramName})");
-                }
+                posConditions.Add($"(ph.position = {paramName} OR ph.position LIKE {paramName} || ' %' OR ph.position LIKE '% ' || {paramName})");
                 parameters.Add(new SqliteParameter(paramName, p));
             }
             whereClauses.Add($"({string.Join(" OR ", posConditions)})");
@@ -2404,7 +2373,7 @@ public class Database
         // Stack Filter
         if (filters.MinStackBB.HasValue || filters.MaxStackBB.HasValue)
         {
-            var stackCol = !string.IsNullOrEmpty(filters.HeroName) ? "ph.stack" : "hands.hero_stack";
+            var stackCol = "ph.stack";
             
             if (filters.MinStackBB.HasValue)
             {
@@ -2457,7 +2426,7 @@ public class Database
                     handsDict[handId].Players.Add(new PlayerInfo
                     {
                         Name = playerName,
-                        Stack = GetInt32OrNull(reader, "hero_stack") ?? 0,
+                        Stack = GetInt32OrNull(reader, "dyn_hero_stack") ?? 0,
                         Cards = GetStringOrNull(reader, "dyn_hero_cards") ?? "",
                         Position = GetStringOrNull(reader, "dyn_hero_position") ?? "",
                         IsHero = true, // We're evaluating from this player's perspective
@@ -2570,12 +2539,9 @@ public class Database
                 blinds = GetStringOrNull(reader, "blinds"),
                 total_pot = GetDoubleOrNull(reader, "total_pot"),
                 rake = GetDoubleOrNull(reader, "rake"),
-                hero_position = GetStringOrNull(reader, "dyn_hero_position") ?? GetStringOrNull(reader, "hero_position"),
-                hero_stack = GetInt32OrNull(reader, "hero_stack"),
-                hero_cards = GetStringOrNull(reader, "dyn_hero_cards") ?? GetStringOrNull(reader, "hero_cards"),
-                villain_position = GetStringOrNull(reader, "villain_position"),
-                villain_stack = GetInt32OrNull(reader, "villain_stack"),
-                villain_cards = GetStringOrNull(reader, "villain_cards"),
+                hero_position = GetStringOrNull(reader, "dyn_hero_position"),
+                hero_stack = GetInt32OrNull(reader, "dyn_hero_stack"),
+                hero_cards = GetStringOrNull(reader, "dyn_hero_cards"),
                 preflop_action = GetStringOrNull(reader, "preflop_action"),
                 flop = GetStringOrNull(reader, "flop"),
                 flop_action = GetStringOrNull(reader, "flop_action"),
@@ -2585,9 +2551,8 @@ public class Database
                 river_action = GetStringOrNull(reader, "river_action"),
                 showdown = GetStringOrNull(reader, "showdown"),
                 result = GetStringOrNull(reader, "result"),
-                hero_profit = GetDoubleOrNull(reader, "dyn_hero_profit") ?? GetDoubleOrNull(reader, "hero_profit"),
-                hero_all_in = GetBoolOrNull(reader, "dyn_hero_all_in") ?? GetBoolOrNull(reader, "hero_all_in"),
-                villain_all_in = GetBoolOrNull(reader, "villain_all_in"),
+                hero_profit = GetDoubleOrNull(reader, "dyn_hero_profit"),
+                hero_all_in = GetBoolOrNull(reader, "dyn_hero_all_in"),
                 went_to_showdown = GetBoolOrNull(reader, "dyn_went_to_showdown") ?? GetBoolOrNull(reader, "went_to_showdown"),
                 player_count = GetInt32OrNull(reader, "player_count"),
                 ev_chips = GetDoubleOrNull(reader, "ev_chips"),
@@ -2625,13 +2590,6 @@ public class Database
             Blinds = GetStringOrNull(reader, "blinds"),
             TotalPot = GetDoubleOrNull(reader, "total_pot") ?? 0,
             Rake = GetDoubleOrNull(reader, "rake") ?? 0,
-            HeroPosition = GetStringOrNull(reader, "dyn_hero_position") ?? GetStringOrNull(reader, "hero_position"),
-            HeroName = GetStringOrNull(reader, "dyn_hero_name"),
-            HeroStack = GetInt32OrNull(reader, "hero_stack") ?? 0,
-            HeroCards = GetStringOrNull(reader, "dyn_hero_cards") ?? GetStringOrNull(reader, "hero_cards"),
-            VillainPosition = GetStringOrNull(reader, "villain_position"),
-            VillainStack = GetInt32OrNull(reader, "villain_stack") ?? 0,
-            VillainCards = GetStringOrNull(reader, "villain_cards"),
             PreflopAction = GetStringOrNull(reader, "preflop_action") ?? "",
             Flop = GetStringOrNull(reader, "flop"),
             FlopAction = GetStringOrNull(reader, "flop_action") ?? "",
@@ -2641,11 +2599,6 @@ public class Database
             RiverAction = GetStringOrNull(reader, "river_action") ?? "",
             Showdown = GetStringOrNull(reader, "showdown") ?? "",
             Result = GetStringOrNull(reader, "result") ?? "",
-            HeroInvestment = GetDoubleOrNull(reader, "hero_investment") ?? 0,
-            HeroProfit = GetDoubleOrNull(reader, "dyn_hero_profit") ?? GetDoubleOrNull(reader, "hero_profit") ?? 0,
-            HeroNetProfit = GetDoubleOrNull(reader, "hero_net_profit") ?? 0,
-            HeroAllIn = GetBoolOrNull(reader, "dyn_hero_all_in") ?? GetBoolOrNull(reader, "hero_all_in") ?? false,
-            VillainAllIn = GetBoolOrNull(reader, "villain_all_in") ?? false,
             AllInStreet = GetStringOrNull(reader, "all_in_street"),
             WentToShowdown = GetBoolOrNull(reader, "dyn_went_to_showdown") ?? GetBoolOrNull(reader, "went_to_showdown") ?? false
         };

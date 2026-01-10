@@ -16,19 +16,36 @@ namespace PokerTrackerBackend.StatsBuilder
             _logger = logger;
         }
 
+        private class EvaluationContext
+        {
+            public string HeroName { get; set; } = "";
+            public double HeroStack { get; set; }
+            public string HeroPosition { get; set; } = "";
+        }
+
         public StatEvaluationResult Evaluate(List<ParsedHand> hands, StatDefinition stat)
         {
             var result = new StatEvaluationResult();
             
             foreach (var hand in hands)
             {
+                var hero = hand.Players.FirstOrDefault(p => p.IsHero);
+                if (hero == null) continue;
+
+                var ctx = new EvaluationContext 
+                { 
+                    HeroName = hero.Name, 
+                    HeroStack = hero.Stack, 
+                    HeroPosition = hero.Position 
+                };
+
                 // 1. Check Denominator (Opportunity)
-                if (EvaluateGroup(hand, stat.Denominator))
+                if (EvaluateGroup(hand, stat.Denominator, ctx))
                 {
                     result.Opportunities++;
 
                     // 2. Check Numerator (Success)
-                    if (EvaluateGroup(hand, stat.Numerator))
+                    if (EvaluateGroup(hand, stat.Numerator, ctx))
                     {
                         result.Successes++;
                         result.MatchingHands.Add(new HandSummary 
@@ -61,112 +78,76 @@ namespace PokerTrackerBackend.StatsBuilder
                 // If heroName is provided, evaluate only for that player.
                 // If NULL (Field Analysis), evaluate for EVERY player who has cards.
                 var playersToEvaluate = !string.IsNullOrEmpty(heroName) 
-                    ? new List<string> { heroName }
-                    : hand.Players.Where(p => !string.IsNullOrEmpty(p.Cards)).Select(p => p.Name).ToList();
+                    ? hand.Players.Where(p => p.Name.Equals(heroName, StringComparison.OrdinalIgnoreCase)).ToList()
+                    : hand.Players.Where(p => !string.IsNullOrEmpty(p.Cards)).ToList();
 
-                foreach (var player in playersToEvaluate)
+                foreach (var pInfo in playersToEvaluate)
                 {
-                    // Create a virtual "perspective" for this player
-                    var pInfo = hand.Players.FirstOrDefault(p => p.Name == player);
-                    if (pInfo == null) continue;
-
-                    // Temporary override of hand properties for this evaluation
-                    var originalHeroName = hand.HeroName;
-                    var originalHeroStack = hand.HeroStack;
-                    var originalHeroPos = hand.HeroPosition;
-
-                    hand.HeroName = player;
-                    hand.HeroStack = (int)pInfo.Stack;
-                    hand.HeroPosition = pInfo.Position;
+                    var ctx = new EvaluationContext 
+                    { 
+                        HeroName = pInfo.Name, 
+                        HeroStack = pInfo.Stack, 
+                        HeroPosition = pInfo.Position 
+                    };
 
                     foreach (var stat in stats)
                     {
                         var key = !string.IsNullOrEmpty(stat.Id) ? stat.Id : stat.Name;
                         
-                        if (EvaluateGroup(hand, stat.Denominator))
+                        if (EvaluateGroup(hand, stat.Denominator, ctx))
                         {
                             results[key].Opportunities++;
-                            if (EvaluateGroup(hand, stat.Numerator))
+                            if (EvaluateGroup(hand, stat.Numerator, ctx))
                             {
                                 results[key].Successes++;
                             }
                         }
                     }
-
-                    // Restore original values
-                    hand.HeroName = originalHeroName;
-                    hand.HeroStack = originalHeroStack;
-                    hand.HeroPosition = originalHeroPos;
                 }
             }
 
             return results;
         }
 
-        private bool EvaluateGroup(ParsedHand hand, ConditionGroup group)
+        private bool EvaluateGroup(ParsedHand hand, ConditionGroup group, EvaluationContext ctx)
         {
-            if (group.Conditions.Count == 0 && group.SubGroups.Count == 0) return true; // Empty group = true (or false? usually true for "all")
+            if (group.Conditions.Count == 0 && group.SubGroups.Count == 0) return true; 
 
             bool isAnd = group.Operator == "AND";
-            bool currentResult = isAnd; // Start with true for AND, false for OR? 
-            // Actually:
-            // AND: all must be true. Start true. If any false, return false.
-            // OR: any must be true. Start false. If any true, return true.
-
-            // Combine Conditions and SubGroups
             var results = new List<bool>();
 
             foreach (var condition in group.Conditions)
             {
-                var conditionResult = EvaluateCondition(hand, condition);
+                var conditionResult = EvaluateCondition(hand, condition, ctx);
                 results.Add(conditionResult);
                 
-                // Debug logging for first few evaluations
                 if (_logger != null && results.Count <= 2)
                 {
                     _logger.LogDebug($"EvaluateGroup: Condition {results.Count} - Street={condition.Street}, Actor={condition.Actor}, Action={condition.Action}, Result={conditionResult}");
-                    if (condition.Parameters != null && condition.Parameters.Count > 0)
-                    {
-                        foreach (var param in condition.Parameters)
-                        {
-                            _logger.LogDebug($"  Parameter: {param.Key}={param.Value}");
-                        }
-                    }
                 }
             }
 
             foreach (var subGroup in group.SubGroups)
             {
-                results.Add(EvaluateGroup(hand, subGroup));
+                results.Add(EvaluateGroup(hand, subGroup, ctx));
             }
 
             if (results.Count == 0) return true;
 
-            bool finalResult;
-            if (isAnd)
-            {
-                finalResult = results.All(x => x);
-            }
-            else // OR
-            {
-                finalResult = results.Any(x => x);
-            }
-
+            bool finalResult = isAnd ? results.All(x => x) : results.Any(x => x);
             return group.Not ? !finalResult : finalResult;
         }
 
-        private bool EvaluateCondition(ParsedHand hand, StatCondition condition)
+        private bool EvaluateCondition(ParsedHand hand, StatCondition condition, EvaluationContext ctx)
         {
-            // 0. Check Parameters (Hand-level filters)
             if (condition.Parameters != null && condition.Parameters.Count > 0)
             {
                 // Position
                 if (condition.Parameters.TryGetValue("Position", out var posObj))
                 {
                     var pos = posObj.ToString();
-                    if (!string.IsNullOrEmpty(pos) && !string.Equals(hand.HeroPosition, pos, StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrEmpty(pos) && !string.Equals(ctx.HeroPosition, pos, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (_logger != null) _logger.LogDebug($"EvaluateCondition: Position mismatch - Expected: {pos}, Got: {hand.HeroPosition}");
                         return false;
                     }
                 }
@@ -175,15 +156,8 @@ namespace PokerTrackerBackend.StatsBuilder
                 if (condition.Parameters.TryGetValue("PlayerCount", out var pcObj))
                 {
                     int pc = 0;
-                    bool parsed = false;
-                    if (pcObj is int i) { pc = i; parsed = true; }
-                    else if (pcObj is double d) { pc = (int)d; parsed = true; }
-                    else if (pcObj is long l) { pc = (int)l; parsed = true; }
-                    else if (int.TryParse(pcObj.ToString(), out pc)) { parsed = true; }
-
-                    if (parsed && hand.PlayerCount != pc)
+                    if (int.TryParse(pcObj.ToString(), out pc) && hand.PlayerCount != pc)
                     {
-                        if (_logger != null) _logger.LogDebug($"EvaluateCondition: PlayerCount mismatch - Expected: {pc}, Got: {hand.PlayerCount}");
                         return false;
                     }
                 }
@@ -194,89 +168,39 @@ namespace PokerTrackerBackend.StatsBuilder
                     double bb = ParseBigBlind(hand.Blinds);
                     if (bb > 0)
                     {
-                        double stackBB = hand.HeroStack / bb;
+                        double stackBB = ctx.HeroStack / bb;
                         
-                        if (condition.Parameters.TryGetValue("MinStackBB", out var minObj))
+                        if (condition.Parameters.TryGetValue("MinStackBB", out var minObj) && double.TryParse(minObj.ToString(), out double min) && stackBB < min)
                         {
-                            double min = 0;
-                            bool parsed = false;
-                            if (minObj is double d) { min = d; parsed = true; }
-                            else if (minObj is int i) { min = i; parsed = true; }
-                            else if (minObj is long l) { min = l; parsed = true; }
-                            else if (double.TryParse(minObj.ToString(), out min)) { parsed = true; }
-
-                            if (parsed && stackBB < min)
-                            {
-                                if (_logger != null) _logger.LogDebug($"EvaluateCondition: MinStackBB mismatch - Expected: >= {min}, Got: {stackBB:F2} (Stack={hand.HeroStack}, BB={bb})");
-                                return false;
-                            }
+                            return false;
                         }
                         
-                        if (condition.Parameters.TryGetValue("MaxStackBB", out var maxObj))
+                        if (condition.Parameters.TryGetValue("MaxStackBB", out var maxObj) && double.TryParse(maxObj.ToString(), out double max) && stackBB > max)
                         {
-                            double max = 0;
-                            bool parsed = false;
-                            if (maxObj is double d) { max = d; parsed = true; }
-                            else if (maxObj is int i) { max = i; parsed = true; }
-                            else if (maxObj is long l) { max = l; parsed = true; }
-                            else if (double.TryParse(maxObj.ToString(), out max)) { parsed = true; }
-
-                            if (parsed && stackBB > max)
-                            {
-                                if (_logger != null) _logger.LogDebug($"EvaluateCondition: MaxStackBB mismatch - Expected: <= {max}, Got: {stackBB:F2}");
-                                return false;
-                            }
+                            return false;
                         }
-                    }
-                    else
-                    {
-                        if (_logger != null) _logger.LogDebug($"EvaluateCondition: Cannot parse BB from blinds: {hand.Blinds}");
                     }
                 }
             }
 
-            // 1. Identify Actor
-            // IMPORTANT: hand.HeroName is set dynamically in EvaluateBatch 
-            // to represent the current player being analyzed.
-            string heroName = hand.HeroName;
-            
-            // 2. Get Action Text for Street
+            string heroName = ctx.HeroName;
             string streetName = condition.Street ?? "Preflop";
             string actionText = GetActionTextForStreet(hand, streetName);
-            if (string.IsNullOrEmpty(actionText))
-            {
-                if (_logger != null) _logger.LogDebug($"EvaluateCondition: No action text for street {streetName}");
-                return false;
-            }
+            if (string.IsNullOrEmpty(actionText)) return false;
 
-            // 3. Parse Actions
             var actions = ParseActions(actionText);
 
-            // 4. Check if Actor performed Action
             foreach (var act in actions)
             {
                 bool actorMatch = false;
                 
-                if (condition.Actor == "Hero")
-                {
-                    actorMatch = IsHero(act.PlayerName, heroName);
-                }
-                else if (condition.Actor == "Villain")
-                {
-                    actorMatch = !IsHero(act.PlayerName, heroName);
-                }
-                else if (condition.Actor == "Any")
-                {
-                    actorMatch = true;
-                }
+                if (condition.Actor == "Hero") actorMatch = IsHero(act.PlayerName, heroName);
+                else if (condition.Actor == "Villain") actorMatch = !IsHero(act.PlayerName, heroName);
+                else if (condition.Actor == "Any") actorMatch = true;
                 
                 if (!actorMatch) continue;
 
-                // Check Action Type
-                if (MatchesActionType(act, condition.Action))
-                {
-                    return true;
-                }
+                if (MatchesActionType(act, condition.Action)) return true;
             }
 
             return false;

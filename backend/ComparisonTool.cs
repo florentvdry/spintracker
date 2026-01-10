@@ -103,7 +103,8 @@ public static class ComparisonTool
                 
                 // Check if using pInfo makes a difference
                  var heroP = localHand.Players.FirstOrDefault(p => p.IsHero || p.Name == "jmenfouu");
-                 bool heroWentToSd = heroP?.WentToShowdown ?? localHand.HeroWentToShowdown;
+                 bool heroWentToSd = heroP?.WentToShowdown ?? false;
+                 double heroProfit = heroP?.NetProfit ?? 0;
                  
 
  
@@ -115,14 +116,14 @@ public static class ComparisonTool
                 }
                 
                 // Compare Profit
-                if (Math.Abs(localHand.HeroProfit - pt4Hand.ChipsWon) > 0.01)
+                if (Math.Abs(heroProfit - pt4Hand.ChipsWon) > 0.01)
                 {
-                     lock(lockObj) Console.WriteLine($"[Mismatch Profit] Hand {localHand.HandId}: Local={localHand.HeroProfit}, PT4={pt4Hand.ChipsWon}");
+                     lock(lockObj) Console.WriteLine($"[Mismatch Profit] Hand {localHand.HandId}: Local={heroProfit}, PT4={pt4Hand.ChipsWon}");
                      mismatch = true;
                 }
 
                 double pt4Ev = pt4Hand.NetExpectedChipsWon ?? pt4Hand.ChipsWon;
-                double localEv = analytics.NetWonAdjusted ?? localHand.HeroProfit;
+                double localEv = analytics.NetWonAdjusted ?? heroProfit;
                 
                 if (Math.Abs(localEv - pt4Ev) > 0.05)
                 {
@@ -144,17 +145,17 @@ public static class ComparisonTool
                         mismatchCount++;
                     }
                     
-                    totalLocalWon += localHand.HeroProfit;
+                    totalLocalWon += heroProfit;
                     totalPt4Won += pt4Hand.ChipsWon;
                     
                     if (heroWentToSd) 
                     {
                         localShowdownCount++;
-                        localShowdownWon += localHand.HeroProfit;
+                        localShowdownWon += heroProfit;
                     }
                     else
                     {
-                        localNoShowdownWon += localHand.HeroProfit;
+                        localNoShowdownWon += heroProfit;
                     }
 
                     if (pt4Hand.Showdown) pt4ShowdownCount++;
@@ -229,13 +230,15 @@ public static class ComparisonTool
                     int checkedCount = 0;
                     foreach (var lh in localHands)
                     {
-                        if (lh.HeroName != "jmenfouu") continue;
+                        var hero = lh.Players.FirstOrDefault(p => p.IsHero || p.Name == "jmenfouu");
+                        if (hero == null) continue;
+                        
                         checkedCount++;
                         if (dbHands.TryGetValue(lh.Id, out var dbWtsd))
                         {
-                            if (lh.HeroWentToShowdown != dbWtsd)
+                            if (hero.WentToShowdown != dbWtsd)
                             {
-                                Console.WriteLine($"Mismatch Hand {lh.Id}: Local={lh.HeroWentToShowdown}, DB={dbWtsd}");
+                                Console.WriteLine($"Mismatch Hand {lh.Id}: Local={hero.WentToShowdown}, DB={dbWtsd}");
                                 misCount++;
                                 if (misCount >= 5) break;
                             }

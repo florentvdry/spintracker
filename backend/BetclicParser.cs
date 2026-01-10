@@ -312,13 +312,6 @@ public class BetclicParser : IHandParser
                 if (isHero)
                 {
                     heroName = name;
-                    hand.HeroStack = stack;
-                    hand.HeroPosition = player["position"].ToString();
-                    hand.HeroName = heroName;
-                }
-                else
-                {
-                    hand.VillainStacks[name] = stack;
                 }
             }
         }
@@ -349,10 +342,6 @@ public class BetclicParser : IHandParser
             var playerName = dealtToMatch.Groups[1].Value.Trim();
             var cards = dealtToMatch.Groups[2].Value.Trim();
 
-            // This is definitely the Hero
-            hand.HeroName = playerName;
-            hand.HeroCards = cards;
-            
             var pInfo = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
             if (pInfo != null)
             {
@@ -372,15 +361,6 @@ public class BetclicParser : IHandParser
             showdownSectionEncountered = true;
 
             UpdatePlayerCards(hand, playerName, cards);
-            
-            if (IsHeroName(playerName, heroName))
-            {
-                hand.HeroCards = cards;
-            }
-            else if (IsValidCardString(cards))
-            {
-                UpdateVillainCards(hand, cards);
-            }
             return true;
         }
         else if (holeMatch.Success || summaryShowMatch.Success)
@@ -401,7 +381,6 @@ public class BetclicParser : IHandParser
 
             if (IsHeroName(playerName, heroName))
             {
-                hand.HeroCards = cards;
                 if (summaryShowMatch.Success)
                 {
                     hand.WentToShowdown = true;
@@ -417,7 +396,6 @@ public class BetclicParser : IHandParser
                     showdownSectionEncountered = true;
                     if (pInfo != null) pInfo.WentToShowdown = true;
                 }
-                UpdateVillainCards(hand, cards);
             }
             return true;
         }
@@ -474,11 +452,6 @@ public class BetclicParser : IHandParser
                         p.IsAllIn = true;
                     }
                 }
-
-                if (!string.IsNullOrEmpty(heroName) && lowerLine.Contains(heroName.ToLower()))
-                    hand.HeroAllIn = true;
-                else
-                    hand.VillainAllIn = true;
             }
         }
     }
@@ -640,47 +613,21 @@ public class BetclicParser : IHandParser
         {
             p.NetProfit = p.ChipsWon - p.Investment;
         }
-        
-        var heroInvestment = playerInvestments.GetValueOrDefault(heroName ?? "", 0.0);
-        hand.HeroInvestment = heroInvestment;
-        hand.HeroProfit = totalPotWon - heroInvestment;
-        hand.HeroNetProfit = hand.HeroProfit;
     }
 
     private void NormalizeHandData(ParsedHand hand, List<Dictionary<string, object>> players, string? heroName)
     {
         hand.PlayerCount = players.Count;
-        var villain = players.FirstOrDefault(p => p["name"].ToString() != heroName);
-        if (villain != null)
+        
+        // Normalize Heads-Up positions
+        if (hand.PlayerCount == 2)
         {
-            hand.VillainPosition = villain["position"].ToString();
-            hand.VillainStack = (int)villain["stack"];
-            
-            // Normalize Heads-Up positions
-            if (hand.PlayerCount == 2)
+            // Update all players positions for consistency in DB
+            foreach (var p in hand.Players)
             {
-                if (hand.HeroPosition == "BTN SB" || hand.HeroPosition == "BTN")
-                    hand.HeroPosition = "SB";
-                
-                var villainPos = villain["position"].ToString();
-                if (villainPos == "BTN SB" || villainPos == "BTN")
-                    villainPos = "SB";
-                
-                hand.VillainPosition = $"Villain ({villainPos})";
-
-                // Update all players positions for consistency in DB
-                foreach (var p in hand.Players)
-                {
-                    if (p.Position == "BTN SB" || p.Position == "BTN")
-                        p.Position = "SB";
-                }
+                if (p.Position == "BTN SB" || p.Position == "BTN")
+                    p.Position = "SB";
             }
-            else
-            {
-                hand.VillainPosition = $"Villain ({hand.VillainPosition})";
-            }
-            
-            hand.HeroPosition = $"Hero ({hand.HeroPosition})";
         }
     }
     
@@ -721,12 +668,6 @@ public class BetclicParser : IHandParser
                     p.WentToShowdown = true;
                 }
             }
-            
-            var heroP = hand.Players.FirstOrDefault(p => p.IsHero);
-            if (heroP != null)
-            {
-                hand.HeroWentToShowdown = heroP.WentToShowdown;
-            }
         }
     }
 
@@ -753,14 +694,6 @@ public class BetclicParser : IHandParser
             else if (!pInfo.Cards.Contains(cards))
                 pInfo.Cards += "|" + cards;
         }
-    }
-
-    private void UpdateVillainCards(ParsedHand hand, string cards)
-    {
-        if (string.IsNullOrEmpty(hand.VillainCards))
-            hand.VillainCards = cards;
-        else if (!hand.VillainCards.Contains(cards))
-            hand.VillainCards += "|" + cards;
     }
 
     private string ExtractPosition(string positionString)

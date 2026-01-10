@@ -18,8 +18,11 @@ public class AnalyticsCalculator
             HandId = hand.Id
         };
 
-        var heroProfit = hand.HeroProfit;
-        var isShowdown = hand.HeroWentToShowdown;
+        var hero = hand.Players.FirstOrDefault(p => p.IsHero);
+        if (hero == null) return analytics;
+
+        var heroProfit = hero.NetProfit;
+        var isShowdown = hero.WentToShowdown;
 
         // Classification: exactly match the 'expected_result' logic
         // Chips Won with Showdown should reflect ACTUAL total profit if showdown occurred
@@ -35,15 +38,13 @@ public class AnalyticsCalculator
             analytics.ChipsWonNoShowdown = heroProfit;
         }
 
-        var heroAllIn = hand.HeroAllIn;
-        var villainAllIn = hand.VillainAllIn;
-        var heroCards = hand.HeroCards;
-        var villainCards = hand.VillainCards;
+        var heroAllIn = hero.IsAllIn;
+        var villainAllIn = hand.Players.Any(p => !p.IsHero && p.IsAllIn);
+        var heroCards = hero.Cards;
+        var villainCards = string.Join("|", hand.Players.Where(p => !p.IsHero && !string.IsNullOrEmpty(p.Cards)).Select(p => p.Cards));
 
-        var isMultiway = !string.IsNullOrEmpty(villainCards) && villainCards.Contains('|');
-        var hasBothCards = !string.IsNullOrEmpty(heroCards) &&
-                          !string.IsNullOrEmpty(villainCards) &&
-                          !string.Equals(villainCards?.Trim(), "none", StringComparison.OrdinalIgnoreCase);
+        var isMultiway = hand.Players.Count(p => !string.IsNullOrEmpty(p.Cards)) > 2;
+        var hasBothCards = !string.IsNullOrEmpty(heroCards) && !string.IsNullOrEmpty(villainCards);
         var anyAllIn = heroAllIn || villainAllIn;
 
         var isRiverAllIn = IsRiverAllIn(hand);
@@ -178,8 +179,11 @@ public class AnalyticsCalculator
     {
         try
         {
-            var heroCards = hand.HeroCards;
-            var villainCards = hand.VillainCards;
+            var hero = hand.Players.FirstOrDefault(p => p.IsHero);
+            if (hero == null) return null;
+
+            var heroCards = hero.Cards;
+            var villainCards = string.Join("|", hand.Players.Where(p => !p.IsHero && !string.IsNullOrEmpty(p.Cards)).Select(p => p.Cards));
             var board = GetBoardAtAllIn(hand);
 
             if (string.IsNullOrEmpty(heroCards) || string.IsNullOrEmpty(villainCards))
@@ -188,9 +192,9 @@ public class AnalyticsCalculator
             var equity = _equityCalc.Calculate(heroCards, villainCards, board, 10000);
             var totalPot = hand.TotalPot;
 
-            var heroInvestment = hand.HeroInvestment > 0 ? hand.HeroInvestment : (ParseHeroInvestment(hand) ?? (totalPot / 2.0));
+            var heroInvestment = hero.Investment > 0 ? hero.Investment : (ParseHeroInvestment(hand) ?? (totalPot / 2.0));
             var perPlayer = ParseInvestmentsPerPlayer(hand);
-            var heroName = hand.HeroName ?? "";
+            var heroName = hero.Name;
             var villainInvestment = perPlayer.Where(kv => !kv.Key.Equals(heroName, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Value).DefaultIfEmpty(0.0).Max();
             var ev = (equity.HeroEquity / 100.0) * totalPot - heroInvestment;
 
@@ -207,7 +211,10 @@ public class AnalyticsCalculator
     {
         try
         {
-            var heroCards = hand.HeroCards;
+            var hero = hand.Players.FirstOrDefault(p => p.IsHero);
+            if (hero == null) return null;
+
+            var heroCards = hero.Cards;
             if (string.IsNullOrEmpty(heroCards)) return null;
 
             // Filter players who have cards (Hero + Villains with known cards)
@@ -215,12 +222,8 @@ public class AnalyticsCalculator
             var activePlayers = hand.Players.Where(p => !string.IsNullOrEmpty(p.Cards) && !p.Folded).ToList();
             
             // If we don't have players info (old parser?), fallback to legacy
-            if (activePlayers.Count == 0 && !string.IsNullOrEmpty(hand.VillainCards))
+            if (activePlayers.Count == 0)
             {
-                // Fallback to legacy simplistic calculation
-                // return CalculateMultiwayEvLegacy(hand); 
-                // But we want to fix it, so let's try to reconstruct players from VillainCards string if Players is empty?
-                // For now, assume Parser is updated.
                 return null;
             }
 
@@ -403,8 +406,9 @@ public class AnalyticsCalculator
     {
         try
         {
-            var heroName = hand.HeroName;
-            if (string.IsNullOrEmpty(heroName)) return null;
+            var hero = hand.Players.FirstOrDefault(p => p.IsHero);
+            if (hero == null) return null;
+            var heroName = hero.Name;
 
             var actions = new[] { hand.PreflopAction, hand.FlopAction, hand.TurnAction, hand.RiverAction };
             double totalInvestment = 0;
@@ -556,8 +560,9 @@ public class AnalyticsCalculator
             }
 
             // Hero name required to compute effective investment
-            var heroName = hand.HeroName;
-            if (string.IsNullOrEmpty(heroName)) return null;
+            var hero = hand.Players.FirstOrDefault(p => p.IsHero);
+            if (hero == null) return null;
+            var heroName = hero.Name;
 
             var heroInv = totalPerPlayer.GetValueOrDefault(heroName, 0.0);
 

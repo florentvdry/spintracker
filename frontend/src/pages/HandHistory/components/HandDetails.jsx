@@ -9,6 +9,11 @@ export default function HandDetails({ hand, onClose }) {
   const profit = hand.hero_profit || 0;
   const isPositive = profit >= 0;
 
+  // Derive villain info from players list
+  const villain = hand.players?.find(p => !p.IsHero);
+  const villainPosition = hand.villain_position || villain?.Position || '—';
+  const villainCards = hand.villain_cards || villain?.Cards || '—';
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -44,8 +49,8 @@ export default function HandDetails({ hand, onClose }) {
       <div className="space-y-2">
         <InfoRow label={t('common.position')} value={hand.hero_position} />
         <InfoRow label="Stack" value={`${hand.hero_stack || 0} ${t('common.chips')}`} />
-        <InfoRow label={t('common.villain', 'Villain')} value={hand.villain_position} />
-        <InfoRow label={t('common.villain_cards', 'Villain Cards')} value={formatCards(hand.villain_cards) || '—'} />
+        <InfoRow label={t('common.villain', 'Villain')} value={villainPosition} />
+        <InfoRow label={t('common.villain_cards', 'Villain Cards')} value={formatCards(villainCards) || '—'} />
         <InfoRow label={t('hand_history.table.pot')} value={`${hand.total_pot || 0} ${t('common.chips')}`} />
         <InfoRow label="Multiplier" value={`${hand.multiplier || 1}x`} />
       </div>
