@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using SpinTrackerBackend;
 using SpinTrackerBackend.StatsBuilder;
+using FluentMigrator.Runner;
+using SpinTrackerBackend.Migrations;
 
 // Initialize SQLite (use Batteries_V2 to match SQLitePCLRaw.batteries_v2)
 SQLitePCL.Batteries_V2.Init();
@@ -17,6 +19,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Extract db-path if provided
 string? dbPath = args.FirstOrDefault(a => a.StartsWith("--db-path="))?.Replace("--db-path=", "");
+
+// Ensure dbPath defaults to the same path used by Database when not provided
+if (string.IsNullOrEmpty(dbPath))
+{
+    var backendDir = Directory.GetCurrentDirectory();
+    var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
+    dbPath = Path.Combine(projectRoot, "poker_tracker.db");
+}
+
+var _connectionStringForMigrations = $"Data Source={dbPath}";
+
+// Register FluentMigrator to run SQLite migrations
+builder.Services.AddFluentMigratorCore()
+    .ConfigureRunner(rb => rb
+        .AddSQLite()
+        .WithGlobalConnectionString(_connectionStringForMigrations)
+        .ScanIn(typeof(InitialCreate20260111).Assembly).For.Migrations())
+    .AddLogging(lb => lb.AddFluentMigratorConsole());
 
 // Configure services
 builder.Services.AddCors(options =>
@@ -38,6 +58,18 @@ builder.Services.AddSingleton<StatsBuilderEngine>();
 builder.Services.AddSingleton<ImporterService>();
 
 var app = builder.Build();
+
+// Run migrations before creating the Database singleton
+using (var scope = app.Services.CreateScope())
+{
+    var migrationRunner = scope.ServiceProvider.GetService<IMigrationRunner>();
+    if (migrationRunner != null)
+    {
+        app.Logger.LogInformation("Running database migrations...");
+        migrationRunner.MigrateUp();
+        app.Logger.LogInformation("Database migrations complete.");
+    }
+}
 
 // Test database initialization
 try
