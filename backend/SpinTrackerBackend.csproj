@@ -22,4 +22,13 @@
     <PackageReference Include="FluentMigrator.Runner.Sqlite" Version="3.3.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\custom_stats_import.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Minimalist_SpinAndGo_HUD.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
