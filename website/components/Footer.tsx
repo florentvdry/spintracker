@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/navigation";
-import { BarChart3, Github, Twitter } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export function Footer() {
@@ -18,7 +18,7 @@ export function Footer() {
               {t('description')}
             </p>
           </div>
-          
+
           <div>
             <h3 className="font-semibold text-white mb-4">{t('product')}</h3>
             <ul className="space-y-2">
@@ -51,12 +51,15 @@ export function Footer() {
             © {new Date().getFullYear()} SpinTracker. {t('rights')}
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="#" className="text-gray-400 hover:text-white">
-              <Twitter className="h-5 w-5" />
-            </Link>
-            <Link href="#" className="text-gray-400 hover:text-white">
-              <Github className="h-5 w-5" />
-            </Link>
+            <a
+              href="https://discord.gg/x9ZSQA2mN2"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Discord"
+              className="text-gray-400 hover:text-white"
+            >
+              <img src="/discord.svg" alt="Discord" className="h-5 w-5" />
+            </a>
           </div>
         </div>
       </div>

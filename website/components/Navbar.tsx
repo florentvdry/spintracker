@@ -4,7 +4,9 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "./ui/Button";
 import { useState, useEffect } from "react";
-import { Menu, X, BarChart3 } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import logoImg from "../assets/img/logo.png";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
@@ -32,7 +34,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <BarChart3 className="h-8 w-8 text-blue-500" />
+            <Image src={logoImg} alt="SpinTracker" width={60} height={60} className="object-contain" />
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
               SpinTracker
             </span>

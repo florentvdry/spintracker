@@ -5,6 +5,8 @@ import { Button } from "./ui/Button";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { ArrowRight, Download } from "lucide-react";
+import Image from "next/image";
+import dashboardImg from "../assets/img/dashboard.jpg";
 
 export function Hero() {
   const t = useTranslations('Hero');
@@ -52,12 +54,8 @@ export function Hero() {
         >
           <div className="relative rounded-xl border border-white/10 bg-gray-900/50 backdrop-blur-sm p-2 md:p-4 shadow-2xl shadow-blue-500/10 max-w-5xl mx-auto">
              <div className="aspect-[16/9] rounded-lg bg-gray-800 overflow-hidden relative group">
-                {/* Placeholder for screenshot */}
-                <div className="absolute inset-0 flex items-center justify-center text-gray-600">
-                    <span className="text-lg">Dashboard Screenshot</span>
-                </div>
-                 {/*  Use a real image if available later */}
-                 {/* <Image src="/dashboard.png" alt="Dashboard" fill className="object-cover" /> */}
+              <Image src={dashboardImg} alt="Dashboard" fill className="w-full" />
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 pointer-events-none" />
              </div>
           </div>
         </motion.div>
