@@ -48,11 +48,15 @@ namespace SpinTrackerBackend.StatsBuilder
                     if (EvaluateGroup(hand, stat.Numerator, ctx))
                     {
                         result.Successes++;
+                        var heroPlayer = hand.Players.FirstOrDefault(p => p.IsHero);
                         result.MatchingHands.Add(new HandSummary 
                         { 
                             Id = hand.Id ?? "", 
                             HandId = hand.HandId ?? "", 
-                            DateTime = hand.DateTime ?? "" 
+                            DateTime = hand.DateTime ?? "",
+                            ChipsWon = heroPlayer != null ? heroPlayer.ChipsWon : (double?)null,
+                            EvChips = heroPlayer != null ? heroPlayer.EvChips : null,
+                            HeroName = heroPlayer != null ? heroPlayer.Name : ""
                         });
                     }
                 }

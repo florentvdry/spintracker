@@ -181,6 +181,7 @@
     "no_data": "No Data",
     "eval_guide": "Build your stat and click Test",
     "matching_hands": "Matching Hands",
+    "truncated_results": "Showing first 200 of {{count}} results (truncated)",
     "nested_group": "Nested Group",
     "pos": "Pos",
     "players": "Players",
@@ -241,6 +242,9 @@
         "active": "Active",
         "inactive": "Inactive"
       }
+    },
+    "stats": {
+      "title": "Statistics"
     },
     "about": {
       "title": "About",

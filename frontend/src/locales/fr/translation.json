@@ -181,6 +181,7 @@
     "no_data": "Aucune donnée",
     "eval_guide": "Créez votre stat et cliquez sur Tester",
     "matching_hands": "Mains correspondantes",
+    "truncated_results": "Affichage des 200 premiers résultats sur {{count}} (tronqué)",
     "nested_group": "Groupe imbriqué",
     "pos": "Pos",
     "players": "Joueurs",
@@ -241,6 +242,9 @@
         "active": "Actif",
         "inactive": "Inactif"
       }
+    },
+    "stats": {
+      "title": "Gestion des Statistiques"
     },
     "about": {
       "title": "À propos",

@@ -2196,26 +2196,40 @@ public class Database
         var selectFields = "*";
         var joinClause = "";
         
+
         if (!string.IsNullOrEmpty(heroName))
         {
+            // When a specific hero is requested, join to player_hands to get hero-specific columns
             joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
             selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
             cmd.Parameters.AddWithValue("@heroName", heroName);
+            cmd.CommandText = $"SELECT {selectFields} FROM hands {joinClause} ORDER BY date_time";
         }
         else
         {
-            // Field Analysis: Get ALL players for each hand, treating each as a potential hero
-            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id";
-            selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
+            // Field Analysis: do not JOIN player_hands here because that would return one row per player
+            // We'll load players per-hand after fetching unique hands to avoid duplicates.
+            cmd.CommandText = "SELECT hands.* FROM hands ORDER BY date_time";
         }
-
-        cmd.CommandText = $"SELECT {selectFields} FROM hands {joinClause} ORDER BY date_time";
 
         var hands = new List<ParsedHand>();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
             hands.Add(ReadParsedHandFromReader(reader));
+        }
+
+        // Load player info for each hand so analysis engines have access to players and hero flags
+        foreach (var hand in hands)
+        {
+            try
+            {
+                await LoadPlayersForHand(hand);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Failed loading players for hand {hand.Id}: {ex.Message}");
+            }
         }
 
         return hands;
@@ -2585,7 +2599,7 @@ public class Database
         
         using var cmd = connection.CreateCommand();
         cmd.CommandText = @"
-            SELECT player_name, position, stack, cards, investment, chips_won, net_profit, is_all_in, went_to_showdown
+            SELECT player_name, position, stack, cards, investment, chips_won, net_profit, is_all_in, went_to_showdown, ev_chips
             FROM player_hands
             WHERE hand_id = @handId";
         cmd.Parameters.AddWithValue("@handId", hand.Id);
@@ -2606,7 +2620,8 @@ public class Database
                 NetProfit = reader.IsDBNull(6) ? 0 : reader.GetDouble(6),
                 IsHero = !string.IsNullOrEmpty(cards), // Heuristic: if they have cards, we treat as hero (might need refinement for showdown)
                 IsAllIn = reader.IsDBNull(7) ? false : reader.GetInt32(7) == 1,
-                WentToShowdown = reader.IsDBNull(8) ? false : reader.GetInt32(8) == 1
+                WentToShowdown = reader.IsDBNull(8) ? false : reader.GetInt32(8) == 1,
+                EvChips = reader.IsDBNull(9) ? null : (double?)reader.GetDouble(9)
             });
         }
         

@@ -59,6 +59,7 @@ public class PlayerInfo
     public double Investment { get; set; }
     public double ChipsWon { get; set; }
     public double NetProfit { get; set; }
+    public double? EvChips { get; set; }
     public string Cards { get; set; } = "";
     public bool IsHero { get; set; }
     public bool Folded { get; set; }

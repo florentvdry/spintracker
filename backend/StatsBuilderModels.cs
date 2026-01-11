@@ -44,5 +44,8 @@ namespace SpinTrackerBackend.StatsBuilder
         public string Id { get; set; } = "";
         public string HandId { get; set; } = "";
         public string DateTime { get; set; } = "";
+        public double? ChipsWon { get; set; }
+        public double? EvChips { get; set; }
+        public string HeroName { get; set; } = "";
     }
 }

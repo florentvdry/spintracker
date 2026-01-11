@@ -69,6 +69,32 @@ const StatsBuilder = () => {
     }
   };
 
+  const addGroup = (street) => {
+    const newGroup = {
+      operator: 'AND',
+      streetContext: street,
+      conditions: [],
+      subGroups: []
+    };
+
+    const targetKey = activeMode;
+    const targetGroup = stat[targetKey];
+
+    if (selectedTarget.type === 'root') {
+      const updatedRoot = {
+        ...targetGroup,
+        subGroups: [...(targetGroup.subGroups || targetGroup.SubGroups || []), { ...newGroup, streetContext: selectedTarget.street }]
+      };
+      setStat({ ...stat, [targetKey]: updatedRoot });
+    } else {
+      const updatedRoot = updateGroup(targetGroup, selectedTarget.path, (group) => ({
+        ...group,
+        subGroups: [...(group.subGroups || group.SubGroups || []), newGroup]
+      }));
+      setStat({ ...stat, [targetKey]: updatedRoot });
+    }
+  };
+
   const handleSelectStat = async (id) => {
     try {
       const res = await fetch(`http://localhost:5050/stats/${id}`);
@@ -211,32 +237,6 @@ const StatsBuilder = () => {
     }
   };
 
-  const addGroup = (street) => {
-    const newGroup = {
-      operator: 'AND',
-      streetContext: street,
-      conditions: [],
-      subGroups: []
-    };
-
-    const targetKey = activeMode;
-    const targetGroup = stat[targetKey];
-
-    if (selectedTarget.type === 'root') {
-      const updatedRoot = {
-        ...targetGroup,
-        subGroups: [...(targetGroup.subGroups || targetGroup.SubGroups || []), { ...newGroup, streetContext: selectedTarget.street }]
-      };
-      setStat({ ...stat, [targetKey]: updatedRoot });
-    } else {
-      const updatedRoot = updateGroup(targetGroup, selectedTarget.path, (group) => ({
-        ...group,
-        subGroups: [...(group.subGroups || group.SubGroups || []), newGroup]
-      }));
-      setStat({ ...stat, [targetKey]: updatedRoot });
-    }
-  };
-
   const removeConditionAt = (path, index) => {
     const targetKey = activeMode;
     const targetGroup = stat[targetKey];
@@ -328,6 +328,8 @@ const StatsBuilder = () => {
   };
 
   const handleTest = async () => {
+    // show loading state immediately and clear previous result to avoid heavy re-render
+    setResult(null);
     setLoading(true);
     try {
       let response;
@@ -750,25 +752,41 @@ const StatsBuilder = () => {
               <div className="space-y-3">
                 <div className="flex justify-between items-center px-1">
                   <h4 className="font-bold text-gray-500 text-[10px] uppercase tracking-widest">{t('stats_builder.matching_hands')}</h4>
-                  <span className="badge-info">{result.matchingHands?.length || 0}</span>
+                      <span className="badge-info">{result.matchingHands?.length || 0}</span>
                 </div>
-                <div className="bg-dark-900/50 rounded-lg border border-dark-100/30 overflow-hidden">
+                      <div className="bg-dark-900/50 rounded-lg border border-dark-100/30 overflow-hidden">
                   <div className="overflow-y-auto max-h-[350px] divide-y divide-dark-100/10 custom-scrollbar">
-                      {result.matchingHands?.map(hand => (
-                      <div 
-                        key={hand.id} 
-                        onClick={() => loadHand(hand.id)}
-                        className="px-3 py-2 text-[10px] text-gray-500 font-mono hover:bg-dark-400 hover:text-primary-400 cursor-pointer transition-colors flex items-center justify-between group"
-                      >
-                          <div className="flex items-center gap-2 truncate">
-                            <Activity size={10} className="text-primary-500 opacity-50 group-hover:opacity-100" />
-                            <span className="font-bold text-gray-300 group-hover:text-primary-400">#{hand.handId}</span>
-                          </div>
-                          <span className="text-[9px] opacity-40 group-hover:opacity-70">{hand.dateTime}</span>
-                      </div>
-                      ))}
+                      {
+                        // Limit rendering to first 200 items to avoid UI freeze on very large result sets
+                        (result.matchingHands || []).slice(0, 200).map(hand => (
+                        <div 
+                          key={`${hand.handId}_${hand.heroName || hand.id}`}
+                          onClick={() => loadHand(hand.id)}
+                          className="px-3 py-2 text-[10px] text-gray-500 font-mono hover:bg-dark-400 hover:text-primary-400 cursor-pointer transition-colors flex items-center justify-between group"
+                        >
+                            <div className="flex flex-col truncate">
+                              <div className="flex items-center gap-2">
+                                <Activity size={10} className="text-primary-500 opacity-50 group-hover:opacity-100" />
+                                <span className="font-bold text-gray-300 group-hover:text-primary-400">{hand.dateTime}</span>
+                              </div>
+                              <div className="text-[10px] opacity-60 mt-0.5">
+                                {hand.chipsWon != null && (
+                                  <span className="mr-2">{Number(hand.chipsWon).toFixed(2)} chips</span>
+                                )}
+                                {hand.evChips != null && (
+                                  <span className="">{Number(hand.evChips).toFixed(2)} CEV</span>
+                                )}
+                              </div>
+                            </div>
+                        </div>
+                        ))
+                      }
+
                       {(!result.matchingHands || result.matchingHands.length === 0) && (
                         <div className="p-8 text-center text-gray-500 text-xs italic">{t('common.no_data')}</div>
+                      )}
+                      {result.matchingHands && result.matchingHands.length > 200 && (
+                        <div className="p-2 text-[11px] text-center text-gray-400">{t('stats_builder.truncated_results', { count: result.matchingHands.length })}</div>
                       )}
                   </div>
                 </div>
@@ -776,11 +794,11 @@ const StatsBuilder = () => {
             </div>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-gray-600 p-8 text-center h-full">
-              <div className="w-12 h-12 bg-dark-400 rounded-full flex items-center justify-center mb-4 opacity-50 border border-dark-100 animate-pulse">
+                <div className="w-12 h-12 bg-dark-400 rounded-full flex items-center justify-center mb-4 opacity-50 border border-dark-100 animate-pulse">
                   <Activity size={24} />
-              </div>
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{t('stats_builder.no_data')}</p>
-              <p className="text-[10px] mt-2 opacity-60">{t('stats_builder.eval_guide')}</p>
+                </div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{loading ? t('common.loading') : t('stats_builder.no_data')}</p>
+                <p className="text-[10px] mt-2 opacity-60">{t('stats_builder.eval_guide')}</p>
             </div>
           )}
         </Card>
