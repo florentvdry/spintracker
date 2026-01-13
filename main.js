@@ -42,10 +42,40 @@ const BACKEND_PORT = 5050;
 
 function getDbPath() {
   const userDataPath = app.getPath('userData');
+  const dbPath = path.join(userDataPath, 'poker_tracker.db');
+
+  // Migration logic: if new DB doesn't exist, try to copy from old location
+  if (!fs.existsSync(dbPath)) {
+    const oldFolderName = 'poker-tracker-pro';
+    const oldUserDataPath = path.join(path.dirname(userDataPath), oldFolderName);
+    const oldDbPath = path.join(oldUserDataPath, 'poker_tracker.db');
+
+    if (fs.existsSync(oldDbPath)) {
+      console.log(`Attempting to migrate database from ${oldDbPath} to ${dbPath}`);
+      try {
+        if (!fs.existsSync(userDataPath)) {
+          fs.mkdirSync(userDataPath, { recursive: true });
+        }
+        fs.copyFileSync(oldDbPath, dbPath);
+        console.log('Database migration successful.');
+        
+        // Also try to migrate the config.json if it exists (for electron-store)
+        const oldConfigPath = path.join(oldUserDataPath, 'config.json');
+        const newConfigPath = path.join(userDataPath, 'config.json');
+        if (fs.existsSync(oldConfigPath)) {
+          fs.copyFileSync(oldConfigPath, newConfigPath);
+          console.log('Config migration successful.');
+        }
+      } catch (err) {
+        console.error('Failed to migrate database or config:', err);
+      }
+    }
+  }
+
   if (!fs.existsSync(userDataPath)) {
     fs.mkdirSync(userDataPath, { recursive: true });
   }
-  return path.join(userDataPath, 'poker_tracker.db');
+  return dbPath;
 }
 
 function startBackend() {
