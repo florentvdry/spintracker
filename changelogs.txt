@@ -1,0 +1,2 @@
+- Ajout: Possibilité de directement importé les .zip en plus des .txt
+- 

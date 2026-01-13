@@ -320,7 +320,7 @@ ipcMain.handle('import-hand-history', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openFile', 'multiSelections'],
     filters: [
-      { name: 'Hand History Files', extensions: ['txt', 'xml'] },
+      { name: 'Hand History Files', extensions: ['txt', 'xml', 'zip'] },
       { name: 'All Files', extensions: ['*'] }
     ]
   });
@@ -329,15 +329,62 @@ ipcMain.handle('import-hand-history', async () => {
     return { success: false, message: 'Import cancelled' };
   }
 
+  // Temporary directory for zip extraction
+  const tempDir = path.join(app.getPath('temp'), 'SpinTracker_Import_' + Date.now());
+  const filesToProcess = [];
+
   try {
+    // 1. Prepare file list (expand zips)
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    const getAllFiles = (dirPath, arrayOfFiles) => {
+      const files = fs.readdirSync(dirPath);
+      arrayOfFiles = arrayOfFiles || [];
+      files.forEach((file) => {
+        const fullPath = path.join(dirPath, file);
+        if (fs.statSync(fullPath).isDirectory()) {
+          arrayOfFiles = getAllFiles(fullPath, arrayOfFiles);
+        } else {
+          // Only accept .txt files from zips (avoid garbage)
+          if (file.toLowerCase().endsWith('.txt') || file.toLowerCase().endsWith('.xml')) {
+            arrayOfFiles.push(fullPath);
+          }
+        }
+      });
+      return arrayOfFiles;
+    };
+
+    for (const filePath of result.filePaths) {
+      if (filePath.toLowerCase().endsWith('.zip')) {
+        try {
+          const zip = new AdmZip(filePath);
+          const extractPath = path.join(tempDir, path.basename(filePath, '.zip'));
+          zip.extractAllTo(extractPath, true);
+          
+          const extractedFiles = getAllFiles(extractPath);
+          filesToProcess.push(...extractedFiles);
+        } catch (err) {
+          console.error(`Failed to extract ${filePath}:`, err);
+        }
+      } else {
+        filesToProcess.push(filePath);
+      }
+    }
+
+    if (filesToProcess.length === 0) {
+      return { success: false, message: 'No valid hand history files found to import.' };
+    }
+
     const fetch = (await import('node-fetch')).default;
     
     // First, count all hands in all files to get the total upfront
     let totalHandsExpected = 0;
-    let totalFiles = result.filePaths.length;
+    let totalFiles = filesToProcess.length;
     let filesCounted = 0;
     
-    for (const filePath of result.filePaths) {
+    for (const filePath of filesToProcess) {
       try {
         mainWindow.webContents.send('import-progress', {
           filesProcessed: filesCounted,
@@ -372,7 +419,7 @@ ipcMain.handle('import-hand-history', async () => {
     let filesProcessed = 0;
     let errors = [];
 
-    for (const filePath of result.filePaths) {
+    for (const filePath of filesToProcess) {
       try {
         const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/import/file`, {
           method: 'POST',
@@ -462,6 +509,15 @@ ipcMain.handle('import-hand-history', async () => {
     };
   } catch (error) {
     return { success: false, message: error.message };
+  } finally {
+    // Cleanup temp directory
+    try {
+      if (fs.existsSync(tempDir)) {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+      }
+    } catch (e) {
+      console.error('Failed to cleanup temp dir:', e);
+    }
   }
 });
 
