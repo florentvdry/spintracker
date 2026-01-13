@@ -249,6 +249,14 @@
     "about": {
       "title": "About",
       "description": "Tracking and analysis application for Spin & Go poker - Developed by Nelfrot"
+    },
+    "maintenance": {
+      "title": "Maintenance & Support",
+      "logs": {
+        "title": "App Logs",
+        "desc": "Open the folder containing log files for technical support",
+        "button": "Open folder"
+      }
     }
   }
 }

@@ -1,17 +1,39 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 const path = require('path');
-
-// Configure Updater
-autoUpdater.logger = log;
-autoUpdater.logger.transports.file.level = 'info';
-autoUpdater.autoDownload = false; // Ask user before downloading
 const fs = require('fs');
 const { spawn } = require('child_process');
 const AdmZip = require('adm-zip');
 
+// ============ Logging Configuration ============
+// Configure electron-log
+log.initialize();
+log.transports.file.level = 'info';
+log.transports.console.level = 'debug';
+
+// Optional: customize log file name/path
+// log.transports.file.fileName = 'main.log';
+
+// Catch unhandled errors and promise rejections
+log.errorHandler.startCatching();
+
+// Redirect console to electron-log
+Object.assign(console, log.functions);
+
+console.log('--- App Starting ---');
+console.log(`Version: ${app.getVersion()}`);
+console.log(`Platform: ${process.platform}`);
+console.log(`Arch: ${process.arch}`);
+console.log(`UserData: ${app.getPath('userData')}`);
+console.log(`LogPath: ${log.transports.file.getFile().path}`);
+
+// Configure Updater
+autoUpdater.logger = log;
+autoUpdater.autoDownload = false; // Ask user before downloading
+
 let mainWindow;
+let splashWindow;
 let backendProcess = null;
 const BACKEND_PORT = 5050;
 
@@ -574,6 +596,21 @@ ipcMain.handle('python-recalculate-analytics', async () => {
     });
   } catch (error) {
     mainWindow.webContents.send('ev-recalc-progress', { progress: 100, message: error.message, error: true });
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('open-logs-folder', async () => {
+  try {
+    const logPath = log.transports.file.getFile().path;
+    const logDir = path.dirname(logPath);
+    if (fs.existsSync(logDir)) {
+      await shell.openPath(logDir);
+      return { success: true };
+    }
+    return { success: false, error: 'Logs directory does not exist' };
+  } catch (error) {
+    console.error('Failed to open logs folder:', error);
     return { success: false, error: error.message };
   }
 });

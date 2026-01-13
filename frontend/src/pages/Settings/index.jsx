@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Trash2, RefreshCw, Database, Calculator, Download, Upload, Globe, FileCode } from 'lucide-react';
+import { Trash2, RefreshCw, Database, Calculator, Download, Upload, Globe, FileCode, FolderOpen } from 'lucide-react';
 import { Card } from '@components/ui';
 import { ipcService } from '@services/ipcService';
 import { pythonService } from '@services/pythonService';
@@ -167,6 +167,24 @@ export default function Settings() {
     e.target.value = null; // Reset input
   };
 
+  const handleOpenLogs = async () => {
+    try {
+      const result = await ipcService.openLogsFolder();
+      if (!result.success) {
+        addNotification({
+          type: 'error',
+          title: 'Erreur',
+          message: result.error || 'Impossible d\'ouvrir le dossier des logs'
+        });
+      }
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        message: error.message
+      });
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-4xl">
       {/* Header */}
@@ -321,6 +339,26 @@ export default function Settings() {
               <span className={`badge ${serverStatus === 'active' ? 'badge-success' : 'badge-danger'}`}>
                 {serverStatus === 'active' ? t('settings.server.status.active') : t('settings.server.status.inactive')}
               </span>
+            }
+          />
+        </div>
+      </Card>
+
+      {/* Maintenance & Support */}
+      <Card title={t('settings.maintenance.title')}>
+        <div className="space-y-4">
+          <SettingRow
+            icon={FolderOpen}
+            title={t('settings.maintenance.logs.title')}
+            description={t('settings.maintenance.logs.desc')}
+            action={
+              <button
+                onClick={handleOpenLogs}
+                className="btn-secondary flex items-center gap-2"
+              >
+                <FolderOpen className="w-4 h-4" />
+                {t('settings.maintenance.logs.button')}
+              </button>
             }
           />
         </div>

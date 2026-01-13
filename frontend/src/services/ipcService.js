@@ -162,6 +162,10 @@ class IPCService {
     return this.invoke('export-data', format);
   }
 
+  async openLogsFolder() {
+    return this.invoke('open-logs-folder');
+  }
+
   async analyzeRange({ position, stack, action }) {
     return this.invoke('python-analyze-range', { position, stack, action });
   }
