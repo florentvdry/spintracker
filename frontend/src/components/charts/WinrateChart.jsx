@@ -49,7 +49,8 @@ export default function WinrateChart({ className }) {
     setIsLoading(true);
     try {
       const { dateFrom, dateTo } = _getDateRangeParams();
-      const result = await ipcService.getWinrateChartData({ dateFrom, dateTo, heroName });
+      const buyIn = config.buyIn === 'all' ? null : Number(config.buyIn);
+      const result = await ipcService.getWinrateChartData({ dateFrom, dateTo, heroName, buyIn });
       if (result && result.success && result.data) {
         const raw = result.data;
         let chartData = [];
@@ -88,7 +89,7 @@ export default function WinrateChart({ className }) {
 
   useEffect(() => {
     loadChartData();
-  }, [config.dateRange, heroName, lastUpdate]);
+  }, [config.dateRange, config.buyIn, heroName, lastUpdate]);
 
   // Suppression de l'effet takeGlobalCursor car il est capricieux et dépend de toolbox
   // On va utiliser brush pour un contrôle total

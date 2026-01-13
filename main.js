@@ -35,6 +35,7 @@ autoUpdater.autoDownload = false; // Ask user before downloading
 let mainWindow;
 let splashWindow;
 let backendProcess = null;
+let isBackendStarting = false;
 const BACKEND_PORT = 5050;
 
 // ============ C# Backend Management ============
@@ -48,6 +49,9 @@ function getDbPath() {
 }
 
 function startBackend() {
+  if (backendProcess || isBackendStarting) return;
+  isBackendStarting = true;
+  
   const isDev = !app.isPackaged || process.argv.includes('--dev');
   
   if (isDev) {
@@ -68,6 +72,7 @@ function startBackend() {
           startBackendProcess();
         } else {
           console.error('[Backend] Build failed!');
+          isBackendStarting = false;
         }
       });
     } else {
@@ -88,7 +93,7 @@ function startBackendProcess() {
 
   if (isDev) {
     command = 'dotnet';
-    args = ['run', BACKEND_PORT.toString(), `--db-path=${dbPath}`];
+    args = ['run', '--', BACKEND_PORT.toString(), `--db-path=${dbPath}`];
     cwd = path.join(__dirname, 'backend');
   } else {
     // In production, the backend is in the resources folder
@@ -110,18 +115,34 @@ function startBackendProcess() {
   });
 
   backendProcess.stdout.on('data', (data) => {
-    const message = data.toString().trim();
-    if (message.includes('ERROR') || message.includes('Starting') || message.includes('info:') || message.includes('warn:') || message.includes('fail:') || message.includes('API Debug')) {
+    const lines = data.toString().split('\n');
+    lines.forEach(line => {
+      const message = line.trim();
+      if (!message) return;
+      
+      // Filter out noisy routine HTTP request logs from ASP.NET Core
+      if (message.includes('info: Microsoft.AspNetCore.Hosting.Diagnostics') || 
+          message.includes('info: Microsoft.AspNetCore.Routing.EndpointMiddleware')) {
+        return;
+      }
+      
       console.log(`[Backend] ${message}`);
-    }
+    });
   });
 
   backendProcess.stderr.on('data', (data) => {
-    const message = data.toString().trim();
-    // Filter out routine request logging
-    if (!message.includes('127.0.0.1') && !message.includes('HTTP/1.1')) {
-      console.error(`[Backend] ${message}`);
-    }
+    const lines = data.toString().split('\n');
+    lines.forEach(line => {
+      const message = line.trim();
+      if (!message) return;
+      
+      // Still filter out standard dev server noises but keep actual errors
+      if (message.includes('127.0.0.1') && message.includes('HTTP/1.1')) {
+        return;
+      }
+      
+      console.error(`[Backend-Err] ${message}`);
+    });
   });
 
   backendProcess.on('close', (code) => {
@@ -129,18 +150,32 @@ function startBackendProcess() {
       console.error(`Backend exited with code ${code}`);
     }
     backendProcess = null;
+    isBackendStarting = false;
   });
 
   backendProcess.on('error', (err) => {
     console.error('Failed to start backend:', err.message);
     backendProcess = null;
+    isBackendStarting = false;
   });
 }
 
 function stopBackend() {
   if (backendProcess) {
-    backendProcess.kill();
+    if (process.platform === 'win32') {
+      // On Windows, child_process.kill() doesn't kill the entire process tree (orphans dotnet run apps)
+      // Use taskkill to ensure the whole tree is gone
+      const { exec } = require('child_process');
+      exec(`taskkill /pid ${backendProcess.pid} /T /F`, (err) => {
+        if (err) {
+          console.error(`Failed to kill backend process tree: ${err.message}`);
+        }
+      });
+    } else {
+      backendProcess.kill();
+    }
     backendProcess = null;
+    isBackendStarting = false;
   }
 }
 
@@ -272,6 +307,10 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
+  stopBackend();
+});
+
+app.on('will-quit', () => {
   stopBackend();
 });
 
@@ -428,17 +467,18 @@ ipcMain.handle('import-hand-history', async () => {
 
 // ============ IPC Handlers - Database Queries ============
 
-ipcMain.handle('get-dashboard-stats', async (event, heroName, dateFrom, dateTo) => {
+ipcMain.handle('get-dashboard-stats', async (event, heroName, dateFrom, dateTo, buyIn) => {
   let query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
   if (dateFrom) query += (query ? '&' : '?') + `dateFrom=${encodeURIComponent(dateFrom)}`;
   if (dateTo) query += (query ? '&' : '?') + `dateTo=${encodeURIComponent(dateTo)}`;
+  if (buyIn) query += (query ? '&' : '?') + `buyIn=${encodeURIComponent(buyIn)}`;
   
   const result = await callBackendAPI(`/db/dashboard-stats${query}`, {}, 'GET');
   return result;
 });
 
-ipcMain.handle('get-session-history', async (event, limit = 50, heroName = null, dateFrom = null, dateTo = null) => {
-  return callBackendAPI('/db/session-history', { limit, heroName, dateFrom, dateTo });
+ipcMain.handle('get-session-history', async (event, limit = 50, heroName = null, dateFrom = null, dateTo = null, buyIn = null) => {
+  return callBackendAPI('/db/session-history', { limit, heroName, dateFrom, dateTo, buyIn });
 });
 
 ipcMain.handle('get-hand-details', async (event, handId) => {
@@ -466,6 +506,10 @@ ipcMain.handle('get-tournament-hands', async (event, gameId, heroName) => {
 
 ipcMain.handle('get-winrate-chart-data', async (event, options = {}) => {
   return callBackendAPI('/db/winrate-chart', options);
+});
+
+ipcMain.handle('get-buy-ins', async (event) => {
+  return callBackendAPI('/db/buyins', {}, 'GET');
 });
 
 ipcMain.handle('get-range-heatmap', async (event, filters) => {
@@ -612,6 +656,21 @@ ipcMain.handle('open-logs-folder', async () => {
   } catch (error) {
     console.error('Failed to open logs folder:', error);
     return { success: false, error: error.message };
+  }
+});
+
+ipcMain.on('frontend-log', (event, { level, message, args }) => {
+  const formattedArgs = args && args.length > 0 ? JSON.stringify(args) : '';
+  const fullMessage = `[Frontend] ${message} ${formattedArgs}`;
+  
+  if (level === 'error') {
+    log.error(fullMessage);
+  } else if (level === 'warn') {
+    log.warn(fullMessage);
+  } else if (level === 'debug') {
+    log.debug(fullMessage);
+  } else {
+    log.info(fullMessage);
   }
 });
 

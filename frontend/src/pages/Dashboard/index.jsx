@@ -1,11 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { 
   TrendingUp, 
   Hash, 
   Trophy, 
   DollarSign,
   Target,
-  Zap
+  Zap,
+  Calendar
 } from 'lucide-react';
 import { useAppStore } from '@stores/appStore';
 import { StatCard, Card, EmptyState, LoadingPage } from '@components/ui';
@@ -23,13 +24,22 @@ export default function Dashboard() {
     loadSessions, 
     heroName,
     config,
-    setDateRange
+    setDateRange,
+    setCustomDateRange,
+    availableBuyIns,
+    setBuyIn,
+    loadBuyIns
   } = useAppStore();
+
+  const [dateFrom, setDateFrom] = useState(config.customDateFrom || '');
+  const [dateTo, setDateTo] = useState(config.customDateTo || '');
+  const [showCustomPicker, setShowCustomPicker] = useState(config.dateRange === 'custom');
 
   useEffect(() => {
     loadDashboardStats();
-    loadSessions(10);
-  }, [config.dateRange]);
+    loadSessions(5);
+    loadBuyIns();
+  }, [config.dateRange, config.customDateFrom, config.customDateTo, config.buyIn]);
 
   if (isLoading && !dashboardStats) {
     return <LoadingPage />;
@@ -47,9 +57,32 @@ export default function Dashboard() {
     { id: 'all', label: t('dashboard.filters.all') },
   ];
 
+  const handleCustomRangeSubmit = (e) => {
+    e.preventDefault();
+    if (dateFrom) {
+      // Format as YYYY-MM-DD 00:00:00 for the backend if needed, 
+      // but store expects what the user provides or handles it.
+      // Store's _getDateRangeParams uses these directly if 'custom'.
+      setCustomDateRange(dateFrom, dateTo ? `${dateTo} 23:59:59` : null);
+    }
+  };
+
   const rangeLabel = config.dateRange !== 'all' 
-    ? ` (${dateFilters.find(f => f.id === config.dateRange)?.label})` 
+    ? ` (${config.dateRange === 'custom' ? t('common.date') : dateFilters.find(f => f.id === config.dateRange)?.label})` 
     : '';
+
+  const PositionCev = ({ label, value, count }) => {
+    const cev = stats.total_tournaments > 0 ? (value / stats.total_tournaments).toFixed(1) : '0';
+    const numCev = parseFloat(cev);
+    return (
+      <div className="flex justify-between items-center text-xs">
+        <span className="text-gray-400">{label}</span>
+        <span className={`font-mono font-medium ${numCev >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+          {numCev > 0 ? '+' : ''}{cev}
+        </span>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -60,21 +93,85 @@ export default function Dashboard() {
           <p className="text-gray-400 mt-1">{t('dashboard.subtitle')}</p>
         </div>
 
-        {/* Date Filters */}
-        <div className="flex bg-[#1e2533] rounded-lg p-1">
-          {dateFilters.map((filter) => (
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-2">
+            {/* Buy-in Filter */}
+            <div className="flex bg-[#1e2533] rounded-lg p-1">
+              <select
+                value={config.buyIn || 'all'}
+                onChange={(e) => setBuyIn(e.target.value)}
+                className="bg-transparent text-gray-400 text-sm font-medium px-3 py-1 outline-none cursor-pointer hover:text-white transition-colors"
+              >
+                <option value="all" className="bg-dark-300">All Buy-ins</option>
+                {(availableBuyIns || []).map(bi => (
+                  <option key={bi} value={bi} className="bg-dark-300">{bi}€</option>
+                ))}
+              </select>
+            </div>
+        </div>
+
+            {/* Date Filters */}
+            <div className="flex bg-[#1e2533] rounded-lg p-1">
+            {dateFilters.map((filter) => (
+              <button
+                key={filter.id}
+                onClick={() => {
+                  setDateRange(filter.id);
+                  setShowCustomPicker(false);
+                }}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  config.dateRange === filter.id
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
             <button
-              key={filter.id}
-              onClick={() => setDateRange(filter.id)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                config.dateRange === filter.id
+              onClick={() => setShowCustomPicker(!showCustomPicker)}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
+                config.dateRange === 'custom'
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
               }`}
             >
-              {filter.label}
+              <Calendar className="w-4 h-4" />
+              {config.dateRange === 'custom' ? t('common.date') : 'Custom'}
             </button>
-          ))}
+          </div>
+
+          {/* Custom Date Picker Dropdown/Panel */}
+          {showCustomPicker && (
+            <div className="bg-[#1e2533] p-4 rounded-lg border border-gray-700 shadow-xl animate-in fade-in slide-in-from-top-2">
+              <form onSubmit={handleCustomRangeSubmit} className="flex flex-wrap items-end gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs text-gray-400 block">{t('hand_history.from')}</label>
+                  <input 
+                    type="date" 
+                    value={dateFrom.split(' ')[0]} 
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    className="bg-dark-300 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-blue-500 outline-none"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-gray-400 block">{t('hand_history.to')}</label>
+                  <input 
+                    type="date" 
+                    value={dateTo.split(' ')[0]} 
+                    onChange={(e) => setDateTo(e.target.value)}
+                    className="bg-dark-300 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-blue-500 outline-none"
+                  />
+                </div>
+                <button 
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors"
+                >
+                  Apply
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       </div>
 
@@ -102,12 +199,39 @@ export default function Dashboard() {
           format="percent"
           icon={Trophy}
         />
-        <StatCard
-          label={t('common.sessions') + rangeLabel}
-          value={stats.total_sessions || 0}
-          format="number"
-          icon={Zap}
-        />
+        <Card className="flex flex-col justify-center">
+          <div className="flex items-start justify-between mb-2">
+            <p className="stat-label">{t('dashboard.cev_per_positions')}</p>
+            <div className="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center shrink-0 -mt-1">
+              <Target className="w-5 h-5 text-primary-400" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">3-Way</p>
+              <div className="space-y-1">
+                <PositionCev label="BTN" value={stats.cev_by_position?.['3W_BTN']} count={stats.count_by_position?.['3W_BTN']} />
+                <PositionCev label="SB" value={stats.cev_by_position?.['3W_SB']} count={stats.count_by_position?.['3W_SB']} />
+                <PositionCev label="BB" value={stats.cev_by_position?.['3W_BB']} count={stats.count_by_position?.['3W_BB']} />
+              </div>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-1">Heads-Up</p>
+              <div className="space-y-1">
+                <PositionCev 
+                  label="SB" 
+                  value={(stats.cev_by_position?.['HU_BTN SB'] || 0) + (stats.cev_by_position?.['HU_SB'] || 0)} 
+                  count={(stats.count_by_position?.['HU_BTN SB'] || 0) + (stats.count_by_position?.['HU_SB'] || 0)} 
+                />
+                <PositionCev 
+                  label="BB" 
+                  value={stats.cev_by_position?.['HU_BB']} 
+                  count={stats.count_by_position?.['HU_BB']} 
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
       </div>
 
       {/* Charts section */}

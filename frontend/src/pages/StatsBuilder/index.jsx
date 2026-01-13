@@ -14,12 +14,15 @@ const PRESETS = [
   { label: 'Hero Bets', actor: 'Hero', action: 'Bet', color: 'bg-orange-500/10 text-orange-400 border-orange-500/20' },
   { label: 'Hero Checks', actor: 'Hero', action: 'Check', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
   { label: 'Hero All-In', actor: 'Hero', action: 'AllIn', color: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
+  { label: 'Hero Any', actor: 'Hero', action: 'Any', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
   
   { label: 'Villain Raises', actor: 'Villain', action: 'Raise', color: 'bg-red-900/20 text-red-500 border-red-900/30' },
   { label: 'Villain Calls', actor: 'Villain', action: 'Call', color: 'bg-yellow-900/20 text-yellow-500 border-yellow-900/30' },
   { label: 'Villain Folds', actor: 'Villain', action: 'Fold', color: 'bg-gray-900/20 text-gray-500 border-gray-900/30' },
   { label: 'Villain Bets', actor: 'Villain', action: 'Bet', color: 'bg-orange-900/20 text-orange-500 border-orange-900/30' },
   { label: 'Villain Checks', actor: 'Villain', action: 'Check', color: 'bg-emerald-900/20 text-emerald-500 border-emerald-900/30' },
+  { label: 'Villain All-In', actor: 'Villain', action: 'AllIn', color: 'bg-purple-900/20 text-purple-500 border-purple-900/30' },
+  { label: 'Villain Any', actor: 'Villain', action: 'Any', color: 'bg-blue-900/20 text-blue-500 border-blue-900/30' },
 ];
 
 const STREETS = ['Preflop', 'Flop', 'Turn', 'River'];
@@ -669,20 +672,37 @@ const StatsBuilder = () => {
             </h3>
             <span className="text-[9px] text-gray-500 italic uppercase">{t('stats_builder.drag_guide')}</span>
           </div>
-          <div className="p-3 flex flex-wrap gap-1.5">
-            {PRESETS.map((preset, idx) => (
-              <div
-                key={idx}
-                draggable
-                onDragStart={(e) => handleDragStart(e, preset)}
-                className={clsx(
-                  "px-2 py-1 rounded text-[10px] font-bold border cursor-grab active:cursor-grabbing flex items-center gap-1 transition-all hover:scale-105",
-                  preset.color
-                )}
-              >
-                {preset.label}
-              </div>
-            ))}
+          <div className="p-3 space-y-3">
+            <div className="flex flex-wrap gap-1.5">
+              {PRESETS.filter(p => p.actor === 'Hero').map((preset, idx) => (
+                <div
+                  key={idx}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, preset)}
+                  className={clsx(
+                    "px-2 py-1 rounded text-[10px] font-bold border cursor-grab active:cursor-grabbing flex items-center gap-1 transition-all hover:scale-105",
+                    preset.color
+                  )}
+                >
+                  {preset.label}
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {PRESETS.filter(p => p.actor === 'Villain').map((preset, idx) => (
+                <div
+                  key={idx}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, preset)}
+                  className={clsx(
+                    "px-2 py-1 rounded text-[10px] font-bold border cursor-grab active:cursor-grabbing flex items-center gap-1 transition-all hover:scale-105",
+                    preset.color
+                  )}
+                >
+                  {preset.label}
+                </div>
+              ))}
+            </div>
           </div>
         </Card>
 

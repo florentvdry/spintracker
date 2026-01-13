@@ -350,7 +350,7 @@ public class Database
                 player_name,
                 COUNT(*) as total_hands,
                 SUM(net_profit) as total_profit,
-                SUM(COALESCE(ev_chips, 0)) as total_ev_profit,
+                SUM(net_won_adjusted) as total_ev_profit,
                 CURRENT_TIMESTAMP
             FROM player_hands
             GROUP BY player_name";
@@ -1377,7 +1377,22 @@ public class Database
         return hands;
     }
 
-    public async Task<object> GetDashboardStatsAsync(string? heroName = null, string? dateFrom = null, string? dateTo = null)
+    public async Task<List<double>> GetUniqueBuyInsAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "SELECT DISTINCT buy_in FROM hands WHERE buy_in > 0 ORDER BY buy_in ASC";
+        var buyIns = new List<double>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            buyIns.Add(reader.GetDouble(0));
+        }
+        return buyIns;
+    }
+
+    public async Task<object> GetDashboardStatsAsync(string? heroName = null, string? dateFrom = null, string? dateTo = null, double? buyIn = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
@@ -1401,6 +1416,10 @@ public class Database
         if (!string.IsNullOrEmpty(dateTo))
         {
             whereClauses.Add("h.date_time <= @dateTo");
+        }
+        if (buyIn.HasValue)
+        {
+            whereClauses.Add("h.buy_in = @buyIn");
         }
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
 
@@ -1427,6 +1446,10 @@ public class Database
         {
             cmd.Parameters.AddWithValue("@dateTo", dateTo);
         }
+        if (buyIn.HasValue)
+        {
+            cmd.Parameters.AddWithValue("@buyIn", buyIn.Value);
+        }
 
         int totalHands = 0;
         int handsWon = 0;
@@ -1442,8 +1465,50 @@ public class Database
             }
         }
 
+        // 1.1 Position-based EV calculation
+        var cevByPosition = new Dictionary<string, double>();
+        var countByPosition = new Dictionary<string, int>();
+        try
+        {
+            using (var cmdPos = connection.CreateCommand())
+            {
+                cmdPos.CommandText = $@"
+                    SELECT 
+                        ph.position,
+                        COALESCE(SUM(ph.net_won_adjusted), 0) as pos_ev,
+                        h.player_count,
+                        COUNT(*) as hand_count
+                    FROM hands h
+                    {joinClause}
+                    {whereClause}
+                    GROUP BY ph.position, h.player_count";
+
+                if (!string.IsNullOrEmpty(heroName)) cmdPos.Parameters.AddWithValue("@heroName", heroName);
+                if (!string.IsNullOrEmpty(dateFrom)) cmdPos.Parameters.AddWithValue("@dateFrom", dateFrom);
+                if (!string.IsNullOrEmpty(dateTo)) cmdPos.Parameters.AddWithValue("@dateTo", dateTo);
+                if (buyIn.HasValue) cmdPos.Parameters.AddWithValue("@buyIn", buyIn.Value);
+
+                using var reader = await cmdPos.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    var pos = reader.IsDBNull(0) ? "Unknown" : reader.GetString(0);
+                    var ev = reader.GetDouble(1);
+                    var playerCount = reader.GetInt32(2);
+                    var count = reader.GetInt32(3);
+                    
+                    var key = (playerCount == 2 ? "HU_" : "3W_") + pos;
+                    cevByPosition[key] = ev;
+                    countByPosition[key] = count;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error calculating position stats: {ex.Message}");
+        }
+
         // 2. Calculate Euro Profit and Sessions using the session logic
-        var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo); 
+        var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo, buyIn); 
         
         double totalProfitEuro = sessions.Sum(s => s.Profit);
         int totalTournaments = sessions.Sum(s => s.Tournaments);
@@ -1462,6 +1527,8 @@ public class Database
             total_ev = totalEv,
             total_tournaments = totalTournaments,
             avg_chips_ev = avgChipsEv,
+            cev_by_position = cevByPosition,
+            count_by_position = countByPosition,
             sessions_this_month = sessionsThisMonth,
             total_sessions = sessions.Count,
             avg_multiplier = 0.0,
@@ -1469,9 +1536,9 @@ public class Database
         };
     }
 
-    public async Task<List<object>> GetSessionHistoryAsync(int limit, string? heroName = null, string? dateFrom = null, string? dateTo = null)
+    public async Task<List<object>> GetSessionHistoryAsync(int limit, string? heroName = null, string? dateFrom = null, string? dateTo = null, double? buyIn = null)
     {
-        var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo); 
+        var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo, buyIn); 
         
         return sessions.Take(limit).Select(s => (object)new {
             room = s.Room,
@@ -1484,7 +1551,7 @@ public class Database
 
     private record SessionInfo(DateTime StartTime, string Room, int Tournaments, int Hands, double Profit);
 
-    private async Task<List<SessionInfo>> GetSessionsInternalAsync(int? limit, string? heroName = null, string? dateFrom = null, string? dateTo = null)
+    private async Task<List<SessionInfo>> GetSessionsInternalAsync(int? limit, string? heroName = null, string? dateFrom = null, string? dateTo = null, double? buyIn = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
@@ -1514,6 +1581,11 @@ public class Database
         {
             whereClauses.Add("h.date_time <= @dateTo");
             cmd.Parameters.AddWithValue("@dateTo", dateTo);
+        }
+        if (buyIn.HasValue)
+        {
+            whereClauses.Add("h.buy_in = @buyIn");
+            cmd.Parameters.AddWithValue("@buyIn", buyIn.Value);
         }
 
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
@@ -1587,7 +1659,7 @@ public class Database
                     if (string.IsNullOrEmpty(g.Key)) continue;
 
                     var first = g.First();
-                    var buyIn = first.b;
+                    var buyInVal = first.b;
                     var prize = first.p;
                     var chipProfit = g.Sum(x => x.h_p);
                     
@@ -1602,13 +1674,13 @@ public class Database
                         // x1000, x100, x20: 75% / 15% / 10%
                         // x10, x5, x4, x3, x2: 100%
                         
-                        bool hasSharing = (buyIn > 0 && (prize / buyIn) >= 20);
+                        bool hasSharing = (buyInVal > 0 && (prize / buyInVal) >= 20);
                         
                         if (chipProfit > 0) 
                         {
                             // Won the tournament (1st)
                             double winAmount = hasSharing ? (prize * 0.75) : prize;
-                            sessionProfit += (winAmount - buyIn);
+                            sessionProfit += (winAmount - buyInVal);
                         }
                         else
                         {
@@ -1630,12 +1702,12 @@ public class Database
                                     // 3rd Place (or unknown/default for loser in sharing pool)
                                     consolation = prize * 0.10;
                                 }
-                                sessionProfit += (consolation - buyIn);
+                                sessionProfit += (consolation - buyInVal);
                             }
                             else
                             {
                                 // Winner takes all, so I lost buyIn
-                                sessionProfit -= buyIn;
+                                sessionProfit -= buyInVal;
                             }
                         }
                     }
@@ -1693,6 +1765,12 @@ public class Database
         {
             whereClauses.Add("h.date_time <= @dateTo");
             parameters.Add(new SqliteParameter("@dateTo", options.DateTo + " 23:59:59"));
+        }
+
+        if (options.BuyIn.HasValue)
+        {
+            whereClauses.Add("h.buy_in = @buyIn");
+            parameters.Add(new SqliteParameter("@buyIn", options.BuyIn.Value));
         }
 
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";

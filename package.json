@@ -1,6 +1,6 @@
 {
   "name": "poker-tracker-pro",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Professional Poker Tracker with React UI, C# Backend, Leak Detection and EV Analysis",
   "main": "main.js",
   "scripts": {

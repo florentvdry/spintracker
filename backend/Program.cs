@@ -420,10 +420,14 @@ app.MapGet("/db/dashboard-stats", async (HttpContext context, Database db) =>
         var heroName = context.Request.Query["heroName"].ToString();
         var dateFrom = context.Request.Query["dateFrom"].ToString();
         var dateTo = context.Request.Query["dateTo"].ToString();
+        var buyInStr = context.Request.Query["buyIn"].ToString();
+        double? buyIn = double.TryParse(buyInStr, out var b) ? b : null;
+
         var stats = await db.GetDashboardStatsAsync(
             string.IsNullOrEmpty(heroName) ? null : heroName,
             string.IsNullOrEmpty(dateFrom) ? null : dateFrom,
-            string.IsNullOrEmpty(dateTo) ? null : dateTo
+            string.IsNullOrEmpty(dateTo) ? null : dateTo,
+            buyIn
         );
         return Results.Json(new { success = true, data = stats });
     }
@@ -442,6 +446,7 @@ app.MapMethods("/db/session-history", new[] { "GET", "POST" }, async (HttpContex
         string? heroName = null;
         string? dateFrom = null;
         string? dateTo = null;
+        double? buyIn = null;
 
         if (context.Request.Method == "POST")
         {
@@ -452,6 +457,7 @@ app.MapMethods("/db/session-history", new[] { "GET", "POST" }, async (HttpContex
             heroName = data?.HeroName;
             dateFrom = data?.DateFrom;
             dateTo = data?.DateTo;
+            buyIn = data?.BuyIn;
         }
         else
         {
@@ -459,9 +465,10 @@ app.MapMethods("/db/session-history", new[] { "GET", "POST" }, async (HttpContex
             heroName = context.Request.Query["heroName"];
             dateFrom = context.Request.Query["dateFrom"];
             dateTo = context.Request.Query["dateTo"];
+            if (double.TryParse(context.Request.Query["buyIn"], out var b)) buyIn = b;
         }
 
-        var sessions = await db.GetSessionHistoryAsync(limit, heroName, dateFrom, dateTo);
+        var sessions = await db.GetSessionHistoryAsync(limit, heroName, dateFrom, dateTo, buyIn);
         return Results.Json(new { success = true, data = sessions });
     }
     catch (Exception e)
@@ -488,7 +495,8 @@ app.MapMethods("/db/winrate-chart", new[] { "GET", "POST" }, async (HttpContext 
             {
                 DateFrom = context.Request.Query["dateFrom"],
                 DateTo = context.Request.Query["dateTo"],
-                HeroName = context.Request.Query["heroName"]
+                HeroName = context.Request.Query["heroName"],
+                BuyIn = double.TryParse(context.Request.Query["buyIn"], out var b) ? b : null
             };
         }
 
@@ -498,6 +506,19 @@ app.MapMethods("/db/winrate-chart", new[] { "GET", "POST" }, async (HttpContext 
     catch (Exception e)
     {
         logger.LogError($"Winrate chart error: {e.Message}");
+        return Results.Problem(detail: e.Message, statusCode: 500);
+    }
+});
+
+app.MapGet("/db/buyins", async (Database db) =>
+{
+    try
+    {
+        var buyIns = await db.GetUniqueBuyInsAsync();
+        return Results.Json(new { success = true, data = buyIns });
+    }
+    catch (Exception e)
+    {
         return Results.Problem(detail: e.Message, statusCode: 500);
     }
 });
@@ -1202,12 +1223,13 @@ public record HandsQueryOptions
     public string? HeroName { get; set; }
     public string? SortBy { get; set; }
 }
-public record SessionHistoryRequest(int Limit = 50, string? HeroName = null, string? DateFrom = null, string? DateTo = null);
+public record SessionHistoryRequest(int Limit = 50, string? HeroName = null, string? DateFrom = null, string? DateTo = null, double? BuyIn = null);
 public record ChartQueryOptions
 {
     public string? DateFrom { get; set; }
     public string? DateTo { get; set; }
     public string? HeroName { get; set; }
+    public double? BuyIn { get; set; }
 }
 public record RangeHeatmapFilters 
 { 

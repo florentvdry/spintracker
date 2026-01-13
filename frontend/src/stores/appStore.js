@@ -11,6 +11,7 @@ export const useAppStore = create((set, get) => ({
   isInitialized: false,
   dashboardStats: null,
   sessions: [],
+  availableBuyIns: [],
   heroName: null,
   lastUpdate: 0,
   
@@ -18,6 +19,7 @@ export const useAppStore = create((set, get) => ({
   config: {
     theme: 'dark',
     dateRange: 'all', // 'today', 'week', 'month', 'all'
+    buyIn: 'all',
     customDateFrom: null,
     customDateTo: null,
     autoRefresh: true,
@@ -29,9 +31,28 @@ export const useAppStore = create((set, get) => ({
     get().refreshAll();
   },
 
+  setBuyIn: (buyIn) => {
+    set((state) => ({
+      config: { ...state.config, buyIn }
+    }));
+    get().refreshAll();
+  },
+
   setDateRange: (range) => {
     set((state) => ({
       config: { ...state.config, dateRange: range }
+    }));
+    get().refreshAll();
+  },
+
+  setCustomDateRange: (from, to) => {
+    set((state) => ({
+      config: { 
+        ...state.config, 
+        dateRange: 'custom',
+        customDateFrom: from,
+        customDateTo: to
+      }
     }));
     get().refreshAll();
   },
@@ -62,6 +83,7 @@ export const useAppStore = create((set, get) => ({
     try {
       // 1. Charger les stats du dashboard
       set({ loadingMessage: 'Chargement des statistiques...' });
+      console.log('[Init] Loading dashboard stats...');
       const statsResult = await retry(async () => {
         const res = await get().loadDashboardStats();
         return res;
@@ -70,26 +92,30 @@ export const useAppStore = create((set, get) => ({
       // Si échec des stats, on considère que l'init a échoué mais on laisse l'app s'ouvrir quand même
       // pour afficher l'erreur à l'utilisateur plutôt que de rester bloqué sur le splash.
       if (!statsResult || !statsResult.success) {
+        console.warn('[Init] Dashboard stats failed to load:', statsResult?.error);
         set({ error: statsResult?.error || 'Impossible de charger les statistiques. Vérifiez que le backend tourne.' });
       } else {
+        console.log('[Init] Dashboard stats loaded successfully');
         set({ isInitialized: true, loadingMessage: 'Prêt !' });
       }
 
       // 2. Charger l'historique des sessions (non-bloquant pour le splash)
-      get().loadSessions();
+      console.log('[Init] Loading sessions...');
+      get().loadSessions(5);
 
       // Notify main process that renderer finished initialization so splash can close
       // IMPORTANT: On le fait DANS TOUS LES CAS pour ne jamais bloquer le splash
+      console.log('[Init] Sending app-ready to main process');
       try {
         const { ipcRenderer } = window.require ? window.require('electron') : { ipcRenderer: null };
         if (ipcRenderer && ipcRenderer.invoke) {
-          ipcRenderer.invoke('app-ready');
+          await ipcRenderer.invoke('app-ready');
         }
       } catch (e) {
-        // ignore
+        console.error('[Init] Failed to send app-ready:', e);
       }
     } catch (error) {
-      console.error('Failed to initialize app:', error);
+      console.error('[Init] Critical failure during initialize:', error);
       set({ error: typeof error === 'string' ? error : error.message || 'Erreur inconnue lors de l\'initialisation' });
       
       // Also notify app-ready so the user can see the error on the main window
@@ -147,8 +173,11 @@ export const useAppStore = create((set, get) => ({
   loadDashboardStats: async () => {
     try {
       const heroName = get().heroName;
+      const { buyIn } = get().config;
       const { dateFrom, dateTo } = get()._getDateRangeParams();
-      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo);
+      const buyInParam = buyIn === 'all' ? null : Number(buyIn);
+      
+      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam);
       if (result.success) {
         const stats = result.data || {};
         // Coercer en nombre pour éviter les valeurs string/undefined
@@ -167,8 +196,11 @@ export const useAppStore = create((set, get) => ({
   loadSessions: async (limit = 50) => {
     try {
       const heroName = get().heroName;
+      const { buyIn } = get().config;
       const { dateFrom, dateTo } = get()._getDateRangeParams();
-      const result = await ipcService.getSessionHistory(limit, heroName, dateFrom, dateTo);
+      const buyInParam = buyIn === 'all' ? null : Number(buyIn);
+
+      const result = await ipcService.getSessionHistory(limit, heroName, dateFrom, dateTo, buyInParam);
       if (result.success) {
         set({ sessions: result.data });
       }
@@ -176,6 +208,17 @@ export const useAppStore = create((set, get) => ({
     } catch (error) {
       console.error('Failed to load sessions:', error);
       return { success: false, error };
+    }
+  },
+
+  loadBuyIns: async () => {
+    try {
+      const result = await ipcService.getBuyIns();
+      if (result.success) {
+        set({ availableBuyIns: result.data });
+      }
+    } catch (error) {
+      console.error('Failed to load buy-ins:', error);
     }
   },
 
@@ -190,7 +233,8 @@ export const useAppStore = create((set, get) => ({
     try {
       await Promise.all([
         get().loadDashboardStats(),
-        get().loadSessions(),
+        get().loadSessions(5),
+        get().loadBuyIns(),
       ]);
       set({ lastUpdate: Date.now() });
     } finally {

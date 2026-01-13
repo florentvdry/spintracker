@@ -70,8 +70,8 @@ class IPCService {
   // ============ API Methods ============
 
   // Dashboard
-  async getDashboardStats(heroName, dateFrom, dateTo) {
-    return this.invoke('get-dashboard-stats', heroName, dateFrom, dateTo);
+  async getDashboardStats(heroName, dateFrom, dateTo, buyIn) {
+    return this.invoke('get-dashboard-stats', heroName, dateFrom, dateTo, buyIn);
   }
 
   async getWinrateChartData(options = {}) {
@@ -79,8 +79,12 @@ class IPCService {
   }
 
   // Sessions
-  async getSessionHistory(limit = 50, heroName, dateFrom, dateTo) {
-    return this.invoke('get-session-history', limit, heroName, dateFrom, dateTo);
+  async getSessionHistory(limit = 50, heroName, dateFrom, dateTo, buyIn) {
+    return this.invoke('get-session-history', limit, heroName, dateFrom, dateTo, buyIn);
+  }
+
+  async getBuyIns() {
+    return this.invoke('get-buy-ins');
   }
 
   // Hands
