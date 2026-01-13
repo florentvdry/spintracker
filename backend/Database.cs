@@ -1397,6 +1397,7 @@ public class Database
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
+        var profitCol = "ph.net_profit";
         var joinClause = "";
         
         if (!string.IsNullOrEmpty(heroName))
@@ -1465,7 +1466,75 @@ public class Database
             }
         }
 
-        // 1.1 Position-based EV calculation
+        // 1.1 Calculate Tournaments Won (ITM) based on financial result
+        int tournamentsWon = 0;
+        try
+        {
+            using var cmdItm = connection.CreateCommand();
+            // Fetch necessary data to determine financial outcome per tournament
+            cmdItm.CommandText = $@"
+                SELECT 
+                    h.buy_in, 
+                    h.prize_pool, 
+                    SUM({profitCol}) as chip_profit,
+                    MAX(h.player_count) as max_players
+                FROM hands h
+                {joinClause}
+                {whereClause}
+                GROUP BY h.game_id";
+            
+            if (!string.IsNullOrEmpty(heroName)) cmdItm.Parameters.AddWithValue("@heroName", heroName);
+            if (!string.IsNullOrEmpty(dateFrom)) cmdItm.Parameters.AddWithValue("@dateFrom", dateFrom);
+            if (!string.IsNullOrEmpty(dateTo)) cmdItm.Parameters.AddWithValue("@dateTo", dateTo);
+            if (buyIn.HasValue) cmdItm.Parameters.AddWithValue("@buyIn", buyIn.Value);
+
+            using var reader = await cmdItm.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                double tBuyIn = reader.IsDBNull(0) ? 0 : reader.GetDouble(0);
+                double tPrizePool = reader.IsDBNull(1) ? 0 : reader.GetDouble(1);
+                double tChipProfit = reader.IsDBNull(2) ? 0 : reader.GetDouble(2);
+                int tLastPlayerCount = reader.IsDBNull(3) ? 3 : reader.GetInt32(3); // Approximation if null
+
+                bool isITM = false;
+
+                if (tPrizePool > 0)
+                {
+                    // Winner always ITM
+                    if (tChipProfit > 0) 
+                    {
+                        isITM = true;
+                    }
+                    else
+                    {
+                        // Check for shared prize (Multiplier >= 20x typically)
+                        // If pool/buyin >= 20, losers get a share
+                        bool hasSharing = (tBuyIn > 0 && (tPrizePool / tBuyIn) >= 20);
+                        if (hasSharing)
+                        {
+                            // In shared prize tournaments, 2nd and 3rd place get money.
+                            // Since standard Spin is 3-handed:
+                            // If I lost (chip profit <= 0), I am either 2nd or 3rd.
+                            // Both get a prize in high multipliers.
+                            isITM = true;
+                        }
+                    }
+                }
+                else
+                {
+                    // Fallback for non-tournament or unknown
+                    if (tChipProfit > 0) isITM = true;
+                }
+
+                if (isITM) tournamentsWon++;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error calculating ITM: {ex.Message}");
+        }
+
+        // 1.2 Position-based EV calculation
         var cevByPosition = new Dictionary<string, double>();
         var countByPosition = new Dictionary<string, int>();
         try
@@ -1523,6 +1592,7 @@ public class Database
         {
             total_hands = totalHands,
             hands_won = handsWon,
+            tournaments_won = tournamentsWon,
             total_profit = totalProfitEuro,
             total_ev = totalEv,
             total_tournaments = totalTournaments,

@@ -46,8 +46,8 @@ export default function Dashboard() {
   }
 
   const stats = dashboardStats || {};
-  const winRate = stats.total_hands > 0 
-    ? ((stats.hands_won / stats.total_hands) * 100)
+  const winRate = stats.total_tournaments > 0 
+    ? ((stats.tournaments_won / stats.total_tournaments) * 100)
     : 0;
 
   const dateFilters = [

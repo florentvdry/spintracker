@@ -80,7 +80,7 @@ function formatValue(value, format) {
       const sign = value >= 0 ? '+' : '';
       return `${sign}${value.toFixed(2)}€`;
     case 'percent':
-      return `${value.toFixed(1)}%`;
+      return `${value.toFixed(2)}%`;
     case 'currency':
       return `${value.toFixed(2)}€`;
     default:
