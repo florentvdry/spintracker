@@ -24,6 +24,10 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/florentvdry/poker-tracker-pro.git"
+  },
   "dependencies": {
     "adm-zip": "^0.5.16",
     "electron-log": "^5.4.3",
@@ -63,8 +67,9 @@
       "icon": "assets/logo.png",
       "publish": [
         {
-          "provider": "generic",
-          "url": "https://example.com/updates"
+          "provider": "github",
+          "owner": "florentvdry",
+          "repo": "spintracker-releases"
         }
       ]
     },

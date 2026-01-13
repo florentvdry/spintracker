@@ -23,10 +23,17 @@ export default function DownloadPage() {
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">{t('windows.title')}</h2>
             <p className="text-gray-400 mb-8">{t('windows.requirements')}</p>
-            <Button size="lg" className="w-full">
-              <Download className="mr-2 h-5 w-5" />
-              {t('windows.button')}
-            </Button>
+            <a 
+              href="https://github.com/votre-pseudo/poker-tracker-releases/releases/latest" 
+              className="w-full"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button size="lg" className="w-full">
+                <Download className="mr-2 h-5 w-5" />
+                {t('windows.button')}
+              </Button>
+            </a>
             <p className="mt-4 text-xs text-gray-500">{t('windows.info')}</p>
           </div>
 
