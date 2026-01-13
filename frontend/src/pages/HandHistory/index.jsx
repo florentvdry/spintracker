@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Calendar, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useHandsStore } from '@stores/handsStore';
 import { useAppStore } from '@stores/appStore';
 import { useReplayerStore } from '@stores/replayerStore';
@@ -88,11 +88,6 @@ export default function HandHistory() {
           <option value="won">{t('common.won')}</option>
           <option value="lost">{t('common.lost')}</option>
         </select>
-
-        <button className="btn-secondary flex items-center gap-2" onClick={() => clearSelection()}>
-          <Filter className="w-4 h-4" />
-          {t('hand_history.more_filters')}
-        </button>
       </Card>
 
       {/* Content */}

@@ -1232,6 +1232,20 @@ public class Database
             }
         }
 
+
+        if (!string.IsNullOrEmpty(options.Result))
+        {
+            if (options.Result.ToLower() == "won")
+            {
+                allTournaments = allTournaments.Where(t => t.NetProfit > 0).ToList();
+            }
+            else if (options.Result.ToLower() == "lost")
+            {
+                allTournaments = allTournaments.Where(t => t.NetProfit <= 0).ToList();
+            }
+        }
+
+
         // 4. Global Sorting
         var sortedTournaments = allTournaments.AsEnumerable();
         if (!string.IsNullOrEmpty(options.SortBy))
