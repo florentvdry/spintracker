@@ -1,5 +1,5 @@
 {
-  "name": "poker-tracker-pro",
+  "name": "spintracker",
   "version": "1.0.1",
   "description": "Professional Poker Tracker with React UI, C# Backend, Leak Detection and EV Analysis",
   "main": "main.js",
@@ -26,7 +26,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/florentvdry/poker-tracker-pro.git"
+    "url": "git+https://github.com/florentvdry/spintracker.git"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
