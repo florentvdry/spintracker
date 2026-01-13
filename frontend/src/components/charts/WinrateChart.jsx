@@ -12,18 +12,21 @@ const LINE_COLORS = {
   chipsWon: '#10b981',        // Vert - Chips Won
   netExpected: '#eab308',     // Jaune - Net Expected Chips Won
   wonWithShowdown: '#3b82f6', // Bleu - Won With Showdown
-  wonWithoutShowdown: '#ef4444' // Rouge - Won Without Showdown
+  wonWithoutShowdown: '#ef4444', // Rouge - Won Without Showdown
+  euroProfit: '#10b981'       // Vert - Euro Profit (même que chips won par défaut)
 };
 
 export default function WinrateChart({ className }) {
   const { t } = useTranslation();
   const chartRef = useRef(null);
+  const [chartMode, setChartMode] = useState('chips'); // 'chips' or 'euro'
 
   const LINE_LABELS = {
     chipsWon: t('common.chips_won', 'Chips Won'),
     netExpected: t('hand_history.table.ev_chips', 'EV Chips'),
     wonWithShowdown: t('common.showdown_winning', 'Showdown Won'),
-    wonWithoutShowdown: t('common.non_showdown_winning', 'Non-Showdown Won')
+    wonWithoutShowdown: t('common.non_showdown_winning', 'Non-Showdown Won'),
+    euroProfit: t('dashboard.net_profit', 'Net Profit (€)')
   };
   const heroName = useAppStore(state => state.heroName);
   const lastUpdate = useAppStore(state => state.lastUpdate);
@@ -36,7 +39,8 @@ export default function WinrateChart({ className }) {
     chipsWon: true,
     netExpected: true,
     wonWithShowdown: true,
-    wonWithoutShowdown: true
+    wonWithoutShowdown: true,
+    euroProfit: true
   });
 
   const loadChartData = async () => {
@@ -63,17 +67,19 @@ export default function WinrateChart({ className }) {
             chipsWon: item.profit ?? item.realWin ?? 0,
             netExpected: item.cumulative ?? item.theoricalWin ?? 0,
             wonWithShowdown: item.chips_won_showdown ?? item.chipsWonShowdown ?? 0,
-            wonWithoutShowdown: item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0
+            wonWithoutShowdown: item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0,
+            euroProfit: item.euro_profit ?? 0
           }));
         } else if (raw.labels && Array.isArray(raw.labels)) {
-           const { labels, realWin, theoricalWin, wonWithShowdown, wonWithoutShowdown } = raw;
+           const { labels, realWin, theoricalWin, wonWithShowdown, wonWithoutShowdown, euro_profit } = raw;
            chartData = labels.map((label, index) => ({
             time: index + 1,
             label: label,
             chipsWon: (realWin && realWin[index]) || 0,
             netExpected: (theoricalWin && theoricalWin[index]) || 0,
             wonWithShowdown: (wonWithShowdown && wonWithShowdown[index]) || 0,
-            wonWithoutShowdown: (wonWithoutShowdown && wonWithoutShowdown[index]) || 0
+            wonWithoutShowdown: (wonWithoutShowdown && wonWithoutShowdown[index]) || 0,
+            euroProfit: (euro_profit && euro_profit[index]) || 0
           }));
         }
         setData(chartData);
@@ -118,56 +124,77 @@ export default function WinrateChart({ className }) {
 
     const seriesList = [];
     
-    if (visibleLines.chipsWon) {
-        seriesList.push({
-            name: LINE_LABELS.chipsWon,
-            type: 'line',
-            data: data.map(d => d.chipsWon),
-            itemStyle: { color: LINE_COLORS.chipsWon },
-            showSymbol: false,
-            lineStyle: { width: 2 },
-            emphasis: { focus: 'series' },
-            large: true, // Optimisation pour grand nombre de points
-        });
-    }
+    if (chartMode === 'chips') {
+        if (visibleLines.chipsWon) {
+            seriesList.push({
+                name: LINE_LABELS.chipsWon,
+                type: 'line',
+                data: data.map(d => d.chipsWon),
+                itemStyle: { color: LINE_COLORS.chipsWon },
+                showSymbol: false,
+                lineStyle: { width: 2 },
+                emphasis: { focus: 'series' },
+                large: true, // Optimisation pour grand nombre de points
+            });
+        }
 
-    if (visibleLines.netExpected) {
-        seriesList.push({
-            name: LINE_LABELS.netExpected,
-            type: 'line',
-            data: data.map(d => d.netExpected),
-            itemStyle: { color: LINE_COLORS.netExpected },
-            showSymbol: false,
-            lineStyle: { width: 2 },
-            emphasis: { focus: 'series' },
-            large: true,
-        });
-    }
+        if (visibleLines.netExpected) {
+            seriesList.push({
+                name: LINE_LABELS.netExpected,
+                type: 'line',
+                data: data.map(d => d.netExpected),
+                itemStyle: { color: LINE_COLORS.netExpected },
+                showSymbol: false,
+                lineStyle: { width: 2 },
+                emphasis: { focus: 'series' },
+                large: true,
+            });
+        }
 
-    if (visibleLines.wonWithShowdown) {
-        seriesList.push({
-            name: LINE_LABELS.wonWithShowdown,
-            type: 'line',
-            data: data.map(d => d.wonWithShowdown),
-            itemStyle: { color: LINE_COLORS.wonWithShowdown },
-            showSymbol: false,
-            lineStyle: { width: 2 },
-            emphasis: { focus: 'series' },
-            large: true,
-        });
-    }
+        if (visibleLines.wonWithShowdown) {
+            seriesList.push({
+                name: LINE_LABELS.wonWithShowdown,
+                type: 'line',
+                data: data.map(d => d.wonWithShowdown),
+                itemStyle: { color: LINE_COLORS.wonWithShowdown },
+                showSymbol: false,
+                lineStyle: { width: 2 },
+                emphasis: { focus: 'series' },
+                large: true,
+            });
+        }
 
-    if (visibleLines.wonWithoutShowdown) {
-        seriesList.push({
-            name: LINE_LABELS.wonWithoutShowdown,
-            type: 'line',
-            data: data.map(d => d.wonWithoutShowdown),
-            itemStyle: { color: LINE_COLORS.wonWithoutShowdown },
-            showSymbol: false,
-            lineStyle: { width: 2 },
-            emphasis: { focus: 'series' },
-            large: true,
-        });
+        if (visibleLines.wonWithoutShowdown) {
+            seriesList.push({
+                name: LINE_LABELS.wonWithoutShowdown,
+                type: 'line',
+                data: data.map(d => d.wonWithoutShowdown),
+                itemStyle: { color: LINE_COLORS.wonWithoutShowdown },
+                showSymbol: false,
+                lineStyle: { width: 2 },
+                emphasis: { focus: 'series' },
+                large: true,
+            });
+        }
+    } else {
+        if (visibleLines.euroProfit) {
+            seriesList.push({
+                name: LINE_LABELS.euroProfit,
+                type: 'line',
+                data: data.map(d => d.euroProfit),
+                itemStyle: { color: LINE_COLORS.euroProfit },
+                showSymbol: false,
+                lineStyle: { width: 3 },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: 'rgba(16, 185, 129, 0.3)' },
+                        { offset: 1, color: 'rgba(16, 185, 129, 0)' }
+                    ])
+                },
+                emphasis: { focus: 'series' },
+                large: true,
+            });
+        }
     }
 
     return {
@@ -185,9 +212,13 @@ export default function WinrateChart({ className }) {
                 const value = item.value;
                 const name = item.seriesName;
                 const sign = value >= 0 ? '+' : '';
+                const formattedValue = chartMode === 'euro' 
+                    ? `${sign}${value.toFixed(2)}€`
+                    : `${sign}${Math.round(value)}`;
+                
                 result += `<div class="flex items-center justify-between gap-4 text-xs">
                     <span style="color:${color}">● ${name}</span>
-                    <span class="font-mono text-white font-medium">${sign}${Math.round(value)}</span>
+                    <span class="font-mono text-white font-medium">${formattedValue}</span>
                 </div>`;
             });
             return result;
@@ -248,7 +279,10 @@ export default function WinrateChart({ className }) {
         type: 'value',
         axisLine: { show: false },
         axisTick: { show: false },
-        axisLabel: { color: '#9ca3af' },
+        axisLabel: { 
+            color: '#9ca3af',
+            formatter: (value) => chartMode === 'euro' ? `${value}€` : value
+        },
         splitLine: { 
             show: true, 
             lineStyle: { color: '#2d3548' } // dark-200 equivalent
@@ -257,7 +291,7 @@ export default function WinrateChart({ className }) {
       // Pas de dataZoom 'inside' (molette désactivée)
       series: seriesList
     };
-  }, [data, visibleLines]);
+  }, [data, visibleLines, chartMode]);
 
   // Fonction d'initialisation appelée quand le chart est prêt
   const onChartReady = (chart) => {
@@ -350,24 +384,62 @@ export default function WinrateChart({ className }) {
 
   return (
     <div className={className}>
-      {/* Legend toggles */}
-      <div className="flex flex-wrap items-center justify-end gap-4 mb-4">
-        <div className="flex flex-wrap gap-3">
-             {Object.entries(LINE_COLORS).map(([key, color]) => (
-                 <button
-                    key={key}
-                    onClick={() => toggleLine(key)}
-                    className={clsx(
-                        'flex items-center gap-1.5 text-xs transition-opacity',
-                        !visibleLines[key] && 'opacity-40'
-                    )}
-                 >
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
-                    <span className="text-gray-300">
-                        {LINE_LABELS[key]}
-                    </span>
-                 </button>
-             ))}
+      {/* Legend and Toggle */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+        {/* Toggle Mode */}
+        <div className="flex bg-[#1e2533] p-1 rounded-lg">
+          <button
+            onClick={() => setChartMode('chips')}
+            className={clsx(
+              'px-4 py-1.5 text-xs font-medium rounded-md transition-all',
+              chartMode === 'chips' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'
+            )}
+          >
+            CEV (Chips)
+          </button>
+          <button
+            onClick={() => setChartMode('euro')}
+            className={clsx(
+              'px-4 py-1.5 text-xs font-medium rounded-md transition-all',
+              chartMode === 'euro' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'
+            )}
+          >
+            Euros (€)
+          </button>
+        </div>
+
+        {/* Legend toggles */}
+        <div className="flex flex-wrap items-center justify-end gap-3">
+             {chartMode === 'chips' ? (
+               Object.entries(LINE_COLORS).filter(([key]) => key !== 'euroProfit').map(([key, color]) => (
+                   <button
+                      key={key}
+                      onClick={() => toggleLine(key)}
+                      className={clsx(
+                          'flex items-center gap-1.5 text-xs transition-opacity',
+                          !visibleLines[key] && 'opacity-40'
+                      )}
+                   >
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
+                      <span className="text-gray-300">
+                          {LINE_LABELS[key]}
+                      </span>
+                   </button>
+               ))
+             ) : (
+                <button
+                  onClick={() => toggleLine('euroProfit')}
+                  className={clsx(
+                      'flex items-center gap-1.5 text-xs transition-opacity',
+                      !visibleLines.euroProfit && 'opacity-40'
+                  )}
+                >
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: LINE_COLORS.euroProfit }} />
+                  <span className="text-gray-300">
+                      {LINE_LABELS.euroProfit}
+                  </span>
+                </button>
+             )}
         </div>
       </div>
 
@@ -384,7 +456,7 @@ export default function WinrateChart({ className }) {
             echarts={echarts}
             option={getOption} 
             style={{ height: '100%', width: '100%' }}
-            notMerge={false}
+            notMerge={true}
             lazyUpdate={true}
             autoResize={true}
             theme={"dark"}

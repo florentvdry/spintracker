@@ -1816,6 +1816,20 @@ public class Database
         return sessionList;
     }
 
+    private class HandData
+    {
+        public string date { get; set; } = "";
+        public double profit { get; set; }
+        public double chips_won_showdown { get; set; }
+        public double chips_won_no_showdown { get; set; }
+        public double cumulative { get; set; }
+        public string? game_id { get; set; }
+        public double buy_in { get; set; }
+        public double prize_pool { get; set; }
+        public int player_count { get; set; }
+        public double hand_profit { get; set; }
+    }
+
     public async Task<object> GetWinrateChartDataAsync(ChartQueryOptions options)
     {
         using var connection = new SqliteConnection(_connectionString);
@@ -1863,7 +1877,7 @@ public class Database
         cmd.CommandText = $@"
             SELECT 
                 h.date_time,
-                SUM({profitCol}) OVER (ORDER BY h.date_time) as cumulative_profit,
+                SUM({profitCol}) OVER (ORDER BY h.date_time, h.id) as cumulative_profit,
                 SUM(
                     COALESCE(
                         CASE 
@@ -1872,7 +1886,7 @@ public class Database
                             ELSE 0 
                         END, 0
                     )
-                ) OVER (ORDER BY h.date_time) as cumulative_showdown,
+                ) OVER (ORDER BY h.date_time, h.id) as cumulative_showdown,
                 SUM(
                     COALESCE(
                         CASE 
@@ -1881,34 +1895,122 @@ public class Database
                             ELSE 0 
                         END, 0
                     )
-                ) OVER (ORDER BY h.date_time) as cumulative_no_showdown,
-                SUM({evCol}) OVER (ORDER BY h.date_time) as cumulative_ev,
-                ROW_NUMBER() OVER (ORDER BY h.date_time) as hand_number
+                ) OVER (ORDER BY h.date_time, h.id) as cumulative_no_showdown,
+                SUM({evCol}) OVER (ORDER BY h.date_time, h.id) as cumulative_ev,
+                h.game_id,
+                h.buy_in,
+                h.prize_pool,
+                h.player_count,
+                {profitCol} as hand_profit
             FROM hands h
             {joinClause}
             {whereClause}
-            ORDER BY h.date_time";
+            ORDER BY h.date_time ASC, h.id ASC";
 
         foreach (var param in parameters)
         {
             cmd.Parameters.Add(param);
         }
 
-        var data = new List<object>();
+        var rawData = new List<HandData>();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
-            data.Add(new
-            {
+            rawData.Add(new HandData {
                 date = reader.GetString(0),
-                profit = reader.GetDouble(1), // cumulative_profit
-                cumulative = reader.GetDouble(4), // cumulative_ev
-                chips_won_showdown = reader.GetDouble(2), // cumulative_showdown
-                chips_won_no_showdown = reader.GetDouble(3) // cumulative_no_showdown
+                profit = reader.GetDouble(1),
+                chips_won_showdown = reader.GetDouble(2),
+                chips_won_no_showdown = reader.GetDouble(3),
+                cumulative = reader.GetDouble(4),
+                game_id = reader.IsDBNull(5) ? null : reader.GetString(5),
+                buy_in = reader.IsDBNull(6) ? 0.0 : reader.GetDouble(6),
+                prize_pool = reader.IsDBNull(7) ? 0.0 : reader.GetDouble(7),
+                player_count = reader.IsDBNull(8) ? 0 : reader.GetInt32(8),
+                hand_profit = reader.GetDouble(9)
             });
         }
 
-        return data;
+        _logger.LogInformation($"WinrateChart: Fetched {rawData.Count} hands.");
+
+        // Second pass: calculate Euro profit
+        // We need to know which hands are the last ones for each game_id
+        var lastHandsMap = new Dictionary<string, int>();
+        for (int i = 0; i < rawData.Count; i++)
+        {
+            if (!string.IsNullOrEmpty(rawData[i].game_id))
+            {
+                lastHandsMap[rawData[i].game_id!] = i;
+            }
+        }
+
+        // Calculate profit per game
+        var gameProfitEuro = new Dictionary<string, double>();
+        var games = rawData.Where(x => !string.IsNullOrEmpty(x.game_id)).GroupBy(x => x.game_id!);
+        foreach (var game in games)
+        {
+            var first = game.First();
+            var last = game.Last();
+            double chipProfit = 0;
+            foreach (var h in game) chipProfit += h.hand_profit;
+
+            double profit = 0;
+            if (first.prize_pool > 0)
+            {
+                bool hasSharing = (first.buy_in > 0 && (first.prize_pool / first.buy_in) >= 20);
+                if (chipProfit > 0)
+                {
+                    double winAmount = hasSharing ? (first.prize_pool * 0.75) : first.prize_pool;
+                    profit = winAmount - first.buy_in;
+                }
+                else
+                {
+                    if (hasSharing)
+                    {
+                        double consolation = (last.player_count == 2) ? (first.prize_pool * 0.15) : (first.prize_pool * 0.10);
+                        profit = consolation - first.buy_in;
+                    }
+                    else
+                    {
+                        profit = -first.buy_in;
+                    }
+                }
+            }
+            else
+            {
+                // If prize_pool is 0, it might be a cash game or missing data
+                profit = chipProfit; 
+            }
+            gameProfitEuro[game.Key] = profit;
+        }
+
+        _logger.LogInformation($"WinrateChart: Calculated profit for {gameProfitEuro.Count} games.");
+
+        var finalData = new List<object>();
+        double currentCumulativeEuro = 0;
+        for (int i = 0; i < rawData.Count; i++)
+        {
+            var h = rawData[i];
+            if (!string.IsNullOrEmpty(h.game_id) && lastHandsMap.ContainsKey(h.game_id!) && lastHandsMap[h.game_id!] == i)
+            {
+                currentCumulativeEuro += gameProfitEuro[h.game_id!];
+            }
+
+            finalData.Add(new {
+                date = h.date,
+                profit = h.profit,
+                cumulative = h.cumulative,
+                chips_won_showdown = h.chips_won_showdown,
+                chips_won_no_showdown = h.chips_won_no_showdown,
+                euro_profit = currentCumulativeEuro
+            });
+        }
+
+        if (finalData.Count > 0)
+        {
+            _logger.LogInformation($"WinrateChart: Final cumulative Euro profit: {currentCumulativeEuro:F2}€");
+        }
+
+        return finalData;
     }
 
     // Debug helper: return raw total profit and recent hands for inspection
