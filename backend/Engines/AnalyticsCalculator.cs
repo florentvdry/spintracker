@@ -1,11 +1,14 @@
-namespace SpinTrackerBackend;
+using SpinTrackerBackend.Interfaces;
+using SpinTrackerBackend;
 
-public class AnalyticsCalculator
+namespace SpinTrackerBackend.Engines;
+
+public class AnalyticsCalculator : IAnalyticsCalculator
 {
-    private readonly EquityCalculator _equityCalc;
+    private readonly IEquityCalculator _equityCalc;
     private readonly ILogger<AnalyticsCalculator> _logger;
 
-    public AnalyticsCalculator(EquityCalculator equityCalc, ILogger<AnalyticsCalculator> logger)
+    public AnalyticsCalculator(IEquityCalculator equityCalc, ILogger<AnalyticsCalculator> logger)
     {
         _equityCalc = equityCalc;
         _logger = logger;
@@ -579,21 +582,4 @@ public class AnalyticsCalculator
             return null;
         }
     }
-}
-
-public class VoluntaryFoldException : Exception { }
-
-public class HandAnalytics
-{
-    public string? HandId { get; set; }
-    public string? PlayerName { get; set; }
-    public double? EvChips { get; set; }
-    public double? NetWonAdjusted { get; set; }
-    public double? EquityPreflop { get; set; }
-    public double? EquityFlop { get; set; }
-    public double? EquityTurn { get; set; }
-    public double? EquityRiver { get; set; }
-    public double? ChipsWonShowdown { get; set; }
-    public double? ChipsWonNoShowdown { get; set; }
-    public double? CevContribution { get; set; }
 }

@@ -1,17 +1,20 @@
 using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
+using SpinTrackerBackend.Interfaces;
+using SpinTrackerBackend;
+using SpinTrackerBackend.Engines;
 
-namespace SpinTrackerBackend;
+namespace SpinTrackerBackend.Services;
 
-public class ImporterService
+public class ImporterService : IImporterService
 {
     private readonly Database _db;
-    private readonly AnalyticsCalculator _analyticsCalc;
+    private readonly IAnalyticsCalculator _analyticsCalc;
     private readonly ILogger<ImporterService> _logger;
     private const int BatchSize = 1000; // Increased batch size for better throughput
 
-    public ImporterService(Database db, AnalyticsCalculator analyticsCalc, ILogger<ImporterService> logger)
+    public ImporterService(Database db, IAnalyticsCalculator analyticsCalc, ILogger<ImporterService> logger)
     {
         _db = db;
         _analyticsCalc = analyticsCalc;
@@ -56,7 +59,16 @@ public class ImporterService
                     if (handBuffer.Length > 0)
                     {
                         var handText = handBuffer.ToString();
-                        var hand = parser.ParseHand(handText);
+                        ParsedHand? hand = null;
+                        try
+                        {
+                            hand = parser.ParseHand(handText);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Parse error: {e.Message}");
+                            hand = null;
+                        }
                         if (hand != null)
                         {
                             count++;
@@ -74,7 +86,16 @@ public class ImporterService
             if (handBuffer.Length > 0)
             {
                 var handText = handBuffer.ToString();
-                var hand = parser.ParseHand(handText);
+                ParsedHand? hand = null;
+                try
+                {
+                    hand = parser.ParseHand(handText);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Parse error: {e.Message}");
+                    hand = null;
+                }
                 if (hand != null)
                 {
                     count++;
@@ -138,7 +159,16 @@ public class ImporterService
                     if (handBuffer.Length > 0)
                     {
                         var handText = handBuffer.ToString();
-                        var hand = parser.ParseHand(handText);
+                        ParsedHand? hand = null;
+                        try
+                        {
+                            hand = parser.ParseHand(handText);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Parse error: {e.Message}");
+                            hand = null;
+                        }
                         if (hand != null)
                         {
                             handsBatch.Add(hand);
@@ -174,7 +204,16 @@ public class ImporterService
             if (handBuffer.Length > 0)
             {
                 var handText = handBuffer.ToString();
-                var hand = parser.ParseHand(handText);
+                ParsedHand? hand = null;
+                try
+                {
+                    hand = parser.ParseHand(handText);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Parse error: {e.Message}");
+                    hand = null;
+                }
                 if (hand != null)
                 {
                     handsBatch.Add(hand);
@@ -215,12 +254,4 @@ public class ImporterService
     }
 }
 
-public class ImportProgress
-{
-    public string Message { get; set; } = "";
-    public int Percent { get; set; }
-    public int HandsImported { get; set; }
-    public int TotalHands { get; set; }
-    public bool Success { get; set; }
-    public string? Error { get; set; }
-}
+

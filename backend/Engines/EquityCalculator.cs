@@ -1,6 +1,9 @@
-namespace SpinTrackerBackend;
+using SpinTrackerBackend.Interfaces;
+using SpinTrackerBackend;
 
-public class EquityCalculator
+namespace SpinTrackerBackend.Engines;
+
+public class EquityCalculator : IEquityCalculator
 {
     private readonly ILogger<EquityCalculator> _logger;
 
@@ -886,11 +889,4 @@ public class EquityCalculator
 public record Card(char Rank, char Suit)
 {
     public override string ToString() => $"{Rank}{Suit}";
-}
-
-public class EquityResult
-{
-    public double HeroEquity { get; set; }
-    public double VillainEquity { get; set; }
-    public double TieEquity { get; set; }
 }

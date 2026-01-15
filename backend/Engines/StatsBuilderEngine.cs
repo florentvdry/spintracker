@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using SpinTrackerBackend;
+using SpinTrackerBackend.Interfaces;
+using SpinTrackerBackend.StatsBuilder;
 
-namespace SpinTrackerBackend.StatsBuilder
+namespace SpinTrackerBackend.Engines
 {
-    public class StatsBuilderEngine
+    public class StatsBuilderEngine : IStatsBuilderEngine
     {
         private readonly ILogger<StatsBuilderEngine> _logger;
 

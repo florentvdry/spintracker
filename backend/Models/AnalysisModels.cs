@@ -112,3 +112,13 @@ public class GraphPoint
     public double Profit { get; set; }
     public double CumulativeProfit { get; set; }
 }
+
+public class RangeAnalysisResult
+{
+    public string Position { get; set; } = "";
+    public string Action { get; set; } = "";
+    public int Stack { get; set; }
+    public string Range { get; set; } = "";
+    public double Vpip { get; set; }
+    public double Pfr { get; set; }
+}

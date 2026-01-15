@@ -5,6 +5,9 @@ using SpinTrackerBackend;
 using SpinTrackerBackend.StatsBuilder;
 using FluentMigrator.Runner;
 using SpinTrackerBackend.Migrations;
+using SpinTrackerBackend.Interfaces;
+using SpinTrackerBackend.Engines;
+using SpinTrackerBackend.Services;
 
 // Initialize SQLite (use Batteries_V2 to match SQLitePCLRaw.batteries_v2)
 SQLitePCL.Batteries_V2.Init();
@@ -51,11 +54,11 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSingleton<Database>(sp => 
     new Database(sp.GetRequiredService<ILogger<Database>>(), dbPath));
-builder.Services.AddSingleton<EquityCalculator>();
-builder.Services.AddSingleton<AnalyticsCalculator>();
-builder.Services.AddSingleton<AnalysisService>();
-builder.Services.AddSingleton<StatsBuilderEngine>();
-builder.Services.AddSingleton<ImporterService>();
+builder.Services.AddSingleton<IEquityCalculator, EquityCalculator>();
+builder.Services.AddSingleton<IAnalyticsCalculator, AnalyticsCalculator>();
+builder.Services.AddSingleton<IAnalysisService, AnalysisService>();
+builder.Services.AddSingleton<IStatsBuilderEngine, StatsBuilderEngine>();
+builder.Services.AddSingleton<IImporterService, ImporterService>();
 
 var app = builder.Build();
 
@@ -108,26 +111,8 @@ var jsonOptions = new JsonSerializerOptions
     PropertyNameCaseInsensitive = true
 };
 
-// ============ Health Check ============
-app.MapGet("/health", () =>
-{
-    return Results.Json(new
-    {
-        success = true,
-        status = "running",
-        version = "2.0.0-csharp",
-        features = new
-        {
-            database = true,
-            parsers = new[] { "Betclic" },
-            equity = true,
-            analysis = true
-        }
-    });
-});
-
 // ============ Parser Endpoints ============
-app.MapPost("/import/file", async (HttpContext context, ImporterService importer) =>
+app.MapPost("/import/file", async (HttpContext context, IImporterService importer) =>
 {
     context.Response.ContentType = "text/event-stream";
     context.Response.Headers.Append("Cache-Control", "no-cache");
@@ -161,7 +146,7 @@ app.MapPost("/import/file", async (HttpContext context, ImporterService importer
     }
 });
 
-app.MapPost("/import/count-hands", async (HttpContext context, ImporterService importer) =>
+app.MapPost("/import/count-hands", async (HttpContext context, IImporterService importer) =>
 {
     try
     {
@@ -266,7 +251,7 @@ app.MapPost("/parse/detect", async (HttpContext context) =>
 });
 
 // ============ Database Endpoints ============
-app.MapPost("/db/insert-hands", async (HttpContext context, Database db, AnalyticsCalculator analyticsCalc) =>
+app.MapPost("/db/insert-hands", async (HttpContext context, Database db, IAnalyticsCalculator analyticsCalc) =>
 {
     try
     {
@@ -605,7 +590,7 @@ app.MapPost("/db/delete-all", async (Database db) =>
 });
 
 // ============ Equity Endpoints ============
-app.MapPost("/equity", async (HttpContext context, EquityCalculator equityCalc) =>
+app.MapPost("/equity", async (HttpContext context, IEquityCalculator equityCalc) =>
 {
     try
     {
@@ -638,7 +623,7 @@ app.MapPost("/equity", async (HttpContext context, EquityCalculator equityCalc) 
     }
 });
 
-app.MapPost("/equity/batch", async (HttpContext context, EquityCalculator equityCalc) =>
+app.MapPost("/equity/batch", async (HttpContext context, IEquityCalculator equityCalc) =>
 {
     try
     {
@@ -687,7 +672,7 @@ app.MapPost("/equity/batch", async (HttpContext context, EquityCalculator equity
 });
 
 // ============ Analysis Endpoints ============
-app.MapPost("/analysis/stats", async (HttpContext context, AnalysisService analysisService) =>
+app.MapPost("/analysis/stats", async (HttpContext context, IAnalysisService analysisService) =>
 {
     try
     {
@@ -710,7 +695,7 @@ app.MapPost("/analysis/stats", async (HttpContext context, AnalysisService analy
     }
 });
 
-app.MapPost("/analysis/hands", async (HttpContext context, AnalysisService analysisService) =>
+app.MapPost("/analysis/hands", async (HttpContext context, IAnalysisService analysisService) =>
 {
     try
     {
@@ -733,7 +718,7 @@ app.MapPost("/analysis/hands", async (HttpContext context, AnalysisService analy
     }
 });
 
-app.MapPost("/analysis/range-breakdown", async (HttpContext context, AnalysisService analysisService) =>
+app.MapPost("/analysis/range-breakdown", async (HttpContext context, IAnalysisService analysisService) =>
 {
     try
     {
@@ -758,7 +743,7 @@ app.MapPost("/analysis/range-breakdown", async (HttpContext context, AnalysisSer
     }
 });
 
-app.MapPost("/stats/builder/evaluate", async (HttpContext context, Database db, StatsBuilderEngine engine) =>
+app.MapPost("/stats/builder/evaluate", async (HttpContext context, Database db, IStatsBuilderEngine engine) =>
 {
     try
     {
@@ -788,7 +773,7 @@ app.MapPost("/stats/builder/evaluate", async (HttpContext context, Database db, 
     }
 });
 
-app.MapPost("/analyze/range", async (HttpContext context, AnalysisService analysisService) =>
+app.MapPost("/analyze/range", async (HttpContext context, IAnalysisService analysisService) =>
 {
     try
     {
@@ -812,7 +797,7 @@ app.MapPost("/analyze/range", async (HttpContext context, AnalysisService analys
     }
 });
 
-app.MapPost("/recalculate-analytics", async (Database db, AnalyticsCalculator analyticsCalc) =>
+app.MapPost("/recalculate-analytics", async (Database db, IAnalyticsCalculator analyticsCalc) =>
 {
     try
     {
@@ -855,7 +840,7 @@ app.MapPost("/recalculate-analytics", async (Database db, AnalyticsCalculator an
     }
 });
 
-app.MapPost("/recalculate-analytics/stream", async (HttpContext context, Database db, AnalyticsCalculator analyticsCalc) =>
+app.MapPost("/recalculate-analytics/stream", async (HttpContext context, Database db, IAnalyticsCalculator analyticsCalc) =>
 {
     context.Response.ContentType = "text/event-stream";
     context.Response.Headers.Append("Cache-Control", "no-cache");
@@ -1075,7 +1060,7 @@ app.MapPost("/stats/import", async (HttpContext context, Database db) =>
     }
 });
 
-app.MapPost("/stats/builder/evaluate-batch", async (HttpContext context, Database db, StatsBuilderEngine engine) =>
+app.MapPost("/stats/builder/evaluate-batch", async (HttpContext context, Database db, IStatsBuilderEngine engine) =>
 {
     try
     {
@@ -1203,68 +1188,3 @@ app.MapPost("/reset-default-stats", async (Database db) =>
 });
 
 app.Run($"http://127.0.0.1:{port}");
-
-// ============ Request/Response Models ============
-public record ImportFileRequest(string FilePath);
-public record ParseFileRequest(string? Content, string? Room);
-public record ParseDetectRequest(string? Content);
-public class InsertHandsRequest { public List<ParsedHand> Hands { get; set; } = new(); }
-public record HandsQueryOptions
-{
-    public int Page { get; set; } = 1;
-    public int Limit { get; set; } = 50;
-    public string? DateFrom { get; set; }
-    public string? DateTo { get; set; }
-    public string? Position { get; set; }
-    public string? Result { get; set; }
-    public string? GameType { get; set; }
-    public double? MinPot { get; set; }
-    public double? MaxPot { get; set; }
-    public string? HeroName { get; set; }
-    public string? SortBy { get; set; }
-}
-public record SessionHistoryRequest(int Limit = 50, string? HeroName = null, string? DateFrom = null, string? DateTo = null, double? BuyIn = null);
-public record ChartQueryOptions
-{
-    public string? DateFrom { get; set; }
-    public string? DateTo { get; set; }
-    public string? HeroName { get; set; }
-    public double? BuyIn { get; set; }
-}
-public record RangeHeatmapFilters 
-{ 
-    public string? HeroName { get; set; }
-}
-public record PlayersQueryOptions
-{
-    public int? Limit { get; set; }
-    public int? MinHands { get; set; }
-}
-public record EquityRequest(string? HeroCards, string? VillainCards, string? Board, int? Iterations);
-public record BatchEquityRequest(List<BatchEquityHand> Hands, int? Iterations);
-public record BatchEquityHand(string? Id, string? HeroCards, string? VillainCards, string? Board);        
-public record AnalyzeRangeRequest(string? Position, string? Action, int? Stack);
-// AnalysisFilters record removed to use class from AnalysisModels.cs
-// ... existing code ...
-
-public class CustomStatRequest
-{
-    public string? Id { get; set; }
-    public string Name { get; set; } = "";
-    public string? Description { get; set; }
-    public object? Definition { get; set; }
-}
-
-public class HudProfileRequest
-{
-    public string? Id { get; set; }
-    public string Name { get; set; } = "";
-    public object? Layout { get; set; }
-    public bool IsActive { get; set; }
-}
-
-public class EvaluateBatchRequest
-{
-    public List<StatDefinition> Stats { get; set; } = new();
-    public SpinTrackerBackend.AnalysisFilters? Filters { get; set; }
-}

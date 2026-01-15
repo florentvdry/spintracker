@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Npgsql;
 using SpinTrackerBackend;
+using SpinTrackerBackend.Engines;
 using Microsoft.Extensions.Logging.Abstractions;
 
 public static class ComparisonTool

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SpinTrackerBackend.Interfaces;
+using SpinTrackerBackend;
 
-namespace SpinTrackerBackend
+namespace SpinTrackerBackend.Services
 {
-    public class AnalysisService
+    public class AnalysisService : IAnalysisService
     {
         private readonly Database _db;
         private readonly ILogger<AnalysisService> _logger;
@@ -596,18 +598,18 @@ namespace SpinTrackerBackend
             return rangeData;
         }
 
-        public object AnalyzeRange(string? position, string? action, int stack)
+        public RangeAnalysisResult AnalyzeRange(string? position, string? action, int stack)
         {
             // Placeholder logic for range analysis (Nash based)
             // In a real app, this would query pre-calculated tables
-            return new
+            return new RangeAnalysisResult
             {
-                position = position ?? "BTN",
-                action = action ?? "Open",
-                stack = stack,
-                range = "22+, A2s+, K5s+, Q8s+, J8s+, T8s+, 98s, A7o+, KTo+, QTo+, JTo",
-                vpip = 24.5,
-                pfr = 18.2
+                Position = position ?? "BTN",
+                Action = action ?? "Open",
+                Stack = stack,
+                Range = "22+, A2s+, K5s+, Q8s+, J8s+, T8s+, 98s, A7o+, KTo+, QTo+, JTo",
+                Vpip = 24.5,
+                Pfr = 18.2
             };
         }
 

@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using System.Globalization;
+using SpinTrackerBackend;
 
 namespace SpinTrackerBackend;
 
@@ -88,12 +89,10 @@ public class BetclicParser : IHandParser
 
     public ParsedHand? ParseHand(string handText)
     {
-        try
-        {
-            var lines = handText.Split('\n')
-                               .Select(l => l.Trim())
-                               .Where(l => !string.IsNullOrEmpty(l))
-                               .ToList();
+        var lines = handText.Split('\n')
+                           .Select(l => l.Trim())
+                           .Where(l => !string.IsNullOrEmpty(l))
+                           .ToList();
 
             var hand = new ParsedHand { Room = "Betclic.fr" };
             
@@ -173,11 +172,6 @@ public class BetclicParser : IHandParser
             ConsolidateShowdownStatus(hand, showdownSectionEncountered);
 
             return hand;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
     }
 
     private string? DetectSection(string line)
