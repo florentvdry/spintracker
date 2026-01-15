@@ -1,119 +1,97 @@
-using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using SpinTrackerBackend.Interfaces;
-using SpinTrackerBackend;
 
 namespace SpinTrackerBackend.Controllers;
 
-public static class AnalysisController
+[ApiController]
+public class AnalysisController : ControllerBase
 {
-    public static void MapEndpoints(WebApplication app)
+    private readonly IAnalysisService _analysisService;
+    private readonly ILogger<AnalysisController> _logger;
+
+    public AnalysisController(IAnalysisService analysisService, ILogger<AnalysisController> logger)
     {
-        var logger = app.Logger;
-        var jsonOptions = new JsonSerializerOptions
+        _analysisService = analysisService;
+        _logger = logger;
+    }
+
+    [HttpPost("analysis/stats")]
+    public async Task<IActionResult> GetAnalysisStats([FromBody] AnalysisFilters filters)
+    {
+        try
         {
-            PropertyNameCaseInsensitive = true
-        };
+            if (filters == null)
+            {
+                return BadRequest(new { success = false, error = "No filters provided" });
+            }
 
-        // ============ Analysis Endpoints (DISABLED - using AnalysisEndpoints.cs instead) ============
-        // app.MapPost("/analysis/stats", async (HttpContext context, IAnalysisService analysisService) =>
-        /*
+            var result = await _analysisService.GetAnalysisStatsAsync(filters);
+            return Ok(new { success = true, data = result });
+        }
+        catch (Exception e)
         {
-            try
-            {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var filters = JsonSerializer.Deserialize<AnalysisFilters>(body, jsonOptions);
+            _logger.LogError($"Analysis error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
 
-                if (filters == null)
-                {
-                     return Results.BadRequest(new { success = false, error = "No filters provided" });
-                }
-
-                var result = await analysisService.GetAnalysisStatsAsync(filters);
-                return Results.Json(new { success = true, data = result });
-            }
-            catch (Exception e)
-            {
-                logger.LogError($"Analysis error: {e.Message}");
-                return Results.Problem(detail: e.Message, statusCode: 500);
-            }
-        });
-        */
-
-        // app.MapPost("/analysis/hands", async (HttpContext context, IAnalysisService analysisService) =>
-        /*
+    [HttpPost("analysis/hands")]
+    public async Task<IActionResult> GetAnalysisHands([FromBody] AnalysisHandsRequest request)
+    {
+        try
         {
-            try
+            if (request == null)
             {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var request = JsonSerializer.Deserialize<AnalysisHandsRequest>(body, jsonOptions);
-
-                if (request == null)
-                {
-                     return Results.BadRequest(new { success = false, error = "Invalid request" });
-                }
-
-                var result = await analysisService.GetAnalysisHandsAsync(request);
-                return Results.Json(new { success = true, data = result });
+                return BadRequest(new { success = false, error = "Invalid request" });
             }
-            catch (Exception e)
-            {
-                logger.LogError($"Analysis hands error: {e.Message}");
-                return Results.Problem(detail: e.Message, statusCode: 500);
-            }
-        });
-        */
 
-        // app.MapPost("/analysis/range-breakdown", async (HttpContext context, IAnalysisService analysisService) =>
-        /*
+            var result = await _analysisService.GetAnalysisHandsAsync(request);
+            return Ok(new { success = true, data = result });
+        }
+        catch (Exception e)
         {
-            try
-            {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var filters = JsonSerializer.Deserialize<AnalysisFilters>(body, jsonOptions);
+            _logger.LogError($"Analysis hands error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
 
-                if (filters == null)
-                {
-                     return Results.BadRequest(new { success = false, error = "Invalid request" });
-                }
-
-                var result = await analysisService.GetRangeAnalysisAsync(filters);
-                return Results.Json(new { success = true, data = result });
-            }
-            catch (Exception e)
-            {
-                logger.LogError($"Range breakdown error: {e.Message}");
-                return Results.Problem(detail: e.Message, statusCode: 500);
-            }
-        });
-        */
-
-        // app.MapPost("/analyze/range", async (HttpContext context, IAnalysisService analysisService) =>
-        /*
+    [HttpPost("analysis/range-breakdown")]
+    public async Task<IActionResult> GetRangeAnalysis([FromBody] AnalysisFilters filters)
+    {
+        try
         {
-            try
+            if (filters == null)
             {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var data = JsonSerializer.Deserialize<AnalyzeRangeRequest>(body, jsonOptions);
-
-                if (data == null)
-                {
-                    return Results.BadRequest(new { success = false, error = "Invalid request" });
-                }
-
-                var result = analysisService.AnalyzeRange(data.Position, data.Action, data.Stack ?? 20);
-
-                return Results.Json(new { success = true, data = result });
+                return BadRequest(new { success = false, error = "Invalid request" });
             }
-            catch (Exception e)
+
+            var result = await _analysisService.GetRangeAnalysisAsync(filters);
+            return Ok(new { success = true, data = result });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Range breakdown error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpPost("analyze/range")]
+    public IActionResult AnalyzeRange([FromBody] AnalyzeRangeRequest data)
+    {
+        try
+        {
+            if (data == null)
             {
-                logger.LogError($"Range analysis error: {e.Message}");
-                return Results.Problem(detail: e.Message, statusCode: 500);
+                return BadRequest(new { success = false, error = "Invalid request" });
             }
-        });
-        */
+
+            var result = _analysisService.AnalyzeRange(data.Position, data.Action, data.Stack ?? 20);
+            return Ok(new { success = true, data = result });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Range analysis error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
     }
 }

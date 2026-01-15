@@ -1,14 +1,5 @@
-using System.Net;
-using System.Text;
-using System.Text.Json;
 using SpinTrackerBackend;
-using SpinTrackerBackend.StatsBuilder;
 using FluentMigrator.Runner;
-using SpinTrackerBackend.Migrations;
-using SpinTrackerBackend.Interfaces;
-using SpinTrackerBackend.Engines;
-using SpinTrackerBackend.Services;
-using SpinTrackerBackend.Data.Repositories;
 
 // Initialize SQLite (use Batteries_V2 to match SQLitePCLRaw.batteries_v2)
 SQLitePCL.Batteries_V2.Init();
@@ -60,51 +51,11 @@ catch (Exception ex)
     throw;
 }
 
-app.UseCors();
-
-// Global exception handler
-app.Use(async (context, next) =>
-{
-    try
-    {
-        await next(context);
-    }
-    catch (Exception ex)
-    {
-        app.Logger.LogError($"Unhandled exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
-        context.Response.StatusCode = 500;
-        await context.Response.WriteAsJsonAsync(new { success = false, error = ex.Message, stackTrace = ex.StackTrace });
-    }
-});
-
-var logger = app.Logger;
-
-// JSON options: be case-insensitive to match frontend payloads (e.g. "content" vs "Content")
-var jsonOptions = new JsonSerializerOptions
-{
-    PropertyNameCaseInsensitive = true
-};
-
-// ============ Database Endpoints ============
-// Database endpoints moved to DatabaseEndpoints.cs
-
-
-// ============ Analysis Endpoints ============
-
-
-
-
 // Get port from command line args
 var port = args.Length > 0 && int.TryParse(args[0], out var p) ? p : 5050;
 
-logger.LogInformation($"Starting C# backend on port {port}");
-logger.LogInformation("Available parsers: Betclic");
-
-
-// ============ Custom Stats Endpoints ============
-// Moved to StatsEndpoints.cs
-
-
+app.Logger.LogInformation($"Starting C# backend on port {port}");
+app.Logger.LogInformation("Available parsers: Betclic");
 
 Startup.Configure(app);
 

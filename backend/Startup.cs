@@ -62,6 +62,13 @@ public static class Startup
         services.AddSingleton(sp => new StatsRepository(connectionString, sp.GetRequiredService<ILogger<StatsRepository>>(), sp.GetRequiredService<CustomStatsRepository>(), sp.GetRequiredService<HudProfileRepository>()));
         services.AddSingleton(sp => new PlayerRepository(connectionString, sp.GetRequiredService<ILogger<PlayerRepository>>()));
         services.AddSingleton(sp => new TournamentsRepository(connectionString, sp.GetRequiredService<ILogger<TournamentsRepository>>()));
+
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+            });
     }
 
     public static void Configure(WebApplication app)
@@ -93,14 +100,6 @@ public static class Startup
         });
 
         // Add endpoints
-        HealthEndpoints.Map(app);
-        ParserEndpoints.Map(app);
-        DatabaseEndpoints.Map(app);
-        EquityEndpoints.Map(app);
-        AnalysisEndpoints.Map(app);
-        StatsEndpoints.Map(app);
-        HudProfileEndpoints.Map(app);
-        PlayerEndpoints.Map(app);
-        TournamentsEndpoints.Map(app);
+        app.MapControllers();
     }
 }

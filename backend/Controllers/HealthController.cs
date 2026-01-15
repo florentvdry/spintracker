@@ -1,27 +1,26 @@
-using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SpinTrackerBackend.Controllers;
 
-public static class HealthController
+[ApiController]
+[Route("health")]
+public class HealthController : ControllerBase
 {
-    public static void MapEndpoints(WebApplication app)
+    [HttpGet]
+    public IActionResult Get()
     {
-        // ============ Health Check ============
-        app.MapGet("/health", () =>
+        return Ok(new
         {
-            return Results.Json(new
+            success = true,
+            status = "running",
+            version = "2.0.0-csharp",
+            features = new
             {
-                success = true,
-                status = "running",
-                version = "2.0.0-csharp",
-                features = new
-                {
-                    database = true,
-                    parsers = new[] { "Betclic" },
-                    equity = true,
-                    analysis = true
-                }
-            });
+                database = true,
+                parsers = new[] { "Betclic" },
+                equity = true,
+                analysis = true
+            }
         });
     }
 }

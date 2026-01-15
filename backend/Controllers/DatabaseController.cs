@@ -1,0 +1,423 @@
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using SpinTrackerBackend.Engines;
+using SpinTrackerBackend.Interfaces;
+using SpinTrackerBackend.Data.Repositories;
+
+namespace SpinTrackerBackend.Controllers;
+
+[ApiController]
+public class DatabaseController : ControllerBase
+{
+    private readonly HandRepository _handRepo;
+    private readonly AnalyticsRepository _analyticsRepo;
+    private readonly StatsRepository _statsRepo;
+    private readonly IAnalyticsCalculator _analyticsCalc;
+    private readonly Database _db;
+    private readonly ILogger<DatabaseController> _logger;
+
+    public DatabaseController(
+        HandRepository handRepo, 
+        AnalyticsRepository analyticsRepo, 
+        StatsRepository statsRepo,
+        IAnalyticsCalculator analyticsCalc,
+        Database db,
+        ILogger<DatabaseController> logger)
+    {
+        _handRepo = handRepo;
+        _analyticsRepo = analyticsRepo;
+        _statsRepo = statsRepo;
+        _analyticsCalc = analyticsCalc;
+        _db = db;
+        _logger = logger;
+    }
+
+    [HttpPost("db/insert-hands")]
+    public async Task<IActionResult> InsertHands([FromBody] InsertHandsRequest data)
+    {
+        try
+        {
+            if (data == null || data.Hands == null || data.Hands.Count == 0)
+            {
+                return Ok(new { success = true, inserted = 0 });
+            }
+
+            var inserted = await _handRepo.InsertHandsBatchAsync(data.Hands);
+
+            var analyticsList = await Task.WhenAll(
+                data.Hands.Select(hand => Task.Run(() => _analyticsCalc.CalculateHandAnalytics(hand)))
+            );
+
+            if (analyticsList.Length > 0)
+            {
+                await _analyticsRepo.InsertAnalyticsBatchAsync(analyticsList);
+            }
+
+            return Ok(
+            new
+            {
+                success = true,
+                inserted,
+                total = data.Hands.Count,
+                analytics_calculated = analyticsList.Length
+            });
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"Insert error: {e.Message}\nStackTrace: {e.StackTrace}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("db/hands")]
+    [HttpPost("db/hands")]
+    public async Task<IActionResult> GetHands([FromBody] HandsQueryOptions? postOptions)
+    {
+        try
+        {
+            HandsQueryOptions options;
+            if (Request.Method == "POST" && postOptions != null)
+            {
+                options = postOptions;
+            }
+            else
+            {
+                options = new HandsQueryOptions
+                {
+                    Page = int.TryParse(Request.Query["page"], out var p) ? p : 1,
+                    Limit = int.TryParse(Request.Query["limit"], out var l) ? l : 50,
+                    DateFrom = Request.Query["dateFrom"],
+                    DateTo = Request.Query["dateTo"],
+                    HeroName = Request.Query["heroName"],
+                    SortBy = Request.Query["sortBy"]
+                };
+            }
+
+            var result = await _handRepo.GetHandsAsync(options);
+            return Ok(new { success = true, data = result });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Get hands error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("db/tournament-hands")]
+    public async Task<IActionResult> GetTournamentHands([FromQuery] string gameId, [FromQuery] string? heroName)
+    {
+        try
+        {
+            var result = await _handRepo.GetTournamentHandsAsync(gameId, heroName);
+            return Ok(new { success = true, data = result });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("db/hand/{handId}")]
+    public async Task<IActionResult> GetHandById(string handId)
+    {
+        try
+        {
+            var hand = await _handRepo.GetHandByIdAsync(handId);
+            if (hand != null)
+            {
+                return Ok(new { success = true, data = hand });
+            }
+            else
+            {
+                return NotFound(new { success = false, error = "Hand not found" });
+            }
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("db/dashboard-stats")]
+    public async Task<IActionResult> GetDashboardStats(
+        [FromQuery] string? heroName, 
+        [FromQuery] string? dateFrom, 
+        [FromQuery] string? dateTo, 
+        [FromQuery] double? buyIn)
+    {
+        try
+        {
+            var stats = await _statsRepo.GetDashboardStatsAsync(
+                string.IsNullOrEmpty(heroName) ? null : heroName,
+                string.IsNullOrEmpty(dateFrom) ? null : dateFrom,
+                string.IsNullOrEmpty(dateTo) ? null : dateTo,
+                buyIn
+            );
+            return Ok(new { success = true, data = stats });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Dashboard stats error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("db/session-history")]
+    [HttpPost("db/session-history")]
+    public async Task<IActionResult> GetSessionHistory([FromBody] SessionHistoryRequest? postRequest)
+    {
+        try
+        {
+            int limit = 50;
+            string? heroName = null;
+            string? dateFrom = null;
+            string? dateTo = null;
+            double? buyIn = null;
+
+            if (Request.Method == "POST" && postRequest != null)
+            {
+                limit = postRequest.Limit;
+                heroName = postRequest.HeroName;
+                dateFrom = postRequest.DateFrom;
+                dateTo = postRequest.DateTo;
+                buyIn = postRequest.BuyIn;
+            }
+            else
+            {
+                limit = int.TryParse(Request.Query["limit"], out var l) ? l : 50;
+                heroName = Request.Query["heroName"];
+                dateFrom = Request.Query["dateFrom"];
+                dateTo = Request.Query["dateTo"];
+                if (double.TryParse(Request.Query["buyIn"], out var b)) buyIn = b;
+            }
+
+            var sessions = await _statsRepo.GetSessionHistoryAsync(limit, heroName, dateFrom, dateTo, buyIn);
+            return Ok(new { success = true, data = sessions });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("db/buyins")]
+    public async Task<IActionResult> GetBuyIns()
+    {
+        try
+        {
+            var buyIns = await _statsRepo.GetUniqueBuyInsAsync();
+            return Ok(new { success = true, data = buyIns });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("debug/dashboard-raw")]
+    public async Task<IActionResult> GetDashboardRaw()
+    {
+        try
+        {
+            var data = await _statsRepo.GetDashboardRawAsync(50);
+            return Ok(new { success = true, data });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Debug dashboard raw error: {e.Message}");
+            return Ok(new { success = false, error = e.Message });
+        }
+    }
+
+    [HttpGet("db/range-heatmap")]
+    [HttpPost("db/range-heatmap")]
+    public async Task<IActionResult> GetRangeHeatmap([FromBody] RangeHeatmapFilters? postFilters)
+    {
+        try
+        {
+            RangeHeatmapFilters filters;
+            if (Request.Method == "POST" && postFilters != null)
+            {
+                filters = postFilters;
+            }
+            else
+            {
+                filters = new RangeHeatmapFilters();
+            }
+
+            var heatmap = await _analyticsRepo.GetRangeHeatmapAsync(filters);
+            return Ok(new { success = true, data = heatmap });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpPost("db/delete-all")]
+    public async Task<IActionResult> DeleteAll()
+    {
+        try
+        {
+            var result = await _db.DeleteAllHandsAsync();
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpPost("recalculate-analytics")]
+    public async Task<IActionResult> RecalculateAnalytics()
+    {
+        try
+        {
+            await _analyticsRepo.DeleteAllAnalyticsAsync();
+            var hands = await _analyticsRepo.GetAllHandsForAnalysisAsync();
+
+            if (hands.Count == 0)
+            {
+                return Ok(new { success = true, data = Array.Empty<object>(), processed = 0 });
+            }
+
+            _logger.LogInformation($"Recalculating analytics for {hands.Count} hands...");
+
+            var analyticsList = await Task.WhenAll(
+                hands.Select(hand => Task.Run(() => _analyticsCalc.CalculateHandAnalytics(hand)))
+            );
+
+            if (analyticsList.Length > 0)
+            {
+                var inserted = await _analyticsRepo.InsertAnalyticsBatchAsync(analyticsList);
+                _logger.LogInformation($"Inserted {inserted} analytics records");
+            }
+
+            return Ok(
+            new
+            {
+                success = true,
+                processed = analyticsList.Length,
+                total_hands = hands.Count
+            });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Analytics recalculation error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpPost("recalculate-analytics/stream")]
+    public async Task RecalculateAnalyticsStream()
+    {
+        Response.ContentType = "text/event-stream";
+        Response.Headers.Append("Cache-Control", "no-cache");
+        Response.Headers.Append("Connection", "keep-alive");
+
+        try
+        {
+            await _analyticsRepo.DeleteAllAnalyticsAsync();
+            var hands = await _analyticsRepo.GetAllHandsForAnalysisAsync();
+            var total = hands.Count;
+
+            if (hands.Count == 0)
+            {
+                var payload = JsonSerializer.Serialize(new
+                {
+                    success = true,
+                    processed = 0,
+                    total_hands = 0,
+                    progress = 100,
+                    message = "No hands to process"
+                });
+                await Response.WriteAsync($"data: {payload}\n\n");
+                await Response.Body.FlushAsync();
+                return;
+            }
+
+            var analyticsList = new List<HandAnalytics>();
+            var processed = 0;
+            var batchSize = 100;
+
+            for (var i = 0; i < hands.Count; i += batchSize)
+            {
+                var batch = hands.Skip(i).Take(batchSize).ToList();
+                var batchResults = await Task.WhenAll(
+                    batch.Select(hand => Task.Run(() => _analyticsCalc.CalculateHandAnalytics(hand)))
+                );
+
+                analyticsList.AddRange(batchResults);
+                processed += batchResults.Length;
+
+                var progress = (int)((processed / (double)total) * 100);
+                var payload = JsonSerializer.Serialize(new
+                {
+                    progress,
+                    message = $"Processed {processed}/{total} hands",
+                    processed,
+                    total
+                });
+
+                await Response.WriteAsync($"data: {payload}\n\n");
+                await Response.Body.FlushAsync();
+            }
+
+            if (analyticsList.Count > 0)
+            {
+                var inserted = await _analyticsRepo.InsertAnalyticsBatchAsync(analyticsList.ToArray());
+                var finalPayload = JsonSerializer.Serialize(new
+                {
+                    progress = 100,
+                    message = "Terminé",
+                    processed = analyticsList.Count,
+                    total,
+                    inserted,
+                    success = true
+                });
+                await Response.WriteAsync($"data: {finalPayload}\n\n");
+            }
+            else
+            {
+                var finalPayload = JsonSerializer.Serialize(new
+                {
+                    progress = 100,
+                    message = "Terminé",
+                    processed = 0,
+                    total,
+                    success = true
+                });
+                await Response.WriteAsync($"data: {finalPayload}\n\n");
+            }
+
+            await Response.Body.FlushAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Analytics recalculation stream error: {e.Message}");
+            var errorPayload = JsonSerializer.Serialize(new
+            {
+                progress = 100,
+                message = e.Message,
+                error = true
+            });
+            await Response.WriteAsync($"data: {errorPayload}\n\n");
+            await Response.Body.FlushAsync();
+        }
+    }
+
+    [HttpPost("reset-default-stats")]
+    public async Task<IActionResult> ResetDefaultStats()
+    {
+        try
+        {
+            await _statsRepo.ResetDefaultStatsAndProfilesAsync();
+            return Ok(new { success = true, message = "Default stats and profiles reloaded" });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Reset default stats error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+}

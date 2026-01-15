@@ -1,164 +1,144 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using SpinTrackerBackend.Interfaces;
-using SpinTrackerBackend;
 
 namespace SpinTrackerBackend.Controllers;
 
-public static class ParserController
+[ApiController]
+public class ParserController : ControllerBase
 {
-    public static void MapEndpoints(WebApplication app)
+    private readonly IImporterService _importer;
+    private readonly ILogger<ParserController> _logger;
+
+    public ParserController(IImporterService importer, ILogger<ParserController> logger)
     {
-        var logger = app.Logger;
-        var jsonOptions = new JsonSerializerOptions
+        _importer = importer;
+        _logger = logger;
+    }
+
+    [HttpPost("import/file")]
+    public async Task ImportFile([FromBody] ImportFileRequest data)
+    {
+        Response.ContentType = "text/event-stream";
+        Response.Headers.Append("Cache-Control", "no-cache");
+        Response.Headers.Append("Connection", "keep-alive");
+
+        try
         {
-            PropertyNameCaseInsensitive = true
-        };
+            if (data == null || string.IsNullOrEmpty(data.FilePath))
+            {
+                var errorPayload = JsonSerializer.Serialize(new { success = false, error = "No file path provided" });
+                await Response.WriteAsync($"data: {errorPayload}\n\n");
+                return;
+            }
 
-        // ============ Parser Endpoints (DISABLED - using ParserEndpoints.cs instead) ============
-        // app.MapPost("/import/file", async (HttpContext context, IImporterService importer) =>
-        /*
+            await _importer.ImportFileAsync(data.FilePath, async (progress) =>
+            {
+                var payload = JsonSerializer.Serialize(progress);
+                await Response.WriteAsync($"data: {payload}\n\n");
+                await Response.Body.FlushAsync();
+            }, HttpContext.RequestAborted);
+        }
+        catch (Exception e)
         {
-            context.Response.ContentType = "text/event-stream";
-            context.Response.Headers.Append("Cache-Control", "no-cache");
-            context.Response.Headers.Append("Connection", "keep-alive");
+            _logger.LogError($"Import error: {e.Message}");
+            var errorPayload = JsonSerializer.Serialize(new { success = false, error = e.Message });
+            await Response.WriteAsync($"data: {errorPayload}\n\n");
+        }
+    }
 
-            try
-            {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var data = JsonSerializer.Deserialize<ImportFileRequest>(body, jsonOptions);
-
-                if (data == null || string.IsNullOrEmpty(data.FilePath))
-                {
-                    var errorPayload = JsonSerializer.Serialize(new { success = false, error = "No file path provided" });
-                    await context.Response.WriteAsync($"data: {errorPayload}\n\n");
-                    return;
-                }
-
-                await importer.ImportFileAsync(data.FilePath, async (progress) =>
-                {
-                    var payload = JsonSerializer.Serialize(progress);
-                    await context.Response.WriteAsync($"data: {payload}\n\n");
-                    await context.Response.Body.FlushAsync();
-                }, context.RequestAborted);
-            }
-            catch (Exception e)
-            {
-                logger.LogError($"Import error: {e.Message}");
-                var errorPayload = JsonSerializer.Serialize(new { success = false, error = e.Message });
-                await context.Response.WriteAsync($"data: {errorPayload}\n\n");
-            }
-        });
-        */
-
-        // app.MapPost("/import/count-hands", async (HttpContext context, IImporterService importer) =>
-        /*
+    [HttpPost("import/count-hands")]
+    public async Task<IActionResult> CountHands([FromBody] ImportFileRequest data)
+    {
+        try
         {
-            try
+            if (data == null || string.IsNullOrEmpty(data.FilePath))
             {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var data = JsonSerializer.Deserialize<ImportFileRequest>(body, jsonOptions);
-
-                if (data == null || string.IsNullOrEmpty(data.FilePath))
-                {
-                    return Results.Json(new { success = false, error = "No file path provided" });
-                }
-
-                var count = await importer.CountHandsInFileAsync(data.FilePath, context.RequestAborted);
-                return Results.Json(new { success = true, count });
+                return Ok(new { success = false, error = "No file path provided" });
             }
-            catch (Exception e)
-            {
-                logger.LogError($"Count hands error: {e.Message}");
-                return Results.Json(new { success = false, error = e.Message });
-            }
-        });
-        */
 
-        // app.MapPost("/parse/file", async (HttpContext context) =>
-        /*
+            var count = await _importer.CountHandsInFileAsync(data.FilePath, HttpContext.RequestAborted);
+            return Ok(new { success = true, count });
+        }
+        catch (Exception e)
         {
-            try
+            _logger.LogError($"Count hands error: {e.Message}");
+            return Ok(new { success = false, error = e.Message });
+        }
+    }
+
+    [HttpPost("parse/file")]
+    public IActionResult ParseFile([FromBody] ParseFileRequest data)
+    {
+        try
+        {
+            if (data == null || string.IsNullOrEmpty(data.Content))
             {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var data = JsonSerializer.Deserialize<ParseFileRequest>(body, jsonOptions);
+                return BadRequest(new { success = false, error = "No content provided" });
+            }
 
-                if (data == null || string.IsNullOrEmpty(data.Content))
-                {
-                    return Results.BadRequest(new { success = false, error = "No content provided" });
-                }
+            IHandParser? parser;
+            if (!string.IsNullOrEmpty(data.Room))
+            {
+                parser = ParserFactory.GetParserByRoom(data.Room);
+            }
+            else
+            {
+                parser = ParserFactory.GetParser(data.Content);
+            }
 
-                IHandParser? parser;
-                if (!string.IsNullOrEmpty(data.Room))
-                {
-                    parser = ParserFactory.GetParserByRoom(data.Room);
-                }
-                else
-                {
-                    parser = ParserFactory.GetParser(data.Content);
-                }
+            if (parser == null)
+            {
+                return BadRequest(new { success = false, error = "Could not detect hand history format" });
+            }
 
-                if (parser == null)
-                {
-                    return Results.BadRequest(new { success = false, error = "Could not detect hand history format" });
-                }
+            var result = parser.ParseFile(data.Content);
 
-                var result = parser.ParseFile(data.Content);
+            return Ok(new
+            {
+                success = result.Success,
+                room = parser.RoomName,
+                hands = result.Hands,
+                count = result.Count,
+                error = result.Error
+            });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Parse error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
 
-                return Results.Json(new
+    [HttpPost("parse/detect")]
+    public IActionResult DetectParser([FromBody] ParseDetectRequest data)
+    {
+        try
+        {
+            if (data == null || string.IsNullOrEmpty(data.Content))
+            {
+                return BadRequest(new { success = false, error = "No content provided" });
+            }
+
+            var parser = ParserFactory.GetParser(data.Content);
+
+            if (parser != null)
+            {
+                return Ok(new
                 {
-                    success = result.Success,
+                    success = true,
                     room = parser.RoomName,
-                    hands = result.Hands,
-                    count = result.Count,
-                    error = result.Error
+                    version = parser.ParserVersion
                 });
             }
-            catch (Exception e)
+            else
             {
-                logger.LogError($"Parse error: {e.Message}");
-                return Results.Problem(detail: e.Message, statusCode: 500);
+                return Ok(new { success = false, error = "Unknown format" });
             }
-        });
-        */
-
-        // app.MapPost("/parse/detect", async (HttpContext context) =>
-        /*
+        }
+        catch (Exception e)
         {
-            try
-            {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var data = JsonSerializer.Deserialize<ParseDetectRequest>(body, jsonOptions);
-
-                if (data == null || string.IsNullOrEmpty(data.Content))
-                {
-                    return Results.BadRequest(new { success = false, error = "No content provided" });
-                }
-
-                var parser = ParserFactory.GetParser(data.Content);
-
-                if (parser != null)
-                {
-                    return Results.Json(new
-                    {
-                        success = true,
-                        room = parser.RoomName,
-                        version = parser.ParserVersion
-                    });
-                }
-                else
-                {
-                    return Results.Json(new { success = false, error = "Unknown format" });
-                }
-            }
-            catch (Exception e)
-            {
-                return Results.Json(new { success = false, message = e.Message, error = e.Message });
-            }
-        });
-        */
+            return Ok(new { success = false, message = e.Message, error = e.Message });
+        }
     }
 }
