@@ -6,17 +6,22 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SpinTrackerBackend.Interfaces;
 using SpinTrackerBackend;
+using SpinTrackerBackend.Data.Repositories;
 
 namespace SpinTrackerBackend.Services
 {
     public class AnalysisService : IAnalysisService
     {
         private readonly Database _db;
+        private readonly HandRepository _handRepo;
+        private readonly AnalyticsRepository _analyticsRepo;
         private readonly ILogger<AnalysisService> _logger;
 
-        public AnalysisService(Database db, ILogger<AnalysisService> logger)
+        public AnalysisService(Database db, HandRepository handRepo, AnalyticsRepository analyticsRepo, ILogger<AnalysisService> logger)
         {
             _db = db;
+            _handRepo = handRepo;
+            _analyticsRepo = analyticsRepo;
             _logger = logger;
         }
 
@@ -25,7 +30,7 @@ namespace SpinTrackerBackend.Services
             // Removed HeroName check to allow Field analysis
 
             // 1. Get raw hands from DB (filtered by Date, Hero, Position)
-            var hands = await _db.GetHandsForAnalysisAsync(request);
+            var hands = await _analyticsRepo.GetHandsForAnalysisAsync(request);
             _logger.LogInformation($"GetAnalysisHandsAsync: Got {hands.Count} hands from DB");
 
             // 2. Apply in-memory filters (Situation, Action, Stack)
@@ -66,7 +71,7 @@ namespace SpinTrackerBackend.Services
             var ids = pagedItems.Select(h => h.HandId).ToList();
 
             // 5. Fetch full details
-            var fullHands = await _db.GetHandsByIdsAsync(ids, request.HeroName);
+            var fullHands = await _handRepo.GetHandsByIdsAsync(ids, request.HeroName);
 
             // 6. Re-sort full hands to match pagedItems order (DB returns Date DESC)
             var sortedFullHands = new List<object>();
@@ -94,7 +99,7 @@ namespace SpinTrackerBackend.Services
             // Removed HeroName check to allow Field analysis
 
             // 1. Get raw hands from DB (filtered by Date, Hero, Position)
-            var hands = await _db.GetHandsForAnalysisAsync(filters);
+            var hands = await _analyticsRepo.GetHandsForAnalysisAsync(filters);
 
             // 2. Apply in-memory filters (Situation, Action, Stack)
             var filteredHands = FilterHands(hands, filters);
@@ -528,7 +533,7 @@ namespace SpinTrackerBackend.Services
             _logger.LogInformation($"GetRangeAnalysisAsync: Starting analysis for Hero='{filters.HeroName}', Situation='{filters.Situation}'");
 
             // 1. Get raw hands from DB
-            var hands = await _db.GetHandsForAnalysisAsync(filters);
+            var hands = await _analyticsRepo.GetHandsForAnalysisAsync(filters);
             _logger.LogInformation($"GetRangeAnalysisAsync: DB returned {hands.Count} hands");
 
             // 2. Filter in memory

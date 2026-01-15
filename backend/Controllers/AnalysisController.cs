@@ -14,8 +14,9 @@ public static class AnalysisController
             PropertyNameCaseInsensitive = true
         };
 
-        // ============ Analysis Endpoints ============
-        app.MapPost("/analysis/stats", async (HttpContext context, IAnalysisService analysisService) =>
+        // ============ Analysis Endpoints (DISABLED - using AnalysisEndpoints.cs instead) ============
+        // app.MapPost("/analysis/stats", async (HttpContext context, IAnalysisService analysisService) =>
+        /*
         {
             try
             {
@@ -37,8 +38,10 @@ public static class AnalysisController
                 return Results.Problem(detail: e.Message, statusCode: 500);
             }
         });
+        */
 
-        app.MapPost("/analysis/hands", async (HttpContext context, IAnalysisService analysisService) =>
+        // app.MapPost("/analysis/hands", async (HttpContext context, IAnalysisService analysisService) =>
+        /*
         {
             try
             {
@@ -60,8 +63,10 @@ public static class AnalysisController
                 return Results.Problem(detail: e.Message, statusCode: 500);
             }
         });
+        */
 
-        app.MapPost("/analysis/range-breakdown", async (HttpContext context, IAnalysisService analysisService) =>
+        // app.MapPost("/analysis/range-breakdown", async (HttpContext context, IAnalysisService analysisService) =>
+        /*
         {
             try
             {
@@ -83,8 +88,10 @@ public static class AnalysisController
                 return Results.Problem(detail: e.Message, statusCode: 500);
             }
         });
+        */
 
-        app.MapPost("/analyze/range", async (HttpContext context, IAnalysisService analysisService) =>
+        // app.MapPost("/analyze/range", async (HttpContext context, IAnalysisService analysisService) =>
+        /*
         {
             try
             {
@@ -107,5 +114,6 @@ public static class AnalysisController
                 return Results.Problem(detail: e.Message, statusCode: 500);
             }
         });
+        */
     }
 }

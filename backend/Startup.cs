@@ -1,0 +1,106 @@
+using System.Net;
+using System.Text;
+using System.Text.Json;
+using SpinTrackerBackend;
+using SpinTrackerBackend.StatsBuilder;
+using FluentMigrator.Runner;
+using SpinTrackerBackend.Migrations;
+using SpinTrackerBackend.Interfaces;
+using SpinTrackerBackend.Engines;
+using SpinTrackerBackend.Services;
+using SpinTrackerBackend.Data.Repositories;
+
+namespace SpinTrackerBackend;
+
+public static class Startup
+{
+    public static void ConfigureServices(IServiceCollection services, string dbPath)
+    {
+        var _connectionStringForMigrations = $"Data Source={dbPath}";
+
+        // Register FluentMigrator to run SQLite migrations
+        services.AddFluentMigratorCore()
+            .ConfigureRunner(rb => rb
+                .AddSQLite()
+                .WithGlobalConnectionString(_connectionStringForMigrations)
+                .ScanIn(typeof(InitialCreate20260111).Assembly).For.Migrations())
+            .AddLogging(lb => lb.AddFluentMigratorConsole());
+
+        // Configure services
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
+
+        services.AddSingleton<Database>(sp => 
+            new Database(
+                sp.GetRequiredService<ILogger<Database>>(), 
+                dbPath,
+                sp.GetRequiredService<HudProfileRepository>(),
+                sp.GetRequiredService<CustomStatsRepository>(),
+                sp.GetRequiredService<StatsRepository>(),
+                sp.GetRequiredService<PlayerRepository>()
+            ));
+        services.AddSingleton<IEquityCalculator, EquityCalculator>();
+        services.AddSingleton<IAnalyticsCalculator, AnalyticsCalculator>();
+        services.AddSingleton<IAnalysisService, AnalysisService>();
+        services.AddSingleton<IStatsBuilderEngine, StatsBuilderEngine>();
+        services.AddSingleton<IImporterService, ImporterService>();
+
+        string connectionString = $"Data Source={dbPath}";
+
+        // Repositories
+        services.AddSingleton(sp => new HudProfileRepository(connectionString));
+        services.AddSingleton(sp => new AnalyticsRepository(connectionString, sp.GetRequiredService<ILogger<AnalyticsRepository>>()));
+        services.AddSingleton(sp => new CustomStatsRepository(connectionString));
+        services.AddSingleton(sp => new HandRepository(connectionString, sp.GetRequiredService<ILogger<HandRepository>>(), sp.GetRequiredService<PlayerRepository>()));
+        services.AddSingleton(sp => new StatsRepository(connectionString, sp.GetRequiredService<ILogger<StatsRepository>>(), sp.GetRequiredService<CustomStatsRepository>(), sp.GetRequiredService<HudProfileRepository>()));
+        services.AddSingleton(sp => new PlayerRepository(connectionString, sp.GetRequiredService<ILogger<PlayerRepository>>()));
+        services.AddSingleton(sp => new TournamentsRepository(connectionString, sp.GetRequiredService<ILogger<TournamentsRepository>>()));
+    }
+
+    public static void Configure(WebApplication app)
+    {
+        app.UseCors();
+
+        // Global exception handler
+        app.Use(async (context, next) =>
+        {
+            try
+            {
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                app.Logger.LogError($"Unhandled exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.ContentType = "application/json";
+                var errorResponse = new { error = "Internal server error", message = ex.Message };
+                await context.Response.WriteAsJsonAsync(errorResponse);
+            }
+        });
+
+        // JSON options
+        app.Use(async (context, next) =>
+        {
+            context.Response.ContentType = "application/json";
+            await next(context);
+        });
+
+        // Add endpoints
+        HealthEndpoints.Map(app);
+        ParserEndpoints.Map(app);
+        DatabaseEndpoints.Map(app);
+        EquityEndpoints.Map(app);
+        AnalysisEndpoints.Map(app);
+        StatsEndpoints.Map(app);
+        HudProfileEndpoints.Map(app);
+        PlayerEndpoints.Map(app);
+        TournamentsEndpoints.Map(app);
+    }
+}

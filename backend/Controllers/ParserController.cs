@@ -14,8 +14,9 @@ public static class ParserController
             PropertyNameCaseInsensitive = true
         };
 
-        // ============ Parser Endpoints ============
-        app.MapPost("/import/file", async (HttpContext context, IImporterService importer) =>
+        // ============ Parser Endpoints (DISABLED - using ParserEndpoints.cs instead) ============
+        // app.MapPost("/import/file", async (HttpContext context, IImporterService importer) =>
+        /*
         {
             context.Response.ContentType = "text/event-stream";
             context.Response.Headers.Append("Cache-Control", "no-cache");
@@ -48,8 +49,10 @@ public static class ParserController
                 await context.Response.WriteAsync($"data: {errorPayload}\n\n");
             }
         });
+        */
 
-        app.MapPost("/import/count-hands", async (HttpContext context, IImporterService importer) =>
+        // app.MapPost("/import/count-hands", async (HttpContext context, IImporterService importer) =>
+        /*
         {
             try
             {
@@ -71,8 +74,10 @@ public static class ParserController
                 return Results.Json(new { success = false, error = e.Message });
             }
         });
+        */
 
-        app.MapPost("/parse/file", async (HttpContext context) =>
+        // app.MapPost("/parse/file", async (HttpContext context) =>
+        /*
         {
             try
             {
@@ -117,8 +122,10 @@ public static class ParserController
                 return Results.Problem(detail: e.Message, statusCode: 500);
             }
         });
+        */
 
-        app.MapPost("/parse/detect", async (HttpContext context) =>
+        // app.MapPost("/parse/detect", async (HttpContext context) =>
+        /*
         {
             try
             {
@@ -152,5 +159,6 @@ public static class ParserController
                 return Results.Json(new { success = false, message = e.Message, error = e.Message });
             }
         });
+        */
     }
 }

@@ -214,7 +214,7 @@ public class EquityCalculator : IEquityCalculator
         else
         {
             // Generic fallback using slow method if weird case
-            return RunExactEnumeration(heroCards, villainCards, boardCards);
+            return RunExactEnumerationFast(heroCards, villainCards, boardCards, null);
         }
 
         var total = (double)(heroWins + villainWins + ties);
@@ -813,11 +813,7 @@ public class EquityCalculator : IEquityCalculator
         };
     }
     
-    private EquityResult RunExactEnumeration(List<Card> heroCards, List<Card> villainCards, List<Card> boardCards)
-    {
-        // Just redirect to Fast, logic is same
-        return RunExactEnumerationFast(heroCards, villainCards, boardCards);
-    }
+
 
     private IEnumerable<List<Card>> GetCombinations(List<Card> list, int k)
     {

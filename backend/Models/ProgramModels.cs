@@ -76,3 +76,10 @@ public class ImportProgress
     public bool Success { get; set; }
     public string? Error { get; set; }
 }
+
+public class StatsFilters
+{
+    public string? HeroName { get; set; }
+    public string? DateFrom { get; set; }
+    public string? DateTo { get; set; }
+}

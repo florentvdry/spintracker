@@ -14,8 +14,9 @@ public static class EquityController
             PropertyNameCaseInsensitive = true
         };
 
-        // ============ Equity Endpoints ============
-        app.MapPost("/equity", async (HttpContext context, IEquityCalculator equityCalc) =>
+        // ============ Equity Endpoints (DISABLED - using EquityEndpoints.cs instead) ============
+        // app.MapPost("/equity", async (HttpContext context, IEquityCalculator equityCalc) =>
+        /*
         {
             try
             {
@@ -47,8 +48,10 @@ public static class EquityController
                 return Results.Problem(detail: e.Message, statusCode: 500);
             }
         });
+        */
 
-        app.MapPost("/equity/batch", async (HttpContext context, IEquityCalculator equityCalc) =>
+        // app.MapPost("/equity/batch", async (HttpContext context, IEquityCalculator equityCalc) =>
+        /*
         {
             try
             {
@@ -95,5 +98,6 @@ public static class EquityController
                 return Results.Problem(detail: e.Message, statusCode: 500);
             }
         });
+        */
     }
 }
