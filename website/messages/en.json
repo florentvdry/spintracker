@@ -8,8 +8,7 @@
     "title": "Master Your Poker Game",
     "subtitle": "With Precision Data.",
     "description": "The most advanced poker tracking software. Range analysis, leak detection, and performance tracking at your fingertips.",
-    "download_free": "Download for Free",
-    "explore_features": "Explore Features"
+    "download_free": "Download for Free"
   },
   "Features": {
     "title": "Built for Professional Grinders",
@@ -22,10 +21,6 @@
       "range": {
         "title": "Range Analysis",
         "description": "Visualize and analyze hand ranges to understand your strategy better."
-      },
-      "leaks": {
-        "title": "Leak Finder",
-        "description": "Automated analysis to identify and plug your biggest leaks instantly."
       },
       "performance": {
         "title": "High Performance",

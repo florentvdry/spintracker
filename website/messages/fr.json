@@ -5,15 +5,14 @@
     "download": "Télécharger"
   },
   "Hero": {
-    "title": "Maîtrisez Votre Jeu",
-    "subtitle": "Avec des Données Précises.",
-    "description": "Le logiciel de tracking de poker le plus avancé. Analyse de range, détection de fuites et suivi de performance à portée de main.",
-    "download_free": "Télécharger Gratuitement",
-    "explore_features": "Explorer les Fonctionnalités"
+    "title": "Le premier tracker français",
+    "subtitle": "pour les Spins.",
+    "description": "Analysez votre jeu, identifiez vos leaks et améliorez vos performances avec SpinTracker.",
+    "download_free": "Télécharger"
   },
   "Features": {
-    "title": "Conçu pour les Grinders Pros",
-    "subtitle": "Tout ce dont vous avez besoin pour passer au niveau supérieur.",
+    "title": "Conçu pour les joueurs de Spin",
+    "subtitle": "Tout ce dont vous avez besoin pour analyser votre jeu et progresser.",
     "items": {
       "analytics": {
         "title": "Analyses Avancées",
@@ -22,10 +21,6 @@
       "range": {
         "title": "Analyse de Range",
         "description": "Visualisez et analysez vos ranges de mains pour mieux comprendre votre stratégie."
-      },
-      "leaks": {
-        "title": "Détecteur de Fuites",
-        "description": "Analyse automatisée pour identifier et combler vos plus grosses faiblesses instantanément."
       },
       "performance": {
         "title": "Haute Performance",

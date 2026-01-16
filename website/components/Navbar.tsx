@@ -42,12 +42,6 @@ export function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/#features" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-              {t('features')}
-            </Link>
-            <Link href="/#screenshots" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-              {t('screenshots')}
-            </Link>
             <Link href="/download">
               <Button variant="primary" size="sm" className="rounded-full px-6">
                 {t('download')}

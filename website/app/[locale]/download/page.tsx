@@ -28,7 +28,7 @@ export default function DownloadPage() {
             <h2 className="text-2xl font-bold text-white mb-2">{t('windows.title')}</h2>
             <p className="text-gray-400 mb-8">{t('windows.requirements')}</p>
             <a 
-              href={`https://spintracker.vercel.app/${locale}/updates/SpinTracker%20Setup%201.0.1.exe`} 
+              href="https://spintracker.vercel.app/updates/SpinTracker%20Setup%201.0.1.exe" 
               className="w-full"
               target="_blank"
               rel="noopener noreferrer"

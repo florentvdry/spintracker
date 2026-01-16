@@ -19,11 +19,6 @@ export function Features() {
       description: t('items.range.description'),
     },
     {
-      icon: Target,
-      title: t('items.leaks.title'),
-      description: t('items.leaks.description'),
-    },
-    {
       icon: Database,
       title: t('items.performance.title'),
       description: t('items.performance.description'),
