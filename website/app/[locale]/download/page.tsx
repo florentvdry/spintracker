@@ -1,9 +1,13 @@
+'use client';
+
 import { Button } from "@/components/ui/Button";
 import { Download, Monitor, Apple } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useParams } from 'next/navigation';
 
 export default function DownloadPage() {
   const t = useTranslations('Download');
+  const locale = useParams().locale;
 
   return (
     <div className="pt-32 pb-20 min-h-screen bg-black">
@@ -24,7 +28,7 @@ export default function DownloadPage() {
             <h2 className="text-2xl font-bold text-white mb-2">{t('windows.title')}</h2>
             <p className="text-gray-400 mb-8">{t('windows.requirements')}</p>
             <a 
-              href="https://spintracker.vercel.app/fr/updates/SpinTracker%20Setup%201.0.1.exe" 
+              href={`https://spintracker.vercel.app/${locale}/updates/SpinTracker%20Setup%201.0.1.exe`} 
               className="w-full"
               target="_blank"
               rel="noopener noreferrer"
@@ -61,7 +65,7 @@ export default function DownloadPage() {
                 <li>• {t('requirements.os_win')}</li>
                 <li>• {t('requirements.cpu_i3')}</li>
                 <li>• {t('requirements.ram_4gb')}</li>
-                <li>• {t('requirements.storage_500mb')}</li>
+                <li>• {t('requirements.storage_2gb')}</li>
               </ul>
             </div>
             <div>
@@ -70,7 +74,7 @@ export default function DownloadPage() {
                 <li>• {t('requirements.os_win11')}</li>
                 <li>• {t('requirements.cpu_i5')}</li>
                 <li>• {t('requirements.ram_8gb')}</li>
-                <li>• {t('requirements.storage_ssd')}</li>
+                <li>• {t('requirements.storage_2gb')}</li>
               </ul>
             </div>
           </div>

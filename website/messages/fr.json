@@ -98,8 +98,7 @@
       "cpu_i5": "Processeur : Intel Core i5 ou supérieur",
       "ram_4gb": "Mémoire : 4 Go RAM",
       "ram_8gb": "Mémoire : 8 Go RAM",
-      "storage_500mb": "Stockage : 500 Mo d'espace libre",
-      "storage_ssd": "Stockage : SSD avec 1 Go d'espace libre"
+      "storage_2gb": "Stockage : 2 Go d'espace libre"
     }
   }
 }

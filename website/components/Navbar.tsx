@@ -73,20 +73,6 @@ export function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-black/95 backdrop-blur-xl border-b border-white/10 absolute w-full">
           <div className="px-4 py-6 space-y-4">
-            <Link
-              href="/#features"
-              className="block text-base font-medium text-gray-300 hover:text-white"
-              onClick={() => setIsOpen(false)}
-            >
-              {t('features')}
-            </Link>
-            <Link
-              href="/#screenshots"
-              className="block text-base font-medium text-gray-300 hover:text-white"
-              onClick={() => setIsOpen(false)}
-            >
-              {t('screenshots')}
-            </Link>
             <Link href="/download" onClick={() => setIsOpen(false)}>
               <Button className="w-full mt-4">{t('download')}</Button>
             </Link>

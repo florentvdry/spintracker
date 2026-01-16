@@ -36,12 +36,6 @@ export function Hero() {
                 {t('download_free')}
               </Button>
             </Link>
-            <Link href="#features">
-              <Button variant="secondary" size="lg" className="group">
-                {t('explore_features')}
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
           </div>
         </motion.div>
 
