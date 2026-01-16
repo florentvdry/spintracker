@@ -85,8 +85,7 @@
     "mac": {
       "title": "macOS",
       "status": "Bientôt disponible",
-      "button": "Pas encore disponible",
-      "info": "Rejoignez la liste d'attente"
+      "button": "Pas encore disponible"
     },
     "requirements": {
       "title": "Configuration Requise",

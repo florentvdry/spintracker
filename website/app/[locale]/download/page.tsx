@@ -52,7 +52,6 @@ export default function DownloadPage() {
               <Download className="mr-2 h-5 w-5" />
               {t('mac.button')}
             </Button>
-            <p className="mt-4 text-xs text-gray-500">{t('mac.info')}</p>
           </div>
         </div>
 
