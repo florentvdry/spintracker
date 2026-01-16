@@ -1,6 +1,6 @@
 {
   "name": "spintracker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Professional Poker Tracker with React UI, C# Backend, Leak Detection and EV Analysis",
   "main": "main.js",
   "scripts": {

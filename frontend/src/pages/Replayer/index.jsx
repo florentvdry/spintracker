@@ -8,14 +8,16 @@ const Replayer = () => {
   const { setReplayerHand, closeReplayer, isPlaying, nextStep, playbackSpeed } = useReplayerStore();
 
   useEffect(() => {
-    const handleMessage = (event) => {
-      if (event.data.type === 'loadReplayer') {
-        setReplayerHand(event.data.data);
-      }
+    const handleLoadData = (event, handData) => {
+      setReplayerHand(handData);
     };
 
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
+    const { ipcRenderer } = window.require('electron');
+    ipcRenderer.on('load-replayer-data', handleLoadData);
+
+    return () => {
+      ipcRenderer.removeListener('load-replayer-data', handleLoadData);
+    };
   }, [setReplayerHand]);
 
   // Auto-play Loop

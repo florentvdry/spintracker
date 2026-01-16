@@ -294,6 +294,49 @@ function createWindow() {
   });
 }
 
+function createReplayerWindow(handData) {
+  const isDev = process.argv.includes('--dev');
+  
+  const replayerWindow = new BrowserWindow({
+    width: 1000,
+    height: 700,
+    resizable: true,
+    backgroundColor: '#1a1f2e',
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+      webSecurity: !isDev,
+    },
+    frame: true,
+    titleBarStyle: 'default',
+    icon: path.join(__dirname, 'assets/logo.png'),
+  });
+
+  if (isDev) {
+    replayerWindow.loadURL('http://localhost:3000/replayer.html').catch(() => {
+      const replayerPath = path.join(__dirname, 'frontend/dist/replayer.html');
+      if (fs.existsSync(replayerPath)) {
+        replayerWindow.loadFile(replayerPath);
+      }
+    });
+  } else {
+    const replayerPath = path.join(__dirname, 'frontend/dist/replayer.html');
+    if (fs.existsSync(replayerPath)) {
+      replayerWindow.loadFile(replayerPath);
+    }
+  }
+
+  replayerWindow.webContents.on('did-finish-load', () => {
+    // Send the hand data to the replayer window
+    replayerWindow.webContents.send('load-replayer-data', handData);
+  });
+
+  replayerWindow.on('closed', () => {
+    // Cleanup if needed
+  });
+}
+
 // ============ App Lifecycle ============
 
 app.whenReady().then(() => {
@@ -708,6 +751,10 @@ ipcMain.handle('app-ready', async () => {
 
 ipcMain.handle('python-analyze-range', async (event, params) => {
   return callBackendAPI('/analyze/range', params);
+});
+
+ipcMain.handle('open-replayer', async (event, handData) => {
+  createReplayerWindow(handData);
 });
 
 ipcMain.handle('stats-builder-evaluate', async (event, stat) => {

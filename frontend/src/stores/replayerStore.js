@@ -122,21 +122,8 @@ export const useReplayerStore = create((set, get) => ({
   },
 
   openReplayer: (handData) => {
-    // Open replayer in a new window
-    const newWindow = window.open('/replayer.html', '_blank', 'width=1000,height=700,resizable=yes,scrollbars=no');
-    
-    // Wait for the window to load, then send the data
-    const checkReady = () => {
-      if (newWindow && !newWindow.closed) {
-        try {
-          newWindow.postMessage({ type: 'loadReplayer', data: handData }, '*');
-        } catch (e) {
-          // Window not ready, try again
-          setTimeout(checkReady, 100);
-        }
-      }
-    };
-    setTimeout(checkReady, 500); // Give some time for the window to load
+    // Open replayer in a new window via IPC
+    ipcService.invoke('open-replayer', handData);
   },
 
   setReplayerHand: (handData) => {
