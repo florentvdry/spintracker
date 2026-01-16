@@ -7,6 +7,7 @@
     "start": "electron .",
     "dev": "concurrently \"npm run react:dev\" \"wait-on http://localhost:3000 && electron . --dev\"",
     "build": "npm run react:build && npm run backend:build && electron-builder --win",
+    "publish": "npm run react:build && npm run backend:build && electron-builder --win --publish always",
     "react:dev": "cd frontend && npm run dev",
     "react:build": "cd frontend && npm run build",
     "react:install": "cd frontend && npm install",
@@ -48,9 +49,7 @@
       "output": "dist"
     },
     "files": [
-      "**/*",
-      "!**/*.md",
-      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "main.js",
       "frontend/dist/**/*"
     ],
     "extraResources": [
@@ -65,12 +64,11 @@
     "win": {
       "target": "nsis",
       "icon": "assets/logo.png",
-      "publish": [
-        {
-          "provider": "generic",
-          "url": "https://spintracker.vercel.app/updates/"
-        }
-      ]
+      "publish": {
+        "provider": "github",
+        "owner": "florentvdry",
+        "repo": "spintracker-releases"
+      }
     },
     "nsis": {
       "oneClick": false,
