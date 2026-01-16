@@ -321,7 +321,7 @@ export default function Settings() {
       {/* About */}
       <Card title={t('settings.about.title')}>
         <div className="space-y-2 text-sm text-gray-400">
-          <p><span className="text-white">SpinTracker</span> v1.0.0</p>
+          <p><span className="text-white">SpinTracker</span> v1.0.2</p>
           <p>{t('settings.about.description')}</p>
         </div>
       </Card>
