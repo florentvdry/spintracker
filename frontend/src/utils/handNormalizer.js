@@ -61,6 +61,9 @@ export function normalizeHand(input) {
     }));
   }
 
+  // Sort players so hero is first
+  players.sort((a, b) => b.isHero - a.isHero);
+
   // Actions
   // We need to parse text actions from input.preflop_action, input.flop_action, etc.
   const actions = [];

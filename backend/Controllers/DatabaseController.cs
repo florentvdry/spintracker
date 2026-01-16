@@ -118,11 +118,11 @@ public class DatabaseController : ControllerBase
     }
 
     [HttpGet("db/hand/{handId}")]
-    public async Task<IActionResult> GetHandById(string handId)
+    public async Task<IActionResult> GetHandById(string handId, [FromQuery] string? heroName)
     {
         try
         {
-            var hand = await _handRepo.GetHandByIdAsync(handId);
+            var hand = await _handRepo.GetHandByIdAsync(handId, heroName);
             if (hand != null)
             {
                 return Ok(new { success = true, data = hand });

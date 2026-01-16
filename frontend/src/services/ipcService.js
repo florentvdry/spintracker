@@ -100,8 +100,8 @@ class IPCService {
     return this.invoke('get-tournament-hands', gameId, heroName);
   }
 
-  async getHandDetails(handId) {
-    return this.invoke('get-hand-details', handId);
+  async getHandDetails(handId, heroName = null) {
+    return this.invoke('get-hand-details', handId, heroName);
   }
 
   // Players

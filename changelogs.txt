@@ -1,6 +1,7 @@
 - Fix: L'ITM était calculé par rapport au main gagné, pas les tournois. Il affiche désormais la bonne valeur
 - Fix: Le filtrage via parties gagné/perdu est corrigé dans la page historique.
 - Fix: Ajustement de 8k lignes de code environ afin séparer la logique de chaque pages.
+- Fix: En ouvrant un replay depuis l'historique, vous êtes désormais positionner en bas du replayer.
 
 - Ajout: Possibilité de directement importé les .zip en plus des .txt
 - Ajout: Systeme de mise à jours automatique - Vous aurez un message pour mettre à jours le logiciel quand j'ai fait une mise à jours.

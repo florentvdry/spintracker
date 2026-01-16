@@ -368,6 +368,7 @@ public class HandRepository
                 hero_position = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_position"),
                 hero_stack = DatabaseUtils.GetInt32OrNull(reader, "dyn_hero_stack"),
                 hero_cards = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_cards"),
+                hero_name = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_name"),
                 preflop_action = DatabaseUtils.GetStringOrNull(reader, "preflop_action"),
                 flop = DatabaseUtils.GetStringOrNull(reader, "flop"),
                 flop_action = DatabaseUtils.GetStringOrNull(reader, "flop_action"),
@@ -397,7 +398,7 @@ public class HandRepository
         }
     }
 
-    public async Task<object?> GetHandByIdAsync(string handId)
+    public async Task<object?> GetHandByIdAsync(string handId, string? heroName = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
@@ -455,7 +456,8 @@ public class HandRepository
                         EquityPreflop = reader.IsDBNull(10) ? null : (double?)reader.GetDouble(10),
                         EquityFlop = reader.IsDBNull(11) ? null : (double?)reader.GetDouble(11),
                         EquityTurn = reader.IsDBNull(12) ? null : (double?)reader.GetDouble(12),
-                        EquityRiver = reader.IsDBNull(13) ? null : (double?)reader.GetDouble(13)
+                        EquityRiver = reader.IsDBNull(13) ? null : (double?)reader.GetDouble(13),
+                        IsHero = heroName != null && reader.GetString(0).ToLower() == heroName.ToLower()
                     });
                 }
             }

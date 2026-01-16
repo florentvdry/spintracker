@@ -43,7 +43,7 @@ export default function HandHistory() {
     const result = await loadTournamentHands(gameId);
     if (result && result.success && result.data) {
       const handIds = result.data.map(h => h.id);
-      loadHandQueue(handIds);
+      loadHandQueue(handIds, heroName);
     }
   };
 

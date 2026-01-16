@@ -36,7 +36,7 @@ export default function HandDetails({ hand, onClose }) {
           'text-2xl font-bold',
           isPositive ? 'profit-positive' : 'profit-negative'
         )}>
-          {isPositive ? '+' : ''}{profit.toFixed(2)}€
+          {isPositive ? '+' : ''}{profit.toFixed(2)} {t('common.chips')}
         </p>
         {hand.ev_chips !== null && (
           <p className="text-sm text-gray-400 mt-1">

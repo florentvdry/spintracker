@@ -567,10 +567,11 @@ ipcMain.handle('get-session-history', async (event, limit = 50, heroName = null,
   return callBackendAPI('/db/session-history', { limit, heroName, dateFrom, dateTo, buyIn });
 });
 
-ipcMain.handle('get-hand-details', async (event, handId) => {
+ipcMain.handle('get-hand-details', async (event, handId, heroName) => {
   const fetch = (await import('node-fetch')).default;
   try {
-    const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/db/hand/${handId}`);
+    const query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
+    const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/db/hand/${handId}${query}`);
     return await response.json();
   } catch (error) {
     return { success: false, message: error.message };

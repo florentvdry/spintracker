@@ -24,6 +24,7 @@ export const useReplayerStore = create((set, get) => ({
   handQueue: [],
   currentHandIndex: -1,
   isLoadingHand: false,
+  heroName: null,
 
   // Actions
   toggleShowVillainHands: () => {
@@ -42,12 +43,13 @@ export const useReplayerStore = create((set, get) => ({
     });
   },
 
-  loadHandQueue: async (handIds) => {
+  loadHandQueue: async (handIds, heroName = null) => {
     if (!handIds || handIds.length === 0) return;
     
     set({ 
       handQueue: handIds, 
       currentHandIndex: 0,
+      heroName,
       isOpen: true,
       isMinimized: false 
     });
@@ -58,7 +60,8 @@ export const useReplayerStore = create((set, get) => ({
   loadHand: async (handId) => {
     set({ isLoadingHand: true });
     try {
-      const res = await ipcService.getHandDetails(handId);
+      const { heroName } = get();
+      const res = await ipcService.getHandDetails(handId, heroName);
       if (res.success) {
         // We call openReplayer but passing a flag or rely on it not clearing queue if we don't tell it to
         // Actually openReplayer currently doesn't touch queue, which is good.

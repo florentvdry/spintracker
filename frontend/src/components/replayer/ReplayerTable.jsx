@@ -28,15 +28,15 @@ const SEAT_POSITIONS_6 = [
 
 // Heads Up Positions
 const SEAT_POSITIONS_2 = [
-    { top: '85%', left: '50%' }, // Hero - Bottom
-    { top: '15%', left: '50%' }, // Villain - Top
+    { top: '15%', left: '50%' }, // 0 - Top
+    { top: '85%', left: '50%' }, // 1 - Bottom
 ];
 
 // 3-Max Positions
 const SEAT_POSITIONS_3 = [
-    { top: '85%', left: '50%' }, // Hero - Bottom
-    { top: '25%', left: '20%' }, // Left
-    { top: '25%', left: '80%' }, // Right
+    { top: '25%', left: '20%' }, // 0 - Top Left
+    { top: '85%', left: '50%' }, // 1 - Bottom
+    { top: '25%', left: '80%' }, // 2 - Top Right
 ];
 
 const ReplayerTable = () => {
@@ -77,22 +77,15 @@ const ReplayerTable = () => {
   // Ideally we rotate so hero is at index 0.
   const heroIndex = players.findIndex(p => p.isHero);
   
-  // Calculate rotation to put Hero at index 0 (bottom seat)
-  // If heroIndex is 2 (seat 3) in a 6-player table, we want seat 3 to map to position 0.
-  // Formula: (seatIndex - heroIndex + N) % N
+  // Calculate rotation to put Hero at index 1 (bottom)
+  // Formula: (playerIndex - heroIndex + N + 1) % N
   
   const getDisplayPosition = (playerIndex) => {
      if (heroIndex === -1) return positions[playerIndex]; // Fallback if no hero
 
      const N = players.length;
-     // Rotate so hero is always at position 0 (Bottom)
-     // We are iterating players array by index 0..N-1.
-     // Player at heroIndex should get position 0.
-     // Player at heroIndex+1 should get position 1.
-     const positionIndex = (playerIndex - heroIndex + N) % N;
-     
-     // Special case handling for small tables to ensure nice distribution if needed
-     // But SEAT_POSITIONS arrays are already defined relative to "Hero at bottom".
+     // Rotate so hero is always at position 1 (Bottom)
+     const positionIndex = (playerIndex - heroIndex + N + 1) % N;
      
      return positions[positionIndex] || { top: '50%', left: '50%' };
   };
