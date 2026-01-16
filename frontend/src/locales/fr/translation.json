@@ -217,12 +217,6 @@
     "database": {
       "title": "Base de données",
       "subtitle": "Gestion des données",
-      "recalc": {
-        "title": "Recalculer toutes les statistiques",
-        "desc": "Recalcule l'équité de toutes les mains (peut prendre plusieurs minutes)",
-        "button": "Recalculer",
-        "button_loading": "En cours..."
-      },
       "export": {
         "title": "Exporter les données",
         "desc": "Télécharger toutes vos mains au format ZIP (groupées par date)",

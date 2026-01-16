@@ -51,8 +51,6 @@ Tous les endpoints sont identiques à la version Python:
 - `POST /equity/batch` - Calculer l'équité par batch
 - `POST /analyze/leaks` - Analyser les leaks
 - `POST /analyze/range` - Analyser une range
-- `POST /recalculate-analytics` - Recalculer toutes les analytics
-- `POST /recalculate-analytics/stream` - Recalculer avec streaming SSE
 
 ## Performance
 

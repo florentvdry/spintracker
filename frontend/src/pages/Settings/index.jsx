@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Trash2, RefreshCw, Database, Calculator, Download, Upload, Globe, FileCode, FolderOpen } from 'lucide-react';
+import { Trash2, Database, Download, Upload, Globe, FileCode, FolderOpen } from 'lucide-react';
 import { Card } from '@components/ui';
 import { ipcService } from '@services/ipcService';
 import { pythonService } from '@services/pythonService';
@@ -11,7 +11,6 @@ import logo from '../../assets/logo.png';
 
 export default function Settings() {
   const { t, i18n } = useTranslation();
-  const [isRecalculating, setIsRecalculating] = useState(false);
   const addNotification = useNotificationStore(state => state.addNotification);
   const refreshAll = useAppStore(state => state.refreshAll);
   const setHeroName = useAppStore(state => state.setHeroName);
@@ -71,35 +70,6 @@ export default function Settings() {
         title: 'Erreur critique',
         message: error.message || 'Impossible de contacter le serveur',
       });
-    }
-  };
-
-  const handleRecalculateEV = async () => {
-    setIsRecalculating(true);
-    try {
-      const result = await pythonService.recalculateAllEV();
-      if (result && result.success) {
-        const count = result.handsProcessed || (result.raw && (result.raw.processed || result.raw.inserted)) || 0;
-        addNotification({
-          type: 'success',
-          title: 'Recalcul terminé',
-          message: `${count} mains recalculées`,
-        });
-        await refreshAll();
-      } else {
-        const msg = (result && (result.message || result.error || JSON.stringify(result))) || 'Erreur inconnue';
-        addNotification({
-          type: 'error',
-          message: msg,
-        });
-      }
-    } catch (error) {
-      addNotification({
-        type: 'error',
-        message: error && error.message ? error.message : String(error),
-      });
-    } finally {
-      setIsRecalculating(false);
     }
   };
 
@@ -265,22 +235,6 @@ export default function Settings() {
       {/* Database section */}
       <Card title={t('settings.database.title')} subtitle={t('settings.database.subtitle')}>
         <div className="space-y-4">
-          <SettingRow
-            icon={Calculator}
-            title={t('settings.database.recalc.title')}
-            description={t('settings.database.recalc.desc')}
-            action={
-              <button
-                onClick={handleRecalculateEV}
-                disabled={isRecalculating}
-                className="btn-secondary flex items-center gap-2"
-              >
-                <RefreshCw className={`w-4 h-4 ${isRecalculating ? 'animate-spin' : ''}`} />
-                {isRecalculating ? t('settings.database.recalc.button_loading') : t('settings.database.recalc.button')}
-              </button>
-            }
-          />
-
           <SettingRow
             icon={Download}
             title={t('settings.database.export.title')}

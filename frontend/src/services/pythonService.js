@@ -62,44 +62,6 @@ class PythonService {
     }
   }
 
-
-  /**
-   * Recalcul de tous les analytics (EV, CEV, equity) depuis les données brutes
-   */
-  async recalculateAllEV() {
-    const progressStore = useProgressStore.getState();
-    
-    progressStore.startProgress({
-      title: 'Recalcul des statistiques',
-      message: 'Recalcul des EV, CEV et équités...',
-      canCancel: false,
-    });
-
-    try {
-      const unsubscribe = ipcService.on('ev-recalc-progress', ({ progress, message }) => {
-        progressStore.updateProgress({ progress: progress ?? 0, message: message ?? '' });
-      });
-
-      const rawResult = await ipcService.invoke('python-recalculate-analytics');
-      unsubscribe();
-      progressStore.finishProgress();
-
-      // Normalize result shape to { success, handsProcessed, totalHands, message, raw }
-      const normalized = {
-        success: rawResult && (rawResult.success === true || rawResult.processed || rawResult.inserted) ? true : (rawResult && rawResult.success === false ? false : true),
-        handsProcessed: (rawResult && (rawResult.processed || rawResult.inserted)) || 0,
-        totalHands: rawResult && rawResult.total || null,
-        message: rawResult && (rawResult.message || rawResult.msg || rawResult.error) || '',
-        raw: rawResult,
-      };
-
-      return normalized;
-    } catch (error) {
-      progressStore.finishProgress();
-      throw new Error(error && error.message ? error.message : String(error));
-    }
-  }
-
   /**
    * Analyse de range GTO
    */

@@ -10,4 +10,5 @@
 - Ajout: Systeme de mise à jours automatique - Vous aurez un message pour mettre à jours le logiciel quand j'ai fait une mise à jours.
 - Ajout: Dans la partie historique, en plus de pouvoir replay le tournoi entier, vous pouvez maintenant cliquez directement sur la main que vous souhaitez replay (sans avoir à voir tout le tournois)
 
+- Retrait: Recalculer les statistiques dans lesparamètres, inutile.
 - Changement: Le replayer est désormais completement une autre fenêtre. Pour pouvoir le changer d'écran etc indépendament du reste du tracker.

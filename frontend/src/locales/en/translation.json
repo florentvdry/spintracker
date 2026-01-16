@@ -217,12 +217,6 @@
     "database": {
       "title": "Database",
       "subtitle": "Data management",
-      "recalc": {
-        "title": "Recalculate all stats",
-        "desc": "Recalculates equity for all hands (may take several minutes)",
-        "button": "Recalculate",
-        "button_loading": "In progress..."
-      },
       "export": {
         "title": "Export data",
         "desc": "Download all your hands as ZIP (grouped by date)",
