@@ -65,20 +65,6 @@ public class Database
             _logger.LogInformation("Forced refresh: clearing all data from database tables...");
 
             // Clear known application tables but keep schema intact (migrations manage schema)
-            var tablesToClear = new[] { "player_hands", "hands", "players", "custom_stats", "hud_profiles", "config" };
-
-            foreach (var table in tablesToClear)
-            {
-                cmd.CommandText = $"DELETE FROM {table};";
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"Could not clear table '{table}': {ex.Message}");
-                }
-            }
 
             // Reset AUTOINCREMENT counters where applicable
             try
