@@ -162,7 +162,9 @@
     "new_hand": "Nouvelle main",
     "loading": "Chargement de la main...",
     "start": "DÉBUT",
-    "action_log": "Journal d'actions"
+    "action_log": "Journal d'actions",
+    "export_video": "Exporter Vidéo",
+    "recording": "Enregistrement..."
   },
   "stats_builder": {
     "title": "Générateur de Stats",

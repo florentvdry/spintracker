@@ -8,6 +8,7 @@
 - Ajout: Sur la page d'accueil, vous pouvez passer de votre graphique en chips, à un graphique en gain monétaire.
 - Ajout: Possibilité de directement importé les .zip en plus des .txt
 - Ajout: Systeme de mise à jours automatique - Vous aurez un message pour mettre à jours le logiciel quand j'ai fait une mise à jours.
+- Ajout: Il est désormais possible d'exporter une main au format vidéo.
 - Ajout: Dans la partie historique, en plus de pouvoir replay le tournoi entier, vous pouvez maintenant cliquez directement sur la main que vous souhaitez replay (sans avoir à voir tout le tournois)
 
 - Retrait: Recalculer les statistiques dans lesparamètres, inutile.

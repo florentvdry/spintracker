@@ -162,7 +162,9 @@
     "new_hand": "New Hand",
     "loading": "Loading Hand...",
     "start": "START",
-    "action_log": "Action Log"
+    "action_log": "Action Log",
+    "export_video": "Export Video",
+    "recording": "Recording..."
   },
   "stats_builder": {
     "title": "Stats Builder",

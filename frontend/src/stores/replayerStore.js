@@ -26,6 +26,11 @@ export const useReplayerStore = create((set, get) => ({
   isLoadingHand: false,
   heroName: null,
 
+  // Recording State
+  isRecording: false,
+  recorder: null,
+  recordingType: null, // 'hand' or 'tournament'
+
   // Actions
   toggleShowVillainHands: () => {
     set((state) => {
@@ -41,6 +46,30 @@ export const useReplayerStore = create((set, get) => ({
       localStorage.setItem('replayer_showInBB', JSON.stringify(newValue));
       return { showInBB: newValue };
     });
+  },
+
+  exportVideo: async () => {
+    const { handQueue, currentHandIndex, hand } = get();
+    if (!hand) return;
+
+    let exportType = 'hand';
+    if (handQueue.length > 1) {
+      // Ask user what to export
+      const choice = window.confirm('Exporter la main actuelle ou tout le tournoi?\n\nOK = Main actuelle\nAnnuler = Tout le tournoi');
+      exportType = choice ? 'hand' : 'tournament';
+    }
+
+    // Start recording
+    set({ isRecording: true, recordingType: exportType });
+    
+    try {
+      await startVideoRecording(exportType);
+    } catch (error) {
+      console.error('Video export failed:', error);
+      alert('Erreur lors de l\'export vidéo: ' + error.message);
+    } finally {
+      set({ isRecording: false, recordingType: null });
+    }
   },
 
   loadHandQueue: async (handIds, heroName = null) => {
@@ -204,11 +233,16 @@ export const useReplayerStore = create((set, get) => ({
   },
 
   nextStep: () => {
-    const { currentActionIndex, hand } = get();
+    const { currentActionIndex, hand, isRecording, recordingType, handQueue, currentHandIndex } = get();
     if (hand && currentActionIndex < hand.actions.length - 1) {
       set({ currentActionIndex: currentActionIndex + 1 });
     } else {
-      set({ isPlaying: false });
+      // If recording tournament and not last hand, advance to next hand
+      if (isRecording && recordingType === 'tournament' && currentHandIndex < handQueue.length - 1) {
+        get().nextHand();
+      } else {
+        set({ isPlaying: false });
+      }
     }
   },
 
@@ -427,3 +461,205 @@ export const selectReplayerState = (state) => {
     bbSize: hand.blinds.bb
   };
 };
+
+// Video Recording Function
+async function startVideoRecording(exportType) {
+  const isElectron = window.process && window.process.versions && window.process.versions.electron;
+  const isDev = import.meta.env.DEV; // Vite dev mode
+  let stream;
+
+  if (isDev && !isElectron) {
+    // Development mode in browser - simulate recording
+    console.log('Development mode: Simulating video recording...');
+    
+    // Simulate the recording process
+    await simulateRecording(exportType);
+    return;
+  }
+
+  if (isElectron && window.opener) {
+    // Electron separate window mode - use desktopCapturer
+    const { desktopCapturer } = require('electron');
+
+    // Get screen sources
+    const sources = await desktopCapturer.getSources({
+      types: ['window'],
+      thumbnailSize: { width: 0, height: 0 }
+    });
+
+    // Find replayer window
+    const replayerSource = sources.find(source => source.name.includes('Hand Replayer') || source.name.includes('replayer'));
+    if (!replayerSource) {
+      throw new Error('Replayer window not found. Please ensure the replayer is open.');
+    }
+
+    // Get media stream
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: {
+        mandatory: {
+          chromeMediaSource: 'desktop',
+          chromeMediaSourceId: replayerSource.id,
+          minWidth: 1280,
+          maxWidth: 1920,
+          minHeight: 720,
+          maxHeight: 1080
+        }
+      }
+    });
+  } else {
+    // Browser mode or modal mode - use getDisplayMedia (user selects what to record)
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      throw new Error('Screen recording is not supported in this browser. Please use a modern browser like Chrome 72+, Firefox 66+, or run the Electron app for full functionality.');
+    }
+    
+    try {
+      stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { mediaSource: 'screen' },
+        audio: false
+      });
+    } catch (error) {
+      if (error.name === 'NotAllowedError') {
+        throw new Error('Screen recording permission was denied. Please allow screen sharing when prompted to export video.');
+      } else if (error.name === 'NotFoundError') {
+        throw new Error('No screen sharing source found. Please ensure you have a screen or window to share.');
+      } else if (error.message.includes('Not supported') || error.name === 'NotSupportedError') {
+        throw new Error('Screen recording is not supported in this browser environment. Please use Chrome, Firefox, or the Electron app.');
+      } else {
+        throw new Error(`Screen recording failed: ${error.message}`);
+      }
+    }
+  }
+
+  // Import RecordRTC dynamically
+  const RecordRTC = (await import('recordrtc')).default;
+
+  // Create recorder
+  const recorder = new RecordRTC(stream, {
+    type: 'video',
+    mimeType: 'video/webm;codecs=vp9',
+    recorderType: RecordRTC.MediaStreamRecorder
+  });
+
+  // Store recorder in state
+  useReplayerStore.setState({ recorder });
+
+  // Start recording
+  recorder.startRecording();
+
+  // Start playback
+  const store = useReplayerStore.getState();
+  store.setPlaybackSpeed(2); // 2x speed for export
+  if (exportType === 'hand') {
+    store.jumpToStep(-1); // Start from beginning of current hand
+  } // For tournament, continue from current position or start current hand
+  store.togglePlay(); // Start playing
+
+  // Wait for completion
+  const waitForCompletion = new Promise((resolve) => {
+    const checkCompletion = () => {
+      const state = useReplayerStore.getState();
+      const { hand, currentActionIndex, handQueue, currentHandIndex, isPlaying } = state;
+
+      if (exportType === 'hand') {
+        // Check if current hand is finished
+        if (currentActionIndex >= hand.actions.length - 1 && !isPlaying) {
+          resolve();
+          return;
+        }
+      } else {
+        // Tournament: check if all hands finished
+        if (currentHandIndex >= handQueue.length - 1 && currentActionIndex >= hand.actions.length - 1 && !isPlaying) {
+          resolve();
+          return;
+        }
+      }
+
+      setTimeout(checkCompletion, 100);
+    };
+    checkCompletion();
+  });
+
+  await waitForCompletion;
+
+  // Stop recording
+  recorder.stopRecording(() => {
+    const blob = recorder.getBlob();
+    
+    // Prompt for filename
+    const defaultName = `poker-replay-${exportType}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`;
+    const filename = prompt('Enter filename for the video export:', defaultName);
+    
+    if (!filename) return; // User cancelled
+    
+    // Create download link
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    
+    // Cleanup
+    URL.revokeObjectURL(url);
+    stream.getTracks().forEach(track => track.stop());
+    useReplayerStore.setState({ recorder: null, recordingType: null });
+  });
+}
+
+// Development Simulation Function
+async function simulateRecording(exportType) {
+  const store = useReplayerStore.getState();
+  
+  // Start playback
+  store.setPlaybackSpeed(2); // 2x speed for export
+  if (exportType === 'hand') {
+    store.jumpToStep(-1); // Start from beginning of current hand
+  }
+  store.togglePlay(); // Start playing
+
+  // Simulate recording duration
+  const waitForCompletion = new Promise((resolve) => {
+    const checkCompletion = () => {
+      const state = useReplayerStore.getState();
+      const { hand, currentActionIndex, handQueue, currentHandIndex, isPlaying } = state;
+
+      if (exportType === 'hand') {
+        if (currentActionIndex >= hand.actions.length - 1 && !isPlaying) {
+          resolve();
+          return;
+        }
+      } else {
+        if (currentHandIndex >= handQueue.length - 1 && currentActionIndex >= hand.actions.length - 1 && !isPlaying) {
+          resolve();
+          return;
+        }
+      }
+
+      setTimeout(checkCompletion, 100);
+    };
+    checkCompletion();
+  });
+
+  await waitForCompletion;
+
+  // Simulate download
+  console.log('Development mode: Simulating video download...');
+  
+  // Prompt for filename
+  const defaultName = `poker-replay-${exportType}-simulation-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+  const filename = prompt('Enter filename for the video export (simulation):', defaultName);
+  
+  if (!filename) return; // User cancelled
+  
+  // Create a dummy video blob for simulation
+  const dummyContent = 'This is a simulated video file for development testing.';
+  const blob = new Blob([dummyContent], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  alert('Development mode: Video export simulated successfully! The file has been downloaded.');
+}
