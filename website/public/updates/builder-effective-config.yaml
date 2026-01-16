@@ -1,0 +1,26 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.spintracker.app
+productName: SpinTracker
+files:
+  - filter:
+      - '**/*'
+      - '!**/*.md'
+      - '!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}'
+      - frontend/dist/**/*
+extraResources:
+  - from: backend/bin/Release/net8.0/win-x64/publish
+    to: backend
+    filter:
+      - '**/*'
+win:
+  target: nsis
+  icon: assets/logo.png
+  publish:
+    - provider: generic
+      url: https://spintracker.vercel.app/updates/
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+electronVersion: 28.3.3
