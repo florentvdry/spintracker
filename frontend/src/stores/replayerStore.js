@@ -93,14 +93,24 @@ export const useReplayerStore = create((set, get) => ({
   },
 
   openReplayer: (handData) => {
-    // If openReplayer is called directly (not via loadHandQueue/loadHand), 
-    // we should probably clear the queue effectively treating it as a single hand session
-    // UNLESS it was called by loadHand.
-    // We can distinguish by checking if we are loading from queue?
-    // But loadHand calls openReplayer.
-    // Let's assume openReplayer is just "set current hand state". 
-    // The queue management is separate.
+    // Open replayer in a new window
+    const newWindow = window.open('/replayer.html', '_blank', 'width=1000,height=700,resizable=yes,scrollbars=no');
     
+    // Wait for the window to load, then send the data
+    const checkReady = () => {
+      if (newWindow && !newWindow.closed) {
+        try {
+          newWindow.postMessage({ type: 'loadReplayer', data: handData }, '*');
+        } catch (e) {
+          // Window not ready, try again
+          setTimeout(checkReady, 100);
+        }
+      }
+    };
+    setTimeout(checkReady, 500); // Give some time for the window to load
+  },
+
+  setReplayerHand: (handData) => {
     const normalized = normalizeHand(handData);
     
     // Inject virtual street actions if board exists but actions are missing
@@ -166,7 +176,11 @@ export const useReplayerStore = create((set, get) => ({
   },
 
   closeReplayer: () => {
-    set({ isOpen: false, isPlaying: false });
+    if (window.opener) {
+      window.close();
+    } else {
+      set({ isOpen: false, isPlaying: false });
+    }
   },
 
   minimizeReplayer: (isMinimized) => {
