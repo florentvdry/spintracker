@@ -185,7 +185,7 @@ const ReplayerTable = () => {
               
               {/* Cards */}
               <div className="flex justify-center gap-1 h-8">
-                {player.cards && (player.isHero || showVillainHands || currentStreet === 4) ? (
+                {player.cards && (player.isHero || showVillainHands || (player.isWinner && currentStreet === 4)) ? (
                    parseCards(player.cards).map((c, i) => (
                      <PlayingCard key={i} card={c} size="sm" />
                    ))
