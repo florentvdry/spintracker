@@ -90,13 +90,13 @@ const ReplayerTable = () => {
      return positions[positionIndex] || { top: '50%', left: '50%' };
   };
 
-  // Calculate position for player's current bet (moved 30% towards center)
+  // Calculate position for player's current bet (moved 40% towards center)
   const getBetPosition = (playerPos) => {
       const pTop = parseFloat(playerPos.top);
       const pLeft = parseFloat(playerPos.left);
       
       // Move towards center (50, 50)
-      const factor = 0.3; 
+      const factor = 0.4; 
       const bTop = pTop + (50 - pTop) * factor;
       const bLeft = pLeft + (50 - pLeft) * factor;
 
@@ -138,24 +138,16 @@ const ReplayerTable = () => {
       {/* Players */}
       {players.map((player, idx) => {
         const pos = getDisplayPosition(idx);
-        const betPos = getBetPosition(pos);
         
         return (
-          <React.Fragment key={player.seat}>
           <div 
             className={`absolute transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1 transition-all duration-300 ${player.isFolded ? 'opacity-50 grayscale' : ''} ${player.isWinner ? 'scale-110 z-20' : 'z-10'}`}
             style={{ top: pos.top, left: pos.left }}
+            key={player.seat}
           >
-            {/* Winner Badge (Removed redundant bounce animation, now part of action badge logic or handled separately) */}
-            {/* If we want a separate winner badge, we can keep it, but user said "double winner bubble".
-                The action label also shows "Win X". So we should probably remove this one or ensure they don't overlap.
-                The user specifically asked to "remove the jumping one". The previous action label was jumping.
-                This badge was also bouncing. Let's remove this explicit "WINNER" badge and rely on the Action Badge "Win 100".
-            */}
-
             {/* Action Badge (Replaces jumping bubble) */}
             {player.actionLabel && (
-              <div className={`absolute -top-10 left-1/2 transform -translate-x-1/2 z-30 px-3 py-1 rounded-md shadow-lg border text-xs font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-300 ${getActionStyle(player.lastActionType)}`}>
+              <div className={`absolute -top-10 left-1/2 transform -translate-x-1/2 z-50 px-3 py-1 rounded-md shadow-lg border text-xs font-bold uppercase tracking-wide whitespace-nowrap transition-all duration-300 ${getActionStyle(player.lastActionType)}`}>
                 {player.actionLabel.replace(/\d+(\.\d+)?/, (match) => {
                   const val = parseFloat(match);
                   if (!isNaN(val)) return formatAmount(val);
@@ -163,19 +155,6 @@ const ReplayerTable = () => {
                 })}
               </div>
             )}
-
-            {/* Avatar Circle (Removed Circle) */}
-            <div className={`relative flex items-center justify-center`}>
-              <span className={`text-xs font-bold text-white overflow-hidden text-ellipsis px-2 py-1 rounded w-full text-center whitespace-nowrap bg-black/50 border border-white/10 ${player.isWinner ? 'text-yellow-400 border-yellow-400/50' : ''}`}>
-                {player.name}
-              </span>
-              {/* Dealer Button */}
-              {player.seat === dealerSeat && (
-                <div className="absolute -bottom-3 -right-2 w-5 h-5 bg-white text-black rounded-full text-[10px] flex items-center justify-center font-bold border border-gray-300 shadow z-20">
-                  D
-                </div>
-              )}
-            </div>
 
             {/* Stack & Cards */}
             <div className="bg-gray-900/90 rounded p-1.5 min-w-[80px] text-center border border-gray-700 shadow-xl backdrop-blur-sm">
@@ -199,21 +178,41 @@ const ReplayerTable = () => {
                 )}
               </div>
             </div>
-          </div>
 
-          {/* Current Bet Stack (Rendered separate from player container for proper positioning) */}
-          {player.currentBet > 0 && (
-              <div 
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center pointer-events-none"
-                  style={{ top: betPos.top, left: betPos.left }}
-              >
-                  <ChipStack amount={player.currentBet} size="sm" />
-                  <div className="mt-1 bg-black/80 text-white text-xs font-bold px-2 py-0.5 rounded-full font-mono border border-white/20 shadow-md whitespace-nowrap z-30">
-                      {formatAmount(player.currentBet)}
-                  </div>
-              </div>
-          )}
-          </React.Fragment>
+            {/* Avatar Circle (Moved below cards) */}
+            <div className={`relative flex items-center justify-center`}>
+              <span className={`text-xs font-bold text-white overflow-hidden text-ellipsis px-3 py-1 rounded w-full text-center whitespace-nowrap bg-black/70 border border-white/20 shadow-md ${player.isWinner ? 'text-yellow-400 border-yellow-400/50' : ''}`}>
+                {player.name}
+              </span>
+              {/* Dealer Button */}
+              {player.seat === dealerSeat && (
+                <div className="absolute -bottom-3 -right-2 w-5 h-5 bg-white text-black rounded-full text-[10px] flex items-center justify-center font-bold border border-gray-300 shadow z-20">
+                  D
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Current Bet Stacks (Rendered after players to ensure actions are on top) */}
+      {players.map((player, idx) => {
+        if (player.currentBet <= 0) return null;
+        
+        const pos = getDisplayPosition(idx);
+        const betPos = getBetPosition(pos);
+        
+        return (
+          <div 
+            key={`bet-${player.seat}`}
+            className="absolute transform -translate-x-1/2 -translate-y-1/2 z-5 flex flex-col items-center pointer-events-none"
+            style={{ top: betPos.top, left: betPos.left }}
+          >
+            <ChipStack amount={player.currentBet} size="sm" />
+            <div className="mt-1 bg-black/80 text-white text-xs font-bold px-2 py-0.5 rounded-full font-mono border border-white/20 shadow-md whitespace-nowrap z-20">
+              {formatAmount(player.currentBet)}
+            </div>
+          </div>
         );
       })}
     </div>
