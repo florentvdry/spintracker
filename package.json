@@ -67,9 +67,8 @@
       "icon": "assets/logo.png",
       "publish": [
         {
-          "provider": "github",
-          "owner": "florentvdry",
-          "repo": "spintracker-releases"
+          "provider": "generic",
+          "url": "https://spintracker.vercel.app/updates/"
         }
       ]
     },
