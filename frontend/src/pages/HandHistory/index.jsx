@@ -47,6 +47,11 @@ export default function HandHistory() {
     }
   };
 
+  const handleReplayHand = async (handId) => {
+    console.log('handleReplayHand called with:', handId, typeof handId);
+    loadHandQueue([handId], heroName);
+  };
+
   const totalPages = Math.ceil(totalTournaments / pageSize);
 
   return (
@@ -111,6 +116,7 @@ export default function HandHistory() {
                   sortBy={filters.sortBy}
                   onSort={setSortBy}
                   onReplayTournament={handleReplayTournament}
+                  onReplayHand={handleReplayHand}
                 />
                 
                 {/* Pagination */}

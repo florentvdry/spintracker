@@ -15,7 +15,8 @@ export default function TournamentsTable({
   onSelectHand,
   sortBy,
   onSort,
-  onReplayTournament
+  onReplayTournament,
+  onReplayHand
 }) {
   const { t } = useTranslation();
 
@@ -130,6 +131,7 @@ export default function TournamentsTable({
                                   <th className="px-4 py-2 text-left">{t('common.position')}</th>
                                   <th className="px-4 py-2 text-right">CEV</th>
                                   <th className="px-4 py-2 text-right">{t('common.result')}</th>
+                                  <th className="px-4 py-2 text-center w-12"></th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -173,6 +175,19 @@ export default function TournamentsTable({
                                         handProfit > 0 ? "text-emerald-500/80" : (handProfit < 0 ? "text-rose-500/80" : "text-gray-500")
                                       )}>
                                         {handProfit > 0 ? '+' : ''}{handProfit.toFixed(0)}
+                                      </td>
+                                      <td className="px-4 py-2 text-center">
+                                        <button 
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            console.log('Replaying hand:', hand.id, typeof hand.id);
+                                            onReplayHand(hand.id);
+                                          }}
+                                          className="p-1 rounded hover:bg-primary-500/20 text-gray-500 hover:text-primary-400 transition-all"
+                                          title="Replay Hand"
+                                        >
+                                          <Play size={12} fill="currentColor" />
+                                        </button>
                                       </td>
                                     </tr>
                                   );
