@@ -1,1 +1,2 @@
 website/public/updates/*.exe filter=lfs diff=lfs merge=lfs -text
+website/public/updates/SpinTracker[[:space:]]Setup[[:space:]]1.0.1.exe filter=lfs diff=lfs merge=lfs -text
