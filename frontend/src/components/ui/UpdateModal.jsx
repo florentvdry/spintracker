@@ -93,7 +93,7 @@ export default function UpdateModal() {
               <div className="bg-dark-300 rounded-lg p-3 max-h-48 overflow-y-auto">
                 <p className="text-sm text-gray-400 font-medium mb-1">{t('common.details')}:</p>
                 <div className="text-sm text-gray-300 whitespace-pre-wrap">
-                  {typeof releaseNotes === 'string' ? releaseNotes : JSON.stringify(releaseNotes)}
+                  {typeof releaseNotes === 'string' ? releaseNotes.replace(/<[^>]*>/g, '') : JSON.stringify(releaseNotes)}
                 </div>
               </div>
             </div>
