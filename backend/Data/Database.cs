@@ -65,6 +65,14 @@ public class Database
             _logger.LogInformation("Forced refresh: clearing all data from database tables...");
 
             // Clear known application tables but keep schema intact (migrations manage schema)
+            cmd.CommandText = @"
+                DELETE FROM hands;
+                DELETE FROM player_hands;
+                DELETE FROM players;
+                DELETE FROM custom_stats;
+                DELETE FROM hud_profiles;
+            ";
+            cmd.ExecuteNonQuery();
 
             // Reset AUTOINCREMENT counters where applicable
             try

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Trash2, Database, Download, Upload, Globe, FileCode, FolderOpen } from 'lucide-react';
+import { Trash2, Database, Download, Upload, Globe, FileCode, FolderOpen, Loader } from 'lucide-react';
 import { Card } from '@components/ui';
 import { ipcService } from '@services/ipcService';
 import { pythonService } from '@services/pythonService';
@@ -16,6 +16,7 @@ export default function Settings() {
   const setHeroName = useAppStore(state => state.setHeroName);
   const loadPlayers = usePlayersStore(state => state.loadPlayers);
   const [serverStatus, setServerStatus] = useState('checking');
+  const [exportLoading, setExportLoading] = useState(false);
 
   useEffect(() => {
     checkStatus();
@@ -242,25 +243,40 @@ export default function Settings() {
             action={
               <button 
                 onClick={async () => {
-                  const result = await ipcService.exportData();
-                  if (result.success) {
-                    addNotification({
-                      type: 'success',
-                      title: 'Export réussi',
-                      message: result.message
-                    });
-                  } else if (result.message !== 'Export cancelled') {
-                    addNotification({
-                      type: 'error',
-                      title: 'Erreur',
-                      message: result.message
-                    });
+                  setExportLoading(true);
+                  try {
+                    const result = await ipcService.exportData();
+                    if (result.success) {
+                      addNotification({
+                        type: 'success',
+                        title: 'Export réussi',
+                        message: result.message
+                      });
+                    } else if (result.message !== 'Export cancelled') {
+                      addNotification({
+                        type: 'error',
+                        title: 'Erreur',
+                        message: result.message
+                      });
+                    }
+                  } finally {
+                    setExportLoading(false);
                   }
                 }}
+                disabled={exportLoading}
                 className="btn-secondary flex items-center gap-2"
               >
-                <Download className="w-4 h-4" />
-                {t('settings.database.export.button')}
+                {exportLoading ? (
+                  <>
+                    <Loader className="w-4 h-4 animate-spin" />
+                    {t('common.loading')}
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4" />
+                    {t('settings.database.export.button')}
+                  </>
+                )}
               </button>
             }
           />
