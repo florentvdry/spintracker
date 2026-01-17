@@ -27,9 +27,14 @@ export default function ActionSequenceSelector({ filters, onChange }) {
   // Initialize/Reset based on filters or defaults
   useEffect(() => {
     // If filters have no actions, reset sequence
-    const hasActions = ['BTN', 'SB', 'BB'].some(pos => filters[`Preflop${pos}Action`]);
+    const hasActions = ['BTN', 'SB', 'BB'].some(pos => {
+        const key = `Preflop${pos.charAt(0) + pos.slice(1).toLowerCase()}Action`;
+        return filters[key];
+    });
     if (!hasActions && sequence.length > 0) {
       setSequence([]);
+      // Reset next position if sequence is cleared externally
+      setNextPosition(filters.PlayerCount === 2 ? 'SB' : 'BTN');
     }
   }, [filters]);
 
