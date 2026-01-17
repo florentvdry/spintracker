@@ -1,9 +1,6 @@
 using SpinTrackerBackend;
 using FluentMigrator.Runner;
 
-// Initialize SQLite (use Batteries_V2 to match SQLitePCLRaw.batteries_v2)
-SQLitePCL.Batteries_V2.Init();
-
 if (args.Length > 0 && args[0] == "--compare")
 {
     await ComparisonTool.Run();
