@@ -27,6 +27,7 @@ public class AnalysisFilters
     public double? MaxStackBB { get; set; }
     public string[]? Positions { get; set; } // Hero Position filter
     public int? PlayerCount { get; set; } // New filter
+    public List<string>? ActionSequence { get; set; } // Ordered sequence: "BTN:Raise", "SB:Call"
     public string? DateFrom { get; set; }
     public string? DateTo { get; set; }
 }

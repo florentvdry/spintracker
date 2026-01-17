@@ -75,6 +75,9 @@ export default function ActionSequenceSelector({ filters, onChange }) {
     // This is a simplification but fits the existing filter structure
     const newFilters = { ...filters };
     newFilters[`Preflop${nextPosition.charAt(0) + nextPosition.slice(1).toLowerCase()}Action`] = actionObj.value;
+    // NEW: Add ordered sequence
+    newFilters.ActionSequence = newSequence.map(item => `${item.position}:${item.action}`);
+    
     onChange(newFilters);
 
     // Calculate next position
@@ -90,7 +93,8 @@ export default function ActionSequenceSelector({ filters, onChange }) {
         ...filters,
         PreflopBtnAction: '',
         PreflopSbAction: '',
-        PreflopBbAction: ''
+        PreflopBbAction: '',
+        ActionSequence: [] // Clear sequence
     });
     setNextPosition(filters.PlayerCount === 2 ? 'SB' : 'BTN');
   };
@@ -108,6 +112,9 @@ export default function ActionSequenceSelector({ filters, onChange }) {
       newSequence.forEach(item => {
           newFilters[`Preflop${item.position.charAt(0) + item.position.slice(1).toLowerCase()}Action`] = item.action;
       });
+      // NEW: Update ActionSequence
+      newFilters.ActionSequence = newSequence.map(item => `${item.position}:${item.action}`);
+      
       onChange(newFilters);
 
       // Reset next position to the one we just removed

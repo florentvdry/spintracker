@@ -34,6 +34,7 @@ export default function RangeResearch() {
     Positions: [],
     DateFrom: '',
     DateTo: '',
+    ActionSequence: [], // New ordered sequence
     // Street Actions
     PreflopBtnAction: '',
     PreflopSbAction: '',

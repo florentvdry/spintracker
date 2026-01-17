@@ -135,31 +135,45 @@ namespace SpinTrackerBackend.Services
                     if (!MatchesSituation(hand, filters.Situation)) continue;
                 }
 
-                // Filter by Action
+                // Filter by Action (Global)
                 if (!string.IsNullOrEmpty(filters.Action))
                 {
                     if (!MatchesAction(hand, filters.Situation, filters.Action, heroName)) continue;
                 }
 
-                // Per-street Action Filters by Position
-                if (!MatchesStreetActionByPosition(hand.PreflopAction, filters.PreflopBtnAction, filters.PreflopSbAction, filters.PreflopBbAction, hand)) 
+                // NEW: Ordered Sequence Filter
+                if (filters.ActionSequence != null && filters.ActionSequence.Count > 0)
                 {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to PreflopAction mismatch. Filters: BTN={filters.PreflopBtnAction}, SB={filters.PreflopSbAction}, BB={filters.PreflopBbAction}");
-                    continue;
+                    if (!MatchesActionSequence(hand, filters.ActionSequence))
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to Sequence mismatch.");
+                        continue;
+                    }
                 }
+                else 
+                {
+                    // Fallback to legacy presence-based filters if no sequence provided
+                    if (!MatchesStreetActionByPosition(hand.PreflopAction, filters.PreflopBtnAction, filters.PreflopSbAction, filters.PreflopBbAction, hand)) 
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to PreflopAction mismatch.");
+                        continue;
+                    }
+                }
+                
+                // Keep Postflop filters valid even with sequence (sequence is Preflop only for now)
                 if (!MatchesStreetActionByPosition(hand.FlopAction, filters.FlopBtnAction, filters.FlopSbAction, filters.FlopBbAction, hand)) 
                 {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopAction mismatch. Action='{hand.FlopAction}' Filters: BTN={filters.FlopBtnAction}, SB={filters.FlopSbAction}, BB={filters.FlopBbAction}");
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopAction mismatch.");
                     continue;
                 }
                 if (!MatchesStreetActionByPosition(hand.TurnAction, filters.TurnBtnAction, filters.TurnSbAction, filters.TurnBbAction, hand)) 
                 {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnAction mismatch. Action='{hand.TurnAction}'");
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnAction mismatch.");
                     continue;
                 }
                 if (!MatchesStreetActionByPosition(hand.RiverAction, filters.RiverBtnAction, filters.RiverSbAction, filters.RiverBbAction, hand)) 
                 {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverAction mismatch. Action='{hand.RiverAction}'");
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverAction mismatch.");
                     continue;
                 }
 
@@ -169,6 +183,90 @@ namespace SpinTrackerBackend.Services
             _logger.LogInformation($"FilterHands: {result.Count}/{hands.Count} passed filters");
 
             return result;
+        }
+
+        private bool MatchesActionSequence(AnalysisHandData hand, List<string> sequence)
+        {
+             if (sequence == null || sequence.Count == 0) return true;
+             if (string.IsNullOrEmpty(hand.PreflopAction)) return false;
+
+             // Parse PlayerPositionsMap: "Player1:BTN|Player2:SB"
+             var posMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+             if (!string.IsNullOrEmpty(hand.PlayerPositionsMap))
+             {
+                 var pairs = hand.PlayerPositionsMap.Split('|');
+                 foreach (var pair in pairs)
+                 {
+                     var parts = pair.Split(':');
+                     if (parts.Length == 2)
+                     {
+                         posMap[parts[0]] = parts[1]; // Name -> Position
+                     }
+                 }
+             }
+
+             // Parse Hand Actions into a list of "Position:Action"
+             // Format of line: "PlayerName: raises to 40"
+             var actualActions = new List<string>();
+             var lines = hand.PreflopAction.Split('\n');
+             
+             foreach (var line in lines)
+             {
+                 if (string.IsNullOrEmpty(line)) continue;
+                 
+                 var processingLine = line.Trim();
+                 var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
+                 if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
+
+                 var colonIndex = processingLine.IndexOf(':');
+                 if (colonIndex == -1) continue;
+
+                 var playerName = processingLine.Substring(0, colonIndex).Trim();
+                 var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+
+                 if (posMap.TryGetValue(playerName, out var pos))
+                 {
+                     // Convert content to standardized verb
+                     string verb = "unknown";
+                     if (content.Contains("raises")) verb = "raise";
+                     else if (content.Contains("bets")) verb = "bet";
+                     else if (content.Contains("calls")) verb = "call";
+                     else if (content.Contains("checks")) verb = "check";
+                     else if (content.Contains("folds")) verb = "fold";
+                     else if (content.Contains("all-in")) verb = "all-in";
+                     else if (content.Contains("posts")) continue; // Skip blinds posting
+                     else if (content.Contains("ante")) continue;
+                     
+                     if (verb != "unknown")
+                     {
+                         actualActions.Add($"{pos}:{verb}");
+                     }
+                 }
+             }
+
+             // Check if 'actualActions' starts with 'sequence'
+             if (actualActions.Count < sequence.Count) return false;
+
+             for (int i = 0; i < sequence.Count; i++)
+             {
+                 var required = sequence[i]; // "BTN:raise"
+                 var actual = actualActions[i]; // "BTN:raise"
+                 
+                 // Flexible match?
+                 // Require exact Position:Verb match
+                 if (!string.Equals(required, actual, StringComparison.OrdinalIgnoreCase))
+                 {
+                     // Allow "raise" to match "bet" or "all-in" if loose matching desired?
+                     // For now strict: user selected "Raise", hand must have "Raise".
+                     // Exception: "all-in" often contains "raises" in text ("raises to 100 and is all-in")
+                     // My parser above sets verb to "all-in" if content contains "all-in".
+                     // If user filters "raise", but hand is "all-in", currently fails.
+                     // Fix: if required is "raise", allow "all-in"? Maybe not.
+                     return false;
+                 }
+             }
+
+             return true;
         }
 
         private bool MatchesStreetActionByPosition(string handAction, string? btnAction, string? sbAction, string? bbAction)
