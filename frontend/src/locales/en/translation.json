@@ -2,7 +2,7 @@
   "navigation": {
     "dashboard": "Dashboard",
     "history": "Tournament History",
-    "ranges": "Ranges",
+    "ranges": "Ranges Analyzer",
     "settings": "Settings"
   },
   "sidebar": {
@@ -40,7 +40,8 @@
     "all_read": "Mark all as read",
     "clear_all": "Clear all",
     "notifications": "Notifications",
-    "no_notifications": "No notifications"
+    "no_notifications": "No notifications",
+    "any": "Any"
   },
   "header": {
     "search_placeholder": "Search hand, player...",
@@ -164,7 +165,12 @@
     "start": "START",
     "action_log": "Action Log",
     "export_video": "Export Video",
-    "recording": "Recording..."
+    "recording": "Recording...",
+    "error_title": "Replayer Error",
+    "no_data": "No hand data found for this window.",
+    "load_error": "Error loading data: ",
+    "close": "Close",
+    "hand_title": "Hand Replayer"
   },
   "stats_builder": {
     "title": "Stats Builder",
@@ -201,12 +207,15 @@
     "vs_position": "Vs Position",
     "matrix": "Range Matrix",
     "hand_details": "Hand Details",
-    "select_prompt": "Click a hand to see details",
+    "select_prompt": "Select a hand",
     "statistics": "Statistics",
     "total_hands": "Total hands",
     "unique_hands": "Unique hands",
     "frequency": "Frequency",
-    "occurrences": "Occurrences"
+    "occurrences": "Occurrences",
+    "loading": "Loading range...",
+    "breakdown": "Range Breakdown",
+    "matrix_hint": "Click any cell in the matrix to view detailed breakdown"
   },
   "settings": {
     "title": "Settings",
@@ -255,5 +264,14 @@
         "button": "Open folder"
       }
     }
+  },
+  "actions": {
+    "raise": "Raise",
+    "call": "Call",
+    "fold": "Fold",
+    "bet": "Bet",
+    "check": "Check",
+    "all_in": "All-In",
+    "any": "Any"
   }
 }

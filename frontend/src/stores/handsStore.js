@@ -12,7 +12,8 @@ export const useHandsStore = create((set, get) => ({
   totalTournaments: 0,
   totalHands: 0,
   isLoading: false,
-  isLoadingHands: false,
+  isLoadingHands: false, // For tournament hands list
+  isLoadingHand: false,  // For single hand details
   currentPage: 1,
   pageSize: 50,
   filters: {
@@ -103,13 +104,22 @@ export const useHandsStore = create((set, get) => ({
   },
 
   selectHand: async (handId) => {
+    if (!handId) {
+      set({ selectedHand: null });
+      return { success: true };
+    }
+    
+    set({ isLoadingHand: true });
     try {
-      const result = await ipcService.getHandDetails(handId);
+      const heroName = useAppStore.getState().heroName;
+      const result = await ipcService.getHandDetails(handId, heroName);
       if (result.success) {
         set({ selectedHand: result.data });
       }
+      set({ isLoadingHand: false });
       return result;
     } catch (error) {
+      set({ isLoadingHand: false });
       console.error('Failed to load hand details:', error);
       return { success: false, error };
     }

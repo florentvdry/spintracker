@@ -343,57 +343,57 @@ public class HandRepository
         hand.PlayerCount = hand.Players.Count;
     }
 
+    private int? TryGetOrdinal(SqliteDataReader reader, string columnName)
+    {
+        try { return reader.GetOrdinal(columnName); } catch { return null; }
+    }
+
     private object ReadHandFromReader(SqliteDataReader reader)
     {
         try
         {
-            _logger.LogInformation("Reading hand from reader...");
-            var hand = new
-            {
-                id = DatabaseUtils.GetStringOrNull(reader, "id"),
-                game_id = DatabaseUtils.GetStringOrNull(reader, "game_id"),
-                hand_id = DatabaseUtils.GetStringOrNull(reader, "hand_id"),
-                room = DatabaseUtils.GetStringOrNull(reader, "room"),
-                game_mode = DatabaseUtils.GetStringOrNull(reader, "game_mode"),
-                game_type = DatabaseUtils.GetStringOrNull(reader, "game_type"),
-                game_name = DatabaseUtils.GetStringOrNull(reader, "game_name"),
-                prize_pool = DatabaseUtils.GetDoubleOrNull(reader, "prize_pool"),
-                multiplier = DatabaseUtils.GetInt32OrNull(reader, "multiplier"),
-                buy_in = DatabaseUtils.GetDoubleOrNull(reader, "buy_in"),
-                date_time = DatabaseUtils.GetStringOrNull(reader, "date_time"),
-                table_id = DatabaseUtils.GetStringOrNull(reader, "table_id"),
-                blinds = DatabaseUtils.GetStringOrNull(reader, "blinds"),
-                total_pot = DatabaseUtils.GetDoubleOrNull(reader, "total_pot"),
-                rake = DatabaseUtils.GetDoubleOrNull(reader, "rake"),
-                hero_position = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_position"),
-                hero_stack = DatabaseUtils.GetInt32OrNull(reader, "dyn_hero_stack"),
-                hero_cards = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_cards"),
-                hero_name = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_name"),
-                preflop_action = DatabaseUtils.GetStringOrNull(reader, "preflop_action"),
-                flop = DatabaseUtils.GetStringOrNull(reader, "flop"),
-                flop_action = DatabaseUtils.GetStringOrNull(reader, "flop_action"),
-                turn = DatabaseUtils.GetStringOrNull(reader, "turn"),
-                turn_action = DatabaseUtils.GetStringOrNull(reader, "turn_action"),
-                river = DatabaseUtils.GetStringOrNull(reader, "river"),
-                river_action = DatabaseUtils.GetStringOrNull(reader, "river_action"),
-                showdown = DatabaseUtils.GetStringOrNull(reader, "showdown"),
-                result = DatabaseUtils.GetStringOrNull(reader, "result"),
-                hero_profit = DatabaseUtils.GetDoubleOrNull(reader, "dyn_hero_profit"),
-                hero_all_in = DatabaseUtils.GetBoolOrNull(reader, "dyn_hero_all_in"),
-                went_to_showdown = DatabaseUtils.GetBoolOrNull(reader, "dyn_went_to_showdown") ?? DatabaseUtils.GetBoolOrNull(reader, "went_to_showdown"),
-                player_count = DatabaseUtils.GetInt32OrNull(reader, "player_count"),
-                ev_chips = DatabaseUtils.GetDoubleOrNull(reader, "ev_chips"),
-                equity_preflop = DatabaseUtils.GetDoubleOrNull(reader, "equity_preflop"),
-                equity_flop = DatabaseUtils.GetDoubleOrNull(reader, "equity_flop"),
-                equity_turn = DatabaseUtils.GetDoubleOrNull(reader, "equity_turn"),
-                equity_river = DatabaseUtils.GetDoubleOrNull(reader, "equity_river")
+            var hand = new Dictionary<string, object?>();
+            
+            // Core fields always present in 'hands' table
+            string[] coreFields = { 
+                "id", "game_id", "hand_id", "room", "game_mode", "game_type", "game_name", 
+                "prize_pool", "multiplier", "buy_in", "date_time", "table_id", "blinds", 
+                "total_pot", "rake", "preflop_action", "flop", "flop_action", "turn", 
+                "turn_action", "river", "river_action", "showdown", "result", "player_count" 
             };
-            _logger.LogInformation($"Successfully read hand: {hand.id}");
+
+            foreach (var field in coreFields)
+            {
+                int? idx = TryGetOrdinal(reader, field);
+                if (idx.HasValue)
+                {
+                    if (reader.IsDBNull(idx.Value)) hand[field] = null;
+                    else hand[field] = reader.GetValue(idx.Value);
+                }
+            }
+
+            // Dynamic fields from JOINs
+            hand["hero_position"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_position");
+            hand["hero_stack"] = DatabaseUtils.GetDoubleOrNull(reader, "dyn_hero_stack");
+            hand["hero_cards"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_cards");
+            hand["hero_name"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_name");
+            hand["hero_profit"] = DatabaseUtils.GetDoubleOrNull(reader, "dyn_hero_profit");
+            hand["hero_all_in"] = DatabaseUtils.GetBoolOrNull(reader, "dyn_hero_all_in") ?? false;
+            hand["went_to_showdown"] = DatabaseUtils.GetBoolOrNull(reader, "dyn_went_to_showdown") ?? DatabaseUtils.GetBoolOrNull(reader, "went_to_showdown") ?? false;
+            hand["ev_chips"] = DatabaseUtils.GetDoubleOrNull(reader, "ev_chips");
+            
+            // Analytics
+            hand["equity_preflop"] = DatabaseUtils.GetDoubleOrNull(reader, "equity_preflop");
+            hand["equity_flop"] = DatabaseUtils.GetDoubleOrNull(reader, "equity_flop");
+            hand["equity_turn"] = DatabaseUtils.GetDoubleOrNull(reader, "equity_turn");
+            hand["equity_river"] = DatabaseUtils.GetDoubleOrNull(reader, "equity_river");
+
+            _logger.LogInformation($"Successfully read hand from DB: {hand["id"]}");
             return hand;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error in ReadHandFromReader: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            _logger.LogError($"Error in ReadHandFromReader: {ex.Message}");
             throw;
         }
     }
@@ -445,7 +445,7 @@ public class HandRepository
                     players.Add(new {
                         Name = reader.GetString(0),
                         Position = reader.IsDBNull(1) ? "" : reader.GetString(1),
-                        Stack = reader.GetInt32(2),
+                        Stack = reader.GetDouble(2),
                         Cards = reader.IsDBNull(3) ? null : reader.GetString(3),
                         Investment = reader.GetDouble(4),
                         ChipsWon = reader.GetDouble(5),

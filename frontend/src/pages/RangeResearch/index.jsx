@@ -57,27 +57,6 @@ export default function RangeResearch() {
   const [selectedRangeStats, setSelectedRangeStats] = useState(null);
   const [selectedActionFilter, setSelectedActionFilter] = useState(null);
 
-  // Calculate Global Frequencies
-  const globalStats = useMemo(() => {
-    let total = 0;
-    const actions = {};
-    
-    if (rangeData) {
-        Object.values(rangeData).forEach(stats => {
-            // Normalize property names (backend sends camelCase: actions)
-            const acts = stats.actions || stats.Actions;
-            if (stats && acts) {
-                Object.entries(acts).forEach(([action, count]) => {
-                    actions[action] = (actions[action] || 0) + count;
-                    total += count;
-                });
-            }
-        });
-    }
-    
-    return { total, actions };
-  }, [rangeData]);
-
   // Load players list on mount (for dropdown)
   useEffect(() => {
     loadPlayers({ limit: 1000 });
@@ -190,16 +169,16 @@ export default function RangeResearch() {
             {/* Left: Range Grid */}
             <div className="flex-1 bg-dark-200 rounded-lg shadow-lg flex flex-col min-h-0">
                <div className="p-4 border-b border-dark-100 flex justify-between items-center">
-                 <h2 className="text-lg font-bold text-white">Range Matrix</h2>
+                 <h2 className="text-lg font-bold text-white">{t('range_analysis.matrix')}</h2>
                  <div className="flex gap-2 text-xs">
-                    <div className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f44336]"></span>Raise</div>
-                    <div className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#4caf50]"></span>Call</div>
-                    <div className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#2196f3]"></span>Fold</div>
+                    <div className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#f44336]"></span>{t('actions.raise')}</div>
+                    <div className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#4caf50]"></span>{t('actions.call')}</div>
+                    <div className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-[#2196f3]"></span>{t('actions.fold')}</div>
                  </div>
                </div>
                <div className="flex-1 p-4 overflow-auto flex items-center justify-center">
                   {rangeLoading ? (
-                    <div className="text-gray-400">Loading range...</div>
+                    <div className="text-gray-400">{t('range_analysis.loading')}</div>
                   ) : (
                     <RangeGrid 
                       data={rangeData} 
@@ -218,52 +197,11 @@ export default function RangeResearch() {
             {/* Right: Details Panel */}
             <div className="w-96 bg-dark-200 rounded-lg shadow-lg flex flex-col min-h-0 border-l border-dark-100">
               <div className="p-4 border-b border-dark-100">
-                 <h3 className="text-lg font-bold text-white">Range Breakdown</h3>
+                 <h3 className="text-lg font-bold text-white">{t('range_analysis.breakdown')}</h3>
               </div>
               
               <div className="p-6 overflow-y-auto space-y-8">
-                {/* Global Frequencies */}
-                <div className="space-y-2">
-                    <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Overall Frequency</h4>
-                    <div className="h-8 w-full flex rounded-md overflow-hidden bg-dark-300 relative">
-                         {globalStats.total === 0 ? (
-                             <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No Data</div>
-                         ) : (
-                            Object.entries(globalStats.actions)
-                              .sort((a, b) => b[1] - a[1]) // Sort by frequency
-                              .map(([action, count]) => {
-                                  const percent = (count / globalStats.total) * 100;
-                                  if (percent < 1) return null; // Hide tiny segments
-                                  return (
-                                     <div 
-                                        key={action}
-                                        className="h-full flex items-center justify-center text-[10px] font-bold text-white overflow-hidden transition-all duration-500"
-                                        style={{
-                                            width: `${percent}%`,
-                                            backgroundColor: ACTION_COLORS[action] || ACTION_COLORS.None
-                                        }}
-                                        title={`${action}: ${percent.toFixed(1)}%`}
-                                     >
-                                         {percent > 10 && `${percent.toFixed(0)}%`}
-                                     </div>
-                                  );
-                              })
-                         )}
-                    </div>
-                    <div className="flex flex-wrap gap-3 text-xs text-gray-400 mt-2">
-                        {Object.entries(globalStats.actions)
-                            .sort((a, b) => b[1] - a[1])
-                            .slice(0, 4) // Show top 4 actions in legend
-                            .map(([action, count]) => (
-                            <div key={action} className="flex items-center gap-1.5">
-                                <span className="w-2 h-2 rounded-full" style={{backgroundColor: ACTION_COLORS[action] || ACTION_COLORS.None}}></span>
-                                <span>{action}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="border-t border-dark-100 my-4"></div>
+                <div className="border-t border-dark-100 my-4 hidden"></div>
 
                 {selectedRangeHand ? (
                   <div className="space-y-6">
@@ -385,8 +323,8 @@ export default function RangeResearch() {
                   </div>
                 ) : (
                   <div className="text-gray-500 text-center py-10 border-2 border-dashed border-dark-300 rounded-lg">
-                    <div className="mb-2">Select a hand</div>
-                    <div className="text-xs">Click any cell in the matrix to view detailed breakdown</div>
+                    <div className="mb-2">{t('range_analysis.select_prompt')}</div>
+                    <div className="text-xs">{t('range_analysis.select_prompt')}</div>
                   </div>
                 )}
               </div>

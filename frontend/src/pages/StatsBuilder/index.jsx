@@ -432,7 +432,7 @@ const StatsBuilder = () => {
       >
         {!isRoot && (
           <div className="flex justify-between items-center mb-1 pb-1 border-b border-dark-100/30">
-             <span className="text-[9px] font-bold text-gray-500 uppercase tracking-tight">Nested Group</span>
+             <span className="text-[9px] font-bold text-gray-500 uppercase tracking-tight">{t('stats_builder.nested_group')}</span>
              <button onClick={(e) => { e.stopPropagation(); removeGroupAt(path); }} className="text-gray-500 hover:text-red-400">
                <X size={10} />
              </button>
@@ -468,7 +468,7 @@ const StatsBuilder = () => {
                           onChange={(e) => updateConditionParameter(path, item.originalIndex, 'Position', e.target.value)}
                           className="w-11 bg-dark-900/50 border border-white/10 rounded px-0.5 py-0.5 text-[9px] text-white outline-none focus:border-primary-500/50 appearance-none text-center"
                         >
-                          <option value="">Any</option>
+                          <option value="">{t('common.any')}</option>
                           <option value="SB">SB</option>
                           <option value="BB">BB</option>
                           <option value="BTN">BTN</option>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { User, Calendar, RotateCcw, ArrowRight } from 'lucide-react';
+import { User, Calendar, RotateCcw, ArrowRight, Layers, Search, ChevronDown } from 'lucide-react';
 import clsx from 'clsx';
 import { usePlayersStore } from '@stores/playersStore';
 
@@ -23,6 +23,14 @@ export default function ActionSequenceSelector({ filters, onChange }) {
   // Each item: { position: 'BTN', action: 'raise', label: 'Raise' }
   const [sequence, setSequence] = useState([]);
   const [nextPosition, setNextPosition] = useState(null);
+
+  // States for searchable player dropdown
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredPlayers = players.filter(p => 
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Initialize/Reset based on filters or defaults
   useEffect(() => {
@@ -144,17 +152,95 @@ export default function ActionSequenceSelector({ filters, onChange }) {
                 </button>
             </div>
 
-            {/* Hero Selector */}
-            <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-gray-400" />
-                <select
-                    value={filters.HeroName || ''}
-                    onChange={(e) => onChange({...filters, HeroName: e.target.value})}
-                    className="bg-dark-400 border border-dark-300 rounded px-2 py-1 text-xs text-white focus:border-primary-500 focus:outline-none"
+            {/* Searchable Hero Selector */}
+            <div className="relative">
+                <div 
+                    className="flex items-center gap-2 cursor-pointer bg-dark-400 border border-dark-300 rounded px-3 py-1 text-xs text-white hover:border-primary-500 transition-colors min-w-[150px]"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 >
-                    <option value="">Field (All)</option>
-                    {players.map(p => <option key={p.name} value={p.name}>{p.name}</option>)}
-                </select>
+                    <User className="w-4 h-4 text-gray-400" />
+                    <span className="flex-1 truncate">{filters.HeroName || 'Field (All)'}</span>
+                    <ChevronDown className="w-3 h-3 text-gray-400" />
+                </div>
+
+                {isDropdownOpen && (
+                    <>
+                        <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>
+                        <div className="absolute top-full left-0 mt-1 w-64 bg-dark-300 border border-dark-200 rounded shadow-2xl z-50 flex flex-col max-h-60 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+                            <div className="p-2 border-b border-dark-200 bg-dark-300">
+                                <div className="relative">
+                                    <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500" />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search player..." 
+                                        className="w-full bg-dark-400 border border-dark-200 rounded pl-8 pr-2 py-1.5 text-[11px] text-gray-200 focus:outline-none focus:border-primary-500"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        autoFocus
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                </div>
+                            </div>
+                            <div className="overflow-y-auto flex-1 custom-scrollbar">
+                                <div 
+                                    className={clsx(
+                                        "px-3 py-2 text-xs cursor-pointer hover:bg-dark-400 transition-colors",
+                                        !filters.HeroName ? "bg-primary-500/10 text-primary-400 font-bold" : "text-gray-300"
+                                    )}
+                                    onClick={() => {
+                                        onChange({...filters, HeroName: ''});
+                                        setIsDropdownOpen(false);
+                                    }}
+                                >
+                                    Field (All)
+                                </div>
+                                {filteredPlayers.map(p => (
+                                    <div 
+                                        key={p.name} 
+                                        className={clsx(
+                                            "px-3 py-2 text-xs cursor-pointer hover:bg-dark-400 transition-colors flex flex-col",
+                                            filters.HeroName === p.name ? "bg-primary-500/10 text-primary-400 font-bold" : "text-gray-300"
+                                        )}
+                                        onClick={() => {
+                                            onChange({...filters, HeroName: p.name});
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        <span>{p.name}</span>
+                                        <span className="text-[10px] text-gray-500 font-normal">{p.total_hands} hands</span>
+                                    </div>
+                                ))}
+                                {filteredPlayers.length === 0 && searchTerm && (
+                                    <div className="px-3 py-4 text-center text-xs text-gray-500">
+                                        No player found
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </>
+                )}
+            </div>
+
+            {/* Stack Depth (BB) */}
+            <div className="flex items-center gap-2">
+                <Layers className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-1">
+                    <input 
+                        type="number" 
+                        placeholder="Min BB"
+                        value={filters.MinStackBB || ''}
+                        onChange={(e) => onChange({...filters, MinStackBB: e.target.value ? parseFloat(e.target.value) : null})}
+                        className="bg-dark-400 border border-dark-300 rounded px-2 py-1 text-xs text-white w-16 focus:border-primary-500 focus:outline-none"
+                    />
+                    <span className="text-gray-500">-</span>
+                    <input 
+                        type="number" 
+                        placeholder="Max BB"
+                        value={filters.MaxStackBB || ''}
+                        onChange={(e) => onChange({...filters, MaxStackBB: e.target.value ? parseFloat(e.target.value) : null})}
+                        className="bg-dark-400 border border-dark-300 rounded px-2 py-1 text-xs text-white w-16 focus:border-primary-500 focus:outline-none"
+                    />
+                </div>
             </div>
 
             {/* Date Range - Simplified */}

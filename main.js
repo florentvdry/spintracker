@@ -34,6 +34,7 @@ autoUpdater.autoDownload = false; // Ask user before downloading
 
 let mainWindow;
 let splashWindow;
+let lastReplayerData = null;
 let backendProcess = null;
 let isBackendStarting = false;
 const BACKEND_PORT = 5050;
@@ -341,6 +342,11 @@ function createReplayerWindow(handData) {
 
 app.whenReady().then(() => {
   startBackend();
+
+  ipcMain.handle('replayer-get-data', () => {
+    console.log('[Main] replayer-get-data invoked, returning stored data');
+    return lastReplayerData;
+  });
 
   // Create a lightweight splash window
   splashWindow = new BrowserWindow({
@@ -754,6 +760,7 @@ ipcMain.handle('python-analyze-range', async (event, params) => {
 });
 
 ipcMain.handle('open-replayer', async (event, handData) => {
+  lastReplayerData = handData;
   createReplayerWindow(handData);
 });
 

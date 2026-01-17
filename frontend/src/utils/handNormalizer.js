@@ -2,211 +2,187 @@
  * Normalizes various hand formats into a unified internal Hand Model for the Replayer.
  */
 export function normalizeHand(input) {
-  if (!input) return null;
-
-  // If it's already in our internal format
-  if (input.isNormalized) {
-    return input;
-  }
-
-  // Parse Blinds
-  let blinds = { sb: 0, bb: 0, ante: 0 };
-  if (typeof input.blinds === 'string') {
-    // "100/200" or "100/200/20"
-    const parts = input.blinds.split('/');
-    if (parts.length >= 2) {
-      blinds.sb = parseFloat(parts[0]);
-      blinds.bb = parseFloat(parts[1]);
-      if (parts.length > 2) blinds.ante = parseFloat(parts[2]);
+  try {
+    if (!input) {
+      console.warn('[HandNormalizer] Input is null or undefined');
+      return null;
     }
-  } else if (input.blinds) {
-    blinds = input.blinds;
-  }
 
-  // Parse Board
-  // Input board might be "AhKd2s" or ["Ah", "Kd", "2s"] or derived from street strings
-  let board = [];
-  if (Array.isArray(input.board)) {
-    board = input.board;
-  } else if (typeof input.board === 'string') {
-    board = parseCards(input.board);
-  } else {
-    // Try to construct from street strings
-    const flop = parseCards(input.flop);
-    const turn = parseCards(input.turn);
-    const river = parseCards(input.river);
-    board = [...flop, ...turn, ...river];
-  }
+    // If it's already in our internal format
+    if (input.isNormalized) {
+      return input;
+    }
 
-  // Players
-  // The backend now returns a Players array in the JSON
-  let players = [];
-  if (input.Players && Array.isArray(input.Players)) {
-    players = input.Players.map((p, idx) => ({
-      seat: idx + 1, // Auto-assign seat if missing?
-      name: p.Name || p.name,
-      stack: p.Stack || p.stack,
-      cards: p.cards || p.Cards, // "AhKh"
-      isHero: p.IsHero !== undefined ? p.IsHero : p.isHero,
-      position: p.Position || p.position
-    }));
-  } else if (input.players && Array.isArray(input.players)) {
-    players = input.players.map((p, idx) => ({
-      seat: p.seat || (idx + 1),
-      name: p.name,
-      stack: p.stack,
-      cards: p.cards,
-      isHero: p.isHero,
-      position: p.position
-    }));
-  }
-
-  // Sort players so hero is first
-  players.sort((a, b) => b.isHero - a.isHero);
-
-  // Actions
-  // We need to parse text actions from input.preflop_action, input.flop_action, etc.
-  const actions = [];
-  
-  // Helper to parse a block of text actions
-  const parseActionBlock = (text, street) => {
-    if (!text) return;
-    const lines = text.split('\n');
-    lines.forEach(line => {
-      line = line.trim();
-      if (!line) return;
-      
-      const action = parseActionLine(line, players);
-      if (action) {
-        actions.push({ ...action, street });
+    // Parse Blinds
+    let blinds = { sb: 0, bb: 0, ante: 0 };
+    if (typeof input.blinds === 'string') {
+      // "100/200" or "100/200/20"
+      const parts = input.blinds.split('/');
+      if (parts.length >= 2) {
+        blinds.sb = parseFloat(parts[0]) || 0;
+        blinds.bb = parseFloat(parts[1]) || 0;
+        if (parts.length > 2) blinds.ante = parseFloat(parts[2]) || 0;
       }
-    });
-  };
+    } else if (input.blinds) {
+      blinds = {
+        sb: input.blinds.sb || 0,
+        bb: input.blinds.bb || 0,
+        ante: input.blinds.ante || 0
+      };
+    }
 
-  parseActionBlock(input.preflop_action || input.PreflopAction, 0); // Preflop
-  parseActionBlock(input.flop_action || input.FlopAction, 1);       // Flop
-  parseActionBlock(input.turn_action || input.TurnAction, 2);       // Turn
-  parseActionBlock(input.river_action || input.RiverAction, 3);     // River
-  
-  // Parse Showdown / Summary for Winners
-  // Usually found in 'result' or 'showdown' field, or sometimes 'summary'
-  // Look for "wins Pot", "collected", etc.
-  let summaryText = input.showdown || input.Showdown;
-  
-  if (!summaryText && (input.result || input.Result)) {
-    // If we only have 'result', it might contain the FULL hand history (anonymized)
-    // We need to extract ONLY the Summary/Showdown part to avoid duplicating actions
-    const fullResult = input.result || input.Result;
-    
-    // Check if it looks like a full history
-    if (fullResult.includes('*** HEADER ***') || fullResult.includes('Site:')) {
-       // Try to find the start of showdown or summary
-       const showdownIdx = fullResult.indexOf('*** SHOWDOWN ***');
-       const summaryIdx = fullResult.indexOf('*** SUMMARY ***');
-       
-       if (showdownIdx !== -1) {
-           summaryText = fullResult.substring(showdownIdx);
-       } else if (summaryIdx !== -1) {
-           summaryText = fullResult.substring(summaryIdx);
-       } else {
-           // Fallback: If no headers, maybe use the last few lines? 
-           // Or just trust it if it's short.
-           // For now, let's assume if it has preflop/flop headers it's full.
-           if (fullResult.includes('*** PRE-FLOP ***')) {
-               summaryText = ""; // Don't use full text if we can't find summary section
-           } else {
-               summaryText = fullResult;
-           }
-       }
+    // Parse Board
+    let board = [];
+    if (Array.isArray(input.board)) {
+      board = input.board;
+    } else if (typeof input.board === 'string') {
+      board = parseCards(input.board);
     } else {
-       summaryText = fullResult;
+      // Try to construct from street strings
+      const flop = parseCards(input.flop || input.Flop);
+      const turn = parseCards(input.turn || input.Turn);
+      const river = parseCards(input.river || input.River);
+      board = [...flop, ...turn, ...river];
     }
-  }
-  
-  parseActionBlock(summaryText, 4); // Showdown/End
 
-  // Determine button seat from player positions
-  const btnPlayer = players.find(p => p.position === 'BTN');
-  const buttonSeat = btnPlayer ? btnPlayer.seat : 0;
+    // Players
+    let players = [];
+    const rawPlayers = input.Players || input.players;
+    
+    if (rawPlayers && Array.isArray(rawPlayers)) {
+      players = rawPlayers.map((p, idx) => ({
+        seat: p.seat || p.Seat || (idx + 1),
+        name: p.name || p.Name || `Player ${idx + 1}`,
+        stack: p.stack || p.Stack || 0,
+        cards: p.cards || p.Cards || null,
+        isHero: p.isHero || p.IsHero || false,
+        position: p.position || p.Position || ''
+      }));
+    }
 
-  // Process Blinds to be "instant"
-  // We want to remove 'post' actions from the timeline and apply them to initial state
-  const timelineActions = [];
-  
-  // Clone players to avoid mutating input during this pass if we were reusing objects
-  // But here 'players' is our local array, so we can mutate it.
-  players.forEach(p => {
-      p.initialBet = 0;
-      // p.stack is the starting stack from hand history
-  });
+    if (players.length === 0) {
+      console.warn('[HandNormalizer] No players found in hand data');
+    }
 
-  actions.forEach(action => {
-      if (action.type === 'post') {
-          const p = players.find(pl => pl.name === action.player);
-          if (p) {
-              p.initialBet += action.amount;
-              p.stack -= action.amount; // Reduce starting stack immediately
+    // Sort players so hero is first
+    players.sort((a, b) => (b.isHero ? 1 : 0) - (a.isHero ? 1 : 0));
+
+    // Actions
+    const actions = [];
+    
+    const parseActionBlock = (text, street) => {
+      if (!text || typeof text !== 'string') return;
+      const lines = text.split('\n');
+      lines.forEach(line => {
+        line = line.trim();
+        if (!line) return;
+        
+        try {
+          const action = parseActionLine(line, players);
+          if (action) {
+            actions.push({ ...action, street });
           }
-      } else {
-          timelineActions.push(action);
+        } catch (e) {
+          console.error('[HandNormalizer] Error parsing action line:', line, e);
+        }
+      });
+    };
+
+    parseActionBlock(input.preflop_action || input.PreflopAction, 0);
+    parseActionBlock(input.flop_action || input.FlopAction, 1);
+    parseActionBlock(input.turn_action || input.TurnAction, 2);
+    parseActionBlock(input.river_action || input.RiverAction, 3);
+    
+    let summaryText = input.showdown || input.Showdown;
+    if (!summaryText && (input.result || input.Result)) {
+      const fullResult = input.result || input.Result;
+      if (typeof fullResult === 'string') {
+        if (fullResult.includes('*** HEADER ***') || fullResult.includes('Site:')) {
+           const showdownIdx = fullResult.indexOf('*** SHOWDOWN ***');
+           const summaryIdx = fullResult.indexOf('*** SUMMARY ***');
+           
+           if (showdownIdx !== -1) summaryText = fullResult.substring(showdownIdx);
+           else if (summaryIdx !== -1) summaryText = fullResult.substring(summaryIdx);
+           else if (!fullResult.includes('*** PRE-FLOP ***')) summaryText = fullResult;
+        } else {
+           summaryText = fullResult;
+        }
       }
-  });
-
-  const normalized = {
-    id: input.HandId || input.id || Date.now().toString(),
-    site: input.Site || input.room || 'Unknown',
-    tableSize: input.TableSize || input.tableSize || players.length || 6,
-    blinds,
-    heroName: input.HeroName || input.heroName || players.find(p => p.isHero)?.name || null,
-    heroSeat: players.findIndex(p => p.isHero) + 1, 
-    buttonSeat,
-    timestamp: input.Date || input.timestamp || input.date_time || new Date().toISOString(),
+    }
     
-    players,
-    board,
-    actions: timelineActions,
-    
-    isNormalized: true,
-  };
+    parseActionBlock(summaryText, 4);
 
-  return normalized;
+    const btnPlayer = players.find(p => p.position === 'BTN');
+    const buttonSeat = btnPlayer ? btnPlayer.seat : (input.buttonSeat || input.ButtonSeat || 0);
+
+    const timelineActions = [];
+    players.forEach(p => { p.initialBet = 0; });
+
+    actions.forEach(action => {
+        if (action.type === 'post') {
+            const p = players.find(pl => pl.name === action.player);
+            if (p) {
+                p.initialBet += action.amount;
+                p.stack -= action.amount;
+            }
+        } else {
+            timelineActions.push(action);
+        }
+    });
+
+    const normalized = {
+      id: input.HandId || input.id || input.id_hand || Date.now().toString(),
+      site: input.Site || input.room || 'Unknown',
+      tableSize: input.TableSize || input.tableSize || players.length || 6,
+      blinds,
+      heroName: input.HeroName || input.heroName || players.find(p => p.isHero)?.name || null,
+      heroSeat: players.findIndex(p => p.isHero) + 1, 
+      buttonSeat,
+      timestamp: input.Date || input.timestamp || input.date_time || new Date().toISOString(),
+      players,
+      board,
+      actions: timelineActions,
+      isNormalized: true,
+    };
+
+    return normalized;
+  } catch (error) {
+    console.error('[HandNormalizer] Critical error during normalization:', error);
+    return null;
+  }
 }
 
 export function parseCards(str) {
-  if (!str) return [];
-  // Remove spaces
+  if (!str || typeof str !== 'string') return [];
   str = str.replace(/\s+/g, '');
-  
-  // Split by 2 chars: "AhKd" -> ["Ah", "Kd"]
   const cards = [];
   for (let i = 0; i < str.length; i += 2) {
-    cards.push(str.substring(i, i + 2));
+    const card = str.substring(i, i + 2);
+    if (card.length === 2) cards.push(card);
   }
   return cards;
 }
 
 function parseActionLine(line, players) {
-  // 1. Strip timestamp prefix (e.g. "22:53:05 - ")
+  if (!line || !players) return null;
+  
   let cleanLine = line.replace(/^\d{1,2}:\d{2}:\d{2}\s*-\s*/, '').trim();
-
-  // 2. robust player detection (match longest names first to avoid partial matches)
-  const sortedPlayers = [...players].sort((a, b) => b.name.length - a.name.length);
+  const sortedPlayers = [...players].sort((a, b) => (b.name?.length || 0) - (a.name?.length || 0));
 
   let playerName = null;
   let actionText = "";
 
   for (const p of sortedPlayers) {
+      if (!p.name) continue;
       if (cleanLine.startsWith(p.name)) {
           playerName = p.name;
           actionText = cleanLine.substring(p.name.length);
           
-          // Verify boundary (colon or space)
           if (actionText.startsWith(':')) {
               actionText = actionText.substring(1).trim();
           } else if (actionText.startsWith(' ')) {
               actionText = actionText.trim();
           } else if (actionText !== "") {
-             // Partial match (e.g. matched "Bob" in "Bobby"), continue searching
              playerName = null;
              continue;
           }
@@ -214,7 +190,6 @@ function parseActionLine(line, players) {
       }
   }
 
-  // Fallback: Check for ": " separator if start match failed
   if (!playerName && cleanLine.includes(': ')) {
       const parts = cleanLine.split(': ');
       const potentialName = parts[0].trim();
@@ -246,7 +221,7 @@ function parseActionLine(line, players) {
       amount = extractAmount(actionText);
   }
   else if (lowerRest.includes('posts')) {
-      type = 'post'; // blind
+      type = 'post';
       amount = extractAmount(actionText);
   }
   else if (lowerRest.includes('all-in')) {
@@ -258,7 +233,7 @@ function parseActionLine(line, players) {
       amount = extractAmount(actionText);
   }
   else {
-      return null; // Irrelevant line (e.g. "shows")
+      return null;
   }
 
   return {
@@ -270,9 +245,7 @@ function parseActionLine(line, players) {
 }
 
 function extractAmount(text) {
-  // "raises to 200" -> 200
-  // "calls 50" -> 50
-  // "posts small blind 10" -> 10
+  if (!text) return 0;
   const match = text.match(/(\d+(\.\d+)?)/);
   return match ? parseFloat(match[0]) : 0;
 }

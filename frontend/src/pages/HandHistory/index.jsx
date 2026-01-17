@@ -28,6 +28,7 @@ export default function HandHistory() {
     setFilters,
     setSortBy,
     selectedHand,
+    isLoadingHand,
     selectedTournament,
     selectHand,
     selectTournament,
@@ -154,7 +155,11 @@ export default function HandHistory() {
         {/* Hand details */}
         <div>
           <Card title={t('hand_history.hand_details')}>
-            {selectedHand ? (
+            {isLoadingHand ? (
+              <div className="flex items-center justify-center py-20">
+                <LoadingSpinner />
+              </div>
+            ) : selectedHand ? (
               <HandDetails hand={selectedHand} onClose={() => selectHand(null)} />
             ) : (
               <p className="text-gray-400 text-center py-8">

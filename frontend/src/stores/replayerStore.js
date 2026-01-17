@@ -92,9 +92,16 @@ export const useReplayerStore = create((set, get) => ({
       const { heroName } = get();
       const res = await ipcService.getHandDetails(handId, heroName);
       if (res.success) {
-        // We call openReplayer but passing a flag or rely on it not clearing queue if we don't tell it to
-        // Actually openReplayer currently doesn't touch queue, which is good.
-        get().openReplayer(res.data);
+        // Check if we are already in a replayer window
+        const isReplayerWindow = typeof window !== 'undefined' && 
+                                (window.location.href.includes('replayer.html') || 
+                                 window.location.hash.includes('replayer'));
+        
+        if (isReplayerWindow) {
+          get().setReplayerHand(res.data);
+        } else {
+          get().openReplayer(res.data);
+        }
       }
     } catch (e) {
       console.error("Failed to load hand", e);
@@ -122,11 +129,16 @@ export const useReplayerStore = create((set, get) => ({
   },
 
   openReplayer: (handData) => {
-    // Open replayer in a new window via IPC
-    ipcService.invoke('open-replayer', handData);
+    const { handQueue, currentHandIndex } = get();
+    // Open replayer in a new window via IPC, passing queue info for navigation
+    ipcService.invoke('open-replayer', {
+      handData,
+      handQueue,
+      currentHandIndex
+    });
   },
 
-  setReplayerHand: (handData) => {
+  setReplayerHand: (handData, queueInfo = null) => {
     const normalized = normalizeHand(handData);
     
     // Inject virtual street actions if board exists but actions are missing
@@ -186,8 +198,8 @@ export const useReplayerStore = create((set, get) => ({
       hand: normalized,
       currentActionIndex: -1,
       isPlaying: false,
-      handQueue: state.isLoadingHand ? state.handQueue : [],
-      currentHandIndex: state.isLoadingHand ? state.currentHandIndex : -1
+      handQueue: queueInfo ? queueInfo.handQueue : (state.isLoadingHand ? state.handQueue : []),
+      currentHandIndex: queueInfo ? queueInfo.currentHandIndex : (state.isLoadingHand ? state.currentHandIndex : -1)
     }));
   },
 

@@ -228,12 +228,12 @@ namespace SpinTrackerBackend.Services
                  {
                      // Convert content to standardized verb
                      string verb = "unknown";
-                     if (content.Contains("raises")) verb = "raise";
+                     if (content.Contains("all-in")) verb = "all-in";
+                     else if (content.Contains("raises")) verb = "raise";
                      else if (content.Contains("bets")) verb = "bet";
                      else if (content.Contains("calls")) verb = "call";
                      else if (content.Contains("checks")) verb = "check";
                      else if (content.Contains("folds")) verb = "fold";
-                     else if (content.Contains("all-in")) verb = "all-in";
                      else if (content.Contains("posts")) continue; // Skip blinds posting
                      else if (content.Contains("ante")) continue;
                      
@@ -638,6 +638,19 @@ namespace SpinTrackerBackend.Services
             var filteredHands = FilterHands(hands, filters);
             _logger.LogInformation($"GetRangeAnalysisAsync: After filtering {filteredHands.Count} hands");
 
+            // Determine Target Position from Action Sequence to avoid mixing players
+            // e.g. if Sequence is "BTN:Raise", we only want to see BTN's hands, not SB's response.
+            string? targetPosition = null;
+            if (filters.ActionSequence != null && filters.ActionSequence.Count > 0)
+            {
+                var lastItem = filters.ActionSequence.Last();
+                var parts = lastItem.Split(':');
+                if (parts.Length > 0) 
+                {
+                    targetPosition = parts[0].Trim(); 
+                }
+            }
+
             // 3. Aggregate
             var rangeData = new Dictionary<string, RangeHandStats>();
             int skippedNoHeroName = 0;
@@ -654,6 +667,16 @@ namespace SpinTrackerBackend.Services
                     skippedNoHeroName++;
                     if (skippedNoHeroName <= 5) _logger.LogWarning($"Skipped hand {hand.HandId} because HeroName is null/empty. Filter='{filters.HeroName}', Hand='{hand.HeroName}'");
                     continue;
+                }
+
+                // Filter by Target Position if implied by sequence
+                if (!string.IsNullOrEmpty(targetPosition))
+                {
+                    // hand.HeroPosition is the position of the player for this specific row
+                    if (!string.Equals(hand.HeroPosition, targetPosition, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
                 }
 
                 // Normalize cards

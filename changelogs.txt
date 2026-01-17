@@ -1,7 +1,12 @@
 1.0.3:
 
+- Big modif: Changement du système de Range Research, comme GTO Wizard, vous mettez les actions les une à la suite des autres.
+
 - Ajout: Ajout d'un message de changement lorsque les mains sont en cours de récupération.
 - Ajout: Dans les sessions récentes, vous pouvez cliquez sur une session pour afficher toutes les data du Dashboard par rapport à celle-ci. (CEV, Graphique, etc..)
 
+- Correction: Replayer qui marchait quand il voulait.
 - Correction: Les sessions "récentes" n'était pas trier par date correctement.
 - Correction: "Supprimer toutes les données" oubliait des statistiques.
+
+- Retrait: Systeme d'analyse et stats builder postflop (trop complexe pour le commun des mortels, info pas forcément pertinente)

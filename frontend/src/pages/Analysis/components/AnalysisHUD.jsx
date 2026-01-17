@@ -47,7 +47,7 @@ const DraggableTextTool = () => {
         isDragging && "opacity-50 ring-2 ring-primary-500"
     )}>
       <Type size={14} className="text-gray-500 group-hover:text-gray-300 transition-colors" />
-      <span className="text-sm font-medium text-gray-300 group-hover:text-white">Text Label</span>
+      <span className="text-sm font-medium text-gray-300 group-hover:text-white">{t('analysis.hud.text_label')}</span>
     </div>
   );
 };

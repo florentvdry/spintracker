@@ -2,7 +2,7 @@
   "navigation": {
     "dashboard": "Tableau de bord",
     "history": "Historique des tournois",
-    "ranges": "Ranges",
+    "ranges": "Analyseur de ranges",
     "settings": "Paramètres"
   },
   "sidebar": {
@@ -40,7 +40,8 @@
     "all_read": "Tout lire",
     "clear_all": "Tout effacer",
     "notifications": "Notifications",
-    "no_notifications": "Aucune notification"
+    "no_notifications": "Aucune notification",
+    "any": "N'importe"
   },
   "header": {
     "search_placeholder": "Rechercher une main, joueur...",
@@ -164,7 +165,12 @@
     "start": "DÉBUT",
     "action_log": "Journal d'actions",
     "export_video": "Exporter Vidéo",
-    "recording": "Enregistrement..."
+    "recording": "Enregistrement...",
+    "error_title": "Erreur du Replayer",
+    "no_data": "Aucune donnée de main n'a été trouvée pour cette fenêtre.",
+    "load_error": "Erreur lors de la récupération des données: ",
+    "close": "Fermer",
+    "hand_title": "Replayer de main"
   },
   "stats_builder": {
     "title": "Générateur de Stats",
@@ -201,12 +207,15 @@
     "vs_position": "Vs Position",
     "matrix": "Matrice de Range",
     "hand_details": "Détails de la main",
-    "select_prompt": "Cliquez sur une main pour voir les détails",
+    "select_prompt": "Sélectionnez une main",
     "statistics": "Statistiques",
     "total_hands": "Total mains",
     "unique_hands": "Mains différentes",
     "frequency": "Fréquence",
-    "occurrences": "Occurrences"
+    "occurrences": "Occurrences",
+    "loading": "Chargement du range...",
+    "breakdown": "Répartition du Range",
+    "matrix_hint": "Cliquez sur n'importe quelle cellule de la matrice pour voir la répartition détaillée"
   },
   "settings": {
     "title": "Paramètres",
@@ -255,5 +264,14 @@
         "button": "Ouvrir le dossier"
       }
     }
+  },
+  "actions": {
+    "raise": "Raise",
+    "call": "Call",
+    "fold": "Fold",
+    "bet": "Bet",
+    "check": "Check",
+    "all_in": "All-In",
+    "any": "N'importe"
   }
 }

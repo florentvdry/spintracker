@@ -397,8 +397,10 @@ public class AnalyticsRepository
 
             if (!string.IsNullOrEmpty(filters.DateTo))
             {
+                var dateTo = filters.DateTo;
+                if (dateTo.Length == 10) dateTo += " 23:59:59";
                 whereClauses.Add("h.date_time <= @dateTo");
-                parameters.Add(new SqliteParameter("@dateTo", filters.DateTo));
+                parameters.Add(new SqliteParameter("@dateTo", dateTo));
             }
 
             if (filters.Positions != null && filters.Positions.Length > 0)
@@ -583,8 +585,10 @@ public class AnalyticsRepository
         }
         if (!string.IsNullOrEmpty(filters.DateTo))
         {
+            var dateTo = filters.DateTo;
+            if (dateTo.Length == 10) dateTo += " 23:59:59";
             whereClauses.Add("hands.date_time <= @dateTo");
-            parameters.Add(new SqliteParameter("@dateTo", filters.DateTo));
+            parameters.Add(new SqliteParameter("@dateTo", dateTo));
         }
 
         // Position Filter
