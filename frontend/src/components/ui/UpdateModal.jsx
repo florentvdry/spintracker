@@ -161,7 +161,7 @@ export default function UpdateModal() {
                         className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg flex items-center gap-2 transition-colors font-medium shadow-lg shadow-green-900/20"
                     >
                         <RefreshCw className="w-4 h-4" />
-                        {t('common.retry', 'Restart')}
+                        {t('common.restart', 'Restart')}
                     </button>
                 </>
             )}
