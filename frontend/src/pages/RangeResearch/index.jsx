@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import AnalysisFilters from '../Analysis/components/AnalysisFilters';
+import ActionSequenceSelector from './components/ActionSequenceSelector';
 import RangeGrid from '../../components/charts/RangeGrid';
 import { Save, Upload, Layers } from 'lucide-react';
 import { usePlayersStore } from '@stores/playersStore';
@@ -28,7 +28,7 @@ export default function RangeResearch() {
     HeroName: '',
     Situation: 'Preflop', // Default to Preflop for Range Research
     Action: '',
-    PlayerCount: null,
+    PlayerCount: 3,
     MinStackBB: null,
     MaxStackBB: null,
     Positions: [],
@@ -177,14 +177,14 @@ export default function RangeResearch() {
         </div>
       </div>
 
-      <div className="flex-1 flex gap-6 min-h-0">
-        {/* Left Sidebar - Filters */}
-        <div className="w-80 flex-shrink-0 overflow-y-auto custom-scrollbar">
-          <AnalysisFilters filters={filters} onChange={setFilters} />
+      <div className="flex-1 flex flex-col gap-6 min-h-0">
+        {/* Horizontal Action Selector */}
+        <div className="w-full flex-shrink-0">
+          <ActionSequenceSelector filters={filters} onChange={setFilters} />
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 flex flex-col">
+        <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 flex flex-col min-h-0">
           <div className="flex gap-4 h-full">
             {/* Left: Range Grid */}
             <div className="flex-1 bg-dark-200 rounded-lg shadow-lg flex flex-col min-h-0">
