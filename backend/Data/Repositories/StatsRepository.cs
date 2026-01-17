@@ -243,7 +243,7 @@ public class StatsRepository
     {
         var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo, buyIn); 
         
-        return sessions.Take(limit).Select(s => (object)new {
+        return sessions.OrderByDescending(s => s.StartTime).Take(limit).Select(s => (object)new {
             room = s.Room,
             tournaments = s.Tournaments,
             hands_played = s.Hands,

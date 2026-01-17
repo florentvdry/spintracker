@@ -6,7 +6,8 @@ import {
   DollarSign,
   Target,
   Zap,
-  Calendar
+  Calendar,
+  X
 } from 'lucide-react';
 import { useAppStore } from '@stores/appStore';
 import { StatCard, Card, EmptyState, LoadingPage } from '@components/ui';
@@ -37,9 +38,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     loadDashboardStats();
+  }, [config.dateRange, config.customDateFrom, config.customDateTo, config.buyIn]);
+
+  useEffect(() => {
     loadSessions(5);
     loadBuyIns();
-  }, [config.dateRange, config.customDateFrom, config.customDateTo, config.buyIn]);
+  }, [config.buyIn]);
 
   if (isLoading && !dashboardStats) {
     return <LoadingPage />;
@@ -68,7 +72,7 @@ export default function Dashboard() {
   };
 
   const rangeLabel = config.dateRange !== 'all' 
-    ? ` (${config.dateRange === 'custom' ? t('common.date') : dateFilters.find(f => f.id === config.dateRange)?.label})` 
+    ? ` (${config.dateRange === 'custom' ? t('common.date') : config.dateRange === 'session' ? 'Session' : dateFilters.find(f => f.id === config.dateRange)?.label})` 
     : '';
 
   const PositionCev = ({ label, value, count }) => {
@@ -139,6 +143,15 @@ export default function Dashboard() {
               <Calendar className="w-4 h-4" />
               {config.dateRange === 'custom' ? t('common.date') : 'Custom'}
             </button>
+            {config.dateRange === 'session' && (
+              <button
+                onClick={() => setDateRange('all')}
+                className="px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-400 hover:text-white hover:bg-gray-700/50 flex items-center gap-2"
+              >
+                <X className="w-4 h-4" />
+                Clear Session
+              </button>
+            )}
           </div>
 
           {/* Custom Date Picker Dropdown/Panel */}

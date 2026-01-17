@@ -1,3 +1,7 @@
 1.0.3:
-Correction: "Supprimer toutes les données" oubliait des statistiques.
-Ajout: Ajout d'un message de changement lorsque les mains sont en cours de récupération.
+
+- Ajout: Ajout d'un message de changement lorsque les mains sont en cours de récupération.
+- Ajout: Dans les sessions récentes, vous pouvez cliquez sur une session pour afficher toutes les data du Dashboard par rapport à celle-ci. (CEV, Graphique, etc..)
+
+- Correction: Les sessions "récentes" n'était pas trier par date correctement.
+- Correction: "Supprimer toutes les données" oubliait des statistiques.

@@ -18,10 +18,11 @@ export const useAppStore = create((set, get) => ({
   // Configuration
   config: {
     theme: 'dark',
-    dateRange: 'all', // 'today', 'week', 'month', 'all'
+    dateRange: 'all', // 'today', 'week', 'month', 'all', 'session'
     buyIn: 'all',
     customDateFrom: null,
     customDateTo: null,
+    selectedSession: null,
     autoRefresh: true,
   },
 
@@ -54,6 +55,27 @@ export const useAppStore = create((set, get) => ({
         customDateTo: to
       }
     }));
+    get().refreshAll();
+  },
+
+  setSelectedSession: (session) => {
+    if (session === null) {
+      set((state) => ({
+        config: { 
+          ...state.config, 
+          dateRange: 'all',
+          selectedSession: null
+        }
+      }));
+    } else {
+      set((state) => ({
+        config: { 
+          ...state.config, 
+          dateRange: 'session',
+          selectedSession: session
+        }
+      }));
+    }
     get().refreshAll();
   },
 
@@ -133,7 +155,7 @@ export const useAppStore = create((set, get) => ({
   },
 
   _getDateRangeParams: () => {
-    const { dateRange, customDateFrom, customDateTo } = get().config;
+    const { dateRange, customDateFrom, customDateTo, selectedSession } = get().config;
     let dateFrom = null;
     let dateTo = null;
 
@@ -165,6 +187,13 @@ export const useAppStore = create((set, get) => ({
     } else if (dateRange === 'custom') {
       dateFrom = customDateFrom;
       dateTo = customDateTo;
+    } else if (dateRange === 'session' && selectedSession) {
+      // Session date is in format "yyyy-MM-dd HH:mm"
+      const sessionDate = new Date(selectedSession.session_date);
+      dateFrom = formatDate(sessionDate);
+      // Sessions are grouped by hands within 2 hours
+      const sessionEnd = new Date(sessionDate.getTime() + 2 * 60 * 60 * 1000); // +2 hours
+      dateTo = formatDate(sessionEnd);
     }
 
     return { dateFrom, dateTo };
@@ -197,7 +226,9 @@ export const useAppStore = create((set, get) => ({
     try {
       const heroName = get().heroName;
       const { buyIn } = get().config;
-      const { dateFrom, dateTo } = get()._getDateRangeParams();
+      // Pour les sessions récentes, on ne filtre pas par date, on veut toujours voir les dernières
+      const dateFrom = null;
+      const dateTo = null;
       const buyInParam = buyIn === 'all' ? null : Number(buyIn);
 
       const result = await ipcService.getSessionHistory(limit, heroName, dateFrom, dateTo, buyInParam);

@@ -1,9 +1,11 @@
 import { formatDate, formatCurrency } from '@utils/formatters';
 import { Calendar, Clock, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useAppStore } from '@stores/appStore';
 
 export default function SessionList({ sessions = [] }) {
   const { t } = useTranslation();
+  const { setSelectedSession, config } = useAppStore();
 
   if (!sessions || sessions.length === 0) {
     return (
@@ -17,11 +19,23 @@ export default function SessionList({ sessions = [] }) {
     <div className="flex-1 overflow-y-auto pr-2 space-y-3">
       {sessions.map((session, index) => {
         const isWin = session.profit > 0;
+        const isSelected = config.dateRange === 'session' && config.selectedSession?.session_date === session.session_date;
         
         return (
           <div 
             key={index}
-            className="p-3 bg-dark-300/50 rounded-lg border border-dark-200 hover:border-dark-100 transition-colors"
+            onClick={() => {
+              if (isSelected) {
+                setSelectedSession(null);
+              } else {
+                setSelectedSession(session);
+              }
+            }}
+            className={`p-3 rounded-lg border transition-all cursor-pointer ${
+              isSelected 
+                ? 'bg-blue-600/20 border-blue-500 shadow-lg' 
+                : 'bg-dark-300/50 border-dark-200 hover:border-dark-100'
+            }`}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2 text-sm text-gray-300">
