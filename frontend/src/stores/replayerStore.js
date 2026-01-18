@@ -463,7 +463,10 @@ export const selectReplayerState = (state) => {
 
 // Video Recording Function
 async function startVideoRecording(exportType) {
-  const isElectron = window.process && window.process.versions && window.process.versions.electron;
+  // Check for Electron using the same logic as ipcService (window.require check)
+  // or checks userAgent or specific window property injected by preload.
+  // Using window.versions.electron is standard but relying on window.require for functionality is key.
+  const isElectron = typeof window !== 'undefined' && (window.process?.versions?.electron || window.require);
   const isDev = import.meta.env.DEV; // Vite dev mode
   let stream;
 
@@ -476,38 +479,98 @@ async function startVideoRecording(exportType) {
     return;
   }
 
-  if (isElectron && window.opener) {
-    // Electron separate window mode - use desktopCapturer
-    const { desktopCapturer } = require('electron');
-
-    // Get screen sources
-    const sources = await desktopCapturer.getSources({
-      types: ['window'],
-      thumbnailSize: { width: 0, height: 0 }
-    });
-
-    // Find replayer window
-    const replayerSource = sources.find(source => source.name.includes('Hand Replayer') || source.name.includes('replayer'));
-    if (!replayerSource) {
-      throw new Error('Replayer window not found. Please ensure the replayer is open.');
-    }
-
-    // Get media stream
-    stream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: {
-        mandatory: {
-          chromeMediaSource: 'desktop',
-          chromeMediaSourceId: replayerSource.id,
-          minWidth: 1280,
-          maxWidth: 1920,
-          minHeight: 720,
-          maxHeight: 1080
-        }
+        // Use IPC if in Electron
+    if (isElectron) {
+      try {
+        console.log('Attempting to get desktop sources via IPC...');
+        // Get screen sources from Main process via IPC
+        let sources = [];
+        try {
+          const result = await ipcService.invoke('get-desktop-sources');
+          // ipcService catches errors and returns { success: false, message: ... }
+          // but if successful, main returns an array
+          if (Array.isArray(result)) {
+            sources = result;
+          } else {
+            console.error('IPC get-desktop-sources returned non-array:', result);
+            throw new Error(result?.message || 'Failed to get desktop sources via IPC');
+          }
+        } catch (ipcError) {
+          console.error('IPC get-desktop-sources failed:', ipcError);
+          // Fallback: Try direct access since nodeIntegration might be on
+          if (window.require) {
+             console.log('Attempting direct desktopCapturer access...');
+             const { desktopCapturer } = window.require('electron');
+             const rawSources = await desktopCapturer.getSources({ types: ['window', 'screen'], thumbnailSize: { width: 0, height: 0 } });
+             sources = rawSources.map(s => ({ id: s.id, name: s.name }));
+          } else {
+             throw ipcError;
+          }
+        }      
+      if (!sources || !Array.isArray(sources)) {
+         console.error('Invalid sources received:', sources);
+         throw new Error('Failed to get desktop sources from main process');
       }
-    });
+
+      console.log(`Received ${sources.length} sources.`);
+
+      // Find replayer window
+      // Look for "Replayer" or if not found, look for the main app name "SpinTracker"
+      let replayerSource = sources.find(source => 
+        source.name.toLowerCase().includes('replayer') || 
+        source.name.toLowerCase().includes('hand replayer')
+      );
+      
+      // Fallback: capture the "SpinTracker" window if replayer specific one not found (might be same window)
+      if (!replayerSource) {
+         replayerSource = sources.find(source => source.name.toLowerCase().includes('spintracker'));
+      }
+
+      if (!replayerSource) {
+        console.warn('Available sources:', sources.map(s => s.name));
+        // Fallback to the first available window if specific one not found? 
+        // Or throw specific error.
+        // Let's try the first window that is NOT the overlay or splash.
+        replayerSource = sources.find(source => source.name !== 'Overlay' && source.name !== 'Splash');
+      }
+
+      if (!replayerSource) {
+        throw new Error('Replayer window not found. Please ensure the replayer is open.');
+      }
+
+      console.log('Recording source:', replayerSource.name);
+
+      // Get media stream
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          mandatory: {
+            chromeMediaSource: 'desktop',
+            chromeMediaSourceId: replayerSource.id,
+            minWidth: 1280,
+            maxWidth: 1920,
+            minHeight: 720,
+            maxHeight: 1080
+          }
+        }
+      });
+    } catch (e) {
+       console.error('Electron recording init failed:', e);
+       // Fallback to getDisplayMedia if IPC method fails?
+       // But usually if IPC fails, we are in trouble.
+       // Let's try getDisplayMedia as last resort.
+       console.log('Falling back to getDisplayMedia...');
+       try {
+         stream = await navigator.mediaDevices.getDisplayMedia({
+            video: { mediaSource: 'screen' },
+            audio: false
+         });
+       } catch (err) {
+         throw new Error('Video recording failed: ' + (e.message || err.message));
+       }
+    }
   } else {
-    // Browser mode or modal mode - use getDisplayMedia (user selects what to record)
+    // Browser mode - use getDisplayMedia (user selects what to record)
     if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
       throw new Error('Screen recording is not supported in this browser. Please use a modern browser like Chrome 72+, Firefox 66+, or run the Electron app for full functionality.');
     }
