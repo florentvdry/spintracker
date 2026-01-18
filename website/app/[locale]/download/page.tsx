@@ -15,11 +15,8 @@ export default function DownloadPage() {
         <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
           {t('title')}
         </h1>
-        <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
-          {t('subtitle')}
-        </p>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto pt-5">
           {/* Windows */}
           <div className="p-8 rounded-2xl bg-gray-900 border border-white/10 hover:border-blue-500/50 transition-colors flex flex-col items-center">
             <div className="h-16 w-16 bg-blue-600/10 rounded-full flex items-center justify-center mb-6">

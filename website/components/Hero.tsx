@@ -28,6 +28,9 @@ export function Hero() {
           <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
             {t('description')}
           </p>
+          <p className="text-sm md:text-base text-gray-500 mb-8 max-w-2xl mx-auto">
+            {t('compatible_rooms')}
+          </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/download">

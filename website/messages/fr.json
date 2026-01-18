@@ -8,23 +8,24 @@
     "title": "Le premier tracker français",
     "subtitle": "pour les Spins.",
     "description": "Analysez votre jeu, identifiez vos leaks et améliorez vos performances avec SpinTracker.",
+    "compatible_rooms": "Compatible avec : Betclic, et d'autres bientôt.",
     "download_free": "Télécharger"
   },
   "Features": {
     "title": "Conçu pour les joueurs de Spin",
-    "subtitle": "Tout ce dont vous avez besoin pour analyser votre jeu et progresser.",
+    "subtitle": "Tout ce dont vous avez besoin pour commencer à analyser votre jeu et progresser.",
     "items": {
       "analytics": {
         "title": "Analyses Avancées",
-        "description": "Plongez dans votre jeu avec des rapports personnalisables et des graphiques interactifs."
+        "description": "Plongez dans votre jeu avec des graphiques interactifs et vos CEVs par position."
       },
       "range": {
         "title": "Analyse de Range",
-        "description": "Visualisez et analysez vos ranges de mains pour mieux comprendre votre stratégie."
+        "description": "Visualisez et analysez votre range, ainsi que celle de vos adversaires."
       },
       "performance": {
-        "title": "Haute Performance",
-        "description": "Optimisé pour les grandes bases de données. Importez des millions de mains en quelques minutes."
+        "title": "Historique et Replayer",
+        "description": "Analyser vos parties passées et revivez-les avec notre replayer interactif."
       }
     }
   },
@@ -43,16 +44,21 @@
     },
     "replayer": {
       "title": "Replayer Interactif",
-      "description": "Revoyez vos sessions avec notre replayer élégant. Analysez chaque street, vérifiez les équités et prenez des notes sur vos adversaires.",
+      "description": "Revoyez vos sessions avec notre replayer élégant.",
       "list": {
-        "equity": "Calcul d'équité instantané",
-        "range": "Visualiseur de range"
+        "analyze": "Analyse main par main ou par tournois",
+        "export": "Exportation au format vidéo"
       },
       "alt": "Capture d'écran du Replayer"
+    },
+    "range_research": {
+      "title": "Recherche de Range",
+      "description": "Étudiez et affinez vos ranges avec notre outil complet de recherche de range. Comparez-les aux tendances de vos adversaires et optimisez votre stratégie.",
+      "alt": "Capture d'écran de l'outil de recherche de range"
     }
   },
   "Footer": {
-    "description": "Logiciel de tracking de poker nouvelle génération pour les joueurs professionnels. Analysez, adaptez-vous et écrasez les parties.",
+    "description": "Logiciel de tracking de poker pour joueurs de Spin. Analysez, progressez et dominez vos adversaires.",
     "product": "Produit",
     "support": "Support",
     "legal": "Légal",
@@ -70,7 +76,6 @@
   },
   "Download": {
     "title": "Télécharger SpinTracker",
-    "subtitle": "Commencez votre essai gratuit de 30 jours. Aucune carte de crédit requise.",
     "windows": {
       "title": "Windows",
       "requirements": "Windows 10 ou ultérieur (64-bit)",
@@ -93,6 +98,75 @@
       "ram_4gb": "Mémoire : 4 Go RAM",
       "ram_8gb": "Mémoire : 8 Go RAM",
       "storage_2gb": "Stockage : 2 Go d'espace libre"
+    }
+  },
+  "CTA": {
+    "title": "Prêt à écraser la concurrence ?",
+    "description": "Rejoignez des centaines de joueurs professionnels qui font confiance à SpinTracker pour améliorer leur jeu.",
+    "button": "Télécharger gratuitement"
+  },
+  "Privacy": {
+    "title": "Politique de Confidentialité",
+    "intro": "Cette Politique de Confidentialité explique comment SpinTracker gère vos données et votre vie privée.",
+    "dataCollection": {
+      "title": "Collecte de Données",
+      "content": "SpinTracker ne collecte, ne stocke ni ne transmet aucune donnée personnelle, statistique d'utilisation ou autre information des utilisateurs. Toutes les données traitées par le logiciel restent entièrement sur votre appareil local."
+    },
+    "dataUsage": {
+      "title": "Utilisation des Données",
+      "content": "Puisqu'aucune donnée n'est collectée ou transmise, il n'y a aucune utilisation de données personnelles par SpinTracker ou ses services."
+    },
+    "dataSharing": {
+      "title": "Partage des Données",
+      "content": "Nous ne partageons, ne vendons ni ne transférons aucune donnée à des tiers, car aucune donnée n'est collectée auprès des utilisateurs."
+    },
+    "dataSecurity": {
+      "title": "Sécurité des Données",
+      "content": "Toutes les données sont stockées localement sur votre appareil dans le dossier %APPDATA%. Vous êtes responsable de la sécurité de vos données locales et de votre appareil. Nous recommandons d'utiliser des mesures de sécurité appropriées pour protéger vos fichiers."
+    },
+    "userRights": {
+      "title": "Vos Droits",
+      "content": "Vous avez un contrôle total sur vos données locales. Vous pouvez accéder, modifier ou supprimer toute donnée stockée par le logiciel à tout moment."
+    },
+    "updates": {
+      "title": "Mises à Jour de la Politique",
+      "content": "Cette Politique de Confidentialité peut être mise à jour à tout moment. Nous vous encourageons à la consulter périodiquement."
+    },
+    "contact": {
+      "title": "Contactez-Nous",
+      "content": "Si vous avez des questions concernant cette Politique de Confidentialité, veuillez nous contacter à privacy@spintracker.com."
+    }
+  },
+  "Terms": {
+    "title": "Conditions d'Utilisation",
+    "intro": "Ces Conditions d'Utilisation régissent votre utilisation du logiciel et du site web SpinTracker.",
+    "acceptance": {
+      "title": "Acceptation des Conditions",
+      "content": "En téléchargeant, installant ou utilisant SpinTracker, vous acceptez et vous engagez à respecter ces termes et conditions."
+    },
+    "useLicense": {
+      "title": "Licence d'Utilisation",
+      "content": "SpinTracker est actuellement fourni gratuitement. Cependant, il pourrait devenir un service payant à l'avenir. Vous êtes titulaire d'une licence non exclusive, non transférable pour utiliser le logiciel à des fins personnelles et non commerciales."
+    },
+    "restrictions": {
+      "title": "Restrictions",
+      "content": "Vous êtes spécifiquement restreint de : modifier, rétro-ingénier ou distribuer le logiciel ; l'utiliser à des fins illégales ; ou tenter de contourner toute mesure de sécurité."
+    },
+    "termination": {
+      "title": "Résiliation",
+      "content": "Cette licence peut être résiliée si vous violez ces conditions. Lors de la résiliation, vous devez cesser d'utiliser le logiciel et supprimer toutes les copies."
+    },
+    "disclaimer": {
+      "title": "Avis de Non-Responsabilité",
+      "content": "Le logiciel est fourni 'tel quel' sans garanties d'aucune sorte. Nous ne sommes pas responsables des dommages découlant de votre utilisation du logiciel."
+    },
+    "updates": {
+      "title": "Mises à Jour des Conditions",
+      "content": "Ces Conditions d'Utilisation peuvent être mises à jour à tout moment. L'utilisation continue du logiciel constitue l'acceptation des conditions mises à jour."
+    },
+    "contact": {
+      "title": "Informations de Contact",
+      "content": "Si vous avez des questions concernant ces Conditions d'Utilisation, veuillez nous contacter à legal@spintracker.com."
     }
   }
 }

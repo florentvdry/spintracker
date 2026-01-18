@@ -1,0 +1,3 @@
+1.0.4:
+- Impossible de supprimer la base de donnée.
+- Importation des spins uniquement.

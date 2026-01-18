@@ -8,6 +8,7 @@
     "title": "The first French tracker",
     "subtitle": "dedicated to Spins.",
     "description": "Analyze your game, identify your leaks, and improve your performance with SpinTracker.",
+    "compatible_rooms": "Compatible with: Betclic, and more soon.",
     "download_free": "Download for Free"
   },
   "Features": {
@@ -16,15 +17,15 @@
     "items": {
       "analytics": {
         "title": "Advanced Analytics",
-        "description": "Deep dive into your game with customizable reports and interactive graphs."
+        "description": "Deep dive into your game with interactive graphs and CEV for every position."
       },
       "range": {
         "title": "Range Analysis",
-        "description": "Visualize and analyze hand ranges to understand your strategy better."
+        "description": "Visualize and analyze your range, as well as your opponents."
       },
       "performance": {
-        "title": "High Performance",
-        "description": "Optimized for large databases. Import millions of hands in minutes."
+        "title": "History & Replayer",
+        "description": "Review your previous sessions and relive them with our interactive replayer."
       }
     }
   },
@@ -45,10 +46,15 @@
       "title": "Interactive Replayer",
       "description": "Review your sessions with our sleek hand replayer. Analyze every street, check equities, and take notes on opponents.",
       "list": {
-        "equity": "Instant equity calculation",
-        "range": "Range visualizer"
+        "analyze": "Hand-by-hand or tournament analysis",
+        "export": "Video export"
       },
       "alt": "Hand Replayer Screenshot"
+    },
+    "range_research": {
+      "title": "Range Research",
+      "description": "Study and refine your ranges with our comprehensive range research tool. Compare against opponent tendencies and optimize your strategy.",
+      "alt": "Range Research Tool Screenshot"
     }
   },
   "Footer": {
@@ -70,7 +76,6 @@
   },
   "Download": {
     "title": "Download SpinTracker",
-    "subtitle": "Start your 30-day free trial today. No credit card required.",
     "windows": {
       "title": "Windows",
       "requirements": "Windows 10 or later (64-bit)",
@@ -93,6 +98,75 @@
       "ram_4gb": "Memory: 4 GB RAM",
       "ram_8gb": "Memory: 8 GB RAM",
       "storage_2gb": "Storage: 2 GB available space"
+    }
+  },
+  "CTA": {
+    "title": "Ready to crush the competition?",
+    "description": "Join hundreds of professional players who trust SpinTracker to improve their game.",
+    "button": "Download for free"
+  },
+  "Privacy": {
+    "title": "Privacy Policy",
+    "intro": "This Privacy Policy explains how SpinTracker handles your data and privacy.",
+    "dataCollection": {
+      "title": "Data Collection",
+      "content": "SpinTracker does not collect, store, or transmit any personal data, usage statistics, or other information from users. All data processed by the software remains entirely on your local device."
+    },
+    "dataUsage": {
+      "title": "Data Usage",
+      "content": "Since no data is collected or transmitted, there is no usage of personal data by SpinTracker or its services."
+    },
+    "dataSharing": {
+      "title": "Data Sharing",
+      "content": "We do not share, sell, or transfer any data to third parties, as no data is collected from users."
+    },
+    "dataSecurity": {
+      "title": "Data Security",
+      "content": "All data is stored locally on your device in the %APPDATA% folder. You are responsible for the security of your local data and device. We recommend using appropriate security measures to protect your files."
+    },
+    "userRights": {
+      "title": "Your Rights",
+      "content": "You have full control over your local data. You can access, modify, or delete any data stored by the software at any time."
+    },
+    "updates": {
+      "title": "Policy Updates",
+      "content": "This Privacy Policy may be updated at any time. We encourage you to review it periodically."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "content": "If you have any questions about this Privacy Policy, please contact us at privacy@spintracker.com."
+    }
+  },
+  "Terms": {
+    "title": "Terms of Service",
+    "intro": "These Terms of Service govern your use of SpinTracker software and website.",
+    "acceptance": {
+      "title": "Acceptance of Terms",
+      "content": "By downloading, installing, or using SpinTracker, you accept and agree to be bound by these terms and conditions."
+    },
+    "useLicense": {
+      "title": "Use License",
+      "content": "SpinTracker is currently provided free of charge. However, it may become a paid service in the future. You are granted a non-exclusive, non-transferable license to use the software for personal, non-commercial purposes."
+    },
+    "restrictions": {
+      "title": "Restrictions",
+      "content": "You are specifically restricted from: modifying, reverse engineering, or distributing the software; using it for any illegal purposes; or attempting to circumvent any security measures."
+    },
+    "termination": {
+      "title": "Termination",
+      "content": "This license may be terminated if you violate these terms. Upon termination, you must cease using the software and delete all copies."
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "content": "The software is provided 'as is' without warranties of any kind. We are not liable for any damages arising from your use of the software."
+    },
+    "updates": {
+      "title": "Updates to Terms",
+      "content": "These Terms of Service may be updated at any time. Continued use of the software constitutes acceptance of the updated terms."
+    },
+    "contact": {
+      "title": "Contact Information",
+      "content": "If you have any questions about these Terms of Service, please contact us at legal@spintracker.com."
     }
   }
 }

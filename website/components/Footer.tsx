@@ -1,6 +1,8 @@
 import { Link } from "@/i18n/navigation";
 import { BarChart3 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 
 export function Footer() {
   const t = useTranslations('Footer');
@@ -20,28 +22,16 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-4">{t('product')}</h3>
-            <ul className="space-y-2">
-              <li><Link href="/#features" className="text-sm text-gray-400 hover:text-white">{t('links.features')}</Link></li>
-              <li><Link href="/download" className="text-sm text-gray-400 hover:text-white">{t('links.download')}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">{t('links.changelog')}</Link></li>
-            </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold text-white mb-4">{t('support')}</h3>
-            <ul className="space-y-2">
-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">{t('links.docs')}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">{t('links.faq')}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">{t('links.contact')}</Link></li>
-            </ul>
           </div>
 
           <div>
             <h3 className="font-semibold text-white mb-4">{t('legal')}</h3>
             <ul className="space-y-2">
-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">{t('links.privacy')}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-400 hover:text-white">{t('links.terms')}</Link></li>
+              <li><Link href="/privacy" className="text-sm text-gray-400 hover:text-white">{t('links.privacy')}</Link></li>
+              <li><Link href="/terms" className="text-sm text-gray-400 hover:text-white">{t('links.terms')}</Link></li>
             </ul>
           </div>
         </div>
@@ -58,7 +48,7 @@ export function Footer() {
               aria-label="Discord"
               className="text-gray-400 hover:text-white"
             >
-              <img src="/discord.svg" alt="Discord" className="h-5 w-5" />
+              <FontAwesomeIcon icon={faDiscord} className="h-5 w-5" />
             </a>
           </div>
         </div>
