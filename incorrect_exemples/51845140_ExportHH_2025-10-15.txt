@@ -1,0 +1,363 @@
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KPAGC7AXNFS6SR7BVBW3A0
+Date & Time: 2025-10-15 10:23:16 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 20/40
+Total Pot: 1304
+Rake: 0
+*** PLAYERS ***
+Seat 2: miimi10 (848) [BTN SB]
+Seat 3: Fish2Put1 (652) [BB Hero]
+*** HOLE CARDS ***
+miimi10: [Ad 2d]
+Fish2Put1: [Ks 8h]
+*** PRE-FLOP ***
+10:23:16 - miimi10: Posts SB 20
+10:23:16 - Fish2Put1: Posts BB 40
+10:23:21 - miimi10: Raises to 848 and is all-in
+10:23:23 - Fish2Put1: Calls 612 and is all-in
+*** FLOP *** [4c Ah 7s]
+*** TURN *** [4c Ah 7s 4s]
+*** RIVER *** [4c Ah 7s 4s Js]
+*** SHOWDOWN ***
+Fish2Put1 shows [Ks 8h] (Pair) [4s 4c Ah Ks Js]
+miimi10 shows [Ad 2d] (Two Pair) [Ah Ad 4s 4c Js]
+*** SUMMARY ***
+miimi10 wins main pot of 1304
+miimi10 finished 1st and wins 0.40 EUR
+Fish2Put1 finished 2nd
+
+------------
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KPA4RBZZXPV0C5EWTMWASV
+Date & Time: 2025-10-15 10:23:04 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 20/40
+Total Pot: 848
+Rake: 0
+*** PLAYERS ***
+Seat 2: miimi10 (748) [BB]
+Seat 3: Fish2Put1 (752) [BTN SB Hero]
+*** HOLE CARDS ***
+Fish2Put1: [Kc 9d]
+*** PRE-FLOP ***
+10:23:04 - Fish2Put1: Posts SB 20
+10:23:04 - miimi10: Posts BB 40
+10:23:08 - Fish2Put1: Raises to 100
+10:23:11 - miimi10: Raises to 748 and is all-in
+10:23:13 - Fish2Put1: Folds
+*** SUMMARY ***
+miimi10 wins main pot of 848
+
+------------
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KP9H88V9VK8VYCE1HCWCTK
+Date & Time: 2025-10-15 10:22:45 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 20/40
+Total Pot: 748
+Rake: 0
+*** PLAYERS ***
+Seat 2: miimi10 (374) [BTN SB]
+Seat 3: Fish2Put1 (1126) [BB Hero]
+*** HOLE CARDS ***
+miimi10: [Ks Kd]
+Fish2Put1: [Qc Tc]
+*** PRE-FLOP ***
+10:22:45 - miimi10: Posts SB 20
+10:22:45 - Fish2Put1: Posts BB 40
+10:22:49 - miimi10: Calls 20
+10:22:51 - Fish2Put1: Raises to 1126 and is all-in
+10:22:53 - miimi10: Calls 334 and is all-in
+*** FLOP *** [7s 9s Ah]
+*** TURN *** [7s 9s Ah 6h]
+*** RIVER *** [7s 9s Ah 6h Qd]
+*** SHOWDOWN ***
+Fish2Put1 shows [Qc Tc] (Pair) [Qd Qc Ah Tc 9s]
+miimi10 shows [Ks Kd] (Pair) [Ks Kd Ah Qd 9s]
+*** SUMMARY ***
+miimi10 wins main pot of 748
+
+------------
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KP97JKCE0BNN7866R34EMY
+Date & Time: 2025-10-15 10:22:35 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 20/40
+Total Pot: 1126
+Rake: 0
+*** PLAYERS ***
+Seat 2: miimi10 (414) [BB]
+Seat 3: Fish2Put1 (1086) [BTN SB Hero]
+*** HOLE CARDS ***
+Fish2Put1: [8d 8c]
+*** PRE-FLOP ***
+10:22:35 - Fish2Put1: Posts SB 20
+10:22:35 - miimi10: Posts BB 40
+10:22:37 - Fish2Put1: Raises to 1086 and is all-in
+10:22:41 - miimi10: Folds
+*** SUMMARY ***
+Fish2Put1 wins main pot of 1126
+
+------------
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KP8V6DCSSET943T44WH4R0
+Date & Time: 2025-10-15 10:22:22 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 20/40
+Total Pot: 160
+Rake: 0
+*** PLAYERS ***
+Seat 2: miimi10 (454) [BTN SB]
+Seat 3: Fish2Put1 (1046) [BB Hero]
+*** HOLE CARDS ***
+Fish2Put1: [Ad 8h]
+*** PRE-FLOP ***
+10:22:22 - miimi10: Posts SB 20
+10:22:22 - Fish2Put1: Posts BB 40
+10:22:25 - miimi10: Calls 20
+10:22:28 - Fish2Put1: Raises to 120
+10:22:31 - miimi10: Folds
+*** SUMMARY ***
+Fish2Put1 wins main pot of 160
+
+------------
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KP7YCQHFNXA9Z7VG99SK49
+Date & Time: 2025-10-15 10:21:52 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 15/30
+Total Pot: 90
+Rake: 0
+*** PLAYERS ***
+Seat 2: miimi10 (424) [BB]
+Seat 3: Fish2Put1 (1076) [BTN SB Hero]
+*** HOLE CARDS ***
+Fish2Put1: [Qd 5c]
+*** PRE-FLOP ***
+10:21:52 - Fish2Put1: Posts SB 15
+10:21:52 - miimi10: Posts BB 30
+10:21:56 - Fish2Put1: Calls 15
+10:22:09 - miimi10: Checks
+*** FLOP *** [Ad 3c 8h]
+10:22:17 - miimi10: Bets 30
+10:22:19 - Fish2Put1: Folds
+*** SUMMARY ***
+miimi10 wins main pot of 90
+
+------------
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KP78M9VPSSQH1D8SAQV3C2
+Date & Time: 2025-10-15 10:21:30 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 15/30
+Total Pot: 90
+Rake: 0
+*** PLAYERS ***
+Seat 2: miimi10 (454) [BTN SB]
+Seat 3: Fish2Put1 (1046) [BB Hero]
+*** HOLE CARDS ***
+Fish2Put1: [9s Kd]
+*** PRE-FLOP ***
+10:21:30 - miimi10: Posts SB 15
+10:21:30 - Fish2Put1: Posts BB 30
+10:21:32 - miimi10: Calls 15
+10:21:34 - Fish2Put1: Checks
+*** FLOP *** [5d 3h 6d]
+10:21:37 - Fish2Put1: Checks
+10:21:42 - miimi10: Checks
+*** TURN *** [5d 3h 6d Jh]
+10:21:45 - Fish2Put1: Bets 30
+10:21:49 - miimi10: Folds
+*** SUMMARY ***
+Fish2Put1 wins main pot of 90
+
+------------
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KP72FYVKF4HYA5TR9P30JK
+Date & Time: 2025-10-15 10:21:24 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 15/30
+Total Pot: 45
+Rake: 0
+*** PLAYERS ***
+Seat 2: miimi10 (439) [BB]
+Seat 3: Fish2Put1 (1061) [BTN SB Hero]
+*** HOLE CARDS ***
+Fish2Put1: [9c 2h]
+*** PRE-FLOP ***
+10:21:24 - Fish2Put1: Posts SB 15
+10:21:24 - miimi10: Posts BB 30
+10:21:27 - Fish2Put1: Folds
+*** SUMMARY ***
+miimi10 wins main pot of 45
+
+------------
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KP61XSXJRC1YTHK8T12XT5
+Date & Time: 2025-10-15 10:20:51 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 10/20
+Total Pot: 745
+Rake: 0
+*** PLAYERS ***
+Seat 1: babou41190 (352) [BB]
+Seat 2: miimi10 (480) [BTN]
+Seat 3: Fish2Put1 (668) [SB Hero]
+*** HOLE CARDS ***
+babou41190: [6h 9h]
+Fish2Put1: [5c Qc]
+*** PRE-FLOP ***
+10:20:51 - Fish2Put1: Posts SB 10
+10:20:51 - babou41190: Posts BB 20
+10:20:52 - miimi10: Calls 20
+10:20:54 - Fish2Put1: Calls 10
+10:20:55 - babou41190: Checks
+*** FLOP *** [9s 5h Qs]
+10:20:59 - Fish2Put1: Bets 21
+10:21:01 - babou41190: Calls 21
+10:21:02 - miimi10: Calls 21
+*** TURN *** [9s 5h Qs 6s]
+10:21:06 - Fish2Put1: Bets 79
+10:21:08 - babou41190: Raises to 158
+10:21:09 - miimi10: Folds
+10:21:10 - Fish2Put1: Calls 79
+*** RIVER *** [9s 5h Qs 6s Jc]
+10:21:13 - Fish2Put1: Checks
+10:21:15 - babou41190: Bets 153 and is all-in
+10:21:17 - Fish2Put1: Calls 153
+*** SHOWDOWN ***
+Fish2Put1 shows [5c Qc] (Two Pair) [Qs Qc 5h 5c Jc]
+babou41190 shows [6h 9h] (Two Pair) [9s 9h 6s 6h Qs]
+*** SUMMARY ***
+Fish2Put1 wins main pot of 745
+babou41190 finished 3rd
+
+------------
+
+*** HEADER ***
+Site: Betclic.fr
+Game Mode: Spin
+Game Type: NL Texas Hold'em
+Game Name: Spin & Rush 0.20€
+Game ID: 01K7KP4JMWBR8XNG6W50EXP3FR
+Prize pool: 0.40€
+Multiplier: x2
+Buy In: 0.20€
+Hand ID: 01K7KP4ZMEM7G44XRVVHKQWZWC
+Date & Time: 2025-10-15 10:20:15 (UTC)
+Table ID: 01K7KP4JNA1T4BV2XAX1EM998Z
+Blinds: 10/20
+Total Pot: 316
+Rake: 0
+*** PLAYERS ***
+Seat 1: babou41190 (500) [BTN]
+Seat 2: miimi10 (500) [SB]
+Seat 3: Fish2Put1 (500) [BB Hero]
+*** HOLE CARDS ***
+babou41190: [Kh 6d]
+Fish2Put1: [4c Kd]
+*** PRE-FLOP ***
+10:20:15 - miimi10: Posts SB 10
+10:20:15 - Fish2Put1: Posts BB 20
+10:20:17 - babou41190: Calls 20
+10:20:18 - miimi10: Calls 10
+10:20:20 - Fish2Put1: Checks
+*** FLOP *** [Ac 3c Ad]
+10:20:23 - miimi10: Checks
+10:20:25 - Fish2Put1: Checks
+10:20:26 - babou41190: Checks
+*** TURN *** [Ac 3c Ad 4s]
+10:20:28 - miimi10: Checks
+10:20:31 - Fish2Put1: Bets 39
+10:20:33 - babou41190: Calls 39
+10:20:34 - miimi10: Folds
+*** RIVER *** [Ac 3c Ad 4s 3d]
+10:20:40 - Fish2Put1: Checks
+10:20:43 - babou41190: Bets 89
+10:20:45 - Fish2Put1: Calls 89
+*** SHOWDOWN ***
+Fish2Put1 shows [4c Kd] (Two Pair) [Ad Ac 4s 4c Kd]
+babou41190 shows [Kh 6d] (Two Pair) [Ad Ac 3d 3c Kh]
+*** SUMMARY ***
+Fish2Put1 wins main pot of 316

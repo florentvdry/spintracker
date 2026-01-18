@@ -22,6 +22,7 @@ public class TournamentsRepository
         await connection.OpenAsync();
 
         var whereClauses = new List<string>();
+        whereClauses.Add("h.player_count <= 3");
         var parameters = new List<SqliteParameter>();
 
         if (!string.IsNullOrEmpty(options.HeroName))

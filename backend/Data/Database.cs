@@ -66,11 +66,9 @@ public class Database
 
             // Clear known application tables but keep schema intact (migrations manage schema)
             cmd.CommandText = @"
-                DELETE FROM hands;
                 DELETE FROM player_hands;
+                DELETE FROM hands;
                 DELETE FROM players;
-                DELETE FROM custom_stats;
-                DELETE FROM hud_profiles;
             ";
             cmd.ExecuteNonQuery();
 

@@ -54,13 +54,15 @@ public class PlayerRepository
         cmd.CommandText = @"
             INSERT OR REPLACE INTO players (name, total_hands, total_profit, total_ev_profit, updated_at)
             SELECT 
-                player_name,
+                ph.player_name,
                 COUNT(*) as total_hands,
-                SUM(net_profit) as total_profit,
-                SUM(net_won_adjusted) as total_ev_profit,
+                SUM(ph.net_profit) as total_profit,
+                SUM(ph.net_won_adjusted) as total_ev_profit,
                 CURRENT_TIMESTAMP
-            FROM player_hands
-            GROUP BY player_name";
+            FROM player_hands ph
+            JOIN hands h ON ph.hand_id = h.id
+            WHERE h.player_count <= 3
+            GROUP BY ph.player_name";
         
         await cmd.ExecuteNonQueryAsync();
     }

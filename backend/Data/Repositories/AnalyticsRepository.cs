@@ -86,13 +86,13 @@ public class AnalyticsRepository
             joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
             selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
             cmd.Parameters.AddWithValue("@heroName", heroName);
-            cmd.CommandText = $"SELECT {selectFields} FROM hands {joinClause} ORDER BY date_time";
+            cmd.CommandText = $"SELECT {selectFields} FROM hands {joinClause} WHERE hands.player_count <= 3 ORDER BY date_time";
         }
         else
         {
             // Field Analysis: do not JOIN player_hands here because that would return one row per player
             // We'll load players per-hand after fetching unique hands to avoid duplicates.
-            cmd.CommandText = "SELECT hands.* FROM hands ORDER BY date_time";
+            cmd.CommandText = "SELECT hands.* FROM hands WHERE player_count <= 3 ORDER BY date_time";
         }
 
         var hands = new List<ParsedHand>();
@@ -275,7 +275,7 @@ public class AnalyticsRepository
                 {profitCol}
             FROM hands
             {joinClause}
-            WHERE {cardsCol} IS NOT NULL AND {cardsCol} != ''";
+            WHERE {cardsCol} IS NOT NULL AND {cardsCol} != '' AND hands.player_count <= 3";
 
         var heatmapData = new Dictionary<string, HeatmapEntry>();
 
@@ -371,6 +371,7 @@ public class AnalyticsRepository
             await connection.OpenAsync();
 
             var whereClauses = new List<string>();
+            whereClauses.Add("h.player_count <= 3");
             var parameters = new List<SqliteParameter>();
             var joinClause = "";
             
@@ -562,6 +563,7 @@ public class AnalyticsRepository
         await connection.OpenAsync();
 
         var whereClauses = new List<string>();
+        whereClauses.Add("hands.player_count <= 3");
         var parameters = new List<SqliteParameter>();
 
         var selectFields = "*";

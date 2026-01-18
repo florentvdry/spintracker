@@ -69,7 +69,7 @@ public class ImporterService : IImporterService
                             Console.WriteLine($"Parse error: {e.Message}");
                             hand = null;
                         }
-                        if (hand != null)
+                        if (hand != null && hand.PlayerCount <= 3)
                         {
                             count++;
                         }
@@ -96,7 +96,7 @@ public class ImporterService : IImporterService
                     Console.WriteLine($"Parse error: {e.Message}");
                     hand = null;
                 }
-                if (hand != null)
+                if (hand != null && hand.PlayerCount <= 3)
                 {
                     count++;
                 }
@@ -169,7 +169,7 @@ public class ImporterService : IImporterService
                             Console.WriteLine($"Parse error: {e.Message}");
                             hand = null;
                         }
-                        if (hand != null)
+                        if (hand != null && hand.PlayerCount <= 3)
                         {
                             handsBatch.Add(hand);
                             totalHands++;
@@ -214,7 +214,7 @@ public class ImporterService : IImporterService
                     Console.WriteLine($"Parse error: {e.Message}");
                     hand = null;
                 }
-                if (hand != null)
+                if (hand != null && hand.PlayerCount <= 3)
                 {
                     handsBatch.Add(hand);
                     totalHands++;

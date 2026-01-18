@@ -1,1 +1,7 @@
 1.0.4:
+- Impossible de supprimer la base de donnée (Corrigé: erreur de contrainte de clé étrangère).
+- Importation des spins uniquement (Filtrage des mains avec > 3 joueurs).
+- Filtrage systématique des mains avec > 3 joueurs sur tous les affichages (Dashboard, Graphiques, Sessions, Hands, Tournaments, etc.).
+- Filtrer pour les MTT (Ignorer les tournois multi-tables).
+
+1.0.3:

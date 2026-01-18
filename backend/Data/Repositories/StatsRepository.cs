@@ -43,6 +43,7 @@ public class StatsRepository
         }
 
         var whereClauses = new List<string>();
+        whereClauses.Add("h.player_count <= 3");
         if (!string.IsNullOrEmpty(dateFrom))
         {
             whereClauses.Add("h.date_time >= @dateFrom");
@@ -275,6 +276,7 @@ public class StatsRepository
         }
 
         var whereClauses = new List<string>();
+        whereClauses.Add("h.player_count <= 3");
         if (!string.IsNullOrEmpty(dateFrom))
         {
             whereClauses.Add("h.date_time >= @dateFrom");
@@ -402,6 +404,7 @@ public class StatsRepository
         await connection.OpenAsync();
 
         var whereClauses = new List<string>();
+        whereClauses.Add("h.player_count <= 3");
         var parameters = new List<SqliteParameter>();
 
         var joinClause = "";
@@ -598,7 +601,7 @@ public class StatsRepository
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
         using var cmd = connection.CreateCommand();
-        cmd.CommandText = "SELECT DISTINCT buy_in FROM hands WHERE buy_in > 0 ORDER BY buy_in ASC";
+        cmd.CommandText = "SELECT DISTINCT buy_in FROM hands WHERE buy_in > 0 AND player_count <= 3 ORDER BY buy_in ASC";
         var buyIns = new List<double>();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
@@ -617,7 +620,8 @@ public class StatsRepository
         cmd.CommandText = @"
             SELECT COALESCE(SUM(ph.net_profit), 0) as total_profit, COUNT(*) as total_hands 
             FROM hands h
-            JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)";
+            JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)
+            WHERE h.player_count <= 3";
 
         double totalProfit = 0;
         int totalHands = 0;
@@ -635,6 +639,7 @@ public class StatsRepository
             SELECT h.id, h.date_time, ph.net_profit, h.buy_in, h.prize_pool, h.total_pot, h.result 
             FROM hands h
             JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)
+            WHERE h.player_count <= 3
             ORDER BY h.date_time DESC 
             LIMIT {sampleLimit}";
 

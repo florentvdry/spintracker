@@ -168,6 +168,7 @@ public class HandRepository
             await connection.OpenAsync();
 
             var whereClauses = new List<string>();
+            whereClauses.Add("h.player_count <= 3");
             var parameters = new List<SqliteParameter>();
             var joinClause = "";
             
@@ -415,7 +416,7 @@ public class HandRepository
                        ph.stack as dyn_hero_stack
                 FROM hands h
                 LEFT JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)
-                WHERE h.id = @handId";
+                WHERE h.id = @handId AND h.player_count <= 3";
             cmd.Parameters.AddWithValue("@handId", handId);
 
             using var reader = await cmd.ExecuteReaderAsync();
@@ -499,7 +500,7 @@ public class HandRepository
             SELECT {selectFields}
             FROM hands h
             {joinClause}
-            WHERE h.game_id = @gameId
+            WHERE h.game_id = @gameId AND h.player_count <= 3
             ORDER BY h.date_time ASC";
 
         cmd.Parameters.AddWithValue("@gameId", gameId);
@@ -556,7 +557,7 @@ public class HandRepository
             SELECT {selectFields}
             FROM hands h
             {joinClause}
-            WHERE h.id IN ({string.Join(",", idParams)})
+            WHERE h.id IN ({string.Join(",", idParams)}) AND h.player_count <= 3
             ORDER BY h.date_time DESC"; // Default sort, though caller might re-sort
 
         foreach (var p in parameters) cmd.Parameters.Add(p);
