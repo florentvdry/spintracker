@@ -170,6 +170,10 @@ class IPCService {
     return this.invoke('open-logs-folder');
   }
 
+  async getAppVersion() {
+    return this.invoke('get-app-version');
+  }
+
   async analyzeRange({ position, stack, action }) {
     return this.invoke('python-analyze-range', { position, stack, action });
   }

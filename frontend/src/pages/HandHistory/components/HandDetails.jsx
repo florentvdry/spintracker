@@ -1,6 +1,8 @@
 import { X } from 'lucide-react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
+import PlayingCard from '../../../components/common/PlayingCard';
+import { parseCards } from '../../../utils/handNormalizer';
 
 export default function HandDetails({ hand, onClose }) {
   const { t } = useTranslation();
@@ -18,11 +20,15 @@ export default function HandDetails({ hand, onClose }) {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h4 className="text-lg font-semibold text-white font-mono">
-            {formatCards(hand.hero_cards)}
-          </h4>
-          <p className="text-sm text-gray-400">{hand.date_time}</p>
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            {parseCards(hand.hero_cards).map((c, i) => (
+              <PlayingCard key={i} card={c} size="sm" />
+            ))}
+          </div>
+          <div>
+            <p className="text-xs text-gray-400">{hand.date_time}</p>
+          </div>
         </div>
         <button onClick={onClose} className="btn-icon">
           <X className="w-4 h-4" />
@@ -50,7 +56,13 @@ export default function HandDetails({ hand, onClose }) {
         <InfoRow label={t('common.position')} value={hand.hero_position} />
         <InfoRow label="Stack" value={`${hand.hero_stack || 0} ${t('common.chips')}`} />
         <InfoRow label={t('common.villain', 'Villain')} value={villainPosition} />
-        <InfoRow label={t('common.villain_cards', 'Villain Cards')} value={formatCards(villainCards) || '—'} />
+        <InfoRow label={t('common.villain_cards', 'Villain Cards')} value={
+          <div className="flex gap-0.5 justify-end">
+            {villainCards !== '—' ? parseCards(villainCards).map((c, i) => (
+              <PlayingCard key={i} card={c} size="xs" />
+            )) : '—'}
+          </div>
+        } />
         <InfoRow label={t('hand_history.table.pot')} value={`${hand.total_pot || 0} ${t('common.chips')}`} />
         <InfoRow label="Multiplier" value={`${hand.multiplier || 1}x`} />
       </div>
@@ -59,10 +71,16 @@ export default function HandDetails({ hand, onClose }) {
       {(hand.flop || hand.turn || hand.river) && (
         <div className="p-4 bg-dark-200 rounded-lg">
           <p className="text-sm text-gray-400 mb-2">Board</p>
-          <div className="flex gap-2 font-mono text-lg">
-            {hand.flop && <span className="text-white">{formatCards(hand.flop)}</span>}
-            {hand.turn && <span className="text-yellow-400">{formatCards(hand.turn)}</span>}
-            {hand.river && <span className="text-blue-400">{formatCards(hand.river)}</span>}
+          <div className="flex gap-1">
+            {hand.flop && parseCards(hand.flop).map((c, i) => (
+              <PlayingCard key={`flop-${i}`} card={c} size="sm" />
+            ))}
+            {hand.turn && parseCards(hand.turn).map((c, i) => (
+              <PlayingCard key={`turn-${i}`} card={c} size="sm" />
+            ))}
+            {hand.river && parseCards(hand.river).map((c, i) => (
+              <PlayingCard key={`river-${i}`} card={c} size="sm" />
+            ))}
           </div>
         </div>
       )}
@@ -104,10 +122,3 @@ function ActionBlock({ title, content }) {
   );
 }
 
-function formatCards(cards) {
-  if (!cards) return null;
-  return cards.replace(/([AKQJT2-9])([shdc])/gi, (match, rank, suit) => {
-    const suitSymbols = { s: '♠', h: '♥', d: '♦', c: '♣' };
-    return rank + (suitSymbols[suit.toLowerCase()] || suit);
-  });
-}

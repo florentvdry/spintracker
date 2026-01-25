@@ -109,7 +109,7 @@ export const useHandsStore = create((set, get) => ({
       return { success: true };
     }
     
-    set({ isLoadingHand: true });
+    set({ isLoadingHand: true, selectedHand: null });
     try {
       const heroName = useAppStore.getState().heroName;
       const result = await ipcService.getHandDetails(handId, heroName);

@@ -9,7 +9,8 @@ import {
   Settings,
   Database,
   BarChart2,
-  Hammer
+  Hammer,
+  MessageCircle
 } from 'lucide-react';
 import clsx from 'clsx';
 import logo from '../../assets/logo.png';
@@ -61,10 +62,15 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="p-4 border-t border-dark-100/30">
-        <div className="flex items-center gap-3 text-sm text-gray-500">
-          <Database className="w-4 h-4" />
-          <span>{t('sidebar.sqlite_local')}</span>
-        </div>
+        <a 
+          href="https://discord.gg/x9ZSQA2mN2" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 text-sm text-gray-500 hover:text-blue-400 transition-colors"
+        >
+          <MessageCircle className="w-4 h-4" />
+          <span>Discord</span>
+        </a>
       </div>
     </aside>
   );

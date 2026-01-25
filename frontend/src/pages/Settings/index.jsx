@@ -17,15 +17,26 @@ export default function Settings() {
   const loadPlayers = usePlayersStore(state => state.loadPlayers);
   const [serverStatus, setServerStatus] = useState('checking');
   const [exportLoading, setExportLoading] = useState(false);
+  const [appVersion, setAppVersion] = useState('1.0.0');
 
   useEffect(() => {
     checkStatus();
+    loadVersion();
     const interval = setInterval(checkStatus, 30000); // Check every 30s
     return () => clearInterval(interval);
   }, []);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
+  };
+
+  const loadVersion = async () => {
+    try {
+      const version = await ipcService.getAppVersion();
+      if (version) setAppVersion(version);
+    } catch (error) {
+      console.error('Failed to load version:', error);
+    }
   };
 
   const checkStatus = async () => {
@@ -337,7 +348,7 @@ export default function Settings() {
       {/* About */}
       <Card title={t('settings.about.title')}>
         <div className="space-y-2 text-sm text-gray-400">
-          <p><span className="text-white">SpinTracker</span> v1.0.2</p>
+          <p><span className="text-white">SpinTracker</span> v{appVersion}</p>
           <p>{t('settings.about.description')}</p>
         </div>
       </Card>

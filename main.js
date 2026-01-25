@@ -348,6 +348,10 @@ app.whenReady().then(() => {
     return lastReplayerData;
   });
 
+  ipcMain.handle('get-app-version', () => {
+    return app.getVersion();
+  });
+
   // Create a lightweight splash window
   splashWindow = new BrowserWindow({
     width: 420,
@@ -620,7 +624,7 @@ ipcMain.handle('get-hand-details', async (event, handId, heroName) => {
   const fetch = (await import('node-fetch')).default;
   try {
     const query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
-    const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/db/hand/${handId}${query}`);
+    const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/db/hand/${encodeURIComponent(handId)}${query}`);
     return await response.json();
   } catch (error) {
     return { success: false, message: error.message };
