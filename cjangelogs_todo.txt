@@ -1,2 +1,5 @@
 1.0.5:
 - Detection de reg
+- Visualiseur de main parfois incorrect à droite dans l'historique?
+- Ajout lien discord à la place de SQLite Local
+- Prendre la version via le package.json pour les parametres.
