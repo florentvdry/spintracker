@@ -123,7 +123,7 @@ export default function RangeGrid({
                 style={getBackgroundStyle(stats)}
                 className={clsx(
                   cellSizes[size],
-                  'flex items-center justify-center rounded cursor-pointer relative group',
+                  'flex flex-col items-center justify-center rounded cursor-pointer relative group leading-none',
                   'transition-all duration-150',
                   isSelected ? 'ring-2 ring-white z-10' : 'hover:ring-1 hover:ring-gray-300 hover:z-10',
                   stats.TotalCount === 0 && 'opacity-40'
@@ -136,6 +136,11 @@ export default function RangeGrid({
                 )}>
                   {hand.replace('s', '').replace('o', '')}
                 </span>
+                {stats.TotalCount > 0 && size !== 'sm' && (
+                  <span className="text-[10px] text-white/90 font-bold drop-shadow-md mt-0.5 scale-90">
+                    {stats.TotalCount}
+                  </span>
+                )}
               </div>
             );
           })

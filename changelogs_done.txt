@@ -3,5 +3,7 @@
 - Importation des spins uniquement (Filtrage des mains avec > 3 joueurs).
 - Filtrage systématique des mains avec > 3 joueurs sur tous les affichages (Dashboard, Graphiques, Sessions, Hands, Tournaments, etc.).
 - Filtrer pour les MTT (Ignorer les tournois multi-tables).
+- Sur la page historique, ajout d'un filtre temporel (Aujourd'hui, Semaine, Mois, Tout, Personnalisé) similaire au Dashboard.
+- Dans l'analyseur de range, le nombre de main est maintenant marqué, pour différencier les mains fréquence ou non.
 
 1.0.3:

@@ -1,5 +1,2 @@
 1.0.4:
-- Nombre de tournois incorrect?
-- Concernant le Hand research, ce serait utile d'avoir affiché le nombre de mains par combo car si tout est à plat, on ne peut pas trop relativiser (dans ton screen, s'il y a 100 combo de AQo pour 1 combo de 53o, c'est quand même une info à avoir). 
 - Detection de reg
-- Sur la page historique, mettre un filtre comme la page d'accueil session / aujourdhui, ..
