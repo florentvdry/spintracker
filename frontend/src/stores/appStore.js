@@ -85,17 +85,17 @@ export const useAppStore = create((set, get) => ({
     set({ isLoading: true, error: null, loadingMessage: 'Démarrage du serveur...' });
     
     // Helper pour réessayer les appels si le backend n'est pas encore prêt
-    const retry = async (fn, retries = 5, delay = 1000) => {
+    const retry = async (fn, retries = 10, delay = 1000) => {
       for (let i = 0; i < retries; i++) {
         try {
-          // Timeout de 2s par tentative pour ne pas bloquer indéfiniment
+          // Timeout de 10s par tentative pour ne pas bloquer indéfiniment sur des calculs lourds
           const result = await Promise.race([
             fn(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000))
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
           ]);
           if (result && result.success) return result;
         } catch (e) {
-          // Continue to next retry
+          console.warn(`[Retry] Attempt ${i+1} failed:`, e.message);
         }
         await new Promise(resolve => setTimeout(resolve, delay));
       }
@@ -109,7 +109,7 @@ export const useAppStore = create((set, get) => ({
       const statsResult = await retry(async () => {
         const res = await get().loadDashboardStats();
         return res;
-      }, 5, 1000);
+      }, 10, 1500);
       
       // Si échec des stats, on considère que l'init a échoué mais on laisse l'app s'ouvrir quand même
       // pour afficher l'erreur à l'utilisateur plutôt que de rester bloqué sur le splash.

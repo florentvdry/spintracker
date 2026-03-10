@@ -28,6 +28,19 @@ export default function RangeGrid({
     lg: 'w-12 h-12 text-sm',
   };
 
+  // Calculate max count for opacity scaling
+  const maxTotalCount = useMemo(() => {
+    const counts = Object.values(data).map(d => d.totalCount || d.TotalCount || 0);
+    return Math.max(...counts, 1);
+  }, [data]);
+
+  const hexToRgba = (hex, alpha) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
   const getCellData = (row, col) => {
     const card1 = CARDS[row];
     const card2 = CARDS[col];
@@ -55,25 +68,23 @@ export default function RangeGrid({
   };
 
   const getBackgroundStyle = (stats) => {
-    // Backend returns camelCase keys, so we need to handle that.
-    // In logs: stats = { totalCount: 1, totalProfit: 100, actions: { AllIn: 1 } }
-    // The existing code expects PascalCase (TotalCount, Actions).
-    
-    // Normalize stats to access properties safely
-    const total = stats.totalCount !== undefined ? stats.totalCount : (stats.TotalCount || 0);
-    
-    if (!stats || total === 0) return { backgroundColor: '#1e293b' };
+    const total = stats.TotalCount;
+    if (total === 0) return { backgroundColor: '#1e293b' };
 
-    const actions = stats.actions || stats.Actions || {};
+    // Global cell opacity based on volume relative to max (min 0.3 to keep it visible)
+    const volumeOpacity = 0.3 + (0.7 * (total / maxTotalCount));
+    
+    const actions = stats.Actions;
     let gradientStops = [];
     let currentPercent = 0;
 
-    // Order: AllIn, Raise, Bet, Call, Check, Fold, None
     const actionOrder = ['AllIn', 'Raise', 'Bet', 'Call', 'Check', 'Fold', 'None'];
     
-    // If there is only one dominant action (>90%), just use solid color for cleaner look
+    // Scale action colors by volume opacity
+    const getActionColor = (action) => hexToRgba(ACTION_COLORS[action] || ACTION_COLORS.None, volumeOpacity);
+
+    // If there is only one dominant action (>95%), just use solid color
     let dominantAction = null;
-    
     for (const action of actionOrder) {
       const count = actions[action] || 0;
       if (count / total > 0.95) {
@@ -83,7 +94,7 @@ export default function RangeGrid({
     }
     
     if (dominantAction) {
-       return { backgroundColor: ACTION_COLORS[dominantAction] };
+       return { backgroundColor: getActionColor(dominantAction) };
     }
 
     // Otherwise use gradient
@@ -91,17 +102,13 @@ export default function RangeGrid({
       const count = actions[action] || 0;
       if (count > 0) {
         const percent = (count / total) * 100;
-        const color = ACTION_COLORS[action] || ACTION_COLORS.None;
+        const color = getActionColor(action);
         gradientStops.push(`${color} ${currentPercent}% ${currentPercent + percent}%`);
         currentPercent += percent;
       }
     });
 
-    if (gradientStops.length === 0) {
-        // Fallback if somehow counts > 0 but no actions matched?
-        // Should not happen if 'None' is in actionOrder
-        return { backgroundColor: '#1e293b' };
-    }
+    if (gradientStops.length === 0) return { backgroundColor: '#1e293b' };
 
     return {
       background: `linear-gradient(to top, ${gradientStops.join(', ')})`

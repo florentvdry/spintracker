@@ -638,10 +638,14 @@ namespace SpinTrackerBackend.Services
             var filteredHands = FilterHands(hands, filters);
             _logger.LogInformation($"GetRangeAnalysisAsync: After filtering {filteredHands.Count} hands");
 
-            // Determine Target Position from Action Sequence to avoid mixing players
-            // e.g. if Sequence is "BTN:Raise", we only want to see BTN's hands, not SB's response.
+            // Determine Target Position. 
+            // Priority: 1. filters.Positions, 2. last action in ActionSequence
             string? targetPosition = null;
-            if (filters.ActionSequence != null && filters.ActionSequence.Count > 0)
+            if (filters.Positions != null && filters.Positions.Length > 0)
+            {
+                targetPosition = filters.Positions[0];
+            }
+            else if (filters.ActionSequence != null && filters.ActionSequence.Count > 0)
             {
                 var lastItem = filters.ActionSequence.Last();
                 var parts = lastItem.Split(':');
