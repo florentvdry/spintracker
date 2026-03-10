@@ -8,6 +8,24 @@ public class AnalyticsCalculator : IAnalyticsCalculator
     private readonly IEquityCalculator _equityCalc;
     private readonly ILogger<AnalyticsCalculator> _logger;
 
+    private static readonly System.Text.RegularExpressions.Regex PlayerActionRegex = 
+        new(@"^(?:[0-9:]+\s*-\s*)?([^:]+):", System.Text.RegularExpressions.RegexOptions.Compiled);
+    
+    private static readonly System.Text.RegularExpressions.Regex PostsRegex = 
+        new(@"posts\s+\w+\s+(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly System.Text.RegularExpressions.Regex RaisesToRegex = 
+        new(@"raises\s+to\s+(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly System.Text.RegularExpressions.Regex CallsRegex = 
+        new(@"calls\s+(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly System.Text.RegularExpressions.Regex BetsRegex = 
+        new(@"bets\s+(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly System.Text.RegularExpressions.Regex AllInRegex = 
+        new(@"(\d+)\s+and\s+is\s+all-in", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
     public AnalyticsCalculator(IEquityCalculator equityCalc, ILogger<AnalyticsCalculator> logger)
     {
         _equityCalc = equityCalc;
@@ -153,7 +171,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                 foreach (var line in lines)
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
-                    var m = System.Text.RegularExpressions.Regex.Match(line, "^(?:[0-9:]+\\s*-\\s*)?([^:]+):");
+                    var m = PlayerActionRegex.Match(line);
                     if (!m.Success) continue;
                     var p = m.Groups[1].Value.Trim();
                     if (!p.Equals(playerName, StringComparison.OrdinalIgnoreCase)) continue;
@@ -351,27 +369,30 @@ public class AnalyticsCalculator : IAnalyticsCalculator
             foreach (var line in lines)
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
-                var m = System.Text.RegularExpressions.Regex.Match(line, "^(?:[0-9:]+\\s*-\\s*)?([^:]+):");
+                var m = PlayerActionRegex.Match(line);
                 if (!m.Success) continue;
                 var player = m.Groups[1].Value.Trim();
                 if (!streetInv.ContainsKey(player)) streetInv[player] = 0;
-                var lower = line.ToLower();
-                var mm = System.Text.RegularExpressions.Regex.Match(lower, "posts\\s+\\w+\\s+(\\d+)");
-                if (mm.Success) { streetInv[player] = double.Parse(mm.Groups[1].Value); goto merge; }
-                mm = System.Text.RegularExpressions.Regex.Match(lower, "raises\\s+to\\s+(\\d+)");
-                if (mm.Success) { streetInv[player] = double.Parse(mm.Groups[1].Value); goto merge; }
-                mm = System.Text.RegularExpressions.Regex.Match(lower, "calls\\s+(\\d+)");
-                if (mm.Success) { streetInv[player] += double.Parse(mm.Groups[1].Value); goto merge; }
-                mm = System.Text.RegularExpressions.Regex.Match(lower, "bets\\s+(\\d+)");
-                if (mm.Success) { streetInv[player] = double.Parse(mm.Groups[1].Value); goto merge; }
-                mm = System.Text.RegularExpressions.Regex.Match(lower, "(\\d+)\\s+and\\s+is\\s+all-in");
+                
+                var mm = PostsRegex.Match(line);
+                if (mm.Success) { streetInv[player] = double.Parse(mm.Groups[1].Value); continue; }
+                
+                mm = RaisesToRegex.Match(line);
+                if (mm.Success) { streetInv[player] = double.Parse(mm.Groups[1].Value); continue; }
+                
+                mm = CallsRegex.Match(line);
+                if (mm.Success) { streetInv[player] += double.Parse(mm.Groups[1].Value); continue; }
+                
+                mm = BetsRegex.Match(line);
+                if (mm.Success) { streetInv[player] = double.Parse(mm.Groups[1].Value); continue; }
+                
+                mm = AllInRegex.Match(line);
                 if (mm.Success)
                 {
                     var amt = double.Parse(mm.Groups[1].Value);
-                    if (lower.Contains("raises to")) streetInv[player] = amt;
+                    if (line.Contains("raises to", StringComparison.OrdinalIgnoreCase)) streetInv[player] = amt;
                     else streetInv[player] += amt;
                 }
-            merge: ;
             }
             foreach (var kv in streetInv)
             {
@@ -429,10 +450,8 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                     if (string.IsNullOrWhiteSpace(line)) continue;
                     if (!line.Contains(heroName, StringComparison.OrdinalIgnoreCase)) continue;
 
-                    var lower = line.ToLower();
-
                     // Posts blind/ante (sets street investment)
-                    var m = System.Text.RegularExpressions.Regex.Match(lower, @"posts\s+\w+\s+(\d+)");
+                    var m = PostsRegex.Match(line);
                     if (m.Success)
                     {
                         streetInvestment = double.Parse(m.Groups[1].Value);
@@ -440,7 +459,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                     }
 
                     // Raises to X (replaces previous street investment)
-                    m = System.Text.RegularExpressions.Regex.Match(lower, @"raises\s+to\s+(\d+)");
+                    m = RaisesToRegex.Match(line);
                     if (m.Success)
                     {
                         streetInvestment = double.Parse(m.Groups[1].Value);
@@ -448,7 +467,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                     }
 
                     // Calls X (adds to street investment)
-                    m = System.Text.RegularExpressions.Regex.Match(lower, @"calls\s+(\d+)");
+                    m = CallsRegex.Match(line);
                     if (m.Success)
                     {
                         streetInvestment += double.Parse(m.Groups[1].Value);
@@ -456,7 +475,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                     }
 
                     // Bets X (sets street investment)
-                    m = System.Text.RegularExpressions.Regex.Match(lower, @"bets\s+(\d+)");
+                    m = BetsRegex.Match(line);
                     if (m.Success)
                     {
                         streetInvestment = double.Parse(m.Groups[1].Value);
@@ -464,11 +483,11 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                     }
 
                     // All-in (could be raise or call)
-                    m = System.Text.RegularExpressions.Regex.Match(lower, @"(\d+)\s+and\s+is\s+all-in");
+                    m = AllInRegex.Match(line);
                     if (m.Success)
                     {
                         var amt = double.Parse(m.Groups[1].Value);
-                        if (lower.Contains("raises to"))
+                        if (line.Contains("raises to", StringComparison.OrdinalIgnoreCase))
                             streetInvestment = amt;
                         else
                             streetInvestment += amt;
@@ -506,51 +525,50 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                     if (string.IsNullOrWhiteSpace(line)) continue;
 
                     // Extract player name (formats: "12:34 - Name: action" or "Name: action")
-                    var m = System.Text.RegularExpressions.Regex.Match(line, "^(?:[0-9:]+\\s*-\\s*)?([^:]+):");
+                    var m = PlayerActionRegex.Match(line);
                     if (!m.Success) continue;
                     var player = m.Groups[1].Value.Trim();
                     if (!streetInv.ContainsKey(player)) streetInv[player] = 0;
 
-                    var lower = line.ToLower();
-                    if (lower.Contains("folds"))
+                    if (line.Contains("folds", StringComparison.OrdinalIgnoreCase))
                     {
                         foldedPlayers.Add(player);
                         continue;
                     }
 
-                    var mm = System.Text.RegularExpressions.Regex.Match(lower, "posts\\s+\\w+\\s+(\\d+)");
+                    var mm = PostsRegex.Match(line);
                     if (mm.Success)
                     {
                         streetInv[player] = double.Parse(mm.Groups[1].Value);
                         continue;
                     }
 
-                    mm = System.Text.RegularExpressions.Regex.Match(lower, "raises\\s+to\\s+(\\d+)");
+                    mm = RaisesToRegex.Match(line);
                     if (mm.Success)
                     {
                         streetInv[player] = double.Parse(mm.Groups[1].Value);
                         continue;
                     }
 
-                    mm = System.Text.RegularExpressions.Regex.Match(lower, "calls\\s+(\\d+)");
+                    mm = CallsRegex.Match(line);
                     if (mm.Success)
                     {
                         streetInv[player] += double.Parse(mm.Groups[1].Value);
                         continue;
                     }
 
-                    mm = System.Text.RegularExpressions.Regex.Match(lower, "bets\\s+(\\d+)");
+                    mm = BetsRegex.Match(line);
                     if (mm.Success)
                     {
                         streetInv[player] = double.Parse(mm.Groups[1].Value);
                         continue;
                     }
 
-                    mm = System.Text.RegularExpressions.Regex.Match(lower, "(\\d+)\\s+and\\s+is\\s+all-in");
+                    mm = AllInRegex.Match(line);
                     if (mm.Success)
                     {
                         var amt = double.Parse(mm.Groups[1].Value);
-                        if (lower.Contains("raises to")) streetInv[player] = amt;
+                        if (line.Contains("raises to", StringComparison.OrdinalIgnoreCase)) streetInv[player] = amt;
                         else streetInv[player] += amt;
                     }
                 }

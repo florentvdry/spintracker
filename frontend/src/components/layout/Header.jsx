@@ -98,8 +98,8 @@ export default function Header() {
 
   const handleImport = async () => {
     // Écouter les mises à jour de progression
-    const unsubscribe = ipcService.onImportProgress(({ percent, processed, total, speed, handsImported, totalHands, filesProcessed, totalFiles, message }) => {
-      const speedText = speed ? ` (${speed} ${t('common.hands')}/s)` : '';
+    const unsubscribe = ipcService.onImportProgress(({ percent, handsImported, handsSkipped, totalHands, message }) => {
+      const speedText = ''; // Speed is not currently passed from main.js anymore for simplicity
       
       // If a custom message is provided, use it
       if (message) {
@@ -107,16 +107,19 @@ export default function Header() {
           progress: percent,
           message: message,
         });
-      } else if (typeof handsImported === 'number' && typeof totalHands === 'number' && totalHands > 0) {
+      } else if (typeof handsImported === 'number') {
+        let statusMsg = `${handsImported} ${t('common.hands')}`;
+        if (handsSkipped > 0) {
+            statusMsg += ` (+${handsSkipped} ${t('common.skipped') || 'doublons'})`;
+        }
+        
+        if (totalHands) {
+            statusMsg += ` / ${totalHands}`;
+        }
+
         updateProgress({
           progress: percent,
-          message: `${handsImported}/${totalHands} ${t('common.hands')}${speedText}`,
-        });
-      } else if (typeof handsImported === 'number' && handsImported > 0) {
-        // Show hands imported even if total is not yet known
-        updateProgress({
-          progress: percent,
-          message: `${handsImported} ${t('common.hands')}${speedText}`,
+          message: statusMsg,
         });
       } else {
         updateProgress({
@@ -141,7 +144,11 @@ export default function Header() {
         addNotification({
           type: 'success',
           title: t('header.import_success'),
-          message: t('header.import_stats', { hands: result.handsImported, files: result.filesProcessed }),
+          message: t('header.import_stats', { 
+            hands: result.handsImported, 
+            skipped: result.handsSkipped || 0,
+            files: result.filesProcessed 
+          }),
         });
         
         // Attendre un peu pour s'assurer que la BDD est bien synchronisée

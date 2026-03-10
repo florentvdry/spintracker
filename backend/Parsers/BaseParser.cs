@@ -8,6 +8,7 @@ public interface IHandParser
 {
     string RoomName { get; }
     int ParserVersion { get; }
+    string HandSeparator { get; }
     bool DetectFormat(string content);
     ParseResult ParseFile(string fileContent);
     ParsedHand? ParseHand(string handText);

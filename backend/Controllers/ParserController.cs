@@ -34,16 +34,35 @@ public class ParserController : ControllerBase
 
             await _importer.ImportFileAsync(data.FilePath, async (progress) =>
             {
-                var payload = JsonSerializer.Serialize(progress);
-                await Response.WriteAsync($"data: {payload}\n\n");
-                await Response.Body.FlushAsync();
+                try
+                {
+                    var payload = JsonSerializer.Serialize(progress);
+                    await Response.WriteAsync($"data: {payload}\n\n");
+                    await Response.Body.FlushAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning($"Failed to write progress to stream: {ex.Message}");
+                }
             }, HttpContext.RequestAborted);
+            
+            // Send final completion marker if not already success
+            // await Response.WriteAsync("data: {\"Success\": true, \"Percent\": 100}\n\n");
+            // await Response.Body.FlushAsync();
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("Import cancelled by client.");
         }
         catch (Exception e)
         {
             _logger.LogError($"Import error: {e.Message}");
-            var errorPayload = JsonSerializer.Serialize(new { success = false, error = e.Message });
-            await Response.WriteAsync($"data: {errorPayload}\n\n");
+            try 
+            {
+                var errorPayload = JsonSerializer.Serialize(new { success = false, error = e.Message });
+                await Response.WriteAsync($"data: {errorPayload}\n\n");
+                await Response.Body.FlushAsync();
+            } catch {}
         }
     }
 

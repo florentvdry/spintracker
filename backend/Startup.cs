@@ -50,7 +50,13 @@ public static class Startup
         services.AddSingleton<IAnalyticsCalculator, AnalyticsCalculator>();
         services.AddSingleton<IAnalysisService, AnalysisService>();
         services.AddSingleton<IStatsBuilderEngine, StatsBuilderEngine>();
-        services.AddSingleton<IImporterService, ImporterService>();
+        services.AddSingleton<IImporterService>(sp => 
+            new ImporterService(
+                sp.GetRequiredService<Database>(),
+                sp.GetRequiredService<IAnalyticsCalculator>(),
+                sp.GetRequiredService<ILogger<ImporterService>>(),
+                sp.GetRequiredService<PlayerRepository>()
+            ));
 
         string connectionString = $"Data Source={dbPath}";
 

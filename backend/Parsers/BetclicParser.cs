@@ -8,7 +8,7 @@ public class BetclicParser : IHandParser
 {
     public string RoomName => "Betclic";
     public int ParserVersion => 3;
-    private const string HandSeparator = "------------";
+    public string HandSeparator => "------------";
 
     // Section Headers
     private const string SectionHeader = "*** HEADER ***";

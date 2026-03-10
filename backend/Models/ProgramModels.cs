@@ -72,6 +72,7 @@ public class ImportProgress
     public string Message { get; set; } = "";
     public int Percent { get; set; }
     public int HandsImported { get; set; }
+    public int HandsSkipped { get; set; }
     public int TotalHands { get; set; }
     public bool Success { get; set; }
     public string? Error { get; set; }

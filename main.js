@@ -499,6 +499,7 @@ ipcMain.handle('import-hand-history', async () => {
 
     // Now start importing with the total known
     let totalHandsImported = 0;
+    let totalHandsSkipped = 0;
     let filesProcessed = 0;
     let errors = [];
 
@@ -517,6 +518,8 @@ ipcMain.handle('import-hand-history', async () => {
         // Handle SSE stream
         await new Promise((resolve, reject) => {
           let buffer = '';
+          let currentFileHandsSkipped = 0;
+          let currentFileHandsImported = 0;
           
           response.body.on('data', (chunk) => {
             buffer += chunk.toString();
@@ -544,19 +547,24 @@ ipcMain.handle('import-hand-history', async () => {
                     const globalPercent = 10 + Math.round((filesProcessed * fileContribution) + currentFileProgress);
                     
                     // Calculate accumulated totals
-                    const currentFileHandsImported = progress.HandsImported || 0;
+                    currentFileHandsImported = progress.HandsImported || 0;
+                    currentFileHandsSkipped = progress.HandsSkipped || 0;
+
                     const accumulatedHandsImported = totalHandsImported + currentFileHandsImported;
+                    const accumulatedHandsSkipped = totalHandsSkipped + currentFileHandsSkipped;
                     
                     mainWindow.webContents.send('import-progress', {
                       filesProcessed: filesProcessed,
                       totalFiles: totalFiles,
                       percent: Math.min(100, globalPercent),
                       handsImported: accumulatedHandsImported,
+                      handsSkipped: accumulatedHandsSkipped,
                       totalHands: totalHandsExpected > 0 ? totalHandsExpected : null
                     });
 
                     if (progress.Success) {
                         totalHandsImported += currentFileHandsImported;
+                        totalHandsSkipped += currentFileHandsSkipped;
                     }
                   } catch (e) {
                     console.error('[Import] Parse error:', e);
@@ -587,6 +595,7 @@ ipcMain.handle('import-hand-history', async () => {
     return {
       success: true,
       handsImported: totalHandsImported,
+      handsSkipped: totalHandsSkipped,
       filesProcessed: filesProcessed,
       errors: errors
     };

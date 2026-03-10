@@ -41,7 +41,8 @@
     "clear_all": "Tout effacer",
     "notifications": "Notifications",
     "no_notifications": "Aucune notification",
-    "any": "N'importe"
+    "any": "N'importe",
+    "skipped": "ignorées"
   },
   "header": {
     "search_placeholder": "Rechercher une main, joueur...",
@@ -54,7 +55,8 @@
     "calculating": "Calcul en cours...",
     "processing": "Traitement...",
     "import_success": "Import réussi",
-    "import_stats": "{{hands}} mains importées depuis {{files}} fichier(s)",
+    "import_stats": "{{hands}} mains importées, {{skipped}} ignorées (doublons)",
+    "import_recap": "Recap: {{hands}} importées, {{skipped}} ignorées",
     "import_error": "Erreur d'import",
     "data_refreshed": "Données actualisées",
     "no_player_found": "Aucun joueur trouvé"
