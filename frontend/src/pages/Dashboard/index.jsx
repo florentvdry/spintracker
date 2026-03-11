@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { 
   TrendingUp, 
   Hash, 
   Trophy, 
   DollarSign,
   Target,
-  Zap,
-  Calendar,
-  X
+  Zap
 } from 'lucide-react';
 import { useAppStore } from '@stores/appStore';
+import { useFilterStore } from '@stores/filterStore';
 import { StatCard, Card, EmptyState, LoadingPage } from '@components/ui';
 import { WinrateChart } from '@components/charts';
 import SessionList from './components/SessionList';
@@ -20,30 +19,11 @@ export default function Dashboard() {
   const { 
     isLoading, 
     dashboardStats, 
-    sessions, 
-    loadDashboardStats, 
-    loadSessions, 
-    heroName,
-    config,
-    setDateRange,
-    setCustomDateRange,
-    availableBuyIns,
-    setBuyIn,
-    loadBuyIns
+    sessions,
+    availableBuyIns
   } = useAppStore();
 
-  const [dateFrom, setDateFrom] = useState(config.customDateFrom || '');
-  const [dateTo, setDateTo] = useState(config.customDateTo || '');
-  const [showCustomPicker, setShowCustomPicker] = useState(config.dateRange === 'custom');
-
-  useEffect(() => {
-    loadDashboardStats();
-  }, [config.dateRange, config.customDateFrom, config.customDateTo, config.buyIn]);
-
-  useEffect(() => {
-    loadSessions(5);
-    loadBuyIns();
-  }, [config.buyIn]);
+  const { heroName, dateRange } = useFilterStore();
 
   if (isLoading && !dashboardStats) {
     return <LoadingPage />;
@@ -54,25 +34,8 @@ export default function Dashboard() {
     ? ((stats.tournaments_won / stats.total_tournaments) * 100)
     : 0;
 
-  const dateFilters = [
-    { id: 'today', label: t('dashboard.filters.today') },
-    { id: 'week', label: t('dashboard.filters.week') },
-    { id: 'month', label: t('dashboard.filters.month') },
-    { id: 'all', label: t('dashboard.filters.all') },
-  ];
-
-  const handleCustomRangeSubmit = (e) => {
-    e.preventDefault();
-    if (dateFrom) {
-      // Format as YYYY-MM-DD 00:00:00 for the backend if needed, 
-      // but store expects what the user provides or handles it.
-      // Store's _getDateRangeParams uses these directly if 'custom'.
-      setCustomDateRange(dateFrom, dateTo ? `${dateTo} 23:59:59` : null);
-    }
-  };
-
-  const rangeLabel = config.dateRange !== 'all' 
-    ? ` (${config.dateRange === 'custom' ? t('common.date') : config.dateRange === 'session' ? 'Session' : dateFilters.find(f => f.id === config.dateRange)?.label})` 
+  const rangeLabel = dateRange !== 'all' 
+    ? ` (${dateRange === 'custom' ? t('common.date') : t(`dashboard.filters.${dateRange}`)})` 
     : '';
 
   const PositionCev = ({ label, value, count }) => {
@@ -95,96 +58,6 @@ export default function Dashboard() {
         <div>
           <h1 className="text-2xl font-bold text-white">{t('dashboard.title')}</h1>
           <p className="text-gray-400 mt-1">{t('dashboard.subtitle')}</p>
-        </div>
-
-        <div className="flex flex-col items-end gap-2">
-          <div className="flex items-center gap-2">
-            {/* Buy-in Filter */}
-            <div className="flex bg-[#1e2533] rounded-lg p-1">
-              <select
-                value={config.buyIn || 'all'}
-                onChange={(e) => setBuyIn(e.target.value)}
-                className="bg-transparent text-gray-400 text-sm font-medium px-3 py-1 outline-none cursor-pointer hover:text-white transition-colors"
-              >
-                <option value="all" className="bg-dark-300">All Buy-ins</option>
-                {(availableBuyIns || []).map(bi => (
-                  <option key={bi} value={bi} className="bg-dark-300">{bi}€</option>
-                ))}
-              </select>
-            </div>
-        </div>
-
-            {/* Date Filters */}
-            <div className="flex bg-[#1e2533] rounded-lg p-1">
-            {dateFilters.map((filter) => (
-              <button
-                key={filter.id}
-                onClick={() => {
-                  setDateRange(filter.id);
-                  setShowCustomPicker(false);
-                }}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  config.dateRange === filter.id
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
-            <button
-              onClick={() => setShowCustomPicker(!showCustomPicker)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
-                config.dateRange === 'custom'
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
-              }`}
-            >
-              <Calendar className="w-4 h-4" />
-              {config.dateRange === 'custom' ? t('common.date') : 'Custom'}
-            </button>
-            {config.dateRange === 'session' && (
-              <button
-                onClick={() => setDateRange('all')}
-                className="px-4 py-2 rounded-md text-sm font-medium transition-colors text-gray-400 hover:text-white hover:bg-gray-700/50 flex items-center gap-2"
-              >
-                <X className="w-4 h-4" />
-                Clear Session
-              </button>
-            )}
-          </div>
-
-          {/* Custom Date Picker Dropdown/Panel */}
-          {showCustomPicker && (
-            <div className="bg-[#1e2533] p-4 rounded-lg border border-gray-700 shadow-xl animate-in fade-in slide-in-from-top-2">
-              <form onSubmit={handleCustomRangeSubmit} className="flex flex-wrap items-end gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs text-gray-400 block">{t('hand_history.from')}</label>
-                  <input 
-                    type="date" 
-                    value={dateFrom.split(' ')[0]} 
-                    onChange={(e) => setDateFrom(e.target.value)}
-                    className="bg-dark-300 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-blue-500 outline-none"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs text-gray-400 block">{t('hand_history.to')}</label>
-                  <input 
-                    type="date" 
-                    value={dateTo.split(' ')[0]} 
-                    onChange={(e) => setDateTo(e.target.value)}
-                    className="bg-dark-300 border border-gray-600 rounded px-2 py-1 text-sm text-white focus:border-blue-500 outline-none"
-                  />
-                </div>
-                <button 
-                  type="submit"
-                  className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors"
-                >
-                  Apply
-                </button>
-              </form>
-            </div>
-          )}
         </div>
       </div>
 

@@ -1,9 +1,10 @@
 import { create } from 'zustand';
 import { ipcService } from '@services/ipcService';
+import { useFilterStore } from './filterStore';
 
 /**
  * Store principal de l'application
- * Gère l'état global : stats dashboard, sessions, configuration
+ * Gère le chargement des données globales
  */
 export const useAppStore = create((set, get) => ({
   // État
@@ -12,208 +13,89 @@ export const useAppStore = create((set, get) => ({
   dashboardStats: null,
   sessions: [],
   availableBuyIns: [],
-  heroName: null,
   lastUpdate: 0,
+  error: null,
+  loadingMessage: '',
   
-  // Configuration
-  config: {
-    theme: 'dark',
-    dateRange: 'all', // 'today', 'week', 'month', 'all', 'session'
-    buyIn: 'all',
-    customDateFrom: null,
-    customDateTo: null,
-    selectedSession: null,
-    autoRefresh: true,
-  },
-
   // Actions
-  setHeroName: (name) => {
-    set({ heroName: name });
-    get().refreshAll();
-  },
-
-  setBuyIn: (buyIn) => {
-    set((state) => ({
-      config: { ...state.config, buyIn }
-    }));
-    get().refreshAll();
-  },
-
-  setDateRange: (range) => {
-    set((state) => ({
-      config: { ...state.config, dateRange: range }
-    }));
-    get().refreshAll();
-  },
-
-  setCustomDateRange: (from, to) => {
-    set((state) => ({
-      config: { 
-        ...state.config, 
-        dateRange: 'custom',
-        customDateFrom: from,
-        customDateTo: to
-      }
-    }));
-    get().refreshAll();
-  },
-
-  setSelectedSession: (session) => {
-    if (session === null) {
-      set((state) => ({
-        config: { 
-          ...state.config, 
-          dateRange: 'all',
-          selectedSession: null
-        }
-      }));
-    } else {
-      set((state) => ({
-        config: { 
-          ...state.config, 
-          dateRange: 'session',
-          selectedSession: session
-        }
-      }));
-    }
-    get().refreshAll();
-  },
-
   initialize: async () => {
     if (get().isInitialized) return;
     
-    set({ isLoading: true, error: null, loadingMessage: 'Démarrage du serveur...' });
-    
-    // Helper pour réessayer les appels si le backend n'est pas encore prêt
-    const retry = async (fn, retries = 10, delay = 1000) => {
-      for (let i = 0; i < retries; i++) {
-        try {
-          // Timeout de 10s par tentative pour ne pas bloquer indéfiniment sur des calculs lourds
-          const result = await Promise.race([
-            fn(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 10000))
-          ]);
-          if (result && result.success) return result;
-        } catch (e) {
-          console.warn(`[Retry] Attempt ${i+1} failed:`, e.message);
-        }
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-      return { success: false, error: 'Le serveur ne répond pas après plusieurs tentatives.' };
-    };
+    set({ isLoading: true, error: null, loadingMessage: 'Démarrage...' });
     
     try {
-      // 1. Charger les stats du dashboard
-      set({ loadingMessage: 'Chargement des statistiques...' });
-      console.log('[Init] Loading dashboard stats...');
-      const statsResult = await retry(async () => {
-        const res = await get().loadDashboardStats();
-        return res;
-      }, 10, 1500);
-      
-      // Si échec des stats, on considère que l'init a échoué mais on laisse l'app s'ouvrir quand même
-      // pour afficher l'erreur à l'utilisateur plutôt que de rester bloqué sur le splash.
-      if (!statsResult || !statsResult.success) {
-        console.warn('[Init] Dashboard stats failed to load:', statsResult?.error);
-        set({ error: statsResult?.error || 'Impossible de charger les statistiques. Vérifiez que le backend tourne.' });
-      } else {
-        console.log('[Init] Dashboard stats loaded successfully');
-        set({ isInitialized: true, loadingMessage: 'Prêt !' });
+      // 1. Attendre l'hydratation des filtres (localStorage)
+      let hydrationChecks = 0;
+      while (!useFilterStore.getState()._hasHydrated && hydrationChecks < 40) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+        hydrationChecks++;
       }
 
-      // 2. Charger l'historique des sessions (non-bloquant pour le splash)
-      console.log('[Init] Loading sessions...');
-      get().loadSessions(5);
+      // 2. Attendre que le backend soit prêt (Polling)
+      set({ loadingMessage: 'Connexion au serveur...' });
+      let backendReady = false;
+      let attempts = 0;
+      const maxAttempts = 20; // Max 10 secondes d'attente (20 * 500ms)
 
-      // Notify main process that renderer finished initialization so splash can close
-      // IMPORTANT: On le fait DANS TOUS LES CAS pour ne jamais bloquer le splash
-      console.log('[Init] Sending app-ready to main process');
+      while (!backendReady && attempts < maxAttempts) {
+        try {
+          const res = await ipcService.getBuyIns();
+          if (res && res.success) {
+            backendReady = true;
+          } else {
+            throw new Error('Not ready');
+          }
+        } catch (e) {
+          attempts++;
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+
+      if (!backendReady) {
+        console.warn('[Init] Backend not responding after 10s');
+      }
+
+      // 3. Charger les données de base
+      await get().loadBuyIns();
+
+      set({ isInitialized: true, isLoading: false, loadingMessage: 'Prêt !' });
+
+      // Notify main process
       try {
         const { ipcRenderer } = window.require ? window.require('electron') : { ipcRenderer: null };
         if (ipcRenderer && ipcRenderer.invoke) {
           await ipcRenderer.invoke('app-ready');
         }
-      } catch (e) {
-        console.error('[Init] Failed to send app-ready:', e);
-      }
+      } catch (e) {}
+
     } catch (error) {
-      console.error('[Init] Critical failure during initialize:', error);
-      set({ error: typeof error === 'string' ? error : error.message || 'Erreur inconnue lors de l\'initialisation' });
-      
-      // Also notify app-ready so the user can see the error on the main window
-      try {
-        const { ipcRenderer } = window.require ? window.require('electron') : { ipcRenderer: null };
-        if (ipcRenderer && ipcRenderer.invoke) {
-          ipcRenderer.invoke('app-ready');
-        }
-      } catch (e) {
-        // ignore
-      }
-    } finally {
-      set({ isLoading: false });
+      console.error('[Init] Critical failure:', error);
+      set({ error: error.message || 'Erreur lors de l\'initialisation', isLoading: false });
     }
-  },
-
-  _getDateRangeParams: () => {
-    const { dateRange, customDateFrom, customDateTo, selectedSession } = get().config;
-    let dateFrom = null;
-    let dateTo = null;
-
-    if (dateRange === 'all') return { dateFrom, dateTo };
-
-    const now = new Date();
-    const formatDate = (date) => {
-      const pad = (n) => n.toString().padStart(2, '0');
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-    };
-
-    const startOfDay = (date) => {
-      const d = new Date(date);
-      d.setHours(0, 0, 0, 0);
-      return d;
-    };
-    
-    if (dateRange === 'today') {
-      dateFrom = formatDate(startOfDay(now));
-    } else if (dateRange === 'week') {
-      // Start of week (Monday)
-      const day = now.getDay();
-      const diff = now.getDate() - day + (day === 0 ? -6 : 1); 
-      const monday = startOfDay(new Date(now.setDate(diff)));
-      dateFrom = formatDate(monday);
-    } else if (dateRange === 'month') {
-      const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      dateFrom = formatDate(firstOfMonth);
-    } else if (dateRange === 'custom') {
-      dateFrom = customDateFrom;
-      dateTo = customDateTo;
-    } else if (dateRange === 'session' && selectedSession) {
-      // Session date is in format "yyyy-MM-dd HH:mm"
-      const sessionDate = new Date(selectedSession.session_date);
-      dateFrom = formatDate(sessionDate);
-      // Sessions are grouped by hands within 2 hours
-      const sessionEnd = new Date(sessionDate.getTime() + 2 * 60 * 60 * 1000); // +2 hours
-      dateTo = formatDate(sessionEnd);
-    }
-
-    return { dateFrom, dateTo };
   },
 
   loadDashboardStats: async () => {
+    const { heroName, buyIn, getDateRangeParams } = useFilterStore.getState();
+    
+    // Si pas de héros, on reset les stats et on arrête là
+    if (!heroName) {
+      set({ dashboardStats: null });
+      return { success: true, data: null };
+    }
+
     try {
-      const heroName = get().heroName;
-      const { buyIn } = get().config;
-      const { dateFrom, dateTo } = get()._getDateRangeParams();
+      const { dateFrom, dateTo } = getDateRangeParams();
       const buyInParam = buyIn === 'all' ? null : Number(buyIn);
       
       const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam);
       if (result.success) {
         const stats = result.data || {};
-        // Coercer en nombre pour éviter les valeurs string/undefined
-        stats.total_profit = Number(stats.total_profit) || 0;
-        stats.total_hands = Number(stats.total_hands) || 0;
-        stats.total_ev = Number(stats.total_ev) || 0;
-        set({ dashboardStats: stats });
+        set({ dashboardStats: {
+          ...stats,
+          total_profit: Number(stats.total_profit) || 0,
+          total_hands: Number(stats.total_hands) || 0,
+          total_ev: Number(stats.total_ev) || 0
+        }});
       }
       return result;
     } catch (error) {
@@ -224,14 +106,11 @@ export const useAppStore = create((set, get) => ({
 
   loadSessions: async (limit = 50) => {
     try {
-      const heroName = get().heroName;
-      const { buyIn } = get().config;
-      // Pour les sessions récentes, on ne filtre pas par date, on veut toujours voir les dernières
-      const dateFrom = null;
-      const dateTo = null;
+      const { heroName, buyIn } = useFilterStore.getState();
       const buyInParam = buyIn === 'all' ? null : Number(buyIn);
 
-      const result = await ipcService.getSessionHistory(limit, heroName, dateFrom, dateTo, buyInParam);
+      // On ne filtre pas les sessions par date pour le dashboard/header, on veut les dernières
+      const result = await ipcService.getSessionHistory(limit, heroName, null, null, buyInParam);
       if (result.success) {
         set({ sessions: result.data });
       }
@@ -251,12 +130,6 @@ export const useAppStore = create((set, get) => ({
     } catch (error) {
       console.error('Failed to load buy-ins:', error);
     }
-  },
-
-  setConfig: (updates) => {
-    set((state) => ({
-      config: { ...state.config, ...updates },
-    }));
   },
 
   refreshAll: async () => {

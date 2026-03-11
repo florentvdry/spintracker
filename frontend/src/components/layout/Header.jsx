@@ -7,9 +7,12 @@ import {
   ChevronDown,
   Check,
   X,
-  Trash2
+  Trash2,
+  Calendar,
+  Filter
 } from 'lucide-react';
 import { useAppStore } from '@stores/appStore';
+import { useFilterStore } from '@stores/filterStore';
 import { useNotificationStore } from '@stores/notificationStore';
 import { useProgressStore } from '@stores/progressStore';
 import { ipcService } from '@services/ipcService';
@@ -23,6 +26,21 @@ export default function Header() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshAll = useAppStore(state => state.refreshAll);
   const addNotification = useNotificationStore(state => state.addNotification);
+  
+  // Filters from global filterStore
+  const { 
+    heroName, 
+    setHeroName, 
+    dateRange, 
+    setDateRange, 
+    customDateFrom, 
+    customDateTo, 
+    setCustomDateRange,
+    buyIn,
+    setBuyIn
+  } = useFilterStore();
+
+  const availableBuyIns = useAppStore(state => state.availableBuyIns);
   
   // Notification history hooks
   const history = useNotificationStore(state => state.history) || [];
@@ -40,52 +58,53 @@ export default function Header() {
   const [players, setPlayers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const heroName = useAppStore(state => state.heroName);
-  const setHeroName = useAppStore(state => state.setHeroName);
   const isInitialized = useAppStore(state => state.isInitialized);
   const dashboardStats = useAppStore(state => state.dashboardStats);
+  
+  // Date filter UI state
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showBuyInPicker, setShowBuyInPicker] = useState(false);
+  const [customFrom, setCustomFrom] = useState(customDateFrom || '');
+  const [customTo, setCustomTo] = useState(customDateTo || '');
+
+  // Effect to sync custom date inputs when store changes
+  useEffect(() => {
+    setCustomFrom(customDateFrom || '');
+    setCustomTo(customDateTo || '');
+  }, [customDateFrom, customDateTo]);
 
   useEffect(() => {
-    if (!heroName && players.length > 0 && dashboardStats?.total_hands > 0) {
+    if (!heroName && players.length > 0) {
+        // Trier par nombre de mains pour trouver le héros probable
         const best = players.reduce((prev, current) => (prev.total_hands > current.total_hands) ? prev : current);
-        const lastAutoDetected = localStorage.getItem(LAST_AUTO_DETECTED_HERO_KEY);
         
-        // Ne pas afficher la notification si c'est le même héros qui était déjà détecté automatiquement
-        const shouldShowNotification = lastAutoDetected !== best.name;
-        
-        setHeroName(best.name);
-        
-        // Sauvegarder le héros détecté automatiquement
-        localStorage.setItem(LAST_AUTO_DETECTED_HERO_KEY, best.name);
-        
-        // Afficher la notification seulement si c'est un nouveau héros
-        if (shouldShowNotification) {
-            addNotification({
-                type: 'info',
-                title: t('header.hero_detected'),
-                message: t('header.hero_selected_auto', { name: best.name }),
-                duration: 5000
-            });
+        if (best && best.total_hands > 0) {
+            const lastAutoDetected = localStorage.getItem(LAST_AUTO_DETECTED_HERO_KEY);
+            const shouldShowNotification = lastAutoDetected !== best.name;
+            
+            setHeroName(best.name);
+            localStorage.setItem(LAST_AUTO_DETECTED_HERO_KEY, best.name);
+            
+            if (shouldShowNotification) {
+                addNotification({
+                    type: 'info',
+                    title: t('header.hero_detected'),
+                    message: t('header.hero_selected_auto', { name: best.name }),
+                    duration: 5000
+                });
+            }
+            
+            // Forcer un rafraîchissement global une fois le héros détecté
+            refreshAll();
         }
     }
-  }, [players, heroName, setHeroName, addNotification, dashboardStats, t]);
+  }, [players, heroName, setHeroName, addNotification, refreshAll, t]);
 
   const loadPlayers = async () => {
       try {
-          // On charge tous les joueurs avec au moins 1 main pour être sûr de trouver le héros
           const res = await ipcService.getPlayers({ limit: 500, minHands: 1 });
           if (res.success) {
               setPlayers(res.data);
-              
-              // Warning if we have hands but no players (legacy data)
-              if (res.data.length === 0 && dashboardStats?.total_hands > 0) {
-                  addNotification({
-                      type: 'warning',
-                      title: t('header.update_required'),
-                      message: t('header.reimport_needed'),
-                      duration: 10000
-                  });
-              }
           }
       } catch (e) {
           // Silent error
@@ -97,11 +116,7 @@ export default function Header() {
   }, [isInitialized, dashboardStats]);
 
   const handleImport = async () => {
-    // Écouter les mises à jour de progression
     const unsubscribe = ipcService.onImportProgress(({ percent, handsImported, handsSkipped, totalHands, message }) => {
-      const speedText = ''; // Speed is not currently passed from main.js anymore for simplicity
-      
-      // If a custom message is provided, use it
       if (message) {
         updateProgress({
           progress: percent,
@@ -109,22 +124,12 @@ export default function Header() {
         });
       } else if (typeof handsImported === 'number') {
         let statusMsg = `${handsImported} ${t('common.hands')}`;
-        if (handsSkipped > 0) {
-            statusMsg += ` (+${handsSkipped} ${t('common.skipped') || 'doublons'})`;
-        }
-        
-        if (totalHands) {
-            statusMsg += ` / ${totalHands}`;
-        }
+        if (handsSkipped > 0) statusMsg += ` (+${handsSkipped} ${t('common.skipped')})`;
+        if (totalHands) statusMsg += ` / ${totalHands}`;
 
         updateProgress({
           progress: percent,
           message: statusMsg,
-        });
-      } else {
-        updateProgress({
-          progress: percent,
-          message: t('header.processing'),
         });
       }
     });
@@ -136,7 +141,6 @@ export default function Header() {
 
     try {
       const result = await ipcService.importHandHistory();
-      
       finishProgress();
       unsubscribe();
 
@@ -150,11 +154,7 @@ export default function Header() {
             files: result.filesProcessed 
           }),
         });
-        
-        // Attendre un peu pour s'assurer que la BDD est bien synchronisée
         await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Rafraîchir les données
         await refreshAll();
         await loadPlayers();
       } else if (result.message !== 'Import cancelled') {
@@ -192,8 +192,138 @@ export default function Header() {
   return (
     <header className="h-16 bg-dark-400 border-b border-dark-100/30 flex items-center justify-end px-6">
       
-      {/* Actions */}
+      {/* Filters Group */}
       <div className="flex items-center gap-3">
+        
+        {/* Buy-in Selector */}
+        <div className="relative">
+            <div 
+                className="flex items-center gap-2 cursor-pointer bg-dark-300 border border-dark-200 rounded px-3 py-1.5 min-w-[120px] hover:border-primary-500 transition-colors"
+                onClick={() => setShowBuyInPicker(!showBuyInPicker)}
+            >
+                <Filter className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-200 flex-1 truncate">
+                    {buyIn === 'all' ? t('dashboard.filters.all') + ' Buy-ins' : `${buyIn}€`}
+                </span>
+                <ChevronDown className="w-4 h-4 text-gray-400" />
+            </div>
+
+            {showBuyInPicker && (
+                <div className="absolute top-full mt-1 left-0 w-48 bg-dark-300 border border-dark-200 rounded shadow-xl z-50 flex flex-col">
+                    <div className="p-1 max-h-60 overflow-y-auto">
+                        <div 
+                            className={`px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 flex items-center justify-between ${buyIn === 'all' ? 'bg-primary-500/10 text-primary-400' : 'text-gray-300'}`}
+                            onClick={() => {
+                                setBuyIn('all');
+                                setShowBuyInPicker(false);
+                                refreshAll();
+                            }}
+                        >
+                            <span>All Buy-ins</span>
+                            {buyIn === 'all' && <div className="w-2 h-2 rounded-full bg-primary-500"></div>}
+                        </div>
+                        {availableBuyIns.map(bi => (
+                            <div 
+                                key={bi}
+                                className={`px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 flex items-center justify-between ${buyIn === bi.toString() ? 'bg-primary-500/10 text-primary-400' : 'text-gray-300'}`}
+                                onClick={() => {
+                                    setBuyIn(bi.toString());
+                                    setShowBuyInPicker(false);
+                                    refreshAll();
+                                }}
+                            >
+                                <span>{bi}€</span>
+                                {buyIn === bi.toString() && <div className="w-2 h-2 rounded-full bg-primary-500"></div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+            {showBuyInPicker && <div className="fixed inset-0 z-40" onClick={() => setShowBuyInPicker(false)}></div>}
+        </div>
+
+        {/* Date Filter */}
+        <div className="relative">
+            <div 
+                className="flex items-center gap-2 cursor-pointer bg-dark-300 border border-dark-200 rounded px-3 py-1.5 min-w-[160px] hover:border-primary-500 transition-colors"
+                onClick={() => setShowDatePicker(!showDatePicker)}
+            >
+                <Calendar className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-200 flex-1 truncate">
+                    {dateRange === 'custom' 
+                        ? `${customFrom || '...'}-${customTo || '...'}`
+                        : t(`dashboard.filters.${dateRange}`) || t('dashboard.filters.all')
+                    }
+                </span>
+                <ChevronDown className="w-4 h-4 text-gray-400" />
+            </div>
+
+            {showDatePicker && (
+                <div className="absolute top-full mt-1 left-0 w-64 bg-dark-300 border border-dark-200 rounded shadow-xl z-50 flex flex-col">
+                    <div className="p-1">
+                        {[
+                            { id: 'today', label: t('dashboard.filters.today') },
+                            { id: 'week', label: t('dashboard.filters.week') },
+                            { id: 'month', label: t('dashboard.filters.month') },
+                            { id: 'all', label: t('dashboard.filters.all') },
+                            { id: 'custom', label: t('common.custom') }
+                        ].map(filter => (
+                            <div 
+                                key={filter.id}
+                                className={`px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 flex items-center justify-between ${dateRange === filter.id ? 'bg-primary-500/10 text-primary-400' : 'text-gray-300'}`}
+                                onClick={() => {
+                                    if (filter.id === 'custom') {
+                                        setDateRange('custom');
+                                    } else {
+                                        setDateRange(filter.id);
+                                        setShowDatePicker(false);
+                                        refreshAll();
+                                    }
+                                }}
+                            >
+                                <span>{filter.label}</span>
+                                {dateRange === filter.id && <div className="w-2 h-2 rounded-full bg-primary-500"></div>}
+                            </div>
+                        ))}
+                    </div>
+                    
+                    {dateRange === 'custom' && (
+                        <div className="p-3 border-t border-dark-200 space-y-2">
+                            <div>
+                                <label className="text-xs text-gray-400 block mb-1">{t('common.from')}</label>
+                                <input 
+                                    type="date" 
+                                    value={customFrom}
+                                    onChange={(e) => setCustomFrom(e.target.value)}
+                                    className="w-full bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-gray-200"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-xs text-gray-400 block mb-1">{t('common.to')}</label>
+                                <input 
+                                    type="date" 
+                                    value={customTo}
+                                    onChange={(e) => setCustomTo(e.target.value)}
+                                    className="w-full bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-gray-200"
+                                />
+                            </div>
+                            <button 
+                                onClick={() => {
+                                    setCustomDateRange(customFrom, customTo);
+                                    setShowDatePicker(false);
+                                    refreshAll();
+                                }}
+                                className="w-full bg-primary-600 hover:bg-primary-500 text-white rounded px-3 py-1.5 text-xs font-medium"
+                            >
+                                {t('common.apply')}
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
+            {showDatePicker && <div className="fixed inset-0 z-40" onClick={() => setShowDatePicker(false)}></div>}
+        </div>
+
         {/* Hero Selector */}
         <div className="relative mr-2">
             <div 
@@ -206,7 +336,7 @@ export default function Header() {
             </div>
 
             {isDropdownOpen && (
-                <div className="absolute top-full mt-1 left-0 w-64 bg-dark-300 border border-dark-200 rounded shadow-xl z-50 flex flex-col max-h-[400px]">
+                <div className="absolute top-full mt-1 right-0 w-64 bg-dark-300 border border-dark-200 rounded shadow-xl z-50 flex flex-col max-h-[400px]">
                     <div className="p-2 border-b border-dark-200">
                         <div className="relative">
                             <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500" />
@@ -229,6 +359,7 @@ export default function Header() {
                                 onClick={() => {
                                     setHeroName(p.name);
                                     setIsDropdownOpen(false);
+                                    refreshAll();
                                 }}
                             >
                                 <div className="flex flex-col">
@@ -238,21 +369,12 @@ export default function Header() {
                                 {heroName === p.name && <div className="w-2 h-2 rounded-full bg-primary-500"></div>}
                             </div>
                         ))}
-                        {filteredPlayers.length === 0 && (
-                            <div className="px-3 py-4 text-center text-xs text-gray-500">
-                                {t('header.no_player_found')}
-                            </div>
-                        )}
                     </div>
                 </div>
             )}
+            {isDropdownOpen && <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>}
         </div>
         
-        {/* Overlay to close dropdown */}
-        {isDropdownOpen && (
-            <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>
-        )}
-
         {/* Import button */}
         <button
           onClick={handleImport}
@@ -286,12 +408,10 @@ export default function Header() {
             )}
           </button>
 
-          {/* Dropdown Notifications */}
           {isNotificationsOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)}></div>
               <div className="absolute top-full mt-1 right-0 w-80 bg-dark-300 border border-dark-200 rounded shadow-xl z-50 flex flex-col max-h-[400px]">
-                {/* Header */}
                 <div className="p-3 border-b border-dark-200 flex items-center justify-between">
                   <h3 className="font-medium text-gray-200">{t('common.notifications')}</h3>
                   {unreadCount > 0 && (
@@ -304,7 +424,6 @@ export default function Header() {
                   )}
                 </div>
 
-                {/* List */}
                 <div className="overflow-y-auto flex-1">
                   {history.length === 0 ? (
                     <div className="p-8 text-center text-gray-500 text-sm">
@@ -338,7 +457,6 @@ export default function Header() {
                           </div>
                         </div>
 
-                        {/* Actions */}
                         <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={(e) => { e.stopPropagation(); removeHistoryItem(item.id); }}
@@ -353,7 +471,6 @@ export default function Header() {
                   )}
                 </div>
 
-                {/* Footer */}
                 {history.length > 0 && (
                   <div className="p-2 border-t border-dark-200 bg-dark-400/50">
                     <button 

@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { ipcService } from '@services/ipcService';
 import { useAppStore } from '@stores/appStore';
+import { useFilterStore } from '@stores/filterStore';
 import { LoadingSpinner } from '@components/ui';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -28,10 +29,9 @@ export default function WinrateChart({ className }) {
     wonWithoutShowdown: t('common.non_showdown_winning', 'Non-Showdown Won'),
     euroProfit: t('dashboard.net_profit', 'Net Profit (€)')
   };
-  const heroName = useAppStore(state => state.heroName);
+
+  const { heroName, buyIn, dateRange, customDateFrom, customDateTo, getDateRangeParams } = useFilterStore();
   const lastUpdate = useAppStore(state => state.lastUpdate);
-  const config = useAppStore(state => state.config);
-  const _getDateRangeParams = useAppStore(state => state._getDateRangeParams);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -52,9 +52,9 @@ export default function WinrateChart({ className }) {
 
     setIsLoading(true);
     try {
-      const { dateFrom, dateTo } = _getDateRangeParams();
-      const buyIn = config.buyIn === 'all' ? null : Number(config.buyIn);
-      const result = await ipcService.getWinrateChartData({ dateFrom, dateTo, heroName, buyIn });
+      const { dateFrom, dateTo } = getDateRangeParams();
+      const buyInParam = buyIn === 'all' ? null : Number(buyIn);
+      const result = await ipcService.getWinrateChartData({ dateFrom, dateTo, heroName, buyIn: buyInParam });
       if (result && result.success && result.data) {
         const raw = result.data;
         let chartData = [];
@@ -95,22 +95,7 @@ export default function WinrateChart({ className }) {
 
   useEffect(() => {
     loadChartData();
-  }, [config.dateRange, config.buyIn, heroName, lastUpdate]);
-
-  // Suppression de l'effet takeGlobalCursor car il est capricieux et dépend de toolbox
-  // On va utiliser brush pour un contrôle total
-  /*
-  useEffect(() => {
-    if (!isLoading && data.length > 0 && chartRef.current) {
-        const chart = chartRef.current.getEchartsInstance();
-        chart.dispatchAction({
-            type: 'takeGlobalCursor',
-            key: 'dataZoomSelect',
-            dataZoomSelectActive: true
-        });
-    }
-  }, [isLoading, data]);
-  */
+  }, [dateRange, customDateFrom, customDateTo, buyIn, heroName, lastUpdate]);
 
   const toggleLine = (lineKey) => {
     setVisibleLines(prev => ({
@@ -134,7 +119,7 @@ export default function WinrateChart({ className }) {
                 showSymbol: false,
                 lineStyle: { width: 2 },
                 emphasis: { focus: 'series' },
-                large: true, // Optimisation pour grand nombre de points
+                large: true,
             });
         }
 
@@ -199,7 +184,7 @@ export default function WinrateChart({ className }) {
 
     return {
       backgroundColor: 'transparent',
-      animation: false, // Désactiver l'animation pour la performance
+      animation: false,
       tooltip: {
         trigger: 'axis',
         backgroundColor: '#1f2937',
@@ -225,7 +210,6 @@ export default function WinrateChart({ className }) {
         },
         axisPointer: { type: 'cross', label: { backgroundColor: '#374151' } }
       },
-      // Brush permet de sélectionner une zone pour zoomer
       brush: {
         xAxisIndex: 0,
         brushLink: 'all',
@@ -239,14 +223,8 @@ export default function WinrateChart({ className }) {
         }
       },
       toolbox: {
-        show: false,
-        feature: {
-            brush: {
-                type: ['lineX']
-            }
-        }
+        show: false
       },
-      // Configuration explicite de dataZoom pour gérer le zoom
       dataZoom: [
         {
             type: 'slider',
@@ -256,10 +234,9 @@ export default function WinrateChart({ className }) {
         {
             type: 'inside',
             xAxisIndex: 0,
-            disabled: true // On désactive le zoom molette/drag natif
+            disabled: true
         }
       ],
-      // On retire toolbox car on gère tout custom ou via brush
       grid: {
         top: 30,
         right: 10,
@@ -285,15 +262,13 @@ export default function WinrateChart({ className }) {
         },
         splitLine: { 
             show: true, 
-            lineStyle: { color: '#2d3548' } // dark-200 equivalent
+            lineStyle: { color: '#2d3548' }
         }
       },
-      // Pas de dataZoom 'inside' (molette désactivée)
       series: seriesList
     };
-  }, [data, visibleLines, chartMode]);
+  }, [data, visibleLines, chartMode, LINE_LABELS]);
 
-  // Fonction d'initialisation appelée quand le chart est prêt
   const onChartReady = (chart) => {
     chart.dispatchAction({
         type: 'takeGlobalCursor',
@@ -305,7 +280,6 @@ export default function WinrateChart({ className }) {
     });
   };
 
-  // On surveille le changement de zoom pour réappliquer le curseur si besoin
   useEffect(() => {
     if (!isLoading && chartRef.current && !isZoomed) {
          const chart = chartRef.current.getEchartsInstance();
@@ -338,38 +312,27 @@ export default function WinrateChart({ className }) {
 
   const handleChartEvents = {
     'brushEnd': (params) => {
-        // Quand la sélection brush est terminée
         if (params.areas && params.areas.length > 0) {
             const area = params.areas[0];
-            const coordRange = area.coordRange; // [startValue, endValue]
+            const coordRange = area.coordRange;
             
             if (coordRange && chartRef.current) {
                 const chart = chartRef.current.getEchartsInstance();
-                
-                // Appliquer le zoom sur la zone sélectionnée
                 chart.dispatchAction({
                     type: 'dataZoom',
                     startValue: coordRange[0],
                     endValue: coordRange[1]
                 });
-                
-                // Nettoyer le brush pour qu'il ne reste pas affiché
                 chart.dispatchAction({
                     type: 'brush',
                     areas: []
                 });
-                
                 setIsZoomed(true);
             }
         }
     },
-    // Réappliquer le mode brush après un restore ou autre interaction
-    // On veut que l'outil lineX soit toujours actif
     'restore': () => {
         setIsZoomed(false);
-        // Pas besoin de réactiver brushSelect car il est persistant si configuré via toolbox brush, 
-        // mais ici on l'a mis en option globale.
-        // On s'assure que le mode brush est actif par défaut au chargement via l'effet ci-dessous
     }
   };
 
@@ -378,15 +341,12 @@ export default function WinrateChart({ className }) {
         chartRef.current.getEchartsInstance().dispatchAction({
             type: 'restore'
         });
-        // Le restore trigger l'event restore ci-dessus qui reset isZoomed et réactive le curseur
     }
   };
 
   return (
     <div className={className}>
-      {/* Legend and Toggle */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-        {/* Toggle Mode */}
         <div className="flex bg-[#1e2533] p-1 rounded-lg">
           <button
             onClick={() => setChartMode('chips')}
@@ -408,7 +368,6 @@ export default function WinrateChart({ className }) {
           </button>
         </div>
 
-        {/* Legend toggles */}
         <div className="flex flex-wrap items-center justify-end gap-3">
              {chartMode === 'chips' ? (
                Object.entries(LINE_COLORS).filter(([key]) => key !== 'euroProfit').map(([key, color]) => (
@@ -443,7 +402,6 @@ export default function WinrateChart({ className }) {
         </div>
       </div>
 
-      {/* Chart Container */}
       <div 
         className="h-[500px] w-full relative" 
         onContextMenu={(e) => {

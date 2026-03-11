@@ -5,6 +5,7 @@ import { ipcService } from '@services/ipcService';
 import { pythonService } from '@services/pythonService';
 import { useNotificationStore } from '@stores/notificationStore';
 import { useAppStore } from '@stores/appStore';
+import { useFilterStore } from '@stores/filterStore';
 import { usePlayersStore } from '@stores/playersStore';
 import { useTranslation } from 'react-i18next';
 import logo from '../../assets/logo.png';
@@ -13,7 +14,7 @@ export default function Settings() {
   const { t, i18n } = useTranslation();
   const addNotification = useNotificationStore(state => state.addNotification);
   const refreshAll = useAppStore(state => state.refreshAll);
-  const setHeroName = useAppStore(state => state.setHeroName);
+  const { heroName, setHeroName } = useFilterStore();
   const loadPlayers = usePlayersStore(state => state.loadPlayers);
   const [serverStatus, setServerStatus] = useState('checking');
   const [exportLoading, setExportLoading] = useState(false);

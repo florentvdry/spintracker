@@ -8,6 +8,7 @@ import Analysis from '@pages/Analysis';
 import StatsBuilder from '@pages/StatsBuilder';
 import Settings from '@pages/Settings';
 import { useAppStore } from '@stores/appStore';
+import { useFilterStore } from '@stores/filterStore';
 import { useNotificationStore } from '@stores/notificationStore';
 import NotificationContainer from '@components/ui/NotificationContainer';
 import ProgressModal from '@components/ui/ProgressModal';
@@ -15,10 +16,21 @@ import UpdateModal from '@components/ui/UpdateModal';
 
 function App() {
   const initializeApp = useAppStore(state => state.initialize);
+  const isInitialized = useAppStore(state => state.isInitialized);
+  const refreshAll = useAppStore(state => state.refreshAll);
+  const { heroName, dateRange, customDateFrom, customDateTo, buyIn, selectedSession, _hasHydrated } = useFilterStore();
 
   useEffect(() => {
     initializeApp();
   }, [initializeApp]);
+
+  // Synchronisation globale : dès que les filtres changent, on rafraîchit tout
+  // Mais UNIQUEMENT si le store est initialisé (backend prêt + filtres chargés)
+  useEffect(() => {
+    if (_hasHydrated && isInitialized && heroName) {
+      refreshAll();
+    }
+  }, [heroName, dateRange, customDateFrom, customDateTo, buyIn, selectedSession, _hasHydrated, isInitialized, refreshAll]);
 
   return (
     <>

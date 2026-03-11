@@ -2,12 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import SituationSelector from './components/SituationSelector';
 import RangeGrid from '../../components/charts/RangeGrid';
-import { Save, Upload, Layers, Info, Filter, BarChart3, List, ChevronRight } from 'lucide-react';
+import { Save, Upload, Layers, Info, Filter, BarChart3, List, ChevronRight, Play } from 'lucide-react';
 import { usePlayersStore } from '@stores/playersStore';
 import { useReplayerStore } from '@stores/replayerStore';
+import { useFilterStore } from '@stores/filterStore';
 import { ipcService } from '@services/ipcService';
 import clsx from 'clsx';
-import { Play } from 'lucide-react';
 
 const ACTION_COLORS = {
   AllIn: '#b71c1c',
@@ -22,20 +22,29 @@ const ACTION_COLORS = {
 export default function RangeResearch() {
   const { t } = useTranslation();
   const { loadPlayers } = usePlayersStore();
-  const { openReplayer, loadHandQueue } = useReplayerStore();
+  const { loadHandQueue } = useReplayerStore();
+  const { heroName, dateRange, customDateFrom, customDateTo, selectedSession, getDateRangeParams } = useFilterStore();
   
-  const [filters, setFilters] = useState({
-    HeroName: '',
+  const [localFilters, setLocalFilters] = useState({
     Situation: 'Preflop',
     Action: '',
     PlayerCount: 3,
     MinStackBB: null,
     MaxStackBB: null,
     Positions: ['BTN'], // Default to BTN
-    DateFrom: '',
-    DateTo: '',
     ActionSequence: [],
   });
+
+  // Combined filters for API requests
+  const combinedFilters = useMemo(() => {
+    const { dateFrom, dateTo } = getDateRangeParams();
+    return {
+      HeroName: heroName,
+      DateFrom: dateFrom,
+      DateTo: dateTo,
+      ...localFilters
+    };
+  }, [heroName, dateRange, customDateFrom, customDateTo, selectedSession, localFilters, getDateRangeParams]);
 
   // Range Data
   const [rangeData, setRangeData] = useState({});
@@ -55,17 +64,11 @@ export default function RangeResearch() {
     const fetchRange = async () => {
       setRangeLoading(true);
       try {
-        const rangeFilters = { ...filters };
-        if (!rangeFilters.Situation) rangeFilters.Situation = 'Preflop';
-
-        const response = await ipcService.getRangeBreakdown(rangeFilters);
+        const response = await ipcService.getRangeBreakdown(combinedFilters);
         if (mounted && response.success) {
           setRangeData(response.data);
-          // Clear selection if new data doesn't contain it
-          if (selectedRangeHand && !response.data[selectedRangeHand]) {
-             setSelectedRangeHand(null);
-             setSelectedRangeStats(null);
-          } else if (selectedRangeHand) {
+          // Update selected range stats if something was selected
+          if (selectedRangeHand) {
              setSelectedRangeStats(response.data[selectedRangeHand]);
           }
         }
@@ -78,11 +81,11 @@ export default function RangeResearch() {
     
     fetchRange();
     return () => { mounted = false; };
-  }, [filters]);
+  }, [combinedFilters]);
 
   const handleOpenReplayer = async (handIds) => {
     if (!handIds || handIds.length === 0) return;
-    loadHandQueue(handIds);
+    loadHandQueue(handIds, heroName);
   };
 
   const normalizeKey = (v) => {
@@ -103,13 +106,15 @@ export default function RangeResearch() {
   };
 
   const saveConfig = () => {
-    localStorage.setItem('range_research_config', JSON.stringify(filters));
+    localStorage.setItem('range_research_config_v2', JSON.stringify(localFilters));
+    alert(t('range_analysis.config_saved', 'Configuration saved'));
   };
 
   const loadConfig = () => {
-    const saved = localStorage.getItem('range_research_config');
+    const saved = localStorage.getItem('range_research_config_v2');
     if (saved) {
-      setFilters(JSON.parse(saved));
+      setLocalFilters(JSON.parse(saved));
+      alert(t('range_analysis.config_loaded', 'Configuration loaded'));
     }
   };
 
@@ -143,7 +148,7 @@ export default function RangeResearch() {
 
       <div className="flex-1 flex flex-col gap-6 min-h-0">
         {/* Situation Selector */}
-        <SituationSelector filters={filters} onChange={setFilters} />
+        <SituationSelector filters={combinedFilters} onChange={(updates) => setLocalFilters(prev => ({ ...prev, ...updates }))} />
 
         {/* Main Content Area */}
         <div className="flex-1 flex gap-6 min-h-0">
@@ -238,11 +243,6 @@ export default function RangeResearch() {
                            <BarChart3 className="w-4 h-4 text-primary-400" />
                            <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest">{t('range_analysis.distributions')}</h2>
                        </div>
-                       <div className="flex items-center gap-2">
-                           <button className="p-1.5 rounded bg-dark-400 text-gray-500 hover:text-white transition-colors">
-                               <List className="w-4 h-4" />
-                           </button>
-                       </div>
                    </div>
 
                    <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
@@ -252,7 +252,6 @@ export default function RangeResearch() {
                                <div className="space-y-3">
                                    <div className="flex justify-between items-center">
                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t('range_analysis.frequencies')}</span>
-                                       <span className="text-[10px] text-gray-600 italic">Click to filter hands</span>
                                    </div>
                                    <div className="grid grid-cols-3 gap-2">
                                        {Object.entries(selectedRangeStats?.Actions || {})
@@ -342,11 +341,6 @@ export default function RangeResearch() {
                                                </div>
                                            );
                                        })}
-                                       {((selectedRangeStats.Hands || []).filter(h => handMatchesAction(h, selectedActionFilter)).length === 0) && (
-                                           <div className="text-center py-6 text-gray-600 text-xs italic">
-                                               {t('range_analysis.no_hands_match')}
-                                           </div>
-                                       )}
                                    </div>
                                </div>
                            </>

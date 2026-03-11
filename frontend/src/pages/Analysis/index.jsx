@@ -3,40 +3,28 @@ import { useTranslation } from 'react-i18next';
 import AnalysisFilters from './components/AnalysisFilters';
 import AnalysisHandsList from './components/AnalysisHandsList';
 import AnalysisHUD from './components/AnalysisHUD';
-import RangeGrid from '../../components/charts/RangeGrid';
-import { Save, Upload, FileText, List, Grid, Layers } from 'lucide-react';
+import { Save, Upload, List, Grid } from 'lucide-react';
 import { usePlayersStore } from '@stores/playersStore';
 import { useReplayerStore } from '@stores/replayerStore';
+import { useFilterStore } from '@stores/filterStore';
 import { ipcService } from '@services/ipcService';
 import clsx from 'clsx';
-
-const ACTION_COLORS = {
-  AllIn: '#b71c1c',
-  Raise: '#f44336',
-  Bet: '#ff9800',
-  Call: '#4caf50',
-  Check: '#9e9e9e',
-  Fold: '#2196f3',
-  None: '#1e293b'
-};
 
 export default function Analysis() {
   const { t } = useTranslation();
   const { loadPlayers } = usePlayersStore();
   const { openReplayer } = useReplayerStore();
+  const { heroName, dateRange, customDateFrom, customDateTo, selectedSession, getDateRangeParams } = useFilterStore();
   
   const [activeTab, setActiveTab] = useState('stats'); // 'stats' | 'hands'
 
-  const [filters, setFilters] = useState({
-    HeroName: '',
+  const [localFilters, setLocalFilters] = useState({
     Situation: '',
     Action: '',
     PlayerCount: null,
     MinStackBB: null,
     MaxStackBB: null,
     Positions: [],
-    DateFrom: '',
-    DateTo: '',
     // Street Actions
     PreflopBtnAction: '',
     PreflopSbAction: '',
@@ -64,12 +52,23 @@ export default function Analysis() {
   const [handsSort, setHandsSort] = useState('date_desc');
   const [handsPage, setHandsPage] = useState(1);
 
-  // Load players list on mount (for dropdown)
+  // Combined filters for API requests
+  const combinedFilters = useMemo(() => {
+    const { dateFrom, dateTo } = getDateRangeParams();
+    return {
+      HeroName: heroName,
+      DateFrom: dateFrom,
+      DateTo: dateTo,
+      ...localFilters
+    };
+  }, [heroName, dateRange, customDateFrom, customDateTo, selectedSession, localFilters, getDateRangeParams]);
+
+  // Load players list on mount
   useEffect(() => {
     loadPlayers({ limit: 1000 });
   }, []);
 
-  // Fetch Hands List Data (only when tab is active or filters/page change)
+  // Fetch Hands List Data
   useEffect(() => {
     if (activeTab !== 'hands') return;
 
@@ -77,10 +76,7 @@ export default function Analysis() {
     const fetchHands = async () => {
       setHandsLoading(true);
       try {
-        // Sanitize filters: convert empty arrays/strings to null where appropriate to ensure backend ignores them
-        const sanitizedFilters = { ...filters };
-        
-        // Ensure Positions is null if empty array, to strictly trigger "all positions" logic if backend treats [] differently
+        const sanitizedFilters = { ...combinedFilters };
         if (sanitizedFilters.Positions && sanitizedFilters.Positions.length === 0) {
             sanitizedFilters.Positions = null;
         }
@@ -94,7 +90,6 @@ export default function Analysis() {
 
         const response = await ipcService.getAnalysisHands(request);
         if (mounted && response.success) {
-            // Normalize case if needed (backend usually returns camelCase)
             setHandsData({
                 hands: response.data.hands || response.data.Hands || [],
                 total: response.data.total || response.data.Total || 0,
@@ -112,22 +107,22 @@ export default function Analysis() {
 
     fetchHands();
     return () => { mounted = false; };
-  }, [filters, activeTab, handsPage, handsSort]);
+  }, [combinedFilters, activeTab, handsPage, handsSort]);
 
   // Reset page when filters change
   useEffect(() => {
     setHandsPage(1);
-  }, [filters]);
+  }, [combinedFilters]);
 
   const saveConfig = () => {
-    localStorage.setItem('analysis_config', JSON.stringify(filters));
+    localStorage.setItem('analysis_config_v2', JSON.stringify(localFilters));
     alert(t('analysis.config_saved', 'Configuration saved'));
   };
 
   const loadConfig = () => {
-    const saved = localStorage.getItem('analysis_config');
+    const saved = localStorage.getItem('analysis_config_v2');
     if (saved) {
-      setFilters(JSON.parse(saved));
+      setLocalFilters(JSON.parse(saved));
       alert(t('analysis.config_loaded', 'Configuration loaded'));
     }
   };
@@ -181,13 +176,13 @@ export default function Analysis() {
       <div className="flex-1 flex gap-6 min-h-0">
         {/* Left Sidebar - Filters */}
         <div className="w-80 flex-shrink-0 overflow-y-auto custom-scrollbar">
-          <AnalysisFilters filters={filters} onChange={setFilters} />
+          <AnalysisFilters filters={combinedFilters} onChange={(updates) => setLocalFilters(prev => ({ ...prev, ...updates }))} />
         </div>
 
         {/* Main Content */}
         <div className="flex-1 overflow-hidden pr-2 flex flex-col">
           {activeTab === 'stats' && (
-              <AnalysisHUD filters={filters} />
+              <AnalysisHUD filters={combinedFilters} />
           )}
           {activeTab === 'hands' && (
               <AnalysisHandsList 

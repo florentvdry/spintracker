@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { ipcService } from '@services/ipcService';
-import { useAppStore } from './appStore';
+import { useFilterStore } from './filterStore';
 
 /**
  * Store pour l'historique des tournois, des mains et les analyses
@@ -17,8 +17,6 @@ export const useHandsStore = create((set, get) => ({
   currentPage: 1,
   pageSize: 50,
   filters: {
-    dateFrom: null,
-    dateTo: null,
     position: null,
     result: null, // 'won', 'lost', 'all'
     minPot: null,
@@ -37,13 +35,21 @@ export const useHandsStore = create((set, get) => ({
     let lastError = null;
 
     try {
-      const heroName = useAppStore.getState().heroName;
+      const { heroName, getDateRangeParams, buyIn } = useFilterStore.getState();
+      const { dateFrom, dateTo } = getDateRangeParams();
+      const buyInParam = buyIn === 'all' ? null : Number(buyIn);
+
       const result = await ipcService.getTournaments({
         page: currentPage,
         limit: pageSize,
         heroName,
         sortBy: filters.sortBy,
-        ...filters,
+        dateFrom,
+        dateTo,
+        buyIn: buyInParam,
+        result: filters.result,
+        minPot: filters.minPot,
+        maxPot: filters.maxPot,
       });
 
       if (result && result.success && result.data) {
@@ -68,7 +74,7 @@ export const useHandsStore = create((set, get) => ({
   loadTournamentHands: async (gameId) => {
     set({ isLoadingHands: true });
     try {
-      const heroName = useAppStore.getState().heroName;
+      const { heroName } = useFilterStore.getState();
       const result = await ipcService.getTournamentHands(gameId, heroName);
       if (result && result.success) {
         set({ tournamentHands: result.data || [] });
@@ -111,7 +117,7 @@ export const useHandsStore = create((set, get) => ({
     
     set({ isLoadingHand: true, selectedHand: null });
     try {
-      const heroName = useAppStore.getState().heroName;
+      const { heroName } = useFilterStore.getState();
       const result = await ipcService.getHandDetails(handId, heroName);
       if (result.success) {
         set({ selectedHand: result.data });
