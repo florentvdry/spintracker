@@ -929,3 +929,38 @@ ipcMain.handle('get-desktop-sources', async () => {
   }
 });
 
+// ============ IPC Handlers - Database Management ============
+
+ipcMain.handle('get-databases', async () => {
+  return callBackendAPI('/api/databases', {}, 'GET');
+});
+
+ipcMain.handle('get-active-database', async () => {
+  return callBackendAPI('/api/databases/active', {}, 'GET');
+});
+
+ipcMain.handle('create-database', async (event, name) => {
+  return callBackendAPI('/api/databases', { name }, 'POST');
+});
+
+ipcMain.handle('set-active-database', async (event, id) => {
+  const result = await callBackendAPI(`/api/databases/${id}/set-active`, {}, 'POST');
+  if (result.success) {
+    // Restart backend with new database
+    console.log('[Database] Switching active database, restarting backend...');
+    stopBackend();
+    setTimeout(() => {
+      startBackend();
+    }, 1000);
+  }
+  return result;
+});
+
+ipcMain.handle('delete-database', async (event, id) => {
+  return callBackendAPI(`/api/databases/${id}`, {}, 'DELETE');
+});
+
+ipcMain.handle('rename-database', async (event, id, name) => {
+  return callBackendAPI(`/api/databases/${id}`, { name }, 'PUT');
+});
+

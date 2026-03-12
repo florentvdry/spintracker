@@ -258,6 +258,21 @@
     "database": {
       "title": "Database",
       "subtitle": "Data management",
+      "multiple": {
+        "title": "Multiple Databases",
+        "desc": "Manage your different databases",
+        "create": "Create Database",
+        "name": "Database name",
+        "active": "Active",
+        "set_active": "Set as active",
+        "delete": "Delete",
+        "cannot_delete_last": "Cannot delete the last database",
+        "cannot_delete_active": "Cannot delete the active database",
+        "confirm_delete": "Are you sure you want to delete this database?",
+        "delete_warning": "This action is irreversible. All data will be lost.",
+        "hands_count": "{{count}} hands",
+        "created": "Created on {{date}}"
+      },
       "export": {
         "title": "Export data",
         "desc": "Download all your hands as ZIP (grouped by date)",

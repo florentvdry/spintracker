@@ -195,6 +195,31 @@ class IPCService {
   onUpdateStatus(callback) {
     return this.on('update-status', callback);
   }
+
+  // Database Management
+  async getDatabases() {
+    return this.invoke('get-databases');
+  }
+
+  async getActiveDatabase() {
+    return this.invoke('get-active-database');
+  }
+
+  async createDatabase(name) {
+    return this.invoke('create-database', name);
+  }
+
+  async setActiveDatabase(id) {
+    return this.invoke('set-active-database', id);
+  }
+
+  async deleteDatabase(id) {
+    return this.invoke('delete-database', id);
+  }
+
+  async renameDatabase(id, name) {
+    return this.invoke('rename-database', id, name);
+  }
 }
 
 export const ipcService = new IPCService();
