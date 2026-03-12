@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.Json;
 using SpinTrackerBackend;
 using SpinTrackerBackend.Data.Repositories;
@@ -110,6 +111,7 @@ public class Database
     {
         if (hands.Count == 0) return 0;
 
+        var batchSw = Stopwatch.StartNew();
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
@@ -159,6 +161,7 @@ public class Database
                 });
             }
 
+            var handsInsertSw = Stopwatch.StartNew();
             if (handValues.Count > 0)
             {
                 var handSql = @"INSERT OR REPLACE INTO hands (
@@ -178,6 +181,8 @@ public class Database
                 
                 inserted += await handCmd.ExecuteNonQueryAsync();
             }
+            handsInsertSw.Stop();
+            _logger.LogInformation($"[DB] Inserted {hands.Count} hands in {handsInsertSw.ElapsedMilliseconds}ms");
 
             // Batch insert player hands
             var playerValues = new List<string>();
@@ -239,6 +244,7 @@ public class Database
                 }
             }
 
+            var playersInsertSw = Stopwatch.StartNew();
             if (playerValues.Count > 0)
             {
                 var playerSql = @"INSERT OR REPLACE INTO player_hands (
@@ -257,8 +263,12 @@ public class Database
                 
                 await playerCmd.ExecuteNonQueryAsync();
             }
+            playersInsertSw.Stop();
+            _logger.LogInformation($"[DB] Inserted {playerParams.Count} player_hands in {playersInsertSw.ElapsedMilliseconds}ms");
 
             await transaction.CommitAsync();
+            batchSw.Stop();
+            _logger.LogInformation($"[DB] Batch completed: {hands.Count} hands + {playerParams.Count} players in {batchSw.ElapsedMilliseconds}ms total");
             return inserted;
         }
         catch (Exception ex)

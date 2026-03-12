@@ -97,10 +97,13 @@ public class ImporterService : IImporterService
         var fileInfo = new FileInfo(filePath);
         var totalBytes = fileInfo.Length;
         
+        _logger.LogInformation($"[IMPORT] Starting import of {filePath} ({totalBytes} bytes)");
+        
         // Initial progress
         await onProgress(new ImportProgress { Message = "Initializing pipeline...", Percent = 0 });
 
         // Detect parser
+        var detectStart = Stopwatch.StartNew();
         string firstChunk;
         using (var reader = new StreamReader(filePath))
         {
@@ -116,6 +119,7 @@ public class ImporterService : IImporterService
         }
 
         string separator = parser.HandSeparator; 
+        _logger.LogInformation($"[IMPORT] Parser detected in {detectStart.ElapsedMilliseconds}ms, separator: {separator}");
 
         // Pipeline channels - increased buffer size for better throughput
         var handTextChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(2000) { FullMode = BoundedChannelFullMode.Wait });
@@ -130,6 +134,7 @@ public class ImporterService : IImporterService
         // 1. Reader Task
         var readerTask = Task.Run(async () =>
         {
+            var readerSw = Stopwatch.StartNew();
             try
             {
                 var handBuffer = new StringBuilder();
@@ -165,6 +170,7 @@ public class ImporterService : IImporterService
             }
             finally
             {
+                _logger.LogInformation($"[IMPORT] Reader finished: {totalHandsFound} hands in {readerSw.ElapsedMilliseconds}ms");
                 handTextChannel.Writer.Complete();
             }
         }, cancellationToken);
@@ -172,16 +178,26 @@ public class ImporterService : IImporterService
         // 2. Worker Tasks (Parallel Parsing + Analytics)
         // Use more workers for I/O-bound parsing work
         int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        _logger.LogInformation($"[IMPORT] Starting {workerCount} worker tasks");
+        var workerSw = Stopwatch.StartNew();
         var workerTasks = Enumerable.Range(0, workerCount).Select(_ => Task.Run(async () =>
         {
+            int handsParsed = 0;
+            int analyticsComputed = 0;
+            var parseSw = new Stopwatch();
+            var analyticsSw = new Stopwatch();
             try
             {
                 await foreach (var handText in handTextChannel.Reader.ReadAllAsync(cancellationToken))
                 {
                     try
                     {
+                        parseSw.Start();
                         var hand = parser.ParseHand(handText);
+                        parseSw.Stop();
                         if (hand == null) continue;
+
+                        handsParsed++;
 
                         // Only calculate analytics when actually needed (all-in + showdown + cards known)
                         HandAnalytics analytics;
@@ -194,7 +210,10 @@ public class ImporterService : IImporterService
                         
                         if (needsAnalytics)
                         {
+                            analyticsSw.Start();
                             analytics = _analyticsCalc.CalculateHandAnalytics(hand);
+                            analyticsSw.Stop();
+                            analyticsComputed++;
                         }
                         else
                         {
@@ -216,6 +235,10 @@ public class ImporterService : IImporterService
                 }
             }
             catch (OperationCanceledException) { }
+            finally
+            {
+                _logger.LogInformation($"[IMPORT] Worker done: {handsParsed} parsed ({parseSw.ElapsedMilliseconds}ms), {analyticsComputed} analytics ({analyticsSw.ElapsedMilliseconds}ms)");
+            }
         }, cancellationToken)).ToArray();
 
         // 3. Writer Task (DB Batching)
