@@ -1,5 +1,8 @@
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using SpinTrackerBackend.Interfaces;
 using SpinTrackerBackend;
 
@@ -498,45 +501,48 @@ public class EquityCalculator : IEquityCalculator
         long villainWins = 0;
         long ties = 0;
         
-        // For preflop: use PLINQ with exact enumeration (cached results make subsequent calls instant)
+        // For preflop: use optimized parallel processing with direct loop parallelism
         // For postflop: sequential is very fast due to small combination space
         if (cardsNeeded == 5)
         {
-            // Preflop - generate all 5-card combinations and process in parallel
-            var combinations = new List<(int, int, int, int, int)>();
-            for (int i1 = 0; i1 < availCount - 4; i1++)
+            // Parallel by outer loop (i1) - each thread processes a range of i1 values
+            // Thread-local accumulators for better performance
+            Parallel.For(0, availCount - 4, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, () =>
+                (0L, 0L, 0L), (i1, loopState, localAcc) =>
             {
                 for (int i2 = i1 + 1; i2 < availCount - 3; i2++)
                 {
+                    int c2 = available[i2];
                     for (int i3 = i2 + 1; i3 < availCount - 2; i3++)
                     {
+                        int c3 = available[i3];
                         for (int i4 = i3 + 1; i4 < availCount - 1; i4++)
                         {
+                            int c4 = available[i4];
                             for (int i5 = i4 + 1; i5 < availCount; i5++)
                             {
-                                combinations.Add((available[i1], available[i2], available[i3], available[i4], available[i5]));
+                                int c5 = available[i5];
+                                
+                                int hScore = Evaluate7(hc1, hc2, available[i1], c2, c3, c4, c5);
+                                int vScore = Evaluate7(vc1, vc2, available[i1], c2, c3, c4, c5);
+                                
+                                if (hScore > vScore) localAcc.Item1++;
+                                else if (vScore > hScore) localAcc.Item2++;
+                                else localAcc.Item3++;
                             }
                         }
                     }
                 }
-            }
-
-            // Parallel enumeration using PLINQ with partitioner for better performance
-            var results = combinations.AsParallel()
-                .AsOrdered()
-                .Select(c => {
-                    int c1 = c.Item1, c2 = c.Item2, c3 = c.Item3, c4 = c.Item4, c5 = c.Item5;
-                    int hScore = Evaluate7(hc1, hc2, c1, c2, c3, c4, c5);
-                    int vScore = Evaluate7(vc1, vc2, c1, c2, c3, c4, c5);
-                    if (hScore > vScore) return (1L, 0L, 0L);
-                    if (vScore > hScore) return (0L, 1L, 0L);
-                    return (0L, 0L, 1L);
-                })
-                .ToList();
-
-            heroWins = results.Sum(r => r.Item1);
-            villainWins = results.Sum(r => r.Item2);
-            ties = results.Sum(r => r.Item3);
+                return localAcc;
+            }, localAcc =>
+            {
+                lock (_syncLock)
+                {
+                    heroWins += localAcc.Item1;
+                    villainWins += localAcc.Item2;
+                    ties += localAcc.Item3;
+                }
+            });
         }
         else if (cardsNeeded == 2)
         {
@@ -587,6 +593,8 @@ public class EquityCalculator : IEquityCalculator
             TieEquity = (ties / total) * 100.0
         };
     }
+    
+    private static readonly object _syncLock = new object();
 
     private EquityResult RunMonteCarlo(List<Card> heroCards, List<Card> villainCards, List<Card> boardCards, int iterations, List<Card>? deadCards = null)
     {
