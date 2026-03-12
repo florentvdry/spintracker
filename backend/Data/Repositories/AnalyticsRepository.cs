@@ -45,15 +45,15 @@ public class AnalyticsRepository
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddWithValue("@hand_id", analytic.HandId ?? "");
                 cmd.Parameters.AddWithValue("@player_name", analytic.PlayerName ?? "");
-                cmd.Parameters.AddWithValue("@ev_chips", (object)analytic.EvChips ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@net_won_adjusted", (object)analytic.NetWonAdjusted ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@equity_preflop", (object)analytic.EquityPreflop ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@equity_flop", (object)analytic.EquityFlop ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@equity_turn", (object)analytic.EquityTurn ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@equity_river", (object)analytic.EquityRiver ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@chips_won_showdown", (object)analytic.ChipsWonShowdown ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@chips_won_no_showdown", (object)analytic.ChipsWonNoShowdown ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@cev_contribution", (object)analytic.CevContribution ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@ev_chips", analytic.EvChips.HasValue ? (object)analytic.EvChips.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@net_won_adjusted", analytic.NetWonAdjusted.HasValue ? (object)analytic.NetWonAdjusted.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@equity_preflop", analytic.EquityPreflop.HasValue ? (object)analytic.EquityPreflop.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@equity_flop", analytic.EquityFlop.HasValue ? (object)analytic.EquityFlop.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@equity_turn", analytic.EquityTurn.HasValue ? (object)analytic.EquityTurn.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@equity_river", analytic.EquityRiver.HasValue ? (object)analytic.EquityRiver.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@chips_won_showdown", analytic.ChipsWonShowdown.HasValue ? (object)analytic.ChipsWonShowdown.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@chips_won_no_showdown", analytic.ChipsWonNoShowdown.HasValue ? (object)analytic.ChipsWonNoShowdown.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@cev_contribution", analytic.CevContribution.HasValue ? (object)analytic.CevContribution.Value : DBNull.Value);
 
                 await cmd.ExecuteNonQueryAsync();
                 inserted++;

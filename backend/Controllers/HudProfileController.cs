@@ -42,7 +42,7 @@ public class HudProfileController : ControllerBase
             }
 
             var id = Guid.NewGuid().ToString();
-            await _hudRepo.SaveHudProfileAsync(id, data.Name, data.Layout, data.IsActive);
+            await _hudRepo.SaveHudProfileAsync(id, data.Name, data.Layout ?? new { }, data.IsActive);
             return Ok(new { success = true, id });
         }
         catch (Exception e)

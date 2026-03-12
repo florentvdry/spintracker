@@ -155,7 +155,7 @@ public class Database
 
         try
         {
-            var analyticsDict = analytics.ToDictionary(a => a.HandId);
+            var analyticsDict = analytics.Where(a => a.HandId != null).ToDictionary(a => a.HandId!);
 
             // Prepare Hands Insert Command
             using var handCmd = connection.CreateCommand();
@@ -272,7 +272,7 @@ public class Database
 
                 await handCmd.ExecuteNonQueryAsync();
 
-                var handAnalytics = analyticsDict.GetValueOrDefault(hand.Id);
+                var handAnalytics = hand.Id != null && analyticsDict.TryGetValue(hand.Id, out var ha) ? ha : null;
 
                 foreach (var p in hand.Players)
                 {
@@ -289,15 +289,15 @@ public class Database
 
                     if (p.IsHero && handAnalytics != null)
                     {
-                        pParams["@ev_chips"].Value = (object)handAnalytics.EvChips ?? DBNull.Value;
-                        pParams["@net_won_adjusted"].Value = (object)handAnalytics.NetWonAdjusted ?? p.NetProfit;
-                        pParams["@showdown_winning"].Value = (object)handAnalytics.ChipsWonShowdown ?? (p.WentToShowdown ? p.NetProfit : 0);
-                        pParams["@non_showdown_winning"].Value = (object)handAnalytics.ChipsWonNoShowdown ?? (!p.WentToShowdown ? p.NetProfit : 0);
-                        pParams["@equity_preflop"].Value = (object)handAnalytics.EquityPreflop ?? DBNull.Value;
-                        pParams["@equity_flop"].Value = (object)handAnalytics.EquityFlop ?? DBNull.Value;
-                        pParams["@equity_turn"].Value = (object)handAnalytics.EquityTurn ?? DBNull.Value;
-                        pParams["@equity_river"].Value = (object)handAnalytics.EquityRiver ?? DBNull.Value;
-                        pParams["@cev_contribution"].Value = (object)handAnalytics.CevContribution ?? 0;
+                        pParams["@ev_chips"].Value = handAnalytics.EvChips.HasValue ? (object)handAnalytics.EvChips.Value : DBNull.Value;
+                        pParams["@net_won_adjusted"].Value = handAnalytics.NetWonAdjusted.HasValue ? (object)handAnalytics.NetWonAdjusted.Value : p.NetProfit;
+                        pParams["@showdown_winning"].Value = handAnalytics.ChipsWonShowdown.HasValue ? (object)handAnalytics.ChipsWonShowdown.Value : (p.WentToShowdown ? p.NetProfit : 0);
+                        pParams["@non_showdown_winning"].Value = handAnalytics.ChipsWonNoShowdown.HasValue ? (object)handAnalytics.ChipsWonNoShowdown.Value : (!p.WentToShowdown ? p.NetProfit : 0);
+                        pParams["@equity_preflop"].Value = handAnalytics.EquityPreflop.HasValue ? (object)handAnalytics.EquityPreflop.Value : DBNull.Value;
+                        pParams["@equity_flop"].Value = handAnalytics.EquityFlop.HasValue ? (object)handAnalytics.EquityFlop.Value : DBNull.Value;
+                        pParams["@equity_turn"].Value = handAnalytics.EquityTurn.HasValue ? (object)handAnalytics.EquityTurn.Value : DBNull.Value;
+                        pParams["@equity_river"].Value = handAnalytics.EquityRiver.HasValue ? (object)handAnalytics.EquityRiver.Value : DBNull.Value;
+                        pParams["@cev_contribution"].Value = handAnalytics.CevContribution.HasValue ? (object)handAnalytics.CevContribution.Value : 0;
                     }
                     else
                     {

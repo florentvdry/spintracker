@@ -29,7 +29,7 @@ public class HudProfileRepository
             {
                 ["id"] = reader.GetString(0),
                 ["name"] = reader.GetString(1),
-                ["layout"] = JsonSerializer.Deserialize<object>(reader.GetString(2)),
+                ["layout"] = JsonSerializer.Deserialize<object>(reader.GetString(2)) ?? new { },
                 ["isActive"] = reader.GetBoolean(3),
                 ["createdAt"] = reader.GetDateTime(4),
                 ["updatedAt"] = reader.GetDateTime(5)

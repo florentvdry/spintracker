@@ -30,7 +30,7 @@ public class CustomStatsRepository
                 ["id"] = reader.GetString(0),
                 ["name"] = reader.GetString(1),
                 ["description"] = reader.IsDBNull(2) ? "" : reader.GetString(2),
-                ["definition"] = JsonSerializer.Deserialize<object>(reader.GetString(3)),
+                ["definition"] = JsonSerializer.Deserialize<object>(reader.GetString(3)) ?? new { },
                 ["createdAt"] = reader.GetDateTime(4),
                 ["updatedAt"] = reader.GetDateTime(5)
             };
@@ -56,7 +56,7 @@ public class CustomStatsRepository
                 ["id"] = reader.GetString(0),
                 ["name"] = reader.GetString(1),
                 ["description"] = reader.IsDBNull(2) ? "" : reader.GetString(2),
-                ["definition"] = JsonSerializer.Deserialize<object>(reader.GetString(3)),
+                ["definition"] = JsonSerializer.Deserialize<object>(reader.GetString(3)) ?? new { },
                 ["createdAt"] = reader.GetDateTime(4),
                 ["updatedAt"] = reader.GetDateTime(5)
             };

@@ -11,7 +11,7 @@ public static class DatabaseUtils
             var ordinal = reader.GetOrdinal(columnName);
             return reader.IsDBNull(ordinal) ? null : reader.GetString(ordinal);
         }
-        catch (Exception ex)
+        catch
         {
             // Log warning if logger available, but since static, perhaps not
             return null;

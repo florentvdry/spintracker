@@ -22,7 +22,7 @@ public class EquityCalculator : IEquityCalculator
         {
             var heroCardList = ParseCards(heroCards);
             var boardCards = ParseCards(board);
-            var deadCardList = ParseCards(deadCards);
+            var deadCardList = ParseCards(deadCards ?? "");
 
             // Support multiway villain hands separated by '|'
             if (!string.IsNullOrWhiteSpace(villainCards) && villainCards.Contains('|'))

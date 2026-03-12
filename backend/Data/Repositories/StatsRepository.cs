@@ -699,22 +699,11 @@ public class StatsRepository
     {
         try
         {
-            var backendDir = Directory.GetCurrentDirectory();
-            var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
-            var statsFilePath = Path.Combine(projectRoot, "custom_stats_import.json");
-
-            if (!File.Exists(statsFilePath))
-            {
-                _logger.LogWarning($"Default stats file not found: {statsFilePath}");
-                return;
-            }
-
-            var jsonContent = File.ReadAllText(statsFilePath);
-            var stats = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(jsonContent);
+            var stats = DefaultData.DefaultStats;
 
             if (stats == null || stats.Count == 0)
             {
-                _logger.LogWarning("No stats found in default stats file");
+                _logger.LogWarning("No default stats found");
                 return;
             }
 
@@ -737,7 +726,6 @@ public class StatsRepository
                         continue;
                     }
 
-                    // Save the stat with its definition
                     tasks.Add(_customStatsRepo.SaveCustomStatAsync(id, name, description ?? "", definition));
                 }
                 catch (Exception ex)
@@ -759,22 +747,11 @@ public class StatsRepository
     {
         try
         {
-            var backendDir = Directory.GetCurrentDirectory();
-            var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
-            var profileFilePath = Path.Combine(projectRoot, "Minimalist_SpinAndGo_HUD.json");
-
-            if (!File.Exists(profileFilePath))
-            {
-                _logger.LogWarning($"Default HUD profile file not found: {profileFilePath}");
-                return;
-            }
-
-            var jsonContent = File.ReadAllText(profileFilePath);
-            var profileData = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonContent);
+            var profileData = DefaultData.DefaultHudProfile;
 
             if (profileData == null)
             {
-                _logger.LogWarning("Invalid default HUD profile file");
+                _logger.LogWarning("Invalid default HUD profile data");
                 return;
             }
 
