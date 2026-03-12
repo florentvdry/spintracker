@@ -62,7 +62,7 @@ public class DatabaseRegistry
     public string GetDatabasesFolder()
     {
         var appDataPath = GetAppDataPath();
-        var dbFolder = Path.Combine(appDataPath, "database");
+        var dbFolder = Path.Combine(appDataPath, "databases");
         
         if (!Directory.Exists(dbFolder))
         {
