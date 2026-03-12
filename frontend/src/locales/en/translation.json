@@ -133,28 +133,6 @@
       "street_actions": "Street Actions (By Position)",
       "stack": "Stack (BB)",
       "date": "Date"
-    },
-    "hud": {
-      "profile": "Stats Profile",
-      "edit_mode": "Edit Mode",
-      "save_changes": "Save Changes",
-      "no_stats": "No Stats Configured",
-      "editor_guide": "This profile is empty. Switch to Edit Mode to design your layout.",
-      "properties": "Properties",
-      "elements": "Elements",
-      "tools": "Tools",
-      "available_stats": "Available Stats",
-      "text_label": "Text Label",
-      "content": "Content",
-      "appearance": "Appearance",
-      "font_size": "Font Size",
-      "color": "Color",
-      "background": "Background",
-      "alignment": "Alignment",
-      "font_weight": "Font Weight",
-      "format": "Format",
-      "decimals": "Decimals",
-      "remove_element": "Remove Element"
     }
   },
   "replayer": {

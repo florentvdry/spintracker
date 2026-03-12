@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import AnalysisFilters from './components/AnalysisFilters';
 import AnalysisHandsList from './components/AnalysisHandsList';
-import AnalysisHUD from './components/AnalysisHUD';
+import AnalysisDashboard from './components/AnalysisDashboard';
 import { Save, Upload, List, Grid } from 'lucide-react';
 import { usePlayersStore } from '@stores/playersStore';
 import { useReplayerStore } from '@stores/replayerStore';
@@ -39,6 +39,33 @@ export default function Analysis() {
     RiverSbAction: '',
     RiverBbAction: ''
   });
+
+  // Dashboard Data
+  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardLoading, setDashboardLoading] = useState(false);
+
+  // Fetch Dashboard Data
+  useEffect(() => {
+    if (activeTab !== 'stats') return;
+
+    let mounted = true;
+    const fetchDashboard = async () => {
+      setDashboardLoading(true);
+      try {
+        const response = await ipcService.getAnalysisStats(combinedFilters);
+        if (mounted && response.success) {
+          setDashboardData(response.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch dashboard data", err);
+      } finally {
+        if (mounted) setDashboardLoading(false);
+      }
+    };
+
+    fetchDashboard();
+    return () => { mounted = false; };
+  }, [combinedFilters, activeTab]);
 
   // Hands List Data
   const [handsData, setHandsData] = useState({
@@ -182,7 +209,7 @@ export default function Analysis() {
         {/* Main Content */}
         <div className="flex-1 overflow-hidden pr-2 flex flex-col">
           {activeTab === 'stats' && (
-              <AnalysisHUD filters={combinedFilters} />
+              <AnalysisDashboard data={dashboardData} loading={dashboardLoading} />
           )}
           {activeTab === 'hands' && (
               <AnalysisHandsList 

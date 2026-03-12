@@ -139,28 +139,6 @@
       "street_actions": "Actions par street (par position)",
       "stack": "Stack (BB)",
       "date": "Date"
-    },
-    "hud": {
-      "profile": "Profil de stats",
-      "edit_mode": "Mode édition",
-      "save_changes": "Enregistrer",
-      "no_stats": "Aucune statistique configurée",
-      "editor_guide": "Ce profil est vide. Basculez en mode édition pour concevoir votre mise en page.",
-      "properties": "Propriétés",
-      "elements": "Éléments",
-      "tools": "Outils",
-      "available_stats": "Stats disponibles",
-      "text_label": "Libellé texte",
-      "content": "Contenu",
-      "appearance": "Apparence",
-      "font_size": "Taille police",
-      "color": "Couleur",
-      "background": "Fond",
-      "alignment": "Alignement",
-      "font_weight": "Graisse",
-      "format": "Format",
-      "decimals": "Décimales",
-      "remove_element": "Supprimer l'élément"
     }
   },
   "replayer": {

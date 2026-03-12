@@ -114,18 +114,6 @@ public class InitialCreate20260111 : Migration
 			)
 		");
 
-		// HUD Profiles table
-		Execute.Sql(@"
-			CREATE TABLE IF NOT EXISTS hud_profiles (
-				id TEXT PRIMARY KEY,
-				name TEXT NOT NULL,
-				layout TEXT NOT NULL,
-				is_active BOOLEAN DEFAULT 0,
-				created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-				updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-			)
-		");
-
 		// Try to automatically import JSON files if they exist next to the running assembly
 		try
 		{
@@ -148,26 +136,6 @@ public class InitialCreate20260111 : Migration
 		catch
 		{
 			// ignore import errors
-		}
-
-		try
-		{
-			var hudProfile = DefaultData.DefaultHudProfile;
-			if (hudProfile != null)
-			{
-				string hudName = hudProfile.ContainsKey("name") ? hudProfile["name"]?.ToString() ?? "HUD" : "Minimalist Spin HUD";
-				string hudId = hudName.ToLowerInvariant().Replace(' ', '_').Replace('-', '_');
-				object? layoutObj = hudProfile.ContainsKey("layout") ? hudProfile["layout"] : null;
-				string layout = layoutObj != null ? JsonSerializer.Serialize(layoutObj) : "[]";
-				hudId = hudId.Replace("'", "''");
-				hudName = hudName.Replace("'", "''");
-				layout = layout.Replace("'", "''");
-				Execute.Sql($"INSERT OR IGNORE INTO hud_profiles (id,name,layout,is_active) VALUES ('{hudId}','{hudName}','{layout}', 0)");
-			}
-		}
-		catch
-		{
-			// ignore
 		}
 	}
 
