@@ -7,38 +7,21 @@ public class AddPerformanceIndexes : Migration
 {
     public override void Up()
     {
-        Create.Index("idx_hands_date_time")
-            .OnTable("hands")
-            .OnColumn("date_time");
-
-        Create.Index("idx_hands_room")
-            .OnTable("hands")
-            .OnColumn("room");
-
-        Create.Index("idx_hands_game_id")
-            .OnTable("hands")
-            .OnColumn("game_id");
-
-        Create.Index("idx_player_hands_player_name")
-            .OnTable("player_hands")
-            .OnColumn("player_name");
-
-        Create.Index("idx_player_hands_hand_id")
-            .OnTable("player_hands")
-            .OnColumn("hand_id");
-
-        Create.Index("idx_player_hands_position")
-            .OnTable("player_hands")
-            .OnColumn("position");
+        Execute.Sql("CREATE INDEX IF NOT EXISTS idx_hands_date_time ON hands(date_time)");
+        Execute.Sql("CREATE INDEX IF NOT EXISTS idx_hands_room ON hands(room)");
+        Execute.Sql("CREATE INDEX IF NOT EXISTS idx_hands_game_id ON hands(game_id)");
+        Execute.Sql("CREATE INDEX IF NOT EXISTS idx_player_hands_player_name ON player_hands(player_name)");
+        Execute.Sql("CREATE INDEX IF NOT EXISTS idx_player_hands_hand_id ON player_hands(hand_id)");
+        Execute.Sql("CREATE INDEX IF NOT EXISTS idx_player_hands_position ON player_hands(position)");
     }
 
     public override void Down()
     {
-        Delete.Index("idx_hands_date_time").OnTable("hands");
-        Delete.Index("idx_hands_room").OnTable("hands");
-        Delete.Index("idx_hands_game_id").OnTable("hands");
-        Delete.Index("idx_player_hands_player_name").OnTable("player_hands");
-        Delete.Index("idx_player_hands_hand_id").OnTable("player_hands");
-        Delete.Index("idx_player_hands_position").OnTable("player_hands");
+        Execute.Sql("DROP INDEX IF EXISTS idx_hands_date_time");
+        Execute.Sql("DROP INDEX IF EXISTS idx_hands_room");
+        Execute.Sql("DROP INDEX IF EXISTS idx_hands_game_id");
+        Execute.Sql("DROP INDEX IF EXISTS idx_player_hands_player_name");
+        Execute.Sql("DROP INDEX IF EXISTS idx_player_hands_hand_id");
+        Execute.Sql("DROP INDEX IF EXISTS idx_player_hands_position");
     }
 }
