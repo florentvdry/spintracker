@@ -14,7 +14,7 @@ public class ImporterService : IImporterService
     private readonly Database _db;
     private readonly IAnalyticsCalculator _analyticsCalc;
     private readonly ILogger<ImporterService> _logger;
-    private const int InternalBatchSize = 500; 
+    private const int InternalBatchSize = 1000; 
 
     public ImporterService(Database db, IAnalyticsCalculator analyticsCalc, ILogger<ImporterService> logger, SpinTrackerBackend.Data.Repositories.PlayerRepository? playerRepo = null)
     {
@@ -25,6 +25,24 @@ public class ImporterService : IImporterService
     }
 
     private readonly SpinTrackerBackend.Data.Repositories.PlayerRepository? _playerRepo;
+
+    private static readonly System.Text.RegularExpressions.Regex QuickHandIdRegex = 
+        new(@"Hand #(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    private string? TryExtractHandIdQuick(string handText, IHandParser parser)
+    {
+        if (string.IsNullOrEmpty(handText)) return null;
+        
+        var firstLine = handText.Split('\n').FirstOrDefault() ?? "";
+        
+        var match = QuickHandIdRegex.Match(firstLine);
+        if (match.Success)
+        {
+            return match.Groups[1].Value;
+        }
+        
+        return null;
+    }
 
     public async Task<int> CountHandsInFileAsync(string filePath, CancellationToken cancellationToken)
     {
@@ -98,18 +116,15 @@ public class ImporterService : IImporterService
         }
 
         string separator = parser.HandSeparator; 
-        
-        // 0. Fetch existing hands to skip duplicates
-        var existingHandIds = await _db.GetExistingHandIdsAsync();
-        int skippedHands = 0;
 
-        // Pipeline channels
-        var handTextChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(1000) { FullMode = BoundedChannelFullMode.Wait });
-        var processedChannel = Channel.CreateBounded<(ParsedHand, HandAnalytics)>(new BoundedChannelOptions(1000) { FullMode = BoundedChannelFullMode.Wait });
+        // Pipeline channels - increased buffer size for better throughput
+        var handTextChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(2000) { FullMode = BoundedChannelFullMode.Wait });
+        var processedChannel = Channel.CreateBounded<(ParsedHand, HandAnalytics)>(new BoundedChannelOptions(2000) { FullMode = BoundedChannelFullMode.Wait });
 
         // Statistics tracking
         int totalHandsFound = 0;
         int importedHands = 0;
+        int skippedHands = 0;
         long processedBytes = 0;
 
         // 1. Reader Task
@@ -131,8 +146,6 @@ public class ImporterService : IImporterService
                         if (handBuffer.Length > 0)
                         {
                             var handText = handBuffer.ToString();
-                            // Quick check for hand ID to skip if possible
-                            // Note: full ID is only known after parsing, but many formats have it in first line
                             await handTextChannel.Writer.WriteAsync(handText, cancellationToken);
                             totalHandsFound++;
                             handBuffer.Clear();
@@ -157,7 +170,8 @@ public class ImporterService : IImporterService
         }, cancellationToken);
 
         // 2. Worker Tasks (Parallel Parsing + Analytics)
-        int workerCount = Math.Max(1, Environment.ProcessorCount - 1);
+        // Use more workers for I/O-bound parsing work
+        int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
         var workerTasks = Enumerable.Range(0, workerCount).Select(_ => Task.Run(async () =>
         {
             try
@@ -167,14 +181,32 @@ public class ImporterService : IImporterService
                     try
                     {
                         var hand = parser.ParseHand(handText);
-                        if (hand != null && hand.PlayerCount <= 3 && hand.Id != null && existingHandIds.Contains(hand.Id))
-                        {
-                            Interlocked.Increment(ref skippedHands);
-                            continue;
-                        }
-
                         if (hand == null) continue;
-                        var analytics = _analyticsCalc.CalculateHandAnalytics(hand);
+
+                        // Only calculate analytics when actually needed (all-in + showdown + cards known)
+                        HandAnalytics analytics;
+                        var hero = hand.Players.FirstOrDefault(p => p.IsHero);
+                        bool needsAnalytics = hand.WentToShowdown && 
+                                              hand.PlayerCount <= 3 && 
+                                              hero != null && 
+                                              !string.IsNullOrEmpty(hero.Cards) &&
+                                              (hero.IsAllIn || hand.Players.Any(p => !p.IsHero && p.IsAllIn));
+                        
+                        if (needsAnalytics)
+                        {
+                            analytics = _analyticsCalc.CalculateHandAnalytics(hand);
+                        }
+                        else
+                        {
+                            analytics = new HandAnalytics { HandId = hand.Id };
+                            if (hero != null)
+                            {
+                                analytics.NetWonAdjusted = hero.NetProfit;
+                                analytics.ChipsWonShowdown = hero.WentToShowdown ? hero.NetProfit : 0;
+                                analytics.ChipsWonNoShowdown = !hero.WentToShowdown ? hero.NetProfit : 0;
+                            }
+                        }
+                        
                         await processedChannel.Writer.WriteAsync((hand, analytics), cancellationToken);
                     }
                     catch (Exception e)
