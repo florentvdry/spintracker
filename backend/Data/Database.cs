@@ -222,7 +222,7 @@ public class Database
                     playerParams.Add(new SqliteParameter[]
                     {
                         new SqliteParameter("@hand_id", hand.Id ?? ""),
-                        new SqliteParameter("@player_name", p.Name),
+                        new SqliteParameter("@player_name", p.Name ?? ""),
                         new SqliteParameter("@position", p.Position ?? ""),
                         new SqliteParameter("@stack", (int)p.Stack),
                         new SqliteParameter("@cards", p.Cards ?? ""),
