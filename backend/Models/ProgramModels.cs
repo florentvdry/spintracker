@@ -1,5 +1,3 @@
-using SpinTrackerBackend.StatsBuilder;
-
 namespace SpinTrackerBackend;
 
 // ============ Request/Response Models ============
@@ -42,30 +40,6 @@ public record EquityRequest(string? HeroCards, string? VillainCards, string? Boa
 public record BatchEquityRequest(List<BatchEquityHand> Hands, int? Iterations);
 public record BatchEquityHand(string? Id, string? HeroCards, string? VillainCards, string? Board);        
 public record AnalyzeRangeRequest(string? Position, string? Action, int? Stack);
-// AnalysisFilters record removed to use class from AnalysisModels.cs
-// ... existing code ...
-
-public class CustomStatRequest
-{
-    public string? Id { get; set; }
-    public string Name { get; set; } = "";
-    public string? Description { get; set; }
-    public object? Definition { get; set; }
-}
-
-public class HudProfileRequest
-{
-    public string? Id { get; set; }
-    public string Name { get; set; } = "";
-    public object? Layout { get; set; }
-    public bool IsActive { get; set; }
-}
-
-public class EvaluateBatchRequest
-{
-    public List<StatDefinition> Stats { get; set; } = new();
-    public SpinTrackerBackend.AnalysisFilters? Filters { get; set; }
-}
 
 public class ImportProgress
 {

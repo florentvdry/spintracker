@@ -2,11 +2,8 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using SpinTrackerBackend;
-using SpinTrackerBackend.StatsBuilder;
 using FluentMigrator.Runner;
 using SpinTrackerBackend.Migrations;
-using SpinTrackerBackend.Interfaces;
-using SpinTrackerBackend.Engines;
 using SpinTrackerBackend.Services;
 using SpinTrackerBackend.Data.Repositories;
 
@@ -65,7 +62,6 @@ public static class Startup
         services.AddSingleton<IEquityCalculator, EquityCalculator>();
         services.AddSingleton<IAnalyticsCalculator, AnalyticsCalculator>();
         services.AddSingleton<IAnalysisService, AnalysisService>();
-        services.AddSingleton<IStatsBuilderEngine, StatsBuilderEngine>();
         services.AddSingleton<IImporterService>(sp => 
             new ImporterService(
                 sp.GetRequiredService<Database>(),
