@@ -53,9 +53,7 @@ public class EquityCalculator : IEquityCalculator
             // fallback to Monte Carlo when too many unknown cards remain.
             var cardsNeeded = 5 - boardCards.Count;
             
-            // For preflop (cardsNeeded == 5), use Monte Carlo instead of exact enumeration
-            // Exact enumeration = 1.7M iterations (too slow for import)
-            // Monte Carlo with 500 iterations = much faster with good enough accuracy
+            // Use exact enumeration with parallel processing for preflop (fast + accurate)
             if (cardsNeeded == 5)
             {
                 // CACHE CHECK FOR PREFLOP
@@ -67,14 +65,14 @@ public class EquityCalculator : IEquityCalculator
                         return cached;
                     }
 
-                    // Use Monte Carlo with more iterations for better accuracy (5000 iterations)
-                    var result = RunMonteCarlo(heroCardList, villainCardList, boardCards, 5000, deadCardList);
+                    // Use exact enumeration with PLINQ for exact results (parallelized)
+                    var result = RunExactEnumerationParallel(heroCardList, villainCardList, boardCards, deadCardList);
                     _preflopCache[cacheKey] = result;
                     return result;
                 }
 
-                // With dead cards, use Monte Carlo with more iterations
-                return RunMonteCarlo(heroCardList, villainCardList, boardCards, 5000, deadCardList);
+                // With dead cards, use exact enumeration with PLINQ
+                return RunExactEnumerationParallel(heroCardList, villainCardList, boardCards, deadCardList);
             }
 
             // Use fast exact enumeration for postflop (flop/turn/river) - these are fast
@@ -453,6 +451,75 @@ public class EquityCalculator : IEquityCalculator
     // To avoid rewriting huge logic, I will keep old EvaluateHand for MC or update MC to use Fast.
     // Let's update MC to use Fast Evaluator for consistency.
     
+    private EquityResult RunExactEnumerationParallel(List<Card> heroCards, List<Card> villainCards, List<Card> boardCards, List<Card>? deadCards = null)
+    {
+        // Convert to ints
+        int hc1 = GetCardInt(heroCards[0]);
+        int hc2 = GetCardInt(heroCards[1]);
+        int vc1 = GetCardInt(villainCards[0]);
+        int vc2 = GetCardInt(villainCards[1]);
+
+        var usedMask = (1UL << hc1) | (1UL << hc2) | (1UL << vc1) | (1UL << vc2);
+        if (deadCards != null)
+        {
+            foreach (var c in deadCards) usedMask |= (1UL << GetCardInt(c));
+        }
+
+        // Pre-calculate available cards
+        int[] available = new int[52];
+        int availCount = 0;
+        for (int i = 0; i < 52; i++)
+        {
+            if ((usedMask & (1UL << i)) == 0)
+            {
+                available[availCount++] = i;
+            }
+        }
+
+        // Generate all 5-card combinations as indices into available[]
+        var combinations = new List<(int, int, int, int, int)>();
+        for (int i1 = 0; i1 < availCount - 4; i1++)
+        {
+            for (int i2 = i1 + 1; i2 < availCount - 3; i2++)
+            {
+                for (int i3 = i2 + 1; i3 < availCount - 2; i3++)
+                {
+                    for (int i4 = i3 + 1; i4 < availCount - 1; i4++)
+                    {
+                        for (int i5 = i4 + 1; i5 < availCount; i5++)
+                        {
+                            combinations.Add((available[i1], available[i2], available[i3], available[i4], available[i5]));
+                        }
+                    }
+                }
+            }
+        }
+
+        // Parallel enumeration using PLINQ
+        var results = combinations.AsParallel()
+            .Select(c => {
+                int c1 = c.Item1, c2 = c.Item2, c3 = c.Item3, c4 = c.Item4, c5 = c.Item5;
+                int hScore = Evaluate7(hc1, hc2, c1, c2, c3, c4, c5);
+                int vScore = Evaluate7(vc1, vc2, c1, c2, c3, c4, c5);
+                if (hScore > vScore) return (1, 0, 0);
+                if (vScore > hScore) return (0, 1, 0);
+                return (0, 0, 1);
+            })
+            .ToList();
+
+        long heroWins = results.Sum(r => r.Item1);
+        long villainWins = results.Sum(r => r.Item2);
+        long ties = results.Sum(r => r.Item3);
+
+        var total = (double)(heroWins + villainWins + ties);
+        return new EquityResult
+        {
+            HeroEquity = ((heroWins + (ties * 0.5)) / total) * 100.0,
+            VillainEquity = ((villainWins + (ties * 0.5)) / total) * 100.0,
+            TieEquity = (ties / total) * 100.0
+        };
+    }
+
     private EquityResult RunMonteCarlo(List<Card> heroCards, List<Card> villainCards, List<Card> boardCards, int iterations, List<Card>? deadCards = null)
     {
         var deck = CreateDeck();
