@@ -30,6 +30,7 @@ public enum Action
     Raise,
     Call,
     AllIn,
+    Any,
     Unknown
 }
 

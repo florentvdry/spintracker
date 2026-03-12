@@ -9,27 +9,27 @@ public class AddPerformanceIndexes : Migration
     {
         Create.Index("idx_hands_date_time")
             .OnTable("hands")
-            .Column("date_time");
+            .OnColumn("date_time");
 
         Create.Index("idx_hands_room")
             .OnTable("hands")
-            .Column("room");
+            .OnColumn("room");
 
         Create.Index("idx_hands_game_id")
             .OnTable("hands")
-            .Column("game_id");
+            .OnColumn("game_id");
 
         Create.Index("idx_player_hands_player_name")
             .OnTable("player_hands")
-            .Column("player_name");
+            .OnColumn("player_name");
 
         Create.Index("idx_player_hands_hand_id")
             .OnTable("player_hands")
-            .Column("hand_id");
+            .OnColumn("hand_id");
 
         Create.Index("idx_player_hands_position")
             .OnTable("player_hands")
-            .Column("position");
+            .OnColumn("position");
     }
 
     public override void Down()
