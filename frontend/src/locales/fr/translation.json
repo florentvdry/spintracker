@@ -264,6 +264,21 @@
     "database": {
       "title": "Base de données",
       "subtitle": "Gestion des données",
+      "multiple": {
+        "title": "Bases de données multiples",
+        "desc": "Gérez vos différentes bases de données",
+        "create": "Créer une base de données",
+        "name": "Nom de la base de données",
+        "active": "Active",
+        "set_active": "Définir comme active",
+        "delete": "Supprimer",
+        "cannot_delete_last": "Impossible de supprimer la dernière base de données",
+        "cannot_delete_active": "Impossible de supprimer la base de données active",
+        "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette base de données ?",
+        "delete_warning": "Cette action est irréversible. Toutes les données seront perdues.",
+        "hands_count": "{{count}} mains",
+        "created": "Créée le {{date}}"
+      },
       "export": {
         "title": "Exporter les données",
         "desc": "Télécharger toutes vos mains au format ZIP (groupées par date)",

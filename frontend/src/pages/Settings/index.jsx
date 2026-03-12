@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Trash2, Database, Download, Upload, Globe, FileCode, FolderOpen, Loader } from 'lucide-react';
+import { Trash2, Database, Download, Upload, Globe, FileCode, FolderOpen, Loader, Plus, Check, X, Edit2 } from 'lucide-react';
 import { Card } from '@components/ui';
 import { ipcService } from '@services/ipcService';
 import { pythonService } from '@services/pythonService';
@@ -19,10 +19,33 @@ export default function Settings() {
   const [serverStatus, setServerStatus] = useState('checking');
   const [exportLoading, setExportLoading] = useState(false);
   const [appVersion, setAppVersion] = useState('1.0.0');
+  
+  // Database management state
+  const [databases, setDatabases] = useState([]);
+  const [loadingDatabases, setLoadingDatabases] = useState(true);
+  const [creatingDb, setCreatingDb] = useState(false);
+  const [newDbName, setNewDbName] = useState('');
+  const [editingDbId, setEditingDbId] = useState(null);
+  const [editingDbName, setEditingDbName] = useState('');
+
+  const loadDatabases = async () => {
+    try {
+      setLoadingDatabases(true);
+      const result = await ipcService.getDatabases();
+      if (result.success) {
+        setDatabases(result.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to load databases:', error);
+    } finally {
+      setLoadingDatabases(false);
+    }
+  };
 
   useEffect(() => {
     checkStatus();
     loadVersion();
+    loadDatabases();
     const interval = setInterval(checkStatus, 30000); // Check every 30s
     return () => clearInterval(interval);
   }, []);
@@ -168,6 +191,157 @@ export default function Settings() {
     }
   };
 
+  const handleCreateDatabase = async () => {
+    if (!newDbName.trim()) return;
+    
+    try {
+      setCreatingDb(true);
+      const result = await ipcService.createDatabase(newDbName.trim());
+      if (result.success) {
+        addNotification({
+          type: 'success',
+          title: 'Base de données créée',
+          message: `La base de données "${newDbName}" a été créée`
+        });
+        setNewDbName('');
+        await loadDatabases();
+      } else {
+        addNotification({
+          type: 'error',
+          title: 'Erreur',
+          message: result.message || 'Impossible de créer la base de données'
+        });
+      }
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Erreur',
+        message: error.message
+      });
+    } finally {
+      setCreatingDb(false);
+    }
+  };
+
+  const handleSetActiveDatabase = async (dbId) => {
+    try {
+      const result = await ipcService.setActiveDatabase(dbId);
+      if (result.success) {
+        addNotification({
+          type: 'info',
+          title: 'Base de données activée',
+          message: 'L\'application va redémarrer avec la nouvelle base de données...'
+        });
+        await loadDatabases();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        addNotification({
+          type: 'error',
+          title: 'Erreur',
+          message: result.message || 'Impossible de changer de base de données'
+        });
+      }
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Erreur',
+        message: error.message
+      });
+    }
+  };
+
+  const handleDeleteDatabase = async (db) => {
+    if (databases.length <= 1) {
+      addNotification({
+        type: 'error',
+        title: 'Erreur',
+        message: t('settings.database.multiple.cannot_delete_last')
+      });
+      return;
+    }
+
+    if (db.isActive) {
+      addNotification({
+        type: 'error',
+        title: 'Erreur',
+        message: t('settings.database.multiple.cannot_delete_active')
+      });
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `${t('settings.database.multiple.confirm_delete')}\n\n${t('settings.database.multiple.delete_warning')}`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const result = await ipcService.deleteDatabase(db.id);
+      if (result.success) {
+        addNotification({
+          type: 'success',
+          title: 'Base de données supprimée',
+          message: `La base de données "${db.name}" a été supprimée`
+        });
+        await loadDatabases();
+      } else {
+        addNotification({
+          type: 'error',
+          title: 'Erreur',
+          message: result.message || 'Impossible de supprimer la base de données'
+        });
+      }
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Erreur',
+        message: error.message
+      });
+    }
+  };
+
+  const handleRenameDatabase = async (db) => {
+    if (!editingDbName.trim()) return;
+
+    try {
+      const result = await ipcService.renameDatabase(db.id, editingDbName.trim());
+      if (result.success) {
+        addNotification({
+          type: 'success',
+          title: 'Base de données renommée',
+          message: `La base de données a été renommée en "${editingDbName}"`
+        });
+        setEditingDbId(null);
+        setEditingDbName('');
+        await loadDatabases();
+      } else {
+        addNotification({
+          type: 'error',
+          title: 'Erreur',
+          message: result.message || 'Impossible de renommer la base de données'
+        });
+      }
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Erreur',
+        message: error.message
+      });
+    }
+  };
+
+  const startEditing = (db) => {
+    setEditingDbId(db.id);
+    setEditingDbName(db.name);
+  };
+
+  const cancelEditing = () => {
+    setEditingDbId(null);
+    setEditingDbName('');
+  };
+
   return (
     <div className="space-y-6 max-w-4xl">
       {/* Header */}
@@ -207,6 +381,113 @@ export default function Settings() {
             </div>
           }
         />
+      </Card>
+
+      {/* Multiple Databases Section */}
+      <Card title={t('settings.database.multiple.title')} subtitle={t('settings.database.multiple.desc')}>
+        <div className="space-y-4">
+          {/* Create new database */}
+          <div className="flex items-center gap-3 py-3 border-b border-dark-100/30">
+            <div className="w-10 h-10 rounded-lg bg-dark-200 flex items-center justify-center">
+              <Plus className="w-5 h-5 text-gray-400" />
+            </div>
+            <div className="flex-1">
+              <input
+                type="text"
+                value={newDbName}
+                onChange={(e) => setNewDbName(e.target.value)}
+                placeholder={t('settings.database.multiple.name')}
+                className="w-full bg-dark-200 border border-dark-100/50 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-blue-500"
+                onKeyDown={(e) => e.key === 'Enter' && handleCreateDatabase()}
+              />
+            </div>
+            <button
+              onClick={handleCreateDatabase}
+              disabled={!newDbName.trim() || creatingDb}
+              className="btn-primary flex items-center gap-2"
+            >
+              {creatingDb ? <Loader className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+              {t('settings.database.multiple.create')}
+            </button>
+          </div>
+
+          {/* Database list */}
+          {loadingDatabases ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader className="w-6 h-6 animate-spin text-gray-400" />
+            </div>
+          ) : (
+            databases.map((db) => (
+              <div key={db.id} className="flex items-center gap-3 py-3 border-b border-dark-100/30 last:border-b-0">
+                <div className="w-10 h-10 rounded-lg bg-dark-200 flex items-center justify-center">
+                  <Database className={`w-5 h-5 ${db.isActive ? 'text-green-400' : 'text-gray-400'}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  {editingDbId === db.id ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={editingDbName}
+                        onChange={(e) => setEditingDbName(e.target.value)}
+                        className="flex-1 bg-dark-200 border border-dark-100/50 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleRenameDatabase(db);
+                          if (e.key === 'Escape') cancelEditing();
+                        }}
+                        autoFocus
+                      />
+                      <button onClick={() => handleRenameDatabase(db)} className="p-1.5 text-green-400 hover:text-green-300">
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <button onClick={cancelEditing} className="p-1.5 text-gray-400 hover:text-gray-300">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <p className="text-white font-medium truncate">{db.name}</p>
+                        {db.isActive && (
+                          <span className="badge badge-success text-xs">{t('settings.database.multiple.active')}</span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-400">
+                        {t('settings.database.multiple.created', { date: new Date(db.createdAt).toLocaleDateString() })}
+                      </p>
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {!db.isActive && (
+                    <>
+                      <button
+                        onClick={() => startEditing(db)}
+                        className="p-2 text-gray-400 hover:text-white transition-colors"
+                        title={t('common.edit')}
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleSetActiveDatabase(db.id)}
+                        className="btn-secondary flex items-center gap-2 text-sm"
+                      >
+                        <Check className="w-4 h-4" />
+                        {t('settings.database.multiple.set_active')}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteDatabase(db)}
+                        className="p-2 text-red-400 hover:text-red-300 transition-colors"
+                        title={t('common.delete')}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </Card>
 
       {/* Stats Management */}

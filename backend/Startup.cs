@@ -14,9 +14,27 @@ namespace SpinTrackerBackend;
 
 public static class Startup
 {
-    public static void ConfigureServices(IServiceCollection services, string dbPath)
+    public static void ConfigureServices(IServiceCollection services, string? dbPath)
     {
-        var _connectionStringForMigrations = $"Data Source={dbPath}";
+        services.AddSingleton<DatabaseRegistry>(sp => 
+            new DatabaseRegistry(sp.GetRequiredService<ILogger<DatabaseRegistry>>(), dbPath));
+
+        var registry = services.BuildServiceProvider().GetRequiredService<DatabaseRegistry>();
+        var activeDb = registry.GetActive();
+        var actualDbPath = dbPath;
+        
+        if (activeDb != null)
+        {
+            actualDbPath = activeDb.FilePath;
+        }
+        else if (string.IsNullOrEmpty(dbPath))
+        {
+            var backendDir = Directory.GetCurrentDirectory();
+            var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
+            actualDbPath = Path.Combine(projectRoot, "poker_tracker.db");
+        }
+
+        var _connectionStringForMigrations = $"Data Source={actualDbPath}";
 
         // Register FluentMigrator to run SQLite migrations
         services.AddFluentMigratorCore()
@@ -40,7 +58,7 @@ public static class Startup
         services.AddSingleton<Database>(sp => 
             new Database(
                 sp.GetRequiredService<ILogger<Database>>(), 
-                dbPath,
+                actualDbPath,
                 sp.GetRequiredService<HudProfileRepository>(),
                 sp.GetRequiredService<CustomStatsRepository>(),
                 sp.GetRequiredService<StatsRepository>(),
@@ -58,7 +76,7 @@ public static class Startup
                 sp.GetRequiredService<PlayerRepository>()
             ));
 
-        string connectionString = $"Data Source={dbPath}";
+        string connectionString = $"Data Source={actualDbPath}";
 
         // Repositories
         services.AddSingleton(sp => new HudProfileRepository(connectionString));
