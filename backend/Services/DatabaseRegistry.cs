@@ -38,9 +38,18 @@ public class DatabaseRegistry
 
     private string GetAppDataPath()
     {
-        var backendDir = Directory.GetCurrentDirectory();
-        var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
-        var appDataPath = Path.Combine(projectRoot, "app_data");
+        string appDataPath;
+        
+        if (!string.IsNullOrEmpty(_providedDbPath))
+        {
+            appDataPath = Path.GetDirectoryName(_providedDbPath) ?? Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), ".."));
+        }
+        else
+        {
+            var backendDir = Directory.GetCurrentDirectory();
+            var projectRoot = Path.GetFullPath(Path.Combine(backendDir, ".."));
+            appDataPath = Path.Combine(projectRoot, "app_data");
+        }
         
         if (!Directory.Exists(appDataPath))
         {
@@ -53,7 +62,7 @@ public class DatabaseRegistry
     public string GetDatabasesFolder()
     {
         var appDataPath = GetAppDataPath();
-        var dbFolder = Path.Combine(appDataPath, "databases");
+        var dbFolder = Path.Combine(appDataPath, "database");
         
         if (!Directory.Exists(dbFolder))
         {
