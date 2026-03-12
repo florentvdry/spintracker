@@ -167,17 +167,15 @@ public class ImporterService : IImporterService
                     try
                     {
                         var hand = parser.ParseHand(handText);
-                        if (hand != null && hand.PlayerCount <= 3)
+                        if (hand != null && hand.PlayerCount <= 3 && hand.Id != null && existingHandIds.Contains(hand.Id))
                         {
-                            if (existingHandIds.Contains(hand.Id))
-                            {
-                                Interlocked.Increment(ref skippedHands);
-                                continue;
-                            }
-
-                            var analytics = _analyticsCalc.CalculateHandAnalytics(hand);
-                            await processedChannel.Writer.WriteAsync((hand, analytics), cancellationToken);
+                            Interlocked.Increment(ref skippedHands);
+                            continue;
                         }
+
+                        if (hand == null) continue;
+                        var analytics = _analyticsCalc.CalculateHandAnalytics(hand);
+                        await processedChannel.Writer.WriteAsync((hand, analytics), cancellationToken);
                     }
                     catch (Exception e)
                     {

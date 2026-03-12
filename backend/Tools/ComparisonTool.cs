@@ -234,7 +234,8 @@ public static class ComparisonTool
                         if (hero == null) continue;
                         
                         checkedCount++;
-                        if (dbHands.TryGetValue(lh.Id, out var dbWtsd))
+                        var handId = lh.Id;
+                        if (handId != null && dbHands.TryGetValue(handId, out var dbWtsd))
                         {
                             if (hero.WentToShowdown != dbWtsd)
                             {
@@ -260,7 +261,7 @@ public static class ComparisonTool
 
     class Pt4HandData
     {
-        public string HandId { get; set; }
+        public required string HandId { get; set; }
         public double ChipsWon { get; set; }
         public bool Showdown { get; set; }
         public double? NetExpectedChipsWon { get; set; }

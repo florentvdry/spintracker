@@ -281,8 +281,6 @@ namespace SpinTrackerBackend.Engines
                 var content = parts[1].Trim().ToLower();
 
                 string type = "unknown";
-                
-                double amount = 0;
 
                 if (content.Contains("bets")) type = "Bet";
                 else if (content.Contains("raises")) type = "Raise";

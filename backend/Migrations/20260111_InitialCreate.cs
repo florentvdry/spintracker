@@ -134,7 +134,7 @@ public class InitialCreate20260111 : Migration
 			{
 				foreach (var stat in stats)
 				{
-					string id = stat.ContainsKey("Id") ? stat["Id"]?.ToString() : null ?? Guid.NewGuid().ToString();
+					string id = stat.ContainsKey("Id") ? stat["Id"]?.ToString() ?? Guid.NewGuid().ToString() : Guid.NewGuid().ToString();
 					string name = stat.ContainsKey("Name") ? stat["Name"]?.ToString() ?? "" : "";
 					object? definitionObj = stat.ContainsKey("Definition") ? stat["Definition"] : null;
 					string definition = definitionObj != null ? JsonSerializer.Serialize(definitionObj) : "{}";

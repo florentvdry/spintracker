@@ -73,6 +73,6 @@ public static class DefaultData
             {""type"":""text"",""content"":""15+"",""row"":2,""col"":7,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}},
             {""type"":""text"",""content"":""15-10"",""row"":3,""col"":7,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}},
             {""type"":""text"",""content"":""10-8"",""row"":4,""col"":7,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}}
-        ]")
+        ]") ?? new { },
     };
 }

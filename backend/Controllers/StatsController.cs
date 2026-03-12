@@ -94,7 +94,7 @@ public class StatsController : ControllerBase
             }
 
             var id = string.IsNullOrEmpty(data.Id) ? Guid.NewGuid().ToString() : data.Id;
-            await _customStatsRepo.SaveCustomStatAsync(id, data.Name, data.Description ?? "", data.Definition);
+            await _customStatsRepo.SaveCustomStatAsync(id, data.Name, data.Description ?? "", data.Definition ?? new { });
             return Ok(new { success = true, id });
         }
         catch (Exception e)
@@ -145,7 +145,7 @@ public class StatsController : ControllerBase
             foreach (var stat in stats)
             {
                 var id = string.IsNullOrEmpty(stat.Id) ? Guid.NewGuid().ToString() : stat.Id;
-                await _customStatsRepo.SaveCustomStatAsync(id, stat.Name, stat.Description ?? "", stat.Definition);
+                await _customStatsRepo.SaveCustomStatAsync(id, stat.Name, stat.Description ?? "", stat.Definition ?? new { });
                 count++;
             }
 
