@@ -111,6 +111,8 @@ public class Database
     {
         if (hands.Count == 0) return 0;
 
+        _logger.LogInformation($"[DB] Starting batch insert: {hands.Count} hands, {analytics.Count} analytics");
+
         var batchSw = Stopwatch.StartNew();
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
@@ -138,6 +140,8 @@ public class Database
                 @flop, @flop_action, @turn, @turn_action, @river, @river_action,
                 @showdown, @result, @all_in_street, @went_to_showdown, @player_count
             )";
+
+            _logger.LogInformation($"[DB] SQL prepared, starting insert loop for {hands.Count} hands");
 
             foreach (var hand in hands)
             {
@@ -267,7 +271,7 @@ public class Database
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            _logger.LogError($"Transaction failed: {ex.Message}");
+            _logger.LogError($"Transaction failed: {ex.Message}\nStackTrace: {ex.StackTrace}");
             throw;
         }
     }
