@@ -13,14 +13,12 @@ public class StatsRepository
     private readonly string _connectionString;
     private readonly ILogger<StatsRepository> _logger;
     private readonly CustomStatsRepository _customStatsRepo;
-    private readonly HudProfileRepository _hudProfileRepo;
 
-    public StatsRepository(string connectionString, ILogger<StatsRepository> logger, CustomStatsRepository customStatsRepo, HudProfileRepository hudProfileRepo)
+    public StatsRepository(string connectionString, ILogger<StatsRepository> logger, CustomStatsRepository customStatsRepo)
     {
         _connectionString = connectionString;
         _logger = logger;
         _customStatsRepo = customStatsRepo;
-        _hudProfileRepo = hudProfileRepo;
     }
 
     // Placeholder: extract GetDashboardStatsAsync, GetSessionHistoryAsync, etc.
@@ -692,7 +690,6 @@ public class StatsRepository
 
         // Reload defaults (outside transaction)
         LoadDefaultStats();
-        LoadDefaultHudProfiles();
     }
 
     public void LoadDefaultStats()
@@ -740,38 +737,6 @@ public class StatsRepository
         catch (Exception ex)
         {
             _logger.LogError($"Error loading default stats: {ex.Message}");
-        }
-    }
-
-    public void LoadDefaultHudProfiles()
-    {
-        try
-        {
-            var profileData = DefaultData.DefaultHudProfile;
-
-            if (profileData == null)
-            {
-                _logger.LogWarning("Invalid default HUD profile data");
-                return;
-            }
-
-            var name = profileData.ContainsKey("name") ? profileData["name"]?.ToString() : "Minimalist Spin HUD";
-            var layout = profileData.ContainsKey("layout") ? profileData["layout"] : null;
-
-            if (layout == null)
-            {
-                _logger.LogWarning("No layout found in default HUD profile");
-                return;
-            }
-
-            var id = Guid.NewGuid().ToString();
-            _hudProfileRepo.SaveHudProfileAsync(id, name ?? "Minimalist Spin HUD", layout, true).Wait();
-
-            _logger.LogInformation($"Loaded default HUD profile: {name}");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Error loading default HUD profile: {ex.Message}");
         }
     }
 }

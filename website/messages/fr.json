@@ -32,16 +32,6 @@
   "Screenshots": {
     "title": "Voir en Action",
     "subtitle": "Une interface propre et intuitive conçue pour vous garder concentré sur l'action.",
-    "hud": {
-      "title": "HUD Dynamique",
-      "description": "Notre HUD s'adapte à l'état du jeu, affichant uniquement les stats pertinentes quand vous en avez besoin. Entièrement personnalisable via un éditeur drag-and-drop.",
-      "list": {
-        "positional": "Stats positionnelles",
-        "vs_hero": "Stats Vs Hero",
-        "pot_odds": "Cotes du pot en direct"
-      },
-      "alt": "Capture d'écran de l'interface HUD"
-    },
     "replayer": {
       "title": "Replayer Interactif",
       "description": "Revoyez vos sessions avec notre replayer élégant.",

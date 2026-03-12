@@ -1,4 +1,3 @@
-using System.Text.Json;
 
 namespace SpinTrackerBackend.Data;
 
@@ -46,33 +45,5 @@ public static class DefaultData
         new() { ["Name"] = "All in 6- (2w 0-6bb)", ["Id"] = "all_in_6-_2w_0_6", ["Definition"] = new Dictionary<string, object> { ["denominator"] = new Dictionary<string, object> { ["operator"] = "AND", ["conditions"] = new List<Dictionary<string, object>> { new() { ["street"] = "Preflop", ["actor"] = "Hero", ["action"] = "Any", ["parameters"] = new Dictionary<string, object> { ["PlayerCount"] = 2, ["MinStackBB"] = 0, ["MaxStackBB"] = 6 } } }, ["subGroups"] = new List<object>() }, ["numerator"] = new Dictionary<string, object> { ["operator"] = "AND", ["conditions"] = new List<Dictionary<string, object>> { new() { ["street"] = "Preflop", ["actor"] = "Hero", ["action"] = "AllIn", ["parameters"] = new Dictionary<string, object> { ["PlayerCount"] = 2, ["MinStackBB"] = 0, ["MaxStackBB"] = 6 } } }, ["subGroups"] = new List<object>() } } },
         new() { ["Name"] = "Iso 6- (2w 0-6bb)", ["Id"] = "iso_6-_2w_0_6", ["Definition"] = new Dictionary<string, object> { ["denominator"] = new Dictionary<string, object> { ["operator"] = "AND", ["conditions"] = new List<Dictionary<string, object>> { new() { ["street"] = "Preflop", ["actor"] = "Villain", ["action"] = "Call", ["parameters"] = new Dictionary<string, object> { ["PlayerCount"] = 2, ["MinStackBB"] = 0, ["MaxStackBB"] = 6 } } }, ["subGroups"] = new List<object>() }, ["numerator"] = new Dictionary<string, object> { ["operator"] = "AND", ["conditions"] = new List<Dictionary<string, object>> { new() { ["street"] = "Preflop", ["actor"] = "Hero", ["action"] = "Raise", ["parameters"] = new Dictionary<string, object> { ["PlayerCount"] = 2, ["MinStackBB"] = 0, ["MaxStackBB"] = 6 } } }, ["subGroups"] = new List<object>() } } },
         new() { ["Name"] = "Iso Fold 6- (2w 0-6bb)", ["Id"] = "iso_fold_6-_2w_0_6", ["Definition"] = new Dictionary<string, object> { ["denominator"] = new Dictionary<string, object> { ["operator"] = "AND", ["conditions"] = new List<Dictionary<string, object>> { new() { ["street"] = "Preflop", ["actor"] = "Villain", ["action"] = "Call", ["parameters"] = new Dictionary<string, object> { ["PlayerCount"] = 2, ["MinStackBB"] = 0, ["MaxStackBB"] = 6 } }, new() { ["street"] = "Preflop", ["actor"] = "Hero", ["action"] = "Raise", ["parameters"] = new Dictionary<string, object> { ["PlayerCount"] = 2, ["MinStackBB"] = 0, ["MaxStackBB"] = 6 } }, new() { ["street"] = "Preflop", ["actor"] = "Villain", ["action"] = "Raise", ["parameters"] = new Dictionary<string, object> { ["PlayerCount"] = 2, ["MinStackBB"] = 0, ["MaxStackBB"] = 6 } } }, ["subGroups"] = new List<object>() }, ["numerator"] = new Dictionary<string, object> { ["operator"] = "AND", ["conditions"] = new List<Dictionary<string, object>> { new() { ["street"] = "Preflop", ["actor"] = "Hero", ["action"] = "Fold", ["parameters"] = new Dictionary<string, object> { ["PlayerCount"] = 2, ["MinStackBB"] = 0, ["MaxStackBB"] = 6 } } }, ["subGroups"] = new List<object>() } } },
-    };
-
-    public static Dictionary<string, object> DefaultHudProfile => new()
-    {
-        ["name"] = "Minimalist Spin HUD",
-        ["layout"] = JsonSerializer.Deserialize<object>(@"[
-            {""type"":""text"",""content"":""3-WAY"",""row"":0,""col"":0,""style"":{""fontWeight"":""bold"",""color"":""#3b82f6"",""fontSize"":""18px"",""textAlign"":""left""}},
-            {""type"":""text"",""content"":""Depth"",""row"":1,""col"":0,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""O/F"",""row"":1,""col"":1,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""O/C"",""row"":1,""col"":2,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""AI"",""row"":1,""col"":3,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""Iso"",""row"":1,""col"":4,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""IsoF"",""row"":1,""col"":5,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""15+"",""row"":2,""col"":0,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}},
-            {""type"":""text"",""content"":""15-10"",""row"":3,""col"":0,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}},
-            {""type"":""text"",""content"":""10-8"",""row"":4,""col"":0,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}},
-            {""type"":""text"",""content"":""6-"",""row"":5,""col"":0,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}},
-            {""type"":""text"",""content"":""HEADS-UP"",""row"":0,""col"":7,""style"":{""fontWeight"":""bold"",""color"":""#3b82f6"",""fontSize"":""18px"",""textAlign"":""left""}},
-            {""type"":""text"",""content"":""Depth"",""row"":1,""col"":7,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""O/F"",""row"":1,""col"":8,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""O/C"",""row"":1,""col"":9,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""AI"",""row"":1,""col"":10,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""Iso"",""row"":1,""col"":11,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""IsoF"",""row"":1,""col"":12,""style"":{""fontSize"":""12px"",""color"":""#94a3b8"",""fontWeight"":""bold""}},
-            {""type"":""text"",""content"":""15+"",""row"":2,""col"":7,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}},
-            {""type"":""text"",""content"":""15-10"",""row"":3,""col"":7,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}},
-            {""type"":""text"",""content"":""10-8"",""row"":4,""col"":7,""style"":{""fontSize"":""12px"",""color"":""#94a3b8""}}
-        ]") ?? new { },
     };
 }

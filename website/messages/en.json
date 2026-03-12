@@ -32,16 +32,6 @@
   "Screenshots": {
     "title": "See it in Action",
     "subtitle": "A clean, intuitive interface designed to keep you focused on the action.",
-    "hud": {
-      "title": "Dynamic HUD",
-      "description": "Our HUD adapts to the game state, showing you only the relevant stats when you need them. Fully customizable via drag-and-drop editor.",
-      "list": {
-        "positional": "Positional stats",
-        "vs_hero": "Vs Hero stats",
-        "pot_odds": "Live pot odds"
-      },
-      "alt": "HUD Interface Screenshot"
-    },
     "replayer": {
       "title": "Interactive Replayer",
       "description": "Review your sessions with our sleek hand replayer. Analyze every street, check equities, and take notes on opponents.",
