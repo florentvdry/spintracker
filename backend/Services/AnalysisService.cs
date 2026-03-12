@@ -158,23 +158,23 @@ namespace SpinTrackerBackend.Services
                         if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to PreflopAction mismatch.");
                         continue;
                     }
-                }
-                
-                // Keep Postflop filters valid even with sequence (sequence is Preflop only for now)
-                if (!MatchesStreetActionByPosition(hand.FlopAction, filters.FlopBtnAction, filters.FlopSbAction, filters.FlopBbAction, hand)) 
-                {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopAction mismatch.");
-                    continue;
-                }
-                if (!MatchesStreetActionByPosition(hand.TurnAction, filters.TurnBtnAction, filters.TurnSbAction, filters.TurnBbAction, hand)) 
-                {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnAction mismatch.");
-                    continue;
-                }
-                if (!MatchesStreetActionByPosition(hand.RiverAction, filters.RiverBtnAction, filters.RiverSbAction, filters.RiverBbAction, hand)) 
-                {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverAction mismatch.");
-                    continue;
+                    
+                    // Keep Postflop filters valid even with sequence (sequence is Preflop only for now)
+                    if (!MatchesStreetActionByPosition(hand.FlopAction, filters.FlopBtnAction, filters.FlopSbAction, filters.FlopBbAction, hand)) 
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopAction mismatch.");
+                        continue;
+                    }
+                    if (!MatchesStreetActionByPosition(hand.TurnAction, filters.TurnBtnAction, filters.TurnSbAction, filters.TurnBbAction, hand)) 
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnAction mismatch.");
+                        continue;
+                    }
+                    if (!MatchesStreetActionByPosition(hand.RiverAction, filters.RiverBtnAction, filters.RiverSbAction, filters.RiverBbAction, hand)) 
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverAction mismatch.");
+                        continue;
+                    }
                 }
 
                 result.Add(hand);

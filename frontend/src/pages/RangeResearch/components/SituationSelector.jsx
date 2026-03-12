@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { User, Calendar, RotateCcw, Layers, Search, ChevronDown, Info } from 'lucide-react';
 import clsx from 'clsx';
@@ -43,6 +43,12 @@ export default function SituationSelector({ filters, onChange }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPosition, setSelectedPosition] = useState(filters.Positions?.[0] || (filters.PlayerCount === 2 ? 'SB' : 'BTN'));
+
+  useEffect(() => {
+    if (filters.Positions?.[0]) {
+      setSelectedPosition(filters.Positions[0]);
+    }
+  }, [filters.Positions]);
 
   const SITUATIONS = useMemo(() => GET_SITUATIONS(t), [t]);
 
