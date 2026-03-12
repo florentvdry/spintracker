@@ -75,12 +75,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
 
         var shouldCalculateEv = isShowdown && anyAllIn && hasBothCards && !isRiverAllIn;
 
-        // Skip slow EV calculation for preflop all-in (use profit only - much faster)
-        // Preflop exact enumeration is extremely slow (1.7M iterations)
-        if (isPreflopAllIn)
-        {
-            shouldCalculateEv = false;
-        }
+        // Enable EV calculation for preflop all-in - exact enumeration is now fast with caching + parallel
 
         if (shouldCalculateEv)
         {
