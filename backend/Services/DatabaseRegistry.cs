@@ -25,10 +25,12 @@ public class DatabaseRegistry
     private readonly ILogger<DatabaseRegistry> _logger;
     private List<DatabaseInfo> _databases = new();
     private readonly object _lock = new();
+    private readonly string? _providedDbPath;
 
-    public DatabaseRegistry(ILogger<DatabaseRegistry> logger)
+    public DatabaseRegistry(ILogger<DatabaseRegistry> logger, string? providedDbPath = null)
     {
         _logger = logger;
+        _providedDbPath = providedDbPath;
         var appDataPath = GetAppDataPath();
         _registryPath = Path.Combine(appDataPath, "database_registry.json");
         Load();
@@ -73,7 +75,6 @@ public class DatabaseRegistry
             }
             else
             {
-                // Create default database if none exists
                 CreateDefaultDatabase();
             }
         }
@@ -88,12 +89,40 @@ public class DatabaseRegistry
     private void CreateDefaultDatabase()
     {
         var dbFolder = GetDatabasesFolder();
+        string dbPath;
+        string dbName;
+
+        if (!string.IsNullOrEmpty(_providedDbPath) && File.Exists(_providedDbPath))
+        {
+            dbPath = _providedDbPath;
+            dbName = Path.GetFileName(_providedDbPath);
+            _logger.LogInformation($"Using existing database at: {dbPath}");
+        }
+        else
+        {
+            dbPath = Path.Combine(dbFolder, "poker_tracker.db");
+            dbName = "poker_tracker.db";
+
+            var projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), ".."));
+            var oldDbPath = Path.Combine(projectRoot, "poker_tracker.db");
+            if (File.Exists(oldDbPath) && !File.Exists(dbPath))
+            {
+                File.Copy(oldDbPath, dbPath);
+                _logger.LogInformation("Migrated existing database to new location");
+
+                if (File.Exists(oldDbPath + "-wal"))
+                    try { File.Copy(oldDbPath + "-wal", dbPath + "-wal"); } catch { }
+                if (File.Exists(oldDbPath + "-shm"))
+                    try { File.Copy(oldDbPath + "-shm", dbPath + "-shm"); } catch { }
+            }
+        }
+
         var defaultDb = new DatabaseInfo
         {
             Id = Guid.NewGuid().ToString(),
             Name = "Base de données principale",
-            FileName = "poker_tracker.db",
-            FilePath = Path.Combine(dbFolder, "poker_tracker.db"),
+            FileName = dbName,
+            FilePath = dbPath,
             CreatedAt = DateTime.UtcNow,
             LastUsedAt = DateTime.UtcNow,
             IsActive = true
@@ -101,25 +130,6 @@ public class DatabaseRegistry
         
         _databases.Add(defaultDb);
         Save();
-        
-        // Copy old database if exists
-        var projectRoot = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), ".."));
-        var oldDbPath = Path.Combine(projectRoot, "poker_tracker.db");
-        if (File.Exists(oldDbPath) && !File.Exists(defaultDb.FilePath))
-        {
-            File.Copy(oldDbPath, defaultDb.FilePath);
-            _logger.LogInformation("Migrated existing database to new location");
-        }
-        
-        // Also check for WAL files and copy them
-        if (File.Exists(oldDbPath + "-wal") && !File.Exists(defaultDb.FilePath + "-wal"))
-        {
-            try { File.Copy(oldDbPath + "-wal", defaultDb.FilePath + "-wal"); } catch { }
-        }
-        if (File.Exists(oldDbPath + "-shm") && !File.Exists(defaultDb.FilePath + "-shm"))
-        {
-            try { File.Copy(oldDbPath + "-shm", defaultDb.FilePath + "-shm"); } catch { }
-        }
     }
 
     private void Save()

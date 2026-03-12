@@ -16,10 +16,9 @@ public static class Startup
 {
     public static void ConfigureServices(IServiceCollection services, string? dbPath)
     {
-        // Register DatabaseRegistry first
-        services.AddSingleton<DatabaseRegistry>();
+        services.AddSingleton<DatabaseRegistry>(sp => 
+            new DatabaseRegistry(sp.GetRequiredService<ILogger<DatabaseRegistry>>(), dbPath));
 
-        // Get the active database path from registry
         var registry = services.BuildServiceProvider().GetRequiredService<DatabaseRegistry>();
         var activeDb = registry.GetActive();
         var actualDbPath = dbPath;
