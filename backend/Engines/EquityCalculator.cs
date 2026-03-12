@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using SpinTrackerBackend.Interfaces;
 using SpinTrackerBackend;
 
@@ -8,8 +10,8 @@ public class EquityCalculator : IEquityCalculator
     private readonly ILogger<EquityCalculator> _logger;
 
     // Thread-safe cache for preflop results
-    private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, EquityResult> _preflopCache 
-        = new System.Collections.Concurrent.ConcurrentDictionary<string, EquityResult>();
+    private static readonly ConcurrentDictionary<string, EquityResult> _preflopCache 
+        = new ConcurrentDictionary<string, EquityResult>();
 
     public EquityCalculator(ILogger<EquityCalculator> logger)
     {
@@ -75,10 +77,10 @@ public class EquityCalculator : IEquityCalculator
                 return RunExactEnumerationParallel(heroCardList, villainCardList, boardCards, deadCardList);
             }
 
-            // Use fast exact enumeration for postflop (flop/turn/river) - these are fast
+            // Use fast exact enumeration for postflop (flop/turn/river) - parallelized
             if (cardsNeeded > 0 && cardsNeeded < 5) 
             {
-                return RunExactEnumerationFast(heroCardList, villainCardList, boardCards, deadCardList);
+                return RunExactEnumerationParallel(heroCardList, villainCardList, boardCards, deadCardList);
             }
 
             // Monte Carlo simulation for cases with >2 unknown cards (if we ever support that?)
@@ -459,7 +461,21 @@ public class EquityCalculator : IEquityCalculator
         int vc1 = GetCardInt(villainCards[0]);
         int vc2 = GetCardInt(villainCards[1]);
 
+        int b1 = -1, b2 = -1, b3 = -1, b4 = -1, b5 = -1;
+        int boardCount = boardCards.Count;
+        if (boardCount >= 1) b1 = GetCardInt(boardCards[0]);
+        if (boardCount >= 2) b2 = GetCardInt(boardCards[1]);
+        if (boardCount >= 3) b3 = GetCardInt(boardCards[2]);
+        if (boardCount >= 4) b4 = GetCardInt(boardCards[3]);
+        if (boardCount >= 5) b5 = GetCardInt(boardCards[4]);
+
         var usedMask = (1UL << hc1) | (1UL << hc2) | (1UL << vc1) | (1UL << vc2);
+        if (b1 != -1) usedMask |= (1UL << b1);
+        if (b2 != -1) usedMask |= (1UL << b2);
+        if (b3 != -1) usedMask |= (1UL << b3);
+        if (b4 != -1) usedMask |= (1UL << b4);
+        if (b5 != -1) usedMask |= (1UL << b5);
+        
         if (deadCards != null)
         {
             foreach (var c in deadCards) usedMask |= (1UL << GetCardInt(c));
@@ -476,40 +492,92 @@ public class EquityCalculator : IEquityCalculator
             }
         }
 
-        // Generate all 5-card combinations as indices into available[]
-        var combinations = new List<(int, int, int, int, int)>();
-        for (int i1 = 0; i1 < availCount - 4; i1++)
+        int cardsNeeded = 5 - boardCount;
+        
+        long heroWins = 0;
+        long villainWins = 0;
+        long ties = 0;
+        
+        // For preflop: use PLINQ with exact enumeration (cached results make subsequent calls instant)
+        // For postflop: sequential is very fast due to small combination space
+        if (cardsNeeded == 5)
         {
-            for (int i2 = i1 + 1; i2 < availCount - 3; i2++)
+            // Preflop - generate all 5-card combinations and process in parallel
+            var combinations = new List<(int, int, int, int, int)>();
+            for (int i1 = 0; i1 < availCount - 4; i1++)
             {
-                for (int i3 = i2 + 1; i3 < availCount - 2; i3++)
+                for (int i2 = i1 + 1; i2 < availCount - 3; i2++)
                 {
-                    for (int i4 = i3 + 1; i4 < availCount - 1; i4++)
+                    for (int i3 = i2 + 1; i3 < availCount - 2; i3++)
                     {
-                        for (int i5 = i4 + 1; i5 < availCount; i5++)
+                        for (int i4 = i3 + 1; i4 < availCount - 1; i4++)
                         {
-                            combinations.Add((available[i1], available[i2], available[i3], available[i4], available[i5]));
+                            for (int i5 = i4 + 1; i5 < availCount; i5++)
+                            {
+                                combinations.Add((available[i1], available[i2], available[i3], available[i4], available[i5]));
+                            }
                         }
                     }
                 }
             }
+
+            // Parallel enumeration using PLINQ with partitioner for better performance
+            var results = combinations.AsParallel()
+                .AsOrdered()
+                .Select(c => {
+                    int c1 = c.Item1, c2 = c.Item2, c3 = c.Item3, c4 = c.Item4, c5 = c.Item5;
+                    int hScore = Evaluate7(hc1, hc2, c1, c2, c3, c4, c5);
+                    int vScore = Evaluate7(vc1, vc2, c1, c2, c3, c4, c5);
+                    if (hScore > vScore) return (1L, 0L, 0L);
+                    if (vScore > hScore) return (0L, 1L, 0L);
+                    return (0L, 0L, 1L);
+                })
+                .ToList();
+
+            heroWins = results.Sum(r => r.Item1);
+            villainWins = results.Sum(r => r.Item2);
+            ties = results.Sum(r => r.Item3);
         }
-
-        // Parallel enumeration using PLINQ
-        var results = combinations.AsParallel()
-            .Select(c => {
-                int c1 = c.Item1, c2 = c.Item2, c3 = c.Item3, c4 = c.Item4, c5 = c.Item5;
-                int hScore = Evaluate7(hc1, hc2, c1, c2, c3, c4, c5);
-                int vScore = Evaluate7(vc1, vc2, c1, c2, c3, c4, c5);
-                if (hScore > vScore) return (1, 0, 0);
-                if (vScore > hScore) return (0, 1, 0);
-                return (0, 0, 1);
-            })
-            .ToList();
-
-        long heroWins = results.Sum(r => r.Item1);
-        long villainWins = results.Sum(r => r.Item2);
-        long ties = results.Sum(r => r.Item3);
+        else if (cardsNeeded == 2)
+        {
+            for (int i1 = 0; i1 < availCount - 1; i1++)
+            {
+                int c1 = available[i1];
+                for (int i2 = i1 + 1; i2 < availCount; i2++)
+                {
+                    int c2 = available[i2];
+                    
+                    int hScore = Evaluate7(hc1, hc2, b1, b2, b3, c1, c2);
+                    int vScore = Evaluate7(vc1, vc2, b1, b2, b3, c1, c2);
+                    
+                    if (hScore > vScore) heroWins++;
+                    else if (vScore > hScore) villainWins++;
+                    else ties++;
+                }
+            }
+        }
+        else if (cardsNeeded == 1)
+        {
+            for (int i1 = 0; i1 < availCount; i1++)
+            {
+                int c1 = available[i1];
+                
+                int hScore = Evaluate7(hc1, hc2, b1, b2, b3, b4, c1);
+                int vScore = Evaluate7(vc1, vc2, b1, b2, b3, b4, c1);
+                
+                if (hScore > vScore) heroWins++;
+                else if (vScore > hScore) villainWins++;
+                else ties++;
+            }
+        }
+        else if (cardsNeeded == 0)
+        {
+            int hScore = Evaluate7(hc1, hc2, b1, b2, b3, b4, b5);
+            int vScore = Evaluate7(vc1, vc2, b1, b2, b3, b4, b5);
+            if (hScore > vScore) heroWins++;
+            else if (vScore > hScore) villainWins++;
+            else ties++;
+        }
 
         var total = (double)(heroWins + villainWins + ties);
         return new EquityResult
