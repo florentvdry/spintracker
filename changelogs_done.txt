@@ -1,0 +1,3 @@
+- Ajout: Nouveau analyseur de range, plus facile à comprendre, avec de l'opacité selon la fréquence.
+- Changement: Ajout de la date dans la partie haute du site, prise en compte sur toutes les pages de l'application.
+- Ajout: Pouvoir avoir plusieurs base de données.
