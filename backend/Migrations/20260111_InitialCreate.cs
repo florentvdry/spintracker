@@ -101,80 +101,10 @@ public class InitialCreate20260111 : Migration
 		Execute.Sql("CREATE INDEX IF NOT EXISTS idx_hands_game_id ON hands(game_id)");
 		Execute.Sql("CREATE INDEX IF NOT EXISTS idx_player_hands_hand ON player_hands(hand_id)");
 		Execute.Sql("CREATE INDEX IF NOT EXISTS idx_player_hands_player ON player_hands(player_name)");
-
-		// Custom Stats table
-		Execute.Sql(@"
-			CREATE TABLE IF NOT EXISTS custom_stats (
-				id TEXT PRIMARY KEY,
-				name TEXT NOT NULL,
-				description TEXT,
-				definition TEXT NOT NULL,
-				created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-				updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-			)
-		");
-
-		// HUD Profiles table
-		Execute.Sql(@"
-			CREATE TABLE IF NOT EXISTS hud_profiles (
-				id TEXT PRIMARY KEY,
-				name TEXT NOT NULL,
-				layout TEXT NOT NULL,
-				is_active BOOLEAN DEFAULT 0,
-				created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-				updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-			)
-		");
-
-		// Try to automatically import JSON files if they exist next to the running assembly
-		try
-		{
-			var stats = DefaultData.DefaultStats;
-			if (stats != null)
-			{
-				foreach (var stat in stats)
-				{
-					string id = stat.ContainsKey("Id") ? stat["Id"]?.ToString() ?? Guid.NewGuid().ToString() : Guid.NewGuid().ToString();
-					string name = stat.ContainsKey("Name") ? stat["Name"]?.ToString() ?? "" : "";
-					object? definitionObj = stat.ContainsKey("Definition") ? stat["Definition"] : null;
-					string definition = definitionObj != null ? JsonSerializer.Serialize(definitionObj) : "{}";
-					id = id.Replace("'", "''");
-					name = name.Replace("'", "''");
-					definition = definition.Replace("'", "''");
-					Execute.Sql($"INSERT OR IGNORE INTO custom_stats (id,name,definition) VALUES ('{id}','{name}','{definition}')");
-				}
-			}
-		}
-		catch
-		{
-			// ignore import errors
-		}
-
-		try
-		{
-			var hudProfile = DefaultData.DefaultHudProfile;
-			if (hudProfile != null)
-			{
-				string hudName = hudProfile.ContainsKey("name") ? hudProfile["name"]?.ToString() ?? "HUD" : "Minimalist Spin HUD";
-				string hudId = hudName.ToLowerInvariant().Replace(' ', '_').Replace('-', '_');
-				object? layoutObj = hudProfile.ContainsKey("layout") ? hudProfile["layout"] : null;
-				string layout = layoutObj != null ? JsonSerializer.Serialize(layoutObj) : "[]";
-				hudId = hudId.Replace("'", "''");
-				hudName = hudName.Replace("'", "''");
-				layout = layout.Replace("'", "''");
-				Execute.Sql($"INSERT OR IGNORE INTO hud_profiles (id,name,layout,is_active) VALUES ('{hudId}','{hudName}','{layout}', 0)");
-			}
-		}
-		catch
-		{
-			// ignore
-		}
 	}
 
 	public override void Down()
 	{
-		Execute.Sql("DROP TABLE IF EXISTS hud_profiles");
-		Execute.Sql("DROP TABLE IF EXISTS custom_stats");
 		Execute.Sql("DROP INDEX IF EXISTS idx_player_hands_player");
 		Execute.Sql("DROP INDEX IF EXISTS idx_player_hands_hand");
 		Execute.Sql("DROP INDEX IF EXISTS idx_hands_game_id");

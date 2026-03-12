@@ -267,19 +267,4 @@ public class DatabaseController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
-
-    [HttpPost("reset-default-stats")]
-    public async Task<IActionResult> ResetDefaultStats()
-    {
-        try
-        {
-            await _statsRepo.ResetDefaultStatsAndProfilesAsync();
-            return Ok(new { success = true, message = "Default stats and profiles reloaded" });
-        }
-        catch (Exception e)
-        {
-            _logger.LogError($"Reset default stats error: {e.Message}");
-            return Problem(detail: e.Message, statusCode: 500);
-        }
-    }
 }

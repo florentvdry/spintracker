@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Trash2, Database, Download, Upload, Globe, FileCode, FolderOpen, Loader, Plus, Check, X, Edit2 } from 'lucide-react';
+import { Trash2, Database, Download, Upload, Globe, FolderOpen, Loader, Plus, Check, X, Edit2 } from 'lucide-react';
 import { Card } from '@components/ui';
 import { ipcService } from '@services/ipcService';
 import { pythonService } from '@services/pythonService';
@@ -107,70 +107,6 @@ export default function Settings() {
         message: error.message || 'Impossible de contacter le serveur',
       });
     }
-  };
-
-  const handleExportStats = async () => {
-    try {
-      const res = await fetch('http://localhost:5050/stats/export');
-      const json = await res.json();
-      if (json.success) {
-        const dataStr = JSON.stringify(json.data, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `stats_export_${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        addNotification({
-          type: 'success',
-          title: 'Export réussi',
-          message: `${json.data.length} statistiques exportées`
-        });
-      } else {
-        throw new Error(json.error || 'Export failed');
-      }
-    } catch (err) {
-      addNotification({ type: 'error', message: err.message });
-    }
-  };
-
-  const handleImportStats = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        const content = event.target.result;
-        // Validate JSON
-        const stats = JSON.parse(content);
-        if (!Array.isArray(stats)) throw new Error('Format invalide : Liste attendue');
-
-        const res = await fetch('http://localhost:5050/stats/import', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: content
-        });
-        const json = await res.json();
-        
-        if (json.success) {
-          addNotification({
-            type: 'success',
-            title: 'Import réussi',
-            message: `${json.count} statistiques importées`
-          });
-        } else {
-          throw new Error(json.error || 'Import failed');
-        }
-      } catch (err) {
-        addNotification({ type: 'error', message: err.message });
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = null; // Reset input
   };
 
   const handleOpenLogs = async () => {
@@ -487,42 +423,6 @@ export default function Settings() {
               </div>
             ))
           )}
-        </div>
-      </Card>
-
-      {/* Stats Management */}
-      <Card title={t('settings.stats.title') || "Gestion des Statistiques"}>
-        <div className="space-y-4">
-           <SettingRow
-            icon={FileCode}
-            title="Export des Statistiques"
-            description="Sauvegarder vos statistiques personnalisées dans un fichier JSON."
-            action={
-              <button onClick={handleExportStats} className="btn-secondary flex items-center gap-2">
-                <Download className="w-4 h-4" />
-                Exporter
-              </button>
-            }
-          />
-           <SettingRow
-            icon={Upload}
-            title="Import des Statistiques"
-            description="Charger des statistiques depuis un fichier JSON."
-            action={
-              <div className="relative">
-                <input 
-                  type="file" 
-                  accept=".json" 
-                  onChange={handleImportStats}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                <button className="btn-secondary flex items-center gap-2">
-                  <Upload className="w-4 h-4" />
-                  Importer
-                </button>
-              </div>
-            }
-          />
         </div>
       </Card>
 

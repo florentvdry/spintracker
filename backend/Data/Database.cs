@@ -10,22 +10,16 @@ public class Database
 {
     private readonly string _connectionString;
     private readonly ILogger<Database> _logger;
-    private readonly HudProfileRepository _hudProfileRepo;
-    private readonly CustomStatsRepository _customStatsRepo;
     private readonly StatsRepository _statsRepo;
     private readonly PlayerRepository _playerRepo;
 
     public Database(
         ILogger<Database> logger, 
         string? dbPath = null, 
-        HudProfileRepository? hudProfileRepo = null, 
-        CustomStatsRepository? customStatsRepo = null, 
         StatsRepository? statsRepo = null, 
         PlayerRepository? playerRepo = null)
     {
         _logger = logger;
-        _hudProfileRepo = hudProfileRepo!;
-        _customStatsRepo = customStatsRepo!;
         _statsRepo = statsRepo!;
         _playerRepo = playerRepo!;
 
@@ -55,8 +49,6 @@ public class Database
         }
 
         // Schema is now managed by FluentMigrator migrations run at startup.
-        // Load default data if needed (migrations should have created the tables).
-        LoadDefaultDataIfNeeded();
     }
 
     private void InitializeTables(bool forceRefresh = false)
@@ -90,41 +82,10 @@ public class Database
             }
 
             _logger.LogInformation("Database data cleared.");
-
-            // Reload default records
-            LoadDefaultDataIfNeeded();
         }
         else
         {
             _logger.LogInformation("InitializeTables: schema is managed by migrations; skipping table creation.");
-        }
-    }
-
-    private void LoadDefaultDataIfNeeded()
-    {
-        using var connection = new SqliteConnection(_connectionString);
-        connection.Open();
-
-        using var cmd = connection.CreateCommand();
-        
-        // Check if stats table is empty
-        cmd.CommandText = "SELECT COUNT(*) FROM custom_stats";
-        var statsCount = Convert.ToInt32(cmd.ExecuteScalar());
-        
-        // Check if profiles table is empty
-        cmd.CommandText = "SELECT COUNT(*) FROM hud_profiles";
-        var profilesCount = Convert.ToInt32(cmd.ExecuteScalar());
-
-        // Load default stats if empty
-        if (statsCount == 0)
-        {
-            _statsRepo.LoadDefaultStats();
-        }
-
-        // Load default profiles if empty
-        if (profilesCount == 0)
-        {
-            _statsRepo.LoadDefaultHudProfiles();
         }
     }
 
