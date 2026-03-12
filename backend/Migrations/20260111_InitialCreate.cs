@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using SpinTrackerBackend.Data;
 
 namespace SpinTrackerBackend.Migrations;
 
@@ -128,38 +129,19 @@ public class InitialCreate20260111 : Migration
 		// Try to automatically import JSON files if they exist next to the running assembly
 		try
 		{
-			string[] candidates = new[] {
-				Path.Combine(AppContext.BaseDirectory, "custom_stats_import.json"),
-				Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "custom_stats_import.json"),
-				Path.Combine(Environment.CurrentDirectory, "custom_stats_import.json")
-			};
-
-			string csJson = null;
-			foreach (var c in candidates)
+			var stats = DefaultData.DefaultStats;
+			if (stats != null)
 			{
-				var p = Path.GetFullPath(c);
-				if (File.Exists(p))
+				foreach (var stat in stats)
 				{
-					csJson = File.ReadAllText(p);
-					break;
-				}
-			}
-
-			if (!string.IsNullOrEmpty(csJson))
-			{
-				var stats = JsonSerializer.Deserialize<List<JsonElement>>(csJson);
-				if (stats != null)
-				{
-					foreach (var stat in stats)
-					{
-						string id = stat.GetProperty("Id").GetString() ?? Guid.NewGuid().ToString();
-						string name = stat.GetProperty("Name").GetString() ?? "";
-						string definition = stat.GetProperty("Definition").GetRawText();
-						id = id.Replace("'", "''");
-						name = name.Replace("'", "''");
-						definition = definition.Replace("'", "''");
-						Execute.Sql($"INSERT OR IGNORE INTO custom_stats (id,name,definition) VALUES ('{id}','{name}','{definition}')");
-					}
+					string id = stat.ContainsKey("Id") ? stat["Id"]?.ToString() : null ?? Guid.NewGuid().ToString();
+					string name = stat.ContainsKey("Name") ? stat["Name"]?.ToString() ?? "" : "";
+					object? definitionObj = stat.ContainsKey("Definition") ? stat["Definition"] : null;
+					string definition = definitionObj != null ? JsonSerializer.Serialize(definitionObj) : "{}";
+					id = id.Replace("'", "''");
+					name = name.Replace("'", "''");
+					definition = definition.Replace("'", "''");
+					Execute.Sql($"INSERT OR IGNORE INTO custom_stats (id,name,definition) VALUES ('{id}','{name}','{definition}')");
 				}
 			}
 		}
@@ -170,29 +152,13 @@ public class InitialCreate20260111 : Migration
 
 		try
 		{
-			string[] hudCandidates = new[] {
-				Path.Combine(AppContext.BaseDirectory, "Minimalist_SpinAndGo_HUD.json"),
-				Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Minimalist_SpinAndGo_HUD.json"),
-				Path.Combine(Environment.CurrentDirectory, "Minimalist_SpinAndGo_HUD.json")
-			};
-
-			string hudJson = null;
-			foreach (var c in hudCandidates)
+			var hudProfile = DefaultData.DefaultHudProfile;
+			if (hudProfile != null)
 			{
-				var p = Path.GetFullPath(c);
-				if (File.Exists(p))
-				{
-					hudJson = File.ReadAllText(p);
-					break;
-				}
-			}
-
-			if (!string.IsNullOrEmpty(hudJson))
-			{
-				var hudDoc = JsonDocument.Parse(hudJson);
-				string hudName = hudDoc.RootElement.GetProperty("name").GetString() ?? "HUD";
+				string hudName = hudProfile.ContainsKey("name") ? hudProfile["name"]?.ToString() ?? "HUD" : "Minimalist Spin HUD";
 				string hudId = hudName.ToLowerInvariant().Replace(' ', '_').Replace('-', '_');
-				string layout = hudDoc.RootElement.GetProperty("layout").GetRawText();
+				object? layoutObj = hudProfile.ContainsKey("layout") ? hudProfile["layout"] : null;
+				string layout = layoutObj != null ? JsonSerializer.Serialize(layoutObj) : "[]";
 				hudId = hudId.Replace("'", "''");
 				hudName = hudName.Replace("'", "''");
 				layout = layout.Replace("'", "''");

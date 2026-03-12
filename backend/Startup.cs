@@ -79,13 +79,13 @@ public static class Startup
         string connectionString = $"Data Source={actualDbPath}";
 
         // Repositories
-        services.AddSingleton(sp => new HudProfileRepository(connectionString));
-        services.AddSingleton(sp => new AnalyticsRepository(connectionString, sp.GetRequiredService<ILogger<AnalyticsRepository>>()));
-        services.AddSingleton(sp => new CustomStatsRepository(connectionString));
-        services.AddSingleton(sp => new HandRepository(connectionString, sp.GetRequiredService<ILogger<HandRepository>>(), sp.GetRequiredService<PlayerRepository>()));
-        services.AddSingleton(sp => new StatsRepository(connectionString, sp.GetRequiredService<ILogger<StatsRepository>>(), sp.GetRequiredService<CustomStatsRepository>(), sp.GetRequiredService<HudProfileRepository>()));
-        services.AddSingleton(sp => new PlayerRepository(connectionString, sp.GetRequiredService<ILogger<PlayerRepository>>()));
-        services.AddSingleton(sp => new TournamentsRepository(connectionString, sp.GetRequiredService<ILogger<TournamentsRepository>>()));
+        services.AddScoped(sp => new HudProfileRepository(connectionString));
+        services.AddScoped(sp => new AnalyticsRepository(connectionString, sp.GetRequiredService<ILogger<AnalyticsRepository>>()));
+        services.AddScoped(sp => new CustomStatsRepository(connectionString));
+        services.AddScoped(sp => new HandRepository(connectionString, sp.GetRequiredService<ILogger<HandRepository>>(), sp.GetRequiredService<PlayerRepository>()));
+        services.AddScoped(sp => new StatsRepository(connectionString, sp.GetRequiredService<ILogger<StatsRepository>>(), sp.GetRequiredService<CustomStatsRepository>(), sp.GetRequiredService<HudProfileRepository>()));
+        services.AddScoped(sp => new PlayerRepository(connectionString, sp.GetRequiredService<ILogger<PlayerRepository>>()));
+        services.AddScoped(sp => new TournamentsRepository(connectionString, sp.GetRequiredService<ILogger<TournamentsRepository>>()));
 
         services.AddControllers()
             .AddJsonOptions(options =>
