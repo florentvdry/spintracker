@@ -53,12 +53,13 @@ public class EquityCalculator : IEquityCalculator
             // fallback to Monte Carlo when too many unknown cards remain.
             var cardsNeeded = 5 - boardCards.Count;
             
-            // Use fast exact enumeration for everything up to preflop (5 cards needed)
-            // Preflop: C(48, 5) = 1,712,304 iterations. With fast evaluator, this should be < 1s.
-            if (cardsNeeded <= 5) 
+            // For preflop (cardsNeeded == 5), use Monte Carlo instead of exact enumeration
+            // Exact enumeration = 1.7M iterations (too slow for import)
+            // Monte Carlo with 500 iterations = much faster with good enough accuracy
+            if (cardsNeeded == 5)
             {
                 // CACHE CHECK FOR PREFLOP
-                if (cardsNeeded == 5 && (deadCardList == null || deadCardList.Count == 0))
+                if (deadCardList == null || deadCardList.Count == 0)
                 {
                     var cacheKey = GetCacheKey(heroCardList, villainCardList);
                     if (_preflopCache.TryGetValue(cacheKey, out var cached))
@@ -66,11 +67,19 @@ public class EquityCalculator : IEquityCalculator
                         return cached;
                     }
 
-                    var result = RunExactEnumerationFast(heroCardList, villainCardList, boardCards, deadCardList);
+                    // Use Monte Carlo for speed (500 iterations = fast and accurate enough)
+                    var result = RunMonteCarlo(heroCardList, villainCardList, boardCards, 500, deadCardList);
                     _preflopCache[cacheKey] = result;
                     return result;
                 }
 
+                // With dead cards, still use Monte Carlo
+                return RunMonteCarlo(heroCardList, villainCardList, boardCards, 500, deadCardList);
+            }
+
+            // Use fast exact enumeration for postflop (flop/turn/river) - these are fast
+            if (cardsNeeded > 0 && cardsNeeded < 5) 
+            {
                 return RunExactEnumerationFast(heroCardList, villainCardList, boardCards, deadCardList);
             }
 
