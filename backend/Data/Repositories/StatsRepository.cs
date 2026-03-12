@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using SpinTrackerBackend;
+using SpinTrackerBackend.Data;
 using System;
 using System.IO;
 using System.Text.Json;
@@ -11,11 +12,13 @@ public class StatsRepository
 {
     private readonly string _connectionString;
     private readonly ILogger<StatsRepository> _logger;
+    private readonly CustomStatsRepository _customStatsRepo;
 
-    public StatsRepository(string connectionString, ILogger<StatsRepository> logger)
+    public StatsRepository(string connectionString, ILogger<StatsRepository> logger, CustomStatsRepository customStatsRepo)
     {
         _connectionString = connectionString;
         _logger = logger;
+        _customStatsRepo = customStatsRepo;
     }
 
     // Placeholder: extract GetDashboardStatsAsync, GetSessionHistoryAsync, etc.
@@ -657,5 +660,83 @@ public class StatsRepository
         }
 
         return new { totalProfit, totalHands, samples };
+    }
+
+    public async Task ResetDefaultStatsAndProfilesAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var transaction = connection.BeginTransaction();
+        try
+        {
+            // Delete all existing stats
+            using var cmd1 = connection.CreateCommand();
+            cmd1.CommandText = "DELETE FROM custom_stats";
+            await cmd1.ExecuteNonQueryAsync();
+
+            // Delete all existing profiles
+            using var cmd2 = connection.CreateCommand();
+            cmd2.CommandText = "DELETE FROM hud_profiles";
+            await cmd2.ExecuteNonQueryAsync();
+
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+
+        // Reload defaults (outside transaction)
+        LoadDefaultStats();
+    }
+
+    public void LoadDefaultStats()
+    {
+        try
+        {
+            var stats = DefaultData.DefaultStats;
+
+            if (stats == null || stats.Count == 0)
+            {
+                _logger.LogWarning("No default stats found");
+                return;
+            }
+
+            var tasks = new List<Task>();
+            foreach (var stat in stats)
+            {
+                try
+                {
+                    var id = stat.ContainsKey("Id") ? stat["Id"]?.ToString() : 
+                             stat.ContainsKey("id") ? stat["id"]?.ToString() : null;
+                    var name = stat.ContainsKey("Name") ? stat["Name"]?.ToString() : 
+                               stat.ContainsKey("name") ? stat["name"]?.ToString() : "";
+                    var description = stat.ContainsKey("Description") ? stat["Description"]?.ToString() : 
+                                      stat.ContainsKey("description") ? stat["description"]?.ToString() : "";
+                    var definition = stat.ContainsKey("Definition") ? stat["Definition"] : 
+                                     stat.ContainsKey("definition") ? stat["definition"] : null;
+
+                    if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(name) || definition == null)
+                    {
+                        continue;
+                    }
+
+                    tasks.Add(_customStatsRepo.SaveCustomStatAsync(id, name, description ?? "", definition));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error loading default stat: {ex.Message}");
+                }
+            }
+
+            Task.WaitAll(tasks.ToArray());
+            _logger.LogInformation($"Loaded {stats.Count} default stats");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error loading default stats: {ex.Message}");
+        }
     }
 }

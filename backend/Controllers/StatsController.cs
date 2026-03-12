@@ -9,17 +9,20 @@ namespace SpinTrackerBackend.Controllers;
 public class StatsController : ControllerBase
 {
     private readonly AnalyticsRepository _analyticsRepo;
+    private readonly CustomStatsRepository _customStatsRepo;
     private readonly StatsRepository _statsRepo;
     private readonly IStatsBuilderEngine _engine;
     private readonly ILogger<StatsController> _logger;
 
     public StatsController(
         AnalyticsRepository analyticsRepo,
+        CustomStatsRepository customStatsRepo,
         StatsRepository statsRepo,
         IStatsBuilderEngine engine,
         ILogger<StatsController> logger)
     {
         _analyticsRepo = analyticsRepo;
+        _customStatsRepo = customStatsRepo;
         _statsRepo = statsRepo;
         _engine = engine;
         _logger = logger;
@@ -42,6 +45,115 @@ public class StatsController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError($"Stats Builder error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("stats")]
+    public async Task<IActionResult> GetAll()
+    {
+        try
+        {
+            var stats = await _customStatsRepo.GetCustomStatsAsync();
+            return Ok(new { success = true, data = stats });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Get stats error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("stats/{id}")]
+    public async Task<IActionResult> GetById(string id)
+    {
+        try
+        {
+            var stat = await _customStatsRepo.GetCustomStatAsync(id);
+            if (stat != null)
+            {
+                return Ok(new { success = true, data = stat });
+            }
+            return NotFound(new { success = false, error = "Stat not found" });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Get stat error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpPost("stats")]
+    public async Task<IActionResult> Save([FromBody] CustomStatRequest data)
+    {
+        try
+        {
+            if (data == null || string.IsNullOrEmpty(data.Name) || data.Definition == null)
+            {
+                return BadRequest(new { success = false, error = "Name and Definition are required" });
+            }
+
+            var id = string.IsNullOrEmpty(data.Id) ? Guid.NewGuid().ToString() : data.Id;
+            await _customStatsRepo.SaveCustomStatAsync(id, data.Name, data.Description ?? "", data.Definition ?? new { });
+            return Ok(new { success = true, id });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Save stat error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpDelete("stats/{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        try
+        {
+            await _customStatsRepo.DeleteCustomStatAsync(id);
+            return Ok(new { success = true });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Delete stat error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("stats/export")]
+    public async Task<IActionResult> Export()
+    {
+        try
+        {
+            var stats = await _customStatsRepo.GetCustomStatsAsync();
+            return Ok(new { success = true, data = stats });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Export stats error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpPost("stats/import")]
+    public async Task<IActionResult> Import([FromBody] List<CustomStatRequest> stats)
+    {
+        try
+        {
+            if (stats == null) return BadRequest(new { success = false, error = "Invalid JSON" });
+
+            int count = 0;
+            foreach (var stat in stats)
+            {
+                var id = string.IsNullOrEmpty(stat.Id) ? Guid.NewGuid().ToString() : stat.Id;
+                await _customStatsRepo.SaveCustomStatAsync(id, stat.Name, stat.Description ?? "", stat.Definition ?? new { });
+                count++;
+            }
+
+            return Ok(new { success = true, count });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Import stats error: {e.Message}");
             return Problem(detail: e.Message, statusCode: 500);
         }
     }

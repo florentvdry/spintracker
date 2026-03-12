@@ -59,6 +59,7 @@ public static class Startup
             new Database(
                 sp.GetRequiredService<ILogger<Database>>(), 
                 actualDbPath,
+                sp.GetRequiredService<CustomStatsRepository>(),
                 sp.GetRequiredService<StatsRepository>(),
                 sp.GetRequiredService<PlayerRepository>()
             ));
@@ -78,8 +79,9 @@ public static class Startup
 
         // Repositories
         services.AddScoped(sp => new AnalyticsRepository(connectionString, sp.GetRequiredService<ILogger<AnalyticsRepository>>()));
+        services.AddScoped(sp => new CustomStatsRepository(connectionString));
         services.AddScoped(sp => new HandRepository(connectionString, sp.GetRequiredService<ILogger<HandRepository>>(), sp.GetRequiredService<PlayerRepository>()));
-        services.AddScoped(sp => new StatsRepository(connectionString, sp.GetRequiredService<ILogger<StatsRepository>>()));
+        services.AddScoped(sp => new StatsRepository(connectionString, sp.GetRequiredService<ILogger<StatsRepository>>(), sp.GetRequiredService<CustomStatsRepository>()));
         services.AddScoped(sp => new PlayerRepository(connectionString, sp.GetRequiredService<ILogger<PlayerRepository>>()));
         services.AddScoped(sp => new TournamentsRepository(connectionString, sp.GetRequiredService<ILogger<TournamentsRepository>>()));
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import AnalysisFilters from './components/AnalysisFilters';
 import AnalysisHandsList from './components/AnalysisHandsList';
+import AnalysisDashboard from './components/AnalysisDashboard';
 import { Save, Upload, List, Grid } from 'lucide-react';
 import { usePlayersStore } from '@stores/playersStore';
 import { useReplayerStore } from '@stores/replayerStore';
@@ -15,29 +16,58 @@ export default function Analysis() {
   const { openReplayer } = useReplayerStore();
   const { heroName, dateRange, customDateFrom, customDateTo, selectedSession, getDateRangeParams } = useFilterStore();
   
-  const [activeTab, setActiveTab] = useState('hands');
+  const [activeTab, setActiveTab] = useState('stats'); // 'stats' | 'hands'
 
   const [localFilters, setLocalFilters] = useState({
-    situation: '',
-    action: '',
-    playerCount: null,
-    minStackBB: null,
-    maxStackBB: null,
-    positions: [],
-    preflopBtnAction: '',
-    preflopSbAction: '',
-    preflopBbAction: '',
-    flopBtnAction: '',
-    flopSbAction: '',
-    flopBbAction: '',
-    turnBtnAction: '',
-    turnSbAction: '',
-    turnBbAction: '',
-    riverBtnAction: '',
-    riverSbAction: '',
-    riverBbAction: ''
+    Situation: '',
+    Action: '',
+    PlayerCount: null,
+    MinStackBB: null,
+    MaxStackBB: null,
+    Positions: [],
+    // Street Actions
+    PreflopBtnAction: '',
+    PreflopSbAction: '',
+    PreflopBbAction: '',
+    FlopBtnAction: '',
+    FlopSbAction: '',
+    FlopBbAction: '',
+    TurnBtnAction: '',
+    TurnSbAction: '',
+    TurnBbAction: '',
+    RiverBtnAction: '',
+    RiverSbAction: '',
+    RiverBbAction: ''
   });
 
+  // Dashboard Data
+  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardLoading, setDashboardLoading] = useState(false);
+
+  // Fetch Dashboard Data
+  useEffect(() => {
+    if (activeTab !== 'stats') return;
+
+    let mounted = true;
+    const fetchDashboard = async () => {
+      setDashboardLoading(true);
+      try {
+        const response = await ipcService.getAnalysisStats(combinedFilters);
+        if (mounted && response.success) {
+          setDashboardData(response.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch dashboard data", err);
+      } finally {
+        if (mounted) setDashboardLoading(false);
+      }
+    };
+
+    fetchDashboard();
+    return () => { mounted = false; };
+  }, [combinedFilters, activeTab]);
+
+  // Hands List Data
   const [handsData, setHandsData] = useState({
     hands: [],
     total: 0,
@@ -49,20 +79,23 @@ export default function Analysis() {
   const [handsSort, setHandsSort] = useState('date_desc');
   const [handsPage, setHandsPage] = useState(1);
 
+  // Combined filters for API requests
   const combinedFilters = useMemo(() => {
     const { dateFrom, dateTo } = getDateRangeParams();
     return {
-      heroName: heroName,
-      dateFrom: dateFrom,
-      dateTo: dateTo,
+      HeroName: heroName,
+      DateFrom: dateFrom,
+      DateTo: dateTo,
       ...localFilters
     };
   }, [heroName, dateRange, customDateFrom, customDateTo, selectedSession, localFilters, getDateRangeParams]);
 
+  // Load players list on mount
   useEffect(() => {
     loadPlayers({ limit: 1000 });
   }, []);
 
+  // Fetch Hands List Data
   useEffect(() => {
     if (activeTab !== 'hands') return;
 
@@ -71,15 +104,15 @@ export default function Analysis() {
       setHandsLoading(true);
       try {
         const sanitizedFilters = { ...combinedFilters };
-        if (sanitizedFilters.positions && sanitizedFilters.positions.length === 0) {
-            sanitizedFilters.positions = null;
+        if (sanitizedFilters.Positions && sanitizedFilters.Positions.length === 0) {
+            sanitizedFilters.Positions = null;
         }
 
         const request = {
             ...sanitizedFilters,
-            page: handsPage,
-            limit: 50,
-            sortBy: handsSort
+            Page: handsPage,
+            Limit: 50,
+            SortBy: handsSort
         };
 
         const response = await ipcService.getAnalysisHands(request);
@@ -103,6 +136,7 @@ export default function Analysis() {
     return () => { mounted = false; };
   }, [combinedFilters, activeTab, handsPage, handsSort]);
 
+  // Reset page when filters change
   useEffect(() => {
     setHandsPage(1);
   }, [combinedFilters]);
@@ -127,6 +161,30 @@ export default function Analysis() {
           {t('analysis.title', 'Statistical Analysis')}
         </h1>
         <div className="flex gap-2">
+          {/* Tabs */}
+          <div className="flex bg-dark-300 rounded-lg p-1 mr-4 border border-dark-100">
+             <button
+                onClick={() => setActiveTab('stats')}
+                className={clsx(
+                    "px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-all",
+                    activeTab === 'stats' ? "bg-primary-500 text-white shadow" : "text-gray-400 hover:text-white"
+                )}
+             >
+                <Grid className="w-4 h-4" />
+                Stats
+             </button>
+             <button
+                onClick={() => setActiveTab('hands')}
+                className={clsx(
+                    "px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-all",
+                    activeTab === 'hands' ? "bg-primary-500 text-white shadow" : "text-gray-400 hover:text-white"
+                )}
+             >
+                <List className="w-4 h-4" />
+                {t('analysis.tabs.hands', 'Hands List')}
+             </button>
+          </div>
+
           <button 
             onClick={saveConfig}
             className="btn btn-secondary flex items-center gap-2"
@@ -143,31 +201,38 @@ export default function Analysis() {
       </div>
 
       <div className="flex-1 flex gap-6 min-h-0">
+        {/* Left Sidebar - Filters */}
         <div className="w-80 flex-shrink-0 overflow-y-auto custom-scrollbar">
           <AnalysisFilters filters={combinedFilters} onChange={(updates) => setLocalFilters(prev => ({ ...prev, ...updates }))} />
         </div>
 
+        {/* Main Content */}
         <div className="flex-1 overflow-hidden pr-2 flex flex-col">
-          <AnalysisHandsList 
-            hands={handsData.hands} 
-            loading={handsLoading}
-            page={handsData.page}
-            totalPages={handsData.pages}
-            totalHands={handsData.total}
-            sortBy={handsSort}
-            onPageChange={setHandsPage}
-            onSortChange={setHandsSort}
-            onSelectHand={async (id) => {
-              try {
-                const res = await ipcService.getHandDetails(id);
-                if (res.success) {
-                  openReplayer(res.data);
-                }
-              } catch (e) {
-                console.error("Failed to open replayer", e);
-              }
-            }} 
-          />
+          {activeTab === 'stats' && (
+              <AnalysisDashboard data={dashboardData} loading={dashboardLoading} />
+          )}
+          {activeTab === 'hands' && (
+              <AnalysisHandsList 
+                hands={handsData.hands} 
+                loading={handsLoading}
+                page={handsData.page}
+                totalPages={handsData.pages}
+                totalHands={handsData.total}
+                sortBy={handsSort}
+                onPageChange={setHandsPage}
+                onSortChange={setHandsSort}
+                onSelectHand={async (id) => {
+                  try {
+                    const res = await ipcService.getHandDetails(id);
+                    if (res.success) {
+                      openReplayer(res.data);
+                    }
+                  } catch (e) {
+                    console.error("Failed to open replayer", e);
+                  }
+                }} 
+              />
+          )}
         </div>
       </div>
     </div>
