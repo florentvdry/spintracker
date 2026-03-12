@@ -67,14 +67,14 @@ public class EquityCalculator : IEquityCalculator
                         return cached;
                     }
 
-                    // Use Monte Carlo for speed (500 iterations = fast and accurate enough)
-                    var result = RunMonteCarlo(heroCardList, villainCardList, boardCards, 500, deadCardList);
+                    // Use Monte Carlo with more iterations for better accuracy (5000 iterations)
+                    var result = RunMonteCarlo(heroCardList, villainCardList, boardCards, 5000, deadCardList);
                     _preflopCache[cacheKey] = result;
                     return result;
                 }
 
-                // With dead cards, still use Monte Carlo
-                return RunMonteCarlo(heroCardList, villainCardList, boardCards, 500, deadCardList);
+                // With dead cards, use Monte Carlo with more iterations
+                return RunMonteCarlo(heroCardList, villainCardList, boardCards, 5000, deadCardList);
             }
 
             // Use fast exact enumeration for postflop (flop/turn/river) - these are fast

@@ -220,7 +220,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
             if (string.IsNullOrEmpty(heroCards) || string.IsNullOrEmpty(villainCards))
                 return null;
 
-            var equity = _equityCalc.Calculate(heroCards, villainCards, board, 1000);
+            var equity = _equityCalc.Calculate(heroCards, villainCards, board, 5000);
             var totalPot = hand.TotalPot;
 
             var heroInvestment = hero.Investment > 0 ? hero.Investment : (ParseHeroInvestment(hand) ?? (totalPot / 2.0));
@@ -339,7 +339,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                         
                         var deadCardsStr = string.Join(" ", deadCardsList);
 
-                        var equityResult = _equityCalc.Calculate(heroCards, villainCardsStr, board, 1000, deadCardsStr);
+                        var equityResult = _equityCalc.Calculate(heroCards, villainCardsStr, board, 5000, deadCardsStr);
                         double heroEq = equityResult.HeroEquity / 100.0;
                         
                         totalEv += heroEq * stepPot;
