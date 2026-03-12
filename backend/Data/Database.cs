@@ -111,35 +111,6 @@ public class Database
     {
         if (hands.Count == 0) return 0;
 
-        // Validate input data to catch null values early
-        var invalidHands = hands.Where(h => h.Id == null || string.IsNullOrEmpty(h.Id)).ToList();
-        if (invalidHands.Any())
-        {
-            _logger.LogWarning($"Found {invalidHands.Count} hands with null or empty Id");
-        }
-        
-        foreach (var hand in hands)
-        {
-            if (hand.Players == null)
-            {
-                _logger.LogWarning($"Hand {hand.Id ?? "null"} has null Players list");
-            }
-            else
-            {
-                foreach (var p in hand.Players)
-                {
-                    if (p == null)
-                    {
-                        _logger.LogWarning($"Hand {hand.Id ?? "null"} has null player");
-                    }
-                    else if (string.IsNullOrEmpty(p.Name))
-                    {
-                        _logger.LogWarning($"Hand {hand.Id ?? "null"} has player with empty name");
-                    }
-                }
-            }
-        }
-
         var batchSw = Stopwatch.StartNew();
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
@@ -153,41 +124,44 @@ public class Database
 
             // Batch insert hands using multi-row VALUES for much better performance
             var handValues = new List<string>();
-            var handParams = new List<SqliteParameter[]>();
+            var handParams = new List<SqliteParameter>();
             
             foreach (var hand in hands)
             {
-                handValues.Add(@"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                handParams.Add(new SqliteParameter[]
+                if (hand.Id == null || string.IsNullOrEmpty(hand.Id))
                 {
-                    new SqliteParameter("@id", hand.Id ?? ""),
-                    new SqliteParameter("@game_id", hand.GameId ?? ""),
-                    new SqliteParameter("@hand_id", hand.HandId ?? ""),
-                    new SqliteParameter("@room", hand.Room ?? ""),
-                    new SqliteParameter("@game_mode", hand.GameMode ?? ""),
-                    new SqliteParameter("@game_type", hand.GameType ?? ""),
-                    new SqliteParameter("@game_name", hand.GameName ?? ""),
-                    new SqliteParameter("@prize_pool", hand.PrizePool),
-                    new SqliteParameter("@multiplier", hand.Multiplier),
-                    new SqliteParameter("@buy_in", hand.BuyIn),
-                    new SqliteParameter("@date_time", hand.DateTime ?? ""),
-                    new SqliteParameter("@table_id", hand.TableId ?? ""),
-                    new SqliteParameter("@blinds", hand.Blinds ?? ""),
-                    new SqliteParameter("@total_pot", hand.TotalPot),
-                    new SqliteParameter("@rake", hand.Rake),
-                    new SqliteParameter("@preflop_action", hand.PreflopAction ?? ""),
-                    new SqliteParameter("@flop", hand.Flop ?? ""),
-                    new SqliteParameter("@flop_action", hand.FlopAction ?? ""),
-                    new SqliteParameter("@turn", hand.Turn ?? ""),
-                    new SqliteParameter("@turn_action", hand.TurnAction ?? ""),
-                    new SqliteParameter("@river", hand.River ?? ""),
-                    new SqliteParameter("@river_action", hand.RiverAction ?? ""),
-                    new SqliteParameter("@showdown", hand.Showdown ?? ""),
-                    new SqliteParameter("@result", hand.Result ?? ""),
-                    new SqliteParameter("@all_in_street", hand.AllInStreet ?? ""),
-                    new SqliteParameter("@went_to_showdown", hand.WentToShowdown ? 1 : 0),
-                    new SqliteParameter("@player_count", hand.PlayerCount),
-                });
+                    _logger.LogWarning($"Skipping hand with null/empty Id");
+                    continue;
+                }
+                
+                handValues.Add(@"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                handParams.Add(new SqliteParameter(null, hand.Id ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.GameId ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.HandId ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.Room ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.GameMode ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.GameType ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.GameName ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.PrizePool));
+                handParams.Add(new SqliteParameter(null, hand.Multiplier));
+                handParams.Add(new SqliteParameter(null, hand.BuyIn));
+                handParams.Add(new SqliteParameter(null, hand.DateTime ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.TableId ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.Blinds ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.TotalPot));
+                handParams.Add(new SqliteParameter(null, hand.Rake));
+                handParams.Add(new SqliteParameter(null, hand.PreflopAction ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.Flop ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.FlopAction ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.Turn ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.TurnAction ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.River ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.RiverAction ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.Showdown ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.Result ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.AllInStreet ?? ""));
+                handParams.Add(new SqliteParameter(null, hand.WentToShowdown ? 1 : 0));
+                handParams.Add(new SqliteParameter(null, hand.PlayerCount));
             }
 
             var handsInsertSw = Stopwatch.StartNew();
@@ -204,9 +178,7 @@ public class Database
                 using var handCmd = connection.CreateCommand();
                 handCmd.Transaction = transaction;
                 handCmd.CommandText = handSql;
-                
-                var allParams = handParams.SelectMany(p => p).ToArray();
-                handCmd.Parameters.AddRange(allParams);
+                handCmd.Parameters.AddRange(handParams.ToArray());
                 
                 inserted += await handCmd.ExecuteNonQueryAsync();
             }
@@ -215,14 +187,18 @@ public class Database
 
             // Batch insert player hands
             var playerValues = new List<string>();
-            var playerParams = new List<SqliteParameter[]>();
+            var playerParams = new List<SqliteParameter>();
 
             foreach (var hand in hands)
             {
+                if (hand.Id == null || hand.Players == null) continue;
+                
                 var handAnalytics = hand.Id != null && analyticsDict.TryGetValue(hand.Id, out var ha) ? ha : null;
 
                 foreach (var p in hand.Players)
                 {
+                    if (string.IsNullOrEmpty(p?.Name)) continue;
+                    
                     playerValues.Add(@"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                     object evChips = DBNull.Value, netWonAdj, showdownWin, nonShowdownWin;
@@ -248,28 +224,25 @@ public class Database
                         nonShowdownWin = !p.WentToShowdown ? p.NetProfit : 0;
                     }
 
-                    playerParams.Add(new SqliteParameter[]
-                    {
-                        new SqliteParameter("@hand_id", hand.Id ?? ""),
-                        new SqliteParameter("@player_name", p.Name ?? ""),
-                        new SqliteParameter("@position", p.Position ?? ""),
-                        new SqliteParameter("@stack", (int)p.Stack),
-                        new SqliteParameter("@cards", p.Cards ?? ""),
-                        new SqliteParameter("@investment", p.Investment),
-                        new SqliteParameter("@chips_won", p.ChipsWon),
-                        new SqliteParameter("@net_profit", p.NetProfit),
-                        new SqliteParameter("@is_all_in", p.IsAllIn ? 1 : 0),
-                        new SqliteParameter("@went_to_showdown", p.WentToShowdown ? 1 : 0),
-                        new SqliteParameter("@ev_chips", evChips),
-                        new SqliteParameter("@net_won_adjusted", netWonAdj),
-                        new SqliteParameter("@showdown_winning", showdownWin),
-                        new SqliteParameter("@non_showdown_winning", nonShowdownWin),
-                        new SqliteParameter("@equity_preflop", eqPreflop),
-                        new SqliteParameter("@equity_flop", eqFlop),
-                        new SqliteParameter("@equity_turn", eqTurn),
-                        new SqliteParameter("@equity_river", eqRiver),
-                        new SqliteParameter("@cev_contribution", cevContrib),
-                    });
+                    playerParams.Add(new SqliteParameter(null, hand.Id ?? ""));
+                    playerParams.Add(new SqliteParameter(null, p.Name ?? ""));
+                    playerParams.Add(new SqliteParameter(null, p.Position ?? ""));
+                    playerParams.Add(new SqliteParameter(null, (int)p.Stack));
+                    playerParams.Add(new SqliteParameter(null, p.Cards ?? ""));
+                    playerParams.Add(new SqliteParameter(null, p.Investment));
+                    playerParams.Add(new SqliteParameter(null, p.ChipsWon));
+                    playerParams.Add(new SqliteParameter(null, p.NetProfit));
+                    playerParams.Add(new SqliteParameter(null, p.IsAllIn ? 1 : 0));
+                    playerParams.Add(new SqliteParameter(null, p.WentToShowdown ? 1 : 0));
+                    playerParams.Add(new SqliteParameter(null, evChips));
+                    playerParams.Add(new SqliteParameter(null, netWonAdj));
+                    playerParams.Add(new SqliteParameter(null, showdownWin));
+                    playerParams.Add(new SqliteParameter(null, nonShowdownWin));
+                    playerParams.Add(new SqliteParameter(null, eqPreflop));
+                    playerParams.Add(new SqliteParameter(null, eqFlop));
+                    playerParams.Add(new SqliteParameter(null, eqTurn));
+                    playerParams.Add(new SqliteParameter(null, eqRiver));
+                    playerParams.Add(new SqliteParameter(null, cevContrib));
                 }
             }
 
@@ -286,18 +259,16 @@ public class Database
                 using var playerCmd = connection.CreateCommand();
                 playerCmd.Transaction = transaction;
                 playerCmd.CommandText = playerSql;
-                
-                var allPlayerParams = playerParams.SelectMany(p => p).ToArray();
-                playerCmd.Parameters.AddRange(allPlayerParams);
+                playerCmd.Parameters.AddRange(playerParams.ToArray());
                 
                 await playerCmd.ExecuteNonQueryAsync();
             }
             playersInsertSw.Stop();
-            _logger.LogInformation($"[DB] Inserted {playerParams.Count} player_hands in {playersInsertSw.ElapsedMilliseconds}ms");
+            _logger.LogInformation($"[DB] Inserted {playerParams.Count / 19} player_hands in {playersInsertSw.ElapsedMilliseconds}ms");
 
             await transaction.CommitAsync();
             batchSw.Stop();
-            _logger.LogInformation($"[DB] Batch completed: {hands.Count} hands + {playerParams.Count} players in {batchSw.ElapsedMilliseconds}ms total");
+            _logger.LogInformation($"[DB] Batch completed: {hands.Count} hands + {playerValues.Count} players in {batchSw.ElapsedMilliseconds}ms total");
             return inserted;
         }
         catch (Exception ex)
