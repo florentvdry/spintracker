@@ -14,7 +14,7 @@ public class ImporterService : IImporterService
     private readonly Database _db;
     private readonly IAnalyticsCalculator _analyticsCalc;
     private readonly ILogger<ImporterService> _logger;
-    private const int InternalBatchSize = 1000; 
+    private const int InternalBatchSize = 100; 
 
     public ImporterService(Database db, IAnalyticsCalculator analyticsCalc, ILogger<ImporterService> logger, SpinTrackerBackend.Data.Repositories.PlayerRepository? playerRepo = null)
     {

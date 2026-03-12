@@ -111,6 +111,35 @@ public class Database
     {
         if (hands.Count == 0) return 0;
 
+        // Validate input data to catch null values early
+        var invalidHands = hands.Where(h => h.Id == null || string.IsNullOrEmpty(h.Id)).ToList();
+        if (invalidHands.Any())
+        {
+            _logger.LogWarning($"Found {invalidHands.Count} hands with null or empty Id");
+        }
+        
+        foreach (var hand in hands)
+        {
+            if (hand.Players == null)
+            {
+                _logger.LogWarning($"Hand {hand.Id ?? "null"} has null Players list");
+            }
+            else
+            {
+                foreach (var p in hand.Players)
+                {
+                    if (p == null)
+                    {
+                        _logger.LogWarning($"Hand {hand.Id ?? "null"} has null player");
+                    }
+                    else if (string.IsNullOrEmpty(p.Name))
+                    {
+                        _logger.LogWarning($"Hand {hand.Id ?? "null"} has player with empty name");
+                    }
+                }
+            }
+        }
+
         var batchSw = Stopwatch.StartNew();
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
