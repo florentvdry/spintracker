@@ -1,5 +1,7 @@
 - Ajout: Nouveau analyseur de range, plus facile à comprendre, avec de l'opacité selon la fréquence.
 - Ajout: Pouvoir avoir plusieurs base de données.
 
-- Changement: Amélioration légères de performance et refactorisation d'une partie du code de l'application.
+- Changement: Amélioration des performances d'import (de 56 seconds à 37 sur mes données de test)
+- Changement: refactorisation d'une partie du code de l'application.
+- Changement: Retrait de code plus utilisé
 - Changement: Ajout de la date dans la partie haute du site, prise en compte sur toutes les pages de l'application.
