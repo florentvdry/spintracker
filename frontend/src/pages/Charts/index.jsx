@@ -375,7 +375,7 @@ export default function Charts() {
   const PositionCev = ({ label, value, count }) => {
     const totalGames = stats?.total_tournaments || 1;
     const cevValue = value && totalGames > 0 ? value / totalGames : 0;
-    const cev = cevValue.toFixed(1);
+    const cev = cevValue.toFixed(2);
     const numCev = parseFloat(cev);
     return (
       <div className="flex justify-between items-center text-xs">
@@ -504,7 +504,7 @@ export default function Charts() {
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-400">CEV Total</span>
                   <span className={clsx('text-sm font-mono font-medium', finalStats.cev >= 0 ? 'text-green-400' : 'text-red-400')}>
-                    {finalStats.cev >= 0 ? '+' : ''}{finalStats.cev.toFixed(1)}
+                    {finalStats.cev >= 0 ? '+' : ''}{finalStats.cev.toFixed(2)}
                   </span>
                 </div>
                 
