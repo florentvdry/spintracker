@@ -308,16 +308,15 @@ export default function Charts() {
   }, [isZoomed, isLoading]);
 
   const finalStats = useMemo(() => {
-    if (!data || data.length === 0 || !stats) return null;
-    const lastPoint = data[data.length - 1];
+    if (!stats) return null;
     const totalGames = stats.total_tournaments || 1;
     return {
-      cev: lastPoint.netExpected / totalGames,
-      chipsWon: lastPoint.chipsWon / totalGames,
-      showdown: lastPoint.wonWithShowdown / totalGames,
-      nonShowdown: lastPoint.wonWithoutShowdown / totalGames
+      cev: stats.avg_chips_ev || 0,
+      chipsWon: stats.total_ev || 0,
+      showdown: 0,
+      nonShowdown: 0
     };
-  }, [data, stats]);
+  }, [stats]);
 
   if (!heroName) {
     return (
@@ -376,12 +375,13 @@ export default function Charts() {
   const PositionCev = ({ label, value, count }) => {
     const totalGames = stats?.total_tournaments || 1;
     const cevValue = value && totalGames > 0 ? value / totalGames : 0;
-    const cev = Math.round(cevValue * 10) / 10;
+    const cev = cevValue.toFixed(1);
+    const numCev = parseFloat(cev);
     return (
       <div className="flex justify-between items-center text-xs">
         <span className="text-gray-500">{label}</span>
-        <span className={`font-mono font-medium ${cev >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-          {cev > 0 ? '+' : ''}{cev}
+        <span className={`font-mono font-medium ${numCev >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+          {numCev > 0 ? '+' : ''}{cev}
         </span>
       </div>
     );
@@ -500,11 +500,11 @@ export default function Charts() {
                 <GripHorizontal className="w-4 h-4 text-gray-500" />
               </div>
               
-              <div className="space-y-2">
+                <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-400">CEV Total</span>
                   <span className={clsx('text-sm font-mono font-medium', finalStats.cev >= 0 ? 'text-green-400' : 'text-red-400')}>
-                    {finalStats.cev >= 0 ? '+' : ''}{Math.round(finalStats.cev)}
+                    {finalStats.cev >= 0 ? '+' : ''}{finalStats.cev.toFixed(1)}
                   </span>
                 </div>
                 
