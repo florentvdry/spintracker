@@ -373,16 +373,13 @@ export default function Charts() {
     }
   };
 
-  const PositionCev = ({ label, value, count }) => {
-    const totalGames = stats?.total_tournaments || 1;
-    const cevValue = value && totalGames > 0 ? value / totalGames : 0;
-    const cev = cevValue.toFixed(2);
-    const numCev = parseFloat(cev);
+  const PositionStat = ({ label, value, isSelected }) => {
+    const displayValue = value || 0;
     return (
       <div className="flex justify-between items-center text-xs">
-        <span className="text-gray-500">{label}</span>
-        <span className={`font-mono font-medium ${numCev >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-          {numCev > 0 ? '+' : ''}{cev}
+        <span className={isSelected ? 'text-primary-400 font-medium' : 'text-gray-500'}>{label}</span>
+        <span className={`font-mono font-medium ${displayValue >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+          {displayValue > 0 ? '+' : ''}{displayValue}
         </span>
       </div>
     );
@@ -503,26 +500,37 @@ export default function Charts() {
               
                 <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">CEV Total</span>
+                  <span className="text-xs text-gray-400">Tournaments</span>
+                  <span className="text-sm font-mono font-medium text-white">
+                    {stats?.total_tournaments || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-400">Total</span>
+                  <span className="text-sm font-mono font-medium text-white">
+                    {stats?.total_hands || 0}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-400">CEV</span>
                   <span className={clsx('text-sm font-mono font-medium', finalStats.cev >= 0 ? 'text-green-400' : 'text-red-400')}>
                     {finalStats.cev >= 0 ? '+' : ''}{finalStats.cev.toFixed(2)}
                   </span>
                 </div>
                 
-                {stats && stats.cev_by_position && (
+                {stats && stats.tournaments_by_position && (
                   <div className="mt-3 pt-2 border-t border-[#374151]">
-                    <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">CEV by Position</p>
                     <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                       <div>
-                        <p className="text-[9px] text-gray-500">3-Way</p>
-                        <PositionCev label="BTN" value={stats.cev_by_position?.['3W_BTN']} />
-                        <PositionCev label="SB" value={stats.cev_by_position?.['3W_SB']} />
-                        <PositionCev label="BB" value={stats.cev_by_position?.['3W_BB']} />
+                        <p className="text-[9px] text-gray-500">Heads-Up</p>
+                        <PositionStat label="SB" value={stats.tournaments_by_position?.['HU_SB'] || 0} isSelected={chartPosition === 'HU_SB'} />
+                        <PositionStat label="BB" value={stats.tournaments_by_position?.['HU_BB'] || 0} isSelected={chartPosition === 'HU_BB'} />
                       </div>
                       <div>
-                        <p className="text-[9px] text-gray-500">Heads-Up</p>
-                        <PositionCev label="SB" value={(stats.cev_by_position?.['HU_BTN SB'] || 0) + (stats.cev_by_position?.['HU_SB'] || 0)} />
-                        <PositionCev label="BB" value={stats.cev_by_position?.['HU_BB']} />
+                        <p className="text-[9px] text-gray-500">3-Way</p>
+                        <PositionStat label="BTN" value={stats.tournaments_by_position?.['3W_BTN'] || 0} isSelected={chartPosition === '3W_BTN'} />
+                        <PositionStat label="SB" value={stats.tournaments_by_position?.['3W_SB'] || 0} isSelected={chartPosition === '3W_SB'} />
+                        <PositionStat label="BB" value={stats.tournaments_by_position?.['3W_BB'] || 0} isSelected={chartPosition === '3W_BB'} />
                       </div>
                     </div>
                   </div>

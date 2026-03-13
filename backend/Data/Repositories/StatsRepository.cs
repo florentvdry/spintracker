@@ -190,9 +190,10 @@ public class StatsRepository
             _logger.LogError($"Error calculating ITM: {ex.Message}");
         }
 
-        // 1.2 Position-based EV calculation
+        // 1.2 Position-based EV and tournament count calculation
         var cevByPosition = new Dictionary<string, double>();
         var countByPosition = new Dictionary<string, int>();
+        var tournamentsByPosition = new Dictionary<string, int>();
         try
         {
             using (var cmdPos = connection.CreateCommand())
@@ -202,7 +203,8 @@ public class StatsRepository
                         ph.position,
                         COALESCE(SUM(ph.net_won_adjusted), 0) as pos_ev,
                         h.player_count,
-                        COUNT(*) as hand_count
+                        COUNT(*) as hand_count,
+                        COUNT(DISTINCT h.game_id) as tournament_count
                     FROM hands h
                     {joinClause}
                     {whereClause}
@@ -221,10 +223,12 @@ public class StatsRepository
                     var ev = reader.GetDouble(1);
                     var playerCount = reader.GetInt32(2);
                     var count = reader.GetInt32(3);
+                    var tournamentCount = reader.GetInt32(4);
                     
                     var key = (playerCount == 2 ? "HU_" : "3W_") + pos;
                     cevByPosition[key] = ev;
                     countByPosition[key] = count;
+                    tournamentsByPosition[key] = tournamentCount;
                 }
             }
         }
@@ -256,6 +260,7 @@ public class StatsRepository
             avg_chips_ev = avgChipsEv,
             cev_by_position = cevByPosition,
             count_by_position = countByPosition,
+            tournaments_by_position = tournamentsByPosition,
             sessions_this_month = sessionsThisMonth,
             total_sessions = sessions.Count,
             avg_multiplier = 0.0,
