@@ -243,7 +243,19 @@ public class StatsRepository
         var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo, buyIn); 
         
         double totalProfitEuro = sessions.Sum(s => s.Profit);
-        int totalTournaments = sessions.Sum(s => s.Tournaments);
+        
+        // Use position-filtered tournament count if a position is selected
+        int totalTournaments;
+        if (!string.IsNullOrEmpty(dbPosition))
+        {
+            // When position is filtered, use the tournament count from position stats
+            totalTournaments = tournamentsByPosition.Values.Sum();
+        }
+        else
+        {
+            totalTournaments = sessions.Sum(s => s.Tournaments);
+        }
+        
         double avgChipsEv = totalTournaments > 0 ? Math.Round(totalEv / totalTournaments, 2) : 0;
         
         // Sessions this month
