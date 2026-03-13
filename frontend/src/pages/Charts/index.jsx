@@ -308,15 +308,16 @@ export default function Charts() {
   }, [isZoomed, isLoading]);
 
   const finalStats = useMemo(() => {
-    if (!data || data.length === 0) return null;
+    if (!data || data.length === 0 || !stats) return null;
     const lastPoint = data[data.length - 1];
+    const totalGames = stats.total_tournaments || 1;
     return {
-      cev: lastPoint.netExpected,
-      chipsWon: lastPoint.chipsWon,
-      showdown: lastPoint.wonWithShowdown,
-      nonShowdown: lastPoint.wonWithoutShowdown
+      cev: lastPoint.netExpected / totalGames,
+      chipsWon: lastPoint.chipsWon / totalGames,
+      showdown: lastPoint.wonWithShowdown / totalGames,
+      nonShowdown: lastPoint.wonWithoutShowdown / totalGames
     };
-  }, [data]);
+  }, [data, stats]);
 
   if (!heroName) {
     return (
@@ -372,8 +373,10 @@ export default function Charts() {
     }
   };
 
-  const PositionCev = ({ label, value }) => {
-    const cev = value ? Math.round(value) : 0;
+  const PositionCev = ({ label, value, count }) => {
+    const totalGames = stats?.total_tournaments || 1;
+    const cevValue = value && totalGames > 0 ? value / totalGames : 0;
+    const cev = Math.round(cevValue * 10) / 10;
     return (
       <div className="flex justify-between items-center text-xs">
         <span className="text-gray-500">{label}</span>
