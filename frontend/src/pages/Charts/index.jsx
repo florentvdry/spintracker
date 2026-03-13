@@ -518,39 +518,47 @@ export default function Charts() {
                   </span>
                 </div>
                 
-                {stats && stats.avg_cev_by_position && (
+                {stats && stats.cev_by_position && (
                   <div className="mt-3 pt-2 border-t border-[#374151]">
                     <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                       <div>
                         <p className="text-[9px] text-gray-500">Heads-Up</p>
-                        <PositionStat 
-                          label="SB" 
-                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['HU_SB'] || 0).toFixed(2) : (chartPosition === 'HU_SB' ? (stats.avg_cev_by_position?.['HU_SB'] || 0).toFixed(2) : '0.00')} 
-                          isSelected={chartPosition === 'HU_SB'} 
-                        />
-                        <PositionStat 
-                          label="BB" 
-                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['HU_BB'] || 0).toFixed(2) : (chartPosition === 'HU_BB' ? (stats.avg_cev_by_position?.['HU_BB'] || 0).toFixed(2) : '0.00')} 
-                          isSelected={chartPosition === 'HU_BB'} 
-                        />
+                        {(() => {
+                          const totalTournaments = stats.total_tournaments || 1;
+                          const getCevValue = (positionKey) => {
+                            const value = stats.cev_by_position?.[positionKey] || 0;
+                            if (chartPosition === 'all') {
+                              return (value / totalTournaments).toFixed(2);
+                            }
+                            return chartPosition === positionKey ? (value / totalTournaments).toFixed(2) : '0.00';
+                          };
+                          return (
+                            <>
+                              <PositionStat label="SB" value={getCevValue('HU_SB')} isSelected={chartPosition === 'HU_SB'} />
+                              <PositionStat label="BB" value={getCevValue('HU_BB')} isSelected={chartPosition === 'HU_BB'} />
+                            </>
+                          );
+                        })()}
                       </div>
                       <div>
                         <p className="text-[9px] text-gray-500">3-Way</p>
-                        <PositionStat 
-                          label="BTN" 
-                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['3W_BTN'] || 0).toFixed(2) : (chartPosition === '3W_BTN' ? (stats.avg_cev_by_position?.['3W_BTN'] || 0).toFixed(2) : '0.00')} 
-                          isSelected={chartPosition === '3W_BTN'} 
-                        />
-                        <PositionStat 
-                          label="SB" 
-                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['3W_SB'] || 0).toFixed(2) : (chartPosition === '3W_SB' ? (stats.avg_cev_by_position?.['3W_SB'] || 0).toFixed(2) : '0.00')} 
-                          isSelected={chartPosition === '3W_SB'} 
-                        />
-                        <PositionStat 
-                          label="BB" 
-                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['3W_BB'] || 0).toFixed(2) : (chartPosition === '3W_BB' ? (stats.avg_cev_by_position?.['3W_BB'] || 0).toFixed(2) : '0.00')} 
-                          isSelected={chartPosition === '3W_BB'} 
-                        />
+                        {(() => {
+                          const totalTournaments = stats.total_tournaments || 1;
+                          const getCevValue = (positionKey) => {
+                            const value = stats.cev_by_position?.[positionKey] || 0;
+                            if (chartPosition === 'all') {
+                              return (value / totalTournaments).toFixed(2);
+                            }
+                            return chartPosition === positionKey ? (value / totalTournaments).toFixed(2) : '0.00';
+                          };
+                          return (
+                            <>
+                              <PositionStat label="BTN" value={getCevValue('3W_BTN')} isSelected={chartPosition === '3W_BTN'} />
+                              <PositionStat label="SB" value={getCevValue('3W_SB')} isSelected={chartPosition === '3W_SB'} />
+                              <PositionStat label="BB" value={getCevValue('3W_BB')} isSelected={chartPosition === '3W_BB'} />
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>
