@@ -307,6 +307,17 @@ export default function Charts() {
     }
   }, [isZoomed, isLoading]);
 
+  const finalStats = useMemo(() => {
+    if (!data || data.length === 0) return null;
+    const lastPoint = data[data.length - 1];
+    return {
+      cev: lastPoint.netExpected,
+      chipsWon: lastPoint.chipsWon,
+      showdown: lastPoint.wonWithShowdown,
+      nonShowdown: lastPoint.wonWithoutShowdown
+    };
+  }, [data]);
+
   if (!heroName) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-gray-400">
@@ -380,17 +391,6 @@ export default function Charts() {
         });
     }
   };
-
-  const finalStats = useMemo(() => {
-    if (!data || data.length === 0) return null;
-    const lastPoint = data[data.length - 1];
-    return {
-      cev: lastPoint.netExpected,
-      chipsWon: lastPoint.chipsWon,
-      showdown: lastPoint.wonWithShowdown,
-      nonShowdown: lastPoint.wonWithoutShowdown
-    };
-  }, [data]);
 
   const handleMouseDown = (e) => {
     e.preventDefault();
