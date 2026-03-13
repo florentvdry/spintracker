@@ -168,37 +168,20 @@ namespace SpinTrackerBackend.Services
                     continue;
                 }
 
-                // NEW: First Player Pattern Filters
-                if (!MatchesFirstPlayerPattern(hand.FlopAction, filters.FlopFirstPattern, hand))
+                // NEW: Street Interaction Pattern Filters (alternating actions between players)
+                if (!MatchesInteractionPattern(hand.FlopAction, filters.FlopInteractionPattern, hand))
                 {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopFirstPattern mismatch.");
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopInteractionPattern mismatch.");
                     continue;
                 }
-                if (!MatchesFirstPlayerPattern(hand.TurnAction, filters.TurnFirstPattern, hand))
+                if (!MatchesInteractionPattern(hand.TurnAction, filters.TurnInteractionPattern, hand))
                 {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnFirstPattern mismatch.");
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnInteractionPattern mismatch.");
                     continue;
                 }
-                if (!MatchesFirstPlayerPattern(hand.RiverAction, filters.RiverFirstPattern, hand))
+                if (!MatchesInteractionPattern(hand.RiverAction, filters.RiverInteractionPattern, hand))
                 {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverFirstPattern mismatch.");
-                    continue;
-                }
-
-                // NEW: Second Player Pattern Filters
-                if (!MatchesSecondPlayerPattern(hand.FlopAction, filters.FlopSecondPattern, hand))
-                {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopSecondPattern mismatch.");
-                    continue;
-                }
-                if (!MatchesSecondPlayerPattern(hand.TurnAction, filters.TurnSecondPattern, hand))
-                {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnSecondPattern mismatch.");
-                    continue;
-                }
-                if (!MatchesSecondPlayerPattern(hand.RiverAction, filters.RiverSecondPattern, hand))
-                {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverSecondPattern mismatch.");
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverInteractionPattern mismatch.");
                     continue;
                 }
 
@@ -661,7 +644,7 @@ namespace SpinTrackerBackend.Services
             return true;
         }
 
-        private bool MatchesFirstPlayerPattern(string? handAction, string? pattern, AnalysisHandData hand)
+        private bool MatchesInteractionPattern(string? handAction, string? pattern, AnalysisHandData hand)
         {
             if (string.IsNullOrEmpty(pattern)) return true;
             if (string.IsNullOrEmpty(handAction)) return false;
@@ -683,11 +666,8 @@ namespace SpinTrackerBackend.Services
                 }
             }
 
-            var firstPlayerActions = new List<string>();
+            var allActions = new List<(string player, string verb)>();
             var lines = handAction.Split('\n');
-
-            string? firstPlayerName = null;
-            bool foundFirstPlayer = false;
 
             foreach (var line in lines)
             {
@@ -713,115 +693,34 @@ namespace SpinTrackerBackend.Services
 
                 if (verb != "unknown")
                 {
-                    if (!foundFirstPlayer)
-                    {
-                        firstPlayerName = playerName;
-                        foundFirstPlayer = true;
-                    }
-
-                    if (playerName == firstPlayerName)
-                    {
-                        firstPlayerActions.Add(verb);
-                    }
+                    allActions.Add((playerName, verb));
                 }
             }
 
-            if (firstPlayerActions.Count < patternParts.Length) return false;
+            if (allActions.Count < patternParts.Length) return false;
+
+            var alternatingPattern = new List<string>();
+            string? lastPlayer = null;
+            
+            foreach (var action in allActions)
+            {
+                if (lastPlayer != null && action.player != lastPlayer)
+                {
+                    alternatingPattern.Add(action.verb);
+                }
+                else if (lastPlayer == null)
+                {
+                    alternatingPattern.Add(action.verb);
+                }
+                lastPlayer = action.player;
+            }
+
+            if (alternatingPattern.Count < patternParts.Length) return false;
 
             for (int i = 0; i < patternParts.Length; i++)
             {
                 var required = patternParts[i];
-                var actual = firstPlayerActions[i];
-
-                if (!string.Equals(required, actual, StringComparison.OrdinalIgnoreCase))
-                {
-                    if (required == "raise" && actual == "all-in") continue;
-                    if (required == "bet" && actual == "all-in") continue;
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool MatchesSecondPlayerPattern(string? handAction, string? pattern, AnalysisHandData hand)
-        {
-            if (string.IsNullOrEmpty(pattern)) return true;
-            if (string.IsNullOrEmpty(handAction)) return false;
-
-            var patternParts = pattern.ToLower().Split('-').Select(p => p.Trim()).ToArray();
-            if (patternParts.Length == 0) return true;
-
-            var posMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            if (!string.IsNullOrEmpty(hand.PlayerPositionsMap))
-            {
-                var pairs = hand.PlayerPositionsMap.Split('|');
-                foreach (var pair in pairs)
-                {
-                    var parts = pair.Split(':');
-                    if (parts.Length == 2)
-                    {
-                        posMap[parts[0]] = parts[1];
-                    }
-                }
-            }
-
-            var secondPlayerActions = new List<string>();
-            var lines = handAction.Split('\n');
-
-            string? firstPlayerName = null;
-            string? secondPlayerName = null;
-            bool foundFirstPlayer = false;
-            bool foundSecondPlayer = false;
-
-            foreach (var line in lines)
-            {
-                if (string.IsNullOrEmpty(line)) continue;
-
-                var processingLine = line.Trim();
-                var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
-                if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
-
-                var colonIndex = processingLine.IndexOf(':');
-                if (colonIndex == -1) continue;
-
-                var playerName = processingLine.Substring(0, colonIndex).Trim();
-                var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
-
-                string verb = "unknown";
-                if (content.Contains("all-in")) verb = "all-in";
-                else if (content.Contains("raises") || content.Contains("raise")) verb = "raise";
-                else if (content.Contains("bets") || content.Contains("bet")) verb = "bet";
-                else if (content.Contains("calls") || content.Contains("call")) verb = "call";
-                else if (content.Contains("checks") || content.Contains("check")) verb = "check";
-                else if (content.Contains("folds") || content.Contains("fold")) verb = "fold";
-
-                if (verb != "unknown")
-                {
-                    if (!foundFirstPlayer)
-                    {
-                        firstPlayerName = playerName;
-                        foundFirstPlayer = true;
-                    }
-                    else if (!foundSecondPlayer && playerName != firstPlayerName)
-                    {
-                        secondPlayerName = playerName;
-                        foundSecondPlayer = true;
-                    }
-
-                    if (foundSecondPlayer && playerName == secondPlayerName)
-                    {
-                        secondPlayerActions.Add(verb);
-                    }
-                }
-            }
-
-            if (secondPlayerActions.Count < patternParts.Length) return false;
-
-            for (int i = 0; i < patternParts.Length; i++)
-            {
-                var required = patternParts[i];
-                var actual = secondPlayerActions[i];
+                var actual = alternatingPattern[i];
 
                 if (!string.Equals(required, actual, StringComparison.OrdinalIgnoreCase))
                 {

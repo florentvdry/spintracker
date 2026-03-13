@@ -28,15 +28,10 @@ public class AnalysisFilters
     public string? TurnPattern { get; set; }
     public string? RiverPattern { get; set; }
 
-    // First Player Pattern (the player who acts first on the street)
-    public string? FlopFirstPattern { get; set; }
-    public string? TurnFirstPattern { get; set; }
-    public string? RiverFirstPattern { get; set; }
-
-    // Second Player Pattern (the responder)
-    public string? FlopSecondPattern { get; set; }
-    public string? TurnSecondPattern { get; set; }
-    public string? RiverSecondPattern { get; set; }
+    // Street Interaction Patterns (alternating actions between players: "check-bet", "check-raise", "bet-call", etc.)
+    public string? FlopInteractionPattern { get; set; }
+    public string? TurnInteractionPattern { get; set; }
+    public string? RiverInteractionPattern { get; set; }
 
     public double? MinStackBB { get; set; }
     public double? MaxStackBB { get; set; }
