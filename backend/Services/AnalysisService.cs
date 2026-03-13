@@ -299,7 +299,8 @@ namespace SpinTrackerBackend.Services
             var amountBB = heroAction.Value.amountBB;
             
             var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi", "vs_sb_open" };
-            var limpSituations = new[] { "limp", "vs_btn_limp", "hu_sb_limp", "vs_sb_limp", "vs_btn_limp_sb_limp", "vs_btn_limp_sb_fold", "hu_vs_sb_limp" };
+            var limpSituations = new[] { "limp", "vs_btn_limp", "hu_sb_limp" };
+            var bbVsLimpSituations = new[] { "vs_sb_limp", "vs_btn_limp_sb_limp", "vs_btn_limp_sb_fold", "hu_vs_sb_limp" };
             
             if (rfiSituations.Contains(situationId.ToLower()))
             {
@@ -311,8 +312,16 @@ namespace SpinTrackerBackend.Services
             {
                 // Limp: Call approximately 1 BB (just call the blind)
                 // Note: SB calls SB amount = 0.5bb (since SB posted 0.5bb already)
-                // BB vs SB limp: BB calls 0 (they already posted 1bb)
+                // BTN limp calls 1bb
                 return action == "call" && amountBB >= 0.3 && amountBB <= 1.5;
+            }
+            
+            if (bbVsLimpSituations.Contains(situationId.ToLower()))
+            {
+                // BB vs limp: BB has already posted 1bb, so they can't "call"
+                // They can only "check" (do nothing) or "raise"
+                // So we match any action except fold
+                return action != "fold";
             }
             
             return true;
