@@ -28,6 +28,8 @@ export const useReplayerStore = create((set, get) => ({
 
   // Recording State
   isRecording: false,
+  recordingType: null,
+  showExportModal: false,
   recorder: null,
   recordingType: null, // 'hand' or 'tournament'
 
@@ -48,19 +50,19 @@ export const useReplayerStore = create((set, get) => ({
     });
   },
 
-  exportVideo: async () => {
-    const { handQueue, currentHandIndex, hand } = get();
+  openExportModal: () => {
+    const { hand } = get();
     if (!hand) return;
+    set({ showExportModal: true });
+  },
 
-    let exportType = 'hand';
-    if (handQueue.length > 1) {
-      // Ask user what to export
-      const choice = window.confirm('Exporter la main actuelle ou tout le tournoi?\n\nOK = Main actuelle\nAnnuler = Tout le tournoi');
-      exportType = choice ? 'hand' : 'tournament';
-    }
+  closeExportModal: () => {
+    set({ showExportModal: false });
+  },
 
-    // Start recording
-    set({ isRecording: true, recordingType: exportType });
+  confirmExport: async (exportType) => {
+    const { handQueue } = get();
+    set({ showExportModal: false, isRecording: true, recordingType: exportType });
     
     try {
       await startVideoRecording(exportType);
@@ -69,6 +71,25 @@ export const useReplayerStore = create((set, get) => ({
       alert('Erreur lors de l\'export vidéo: ' + error.message);
     } finally {
       set({ isRecording: false, recordingType: null });
+    }
+  },
+
+  exportVideo: async () => {
+    const { handQueue, hand } = get();
+    if (!hand) return;
+
+    if (handQueue.length > 1) {
+      set({ showExportModal: true });
+    } else {
+      set({ isRecording: true, recordingType: 'hand' });
+      try {
+        await startVideoRecording('hand');
+      } catch (error) {
+        console.error('Video export failed:', error);
+        alert('Erreur lors de l\'export vidéo: ' + error.message);
+      } finally {
+        set({ isRecording: false, recordingType: null });
+      }
     }
   },
 
@@ -130,10 +151,15 @@ export const useReplayerStore = create((set, get) => ({
 
   openReplayer: (handData) => {
     const { handQueue, currentHandIndex } = get();
+    // Sérialiser les données pour éviter les erreurs de clonage IPC
+    // On ne garde que les données essentielles pour le replayer
+    const serializedHandData = JSON.parse(JSON.stringify(handData));
+    const serializedHandQueue = handQueue.map(hand => JSON.parse(JSON.stringify(hand)));
+    
     // Open replayer in a new window via IPC, passing queue info for navigation
     ipcService.invoke('open-replayer', {
-      handData,
-      handQueue,
+      handData: serializedHandData,
+      handQueue: serializedHandQueue,
       currentHandIndex
     });
   },

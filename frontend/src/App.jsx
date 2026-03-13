@@ -12,6 +12,7 @@ import { useNotificationStore } from '@stores/notificationStore';
 import NotificationContainer from '@components/ui/NotificationContainer';
 import ProgressModal from '@components/ui/ProgressModal';
 import UpdateModal from '@components/ui/UpdateModal';
+import ExportModal from '@components/ui/ExportModal';
 
 function App() {
   const initializeApp = useAppStore(state => state.initialize);
@@ -45,6 +46,7 @@ function App() {
       <NotificationContainer />
       <ProgressModal />
       <UpdateModal />
+      <ExportModal />
     </>
   );
 }
