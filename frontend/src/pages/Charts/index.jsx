@@ -6,14 +6,13 @@ import { LoadingSpinner } from '@components/ui';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import * as echarts from 'echarts';
-import { BarChart2 } from 'lucide-react';
+import { BarChart2, GripHorizontal } from 'lucide-react';
 
 const LINE_COLORS = {
   chipsWon: '#10b981',
   netExpected: '#eab308',
   wonWithShowdown: '#3b82f6',
-  wonWithoutShowdown: '#ef4444',
-  euroProfit: '#10b981'
+  wonWithoutShowdown: '#ef4444'
 };
 
 const POSITIONS = [
@@ -28,15 +27,17 @@ const POSITIONS = [
 export default function Charts() {
   const { t } = useTranslation();
   const chartRef = useRef(null);
-  const [chartMode, setChartMode] = useState('chips');
   const [chartPosition, setChartPosition] = useState('all');
+  const [stats, setStats] = useState(null);
+  const [boxPosition, setBoxPosition] = useState({ x: 20, y: 20 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   const LINE_LABELS = {
     chipsWon: t('common.chips_won', 'Chips Won'),
     netExpected: t('hand_history.table.ev_chips', 'EV Chips'),
     wonWithShowdown: t('common.showdown_winning', 'Showdown Won'),
-    wonWithoutShowdown: t('common.non_showdown_winning', 'Non-Showdown Won'),
-    euroProfit: t('dashboard.net_profit', 'Net Profit (€)')
+    wonWithoutShowdown: t('common.non_showdown_winning', 'Non-Showdown Won')
   };
 
   const { heroName, buyIn, dateRange, customDateFrom, customDateTo, getDateRangeParams } = useFilterStore();
@@ -47,8 +48,7 @@ export default function Charts() {
     chipsWon: true,
     netExpected: true,
     wonWithShowdown: true,
-    wonWithoutShowdown: true,
-    euroProfit: true
+    wonWithoutShowdown: true
   });
 
   const loadChartData = async () => {
@@ -81,19 +81,17 @@ export default function Charts() {
             chipsWon: item.profit ?? item.realWin ?? 0,
             netExpected: item.cumulative ?? item.theoricalWin ?? 0,
             wonWithShowdown: item.chips_won_showdown ?? item.chipsWonShowdown ?? 0,
-            wonWithoutShowdown: item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0,
-            euroProfit: item.euro_profit ?? 0
+            wonWithoutShowdown: item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0
           }));
         } else if (raw.labels && Array.isArray(raw.labels)) {
-           const { labels, realWin, theoricalWin, wonWithShowdown, wonWithoutShowdown, euro_profit } = raw;
+           const { labels, realWin, theoricalWin, wonWithShowdown, wonWithoutShowdown } = raw;
            chartData = labels.map((label, index) => ({
             time: index + 1,
             label: label,
             chipsWon: (realWin && realWin[index]) || 0,
             netExpected: (theoricalWin && theoricalWin[index]) || 0,
             wonWithShowdown: (wonWithShowdown && wonWithShowdown[index]) || 0,
-            wonWithoutShowdown: (wonWithoutShowdown && wonWithoutShowdown[index]) || 0,
-            euroProfit: (euro_profit && euro_profit[index]) || 0
+            wonWithoutShowdown: (wonWithoutShowdown && wonWithoutShowdown[index]) || 0
           }));
         }
         setData(chartData);
@@ -107,8 +105,30 @@ export default function Charts() {
     }
   };
 
+  const loadStats = async () => {
+    if (!heroName) {
+      setStats(null);
+      return;
+    }
+
+    try {
+      const { dateFrom, dateTo } = getDateRangeParams();
+      const buyInParam = buyIn === 'all' ? null : Number(buyIn);
+      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam);
+      if (result && result.success && result.data) {
+        setStats(result.data);
+      } else {
+        setStats(null);
+      }
+    } catch (error) {
+      console.error('Failed to load stats:', error);
+      setStats(null);
+    }
+  };
+
   useEffect(() => {
     loadChartData();
+    loadStats();
   }, [dateRange, customDateFrom, customDateTo, buyIn, heroName, chartPosition]);
 
   const toggleLine = (lineKey) => {
@@ -123,7 +143,7 @@ export default function Charts() {
 
     const seriesList = [];
     
-    if (chartMode === 'chips') {
+    if (visibleLines.chipsWon) {
         if (visibleLines.chipsWon) {
             seriesList.push({
                 name: LINE_LABELS.chipsWon,
@@ -175,25 +195,6 @@ export default function Charts() {
                 large: true,
             });
         }
-    } else {
-        if (visibleLines.euroProfit) {
-            seriesList.push({
-                name: LINE_LABELS.euroProfit,
-                type: 'line',
-                data: data.map(d => d.euroProfit),
-                itemStyle: { color: LINE_COLORS.euroProfit },
-                showSymbol: false,
-                lineStyle: { width: 3 },
-                areaStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: 'rgba(16, 185, 129, 0.3)' },
-                        { offset: 1, color: 'rgba(16, 185, 129, 0)' }
-                    ])
-                },
-                emphasis: { focus: 'series' },
-                large: true,
-            });
-        }
     }
 
     return {
@@ -211,9 +212,7 @@ export default function Charts() {
                 const value = item.value;
                 const name = item.seriesName;
                 const sign = value >= 0 ? '+' : '';
-                const formattedValue = chartMode === 'euro' 
-                    ? `${sign}${value.toFixed(2)}€`
-                    : `${sign}${Math.round(value)}`;
+                const formattedValue = `${sign}${Math.round(value)}`;
                 
                 result += `<div class="flex items-center justify-between gap-4 text-xs">
                     <span style="color:${color}">● ${name}</span>
@@ -272,7 +271,7 @@ export default function Charts() {
         axisTick: { show: false },
         axisLabel: { 
             color: '#9ca3af',
-            formatter: (value) => chartMode === 'euro' ? `${value}€` : value
+            formatter: (value) => value
         },
         splitLine: { 
             show: true, 
@@ -281,7 +280,7 @@ export default function Charts() {
       },
       series: seriesList
     };
-  }, [data, visibleLines, chartMode, LINE_LABELS]);
+  }, [data, visibleLines, LINE_LABELS]);
 
   const onChartReady = (chart) => {
     chart.dispatchAction({
@@ -362,6 +361,18 @@ export default function Charts() {
     }
   };
 
+  const PositionCev = ({ label, value }) => {
+    const cev = value ? Math.round(value) : 0;
+    return (
+      <div className="flex justify-between items-center text-xs">
+        <span className="text-gray-500">{label}</span>
+        <span className={`font-mono font-medium ${cev >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+          {cev > 0 ? '+' : ''}{cev}
+        </span>
+      </div>
+    );
+  };
+
   const handleResetZoom = () => {
     if (chartRef.current) {
         chartRef.current.getEchartsInstance().dispatchAction({
@@ -370,10 +381,46 @@ export default function Charts() {
     }
   };
 
-  const positionLabel = POSITIONS.find(p => p.value === chartPosition)?.label || 'All Positions';
+  const finalStats = useMemo(() => {
+    if (!data || data.length === 0) return null;
+    const lastPoint = data[data.length - 1];
+    return {
+      cev: lastPoint.netExpected,
+      chipsWon: lastPoint.chipsWon,
+      showdown: lastPoint.wonWithShowdown,
+      nonShowdown: lastPoint.wonWithoutShowdown
+    };
+  }, [data]);
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const container = document.getElementById('chart-container');
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const newX = e.clientX - rect.left - dragOffset.x;
+    const newY = e.clientY - rect.top - dragOffset.y;
+    setBoxPosition({
+      x: Math.max(0, Math.min(newX, rect.width - 250)),
+      y: Math.max(0, Math.min(newY, rect.height - 150))
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   return (
-    <div className="h-[calc(100vh-180px)] flex flex-col">
+    <div className="h-[calc(100vh-180px)] flex flex-col" onMouseUp={handleMouseUp} onMouseMove={handleMouseMove}>
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
         <div>
           <h1 className="text-2xl font-bold text-white">{t('charts.title', 'Charts')}</h1>
@@ -392,64 +439,29 @@ export default function Charts() {
               </option>
             ))}
           </select>
-
-          <div className="flex bg-[#1e2533] p-1 rounded-lg">
-            <button
-              onClick={() => setChartMode('chips')}
-              className={clsx(
-                'px-4 py-1.5 text-xs font-medium rounded-md transition-all',
-                chartMode === 'chips' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'
-              )}
-            >
-              CEV (Chips)
-            </button>
-            <button
-              onClick={() => setChartMode('euro')}
-              className={clsx(
-                'px-4 py-1.5 text-xs font-medium rounded-md transition-all',
-                chartMode === 'euro' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'
-              )}
-            >
-              Euros (€)
-            </button>
-          </div>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-4">
-           {chartMode === 'chips' ? (
-             Object.entries(LINE_COLORS).filter(([key]) => key !== 'euroProfit').map(([key, color]) => (
-                 <button
-                   key={key}
-                   onClick={() => toggleLine(key)}
-                   className={clsx(
-                       'flex items-center gap-1.5 text-xs transition-opacity',
-                       !visibleLines[key] && 'opacity-40'
-                   )}
-                >
-                   <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
-                   <span className="text-gray-300">
-                       {LINE_LABELS[key]}
-                   </span>
-               </button>
-           ))
-         ) : (
-            <button
-              onClick={() => toggleLine('euroProfit')}
-              className={clsx(
-                  'flex items-center gap-1.5 text-xs transition-opacity',
-                  !visibleLines.euroProfit && 'opacity-40'
-              )}
-            >
-              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: LINE_COLORS.euroProfit }} />
-              <span className="text-gray-300">
-                  {LINE_LABELS.euroProfit}
-              </span>
-            </button>
-         )}
+        {Object.entries(LINE_COLORS).map(([key, color]) => (
+             <button
+               key={key}
+               onClick={() => toggleLine(key)}
+               className={clsx(
+                   'flex items-center gap-1.5 text-xs transition-opacity',
+                   !visibleLines[key] && 'opacity-40'
+               )}
+           >
+               <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
+               <span className="text-gray-300">
+                   {LINE_LABELS[key]}
+               </span>
+           </button>
+        ))}
       </div>
 
       <div 
+        id="chart-container"
         className="flex-1 w-full relative min-h-0" 
         onContextMenu={(e) => {
             e.preventDefault();
@@ -468,7 +480,72 @@ export default function Charts() {
             onEvents={handleChartEvents}
             onChartReady={onChartReady}
         />
+        
+        {finalStats && (
+          <div 
+            className="absolute bg-[#1e2533]/95 backdrop-blur-sm border border-[#374151] rounded-lg p-3 shadow-xl select-none"
+            style={{ 
+              left: boxPosition.x, 
+              top: boxPosition.y,
+              cursor: isDragging ? 'grabbing' : 'grab',
+              minWidth: '200px'
+            }}
+            onMouseDown={handleMouseDown}
+          >
+            <div className="flex items-center justify-between mb-2 border-b border-[#374151] pb-2">
+              <span className="text-xs font-medium text-gray-400 uppercase">Stats</span>
+              <GripHorizontal className="w-4 h-4 text-gray-500" />
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-400">CEV Total</span>
+                <span className={clsx('text-sm font-mono font-medium', finalStats.cev >= 0 ? 'text-green-400' : 'text-red-400')}>
+                  {finalStats.cev >= 0 ? '+' : ''}{Math.round(finalStats.cev)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-400">Chips Won</span>
+                <span className={clsx('text-sm font-mono font-medium', finalStats.chipsWon >= 0 ? 'text-green-400' : 'text-red-400')}>
+                  {finalStats.chipsWon >= 0 ? '+' : ''}{Math.round(finalStats.chipsWon)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-400">Showdown</span>
+                <span className={clsx('text-sm font-mono font-medium', finalStats.showdown >= 0 ? 'text-blue-400' : 'text-red-400')}>
+                  {finalStats.showdown >= 0 ? '+' : ''}{Math.round(finalStats.showdown)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-400">Non-Showdown</span>
+                <span className={clsx('text-sm font-mono font-medium', finalStats.nonShowdown >= 0 ? 'text-red-400' : 'text-green-400')}>
+                  {finalStats.nonShowdown >= 0 ? '+' : ''}{Math.round(finalStats.nonShowdown)}
+                </span>
+              </div>
+              
+              {stats && stats.cev_by_position && (
+                <div className="mt-3 pt-2 border-t border-[#374151]">
+                  <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">CEV by Position</p>
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                    <div>
+                      <p className="text-[9px] text-gray-500">3-Way</p>
+                      <PositionCev label="BTN" value={stats.cev_by_position?.['3W_BTN']} />
+                      <PositionCev label="SB" value={stats.cev_by_position?.['3W_SB']} />
+                      <PositionCev label="BB" value={stats.cev_by_position?.['3W_BB']} />
+                    </div>
+                    <div>
+                      <p className="text-[9px] text-gray-500">Heads-Up</p>
+                      <PositionCev label="SB" value={(stats.cev_by_position?.['HU_BTN SB'] || 0) + (stats.cev_by_position?.['HU_SB'] || 0)} />
+                      <PositionCev label="BB" value={stats.cev_by_position?.['HU_BB']} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
