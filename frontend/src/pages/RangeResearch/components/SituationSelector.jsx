@@ -7,31 +7,31 @@ import { usePlayersStore } from '@stores/playersStore';
 const GET_SITUATIONS = (t) => ({
   3: {
     BTN: [
-      { id: 'rfi', label: t('range_analysis.situations.rfi'), sequence: [], positions: ['BTN'] },
-      { id: 'limp', label: t('range_analysis.situations.limp'), sequence: [], positions: ['BTN'] },
+      { id: 'rfi', situationId: 'rfi', label: t('range_analysis.situations.rfi'), sequence: [], positions: ['BTN'] },
+      { id: 'limp', situationId: 'limp', label: t('range_analysis.situations.limp'), sequence: [], positions: ['BTN'] },
     ],
     SB: [
-      { id: 'sb_rfi', label: t('range_analysis.situations.sb_rfi'), sequence: ['BTN:fold'], positions: ['SB'] },
-      { id: 'vs_btn_open', label: t('range_analysis.situations.vs_btn_open'), sequence: ['BTN:raise'], positions: ['SB'] },
-      { id: 'vs_btn_limp', label: t('range_analysis.situations.vs_btn_limp'), sequence: ['BTN:call'], positions: ['SB'] },
+      { id: 'sb_rfi', situationId: 'sb_rfi', label: t('range_analysis.situations.sb_rfi'), sequence: ['BTN:fold'], positions: ['SB'] },
+      { id: 'vs_btn_open', situationId: 'vs_btn_open', label: t('range_analysis.situations.vs_btn_open'), sequence: ['BTN:raise'], positions: ['SB'] },
+      { id: 'vs_btn_limp', situationId: 'vs_btn_limp', label: t('range_analysis.situations.vs_btn_limp'), sequence: ['BTN:call'], positions: ['SB'] },
     ],
     BB: [
-      { id: 'vs_btn_open_sb_fold', label: t('range_analysis.situations.vs_btn_open_sb_fold'), sequence: ['BTN:raise', 'SB:fold'], positions: ['BB'] },
-      { id: 'vs_sb_open', label: t('range_analysis.situations.vs_sb_open'), sequence: ['BTN:fold', 'SB:raise'], positions: ['BB'] },
-      { id: 'vs_btn_open_sb_call', label: t('range_analysis.situations.vs_btn_open_sb_call'), sequence: ['BTN:raise', 'SB:call'], positions: ['BB'] },
-      { id: 'vs_sb_limp', label: t('range_analysis.situations.vs_sb_limp'), sequence: ['BTN:fold', 'SB:call'], positions: ['BB'] },
-      { id: 'vs_btn_limp_sb_limp', label: t('range_analysis.situations.vs_btn_limp_sb_limp'), sequence: ['BTN:call', 'SB:call'], positions: ['BB'] },
-      { id: 'vs_btn_limp_sb_fold', label: t('range_analysis.situations.vs_btn_limp_sb_fold'), sequence: ['BTN:call', 'SB:fold'], positions: ['BB'] },
+      { id: 'vs_btn_open_sb_fold', situationId: 'vs_btn_open_sb_fold', label: t('range_analysis.situations.vs_btn_open_sb_fold'), sequence: ['BTN:raise', 'SB:fold'], positions: ['BB'] },
+      { id: 'vs_sb_open', situationId: 'vs_sb_open', label: t('range_analysis.situations.vs_sb_open'), sequence: ['BTN:fold', 'SB:raise'], positions: ['BB'] },
+      { id: 'vs_btn_open_sb_call', situationId: 'vs_btn_open_sb_call', label: t('range_analysis.situations.vs_btn_open_sb_call'), sequence: ['BTN:raise', 'SB:call'], positions: ['BB'] },
+      { id: 'vs_sb_limp', situationId: 'vs_sb_limp', label: t('range_analysis.situations.vs_sb_limp'), sequence: ['BTN:fold', 'SB:call'], positions: ['BB'] },
+      { id: 'vs_btn_limp_sb_limp', situationId: 'vs_btn_limp_sb_limp', label: t('range_analysis.situations.vs_btn_limp_sb_limp'), sequence: ['BTN:call', 'SB:call'], positions: ['BB'] },
+      { id: 'vs_btn_limp_sb_fold', situationId: 'vs_btn_limp_sb_fold', label: t('range_analysis.situations.vs_btn_limp_sb_fold'), sequence: ['BTN:call', 'SB:fold'], positions: ['BB'] },
     ]
   },
   2: {
     SB: [
-        { id: 'hu_sb_rfi', label: t('range_analysis.situations.hu_sb_rfi'), sequence: [], positions: ['SB'] },
-        { id: 'hu_sb_limp', label: t('range_analysis.situations.hu_sb_limp'), sequence: [], positions: ['SB'] },
+        { id: 'hu_sb_rfi', situationId: 'hu_sb_rfi', label: t('range_analysis.situations.hu_sb_rfi'), sequence: [], positions: ['SB'] },
+        { id: 'hu_sb_limp', situationId: 'hu_sb_limp', label: t('range_analysis.situations.hu_sb_limp'), sequence: [], positions: ['SB'] },
     ],
     BB: [
-        { id: 'hu_vs_sb_open', label: t('range_analysis.situations.hu_vs_sb_open'), sequence: ['SB:raise'], positions: ['BB'] },
-        { id: 'hu_vs_sb_limp', label: t('range_analysis.situations.hu_vs_sb_limp'), sequence: ['SB:call'], positions: ['BB'] },
+        { id: 'hu_vs_sb_open', situationId: 'hu_vs_sb_open', label: t('range_analysis.situations.hu_vs_sb_open'), sequence: ['SB:raise'], positions: ['BB'] },
+        { id: 'hu_vs_sb_limp', situationId: 'hu_vs_sb_limp', label: t('range_analysis.situations.hu_vs_sb_limp'), sequence: ['SB:call'], positions: ['BB'] },
     ]
   }
 });
@@ -63,13 +63,13 @@ export default function SituationSelector({ filters, onChange }) {
     onChange({
       ...filters,
       Positions: sit.positions,
-      ActionSequence: sit.sequence
+      ActionSequence: sit.sequence,
+      SituationId: sit.situationId
     });
   };
 
   const handlePositionChange = (pos) => {
     setSelectedPosition(pos);
-    // Find first situation for this position
     const firstSit = SITUATIONS[filters.PlayerCount]?.[pos]?.[0];
     if (firstSit) {
         handleSituationSelect(firstSit);
@@ -85,17 +85,14 @@ export default function SituationSelector({ filters, onChange }) {
       ...filters,
       PlayerCount: count,
       Positions: firstSit?.positions || [newPos],
-      ActionSequence: firstSit?.sequence || []
+      ActionSequence: firstSit?.sequence || [],
+      SituationId: firstSit?.situationId || 'rfi'
     });
   };
 
   const currentSitId = useMemo(() => {
-    const sit = currentSituations.find(s => 
-        JSON.stringify(s.sequence) === JSON.stringify(filters.ActionSequence) &&
-        JSON.stringify(s.positions) === JSON.stringify(filters.Positions)
-    );
-    return sit?.id;
-  }, [filters.ActionSequence, filters.Positions, currentSituations]);
+    return filters.SituationId || currentSituations[0]?.situationId;
+  }, [filters.SituationId, currentSituations]);
 
   return (
     <div className="bg-dark-200 rounded-xl p-5 shadow-2xl flex flex-col gap-6 border border-white/5 relative overflow-hidden">
@@ -253,7 +250,8 @@ export default function SituationSelector({ filters, onChange }) {
                     DateFrom: '',
                     DateTo: '',
                     Positions: ['BTN'],
-                    ActionSequence: []
+                    ActionSequence: [],
+                    SituationId: 'rfi'
                 });
                 setSelectedPosition('BTN');
             }} 

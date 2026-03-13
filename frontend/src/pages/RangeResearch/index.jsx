@@ -31,8 +31,9 @@ export default function RangeResearch() {
     PlayerCount: 3,
     MinStackBB: null,
     MaxStackBB: null,
-    Positions: ['BTN'], // Default to BTN
+    Positions: ['BTN'],
     ActionSequence: [],
+    SituationId: 'rfi',
   });
 
   // Combined filters for API requests
@@ -162,11 +163,14 @@ export default function RangeResearch() {
                     <Filter className="w-4 h-4 text-primary-400" />
                     <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest">{t('range_analysis.matrix_title')}</h2>
                  </div>
-                 <div className="flex gap-4">
-                    <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#f44336] shadow-sm shadow-red-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.raise')}</span></div>
-                    <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#4caf50] shadow-sm shadow-green-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.call')}</span></div>
-                    <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#2196f3] shadow-sm shadow-blue-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.fold')}</span></div>
-                 </div>
+                  <div className="flex gap-4">
+                     <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#f44336] shadow-sm shadow-red-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.raise')}</span></div>
+                     <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#ff9800] shadow-sm shadow-orange-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.bet')}</span></div>
+                     <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#4caf50] shadow-sm shadow-green-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.call')}</span></div>
+                     <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#9e9e9e] shadow-sm shadow-gray-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.check')}</span></div>
+                     <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#2196f3] shadow-sm shadow-blue-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.fold')}</span></div>
+                     <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#b71c1c] shadow-sm shadow-red-900/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.allin')}</span></div>
+                  </div>
                </div>
 
                <div className="flex-1 p-6 overflow-auto flex items-center justify-center custom-scrollbar">
