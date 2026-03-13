@@ -44,6 +44,12 @@ export default function AnalysisFilters({ filters, onChange }) {
       FlopPattern: '',
       TurnPattern: '',
       RiverPattern: '',
+      FlopFirstPattern: '',
+      TurnFirstPattern: '',
+      RiverFirstPattern: '',
+      FlopSecondPattern: '',
+      TurnSecondPattern: '',
+      RiverSecondPattern: '',
       MinStackBB: null,
       MaxStackBB: null,
       Positions: [], // Hero Position
@@ -71,13 +77,40 @@ export default function AnalysisFilters({ filters, onChange }) {
     { value: 'all-in', label: 'All-in' },
   ];
 
-  const renderPatternSelect = (field) => (
+  const firstPlayerPatternOptions = [
+    { value: '', label: 'Any 1st' },
+    { value: 'check', label: 'Check' },
+    { value: 'check-bet', label: 'Check-Bet' },
+    { value: 'check-raise', label: 'Check-Raise' },
+    { value: 'bet', label: 'Bet' },
+    { value: 'bet-bet', label: 'Bet-Bet' },
+    { value: 'raise', label: 'Raise' },
+    { value: 'raise-raise', label: 'Raise-Raise' },
+  ];
+
+  const secondPlayerPatternOptions = [
+    { value: '', label: 'Any 2nd' },
+    { value: 'check', label: 'Check' },
+    { value: 'call', label: 'Call' },
+    { value: 'raise', label: 'Raise' },
+    { value: 'fold', label: 'Fold' },
+    { value: 'bet', label: 'Bet' },
+    { value: 'check-call', label: 'Check-Call' },
+    { value: 'check-raise', label: 'Check-Raise' },
+    { value: 'check-fold', label: 'Check-Fold' },
+    { value: 'bet-call', label: 'Bet-Call' },
+    { value: 'bet-raise', label: 'Bet-Raise' },
+    { value: 'bet-fold', label: 'Bet-Fold' },
+    { value: 'all-in', label: 'All-in' },
+  ];
+
+  const renderPatternSelect = (field, options) => (
     <select
       value={filters[field] || ''}
       onChange={(e) => handleChange(field, e.target.value)}
       className="flex-1 bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-white focus:border-primary-500 focus:outline-none appearance-none"
     >
-      {patternOptions.map(opt => (
+      {options.map(opt => (
         <option key={opt.value} value={opt.value}>{opt.label}</option>
       ))}
     </select>
@@ -242,9 +275,19 @@ export default function AnalysisFilters({ filters, onChange }) {
                     {renderActionSelect('SB', 'FlopSbAction')}
                     {renderActionSelect('BB', 'FlopBbAction')}
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
-                    {renderPatternSelect('FlopPattern')}
+                <div className="grid grid-cols-3 gap-2">
+                    <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
+                        {renderPatternSelect('FlopPattern', patternOptions)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-cyan-500 uppercase font-semibold whitespace-nowrap">1st:</span>
+                        {renderPatternSelect('FlopFirstPattern', firstPlayerPatternOptions)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-orange-500 uppercase font-semibold whitespace-nowrap">2nd:</span>
+                        {renderPatternSelect('FlopSecondPattern', secondPlayerPatternOptions)}
+                    </div>
                 </div>
             </div>
         </div>
@@ -258,9 +301,19 @@ export default function AnalysisFilters({ filters, onChange }) {
                     {renderActionSelect('SB', 'TurnSbAction')}
                     {renderActionSelect('BB', 'TurnBbAction')}
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
-                    {renderPatternSelect('TurnPattern')}
+                <div className="grid grid-cols-3 gap-2">
+                    <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
+                        {renderPatternSelect('TurnPattern', patternOptions)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-cyan-500 uppercase font-semibold whitespace-nowrap">1st:</span>
+                        {renderPatternSelect('TurnFirstPattern', firstPlayerPatternOptions)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-orange-500 uppercase font-semibold whitespace-nowrap">2nd:</span>
+                        {renderPatternSelect('TurnSecondPattern', secondPlayerPatternOptions)}
+                    </div>
                 </div>
             </div>
         </div>
@@ -274,9 +327,19 @@ export default function AnalysisFilters({ filters, onChange }) {
                     {renderActionSelect('SB', 'RiverSbAction')}
                     {renderActionSelect('BB', 'RiverBbAction')}
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
-                    {renderPatternSelect('RiverPattern')}
+                <div className="grid grid-cols-3 gap-2">
+                    <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
+                        {renderPatternSelect('RiverPattern', patternOptions)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-cyan-500 uppercase font-semibold whitespace-nowrap">1st:</span>
+                        {renderPatternSelect('RiverFirstPattern', firstPlayerPatternOptions)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <span className="text-[10px] text-orange-500 uppercase font-semibold whitespace-nowrap">2nd:</span>
+                        {renderPatternSelect('RiverSecondPattern', secondPlayerPatternOptions)}
+                    </div>
                 </div>
             </div>
         </div>
