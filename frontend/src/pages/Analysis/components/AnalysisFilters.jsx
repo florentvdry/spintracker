@@ -53,7 +53,35 @@ export default function AnalysisFilters({ filters, onChange }) {
     });
   };
 
-  const actionOptions = [
+  const patternOptions = [
+    { value: '', label: 'Any' },
+    { value: 'check', label: 'Check' },
+    { value: 'check-check', label: 'Check-Check' },
+    { value: 'check-bet', label: 'Check-Bet' },
+    { value: 'check-bet-bet', label: 'Check-Bet-Bet' },
+    { value: 'check-bet-check', label: 'Check-Bet-Check' },
+    { value: 'check-call', label: 'Check-Call' },
+    { value: 'check-call-raise', label: 'Check-Call-Raise' },
+    { value: 'check-raise', label: 'Check-Raise' },
+    { value: 'bet', label: 'Bet' },
+    { value: 'bet-bet', label: 'Bet-Bet' },
+    { value: 'bet-check', label: 'Bet-Check' },
+    { value: 'bet-call', label: 'Bet-Call' },
+    { value: 'bet-raise', label: 'Bet-Raise' },
+    { value: 'all-in', label: 'All-in' },
+  ];
+
+  const renderPatternSelect = (field) => (
+    <select
+      value={filters[field] || ''}
+      onChange={(e) => handleChange(field, e.target.value)}
+      className="flex-1 bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-white focus:border-primary-500 focus:outline-none appearance-none"
+    >
+      {patternOptions.map(opt => (
+        <option key={opt.value} value={opt.value}>{opt.label}</option>
+      ))}
+    </select>
+  );
     { value: '', label: 'Any' },
     { value: 'check', label: 'Check' },
     { value: 'call', label: 'Call' },
@@ -216,13 +244,7 @@ export default function AnalysisFilters({ filters, onChange }) {
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
-                    <input
-                        type="text"
-                        placeholder="e.g. check-bet-bet"
-                        value={filters.FlopPattern || ''}
-                        onChange={(e) => handleChange('FlopPattern', e.target.value)}
-                        className="flex-1 bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-white focus:border-primary-500 focus:outline-none"
-                    />
+                    {renderPatternSelect('FlopPattern')}
                 </div>
             </div>
         </div>
@@ -238,13 +260,7 @@ export default function AnalysisFilters({ filters, onChange }) {
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
-                    <input
-                        type="text"
-                        placeholder="e.g. bet-check"
-                        value={filters.TurnPattern || ''}
-                        onChange={(e) => handleChange('TurnPattern', e.target.value)}
-                        className="flex-1 bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-white focus:border-primary-500 focus:outline-none"
-                    />
+                    {renderPatternSelect('TurnPattern')}
                 </div>
             </div>
         </div>
@@ -260,13 +276,7 @@ export default function AnalysisFilters({ filters, onChange }) {
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
-                    <input
-                        type="text"
-                        placeholder="e.g. check-bet-bet"
-                        value={filters.RiverPattern || ''}
-                        onChange={(e) => handleChange('RiverPattern', e.target.value)}
-                        className="flex-1 bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-white focus:border-primary-500 focus:outline-none"
-                    />
+                    {renderPatternSelect('RiverPattern')}
                 </div>
             </div>
         </div>
