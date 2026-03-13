@@ -298,25 +298,22 @@ namespace SpinTrackerBackend.Services
             var action = heroAction.Value.action;
             var amountBB = heroAction.Value.amountBB;
             
-            switch (situationId.ToLower())
+            var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi", "vs_sb_open" };
+            var limpSituations = new[] { "limp", "vs_btn_limp", "hu_sb_limp", "vs_sb_limp" };
+            
+            if (rfiSituations.Contains(situationId.ToLower()))
             {
-                case "rfi":
-                case "sb_rfi":
-                case "hu_sb_rfi":
-                case "vs_sb_open":
-                    // RFI: Raise or All-in between 2 and 3 BB (first raise)
-                    return (action == "raise" || action == "all-in") && amountBB >= 2.0 && amountBB <= 3.0;
-                    
-                case "limp":
-                case "vs_btn_limp":
-                case "hu_sb_limp":
-                case "vs_sb_limp":
-                    // Limp: Call approximately 1 BB (just call the blind) - relaxed tolerance
-                    return action == "call" && amountBB >= 0.5 && amountBB <= 1.5;
-                    
-                default:
-                    return true;
+                // RFI: Any raise or all-in (no amount restriction for filtering)
+                return action == "raise" || action == "all-in";
             }
+            
+            if (limpSituations.Contains(situationId.ToLower()))
+            {
+                // Limp: Call approximately 1 BB (just call the blind) - wider tolerance
+                return action == "call" && amountBB >= 0.5 && amountBB <= 2.5;
+            }
+            
+            return true;
         }
         
         private (string action, double amountBB)? ParseHeroAction(AnalysisHandData hand, string heroPosition)
@@ -822,7 +819,7 @@ namespace SpinTrackerBackend.Services
                 }
 
                 // Determine Action
-                var actionType = DetermineActionType(hand, filters.Situation, heroName);
+                var actionType = DetermineActionType(hand, filters.Situation, filters.SituationId, heroName);
                 if (actionType == "None") continue;
 
                 if (!rangeData.ContainsKey(cards))
@@ -872,7 +869,7 @@ namespace SpinTrackerBackend.Services
             };
         }
 
-        private string DetermineActionType(AnalysisHandData hand, string? situation, string heroName)
+        private string DetermineActionType(AnalysisHandData hand, string? situation, string? situationId, string heroName)
         {
             var actionText = "";
             if (string.IsNullOrEmpty(situation) || situation.ToLower() == "preflop")
@@ -882,6 +879,9 @@ namespace SpinTrackerBackend.Services
             else if (situation.ToLower() == "river") actionText = hand.RiverAction;
 
             if (string.IsNullOrEmpty(actionText)) return "None";
+
+            var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi", "vs_sb_open" };
+            bool isRfiSituation = !string.IsNullOrEmpty(situationId) && rfiSituations.Contains(situationId.ToLower());
 
             var lines = actionText.Split('\n');
             foreach (var line in lines)
@@ -911,7 +911,18 @@ namespace SpinTrackerBackend.Services
                 if (isHero)
                 {
                     if (act.Contains("all-in")) return "AllIn";
-                    if (act.Contains("raises")) return "Raise";
+                    
+                    if (act.Contains("raises"))
+                    {
+                        if (isRfiSituation)
+                        {
+                            var amountBB = ParseActionAmount(act, hand.Blinds);
+                            if (amountBB >= 4.0) return "Raise4BB";
+                            return "Raise2_3BB";
+                        }
+                        return "Raise";
+                    }
+                    
                     if (act.Contains("bets")) return "Bet";
                     if (act.Contains("calls")) return "Call";
                     if (act.Contains("folds")) return "Fold";
@@ -923,6 +934,20 @@ namespace SpinTrackerBackend.Services
             }
 
             return "None";
+        }
+
+        private double ParseActionAmount(string act, string blinds)
+        {
+            var amountMatch = System.Text.RegularExpressions.Regex.Match(act, @"to\s+(\d+\.?\d*)");
+            if (amountMatch.Success)
+            {
+                var bb = ParseBigBlind(blinds);
+                if (bb > 0 && double.TryParse(amountMatch.Groups[1].Value, out var amount))
+                {
+                    return amount / bb;
+                }
+            }
+            return 0;
         }
 
         private string? NormalizeCards(string? cardsRaw)
