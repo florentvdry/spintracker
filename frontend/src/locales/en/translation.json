@@ -3,6 +3,7 @@
     "dashboard": "Dashboard",
     "history": "Tournament History",
     "ranges": "Ranges Analyzer",
+    "players": "Players",
     "settings": "Settings"
   },
   "sidebar": {
@@ -269,5 +270,44 @@
     "check": "Check",
     "all_in": "All-In",
     "any": "Any"
+  },
+  "players": {
+    "title": "Players",
+    "subtitle": "Manage your opponents",
+    "filter_all": "All",
+    "filter_reg": "Regs",
+    "filter_fish": "Fish",
+    "list": "Player list",
+    "player": "Player",
+    "hands": "Hands",
+    "profit": "Profit",
+    "type": "Type",
+    "auto_detected": "Auto-detected",
+    "actions": "Actions",
+    "manual": "Manual",
+    "mark_fish": "Mark as Fish",
+    "mark_reg": "Mark as Reg",
+    "page": "Page"
+  },
+  "range_analysis": {
+    "title": "Range Analysis",
+    "subtitle": "Analyze your ranges by situation",
+    "load_preset": "Load",
+    "save_config": "Save",
+    "matrix_title": "Range Matrix",
+    "loading": "Loading data...",
+    "selected_hand": "Selected hand",
+    "occurrences": "Occurrences",
+    "total_profit": "Total Profit",
+    "ev_realized": "Realized EV",
+    "select_prompt": "Click on a cell to see details",
+    "frequencies": "Frequencies",
+    "history": "History",
+    "replay_filtered": "Replay",
+    "distributions": "Distributions",
+    "opponent_type": "Opponents",
+    "all_opponents": "All",
+    "regs_only": "Regs",
+    "fish_only": "Fish"
   }
 }

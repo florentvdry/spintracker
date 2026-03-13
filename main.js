@@ -681,6 +681,10 @@ ipcMain.handle('get-players', async (event, options = {}) => {
   return callBackendAPI('/db/players', options);
 });
 
+ipcMain.handle('update-player-reg-status', async (event, playerId, isReg) => {
+  return callBackendAPI(`/db/players/${playerId}/reg-status`, { isReg }, 'POST');
+});
+
 ipcMain.handle('delete-all-hands', async () => {
   const result = await dialog.showMessageBox(mainWindow, {
     type: 'warning',

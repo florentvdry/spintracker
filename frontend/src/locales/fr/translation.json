@@ -3,6 +3,7 @@
     "dashboard": "Tableau de bord",
     "history": "Historique des tournois",
     "ranges": "Analyseur de ranges",
+    "players": "Joueurs",
     "settings": "Paramètres"
   },
   "sidebar": {
@@ -275,5 +276,44 @@
     "check": "Check",
     "all_in": "All-In",
     "any": "N'importe"
+  },
+  "players": {
+    "title": "Joueurs",
+    "subtitle": "Gérez vos adversaires",
+    "filter_all": "Tous",
+    "filter_reg": "Regs",
+    "filter_fish": "Poissons",
+    "list": "Liste des joueurs",
+    "player": "Joueur",
+    "hands": "Mains",
+    "profit": "Profit",
+    "type": "Type",
+    "auto_detected": "Auto-détecté",
+    "actions": "Actions",
+    "manual": "Manuel",
+    "mark_fish": "Marquer Fish",
+    "mark_reg": "Marquer Reg",
+    "page": "Page"
+  },
+  "range_analysis": {
+    "title": "Analyse de Range",
+    "subtitle": "Analysez vos ranges par situation",
+    "load_preset": "Charger",
+    "save_config": "Sauvegarder",
+    "matrix_title": "Matrice de Range",
+    "loading": "Chargement des données...",
+    "selected_hand": "Main sélectionnée",
+    "occurrences": "Occurrences",
+    "total_profit": "Profit Total",
+    "ev_realized": "EV Réalisé",
+    "select_prompt": "Cliquez sur une cellule pour voir les détails",
+    "frequencies": "Fréquences",
+    "history": "Historique",
+    "replay_filtered": "Rejouer",
+    "distributions": "Distributions",
+    "opponent_type": "Adversaires",
+    "all_opponents": "Tous",
+    "regs_only": "Regs",
+    "fish_only": "Poissons"
   }
 }

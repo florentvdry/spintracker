@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import SituationSelector from './components/SituationSelector';
 import RangeGrid from '../../components/charts/RangeGrid';
-import { Save, Upload, Layers, Info, Filter, BarChart3, List, ChevronRight, Play } from 'lucide-react';
+import { Save, Upload, Layers, Info, Filter, BarChart3, List, ChevronRight, Play, Crown, Fish, Users } from 'lucide-react';
 import { usePlayersStore } from '@stores/playersStore';
 import { useReplayerStore } from '@stores/replayerStore';
 import { useFilterStore } from '@stores/filterStore';
@@ -38,6 +38,8 @@ export default function RangeResearch() {
     SituationId: 'rfi',
   });
 
+  const [opponentType, setOpponentType] = useState('all');
+
   // Combined filters for API requests
   const combinedFilters = useMemo(() => {
     const { dateFrom, dateTo } = getDateRangeParams();
@@ -45,9 +47,10 @@ export default function RangeResearch() {
       HeroName: heroName,
       DateFrom: dateFrom,
       DateTo: dateTo,
+      OpponentType: opponentType,
       ...localFilters
     };
-  }, [heroName, dateRange, customDateFrom, customDateTo, selectedSession, localFilters, getDateRangeParams]);
+  }, [heroName, dateRange, customDateFrom, customDateTo, selectedSession, localFilters, getDateRangeParams, opponentType]);
 
   // Range Data
   const [rangeData, setRangeData] = useState({});
@@ -151,6 +154,35 @@ export default function RangeResearch() {
       <div className="flex-1 flex flex-col gap-6 min-h-0">
         {/* Situation Selector */}
         <SituationSelector filters={combinedFilters} onChange={(updates) => setLocalFilters(prev => ({ ...prev, ...updates }))} />
+
+        {/* Opponent Type Filter */}
+        <div className="flex items-center gap-4 bg-dark-300/50 p-3 rounded-lg border border-white/5">
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-gray-400" />
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t('range_analysis.opponent_type', 'Adversaires')}:</span>
+          </div>
+          <div className="flex gap-2">
+            {[
+              { id: 'all', label: t('range_analysis.all_opponents', 'Tous'), icon: Users },
+              { id: 'reg', label: t('range_analysis.regs_only', 'Regs'), icon: Crown },
+              { id: 'fish', label: t('range_analysis.fish_only', 'Poissons'), icon: Fish },
+            ].map((type) => (
+              <button
+                key={type.id}
+                onClick={() => setOpponentType(type.id)}
+                className={clsx(
+                  "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
+                  opponentType === type.id
+                    ? "bg-primary-500 text-white shadow-lg shadow-primary-500/20"
+                    : "bg-dark-400 text-gray-400 hover:text-white hover:bg-dark-500"
+                )}
+              >
+                <type.icon className={clsx("w-3.5 h-3.5", type.id === 'reg' && 'text-yellow-400', type.id === 'fish' && 'text-blue-400')} />
+                {type.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Main Content Area */}
         <div className="flex-1 flex gap-6 min-h-0">

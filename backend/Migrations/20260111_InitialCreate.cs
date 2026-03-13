@@ -89,6 +89,8 @@ public class InitialCreate20260111 : Migration
 				total_hands INTEGER DEFAULT 0,
 				total_profit REAL DEFAULT 0,
 				total_ev_profit REAL DEFAULT 0,
+				is_reg INTEGER DEFAULT 0,
+				is_reg_forced INTEGER DEFAULT 0,
 				created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 				updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 			)
@@ -99,7 +101,7 @@ public class InitialCreate20260111 : Migration
 		Execute.Sql("CREATE INDEX IF NOT EXISTS idx_hands_game_id ON hands(game_id)");
 		Execute.Sql("CREATE INDEX IF NOT EXISTS idx_player_hands_hand ON player_hands(hand_id)");
 		Execute.Sql("CREATE INDEX IF NOT EXISTS idx_player_hands_player ON player_hands(player_name)");
- 	}
+  	}
 
 	public override void Down()
 	{
@@ -115,5 +117,4 @@ public class InitialCreate20260111 : Migration
 		Execute.Sql("DROP TABLE IF EXISTS config");
 	}
 }
-
 
