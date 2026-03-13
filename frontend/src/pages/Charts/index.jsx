@@ -373,8 +373,8 @@ export default function Charts() {
   const positionLabel = POSITIONS.find(p => p.value === chartPosition)?.label || 'All Positions';
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+    <div className="h-[calc(100vh-180px)] flex flex-col">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
         <div>
           <h1 className="text-2xl font-bold text-white">{t('charts.title', 'Charts')}</h1>
           <p className="text-gray-400 mt-1">{t('charts.subtitle', 'Full screen winrate visualization')}</p>
@@ -450,7 +450,7 @@ export default function Charts() {
       </div>
 
       <div 
-        className="flex-1 w-full relative min-h-[500px]" 
+        className="flex-1 w-full relative min-h-0" 
         onContextMenu={(e) => {
             e.preventDefault();
             handleResetZoom();

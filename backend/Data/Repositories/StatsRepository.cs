@@ -438,20 +438,22 @@ public class StatsRepository
 
         if (!string.IsNullOrEmpty(options.Position) && options.Position != "all")
         {
-            var posMapping = new Dictionary<string, string>
+            string dbPosition;
+            if (options.Position.StartsWith("HU_"))
             {
-                { "HU_SB", "HU_SB" },
-                { "HU_BB", "HU_BB" },
-                { "3W_BTN", "3W_BTN" },
-                { "3W_SB", "3W_SB" },
-                { "3W_BB", "3W_BB" }
-            };
-            
-            if (posMapping.TryGetValue(options.Position, out var dbPos))
-            {
-                whereClauses.Add("ph.position = @position");
-                parameters.Add(new SqliteParameter("@position", dbPos));
+                dbPosition = options.Position.Replace("HU_", "");
             }
+            else if (options.Position.StartsWith("3W_"))
+            {
+                dbPosition = options.Position.Replace("3W_", "");
+            }
+            else
+            {
+                dbPosition = options.Position;
+            }
+            
+            whereClauses.Add("ph.position = @position");
+            parameters.Add(new SqliteParameter("@position", dbPosition));
         }
 
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
