@@ -301,11 +301,17 @@ namespace SpinTrackerBackend.Services
             switch (situationId.ToLower())
             {
                 case "rfi":
+                case "sb_rfi":
+                case "hu_sb_rfi":
+                case "vs_sb_open":
                     // RFI: Raise between 2 and 3 BB (first raise)
                     return action == "raise" && amountBB >= 2.0 && amountBB <= 3.0;
                     
                 case "limp":
-                    // Limp: Call exactly 1 BB (just call the blind)
+                case "vs_btn_limp":
+                case "hu_sb_limp":
+                case "vs_sb_limp":
+                    // Limp: Call approximately 1 BB (just call the blind)
                     return action == "call" && amountBB >= 0.9 && amountBB <= 1.1;
                     
                 default:
