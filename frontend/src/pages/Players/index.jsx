@@ -1,17 +1,23 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Users, Search, Filter, Crown, Fish, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { Users, Search, Filter, Crown, Fish, ChevronLeft, ChevronRight, Loader2, Eye, X } from 'lucide-react';
 import { ipcService } from '@services/ipcService';
+import { useFilterStore } from '@stores/filterStore';
 import clsx from 'clsx';
 
 export default function Players() {
   const { t } = useTranslation();
+  const { heroName } = useFilterStore();
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
   const [updatingId, setUpdatingId] = useState(null);
   const [page, setPage] = useState(1);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [playerHands, setPlayerHands] = useState(null);
+  const [handsLoading, setHandsLoading] = useState(false);
+  const [handsPage, setHandsPage] = useState(1);
   const pageSize = 50;
 
   const loadPlayers = async () => {
@@ -66,6 +72,48 @@ export default function Players() {
     } finally {
       setUpdatingId(null);
     }
+  };
+
+  const handleViewHands = async (player) => {
+    setSelectedPlayer(player);
+    setHandsPage(1);
+    setHandsLoading(true);
+    try {
+      const result = await ipcService.getHandsAgainstPlayer(player.name, heroName, 20, 1);
+      if (result.success) {
+        setPlayerHands(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to load player hands:', error);
+    } finally {
+      setHandsLoading(false);
+    }
+  };
+
+  const loadMoreHands = async () => {
+    if (!selectedPlayer || handsLoading) return;
+    setHandsLoading(true);
+    try {
+      const nextPage = handsPage + 1;
+      const result = await ipcService.getHandsAgainstPlayer(selectedPlayer.name, heroName, 20, nextPage);
+      if (result.success) {
+        setPlayerHands(prev => ({
+          ...result.data,
+          hands: [...(prev?.hands || []), ...result.data.hands]
+        }));
+        setHandsPage(nextPage);
+      }
+    } catch (error) {
+      console.error('Failed to load more hands:', error);
+    } finally {
+      setHandsLoading(false);
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedPlayer(null);
+    setPlayerHands(null);
+    setHandsPage(1);
   };
 
   return (
@@ -218,13 +266,23 @@ export default function Players() {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <button
-                        onClick={() => handleToggleReg(player)}
-                        disabled={updatingId === player.id}
-                        className="text-xs text-primary-400 hover:text-primary-300 font-medium"
-                      >
-                        {player.is_reg ? t('players.mark_fish', 'Marquer Fish') : t('players.mark_reg', 'Marquer Reg')}
-                      </button>
+                      <div className="flex items-center justify-end gap-3">
+                        <button
+                          onClick={() => handleViewHands(player)}
+                          className="text-xs text-primary-400 hover:text-primary-300 font-medium flex items-center gap-1"
+                          title={t('players.view_hands', 'Voir les mains')}
+                        >
+                          <Eye className="w-3 h-3" />
+                          {t('players.view_hands', 'Voir')}
+                        </button>
+                        <button
+                          onClick={() => handleToggleReg(player)}
+                          disabled={updatingId === player.id}
+                          className="text-xs text-gray-400 hover:text-white font-medium"
+                        >
+                          {player.is_reg ? t('players.mark_fish', 'Fish') : t('players.mark_reg', 'Reg')}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -257,6 +315,104 @@ export default function Players() {
           </div>
         )}
       </div>
+
+      {selectedPlayer && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-200 rounded-2xl shadow-2xl border border-white/10 w-full max-w-4xl max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <div>
+                <h2 className="text-lg font-bold text-white">
+                  {t('players.hands_against', 'Mains contre')} {selectedPlayer.name}
+                </h2>
+                <p className="text-xs text-gray-400">
+                  {playerHands?.total || 0} {t('players.total_hands', 'mains au total')}
+                </p>
+              </div>
+              <button
+                onClick={closeModal}
+                className="p-2 rounded-lg hover:bg-dark-300 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-auto p-4">
+              {handsLoading && !playerHands ? (
+                <div className="flex items-center justify-center h-32">
+                  <Loader2 className="w-6 h-6 text-primary-500 animate-spin" />
+                </div>
+              ) : playerHands?.hands?.length > 0 ? (
+                <div className="space-y-3">
+                  {playerHands.hands.map((hand, idx) => (
+                    <div
+                      key={hand.id || idx}
+                      className="bg-dark-300 rounded-lg p-3 border border-white/5"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-400">
+                            {hand.date_time ? new Date(hand.date_time).toLocaleString() : ''}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {hand.blinds}
+                          </span>
+                        </div>
+                        <span className={clsx(
+                          "text-xs font-bold",
+                          hand.dyn_hero_profit > 0 ? "text-green-400" : hand.dyn_hero_profit < 0 ? "text-red-400" : "text-gray-400"
+                        )}>
+                          {hand.dyn_hero_profit > 0 ? '+' : ''}{hand.dyn_hero_profit?.toFixed(2) || 0}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-400">Hero:</span>
+                          <span className="text-sm font-medium text-white">
+                            {hand.dyn_hero_cards || '-'}
+                          </span>
+                          <span className="text-xs text-gray-500">({hand.dyn_hero_position || '-'})</span>
+                        </div>
+                        <span className="text-gray-500">vs</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-400">Villain:</span>
+                          <span className="text-sm font-medium text-white">
+                            {selectedPlayer.name}
+                          </span>
+                        </div>
+                      </div>
+                      {hand.result && (
+                        <div className="mt-2 text-xs text-gray-500 line-clamp-2">
+                          {hand.result}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center text-gray-400 py-8">
+                  {t('players.no_hands', 'Aucune main trouvée')}
+                </div>
+              )}
+
+              {playerHands && playerHands.hands?.length < playerHands.total && (
+                <div className="mt-4 text-center">
+                  <button
+                    onClick={loadMoreHands}
+                    disabled={handsLoading}
+                    className="px-4 py-2 bg-primary-500 text-white rounded-lg text-sm font-medium hover:bg-primary-600 disabled:opacity-50"
+                  >
+                    {handsLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin inline" />
+                    ) : (
+                      t('players.load_more', 'Charger plus')
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

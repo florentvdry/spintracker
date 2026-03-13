@@ -113,6 +113,10 @@ class IPCService {
     return this.invoke('update-player-reg-status', playerId, isReg);
   }
 
+  async getHandsAgainstPlayer(opponentName, heroName, limit = 50, page = 1) {
+    return this.invoke('get-hands-against-player', opponentName, heroName, limit, page);
+  }
+
   // Import
   async importHandHistory() {
     return this.invoke('import-hand-history');

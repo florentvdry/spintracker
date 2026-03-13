@@ -291,9 +291,14 @@
     "auto_detected": "Auto-détecté",
     "actions": "Actions",
     "manual": "Manuel",
-    "mark_fish": "Marquer Fish",
-    "mark_reg": "Marquer Reg",
-    "page": "Page"
+    "mark_fish": "Fish",
+    "mark_reg": "Reg",
+    "page": "Page",
+    "view_hands": "Voir les mains",
+    "hands_against": "Mains contre",
+    "total_hands": "mains au total",
+    "no_hands": "Aucune main trouvée",
+    "load_more": "Charger plus"
   },
   "range_analysis": {
     "title": "Analyse de Range",

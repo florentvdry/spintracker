@@ -685,6 +685,10 @@ ipcMain.handle('update-player-reg-status', async (event, playerId, isReg) => {
   return callBackendAPI(`/db/players/${playerId}/reg-status`, { isReg }, 'POST');
 });
 
+ipcMain.handle('get-hands-against-player', async (event, opponentName, heroName, limit = 50, page = 1) => {
+  return callBackendAPI(`/db/hands-against/${encodeURIComponent(opponentName)}`, { heroName, limit, page }, 'POST');
+});
+
 ipcMain.handle('delete-all-hands', async () => {
   const result = await dialog.showMessageBox(mainWindow, {
     type: 'warning',

@@ -285,9 +285,14 @@
     "auto_detected": "Auto-detected",
     "actions": "Actions",
     "manual": "Manual",
-    "mark_fish": "Mark as Fish",
-    "mark_reg": "Mark as Reg",
-    "page": "Page"
+    "mark_fish": "Fish",
+    "mark_reg": "Reg",
+    "page": "Page",
+    "view_hands": "View hands",
+    "hands_against": "Hands against",
+    "total_hands": "hands total",
+    "no_hands": "No hands found",
+    "load_more": "Load more"
   },
   "range_analysis": {
     "title": "Range Analysis",

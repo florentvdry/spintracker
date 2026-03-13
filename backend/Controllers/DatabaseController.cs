@@ -267,4 +267,31 @@ public class DatabaseController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
+
+    [HttpGet("db/hands-against/{opponentName}")]
+    [HttpPost("db/hands-against/{opponentName}")]
+    public async Task<IActionResult> GetHandsAgainstPlayer(string opponentName, [FromBody] HandsAgainstPlayerRequest? request)
+    {
+        try
+        {
+            var heroName = request?.HeroName;
+            var limit = request?.Limit ?? 50;
+            var page = request?.Page ?? 1;
+
+            var result = await _handRepo.GetHandsAgainstPlayerAsync(opponentName, heroName, limit, page);
+            return Ok(new { success = true, data = result });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Get hands against player error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+}
+
+public class HandsAgainstPlayerRequest
+{
+    public string? HeroName { get; set; }
+    public int Limit { get; set; } = 50;
+    public int Page { get; set; } = 1;
 }
