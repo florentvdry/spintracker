@@ -1,5 +1,6 @@
 - Ajout: Nouveau analyseur de range, plus facile à comprendre, avec de l'opacité selon la fréquence.
 - Ajout: Pouvoir avoir plusieurs base de données.
+- Ajout: Possibilité de pouvoir supprimé un tournois depuis la liste des tournois
 
 - Changement: Amélioration des performances d'import (de 56 seconds à 37 sur mes données de test)
 - Changement: refactorisation d'une partie du code de l'application.
