@@ -70,8 +70,12 @@ public class AnalyticsCalculator : IAnalyticsCalculator
         var anyAllIn = heroAllIn || villainAllIn;
 
         var isRiverAllIn = IsRiverAllIn(hand);
+        var isPreflopAllIn = !string.IsNullOrEmpty(hand.AllInStreet) && 
+                             hand.AllInStreet.Equals("PREFLOP", StringComparison.OrdinalIgnoreCase);
 
         var shouldCalculateEv = isShowdown && anyAllIn && hasBothCards && !isRiverAllIn;
+
+        // Enable EV calculation for preflop all-in - exact enumeration is now fast with caching + parallel
 
         if (shouldCalculateEv)
         {
@@ -211,7 +215,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
             if (string.IsNullOrEmpty(heroCards) || string.IsNullOrEmpty(villainCards))
                 return null;
 
-            var equity = _equityCalc.Calculate(heroCards, villainCards, board, 10000);
+            var equity = _equityCalc.Calculate(heroCards, villainCards, board, 5000);
             var totalPot = hand.TotalPot;
 
             var heroInvestment = hero.Investment > 0 ? hero.Investment : (ParseHeroInvestment(hand) ?? (totalPot / 2.0));
@@ -330,7 +334,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                         
                         var deadCardsStr = string.Join(" ", deadCardsList);
 
-                        var equityResult = _equityCalc.Calculate(heroCards, villainCardsStr, board, 50000, deadCardsStr);
+                        var equityResult = _equityCalc.Calculate(heroCards, villainCardsStr, board, 5000, deadCardsStr);
                         double heroEq = equityResult.HeroEquity / 100.0;
                         
                         totalEv += heroEq * stepPot;
