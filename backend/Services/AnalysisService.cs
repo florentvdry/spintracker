@@ -310,7 +310,9 @@ namespace SpinTrackerBackend.Services
             if (limpSituations.Contains(situationId.ToLower()))
             {
                 // Limp: Call approximately 1 BB (just call the blind)
-                return action == "call" && amountBB >= 0.8 && amountBB <= 1.2;
+                // Note: SB calls SB amount = 0.5bb (since SB posted 0.5bb already)
+                // BB vs SB limp: BB calls 0 (they already posted 1bb)
+                return action == "call" && amountBB >= 0.3 && amountBB <= 1.5;
             }
             
             return true;
