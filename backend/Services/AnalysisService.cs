@@ -299,7 +299,7 @@ namespace SpinTrackerBackend.Services
             var amountBB = heroAction.Value.amountBB;
             
             var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi", "vs_sb_open" };
-            var limpSituations = new[] { "limp", "vs_btn_limp", "hu_sb_limp", "vs_sb_limp" };
+            var limpSituations = new[] { "limp", "vs_btn_limp", "hu_sb_limp", "vs_sb_limp", "vs_btn_limp_sb_limp", "vs_btn_limp_sb_fold", "hu_vs_sb_limp" };
             
             if (rfiSituations.Contains(situationId.ToLower()))
             {
