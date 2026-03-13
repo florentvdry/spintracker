@@ -1,13 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Users, Search, Filter, Crown, Fish, ChevronLeft, ChevronRight, Loader2, Eye, X } from 'lucide-react';
+import { Users, Search, Filter, Crown, Fish, ChevronLeft, ChevronRight, Loader2, Eye, X, Play } from 'lucide-react';
 import { ipcService } from '@services/ipcService';
 import { useFilterStore } from '@stores/filterStore';
+import { useReplayerStore } from '@stores/replayerStore';
 import clsx from 'clsx';
 
 export default function Players() {
   const { t } = useTranslation();
   const { heroName } = useFilterStore();
+  const { loadHand } = useReplayerStore();
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -114,6 +116,14 @@ export default function Players() {
     setSelectedPlayer(null);
     setPlayerHands(null);
     setHandsPage(1);
+  };
+
+  const handleOpenReplayer = async (handId) => {
+    try {
+      await loadHand(handId);
+    } catch (error) {
+      console.error('Failed to open replayer:', error);
+    }
   };
 
   return (
@@ -326,6 +336,11 @@ export default function Players() {
                 </h2>
                 <p className="text-xs text-gray-400">
                   {playerHands?.total || 0} {t('players.total_hands', 'mains au total')}
+                  {heroName ? (
+                    <span className="ml-2 text-primary-400">• Hero: {heroName}</span>
+                  ) : (
+                    <span className="ml-2 text-yellow-400">• Sélectionnez un héros dans les paramètres pour voir vos mains</span>
+                  )}
                 </p>
               </div>
               <button
@@ -346,7 +361,8 @@ export default function Players() {
                   {playerHands.hands.map((hand, idx) => (
                     <div
                       key={hand.id || idx}
-                      className="bg-dark-300 rounded-lg p-3 border border-white/5"
+                      onClick={() => handleOpenReplayer(hand.id)}
+                      className="bg-dark-300 rounded-lg p-3 border border-white/5 cursor-pointer hover:border-primary-500/50 hover:bg-dark-300/80 transition-all group"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
@@ -357,29 +373,49 @@ export default function Players() {
                             {hand.blinds}
                           </span>
                         </div>
-                        <span className={clsx(
-                          "text-xs font-bold",
-                          hand.dyn_hero_profit > 0 ? "text-green-400" : hand.dyn_hero_profit < 0 ? "text-red-400" : "text-gray-400"
-                        )}>
-                          {hand.dyn_hero_profit > 0 ? '+' : ''}{hand.dyn_hero_profit?.toFixed(2) || 0}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-400">Hero:</span>
-                          <span className="text-sm font-medium text-white">
+                          <span className={clsx(
+                            "text-xs font-bold",
+                            hand.dyn_hero_profit > 0 ? "text-green-400" : hand.dyn_hero_profit < 0 ? "text-red-400" : "text-gray-400"
+                          )}>
+                            {hand.dyn_hero_profit > 0 ? '+' : ''}{hand.dyn_hero_profit?.toFixed(2) || 0}
+                          </span>
+                          <Play className="w-3 h-3 text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center gap-1.5 bg-dark-400/50 rounded px-2 py-1">
+                          <span className="text-xs text-gray-500">Hero</span>
+                          <span className="text-sm font-bold text-primary-400">
                             {hand.dyn_hero_cards || '-'}
                           </span>
                           <span className="text-xs text-gray-500">({hand.dyn_hero_position || '-'})</span>
                         </div>
+                        
                         <span className="text-gray-500">vs</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-400">Villain:</span>
-                          <span className="text-sm font-medium text-white">
-                            {selectedPlayer.name}
+                        
+                        <div className="flex items-center gap-1.5 bg-dark-400/50 rounded px-2 py-1">
+                          <span className="text-xs text-gray-500">{selectedPlayer.name}</span>
+                          <span className="text-xs text-gray-500">
+                            {hand.dyn_hero_all_in ? '(AI)' : ''}
                           </span>
                         </div>
                       </div>
+
+                      {(hand.flop || hand.turn || hand.river) && (
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className="text-xs text-gray-500">Board:</span>
+                          <div className="flex gap-1">
+                            {hand.flop && hand.flop.split(',').map((card, i) => (
+                              <span key={`flop-${i}`} className="text-xs bg-dark-400 px-1 rounded text-gray-300">{card.trim()}</span>
+                            ))}
+                            {hand.turn && <span className="text-xs bg-dark-400 px-1 rounded text-gray-300">{hand.turn.trim()}</span>}
+                            {hand.river && <span className="text-xs bg-dark-400 px-1 rounded text-gray-300">{hand.river.trim()}</span>}
+                          </div>
+                        </div>
+                      )}
+
                       {hand.result && (
                         <div className="mt-2 text-xs text-gray-500 line-clamp-2">
                           {hand.result}
