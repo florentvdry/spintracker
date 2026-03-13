@@ -63,14 +63,13 @@ export default function RangeResearch() {
     let mounted = true;
     const fetchRange = async () => {
       setRangeLoading(true);
+      // Reset selected range when filters change
+      setSelectedRangeHand(null);
+      setSelectedRangeStats(null);
       try {
         const response = await ipcService.getRangeBreakdown(combinedFilters);
         if (mounted && response.success) {
           setRangeData(response.data);
-          // Update selected range stats if something was selected
-          if (selectedRangeHand) {
-             setSelectedRangeStats(response.data[selectedRangeHand]);
-          }
         }
       } catch (err) {
         console.error("Failed to fetch range breakdown", err);
@@ -254,10 +253,10 @@ export default function RangeResearch() {
                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t('range_analysis.frequencies')}</span>
                                    </div>
                                    <div className="grid grid-cols-3 gap-2">
-                                       {Object.entries(selectedRangeStats?.Actions || {})
-                                           .sort((a, b) => b[1] - a[1])
-                                           .map(([action, count]) => {
-                                               const total = selectedRangeStats.TotalCount || 0;
+                                        {Object.entries(selectedRangeStats?.Actions || {})
+                                            .sort((a, b) => b[1] - a[1])
+                                            .map(([action, count]) => {
+                                                const total = selectedRangeStats?.TotalCount || 0;
                                                const percent = total > 0 ? (count / total) * 100 : 0;
                                                const isSelected = selectedActionFilter === action;
                                                return (
@@ -285,8 +284,8 @@ export default function RangeResearch() {
                                    <div className="flex justify-between items-center">
                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t('range_analysis.history')}</span>
                                        <button 
-                                           onClick={() => {
-                                               const list = selectedRangeStats.Hands || [];
+                                            onClick={() => {
+                                                const list = selectedRangeStats?.Hands || [];
                                                const filtered = selectedActionFilter ? list.filter(h => handMatchesAction(h, selectedActionFilter)) : list;
                                                handleOpenReplayer(filtered.map(h => h.id || h.Id));
                                            }}
@@ -295,8 +294,8 @@ export default function RangeResearch() {
                                            <Play className="w-3 h-3" /> {t('range_analysis.replay_filtered')}
                                        </button>
                                    </div>
-                                   <div className="space-y-2">
-                                       {(selectedRangeStats.Hands || []).filter(h => handMatchesAction(h, selectedActionFilter)).map((hand, idx) => {
+                                    <div className="space-y-2">
+                                        {selectedRangeStats && (selectedRangeStats.Hands || []).filter(h => handMatchesAction(h, selectedActionFilter)).map((hand, idx) => {
                                            const handId = hand.id || hand.Id;
                                            const profit = hand.profit !== undefined ? hand.profit : hand.Profit;
                                            const ev = hand.ev !== undefined ? hand.ev : hand.Ev;
