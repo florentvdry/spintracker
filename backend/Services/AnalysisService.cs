@@ -322,7 +322,7 @@ namespace SpinTrackerBackend.Services
         {
             if (string.IsNullOrEmpty(hand.PreflopAction) || string.IsNullOrEmpty(heroPosition)) return null;
             
-            // Parse PlayerPositionsMap: "Player1:BTN|Player2:SB"
+            // Try to use PlayerPositionsMap if available
             var posMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             if (!string.IsNullOrEmpty(hand.PlayerPositionsMap))
             {
@@ -341,6 +341,9 @@ namespace SpinTrackerBackend.Services
             var lines = hand.PreflopAction.Split('\n');
             var bb = ParseBigBlind(hand.Blinds);
             
+            // Get hero name from hand
+            var heroName = hand.HeroName;
+            
             foreach (var line in lines)
             {
                 if (string.IsNullOrEmpty(line)) continue;
@@ -348,15 +351,28 @@ namespace SpinTrackerBackend.Services
                 var processingLine = line.Trim();
                 var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
                 if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
-                
+
                 var colonIndex = processingLine.IndexOf(':');
                 if (colonIndex == -1) continue;
                 
                 var playerName = processingLine.Substring(0, colonIndex).Trim();
                 var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
                 
-                if (!posMap.TryGetValue(playerName, out var pos)) continue;
-                if (!string.Equals(pos, heroPosition, StringComparison.OrdinalIgnoreCase)) continue;
+                // Check if this is the hero's action by:
+                // 1. Matching player name to hero name, OR
+                // 2. Matching position via PlayerPositionsMap
+                bool isHeroAction = false;
+                
+                if (!string.IsNullOrEmpty(heroName) && string.Equals(playerName, heroName, StringComparison.OrdinalIgnoreCase))
+                {
+                    isHeroAction = true;
+                }
+                else if (posMap.Count > 0 && posMap.TryGetValue(playerName, out var pos))
+                {
+                    isHeroAction = string.Equals(pos, heroPosition, StringComparison.OrdinalIgnoreCase);
+                }
+                
+                if (!isHeroAction) continue;
                 
                 // Determine action and amount
                 string action;
