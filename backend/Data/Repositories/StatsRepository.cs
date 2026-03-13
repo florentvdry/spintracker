@@ -194,6 +194,7 @@ public class StatsRepository
         var cevByPosition = new Dictionary<string, double>();
         var countByPosition = new Dictionary<string, int>();
         var tournamentsByPosition = new Dictionary<string, int>();
+        var avgCevByPosition = new Dictionary<string, double>();
         try
         {
             using (var cmdPos = connection.CreateCommand())
@@ -229,6 +230,7 @@ public class StatsRepository
                     cevByPosition[key] = ev;
                     countByPosition[key] = count;
                     tournamentsByPosition[key] = tournamentCount;
+                    avgCevByPosition[key] = tournamentCount > 0 ? Math.Round(ev / tournamentCount, 2) : 0;
                 }
             }
         }
@@ -261,6 +263,7 @@ public class StatsRepository
             cev_by_position = cevByPosition,
             count_by_position = countByPosition,
             tournaments_by_position = tournamentsByPosition,
+            avg_cev_by_position = avgCevByPosition,
             sessions_this_month = sessionsThisMonth,
             total_sessions = sessions.Count,
             avg_multiplier = 0.0,
