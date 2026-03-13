@@ -309,8 +309,8 @@ namespace SpinTrackerBackend.Services
             
             if (limpSituations.Contains(situationId.ToLower()))
             {
-                // Limp: Call approximately 1 BB (just call the blind) - wider tolerance
-                return action == "call" && amountBB >= 0.5 && amountBB <= 2.5;
+                // Limp: Call approximately 1 BB (just call the blind)
+                return action == "call" && amountBB >= 0.8 && amountBB <= 1.2;
             }
             
             return true;
