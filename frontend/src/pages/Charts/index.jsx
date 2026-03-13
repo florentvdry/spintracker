@@ -481,69 +481,51 @@ export default function Charts() {
             onChartReady={onChartReady}
         />
         
-        {finalStats && (
-          <div 
-            className="absolute bg-[#1e2533]/95 backdrop-blur-sm border border-[#374151] rounded-lg p-3 shadow-xl select-none"
-            style={{ 
-              left: boxPosition.x, 
-              top: boxPosition.y,
-              cursor: isDragging ? 'grabbing' : 'grab',
-              minWidth: '200px'
-            }}
-            onMouseDown={handleMouseDown}
-          >
-            <div className="flex items-center justify-between mb-2 border-b border-[#374151] pb-2">
-              <span className="text-xs font-medium text-gray-400 uppercase">Stats</span>
-              <GripHorizontal className="w-4 h-4 text-gray-500" />
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-400">CEV Total</span>
-                <span className={clsx('text-sm font-mono font-medium', finalStats.cev >= 0 ? 'text-green-400' : 'text-red-400')}>
-                  {finalStats.cev >= 0 ? '+' : ''}{Math.round(finalStats.cev)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-400">Chips Won</span>
-                <span className={clsx('text-sm font-mono font-medium', finalStats.chipsWon >= 0 ? 'text-green-400' : 'text-red-400')}>
-                  {finalStats.chipsWon >= 0 ? '+' : ''}{Math.round(finalStats.chipsWon)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-400">Showdown</span>
-                <span className={clsx('text-sm font-mono font-medium', finalStats.showdown >= 0 ? 'text-blue-400' : 'text-red-400')}>
-                  {finalStats.showdown >= 0 ? '+' : ''}{Math.round(finalStats.showdown)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-400">Non-Showdown</span>
-                <span className={clsx('text-sm font-mono font-medium', finalStats.nonShowdown >= 0 ? 'text-red-400' : 'text-green-400')}>
-                  {finalStats.nonShowdown >= 0 ? '+' : ''}{Math.round(finalStats.nonShowdown)}
-                </span>
+          {finalStats && (
+            <div 
+              className="absolute bg-[#1e2533]/95 backdrop-blur-sm border border-[#374151] rounded-lg p-3 shadow-xl select-none"
+              style={{ 
+                left: boxPosition.x, 
+                top: boxPosition.y,
+                cursor: isDragging ? 'grabbing' : 'grab',
+                minWidth: '200px'
+              }}
+              onMouseDown={handleMouseDown}
+            >
+              <div className="flex items-center justify-between mb-2 border-b border-[#374151] pb-2">
+                <span className="text-xs font-medium text-gray-400 uppercase">Stats</span>
+                <GripHorizontal className="w-4 h-4 text-gray-500" />
               </div>
               
-              {stats && stats.cev_by_position && (
-                <div className="mt-3 pt-2 border-t border-[#374151]">
-                  <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">CEV by Position</p>
-                  <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                    <div>
-                      <p className="text-[9px] text-gray-500">3-Way</p>
-                      <PositionCev label="BTN" value={stats.cev_by_position?.['3W_BTN']} />
-                      <PositionCev label="SB" value={stats.cev_by_position?.['3W_SB']} />
-                      <PositionCev label="BB" value={stats.cev_by_position?.['3W_BB']} />
-                    </div>
-                    <div>
-                      <p className="text-[9px] text-gray-500">Heads-Up</p>
-                      <PositionCev label="SB" value={(stats.cev_by_position?.['HU_BTN SB'] || 0) + (stats.cev_by_position?.['HU_SB'] || 0)} />
-                      <PositionCev label="BB" value={stats.cev_by_position?.['HU_BB']} />
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-gray-400">CEV Total</span>
+                  <span className={clsx('text-sm font-mono font-medium', finalStats.cev >= 0 ? 'text-green-400' : 'text-red-400')}>
+                    {finalStats.cev >= 0 ? '+' : ''}{Math.round(finalStats.cev)}
+                  </span>
+                </div>
+                
+                {stats && stats.cev_by_position && (
+                  <div className="mt-3 pt-2 border-t border-[#374151]">
+                    <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">CEV by Position</p>
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                      <div>
+                        <p className="text-[9px] text-gray-500">3-Way</p>
+                        <PositionCev label="BTN" value={stats.cev_by_position?.['3W_BTN']} />
+                        <PositionCev label="SB" value={stats.cev_by_position?.['3W_SB']} />
+                        <PositionCev label="BB" value={stats.cev_by_position?.['3W_BB']} />
+                      </div>
+                      <div>
+                        <p className="text-[9px] text-gray-500">Heads-Up</p>
+                        <PositionCev label="SB" value={(stats.cev_by_position?.['HU_BTN SB'] || 0) + (stats.cev_by_position?.['HU_SB'] || 0)} />
+                        <PositionCev label="BB" value={stats.cev_by_position?.['HU_BB']} />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
     </div>
   );
