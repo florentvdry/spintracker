@@ -143,7 +143,8 @@ public class DatabaseController : ControllerBase
         [FromQuery] string? heroName, 
         [FromQuery] string? dateFrom, 
         [FromQuery] string? dateTo, 
-        [FromQuery] double? buyIn)
+        [FromQuery] double? buyIn,
+        [FromQuery] string? position)
     {
         try
         {
@@ -151,7 +152,8 @@ public class DatabaseController : ControllerBase
                 string.IsNullOrEmpty(heroName) ? null : heroName,
                 string.IsNullOrEmpty(dateFrom) ? null : dateFrom,
                 string.IsNullOrEmpty(dateTo) ? null : dateTo,
-                buyIn
+                buyIn,
+                string.IsNullOrEmpty(position) ? null : position
             );
             return Ok(new { success = true, data = stats });
         }

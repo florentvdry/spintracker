@@ -21,13 +21,30 @@ public class StatsRepository
 
     // Placeholder: extract GetDashboardStatsAsync, GetSessionHistoryAsync, etc.
 
-    public async Task<object> GetDashboardStatsAsync(string? heroName = null, string? dateFrom = null, string? dateTo = null, double? buyIn = null)
+    public async Task<object> GetDashboardStatsAsync(string? heroName = null, string? dateFrom = null, string? dateTo = null, double? buyIn = null, string? position = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
         var profitCol = "ph.net_profit";
         var joinClause = "";
+        
+        string? dbPosition = null;
+        if (!string.IsNullOrEmpty(position) && position != "all")
+        {
+            if (position.StartsWith("HU_"))
+            {
+                dbPosition = position.Replace("HU_", "");
+            }
+            else if (position.StartsWith("3W_"))
+            {
+                dbPosition = position.Replace("3W_", "");
+            }
+            else
+            {
+                dbPosition = position;
+            }
+        }
         
         if (!string.IsNullOrEmpty(heroName))
         {
@@ -51,6 +68,10 @@ public class StatsRepository
         if (buyIn.HasValue)
         {
             whereClauses.Add("h.buy_in = @buyIn");
+        }
+        if (!string.IsNullOrEmpty(dbPosition))
+        {
+            whereClauses.Add("ph.position = @position");
         }
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
 
@@ -80,6 +101,10 @@ public class StatsRepository
         if (buyIn.HasValue)
         {
             cmd.Parameters.AddWithValue("@buyIn", buyIn.Value);
+        }
+        if (!string.IsNullOrEmpty(dbPosition))
+        {
+            cmd.Parameters.AddWithValue("@position", dbPosition);
         }
 
         int totalHands = 0;
@@ -117,6 +142,7 @@ public class StatsRepository
             if (!string.IsNullOrEmpty(dateFrom)) cmdItm.Parameters.AddWithValue("@dateFrom", dateFrom);
             if (!string.IsNullOrEmpty(dateTo)) cmdItm.Parameters.AddWithValue("@dateTo", dateTo);
             if (buyIn.HasValue) cmdItm.Parameters.AddWithValue("@buyIn", buyIn.Value);
+            if (!string.IsNullOrEmpty(dbPosition)) cmdItm.Parameters.AddWithValue("@position", dbPosition);
 
             using var reader = await cmdItm.ExecuteReaderAsync();
             while (await reader.ReadAsync())
@@ -186,6 +212,7 @@ public class StatsRepository
                 if (!string.IsNullOrEmpty(dateFrom)) cmdPos.Parameters.AddWithValue("@dateFrom", dateFrom);
                 if (!string.IsNullOrEmpty(dateTo)) cmdPos.Parameters.AddWithValue("@dateTo", dateTo);
                 if (buyIn.HasValue) cmdPos.Parameters.AddWithValue("@buyIn", buyIn.Value);
+                if (!string.IsNullOrEmpty(dbPosition)) cmdPos.Parameters.AddWithValue("@position", dbPosition);
 
                 using var reader = await cmdPos.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
