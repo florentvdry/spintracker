@@ -41,6 +41,9 @@ export default function AnalysisFilters({ filters, onChange }) {
       RiverBtnAction: '',
       RiverSbAction: '',
       RiverBbAction: '',
+      FlopPattern: '',
+      TurnPattern: '',
+      RiverPattern: '',
       MinStackBB: null,
       MaxStackBB: null,
       Positions: [], // Hero Position
@@ -205,30 +208,66 @@ export default function AnalysisFilters({ filters, onChange }) {
         {/* Flop */}
         <div className="bg-dark-400/30 p-2 rounded border border-dark-200/50">
             <div className="text-xs text-primary-400 font-semibold mb-2">Flop</div>
-            <div className={clsx("grid gap-2", filters.PlayerCount === 2 ? "grid-cols-2" : "grid-cols-3")}>
-                {filters.PlayerCount !== 2 && renderActionSelect('BTN', 'FlopBtnAction')}
-                {renderActionSelect('SB', 'FlopSbAction')}
-                {renderActionSelect('BB', 'FlopBbAction')}
+            <div className="space-y-2">
+                <div className={clsx("grid gap-2", filters.PlayerCount === 2 ? "grid-cols-2" : "grid-cols-3")}>
+                    {filters.PlayerCount !== 2 && renderActionSelect('BTN', 'FlopBtnAction')}
+                    {renderActionSelect('SB', 'FlopSbAction')}
+                    {renderActionSelect('BB', 'FlopBbAction')}
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
+                    <input
+                        type="text"
+                        placeholder="e.g. check-bet-bet"
+                        value={filters.FlopPattern || ''}
+                        onChange={(e) => handleChange('FlopPattern', e.target.value)}
+                        className="flex-1 bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-white focus:border-primary-500 focus:outline-none"
+                    />
+                </div>
             </div>
         </div>
 
         {/* Turn */}
         <div className="bg-dark-400/30 p-2 rounded border border-dark-200/50">
             <div className="text-xs text-primary-400 font-semibold mb-2">Turn</div>
-            <div className={clsx("grid gap-2", filters.PlayerCount === 2 ? "grid-cols-2" : "grid-cols-3")}>
-                {filters.PlayerCount !== 2 && renderActionSelect('BTN', 'TurnBtnAction')}
-                {renderActionSelect('SB', 'TurnSbAction')}
-                {renderActionSelect('BB', 'TurnBbAction')}
+            <div className="space-y-2">
+                <div className={clsx("grid gap-2", filters.PlayerCount === 2 ? "grid-cols-2" : "grid-cols-3")}>
+                    {filters.PlayerCount !== 2 && renderActionSelect('BTN', 'TurnBtnAction')}
+                    {renderActionSelect('SB', 'TurnSbAction')}
+                    {renderActionSelect('BB', 'TurnBbAction')}
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
+                    <input
+                        type="text"
+                        placeholder="e.g. bet-check"
+                        value={filters.TurnPattern || ''}
+                        onChange={(e) => handleChange('TurnPattern', e.target.value)}
+                        className="flex-1 bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-white focus:border-primary-500 focus:outline-none"
+                    />
+                </div>
             </div>
         </div>
 
         {/* River */}
         <div className="bg-dark-400/30 p-2 rounded border border-dark-200/50">
             <div className="text-xs text-primary-400 font-semibold mb-2">River</div>
-            <div className={clsx("grid gap-2", filters.PlayerCount === 2 ? "grid-cols-2" : "grid-cols-3")}>
-                {filters.PlayerCount !== 2 && renderActionSelect('BTN', 'RiverBtnAction')}
-                {renderActionSelect('SB', 'RiverSbAction')}
-                {renderActionSelect('BB', 'RiverBbAction')}
+            <div className="space-y-2">
+                <div className={clsx("grid gap-2", filters.PlayerCount === 2 ? "grid-cols-2" : "grid-cols-3")}>
+                    {filters.PlayerCount !== 2 && renderActionSelect('BTN', 'RiverBtnAction')}
+                    {renderActionSelect('SB', 'RiverSbAction')}
+                    {renderActionSelect('BB', 'RiverBbAction')}
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-gray-500 uppercase font-semibold whitespace-nowrap">Pattern:</span>
+                    <input
+                        type="text"
+                        placeholder="e.g. check-bet-bet"
+                        value={filters.RiverPattern || ''}
+                        onChange={(e) => handleChange('RiverPattern', e.target.value)}
+                        className="flex-1 bg-dark-400 border border-dark-200 rounded px-2 py-1 text-xs text-white focus:border-primary-500 focus:outline-none"
+                    />
+                </div>
             </div>
         </div>
       </div>

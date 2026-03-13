@@ -141,7 +141,7 @@ namespace SpinTrackerBackend.Services
                     if (!MatchesAction(hand, filters.Situation, filters.Action, heroName)) continue;
                 }
 
-                // NEW: Ordered Sequence Filter
+                // Preflop Sequence Filter
                 if (filters.ActionSequence != null && filters.ActionSequence.Count > 0)
                 {
                     if (!MatchesActionSequence(hand, filters.ActionSequence))
@@ -150,31 +150,46 @@ namespace SpinTrackerBackend.Services
                         continue;
                     }
                 }
-                else 
+
+                // NEW: Street Pattern Filters
+                if (!MatchesStreetPattern(hand.FlopAction, filters.FlopPattern, hand))
                 {
-                    // Fallback to legacy presence-based filters if no sequence provided
-                    if (!MatchesStreetActionByPosition(hand.PreflopAction, filters.PreflopBtnAction, filters.PreflopSbAction, filters.PreflopBbAction, hand)) 
-                    {
-                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to PreflopAction mismatch.");
-                        continue;
-                    }
-                    
-                    // Keep Postflop filters valid even with sequence (sequence is Preflop only for now)
-                    if (!MatchesStreetActionByPosition(hand.FlopAction, filters.FlopBtnAction, filters.FlopSbAction, filters.FlopBbAction, hand)) 
-                    {
-                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopAction mismatch.");
-                        continue;
-                    }
-                    if (!MatchesStreetActionByPosition(hand.TurnAction, filters.TurnBtnAction, filters.TurnSbAction, filters.TurnBbAction, hand)) 
-                    {
-                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnAction mismatch.");
-                        continue;
-                    }
-                    if (!MatchesStreetActionByPosition(hand.RiverAction, filters.RiverBtnAction, filters.RiverSbAction, filters.RiverBbAction, hand)) 
-                    {
-                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverAction mismatch.");
-                        continue;
-                    }
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopPattern mismatch.");
+                    continue;
+                }
+                if (!MatchesStreetPattern(hand.TurnAction, filters.TurnPattern, hand))
+                {
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnPattern mismatch.");
+                    continue;
+                }
+                if (!MatchesStreetPattern(hand.RiverAction, filters.RiverPattern, hand))
+                {
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverPattern mismatch.");
+                    continue;
+                }
+
+                // Legacy position-based filters
+                if (!MatchesStreetActionByPosition(hand.PreflopAction, filters.PreflopBtnAction, filters.PreflopSbAction, filters.PreflopBbAction, hand)) 
+                {
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to PreflopAction mismatch.");
+                    continue;
+                }
+                
+                // Keep Postflop filters valid even with sequence (sequence is Preflop only for now)
+                if (!MatchesStreetActionByPosition(hand.FlopAction, filters.FlopBtnAction, filters.FlopSbAction, filters.FlopBbAction, hand)) 
+                {
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopAction mismatch.");
+                    continue;
+                }
+                if (!MatchesStreetActionByPosition(hand.TurnAction, filters.TurnBtnAction, filters.TurnSbAction, filters.TurnBbAction, hand)) 
+                {
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnAction mismatch.");
+                    continue;
+                }
+                if (!MatchesStreetActionByPosition(hand.RiverAction, filters.RiverBtnAction, filters.RiverSbAction, filters.RiverBbAction, hand)) 
+                {
+                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverAction mismatch.");
+                    continue;
                 }
                 
                 // Filter by SituationId (RFI vs Limp) - always apply if provided
@@ -539,6 +554,77 @@ namespace SpinTrackerBackend.Services
             if (f == "all-in") return content.Contains("all-in");
             
             return content.Contains(f);
+        }
+
+        private bool MatchesStreetPattern(string? handAction, string? pattern, AnalysisHandData hand)
+        {
+            if (string.IsNullOrEmpty(pattern)) return true;
+            if (string.IsNullOrEmpty(handAction)) return false;
+
+            var patternParts = pattern.ToLower().Split('-').Select(p => p.Trim()).ToArray();
+            if (patternParts.Length == 0) return true;
+
+            var posMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (!string.IsNullOrEmpty(hand.PlayerPositionsMap))
+            {
+                var pairs = hand.PlayerPositionsMap.Split('|');
+                foreach (var pair in pairs)
+                {
+                    var parts = pair.Split(':');
+                    if (parts.Length == 2)
+                    {
+                        posMap[parts[0]] = parts[1];
+                    }
+                }
+            }
+
+            var actualActions = new List<string>();
+            var lines = handAction.Split('\n');
+
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrEmpty(line)) continue;
+
+                var processingLine = line.Trim();
+                var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
+                if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
+
+                var colonIndex = processingLine.IndexOf(':');
+                if (colonIndex == -1) continue;
+
+                var playerName = processingLine.Substring(0, colonIndex).Trim();
+                var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+
+                string verb = "unknown";
+                if (content.Contains("all-in")) verb = "all-in";
+                else if (content.Contains("raises") || content.Contains("raise")) verb = "raise";
+                else if (content.Contains("bets") || content.Contains("bet")) verb = "bet";
+                else if (content.Contains("calls") || content.Contains("call")) verb = "call";
+                else if (content.Contains("checks") || content.Contains("check")) verb = "check";
+                else if (content.Contains("folds") || content.Contains("fold")) verb = "fold";
+
+                if (verb != "unknown")
+                {
+                    actualActions.Add(verb);
+                }
+            }
+
+            if (actualActions.Count < patternParts.Length) return false;
+
+            for (int i = 0; i < patternParts.Length; i++)
+            {
+                var required = patternParts[i];
+                var actual = actualActions[i];
+
+                if (!string.Equals(required, actual, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (required == "raise" && actual == "all-in") continue;
+                    if (required == "bet" && actual == "all-in") continue;
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private double ParseBigBlind(string blinds)

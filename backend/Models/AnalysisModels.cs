@@ -23,6 +23,11 @@ public class AnalysisFilters
     public string? RiverSbAction { get; set; }
     public string? RiverBbAction { get; set; }
 
+    // Street Patterns (custom sequences like "check-bet-bet")
+    public string? FlopPattern { get; set; }
+    public string? TurnPattern { get; set; }
+    public string? RiverPattern { get; set; }
+
     public double? MinStackBB { get; set; }
     public double? MaxStackBB { get; set; }
     public string[]? Positions { get; set; } // Hero Position filter
