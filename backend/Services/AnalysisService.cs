@@ -686,8 +686,8 @@ namespace SpinTrackerBackend.Services
             var firstPlayerActions = new List<string>();
             var lines = handAction.Split('\n');
 
-            var actedPlayers = new HashSet<string>();
-            string? firstPosition = null;
+            string? firstPlayerName = null;
+            bool foundFirstPlayer = false;
 
             foreach (var line in lines)
             {
@@ -703,8 +703,6 @@ namespace SpinTrackerBackend.Services
                 var playerName = processingLine.Substring(0, colonIndex).Trim();
                 var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
 
-                if (actedPlayers.Contains(playerName)) continue;
-
                 string verb = "unknown";
                 if (content.Contains("all-in")) verb = "all-in";
                 else if (content.Contains("raises") || content.Contains("raise")) verb = "raise";
@@ -715,12 +713,16 @@ namespace SpinTrackerBackend.Services
 
                 if (verb != "unknown")
                 {
-                    if (firstPosition == null)
+                    if (!foundFirstPlayer)
                     {
-                        firstPosition = posMap.GetValueOrDefault(playerName, "");
+                        firstPlayerName = playerName;
+                        foundFirstPlayer = true;
                     }
-                    firstPlayerActions.Add(verb);
-                    actedPlayers.Add(playerName);
+
+                    if (playerName == firstPlayerName)
+                    {
+                        firstPlayerActions.Add(verb);
+                    }
                 }
             }
 
@@ -767,9 +769,10 @@ namespace SpinTrackerBackend.Services
             var secondPlayerActions = new List<string>();
             var lines = handAction.Split('\n');
 
-            var actedPlayers = new HashSet<string>();
-            string? firstPosition = null;
             string? firstPlayerName = null;
+            string? secondPlayerName = null;
+            bool foundFirstPlayer = false;
+            bool foundSecondPlayer = false;
 
             foreach (var line in lines)
             {
@@ -785,8 +788,6 @@ namespace SpinTrackerBackend.Services
                 var playerName = processingLine.Substring(0, colonIndex).Trim();
                 var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
 
-                if (actedPlayers.Contains(playerName)) continue;
-
                 string verb = "unknown";
                 if (content.Contains("all-in")) verb = "all-in";
                 else if (content.Contains("raises") || content.Contains("raise")) verb = "raise";
@@ -797,16 +798,21 @@ namespace SpinTrackerBackend.Services
 
                 if (verb != "unknown")
                 {
-                    if (firstPlayerName == null)
+                    if (!foundFirstPlayer)
                     {
                         firstPlayerName = playerName;
-                        firstPosition = posMap.GetValueOrDefault(playerName, "");
+                        foundFirstPlayer = true;
                     }
-                    else if (playerName != firstPlayerName)
+                    else if (!foundSecondPlayer && playerName != firstPlayerName)
+                    {
+                        secondPlayerName = playerName;
+                        foundSecondPlayer = true;
+                    }
+
+                    if (foundSecondPlayer && playerName == secondPlayerName)
                     {
                         secondPlayerActions.Add(verb);
                     }
-                    actedPlayers.Add(playerName);
                 }
             }
 

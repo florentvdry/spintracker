@@ -81,26 +81,41 @@ export default function AnalysisFilters({ filters, onChange }) {
     { value: '', label: 'Any 1st' },
     { value: 'check', label: 'Check' },
     { value: 'check-bet', label: 'Check-Bet' },
+    { value: 'check-call', label: 'Check-Call' },
     { value: 'check-raise', label: 'Check-Raise' },
+    { value: 'check-bet-raise', label: 'Check-Bet-Raise' },
+    { value: 'check-bet-call', label: 'Check-Bet-Call' },
+    { value: 'check-fold', label: 'Check-Fold' },
     { value: 'bet', label: 'Bet' },
+    { value: 'bet-check', label: 'Bet-Check' },
+    { value: 'bet-call', label: 'Bet-Call' },
+    { value: 'bet-raise', label: 'Bet-Raise' },
+    { value: 'bet-fold', label: 'Bet-Fold' },
     { value: 'bet-bet', label: 'Bet-Bet' },
     { value: 'raise', label: 'Raise' },
+    { value: 'raise-check', label: 'Raise-Check' },
+    { value: 'raise-call', label: 'Raise-Call' },
     { value: 'raise-raise', label: 'Raise-Raise' },
+    { value: 'raise-fold', label: 'Raise-Fold' },
+    { value: 'all-in', label: 'All-in' },
   ];
 
   const secondPlayerPatternOptions = [
     { value: '', label: 'Any 2nd' },
     { value: 'check', label: 'Check' },
+    { value: 'check-check', label: 'Check-Check' },
     { value: 'call', label: 'Call' },
     { value: 'raise', label: 'Raise' },
+    { value: 'raise-raise', label: 'Raise-Raise' },
     { value: 'fold', label: 'Fold' },
     { value: 'bet', label: 'Bet' },
-    { value: 'check-call', label: 'Check-Call' },
-    { value: 'check-raise', label: 'Check-Raise' },
-    { value: 'check-fold', label: 'Check-Fold' },
+    { value: 'bet-check', label: 'Bet-Check' },
     { value: 'bet-call', label: 'Bet-Call' },
     { value: 'bet-raise', label: 'Bet-Raise' },
     { value: 'bet-fold', label: 'Bet-Fold' },
+    { value: 'check-call', label: 'Check-Call' },
+    { value: 'check-raise', label: 'Check-Raise' },
+    { value: 'check-fold', label: 'Check-Fold' },
     { value: 'all-in', label: 'All-in' },
   ];
 
@@ -115,6 +130,8 @@ export default function AnalysisFilters({ filters, onChange }) {
       ))}
     </select>
   );
+
+  const actionOptions = [
     { value: '', label: 'Any' },
     { value: 'check', label: 'Check' },
     { value: 'call', label: 'Call' },
