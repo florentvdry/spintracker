@@ -308,17 +308,17 @@ export default function SituationSelector({ filters, onChange }) {
                         onClick={() => handleSituationSelect(sit)}
                         className={clsx(
                             "flex flex-col gap-2 p-4 rounded-xl border transition-all duration-200 text-left relative overflow-hidden group",
-                            currentSitId === sit.id 
+                            currentSitId === sit.situationId 
                                 ? "bg-white/5 border-primary-500/50 text-white" 
                                 : "bg-dark-400/50 border-white/5 text-gray-400 hover:border-white/20 hover:bg-dark-400"
                         )}
                     >
-                        {currentSitId === sit.id && (
+                        {currentSitId === sit.situationId && (
                             <div className="absolute top-0 right-0 p-1">
                                 <div className="bg-primary-500 text-[8px] font-black px-1.5 py-0.5 rounded text-white uppercase">{t('range_analysis.filters.active')}</div>
                             </div>
                         )}
-                        <span className={clsx("text-sm font-bold transition-colors", currentSitId === sit.id ? "text-primary-400" : "group-hover:text-gray-200")}>
+                        <span className={clsx("text-sm font-bold transition-colors", currentSitId === sit.situationId ? "text-primary-400" : "group-hover:text-gray-200")}>
                             {sit.label}
                         </span>
                         

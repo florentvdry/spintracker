@@ -176,6 +176,16 @@ namespace SpinTrackerBackend.Services
                         continue;
                     }
                 }
+                
+                // Filter by SituationId (RFI vs Limp) - always apply if provided
+                if (!string.IsNullOrEmpty(filters.SituationId))
+                {
+                    if (!MatchesSituationId(hand, filters.SituationId, filters.Positions))
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to SituationId mismatch ({filters.SituationId}).");
+                        continue;
+                    }
+                }
 
                 result.Add(hand);
             }
@@ -269,10 +279,123 @@ namespace SpinTrackerBackend.Services
              return true;
         }
 
-        private bool MatchesStreetActionByPosition(string handAction, string? btnAction, string? sbAction, string? bbAction)
+        private bool MatchesSituationId(AnalysisHandData hand, string situationId, string[]? positions)
         {
-             // This overload is no longer used, but kept for compatibility if needed.
-             return false;
+            if (string.IsNullOrEmpty(situationId)) return true;
+            if (string.IsNullOrEmpty(hand.PreflopAction)) return false;
+            
+            // Get hero position
+            var heroPos = hand.HeroPosition;
+            if (positions != null && positions.Length > 0)
+            {
+                heroPos = positions[0];
+            }
+            
+            // Parse the preflop action for the hero
+            var heroAction = ParseHeroAction(hand, heroPos);
+            if (heroAction == null) return false;
+            
+            var action = heroAction.Value.action;
+            var amountBB = heroAction.Value.amountBB;
+            
+            switch (situationId.ToLower())
+            {
+                case "rfi":
+                    // RFI: Raise between 2 and 3 BB (first raise)
+                    return action == "raise" && amountBB >= 2.0 && amountBB <= 3.0;
+                    
+                case "limp":
+                    // Limp: Call exactly 1 BB (just call the blind)
+                    return action == "call" && amountBB >= 0.9 && amountBB <= 1.1;
+                    
+                default:
+                    return true;
+            }
+        }
+        
+        private (string action, double amountBB)? ParseHeroAction(AnalysisHandData hand, string heroPosition)
+        {
+            if (string.IsNullOrEmpty(hand.PreflopAction) || string.IsNullOrEmpty(heroPosition)) return null;
+            
+            // Parse PlayerPositionsMap: "Player1:BTN|Player2:SB"
+            var posMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (!string.IsNullOrEmpty(hand.PlayerPositionsMap))
+            {
+                var pairs = hand.PlayerPositionsMap.Split('|');
+                foreach (var pair in pairs)
+                {
+                    var parts = pair.Split(':');
+                    if (parts.Length == 2)
+                    {
+                        posMap[parts[0]] = parts[1];
+                    }
+                }
+            }
+            
+            // Find the hero's action in PreflopAction
+            var lines = hand.PreflopAction.Split('\n');
+            var bb = ParseBigBlind(hand.Blinds);
+            
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrEmpty(line)) continue;
+                
+                var processingLine = line.Trim();
+                var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
+                if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
+                
+                var colonIndex = processingLine.IndexOf(':');
+                if (colonIndex == -1) continue;
+                
+                var playerName = processingLine.Substring(0, colonIndex).Trim();
+                var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+                
+                if (!posMap.TryGetValue(playerName, out var pos)) continue;
+                if (!string.Equals(pos, heroPosition, StringComparison.OrdinalIgnoreCase)) continue;
+                
+                // Determine action and amount
+                string action;
+                double amountBB = 0;
+                
+                if (content.Contains("all-in"))
+                {
+                    action = "all-in";
+                    // Try to extract amount from "raises to X and is all-in"
+                    var amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"to\s+(\d+\.?\d*)");
+                    if (amountMatch.Success && bb > 0)
+                    {
+                        amountBB = double.Parse(amountMatch.Groups[1].Value) / bb;
+                    }
+                }
+                else if (content.Contains("raises"))
+                {
+                    action = "raise";
+                    // Extract amount from "raises to X"
+                    var amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"to\s+(\d+\.?\d*)");
+                    if (amountMatch.Success && bb > 0)
+                    {
+                        amountBB = double.Parse(amountMatch.Groups[1].Value) / bb;
+                    }
+                }
+                else if (content.Contains("calls"))
+                {
+                    action = "call";
+                    // Extract amount from "calls X"
+                    var amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"(\d+\.?\d*)");
+                    if (amountMatch.Success && bb > 0)
+                    {
+                        amountBB = double.Parse(amountMatch.Groups[1].Value) / bb;
+                    }
+                }
+                else
+                {
+                    continue; // Skip other actions like check, fold
+                }
+                
+                return (action, amountBB);
+            }
+            
+            return null;
         }
 
         private bool MatchesStreetActionByPosition(string handAction, string? btnAction, string? sbAction, string? bbAction, AnalysisHandData hand)

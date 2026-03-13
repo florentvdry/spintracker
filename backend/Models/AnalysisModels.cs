@@ -28,6 +28,7 @@ public class AnalysisFilters
     public string[]? Positions { get; set; } // Hero Position filter
     public int? PlayerCount { get; set; } // New filter
     public List<string>? ActionSequence { get; set; } // Ordered sequence: "BTN:Raise", "SB:Call"
+    public string? SituationId { get; set; } // e.g., "rfi", "limp" for preflop situations
     public string? DateFrom { get; set; }
     public string? DateTo { get; set; }
 }
