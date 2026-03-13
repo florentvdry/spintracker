@@ -26,6 +26,7 @@ public record ChartQueryOptions
     public string? DateTo { get; set; }
     public string? HeroName { get; set; }
     public double? BuyIn { get; set; }
+    public string? Position { get; set; }
 }
 public record RangeHeatmapFilters 
 { 

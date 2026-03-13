@@ -436,6 +436,24 @@ public class StatsRepository
             parameters.Add(new SqliteParameter("@buyIn", options.BuyIn.Value));
         }
 
+        if (!string.IsNullOrEmpty(options.Position) && options.Position != "all")
+        {
+            var posMapping = new Dictionary<string, string>
+            {
+                { "HU_SB", "HU_SB" },
+                { "HU_BB", "HU_BB" },
+                { "3W_BTN", "3W_BTN" },
+                { "3W_SB", "3W_SB" },
+                { "3W_BB", "3W_BB" }
+            };
+            
+            if (posMapping.TryGetValue(options.Position, out var dbPos))
+            {
+                whereClauses.Add("ph.position = @position");
+                parameters.Add(new SqliteParameter("@position", dbPos));
+            }
+        }
+
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
 
         using var cmd = connection.CreateCommand();
