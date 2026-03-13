@@ -304,15 +304,15 @@ namespace SpinTrackerBackend.Services
                 case "sb_rfi":
                 case "hu_sb_rfi":
                 case "vs_sb_open":
-                    // RFI: Raise between 2 and 3 BB (first raise)
-                    return action == "raise" && amountBB >= 2.0 && amountBB <= 3.0;
+                    // RFI: Raise or All-in between 2 and 3 BB (first raise)
+                    return (action == "raise" || action == "all-in") && amountBB >= 2.0 && amountBB <= 3.0;
                     
                 case "limp":
                 case "vs_btn_limp":
                 case "hu_sb_limp":
                 case "vs_sb_limp":
-                    // Limp: Call approximately 1 BB (just call the blind)
-                    return action == "call" && amountBB >= 0.9 && amountBB <= 1.1;
+                    // Limp: Call approximately 1 BB (just call the blind) - relaxed tolerance
+                    return action == "call" && amountBB >= 0.5 && amountBB <= 1.5;
                     
                 default:
                     return true;
