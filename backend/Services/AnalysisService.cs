@@ -158,23 +158,33 @@ namespace SpinTrackerBackend.Services
                         if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to PreflopAction mismatch.");
                         continue;
                     }
+                    
+                    // Keep Postflop filters valid even with sequence (sequence is Preflop only for now)
+                    if (!MatchesStreetActionByPosition(hand.FlopAction, filters.FlopBtnAction, filters.FlopSbAction, filters.FlopBbAction, hand)) 
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopAction mismatch.");
+                        continue;
+                    }
+                    if (!MatchesStreetActionByPosition(hand.TurnAction, filters.TurnBtnAction, filters.TurnSbAction, filters.TurnBbAction, hand)) 
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnAction mismatch.");
+                        continue;
+                    }
+                    if (!MatchesStreetActionByPosition(hand.RiverAction, filters.RiverBtnAction, filters.RiverSbAction, filters.RiverBbAction, hand)) 
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverAction mismatch.");
+                        continue;
+                    }
                 }
                 
-                // Keep Postflop filters valid even with sequence (sequence is Preflop only for now)
-                if (!MatchesStreetActionByPosition(hand.FlopAction, filters.FlopBtnAction, filters.FlopSbAction, filters.FlopBbAction, hand)) 
+                // Filter by SituationId (RFI vs Limp) - always apply if provided
+                if (!string.IsNullOrEmpty(filters.SituationId))
                 {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to FlopAction mismatch.");
-                    continue;
-                }
-                if (!MatchesStreetActionByPosition(hand.TurnAction, filters.TurnBtnAction, filters.TurnSbAction, filters.TurnBbAction, hand)) 
-                {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to TurnAction mismatch.");
-                    continue;
-                }
-                if (!MatchesStreetActionByPosition(hand.RiverAction, filters.RiverBtnAction, filters.RiverSbAction, filters.RiverBbAction, hand)) 
-                {
-                    if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to RiverAction mismatch.");
-                    continue;
+                    if (!MatchesSituationId(hand, filters.SituationId, filters.Positions))
+                    {
+                        if (loggedSkips++ < 5) _logger.LogInformation($"Skipped {hand.HandId} due to SituationId mismatch ({filters.SituationId}).");
+                        continue;
+                    }
                 }
 
                 result.Add(hand);
@@ -269,10 +279,153 @@ namespace SpinTrackerBackend.Services
              return true;
         }
 
-        private bool MatchesStreetActionByPosition(string handAction, string? btnAction, string? sbAction, string? bbAction)
+        private bool MatchesSituationId(AnalysisHandData hand, string situationId, string[]? positions)
         {
-             // This overload is no longer used, but kept for compatibility if needed.
-             return false;
+            if (string.IsNullOrEmpty(situationId)) return true;
+            if (string.IsNullOrEmpty(hand.PreflopAction)) return false;
+            
+            // Get hero position
+            var heroPos = hand.HeroPosition;
+            if (positions != null && positions.Length > 0)
+            {
+                heroPos = positions[0];
+            }
+            
+            // Parse the preflop action for the hero
+            var heroAction = ParseHeroAction(hand, heroPos);
+            if (heroAction == null) return false;
+            
+            var action = heroAction.Value.action;
+            var amountBB = heroAction.Value.amountBB;
+            
+            var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi", "vs_sb_open" };
+            var limpSituations = new[] { "limp", "vs_btn_limp", "hu_sb_limp" };
+            var bbVsLimpSituations = new[] { "vs_sb_limp", "vs_btn_limp_sb_limp", "vs_btn_limp_sb_fold", "hu_vs_sb_limp" };
+            
+            if (rfiSituations.Contains(situationId.ToLower()))
+            {
+                // RFI: Any raise or all-in (no amount restriction for filtering)
+                return action == "raise" || action == "all-in";
+            }
+            
+            if (limpSituations.Contains(situationId.ToLower()))
+            {
+                // Limp: Call approximately 1 BB (just call the blind)
+                // Note: SB calls SB amount = 0.5bb (since SB posted 0.5bb already)
+                // BTN limp calls 1bb
+                return action == "call" && amountBB >= 0.3 && amountBB <= 1.5;
+            }
+            
+            if (bbVsLimpSituations.Contains(situationId.ToLower()))
+            {
+                // BB vs limp: BB has already posted 1bb, so they can't "call"
+                // They can only "check" (do nothing) or "raise"
+                // So we match any action except fold
+                return action != "fold";
+            }
+            
+            return true;
+        }
+        
+        private (string action, double amountBB)? ParseHeroAction(AnalysisHandData hand, string heroPosition)
+        {
+            if (string.IsNullOrEmpty(hand.PreflopAction) || string.IsNullOrEmpty(heroPosition)) return null;
+            
+            // Try to use PlayerPositionsMap if available
+            var posMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (!string.IsNullOrEmpty(hand.PlayerPositionsMap))
+            {
+                var pairs = hand.PlayerPositionsMap.Split('|');
+                foreach (var pair in pairs)
+                {
+                    var parts = pair.Split(':');
+                    if (parts.Length == 2)
+                    {
+                        posMap[parts[0]] = parts[1];
+                    }
+                }
+            }
+            
+            // Find the hero's action in PreflopAction
+            var lines = hand.PreflopAction.Split('\n');
+            var bb = ParseBigBlind(hand.Blinds);
+            
+            // Get hero name from hand
+            var heroName = hand.HeroName;
+            
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrEmpty(line)) continue;
+                
+                var processingLine = line.Trim();
+                var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
+                if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
+
+                var colonIndex = processingLine.IndexOf(':');
+                if (colonIndex == -1) continue;
+                
+                var playerName = processingLine.Substring(0, colonIndex).Trim();
+                var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+                
+                // Check if this is the hero's action by:
+                // 1. Matching player name to hero name, OR
+                // 2. Matching position via PlayerPositionsMap
+                bool isHeroAction = false;
+                
+                if (!string.IsNullOrEmpty(heroName) && string.Equals(playerName, heroName, StringComparison.OrdinalIgnoreCase))
+                {
+                    isHeroAction = true;
+                }
+                else if (posMap.Count > 0 && posMap.TryGetValue(playerName, out var pos))
+                {
+                    isHeroAction = string.Equals(pos, heroPosition, StringComparison.OrdinalIgnoreCase);
+                }
+                
+                if (!isHeroAction) continue;
+                
+                // Determine action and amount
+                string action;
+                double amountBB = 0;
+                
+                if (content.Contains("all-in"))
+                {
+                    action = "all-in";
+                    // Try to extract amount from "raises to X and is all-in"
+                    var amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"to\s+(\d+\.?\d*)");
+                    if (amountMatch.Success && bb > 0)
+                    {
+                        amountBB = double.Parse(amountMatch.Groups[1].Value) / bb;
+                    }
+                }
+                else if (content.Contains("raises"))
+                {
+                    action = "raise";
+                    // Extract amount from "raises to X"
+                    var amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"to\s+(\d+\.?\d*)");
+                    if (amountMatch.Success && bb > 0)
+                    {
+                        amountBB = double.Parse(amountMatch.Groups[1].Value) / bb;
+                    }
+                }
+                else if (content.Contains("calls"))
+                {
+                    action = "call";
+                    // Extract amount from "calls X"
+                    var amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"(\d+\.?\d*)");
+                    if (amountMatch.Success && bb > 0)
+                    {
+                        amountBB = double.Parse(amountMatch.Groups[1].Value) / bb;
+                    }
+                }
+                else
+                {
+                    continue; // Skip other actions like check, fold
+                }
+                
+                return (action, amountBB);
+            }
+            
+            return null;
         }
 
         private bool MatchesStreetActionByPosition(string handAction, string? btnAction, string? sbAction, string? bbAction, AnalysisHandData hand)
@@ -693,7 +846,7 @@ namespace SpinTrackerBackend.Services
                 }
 
                 // Determine Action
-                var actionType = DetermineActionType(hand, filters.Situation, heroName);
+                var actionType = DetermineActionType(hand, filters.Situation, filters.SituationId, heroName);
                 if (actionType == "None") continue;
 
                 if (!rangeData.ContainsKey(cards))
@@ -743,7 +896,7 @@ namespace SpinTrackerBackend.Services
             };
         }
 
-        private string DetermineActionType(AnalysisHandData hand, string? situation, string heroName)
+        private string DetermineActionType(AnalysisHandData hand, string? situation, string? situationId, string heroName)
         {
             var actionText = "";
             if (string.IsNullOrEmpty(situation) || situation.ToLower() == "preflop")
@@ -753,6 +906,9 @@ namespace SpinTrackerBackend.Services
             else if (situation.ToLower() == "river") actionText = hand.RiverAction;
 
             if (string.IsNullOrEmpty(actionText)) return "None";
+
+            var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi", "vs_sb_open" };
+            bool isRfiSituation = !string.IsNullOrEmpty(situationId) && rfiSituations.Contains(situationId.ToLower());
 
             var lines = actionText.Split('\n');
             foreach (var line in lines)
@@ -782,7 +938,18 @@ namespace SpinTrackerBackend.Services
                 if (isHero)
                 {
                     if (act.Contains("all-in")) return "AllIn";
-                    if (act.Contains("raises")) return "Raise";
+                    
+                    if (act.Contains("raises"))
+                    {
+                        if (isRfiSituation)
+                        {
+                            var amountBB = ParseActionAmount(act, hand.Blinds);
+                            if (amountBB >= 4.0) return "Raise4BB";
+                            return "Raise2_3BB";
+                        }
+                        return "Raise";
+                    }
+                    
                     if (act.Contains("bets")) return "Bet";
                     if (act.Contains("calls")) return "Call";
                     if (act.Contains("folds")) return "Fold";
@@ -794,6 +961,20 @@ namespace SpinTrackerBackend.Services
             }
 
             return "None";
+        }
+
+        private double ParseActionAmount(string act, string blinds)
+        {
+            var amountMatch = System.Text.RegularExpressions.Regex.Match(act, @"to\s+(\d+\.?\d*)");
+            if (amountMatch.Success)
+            {
+                var bb = ParseBigBlind(blinds);
+                if (bb > 0 && double.TryParse(amountMatch.Groups[1].Value, out var amount))
+                {
+                    return amount / bb;
+                }
+            }
+            return 0;
         }
 
         private string? NormalizeCards(string? cardsRaw)

@@ -12,6 +12,8 @@ import clsx from 'clsx';
 const ACTION_COLORS = {
   AllIn: '#b71c1c',
   Raise: '#f44336',
+  Raise2_3BB: '#ef4444',
+  Raise4BB: '#f97316',
   Bet: '#ff9800',
   Call: '#4caf50',
   Check: '#9e9e9e',
@@ -31,8 +33,9 @@ export default function RangeResearch() {
     PlayerCount: 3,
     MinStackBB: null,
     MaxStackBB: null,
-    Positions: ['BTN'], // Default to BTN
+    Positions: ['BTN'],
     ActionSequence: [],
+    SituationId: 'rfi',
   });
 
   // Combined filters for API requests
@@ -63,14 +66,13 @@ export default function RangeResearch() {
     let mounted = true;
     const fetchRange = async () => {
       setRangeLoading(true);
+      // Reset selected range when filters change
+      setSelectedRangeHand(null);
+      setSelectedRangeStats(null);
       try {
         const response = await ipcService.getRangeBreakdown(combinedFilters);
         if (mounted && response.success) {
           setRangeData(response.data);
-          // Update selected range stats if something was selected
-          if (selectedRangeHand) {
-             setSelectedRangeStats(response.data[selectedRangeHand]);
-          }
         }
       } catch (err) {
         console.error("Failed to fetch range breakdown", err);
@@ -163,11 +165,15 @@ export default function RangeResearch() {
                     <Filter className="w-4 h-4 text-primary-400" />
                     <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest">{t('range_analysis.matrix_title')}</h2>
                  </div>
-                 <div className="flex gap-4">
-                    <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#f44336] shadow-sm shadow-red-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.raise')}</span></div>
-                    <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#4caf50] shadow-sm shadow-green-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.call')}</span></div>
-                    <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#2196f3] shadow-sm shadow-blue-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.fold')}</span></div>
-                 </div>
+                   <div className="flex gap-4">
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#ef4444] shadow-sm shadow-red-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">2-3bb</span></div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#f97316] shadow-sm shadow-orange-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">4bb+</span></div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#ff9800] shadow-sm shadow-orange-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.bet')}</span></div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#4caf50] shadow-sm shadow-green-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.call')}</span></div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#9e9e9e] shadow-sm shadow-gray-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.check')}</span></div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#2196f3] shadow-sm shadow-blue-500/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.fold')}</span></div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#b71c1c] shadow-sm shadow-red-900/50"></span><span className="text-[10px] font-bold text-gray-400 uppercase">{t('actions.allin')}</span></div>
+                   </div>
                </div>
 
                <div className="flex-1 p-6 overflow-auto flex items-center justify-center custom-scrollbar">
@@ -254,10 +260,10 @@ export default function RangeResearch() {
                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t('range_analysis.frequencies')}</span>
                                    </div>
                                    <div className="grid grid-cols-3 gap-2">
-                                       {Object.entries(selectedRangeStats?.Actions || {})
-                                           .sort((a, b) => b[1] - a[1])
-                                           .map(([action, count]) => {
-                                               const total = selectedRangeStats.TotalCount || 0;
+                                        {Object.entries(selectedRangeStats?.Actions || {})
+                                            .sort((a, b) => b[1] - a[1])
+                                            .map(([action, count]) => {
+                                                const total = selectedRangeStats?.TotalCount || 0;
                                                const percent = total > 0 ? (count / total) * 100 : 0;
                                                const isSelected = selectedActionFilter === action;
                                                return (
@@ -285,8 +291,8 @@ export default function RangeResearch() {
                                    <div className="flex justify-between items-center">
                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t('range_analysis.history')}</span>
                                        <button 
-                                           onClick={() => {
-                                               const list = selectedRangeStats.Hands || [];
+                                            onClick={() => {
+                                                const list = selectedRangeStats?.Hands || [];
                                                const filtered = selectedActionFilter ? list.filter(h => handMatchesAction(h, selectedActionFilter)) : list;
                                                handleOpenReplayer(filtered.map(h => h.id || h.Id));
                                            }}
@@ -295,8 +301,8 @@ export default function RangeResearch() {
                                            <Play className="w-3 h-3" /> {t('range_analysis.replay_filtered')}
                                        </button>
                                    </div>
-                                   <div className="space-y-2">
-                                       {(selectedRangeStats.Hands || []).filter(h => handMatchesAction(h, selectedActionFilter)).map((hand, idx) => {
+                                    <div className="space-y-2">
+                                        {selectedRangeStats && (selectedRangeStats.Hands || []).filter(h => handMatchesAction(h, selectedActionFilter)).map((hand, idx) => {
                                            const handId = hand.id || hand.Id;
                                            const profit = hand.profit !== undefined ? hand.profit : hand.Profit;
                                            const ev = hand.ev !== undefined ? hand.ev : hand.Ev;

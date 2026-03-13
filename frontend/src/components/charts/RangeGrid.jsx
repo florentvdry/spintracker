@@ -8,6 +8,8 @@ const CARDS = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
 const ACTION_COLORS = {
   AllIn: '#b71c1c',
   Raise: '#f44336',
+  Raise2_3BB: '#ef4444',   // Red for 2-3bb raises
+  Raise4BB: '#f97316',    // Orange for 4bb+ raises
   Bet: '#ff9800',
   Call: '#4caf50',
   Check: '#9e9e9e',
@@ -78,7 +80,7 @@ export default function RangeGrid({
     let gradientStops = [];
     let currentPercent = 0;
 
-    const actionOrder = ['AllIn', 'Raise', 'Bet', 'Call', 'Check', 'Fold', 'None'];
+    const actionOrder = ['AllIn', 'Raise4BB', 'Raise2_3BB', 'Raise', 'Bet', 'Call', 'Check', 'Fold', 'None'];
     
     // Scale action colors by volume opacity
     const getActionColor = (action) => hexToRgba(ACTION_COLORS[action] || ACTION_COLORS.None, volumeOpacity);
