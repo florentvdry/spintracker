@@ -14,7 +14,7 @@ export default function Analysis() {
   const { t } = useTranslation();
   const { loadPlayers } = usePlayersStore();
   const { openReplayer } = useReplayerStore();
-  const { heroName, opponent, dateRange, customDateFrom, customDateTo, selectedSession, getDateRangeParams } = useFilterStore();
+  const { heroName, dateRange, customDateFrom, customDateTo, selectedSession, getDateRangeParams } = useFilterStore();
   
   const [activeTab, setActiveTab] = useState('stats'); // 'stats' | 'hands'
 
@@ -84,12 +84,11 @@ export default function Analysis() {
     const { dateFrom, dateTo } = getDateRangeParams();
     return {
       HeroName: heroName,
-      Opponent: opponent,
       DateFrom: dateFrom,
       DateTo: dateTo,
       ...localFilters
     };
-  }, [heroName, opponent, dateRange, customDateFrom, customDateTo, selectedSession, localFilters, getDateRangeParams]);
+  }, [heroName, dateRange, customDateFrom, customDateTo, selectedSession, localFilters, getDateRangeParams]);
 
   // Load players list on mount
   useEffect(() => {

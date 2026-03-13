@@ -10,7 +10,6 @@ export const useFilterStore = create(
     (set, get) => ({
       // Filters
       heroName: null,
-      opponent: null,
       dateRange: 'month', // Default to 'month' instead of 'all'
       customDateFrom: null,
       customDateTo: null,
@@ -25,7 +24,6 @@ export const useFilterStore = create(
       // Actions
       setHasHydrated: (state) => set({ _hasHydrated: state }),
       setHeroName: (name) => set({ heroName: name }),
-      setOpponent: (name) => set({ opponent: name }),
       
       setDateRange: (range) => {
         set({ dateRange: range });

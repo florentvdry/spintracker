@@ -17,7 +17,6 @@ public record HandsQueryOptions
     public double? MinPot { get; set; }
     public double? MaxPot { get; set; }
     public string? HeroName { get; set; }
-    public string? Opponent { get; set; }
     public string? SortBy { get; set; }
 }
 public record SessionHistoryRequest(int Limit = 50, string? HeroName = null, string? DateFrom = null, string? DateTo = null, double? BuyIn = null);
