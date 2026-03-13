@@ -102,6 +102,7 @@
     "loading_hands": "Loading hands...",
     "time": "Time",
     "avg_cev": "Avg CEV",
+    "delete_tournament": "Delete tournament",
     "table": {
       "ev_chips": "EV Chips",
       "pot": "Pot"

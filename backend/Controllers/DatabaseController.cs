@@ -267,4 +267,28 @@ public class DatabaseController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
+
+    [HttpPost("db/delete-tournament")]
+    public async Task<IActionResult> DeleteTournament([FromBody] DeleteTournamentRequest request)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(request.GameId))
+            {
+                return BadRequest(new { success = false, message = "GameId is required" });
+            }
+
+            var result = await _db.DeleteTournamentAsync(request.GameId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+}
+
+public class DeleteTournamentRequest
+{
+    public string GameId { get; set; } = string.Empty;
 }

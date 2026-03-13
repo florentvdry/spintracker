@@ -289,4 +289,37 @@ public class Database
             return new { success = false, message = $"Failed to delete data: {ex.Message}" };
         }
     }
+
+    public async Task<object> DeleteTournamentAsync(string gameId)
+    {
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+
+            using var transaction = await connection.BeginTransactionAsync();
+
+            using var cmd = connection.CreateCommand();
+            cmd.Transaction = (SqliteTransaction)transaction;
+
+            cmd.CommandText = @"
+                DELETE FROM player_hands 
+                WHERE hand_id IN (SELECT id FROM hands WHERE game_id = @game_id);
+                DELETE FROM hands WHERE game_id = @game_id;
+            ";
+            cmd.Parameters.AddWithValue("@game_id", gameId);
+
+            var deleted = await cmd.ExecuteNonQueryAsync();
+
+            await transaction.CommitAsync();
+
+            _logger.LogInformation($"Deleted tournament {gameId}: {deleted} hands removed");
+            return new { success = true, message = $"Tournoi supprimé ({deleted} mains)" };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Failed to delete tournament {gameId}");
+            return new { success = false, message = $"Failed to delete tournament: {ex.Message}" };
+        }
+    }
 }

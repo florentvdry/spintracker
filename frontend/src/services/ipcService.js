@@ -158,6 +158,10 @@ class IPCService {
     return this.invoke('delete-all-hands');
   }
 
+  async deleteTournament(gameId) {
+    return this.invoke('delete-tournament', gameId);
+  }
+
   async resetDefaultStats() {
     return this.invoke('reset-default-stats');
   }

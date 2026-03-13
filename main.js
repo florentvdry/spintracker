@@ -704,6 +704,24 @@ ipcMain.handle('delete-all-hands', async () => {
   }
 });
 
+ipcMain.handle('delete-tournament', async (event, gameId) => {
+  const result = await dialog.showMessageBox(mainWindow, {
+    type: 'warning',
+    buttons: ['Annuler', 'Supprimer'],
+    defaultId: 0,
+    cancelId: 0,
+    title: 'Confirmation',
+    message: 'Supprimer ce tournoi ?',
+    detail: 'Cette action est irréversible. Le tournoi et toutes ses mains seront définitivement supprimés.'
+  });
+
+  if (result.response === 1) {
+    return await callBackendAPI('/db/delete-tournament', { gameId }, 'POST');
+  } else {
+    return { success: false, message: 'Action annulée par l\'utilisateur' };
+  }
+});
+
 ipcMain.handle('reset-default-stats', async () => {
   return callBackendAPI('/reset-default-stats', {}, 'POST');
 });

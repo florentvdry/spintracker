@@ -33,7 +33,8 @@ export default function HandHistory() {
     selectedTournament,
     selectHand,
     selectTournament,
-    clearSelection
+    clearSelection,
+    deleteTournament
   } = useHandsStore();
 
   useEffect(() => {
@@ -101,6 +102,7 @@ export default function HandHistory() {
                   onSort={setSortBy}
                   onReplayTournament={handleReplayTournament}
                   onReplayHand={handleReplayHand}
+                  onDeleteTournament={deleteTournament}
                 />
                 
                 {/* Pagination */}

@@ -108,6 +108,7 @@
     "loading_hands": "Chargement des mains...",
     "time": "Heure",
     "avg_cev": "CEV Moyen",
+    "delete_tournament": "Supprimer le tournoi",
     "table": {
       "ev_chips": "EV Chips",
       "pot": "Pot"
