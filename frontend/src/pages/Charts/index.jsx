@@ -29,7 +29,7 @@ export default function Charts() {
   const chartRef = useRef(null);
   const [chartPosition, setChartPosition] = useState('all');
   const [stats, setStats] = useState(null);
-  const [boxPosition, setBoxPosition] = useState({ x: 20, y: 20 });
+  const [boxPosition, setBoxPosition] = useState({ x: 80, y: 280 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
@@ -72,29 +72,41 @@ export default function Charts() {
       });
       if (result && result.success && result.data) {
         const raw = result.data;
-        let chartData = [];
-
-        if (Array.isArray(raw)) {
-          chartData = raw.map((item, index) => ({
+        
+        if (Array.isArray(raw) && raw.length > 0) {
+          const groupedData = new Map();
+          
+          raw.forEach(item => {
+            const label = item.date || 'Unknown';
+            if (!groupedData.has(label)) {
+              groupedData.set(label, {
+                label,
+                lastProfit: 0,
+                lastCumulative: 0,
+                lastShowdown: 0,
+                lastNoShowdown: 0
+              });
+            }
+            const entry = groupedData.get(label);
+            entry.lastProfit = item.profit ?? item.realWin ?? 0;
+            entry.lastCumulative = item.cumulative ?? item.theoricalWin ?? 0;
+            entry.lastShowdown = item.chips_won_showdown ?? item.chipsWonShowdown ?? 0;
+            entry.lastNoShowdown = item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0;
+          });
+          
+          const chartData = Array.from(groupedData.values()).map((item, index) => ({
             time: index + 1,
-            label: item.date || `#${index + 1}`,
-            chipsWon: item.profit ?? item.realWin ?? 0,
-            netExpected: item.cumulative ?? item.theoricalWin ?? 0,
-            wonWithShowdown: item.chips_won_showdown ?? item.chipsWonShowdown ?? 0,
-            wonWithoutShowdown: item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0
+            label: item.label,
+            chipsWon: item.lastProfit,
+            netExpected: item.lastCumulative,
+            wonWithShowdown: item.lastShowdown,
+            wonWithoutShowdown: item.lastNoShowdown
           }));
-        } else if (raw.labels && Array.isArray(raw.labels)) {
-           const { labels, realWin, theoricalWin, wonWithShowdown, wonWithoutShowdown } = raw;
-           chartData = labels.map((label, index) => ({
-            time: index + 1,
-            label: label,
-            chipsWon: (realWin && realWin[index]) || 0,
-            netExpected: (theoricalWin && theoricalWin[index]) || 0,
-            wonWithShowdown: (wonWithShowdown && wonWithShowdown[index]) || 0,
-            wonWithoutShowdown: (wonWithoutShowdown && wonWithoutShowdown[index]) || 0
-          }));
+          
+          setData(chartData);
+        } else {
+          setData([]);
         }
-        setData(chartData);
       } else {
         setData([]);
       }

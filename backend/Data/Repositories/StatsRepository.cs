@@ -533,7 +533,8 @@ public class StatsRepository
                 h.buy_in,
                 h.prize_pool,
                 h.player_count,
-                {profitCol} as hand_profit
+                {profitCol} as hand_profit,
+                ph.went_to_showdown as hand_went_to_showdown
             FROM hands h
             {joinClause}
             {whereClause}
@@ -558,7 +559,8 @@ public class StatsRepository
                 buy_in = reader.IsDBNull(6) ? 0.0 : reader.GetDouble(6),
                 prize_pool = reader.IsDBNull(7) ? 0.0 : reader.GetDouble(7),
                 player_count = reader.IsDBNull(8) ? 0 : reader.GetInt32(8),
-                hand_profit = reader.GetDouble(9)
+                hand_profit = reader.GetDouble(9),
+                hand_went_to_showdown = reader.GetInt32(10) == 1
             });
         }
 
@@ -617,22 +619,51 @@ public class StatsRepository
 
         _logger.LogInformation($"WinrateChart: Calculated profit for {gameProfitEuro.Count} games.");
 
+        // Calculate showdown/non-showdown totals per game (session)
+        var gameShowdown = new Dictionary<string, double>();
+        var gameNoShowdown = new Dictionary<string, double>();
+        var gamesSD = rawData.Where(x => !string.IsNullOrEmpty(x.game_id)).GroupBy(x => x.game_id!);
+        foreach (var game in gamesSD)
+        {
+            double showdownTotal = 0;
+            double noShowdownTotal = 0;
+            foreach (var hand in game)
+            {
+                if (hand.hand_went_to_showdown)
+                {
+                    showdownTotal += hand.hand_profit;
+                }
+                else
+                {
+                    noShowdownTotal += hand.hand_profit;
+                }
+            }
+            gameShowdown[game.Key] = showdownTotal;
+            gameNoShowdown[game.Key] = noShowdownTotal;
+        }
+
+        _logger.LogInformation($"WinrateChart: Calculated showdown/non-showdown for {gameShowdown.Count} games.");
+
         var finalData = new List<object>();
         double currentCumulativeEuro = 0;
+        double cumulativeShowdown = 0;
+        double cumulativeNoShowdown = 0;
         for (int i = 0; i < rawData.Count; i++)
         {
             var h = rawData[i];
             if (!string.IsNullOrEmpty(h.game_id) && lastHandsMap.ContainsKey(h.game_id!) && lastHandsMap[h.game_id!] == i)
             {
                 currentCumulativeEuro += gameProfitEuro[h.game_id!];
+                cumulativeShowdown += gameShowdown.GetValueOrDefault(h.game_id!, 0);
+                cumulativeNoShowdown += gameNoShowdown.GetValueOrDefault(h.game_id!, 0);
             }
 
             finalData.Add(new {
                 date = h.date,
                 profit = h.profit,
                 cumulative = h.cumulative,
-                chips_won_showdown = h.chips_won_showdown,
-                chips_won_no_showdown = h.chips_won_no_showdown,
+                chips_won_showdown = cumulativeShowdown,
+                chips_won_no_showdown = cumulativeNoShowdown,
                 euro_profit = currentCumulativeEuro
             });
         }
@@ -657,6 +688,7 @@ public class StatsRepository
         public double prize_pool { get; set; }
         public int player_count { get; set; }
         public double hand_profit { get; set; }
+        public bool hand_went_to_showdown { get; set; }
     }
 
     public async Task<List<double>> GetUniqueBuyInsAsync()
