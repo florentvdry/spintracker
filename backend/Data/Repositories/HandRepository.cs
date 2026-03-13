@@ -183,6 +183,13 @@ public class HandRepository
                 joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)";
             }
 
+            if (!string.IsNullOrEmpty(options.Opponent))
+            {
+                joinClause += " JOIN player_hands ph_opp ON h.id = ph_opp.hand_id";
+                whereClauses.Add("ph_opp.player_name = @opponent");
+                parameters.Add(new SqliteParameter("@opponent", options.Opponent));
+            }
+
             if (!string.IsNullOrEmpty(options.DateFrom))
             {
                 whereClauses.Add("h.date_time >= @dateFrom");

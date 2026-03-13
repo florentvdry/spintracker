@@ -3,6 +3,7 @@ namespace SpinTrackerBackend;
 public class AnalysisFilters
 {
     public string? HeroName { get; set; }
+    public string? Opponent { get; set; }
     public string? Situation { get; set; }
     public string? Action { get; set; }
     

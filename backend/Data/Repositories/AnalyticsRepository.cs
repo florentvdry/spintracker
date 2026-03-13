@@ -390,6 +390,13 @@ public class AnalyticsRepository
                 whereClauses.Add("(ph.cards IS NOT NULL AND ph.cards != '')");
             }
 
+            if (!string.IsNullOrEmpty(filters.Opponent))
+            {
+                joinClause += " JOIN player_hands ph_opp ON h.id = ph_opp.hand_id";
+                whereClauses.Add("ph_opp.player_name = @opponent");
+                parameters.Add(new SqliteParameter("@opponent", filters.Opponent));
+            }
+
             if (!string.IsNullOrEmpty(filters.DateFrom))
             {
                 whereClauses.Add("h.date_time >= @dateFrom");

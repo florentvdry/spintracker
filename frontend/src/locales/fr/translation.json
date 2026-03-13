@@ -39,6 +39,7 @@
     "sessions": "Sessions",
     "player": "Joueur",
     "hero": "Héro",
+    "vs": "Vs",
     "villain": "Vilain",
     "villain_cards": "Cartes Vilain",
     "retry": "Redémarrer",
@@ -52,6 +53,7 @@
   "header": {
     "search_placeholder": "Rechercher une main, joueur...",
     "select_hero": "Sélectionner...",
+    "select_opponent": "Sélectionner...",
     "hero_detected": "Héro détecté",
     "hero_selected_auto": "Le joueur {{name}} a été sélectionné automatiquement.",
     "update_required": "Mise à jour requise",

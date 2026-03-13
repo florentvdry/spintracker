@@ -1,0 +1,12 @@
+[
+  {
+    "Id": "7357277d-0485-4052-8db9-cb49c8b212ea",
+    "Name": "Base de donn\u00E9es principale",
+    "FileName": "poker_tracker.db",
+    "FilePath": "/home/runner/work/spintracker/spintracker/databases/poker_tracker.db",
+    "CreatedAt": "2026-03-13T16:25:54.9430306Z",
+    "LastUsedAt": "2026-03-13T16:25:54.9430825Z",
+    "IsActive": true,
+    "HandsCount": 0
+  }
+]

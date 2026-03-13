@@ -35,6 +35,7 @@
     "sessions": "Sessions",
     "player": "Player",
     "hero": "Hero",
+    "vs": "Vs",
     "villain": "Villain",
     "villain_cards": "Villain Cards",
     "restart": "Restart",
@@ -47,6 +48,7 @@
   "header": {
     "search_placeholder": "Search hand, player...",
     "select_hero": "Select...",
+    "select_opponent": "Select...",
     "hero_detected": "Hero detected",
     "hero_selected_auto": "Player {{name}} was automatically selected.",
     "update_required": "Update required",

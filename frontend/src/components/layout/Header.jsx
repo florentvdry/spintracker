@@ -31,6 +31,8 @@ export default function Header() {
   const { 
     heroName, 
     setHeroName, 
+    opponent,
+    setOpponent,
     dateRange, 
     setDateRange, 
     customDateFrom, 
@@ -58,6 +60,8 @@ export default function Header() {
   const [players, setPlayers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isOpponentDropdownOpen, setIsOpponentDropdownOpen] = useState(false);
+  const [opponentSearchTerm, setOpponentSearchTerm] = useState('');
   const isInitialized = useAppStore(state => state.isInitialized);
   const dashboardStats = useAppStore(state => state.dashboardStats);
   
@@ -373,6 +377,67 @@ export default function Header() {
                 </div>
             )}
             {isDropdownOpen && <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>}
+        </div>
+
+        {/* Opponent Selector */}
+        <div className="relative mr-2">
+            <div 
+                className={`flex items-center gap-2 cursor-pointer bg-dark-300 border rounded px-3 py-1.5 min-w-[180px] transition-colors ${opponent ? 'border-yellow-500 hover:border-yellow-400' : 'border-dark-200 hover:border-primary-500'}`}
+                onClick={() => setIsOpponentDropdownOpen(!isOpponentDropdownOpen)}
+            >
+                <span className={`text-xs ${opponent ? 'text-yellow-400' : 'text-gray-400'}`}>{t('common.vs')}:</span>
+                <span className="text-sm text-gray-200 flex-1 truncate">{opponent || t('header.select_opponent')}</span>
+                {opponent && (
+                    <X 
+                        className="w-3 h-3 text-gray-400 hover:text-white" 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setOpponent(null);
+                            refreshAll();
+                        }}
+                    />
+                )}
+                <ChevronDown className="w-4 h-4 text-gray-400" />
+            </div>
+
+            {isOpponentDropdownOpen && (
+                <div className="absolute top-full mt-1 right-0 w-64 bg-dark-300 border border-dark-200 rounded shadow-xl z-50 flex flex-col max-h-[400px]">
+                    <div className="p-2 border-b border-dark-200">
+                        <div className="relative">
+                            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500" />
+                            <input 
+                                type="text" 
+                                placeholder={t('common.search')} 
+                                className="w-full bg-dark-400 border border-dark-200 rounded pl-8 pr-2 py-1 text-xs text-gray-200 focus:outline-none focus:border-primary-500"
+                                value={opponentSearchTerm}
+                                onChange={(e) => setOpponentSearchTerm(e.target.value)}
+                                autoFocus
+                                onClick={(e) => e.stopPropagation()}
+                            />
+                        </div>
+                    </div>
+                    <div className="overflow-y-auto flex-1">
+                        {players.filter(p => p.name !== heroName && p.name.toLowerCase().includes(opponentSearchTerm.toLowerCase())).map(p => (
+                            <div 
+                                key={p.id} 
+                                className={`px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 flex items-center justify-between ${opponent === p.name ? 'bg-yellow-500/10 text-yellow-400' : 'text-gray-300'}`}
+                                onClick={() => {
+                                    setOpponent(p.name);
+                                    setIsOpponentDropdownOpen(false);
+                                    refreshAll();
+                                }}
+                            >
+                                <div className="flex flex-col">
+                                    <span className="font-medium">{p.name}</span>
+                                    <span className="text-xs text-gray-500">{p.total_hands} {t('common.hands')}</span>
+                                </div>
+                                {opponent === p.name && <div className="w-2 h-2 rounded-full bg-yellow-500"></div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+            {isOpponentDropdownOpen && <div className="fixed inset-0 z-40" onClick={() => setIsOpponentDropdownOpen(false)}></div>}
         </div>
         
         {/* Import button */}
