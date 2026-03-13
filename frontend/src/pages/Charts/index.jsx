@@ -523,14 +523,34 @@ export default function Charts() {
                     <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                       <div>
                         <p className="text-[9px] text-gray-500">Heads-Up</p>
-                        <PositionStat label="SB" value={(stats.avg_cev_by_position?.['HU_SB'] || 0).toFixed(2)} isSelected={chartPosition === 'HU_SB'} />
-                        <PositionStat label="BB" value={(stats.avg_cev_by_position?.['HU_BB'] || 0).toFixed(2)} isSelected={chartPosition === 'HU_BB'} />
+                        <PositionStat 
+                          label="SB" 
+                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['HU_SB'] || 0).toFixed(2) : (chartPosition === 'HU_SB' ? (stats.avg_cev_by_position?.['HU_SB'] || 0).toFixed(2) : '0.00')} 
+                          isSelected={chartPosition === 'HU_SB'} 
+                        />
+                        <PositionStat 
+                          label="BB" 
+                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['HU_BB'] || 0).toFixed(2) : (chartPosition === 'HU_BB' ? (stats.avg_cev_by_position?.['HU_BB'] || 0).toFixed(2) : '0.00')} 
+                          isSelected={chartPosition === 'HU_BB'} 
+                        />
                       </div>
                       <div>
                         <p className="text-[9px] text-gray-500">3-Way</p>
-                        <PositionStat label="BTN" value={(stats.avg_cev_by_position?.['3W_BTN'] || 0).toFixed(2)} isSelected={chartPosition === '3W_BTN'} />
-                        <PositionStat label="SB" value={(stats.avg_cev_by_position?.['3W_SB'] || 0).toFixed(2)} isSelected={chartPosition === '3W_SB'} />
-                        <PositionStat label="BB" value={(stats.avg_cev_by_position?.['3W_BB'] || 0).toFixed(2)} isSelected={chartPosition === '3W_BB'} />
+                        <PositionStat 
+                          label="BTN" 
+                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['3W_BTN'] || 0).toFixed(2) : (chartPosition === '3W_BTN' ? (stats.avg_cev_by_position?.['3W_BTN'] || 0).toFixed(2) : '0.00')} 
+                          isSelected={chartPosition === '3W_BTN'} 
+                        />
+                        <PositionStat 
+                          label="SB" 
+                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['3W_SB'] || 0).toFixed(2) : (chartPosition === '3W_SB' ? (stats.avg_cev_by_position?.['3W_SB'] || 0).toFixed(2) : '0.00')} 
+                          isSelected={chartPosition === '3W_SB'} 
+                        />
+                        <PositionStat 
+                          label="BB" 
+                          value={chartPosition === 'all' ? (stats.avg_cev_by_position?.['3W_BB'] || 0).toFixed(2) : (chartPosition === '3W_BB' ? (stats.avg_cev_by_position?.['3W_BB'] || 0).toFixed(2) : '0.00')} 
+                          isSelected={chartPosition === '3W_BB'} 
+                        />
                       </div>
                     </div>
                   </div>
