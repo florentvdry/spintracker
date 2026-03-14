@@ -126,7 +126,8 @@ export default function Charts() {
     try {
       const { dateFrom, dateTo } = getDateRangeParams();
       const buyInParam = buyIn === 'all' ? null : Number(buyIn);
-      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam, null);
+      const positionParam = chartPosition === 'all' ? null : chartPosition;
+      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam, positionParam);
       if (result && result.success && result.data) {
         setStats(result.data);
       } else {
@@ -535,13 +536,13 @@ export default function Charts() {
                       <div>
                         <p className="text-[9px] text-gray-500">Heads-Up</p>
                         {(() => {
-                          const totalTournaments = stats.total_tournaments || 1;
                           const getCevValue = (positionKey) => {
                             const value = stats.cev_by_position?.[positionKey] || 0;
+                            const tournamentCount = stats.tournaments_by_position?.[positionKey] || 1;
                             if (chartPosition === 'all') {
-                              return (value / totalTournaments).toFixed(2);
+                              return (value / tournamentCount).toFixed(2);
                             }
-                            return chartPosition === positionKey ? (value / totalTournaments).toFixed(2) : '0.00';
+                            return chartPosition === positionKey ? (value / tournamentCount).toFixed(2) : '0.00';
                           };
                           return (
                             <>
@@ -554,13 +555,13 @@ export default function Charts() {
                       <div>
                         <p className="text-[9px] text-gray-500">3-Way</p>
                         {(() => {
-                          const totalTournaments = stats.total_tournaments || 1;
                           const getCevValue = (positionKey) => {
                             const value = stats.cev_by_position?.[positionKey] || 0;
+                            const tournamentCount = stats.tournaments_by_position?.[positionKey] || 1;
                             if (chartPosition === 'all') {
-                              return (value / totalTournaments).toFixed(2);
+                              return (value / tournamentCount).toFixed(2);
                             }
-                            return chartPosition === positionKey ? (value / totalTournaments).toFixed(2) : '0.00';
+                            return chartPosition === positionKey ? (value / tournamentCount).toFixed(2) : '0.00';
                           };
                           return (
                             <>
