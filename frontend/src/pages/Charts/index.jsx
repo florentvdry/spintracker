@@ -563,15 +563,14 @@ export default function Charts() {
                         <p className="text-[9px] text-gray-500">Heads-Up</p>
                         {(() => {
                           const getCevValue = (positionKey) => {
+                            const totalTournaments = globalStats?.total_tournaments || 1;
                             if (chartPosition === 'all') {
                               const value = globalStats.cev_by_position?.[positionKey] || 0;
-                              const tournamentCount = globalStats.tournaments_by_position?.[positionKey] || 1;
-                              return (value / tournamentCount).toFixed(2);
+                              return (value / totalTournaments).toFixed(2);
                             } else {
                               if (positionKey === chartPosition) {
                                 const value = stats?.cev_by_position?.[positionKey] || 0;
-                                const tournamentCount = stats?.tournaments_by_position?.[positionKey] || 1;
-                                return (value / tournamentCount).toFixed(2);
+                                return (value / totalTournaments).toFixed(2);
                               }
                               return '0.00';
                             }
@@ -584,19 +583,18 @@ export default function Charts() {
                           );
                         })()}
                       </div>
-                      <div>
+                        <div>
                         <p className="text-[9px] text-gray-500">3-Way</p>
                         {(() => {
                           const getCevValue = (positionKey) => {
+                            const totalTournaments = globalStats?.total_tournaments || 1;
                             if (chartPosition === 'all') {
                               const value = globalStats.cev_by_position?.[positionKey] || 0;
-                              const tournamentCount = globalStats.tournaments_by_position?.[positionKey] || 1;
-                              return (value / tournamentCount).toFixed(2);
+                              return (value / totalTournaments).toFixed(2);
                             } else {
                               if (positionKey === chartPosition) {
                                 const value = stats?.cev_by_position?.[positionKey] || 0;
-                                const tournamentCount = stats?.tournaments_by_position?.[positionKey] || 1;
-                                return (value / tournamentCount).toFixed(2);
+                                return (value / totalTournaments).toFixed(2);
                               }
                               return '0.00';
                             }
