@@ -57,7 +57,7 @@ public class PlayerRepository
                 ph.player_name,
                 COUNT(*) as total_hands,
                 SUM(ph.net_profit) as total_profit,
-                SUM(ph.net_won_adjusted) as total_ev_profit,
+                SUM(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1000.0) as total_ev_profit,
                 CURRENT_TIMESTAMP
             FROM player_hands ph
             JOIN hands h ON ph.hand_id = h.id
