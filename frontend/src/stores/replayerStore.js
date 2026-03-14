@@ -26,11 +26,9 @@ export const useReplayerStore = create((set, get) => ({
   isLoadingHand: false,
   heroName: null,
 
-  // Recording State
+  // Recording State - keep recorder in a module-level variable to avoid IPC cloning issues
   isRecording: false,
-  recordingType: null,
   showExportModal: false,
-  recorder: null,
   recordingType: null, // 'hand' or 'tournament'
 
   // Actions
@@ -68,7 +66,14 @@ export const useReplayerStore = create((set, get) => ({
       await startVideoRecording(exportType);
     } catch (error) {
       console.error('Video export failed:', error);
-      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+      let errorMessage = 'Unknown error';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error && typeof error === 'object') {
+        errorMessage = JSON.stringify(error);
+      }
       alert('Erreur lors de l\'export vidéo: ' + errorMessage);
     } finally {
       set({ isRecording: false, recordingType: null });
@@ -87,7 +92,14 @@ export const useReplayerStore = create((set, get) => ({
         await startVideoRecording('hand');
       } catch (error) {
         console.error('Video export failed:', error);
-        const errorMessage = error?.message || error?.toString() || 'Unknown error';
+        let errorMessage = 'Unknown error';
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (typeof error === 'string') {
+          errorMessage = error;
+        } else if (error && typeof error === 'object') {
+          errorMessage = JSON.stringify(error);
+        }
         alert('Erreur lors de l\'export vidéo: ' + errorMessage);
       } finally {
         set({ isRecording: false, recordingType: null });
@@ -490,6 +502,10 @@ export const selectReplayerState = (state) => {
 };
 
 // Video Recording Function
+// Keep recorder in module scope to avoid IPC cloning issues
+let currentRecorder = null;
+let currentStream = null;
+
 async function startVideoRecording(exportType) {
   const isElectron = typeof window !== 'undefined' && (window.process?.versions?.electron || window.require);
   const isDev = import.meta.env.DEV;
@@ -503,90 +519,42 @@ async function startVideoRecording(exportType) {
 
   if (isElectron) {
     try {
-      console.log('Getting desktop sources via IPC...');
-      let sources = [];
-      
-      // Try new IPC channel first
-      const result = await ipcService.invoke('get-recordable-windows');
-      if (Array.isArray(result) && result.length > 0) {
-        sources = result;
-      } else {
-        // Fallback to old IPC channel
-        const oldResult = await ipcService.invoke('get-desktop-sources');
-        if (Array.isArray(oldResult)) {
-          sources = oldResult;
-        } else {
-          throw new Error('Failed to get desktop sources');
-        }
-      }
-
-      console.log(`Received ${sources.length} sources.`);
-
-      // Find replayer window
-      let replayerSource = sources.find(source => 
-        source.name.toLowerCase().includes('replayer') || 
-        source.name.toLowerCase().includes('hand replayer')
-      );
-      
-      if (!replayerSource) {
-        replayerSource = sources.find(source => source.name.toLowerCase().includes('spintracker'));
-      }
-
-      if (!replayerSource) {
-        console.warn('Available sources:', sources.map(s => s.name));
-        replayerSource = sources.find(source => source.name !== 'Overlay' && source.name !== 'Splash');
-      }
-
-      if (!replayerSource) {
-        throw new Error('Replayer window not found. Please ensure the replayer is open.');
-      }
-
-      console.log('Recording source:', replayerSource.name);
-
-      // Get media stream using getDisplayMedia (more reliable than getUserMedia with chromeMediaSource)
-      try {
-        stream = await navigator.mediaDevices.getDisplayMedia({
-          video: {
-            displaySurface: 'window',
-            width: { ideal: 1920 },
-            height: { ideal: 1080 },
-            frameRate: { ideal: 30 }
-          },
-          audio: false
-        });
-      } catch (displayError) {
-        // Fallback: try getUserMedia with desktop source
-        console.log('getDisplayMedia failed, trying getUserMedia...', displayError.message);
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: {
-            mandatory: {
-              chromeMediaSource: 'desktop',
-              chromeMediaSourceId: replayerSource.id,
-              minWidth: 1280,
-              maxWidth: 1920,
-              minHeight: 720,
-              maxHeight: 1080
-            }
-          }
-        });
-      }
+      // Use getDisplayMedia directly - it shows a native picker for the user to select the window
+      console.log('Starting screen capture via getDisplayMedia...');
+      stream = await navigator.mediaDevices.getDisplayMedia({
+        video: {
+          displaySurface: 'window',
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          frameRate: { ideal: 30 }
+        },
+        audio: false
+      });
+      console.log('Screen capture started, stream:', stream ? 'active' : 'null');
     } catch (e) {
-      console.error('Electron recording init failed:', e);
-      // Fallback to getDisplayMedia (user selects window)
+      console.error('getDisplayMedia failed:', e);
+      // Try fallback with screen
       try {
+        console.log('Trying fallback with screen source...');
         stream = await navigator.mediaDevices.getDisplayMedia({
           video: { mediaSource: 'screen' },
           audio: false
         });
       } catch (err) {
-        throw new Error('Échec de l\'enregistrement vidéo: ' + (e.message || err.message || 'Unknown error'));
+        console.error('Fallback also failed:', err);
+        const errorMsg = e?.message || err?.message || 'Failed to capture screen';
+        throw new Error('Échec de la capture d\'écran: ' + errorMsg);
       }
-  }
+    }
   }
 
   // Import RecordRTC dynamically
   const RecordRTC = (await import('recordrtc')).default;
+  console.log('RecordRTC version:', RecordRTC.version);
+
+  if (!stream) {
+    throw new Error('No stream available for recording');
+  }
 
   // Create recorder
   const recorder = new RecordRTC(stream, {
@@ -594,17 +562,21 @@ async function startVideoRecording(exportType) {
     mimeType: 'video/webm;codecs=vp9',
     recorderType: RecordRTC.MediaStreamRecorder
   });
+  console.log('Created recorder, starting...');
 
   // Start recording - wrap in try-catch to identify exact failure point
   try {
     recorder.startRecording();
+    console.log('started recording video stream.');
+    console.log('Using recorderType:', recorder.recorderType);
   } catch (recorderError) {
     console.error('Error starting recorder:', recorderError);
     throw recorderError;
   }
 
-  // Store recorder in state
-  useReplayerStore.setState({ recorder });
+  // Store recorder in module variable (not in Zustand to avoid IPC cloning issues)
+  currentRecorder = recorder;
+  currentStream = stream;
 
   // Start playback
   const store = useReplayerStore.getState();
@@ -619,6 +591,11 @@ async function startVideoRecording(exportType) {
     const checkCompletion = () => {
       const state = useReplayerStore.getState();
       const { hand, currentActionIndex, handQueue, currentHandIndex, isPlaying } = state;
+
+      if (!hand) {
+        setTimeout(checkCompletion, 100);
+        return;
+      }
 
       if (exportType === 'hand') {
         // Check if current hand is finished
@@ -671,8 +648,11 @@ async function startVideoRecording(exportType) {
     reader.readAsDataURL(blob);
     
     // Cleanup
-    stream.getTracks().forEach(track => track.stop());
-    useReplayerStore.setState({ recorder: null, recordingType: null });
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    currentRecorder = null;
+    currentStream = null;
   });
 }
 
