@@ -3,6 +3,7 @@ import { useReplayerStore } from '../../stores/replayerStore';
 import ReplayerTable from '../../components/replayer/ReplayerTable';
 import ReplayerControls from '../../components/replayer/ReplayerControls';
 import ReplayerTimeline from '../../components/replayer/ReplayerTimeline';
+import ExportModal from '../../components/ui/ExportModal';
 import { useTranslation } from 'react-i18next';
 
 const Replayer = () => {
@@ -87,7 +88,9 @@ const Replayer = () => {
   }
 
   return (
-    <div className="h-screen w-screen bg-gray-900 text-gray-100 flex flex-col overflow-hidden">
+    <>
+      <ExportModal />
+      <div className="h-screen w-screen bg-gray-900 text-gray-100 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="h-10 bg-gray-800 flex items-center justify-between px-4 border-b border-gray-700">
         <span className="font-semibold text-sm">{t('replayer.hand_title')} {hand?.id ? `- ${hand.id}` : ''}</span>
@@ -114,6 +117,7 @@ const Replayer = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
