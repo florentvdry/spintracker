@@ -19,15 +19,20 @@ const Replayer = () => {
         
         console.log('[Replayer] Received payload:', payload);
         
-        if (payload) {
-          if (payload.handData) {
-            setReplayerHand(payload.handData, {
-              handQueue: payload.handQueue,
-              currentHandIndex: payload.currentHandIndex
-            });
-          } else {
-            setReplayerHand(payload);
-          }
+        let handData = payload;
+        
+        // Handle array format (when wrapped in array by IPC)
+        if (Array.isArray(payload) && payload.length > 0) {
+          handData = payload[0];
+        }
+        
+        if (handData && handData.handData) {
+          setReplayerHand(handData.handData, {
+            handQueue: handData.handQueue,
+            currentHandIndex: handData.currentHandIndex
+          });
+        } else if (handData) {
+          setReplayerHand(handData);
         } else {
           setError(t('replayer.no_data'));
         }
