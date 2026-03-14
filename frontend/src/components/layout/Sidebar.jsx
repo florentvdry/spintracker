@@ -66,10 +66,10 @@ export default function Sidebar() {
           href="https://discord.gg/x9ZSQA2mN2" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex items-center gap-3 px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] rounded-lg transition-colors"
+          className="flex flex-col items-center justify-center gap-1 px-4 py-3 bg-[#5865F2] hover:bg-[#4752C4] rounded-lg transition-colors"
         >
-          <MessageCircle className="w-5 h-5 text-white" />
-          <span className="text-sm font-medium text-white">{t('sidebar.joinDiscord')}</span>
+          <MessageCircle className="w-6 h-6 text-white" />
+          <span className="text-sm font-medium text-white text-center leading-tight">{t('sidebar.joinDiscord')}</span>
         </a>
       </div>
     </aside>
