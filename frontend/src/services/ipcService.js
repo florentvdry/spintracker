@@ -70,8 +70,8 @@ class IPCService {
   // ============ API Methods ============
 
   // Dashboard
-  async getDashboardStats(heroName, dateFrom, dateTo, buyIn) {
-    return this.invoke('get-dashboard-stats', heroName, dateFrom, dateTo, buyIn);
+  async getDashboardStats(heroName, dateFrom, dateTo, buyIn, position) {
+    return this.invoke('get-dashboard-stats', heroName, dateFrom, dateTo, buyIn, position);
   }
 
   async getWinrateChartData(options = {}) {

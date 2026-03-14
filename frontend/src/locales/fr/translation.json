@@ -1,6 +1,7 @@
 {
   "navigation": {
     "dashboard": "Tableau de bord",
+    "charts": "Graphiques",
     "history": "Historique des tournois",
     "ranges": "Analyseur de ranges",
     "settings": "Paramètres"
@@ -277,5 +278,17 @@
     "check": "Check",
     "all_in": "All-In",
     "any": "N'importe"
+  },
+  "charts": {
+    "title": "Graphiques",
+    "subtitle": "Visualisation des gains en plein écran",
+    "positions": {
+      "all": "Toutes les positions",
+      "HU_SB": "HU SB",
+      "HU_BB": "HU BB",
+      "3W_BTN": "3W BTN",
+      "3W_SB": "3W SB",
+      "3W_BB": "3W BB"
+    }
   }
 }
