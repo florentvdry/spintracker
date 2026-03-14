@@ -139,10 +139,35 @@ export default function Charts() {
     }
   }, [heroName, chartPosition, buyIn, dateRange, customDateFrom, customDateTo]);
 
+  const loadGlobalStats = useCallback(async () => {
+    if (!heroName) {
+      return null;
+    }
+
+    try {
+      const { dateFrom, dateTo } = getDateRangeParams();
+      const buyInParam = buyIn === 'all' ? null : Number(buyIn);
+      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam, null);
+      if (result && result.success && result.data) {
+        return result.data;
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to load global stats:', error);
+      return null;
+    }
+  }, [heroName, buyIn, dateRange, customDateFrom, customDateTo]);
+
+  const [globalStats, setGlobalStats] = useState(null);
+
   useEffect(() => {
     loadChartData();
     loadStats();
   }, [loadChartData, loadStats]);
+
+  useEffect(() => {
+    loadGlobalStats().then(setGlobalStats);
+  }, [loadGlobalStats]);
 
   const toggleLine = (lineKey) => {
     setVisibleLines(prev => ({
@@ -530,19 +555,16 @@ export default function Charts() {
                   </span>
                 </div>
                 
-                {stats && stats.cev_by_position && (
+                {globalStats && globalStats.cev_by_position && (
                   <div className="mt-3 pt-2 border-t border-[#374151]">
                     <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                       <div>
                         <p className="text-[9px] text-gray-500">Heads-Up</p>
                         {(() => {
                           const getCevValue = (positionKey) => {
-                            const value = stats.cev_by_position?.[positionKey] || 0;
-                            const tournamentCount = stats.tournaments_by_position?.[positionKey] || 1;
-                            if (chartPosition === 'all') {
-                              return (value / tournamentCount).toFixed(2);
-                            }
-                            return chartPosition === positionKey ? (value / tournamentCount).toFixed(2) : '0.00';
+                            const value = globalStats.cev_by_position?.[positionKey] || 0;
+                            const tournamentCount = globalStats.tournaments_by_position?.[positionKey] || 1;
+                            return (value / tournamentCount).toFixed(2);
                           };
                           return (
                             <>
@@ -556,12 +578,9 @@ export default function Charts() {
                         <p className="text-[9px] text-gray-500">3-Way</p>
                         {(() => {
                           const getCevValue = (positionKey) => {
-                            const value = stats.cev_by_position?.[positionKey] || 0;
-                            const tournamentCount = stats.tournaments_by_position?.[positionKey] || 1;
-                            if (chartPosition === 'all') {
-                              return (value / tournamentCount).toFixed(2);
-                            }
-                            return chartPosition === positionKey ? (value / tournamentCount).toFixed(2) : '0.00';
+                            const value = globalStats.cev_by_position?.[positionKey] || 0;
+                            const tournamentCount = globalStats.tournaments_by_position?.[positionKey] || 1;
+                            return (value / tournamentCount).toFixed(2);
                           };
                           return (
                             <>
