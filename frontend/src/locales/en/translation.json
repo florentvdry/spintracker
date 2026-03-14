@@ -6,7 +6,8 @@
     "settings": "Settings"
   },
   "sidebar": {
-    "sqlite_local": "SQLite Local"
+    "sqlite_local": "SQLite Local",
+    "joinDiscord": "Join Discord"
   },
   "common": {
     "loading": "Loading...",
