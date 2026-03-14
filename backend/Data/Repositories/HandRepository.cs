@@ -375,6 +375,7 @@ public class HandRepository
 
             // Dynamic fields from JOINs
             hand["hero_position"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_position");
+            hand["opponent_position"] = DatabaseUtils.GetStringOrNull(reader, "opponent_position");
             hand["hero_stack"] = DatabaseUtils.GetDoubleOrNull(reader, "dyn_hero_stack");
             hand["hero_cards"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_cards");
             hand["hero_name"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_name");

@@ -579,12 +579,25 @@ export default function Players() {
                                         </div>
                                       )}
 
-                                      {hand.result && (
-                                        <div className="text-xs text-gray-500 bg-dark-400/50 rounded p-2 max-w-md">
-                                          <span className="text-gray-400">Showdown: </span>
-                                          {hand.result}
+                                      {hand.went_to_showdown ? (
+                                        <div className="flex items-center gap-2 text-xs">
+                                          <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 font-medium">
+                                            SD
+                                          </span>
+                                          <span className={handProfit > 0 ? "text-emerald-400" : "text-rose-400"}>
+                                            {handProfit > 0 ? t('common.won', 'Won') : t('common.lost', 'Lost')}
+                                          </span>
                                         </div>
-                                      )}
+                                      ) : handProfit > 0 ? (
+                                        <div className="flex items-center gap-2 text-xs">
+                                          <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-medium">
+                                            Fold
+                                          </span>
+                                          <span className="text-emerald-400">
+                                            {t('common.won', 'Won')}
+                                          </span>
+                                        </div>
+                                      ) : null}
                                     </div>
                                   </div>
                                 </td>
