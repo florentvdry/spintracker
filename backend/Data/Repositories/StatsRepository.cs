@@ -30,15 +30,18 @@ public class StatsRepository
         var joinClause = "";
         
         string? dbPosition = null;
+        int? dbPlayerCount = null;
         if (!string.IsNullOrEmpty(position) && position != "all")
         {
             if (position.StartsWith("HU_"))
             {
                 dbPosition = position.Replace("HU_", "");
+                dbPlayerCount = 2;
             }
             else if (position.StartsWith("3W_"))
             {
                 dbPosition = position.Replace("3W_", "");
+                dbPlayerCount = 3;
             }
             else
             {
@@ -73,6 +76,10 @@ public class StatsRepository
         {
             whereClauses.Add("ph.position = @position");
         }
+        if (dbPlayerCount.HasValue)
+        {
+            whereClauses.Add("h.player_count = @playerCount");
+        }
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
 
         // 1. Basic stats from SQL (Hands Won, Total EV)
@@ -105,6 +112,10 @@ public class StatsRepository
         if (!string.IsNullOrEmpty(dbPosition))
         {
             cmd.Parameters.AddWithValue("@position", dbPosition);
+        }
+        if (dbPlayerCount.HasValue)
+        {
+            cmd.Parameters.AddWithValue("@playerCount", dbPlayerCount.Value);
         }
 
         int totalHands = 0;
@@ -143,6 +154,7 @@ public class StatsRepository
             if (!string.IsNullOrEmpty(dateTo)) cmdItm.Parameters.AddWithValue("@dateTo", dateTo);
             if (buyIn.HasValue) cmdItm.Parameters.AddWithValue("@buyIn", buyIn.Value);
             if (!string.IsNullOrEmpty(dbPosition)) cmdItm.Parameters.AddWithValue("@position", dbPosition);
+            if (dbPlayerCount.HasValue) cmdItm.Parameters.AddWithValue("@playerCount", dbPlayerCount.Value);
 
             using var reader = await cmdItm.ExecuteReaderAsync();
             while (await reader.ReadAsync())
@@ -216,6 +228,7 @@ public class StatsRepository
                 if (!string.IsNullOrEmpty(dateTo)) cmdPos.Parameters.AddWithValue("@dateTo", dateTo);
                 if (buyIn.HasValue) cmdPos.Parameters.AddWithValue("@buyIn", buyIn.Value);
                 if (!string.IsNullOrEmpty(dbPosition)) cmdPos.Parameters.AddWithValue("@position", dbPosition);
+                if (dbPlayerCount.HasValue) cmdPos.Parameters.AddWithValue("@playerCount", dbPlayerCount.Value);
 
                 using var reader = await cmdPos.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
@@ -486,13 +499,16 @@ public class StatsRepository
         if (!string.IsNullOrEmpty(options.Position) && options.Position != "all")
         {
             string dbPosition;
+            int? playerCount = null;
             if (options.Position.StartsWith("HU_"))
             {
                 dbPosition = options.Position.Replace("HU_", "");
+                playerCount = 2;
             }
             else if (options.Position.StartsWith("3W_"))
             {
                 dbPosition = options.Position.Replace("3W_", "");
+                playerCount = 3;
             }
             else
             {
@@ -501,6 +517,12 @@ public class StatsRepository
             
             whereClauses.Add("ph.position = @position");
             parameters.Add(new SqliteParameter("@position", dbPosition));
+            
+            if (playerCount.HasValue)
+            {
+                whereClauses.Add("h.player_count = @playerCount");
+                parameters.Add(new SqliteParameter("@playerCount", playerCount.Value));
+            }
         }
 
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";

@@ -126,8 +126,7 @@ export default function Charts() {
     try {
       const { dateFrom, dateTo } = getDateRangeParams();
       const buyInParam = buyIn === 'all' ? null : Number(buyIn);
-      const positionParam = chartPosition === 'all' ? null : chartPosition;
-      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam, positionParam);
+      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam, null);
       if (result && result.success && result.data) {
         setStats(result.data);
       } else {
