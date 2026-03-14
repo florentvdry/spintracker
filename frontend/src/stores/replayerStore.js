@@ -68,18 +68,20 @@ export const useReplayerStore = create((set, get) => ({
       await startVideoRecording(exportType);
       console.log('[VideoExport] startVideoRecording completed successfully');
     } catch (error) {
-      console.error('[VideoExport] Video export failed with error:', error);
-      console.error('[VideoExport] Error stack:', error?.stack);
-      
+      // Extract error message safely - error objects may not be clonable
       let errorMessage = 'Unknown error';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      } else if (error && typeof error === 'object') {
-        // Handle Error-like objects
-        errorMessage = error.message || error.error?.message || JSON.stringify(error);
+      try {
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (typeof error === 'string') {
+          errorMessage = error;
+        } else if (error && typeof error === 'object') {
+          errorMessage = error.message || JSON.stringify(error);
+        }
+      } catch (e) {
+        errorMessage = 'Failed to extract error message';
       }
+      console.error('[VideoExport] Video export failed:', errorMessage);
       alert('Erreur lors de l\'export vidéo: ' + errorMessage);
     } finally {
       console.log('[VideoExport] Cleaning up recording state');
@@ -103,15 +105,19 @@ export const useReplayerStore = create((set, get) => ({
         console.log('[VideoExport] Starting single hand recording...');
         await startVideoRecording('hand');
       } catch (error) {
-        console.error('[VideoExport] Video export failed:', error);
         let errorMessage = 'Unknown error';
-        if (error instanceof Error) {
-          errorMessage = error.message;
-        } else if (typeof error === 'string') {
-          errorMessage = error;
-        } else if (error && typeof error === 'object') {
-          errorMessage = error.message || error.error?.message || JSON.stringify(error);
+        try {
+          if (error instanceof Error) {
+            errorMessage = error.message;
+          } else if (typeof error === 'string') {
+            errorMessage = error;
+          } else if (error && typeof error === 'object') {
+            errorMessage = error.message || JSON.stringify(error);
+          }
+        } catch (e) {
+          errorMessage = 'Failed to extract error message';
         }
+        console.error('[VideoExport] Video export failed:', errorMessage);
         alert('Erreur lors de l\'export vidéo: ' + errorMessage);
       } finally {
         set({ isRecording: false, recordingType: null });
@@ -539,7 +545,6 @@ async function startVideoRecording(exportType) {
   let stream = null;
   
   try {
-    // Use getDisplayMedia directly - it shows a native picker for the user to select the window
     console.log('[VideoExport] Requesting screen capture via getDisplayMedia...');
     stream = await navigator.mediaDevices.getDisplayMedia({
       video: {
@@ -552,14 +557,45 @@ async function startVideoRecording(exportType) {
     });
     console.log('[VideoExport] Screen capture started, stream active:', !!stream);
   } catch (e) {
-    console.error('[VideoExport] getDisplayMedia failed:', e);
-    const errorMsg = e?.message || String(e) || 'Failed to capture screen';
+    let errorMsg = 'Failed to capture screen';
+    let isUserCancelled = false;
+    
+    try {
+      if (e instanceof Error) {
+        errorMsg = e.message;
+        if (e.name === 'AbortError' || e.message.includes('cancel')) {
+          isUserCancelled = true;
+        }
+      } else if (typeof e === 'string') {
+        errorMsg = e;
+        if (e.includes('cancel') || e.includes('abort')) {
+          isUserCancelled = true;
+        }
+      } else if (e && typeof e === 'object') {
+        errorMsg = e.message || e.name || JSON.stringify(e);
+        if (e.name === 'AbortError') isUserCancelled = true;
+      }
+    } catch (extractError) {
+      // Ignore
+    }
+    
+    console.error('[VideoExport] getDisplayMedia failed:', errorMsg);
+    if (isUserCancelled) {
+      console.log('[VideoExport] User cancelled screen capture');
+      return;
+    }
     throw new Error('Échec de la capture d\'écran: ' + errorMsg);
   }
 
   if (!stream) {
-    throw new Error('No stream available for recording');
+    console.log('[VideoExport] No stream returned, user may have cancelled');
+    return;
   }
+
+  // Handle case where user stops sharing immediately
+  stream.getVideoTracks()[0].onended = () => {
+    console.log('[VideoExport] User stopped sharing');
+  };
 
   // Import RecordRTC dynamically
   let RecordRTC;
@@ -568,8 +604,10 @@ async function startVideoRecording(exportType) {
     RecordRTC = module.default;
     console.log('[VideoExport] RecordRTC loaded, version:', RecordRTC.version);
   } catch (e) {
-    console.error('[VideoExport] Failed to load RecordRTC:', e);
-    throw new Error('Failed to load recording library');
+    let errMsg = 'Failed to load recording library';
+    try { errMsg = e?.message || String(e); } catch {}
+    console.error('[VideoExport] Failed to load RecordRTC:', errMsg);
+    throw new Error(errMsg);
   }
 
   // Create recorder
@@ -583,9 +621,11 @@ async function startVideoRecording(exportType) {
     });
     console.log('[VideoExport] Recorder created successfully');
   } catch (e) {
-    console.error('[VideoExport] Failed to create recorder:', e);
+    let errMsg = 'Failed to create recorder';
+    try { errMsg = e?.message || String(e); } catch {}
+    console.error('[VideoExport] Failed to create recorder:', errMsg);
     stream.getTracks().forEach(t => t.stop());
-    throw new Error('Failed to create recorder: ' + (e.message || String(e)));
+    throw new Error('Failed to create recorder: ' + errMsg);
   }
 
   // Start recording
@@ -594,9 +634,11 @@ async function startVideoRecording(exportType) {
     recorder.startRecording();
     console.log('[VideoExport] Recording started');
   } catch (e) {
-    console.error('[VideoExport] Failed to start recording:', e);
+    let errMsg = 'Failed to start recording';
+    try { errMsg = e?.message || String(e); } catch {}
+    console.error('[VideoExport] Failed to start recording:', errMsg);
     stream.getTracks().forEach(t => t.stop());
-    throw new Error('Failed to start recording: ' + (e.message || String(e)));
+    throw new Error('Failed to start recording: ' + errMsg);
   }
 
   // Store recorder in module variable (not in Zustand to avoid IPC cloning issues)
@@ -612,10 +654,36 @@ async function startVideoRecording(exportType) {
   }
   store.togglePlay(); // Start playing
 
-  // Wait for completion
+  // Wait for completion with timeout
   console.log('[VideoExport] Waiting for replay to complete...');
-  const waitForCompletion = new Promise((resolve) => {
+  const maxRecordingTime = 5 * 60 * 1000; // 5 minutes max
+  const startTime = Date.now();
+  
+  const waitForCompletion = new Promise((resolve, reject) => {
+    let streamEnded = false;
+    
+    // Listen for stream ended (user clicked "Stop sharing")
+    if (stream && stream.getVideoTracks()[0]) {
+      stream.getVideoTracks()[0].onended = () => {
+        console.log('[VideoExport] Screen sharing ended by user');
+        streamEnded = true;
+        resolve();
+      };
+    }
+    
     const checkCompletion = () => {
+      // Check timeout
+      if (Date.now() - startTime > maxRecordingTime) {
+        console.log('[VideoExport] Recording timeout reached');
+        resolve();
+        return;
+      }
+      
+      // Check if stream ended
+      if (streamEnded) {
+        return;
+      }
+      
       const state = useReplayerStore.getState();
       const { hand, currentActionIndex, handQueue, currentHandIndex, isPlaying } = state;
 
@@ -625,14 +693,12 @@ async function startVideoRecording(exportType) {
       }
 
       if (exportType === 'hand') {
-        // Check if current hand is finished
         if (currentActionIndex >= hand.actions.length - 1 && !isPlaying) {
           console.log('[VideoExport] Hand recording complete');
           resolve();
           return;
         }
       } else {
-        // Tournament: check if all hands finished
         if (currentHandIndex >= handQueue.length - 1 && currentActionIndex >= hand.actions.length - 1 && !isPlaying) {
           console.log('[VideoExport] Tournament recording complete');
           resolve();
@@ -645,7 +711,11 @@ async function startVideoRecording(exportType) {
     checkCompletion();
   });
 
-  await waitForCompletion;
+  try {
+    await waitForCompletion;
+  } catch (e) {
+    console.error('[VideoExport] Error during wait:', e);
+  }
 
   // Stop recording and save
   console.log('[VideoExport] Stopping recorder...');
@@ -695,22 +765,30 @@ async function startVideoRecording(exportType) {
             alert('Erreur lors de l\'enregistrement: ' + result.message);
           }
         } catch (saveError) {
-          console.error('[VideoExport] Error saving video:', saveError);
-          alert('Erreur lors de l\'enregistrement vidéo: ' + (saveError.message || String(saveError)));
+          let errMsg = 'Failed to save video';
+          try { errMsg = saveError?.message || String(saveError); } catch {}
+          console.error('[VideoExport] Error saving video:', errMsg);
+          alert('Erreur lors de l\'enregistrement vidéo: ' + errMsg);
         }
       };
       reader.onerror = () => {
         console.error('[VideoExport] FileReader error');
-        reject(new Error('Failed to read video data'));
+        // Don't reject - just show error, don't break the UI
       };
       reader.readAsDataURL(blob);
       
-      // Cleanup
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-      currentRecorder = null;
-      currentStream = null;
+      // Cleanup stream after a delay to ensure recording is done
+      setTimeout(() => {
+        if (stream) {
+          try {
+            stream.getTracks().forEach(track => track.stop());
+          } catch (e) {
+            console.log('[VideoExport] Stream cleanup error:', e);
+          }
+        }
+        currentRecorder = null;
+        currentStream = null;
+      }, 1000);
     });
   });
 }

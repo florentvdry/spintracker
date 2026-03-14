@@ -1001,7 +1001,6 @@ ipcMain.handle('save-video', async (event, data) => {
   console.log('[Main] save-video handler called');
   
   try {
-    // Validate input data
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid data format');
     }
@@ -1014,12 +1013,20 @@ ipcMain.handle('save-video', async (event, data) => {
     
     console.log('[Main] Video data length:', videoData.length, 'exportType:', exportType);
     
+    // Get the appropriate window - try replayer window first, then main window
+    let parentWindow = mainWindow;
+    if (BrowserWindow.getAllWindows().length > 1) {
+      const windows = BrowserWindow.getAllWindows();
+      parentWindow = windows.find(w => w.webContents.getURL().includes('replayer')) || windows[0];
+    }
+    
     // Show folder selection dialog
-    const { filePath } = await dialog.showSaveDialog(mainWindow, {
+    const { filePath } = await dialog.showSaveDialog(parentWindow, {
       title: 'Enregistrer la vidéo',
       defaultPath: `poker-replay-${exportType || 'export'}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`,
       filters: [
         { name: 'WebM Video', extensions: ['webm'] },
+        { name: 'MP4 Video', extensions: ['mp4'] },
         { name: 'All Files', extensions: ['*'] }
       ]
     });
@@ -1035,8 +1042,52 @@ ipcMain.handle('save-video', async (event, data) => {
     console.log(`[Main] Video saved to: ${filePath}, size: ${buffer.length} bytes`);
     return { success: true, filePath };
   } catch (error) {
-    console.error('[Main] Failed to save video:', error);
-    return { success: false, message: error.message };
+    console.error('[Main] Failed to save video:', error.message || error);
+    return { success: false, message: error.message || String(error) };
+  }
+});
+
+// New comprehensive video export handler - orchestrates from backend
+ipcMain.handle('start-video-export', async (event, options) => {
+  console.log('[Main] start-video-export handler called with options:', options);
+  
+  // This handler provides a way to start video export from backend
+  // The actual recording is done in the renderer, this just provides
+  // the file path selection upfront
+  try {
+    const { exportType, handIds } = options || {};
+    
+    // Pre-select the save location
+    let parentWindow = mainWindow;
+    if (BrowserWindow.getAllWindows().length > 1) {
+      const windows = BrowserWindow.getAllWindows();
+      parentWindow = windows.find(w => w.webContents.getURL().includes('replayer')) || windows[0];
+    }
+    
+    const { filePath, canceled } = await dialog.showSaveDialog(parentWindow, {
+      title: 'Enregistrer la vidéo de replay',
+      defaultPath: `poker-replay-${exportType || 'export'}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`,
+      filters: [
+        { name: 'WebM Video', extensions: ['webm'] },
+        { name: 'MP4 Video', extensions: ['mp4'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    });
+    
+    if (canceled || !filePath) {
+      return { success: false, canceled: true };
+    }
+    
+    console.log('[Main] User selected save path:', filePath);
+    return { 
+      success: true, 
+      filePath,
+      exportType,
+      handIds 
+    };
+  } catch (error) {
+    console.error('[Main] start-video-export error:', error.message || error);
+    return { success: false, message: error.message || String(error) };
   }
 });
 
