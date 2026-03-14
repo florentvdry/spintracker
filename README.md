@@ -1,72 +1,76 @@
 # SpinTracker
 
-Application professionnelle de suivi et d'analyse  Spin & Go.
+Application professionnelle de suivi et d'analyse de tournois Spin & Go.
 
 ## 🏗️ Architecture
 
 ```
-poker-tracker-pro/
+spintracker/
 ├── main.js                    # Process principal Electron (IPC)
 ├── package.json               # Dépendances Electron
-├── poker.db                   # Base de données SQLite
-├── backend/                   # Backend Python complet
-│   ├── server.py             # Serveur Flask API (port 5050)
-│   ├── database.py           # Gestion SQLite
-│   ├── equity_calculator.py  # Calculs d'équité (Treys)
-│   ├── analysis_engine.py    # Détection de leaks
-│   ├── requirements.txt      # Dépendances Python
-│   └── parsers/              # Parsers multi-rooms
-│       ├── __init__.py
-│       ├── base_parser.py    # Classe abstraite + Factory
-│       ├── betclic_parser.py # Parser Betclic Spin & Rush
+├── backend/                   # Backend C# .NET 8
+│   ├── Controllers/           # API REST
+│   ├── Services/              # Services métier
+│   ├── Engines/              # Calculs (Equity, Analytics)
+│   ├── Parsers/              # Parsers multi-rooms
+│   │   ├── BetclicParser.cs
+│   │   └── PokerStarsParser.cs
+│   ├── Data/                 # Accès données SQLite
+│   │   └── Repositories/
+│   ├── Models/               # Modèles de données
+│   └── Migrations/           # Migrations base de données
 ├── frontend/                  # Application React
 │   ├── src/
 │   │   ├── components/       # Composants UI
 │   │   │   ├── layout/       # Layout, Sidebar, Header
 │   │   │   ├── ui/           # Composants réutilisables
-│   │   │   └── charts/       # Graphiques
+│   │   │   ├── charts/       # Graphiques (RangeGrid, WinrateChart, RangeHeatmap)
+│   │   │   └── replayer/     # Composants du replayer
 │   │   ├── pages/            # Pages de l'application
 │   │   │   ├── Dashboard/
-│   │   │   ├── Players/
 │   │   │   ├── HandHistory/
-│   │   │   ├── LeakAnalysis/
-│   │   │   ├── RangeAnalysis/
+│   │   │   ├── Analysis/
+│   │   │   ├── Replayer/
+│   │   │   ├── RangeResearch/
 │   │   │   └── Settings/
 │   │   ├── stores/           # État global (Zustand)
-│   │   ├── services/         # Services IPC/Python
+│   │   ├── services/         # Services IPC/C#
 │   │   ├── hooks/            # Hooks React personnalisés
+│   │   ├── locales/          # Traductions (i18n)
 │   │   └── utils/            # Utilitaires
 │   └── package.json
-└── exemple-data/              # Fichiers de test
+└── assets/                    # Ressources (logo, icônes)
 ```
 
 ## 🚀 Installation
 
 ### Prérequis
 
-- **Node.js** 18+ (https://nodejs.org/)
-- **Python** 3.8+ (https://python.org/)
-- **npm** ou **yarn**
+- **Node.js** 18+
+- **.NET SDK** 8.0+ (https://dotnet.microsoft.com/download)
+- **npm**
 
-### Installation automatique (Windows)
+### Installation rapide
 
 ```bash
-.\setup.bat
+npm run setup
 ```
+
+Cela installera :
+1. Les dépendances Electron
+2. Les dépendances React
+3. Le build du backend C#
 
 ### Installation manuelle
 
 ```bash
-# 1. Installer les dépendances Electron
+# 1. Installer les dépendances
 npm install
 
-# 2. Installer les dépendances React
-cd frontend
-npm install
+# 2. Build du backend C#
+cd backend
+dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=true
 cd ..
-
-# 3. Installer les dépendances Python
-pip install -r backend/requirements.txt
 ```
 
 ## 🎮 Utilisation
@@ -80,48 +84,45 @@ npm run dev
 Cela démarre :
 - Le serveur de développement Vite (React) sur http://localhost:3000
 - L'application Electron avec DevTools
-- Le backend Python sur le port 5050
+- Le backend C# sur le port 5050
 
-### Build production
+### Build production (Windows)
 
 ```bash
 npm run build
 ```
 
-## 🧮 Calculs Python
+## 🧮 Backend C#
 
-Le backend Python utilise des librairies optimisées pour les calculs d'équité :
-
-- **Treys** - Évaluation rapide des mains de poker (7 cartes)
-- **NumPy** - Calculs vectorisés haute performance
-- **Flask** - API REST pour la communication avec Electron
+Le backend C# utilise :
+- **ASP.NET Core** - API REST performante
+- **SQLite** - Base de données embarquée
+- **Manjar** - Évaluation des mains de poker
 
 ### API Endpoints
 
 | Endpoint | Méthode | Description |
 |----------|---------|-------------|
 | `/health` | GET | Vérification de l'état du serveur |
-| `/parse/file` | POST | Parser un fichier d'historique |
-| `/parse/detect` | POST | Détecter le format d'un fichier |
-| `/db/insert-hands` | POST | Insérer des mains en base |
-| `/db/hands` | GET | Récupérer les mains (avec filtres) |
-| `/db/dashboard-stats` | GET | Statistiques du dashboard |
-| `/db/winrate-chart` | GET | Données graphique winrate |
-| `/db/range-heatmap` | GET | Heatmap des ranges |
-| `/db/players` | GET | Liste des joueurs |
-| `/db/player/:name` | GET | Détails d'un joueur |
-| `/db/delete-all` | DELETE | Supprimer toutes les mains |
-| `/equity` | POST | Calcul d'équité hero vs villain |
-| `/equity/batch` | POST | Calcul en batch |
-| `/analyze/leaks` | POST | Détection de leaks |
-| `/analyze/range` | POST | Analyse de range par position |
-| `/recalculate-ev` | POST | Recalcul EV toutes les mains |
+| `/parser/parse-file` | POST | Parser un fichier d'historique |
+| `/database/hands` | GET | Récupérer les mains (avec filtres) |
+| `/database/dashboard-stats` | GET | Statistiques du dashboard |
+| `/database/winrate-chart` | GET | Données graphique winrate |
+| `/database/range-heatmap` | GET | Heatmap des ranges |
+| `/database/players` | GET | Liste des joueurs |
+| `/database/tournaments` | GET | Liste des tournois |
+| `/database/delete-tournament` | DELETE | Supprimer un tournoi |
+| `/equity/calculate` | POST | Calcul d'équité hero vs villain |
+| `/analysis/leaks` | POST | Détection de leaks |
+| `/analysis/range` | POST | Analyse de range par position |
+| `/analysis/next-actions` | GET | Prochaines actions d'analyse |
 
 ## 🎰 Rooms Supportées
 
 | Room | Format | Tournois |
 |------|--------|----------|
-| **Betclic** | Texte | Spin & Rush |
+| **Betclic** | Texte | Spin & Go, Spin & Rush |
+| **PokerStars** | Texte | Spin & Go |
 
 ## 📊 Fonctionnalités
 
@@ -130,25 +131,32 @@ Le backend Python utilise des librairies optimisées pour les calculs d'équité
 - Graphique d'évolution du profit vs EV
 - Historique des sessions récentes
 
-### Analyse des Joueurs
-- Liste des adversaires rencontrés
-- Statistiques détaillées (VPIP, PFR, 3-Bet, C-Bet)
-- Profit par joueur
-
 ### Historique des Mains
-- Recherche et filtrage avancés
+- Liste des tournois avec filtrage
+- Recherche et filtrage avancés des mains
 - Détails complets de chaque main
-- Replay visuel
 
-### Détection de Leaks
+### Replayer
+- Replay visuel interactif des mains
+- Timeline de la main
+- Contrôles de lecture (play, pause, step)
+
+### Analyse (Leak Detection)
 - Analyse automatique des erreurs de jeu
 - Classification par sévérité (critique, majeur, mineur)
 - Suggestions de correction
+- Dashboard d'analyse avec filtres
 
-### Analyse de Ranges
+### Recherche de Range
 - Heatmap interactive des ranges par position
 - Comparaison avec les ranges GTO
-- Fréquences par type de main
+- Outil de recherche de situations
+
+### Settings
+- Gestion multi-bases de données
+- Import/Export de données
+- Configuration de l'application
+- Mise à jour de l'application
 
 ## 🛠️ Technologies
 
@@ -157,10 +165,11 @@ Le backend Python utilise des librairies optimisées pour les calculs d'équité
 - **Vite** - Build tool ultra-rapide
 - **TailwindCSS** - Styling utilitaire
 - **Zustand** - Gestion d'état légère
-- **Recharts** - Graphiques React
-- **SQLite (Python)** - Base de données embarquée
-- **Python/Flask** - Backend complet (parsing, BDD, calculs)
-- **Treys** - Évaluation des mains de poker
+- **Recharts / ECharts** - Graphiques React
+- **i18next** - Internationalisation (EN, FR)
+- **.NET 8** - Backend C#
+- **SQLite** - Base de données embarquée
+- **Manjar** - Évaluation des mains de poker
 
 ## 📝 License
 
