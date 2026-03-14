@@ -346,15 +346,16 @@ export default function Charts() {
   }, [isZoomed, isLoading]);
 
   const finalStats = useMemo(() => {
-    if (!stats) return null;
-    const totalGames = stats.total_tournaments || 1;
+    const statsToUse = chartPosition === 'all' ? globalStats : stats;
+    if (!statsToUse) return null;
+    const totalGames = statsToUse.total_tournaments || 1;
     return {
-      cev: stats.avg_chips_ev || 0,
-      chipsWon: stats.total_ev || 0,
+      cev: statsToUse.avg_chips_ev || 0,
+      chipsWon: statsToUse.total_ev || 0,
       showdown: 0,
       nonShowdown: 0
     };
-  }, [stats]);
+  }, [stats, globalStats, chartPosition]);
 
   if (!heroName) {
     return (
@@ -539,13 +540,13 @@ export default function Charts() {
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-400">Tournaments</span>
                   <span className="text-sm font-mono font-medium text-white">
-                    {stats?.total_tournaments || 0}
+                    {(chartPosition === 'all' ? globalStats?.total_tournaments : stats?.total_tournaments) || 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-400">Total</span>
                   <span className="text-sm font-mono font-medium text-white">
-                    {stats?.total_hands || 0}
+                    {(chartPosition === 'all' ? globalStats?.total_hands : stats?.total_hands) || 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
