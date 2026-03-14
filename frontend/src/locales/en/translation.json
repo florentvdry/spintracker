@@ -168,6 +168,10 @@
     "no_hands_match": "No hands match this filter",
     "select_prompt": "Select a hand to see detailed breakdown",
     "loading": "Building Range Data...",
+    "opponent_type": "Opponents",
+    "all_opponents": "All",
+    "regs_only": "Regs",
+    "fish_only": "Fish",
     "filters": {
       "table_size": "Table Size",
       "target_player": "Target Player",
@@ -297,26 +301,5 @@
     "total_hands": "hands total",
     "no_hands": "No hands found",
     "load_more": "Load more"
-  },
-  "range_analysis": {
-    "title": "Range Analysis",
-    "subtitle": "Analyze your ranges by situation",
-    "load_preset": "Load",
-    "save_config": "Save",
-    "matrix_title": "Range Matrix",
-    "loading": "Loading data...",
-    "selected_hand": "Selected hand",
-    "occurrences": "Occurrences",
-    "total_profit": "Total Profit",
-    "ev_realized": "Realized EV",
-    "select_prompt": "Click on a cell to see details",
-    "frequencies": "Frequencies",
-    "history": "History",
-    "replay_filtered": "Replay",
-    "distributions": "Distributions",
-    "opponent_type": "Opponents",
-    "all_opponents": "All",
-    "regs_only": "Regs",
-    "fish_only": "Fish"
   }
 }
