@@ -286,6 +286,20 @@ public class DatabaseController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
+
+    [HttpPost("db/update-betclic-rake")]
+    public async Task<IActionResult> UpdateBetclicRake()
+    {
+        try
+        {
+            var updated = await _handRepo.UpdateBetclicRakeAsync();
+            return Ok(new { success = true, updated_count = updated });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
 }
 
 public class DeleteTournamentRequest

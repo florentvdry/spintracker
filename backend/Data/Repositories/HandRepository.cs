@@ -576,4 +576,18 @@ public class HandRepository
 
         return hands;
     }
+
+    public async Task<int> UpdateBetclicRakeAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+            UPDATE hands 
+            SET rake = ROUND(buy_in * 0.07, 2) 
+            WHERE room LIKE 'Betclic%' AND (rake IS NULL OR rake = 0) AND buy_in > 0";
+
+        return await cmd.ExecuteNonQueryAsync();
+    }
 }
