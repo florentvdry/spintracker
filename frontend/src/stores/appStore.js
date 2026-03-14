@@ -56,7 +56,6 @@ export const useAppStore = create((set, get) => ({
       }
 
       // 3. Vérifier et mettre à jour le rake Betclic si nécessaire
-      set({ loadingMessage: 'Vérification des mains Betclic...' });
       const rakeCheck = await ipcService.getBetclicRakePendingCount();
       if (rakeCheck.success && rakeCheck.count > 0) {
         set({ loadingMessage: `Mise à jour du rake Betclic (${rakeCheck.count} mains)...` });
