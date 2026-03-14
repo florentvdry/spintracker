@@ -590,4 +590,18 @@ public class HandRepository
 
         return await cmd.ExecuteNonQueryAsync();
     }
+
+    public async Task<int> GetBetclicRakePendingCountAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+            SELECT COUNT(*) FROM hands 
+            WHERE room LIKE 'Betclic%' AND (rake IS NULL OR rake = 0) AND buy_in > 0";
+
+        var result = await cmd.ExecuteScalarAsync();
+        return Convert.ToInt32(result);
+    }
 }

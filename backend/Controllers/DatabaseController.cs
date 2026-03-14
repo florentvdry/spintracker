@@ -300,6 +300,20 @@ public class DatabaseController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
+
+    [HttpGet("db/betclic-rake-pending")]
+    public async Task<IActionResult> GetBetclicRakePendingCount()
+    {
+        try
+        {
+            var count = await _handRepo.GetBetclicRakePendingCountAsync();
+            return Ok(new { success = true, count });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
 }
 
 public class DeleteTournamentRequest

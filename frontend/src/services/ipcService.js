@@ -224,6 +224,14 @@ class IPCService {
   async renameDatabase(id, name) {
     return this.invoke('rename-database', id, name);
   }
+
+  async getBetclicRakePendingCount() {
+    return this.invoke('get-betclic-rake-pending');
+  }
+
+  async updateBetclicRake() {
+    return this.invoke('update-betclic-rake');
+  }
 }
 
 export const ipcService = new IPCService();

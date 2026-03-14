@@ -681,6 +681,14 @@ ipcMain.handle('get-players', async (event, options = {}) => {
   return callBackendAPI('/db/players', options);
 });
 
+ipcMain.handle('get-betclic-rake-pending', async () => {
+  return callBackendAPI('/db/betclic-rake-pending', {});
+});
+
+ipcMain.handle('update-betclic-rake', async () => {
+  return callBackendAPI('/db/update-betclic-rake', {}, 'POST');
+});
+
 ipcMain.handle('delete-all-hands', async () => {
   const result = await dialog.showMessageBox(mainWindow, {
     type: 'warning',
