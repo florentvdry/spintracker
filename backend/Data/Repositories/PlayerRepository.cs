@@ -80,7 +80,7 @@ public class PlayerRepository
                 ph.player_name,
                 COUNT(*) as total_hands,
                 SUM(ph.net_profit) as total_profit,
-                SUM(ph.net_won_adjusted) as total_ev_profit,
+                SUM(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1625.0) as total_ev_profit,
                 CASE 
                     WHEN COUNT(*) >= 500 AND (SELECT is_reg_forced FROM players p2 WHERE p2.name = ph.player_name) = 0 THEN 1
                     WHEN (SELECT is_reg FROM players p2 WHERE p2.name = ph.player_name) = 1 THEN 1

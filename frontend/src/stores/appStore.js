@@ -55,7 +55,14 @@ export const useAppStore = create((set, get) => ({
         console.warn('[Init] Backend not responding after 10s');
       }
 
-      // 3. Charger les données de base
+      // 3. Vérifier et mettre à jour le rake Betclic si nécessaire
+      const rakeCheck = await ipcService.getBetclicRakePendingCount();
+      if (rakeCheck.success && rakeCheck.count > 0) {
+        set({ loadingMessage: `Mise à jour du rake Betclic (${rakeCheck.count} mains)...` });
+        await ipcService.updateBetclicRake();
+      }
+
+      // 4. Charger les données de base
       await get().loadBuyIns();
 
       set({ isInitialized: true, isLoading: false, loadingMessage: 'Prêt !' });

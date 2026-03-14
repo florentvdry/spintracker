@@ -117,6 +117,14 @@ class IPCService {
     return this.invoke('get-hands-against-player', opponentName, heroName, limit, page);
   }
 
+  async getBetclicRakePendingCount() {
+    return this.invoke('get-betclic-rake-pending');
+  }
+
+  async updateBetclicRake() {
+    return this.invoke('update-betclic-rake');
+  }
+
   // Import
   async importHandHistory() {
     return this.invoke('import-hand-history');

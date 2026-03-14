@@ -689,6 +689,14 @@ ipcMain.handle('get-hands-against-player', async (event, opponentName, heroName,
   return callBackendAPI(`/db/hands-against/${encodeURIComponent(opponentName)}`, { heroName, limit, page }, 'POST');
 });
 
+ipcMain.handle('get-betclic-rake-pending', async () => {
+  return callBackendAPI('/db/betclic-rake-pending', {});
+});
+
+ipcMain.handle('update-betclic-rake', async () => {
+  return callBackendAPI('/db/update-betclic-rake', {}, 'POST');
+});
+
 ipcMain.handle('delete-all-hands', async () => {
   const result = await dialog.showMessageBox(mainWindow, {
     type: 'warning',

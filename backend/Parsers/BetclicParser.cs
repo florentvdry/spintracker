@@ -7,8 +7,10 @@ namespace SpinTrackerBackend;
 public class BetclicParser : IHandParser
 {
     public string RoomName => "Betclic";
-    public int ParserVersion => 3;
+    public int ParserVersion => 4;
     public string HandSeparator => "------------";
+
+    private const double RakePercentage = 0.07;
 
     // Section Headers
     private const string SectionHeader = "*** HEADER ***";
@@ -242,7 +244,11 @@ public class BetclicParser : IHandParser
         else if (line.Contains("Buy In:"))
         {
             var match = BuyInRegex.Match(line);
-            if (match.Success) hand.BuyIn = double.Parse(match.Value, CultureInfo.InvariantCulture);
+            if (match.Success) 
+            {
+                hand.BuyIn = double.Parse(match.Value, CultureInfo.InvariantCulture);
+                hand.Rake = Math.Round(hand.BuyIn * RakePercentage, 2);
+            }
         }
         else if (line.Contains("Date & Time:"))
         {
