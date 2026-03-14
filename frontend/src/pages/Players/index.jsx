@@ -296,6 +296,7 @@ export default function Players() {
                             ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30" 
                             : "bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30"
                         )}
+                        title={player.is_reg ? t('players.mark_fish', 'Définir comme fish') : t('players.mark_reg', 'Définir comme reg')}
                       >
                         {updatingId === player.id ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
@@ -304,7 +305,7 @@ export default function Players() {
                         ) : (
                           <Fish className="w-3 h-3" />
                         )}
-                        {player.is_reg ? 'Reg' : 'Fish'}
+                        {player.is_reg ? t('players.is_reg', 'Reg') : t('players.is_fish', 'Fish')}
                       </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
@@ -332,9 +333,15 @@ export default function Players() {
                         <button
                           onClick={() => handleToggleReg(player)}
                           disabled={updatingId === player.id}
-                          className="text-xs text-gray-400 hover:text-white font-medium"
+                          className={clsx(
+                            "text-xs font-medium transition-colors",
+                            player.is_reg 
+                              ? "text-yellow-400 hover:text-yellow-300" 
+                              : "text-blue-400 hover:text-blue-300"
+                          )}
+                          title={player.is_reg ? t('players.mark_fish', 'Définir comme fish') : t('players.mark_reg', 'Définir comme reg')}
                         >
-                          {player.is_reg ? t('players.mark_fish', 'Fish') : t('players.mark_reg', 'Reg')}
+                          {player.is_reg ? t('players.set_fish', '→ Fish') : t('players.set_reg', '→ Reg')}
                         </button>
                       </div>
                     </td>
@@ -457,7 +464,7 @@ export default function Players() {
                       {playerHands.hands.map((hand, idx) => {
                         const handProfit = hand.dyn_hero_profit || hand.hero_profit || 0;
                         const handCards = hand.dyn_hero_cards || hand.hero_cards || '';
-                        const handPosition = hand.dyn_hero_position || hand.hero_position || '-';
+                        const handPosition = hand.opponent_position || '-';
                         const handCev = hand.ev_chips || 0;
                         const isExpanded = expandedHands[hand.id];
                         
