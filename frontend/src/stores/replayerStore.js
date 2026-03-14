@@ -68,7 +68,8 @@ export const useReplayerStore = create((set, get) => ({
       await startVideoRecording(exportType);
     } catch (error) {
       console.error('Video export failed:', error);
-      alert('Erreur lors de l\'export vidéo: ' + error.message);
+      const errorMessage = error?.message || error?.toString() || 'Unknown error';
+      alert('Erreur lors de l\'export vidéo: ' + errorMessage);
     } finally {
       set({ isRecording: false, recordingType: null });
     }
@@ -86,7 +87,8 @@ export const useReplayerStore = create((set, get) => ({
         await startVideoRecording('hand');
       } catch (error) {
         console.error('Video export failed:', error);
-        alert('Erreur lors de l\'export vidéo: ' + error.message);
+        const errorMessage = error?.message || error?.toString() || 'Unknown error';
+        alert('Erreur lors de l\'export vidéo: ' + errorMessage);
       } finally {
         set({ isRecording: false, recordingType: null });
       }
@@ -629,11 +631,16 @@ async function startVideoRecording(exportType) {
     recorderType: RecordRTC.MediaStreamRecorder
   });
 
+  // Start recording - wrap in try-catch to identify exact failure point
+  try {
+    recorder.startRecording();
+  } catch (recorderError) {
+    console.error('Error starting recorder:', recorderError);
+    throw recorderError;
+  }
+
   // Store recorder in state
   useReplayerStore.setState({ recorder });
-
-  // Start recording
-  recorder.startRecording();
 
   // Start playback
   const store = useReplayerStore.getState();

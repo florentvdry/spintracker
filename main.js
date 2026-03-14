@@ -330,7 +330,9 @@ function createReplayerWindow(handData) {
 
   replayerWindow.webContents.on('did-finish-load', () => {
     // Send the hand data to the replayer window
-    replayerWindow.webContents.send('load-replayer-data', handData);
+    // Double-serialize to ensure no non-clonable objects slip through
+    const serializedData = JSON.parse(JSON.stringify(handData));
+    replayerWindow.webContents.send('load-replayer-data', serializedData);
   });
 
   replayerWindow.on('closed', () => {
@@ -345,7 +347,9 @@ app.whenReady().then(() => {
 
   ipcMain.handle('replayer-get-data', () => {
     console.log('[Main] replayer-get-data invoked, returning stored data');
-    return lastReplayerData;
+    // Ensure data is serializable before returning
+    if (!lastReplayerData) return null;
+    return JSON.parse(JSON.stringify(lastReplayerData));
   });
 
   ipcMain.handle('get-app-version', () => {
