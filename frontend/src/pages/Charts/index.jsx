@@ -51,7 +51,7 @@ export default function Charts() {
     wonWithoutShowdown: true
   });
 
-  const loadChartData = async () => {
+  const loadChartData = useCallback(async () => {
     if (!heroName) {
       setData([]);
       setIsLoading(false);
@@ -115,9 +115,9 @@ export default function Charts() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [heroName, chartPosition, buyIn, dateRange, customDateFrom, customDateTo]);
 
-  const loadStats = async () => {
+  const loadStats = useCallback(async () => {
     if (!heroName) {
       setStats(null);
       return;
@@ -137,12 +137,12 @@ export default function Charts() {
       console.error('Failed to load stats:', error);
       setStats(null);
     }
-  };
+  }, [heroName, chartPosition, buyIn, dateRange, customDateFrom, customDateTo]);
 
   useEffect(() => {
     loadChartData();
     loadStats();
-  }, [dateRange, customDateFrom, customDateTo, buyIn, heroName, chartPosition]);
+  }, [loadChartData, loadStats]);
 
   const toggleLine = (lineKey) => {
     setVisibleLines(prev => ({
