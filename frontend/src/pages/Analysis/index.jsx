@@ -37,7 +37,13 @@ export default function Analysis() {
     TurnBbAction: '',
     RiverBtnAction: '',
     RiverSbAction: '',
-    RiverBbAction: ''
+    RiverBbAction: '',
+    FlopPattern: '',
+    TurnPattern: '',
+    RiverPattern: '',
+    FlopInteractionPattern: '',
+    TurnInteractionPattern: '',
+    RiverInteractionPattern: ''
   });
 
   // Dashboard Data
