@@ -988,6 +988,25 @@ ipcMain.handle('rename-database', async (event, id, name) => {
 
 // ============ IPC Handlers - Video Recording ============
 
+ipcMain.handle('get-recordable-windows', async () => {
+  try {
+    const sources = await desktopCapturer.getSources({
+      types: ['window', 'screen'],
+      thumbnailSize: { width: 320, height: 180 }
+    });
+
+    // Serialize safely for IPC
+    return JSON.parse(JSON.stringify(sources.map(source => ({
+      id: String(source.id),
+      name: String(source.name),
+      thumbnail: source.thumbnail ? source.thumbnail.toDataURL() : null
+    }))));
+  } catch (error) {
+    console.error('Failed to get sources:', error);
+    return [];
+  }
+});
+
 ipcMain.handle('save-video', async (event, { videoData, exportType }) => {
   try {
     // Show folder selection dialog
