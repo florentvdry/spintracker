@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BarChart2, Users, Target, Database } from "lucide-react";
+import { BarChart2, Users, Target, Database, History, Settings, PlayCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export function Features() {
@@ -10,8 +10,23 @@ export function Features() {
   const features = [
     {
       icon: BarChart2,
-      title: t('items.analytics.title'),
-      description: t('items.analytics.description'),
+      title: t('items.dashboard.title'),
+      description: t('items.dashboard.description'),
+    },
+    {
+      icon: History,
+      title: t('items.handhistory.title'),
+      description: t('items.handhistory.description'),
+    },
+    {
+      icon: Target,
+      title: t('items.analysis.title'),
+      description: t('items.analysis.description'),
+    },
+    {
+      icon: PlayCircle,
+      title: t('items.replayer.title'),
+      description: t('items.replayer.description'),
     },
     {
       icon: Users,
@@ -19,9 +34,9 @@ export function Features() {
       description: t('items.range.description'),
     },
     {
-      icon: Database,
-      title: t('items.performance.title'),
-      description: t('items.performance.description'),
+      icon: Settings,
+      title: t('items.settings.title'),
+      description: t('items.settings.description'),
     },
   ];
 
