@@ -1,9 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Users, Search, Filter, Crown, Fish, ChevronLeft, ChevronRight, Loader2, Eye, X, Play } from 'lucide-react';
+import { Users, Search, Filter, Crown, Fish, ChevronLeft, ChevronRight, ChevronDown, ChevronRight as ChevronRightIcon, Loader2, Eye, X, Play, ArrowUpDown } from 'lucide-react';
 import { ipcService } from '@services/ipcService';
 import { useFilterStore } from '@stores/filterStore';
 import { useReplayerStore } from '@stores/replayerStore';
+import PlayingCard from '@components/common/PlayingCard';
+import { parseCards } from '@utils/handNormalizer';
 import clsx from 'clsx';
 
 export default function Players() {
@@ -20,6 +22,8 @@ export default function Players() {
   const [playerHands, setPlayerHands] = useState(null);
   const [handsLoading, setHandsLoading] = useState(false);
   const [handsPage, setHandsPage] = useState(1);
+  const [handsSortBy, setHandsSortBy] = useState('date_desc');
+  const [expandedHands, setExpandedHands] = useState({});
   const pageSize = 50;
 
   const loadPlayers = async () => {
@@ -79,6 +83,7 @@ export default function Players() {
   const handleViewHands = async (player) => {
     setSelectedPlayer(player);
     setHandsPage(1);
+    setExpandedHands({});
     setHandsLoading(true);
     try {
       const result = await ipcService.getHandsAgainstPlayer(player.name, heroName, 20, 1);
@@ -89,6 +94,45 @@ export default function Players() {
       console.error('Failed to load player hands:', error);
     } finally {
       setHandsLoading(false);
+    }
+  };
+
+  const toggleHandExpand = (handId) => {
+    setExpandedHands(prev => ({
+      ...prev,
+      [handId]: !prev[handId]
+    }));
+  };
+
+  const handleHandsSort = (field) => {
+    let newSort = `${field}_desc`;
+    if (handsSortBy === `${field}_desc`) newSort = `${field}_asc`;
+    else if (handsSortBy === `${field}_asc`) newSort = `${field}_desc`;
+    setHandsSortBy(newSort);
+    
+    if (playerHands?.hands) {
+      const sorted = [...playerHands.hands].sort((a, b) => {
+        let valA, valB;
+        switch (field) {
+          case 'date':
+            valA = new Date(a.date_time);
+            valB = new Date(b.date_time);
+            break;
+          case 'profit':
+            valA = a.dyn_hero_profit || a.hero_profit || 0;
+            valB = b.dyn_hero_profit || b.hero_profit || 0;
+            break;
+          case 'cev':
+            valA = a.ev_chips || 0;
+            valB = b.ev_chips || 0;
+            break;
+          default:
+            return 0;
+        }
+        if (newSort.endsWith('_desc')) return valB - valA;
+        return valA - valB;
+      });
+      setPlayerHands(prev => ({ ...prev, hands: sorted }));
     }
   };
 
@@ -327,21 +371,26 @@ export default function Players() {
       </div>
 
       {selectedPlayer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-dark-200 rounded-2xl shadow-2xl border border-white/10 w-full max-w-4xl max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b border-white/10">
-              <div>
-                <h2 className="text-lg font-bold text-white">
-                  {t('players.hands_against', 'Mains contre')} {selectedPlayer.name}
-                </h2>
-                <p className="text-xs text-gray-400">
-                  {playerHands?.total || 0} {t('players.total_hands', 'mains au total')}
-                  {heroName ? (
-                    <span className="ml-2 text-primary-400">• Hero: {heroName}</span>
-                  ) : (
-                    <span className="ml-2 text-yellow-400">• Sélectionnez un héros dans les paramètres pour voir vos mains</span>
-                  )}
-                </p>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-200 rounded-2xl shadow-2xl border border-white/10 w-full max-w-5xl max-h-[85vh] flex flex-col">
+            <div className="flex items-center justify-between p-5 border-b border-white/10 bg-dark-300/30 rounded-t-2xl">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20">
+                  <Users className="w-5 h-5 text-primary-400" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-white">
+                    {t('players.hands_against', 'Mains contre')} <span className="text-primary-400">{selectedPlayer.name}</span>
+                  </h2>
+                  <p className="text-xs text-gray-400">
+                    {playerHands?.total || 0} {t('players.total_hands', 'mains au total')}
+                    {heroName ? (
+                      <span className="ml-2 text-primary-400">• Hero: {heroName}</span>
+                    ) : (
+                      <span className="ml-2 text-yellow-400">• Sélectionnez un héros</span>
+                    )}
+                  </p>
+                </div>
               </div>
               <button
                 onClick={closeModal}
@@ -351,87 +400,204 @@ export default function Players() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-auto p-4">
+            <div className="flex-1 overflow-auto custom-scrollbar">
               {handsLoading && !playerHands ? (
-                <div className="flex items-center justify-center h-32">
-                  <Loader2 className="w-6 h-6 text-primary-500 animate-spin" />
+                <div className="flex items-center justify-center h-64">
+                  <Loader2 className="w-8 h-8 text-primary-500 animate-spin" />
                 </div>
               ) : playerHands?.hands?.length > 0 ? (
-                <div className="space-y-3">
-                  {playerHands.hands.map((hand, idx) => (
-                    <div
-                      key={hand.id || idx}
-                      onClick={() => handleOpenReplayer(hand.id)}
-                      className="bg-dark-300 rounded-lg p-3 border border-white/5 cursor-pointer hover:border-primary-500/50 hover:bg-dark-300/80 transition-all group"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-400">
-                            {hand.date_time ? new Date(hand.date_time).toLocaleString() : ''}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {hand.blinds}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={clsx(
-                            "text-xs font-bold",
-                            hand.dyn_hero_profit > 0 ? "text-green-400" : hand.dyn_hero_profit < 0 ? "text-red-400" : "text-gray-400"
-                          )}>
-                            {hand.dyn_hero_profit > 0 ? '+' : ''}{hand.dyn_hero_profit?.toFixed(2) || 0}
-                          </span>
-                          <Play className="w-3 h-3 text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <div className="flex items-center gap-1.5 bg-dark-400/50 rounded px-2 py-1">
-                          <span className="text-xs text-gray-500">Hero</span>
-                          <span className="text-sm font-bold text-primary-400">
-                            {hand.dyn_hero_cards || '-'}
-                          </span>
-                          <span className="text-xs text-gray-500">({hand.dyn_hero_position || '-'})</span>
-                        </div>
-                        
-                        <span className="text-gray-500">vs</span>
-                        
-                        <div className="flex items-center gap-1.5 bg-dark-400/50 rounded px-2 py-1">
-                          <span className="text-xs text-gray-500">{selectedPlayer.name}</span>
-                          <span className="text-xs text-gray-500">
-                            {hand.dyn_hero_all_in ? '(AI)' : ''}
-                          </span>
-                        </div>
-                      </div>
-
-                      {(hand.flop || hand.turn || hand.river) && (
-                        <div className="mt-2 flex items-center gap-2">
-                          <span className="text-xs text-gray-500">Board:</span>
-                          <div className="flex gap-1">
-                            {hand.flop && hand.flop.split(',').map((card, i) => (
-                              <span key={`flop-${i}`} className="text-xs bg-dark-400 px-1 rounded text-gray-300">{card.trim()}</span>
-                            ))}
-                            {hand.turn && <span className="text-xs bg-dark-400 px-1 rounded text-gray-300">{hand.turn.trim()}</span>}
-                            {hand.river && <span className="text-xs bg-dark-400 px-1 rounded text-gray-300">{hand.river.trim()}</span>}
+                <div className="table-container">
+                  <table className="table w-full">
+                    <thead className="bg-dark-300/50 sticky top-0 z-10">
+                      <tr>
+                        <th className="w-10 text-center">#</th>
+                        <th 
+                          className="cursor-pointer hover:bg-dark-300 transition-colors text-left"
+                          onClick={() => handleHandsSort('date')}
+                        >
+                          <div className="flex items-center gap-1">
+                            {t('common.date')}
+                            <ArrowUpDown size={12} className={clsx(
+                              "transition-opacity",
+                              handsSortBy?.startsWith('date') ? "opacity-100 text-primary-400" : "opacity-0"
+                            )} />
                           </div>
-                        </div>
-                      )}
+                        </th>
+                        <th className="text-left">{t('common.cards')}</th>
+                        <th className="text-left">{t('common.position')}</th>
+                        <th className="text-right">{t('common.blinds')}</th>
+                        <th 
+                          className="cursor-pointer hover:bg-dark-300 transition-colors text-right"
+                          onClick={() => handleHandsSort('cev')}
+                        >
+                          <div className="flex items-center justify-end gap-1">
+                            CEV
+                            <ArrowUpDown size={12} className={clsx(
+                              "transition-opacity",
+                              handsSortBy?.startsWith('cev') ? "opacity-100 text-primary-400" : "opacity-0"
+                            )} />
+                          </div>
+                        </th>
+                        <th 
+                          className="cursor-pointer hover:bg-dark-300 transition-colors text-right"
+                          onClick={() => handleHandsSort('profit')}
+                        >
+                          <div className="flex items-center justify-end gap-1">
+                            {t('common.result')}
+                            <ArrowUpDown size={12} className={clsx(
+                              "transition-opacity",
+                              handsSortBy?.startsWith('profit') ? "opacity-100 text-primary-400" : "opacity-0"
+                            )} />
+                          </div>
+                        </th>
+                        <th className="w-12"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {playerHands.hands.map((hand, idx) => {
+                        const handProfit = hand.dyn_hero_profit || hand.hero_profit || 0;
+                        const handCards = hand.dyn_hero_cards || hand.hero_cards || '';
+                        const handPosition = hand.dyn_hero_position || hand.hero_position || '-';
+                        const handCev = hand.ev_chips || 0;
+                        const isExpanded = expandedHands[hand.id];
+                        
+                        return (
+                          <React.Fragment key={hand.id || idx}>
+                            <tr 
+                              className="hover:bg-dark-300/30 transition-colors cursor-pointer group"
+                              onClick={() => toggleHandExpand(hand.id)}
+                            >
+                              <td className="text-center">
+                                {isExpanded ? (
+                                  <ChevronDown className="w-4 h-4 text-primary-400 mx-auto" />
+                                ) : (
+                                  <ChevronRightIcon className="w-4 h-4 text-gray-500 mx-auto" />
+                                )}
+                              </td>
+                              <td className="text-gray-300 text-sm">
+                                <div className="flex flex-col">
+                                  <span>{new Date(hand.date_time).toLocaleDateString()}</span>
+                                  <span className="text-xs text-gray-500">{new Date(hand.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                </div>
+                              </td>
+                              <td className="py-3">
+                                <div className="flex gap-0.5">
+                                  {parseCards(handCards).map((card, i) => (
+                                    <PlayingCard key={i} card={card} size="sm" />
+                                  ))}
+                                </div>
+                              </td>
+                              <td>
+                                <span className={clsx(
+                                  "px-2 py-1 rounded text-xs font-medium",
+                                  handPosition === 'BB' || handPosition === 'SB' ? "bg-purple-500/20 text-purple-400" :
+                                  handPosition === 'BTN' ? "bg-orange-500/20 text-orange-400" :
+                                  "bg-dark-400 text-gray-400"
+                                )}>
+                                  {handPosition}
+                                </span>
+                                <span className="ml-1 text-xs text-gray-500">
+                                  ({hand.player_count === 2 ? 'HU' : `${hand.player_count}max`})
+                                </span>
+                              </td>
+                              <td className="text-right text-gray-400 text-sm font-mono">
+                                {hand.blinds || '-'}
+                              </td>
+                              <td className={clsx(
+                                "text-right font-mono text-sm",
+                                handCev > 0 ? "text-emerald-400" : handCev < 0 ? "text-rose-400" : "text-gray-400"
+                              )}>
+                                {handCev > 0 ? '+' : ''}{handCev.toFixed(1)}
+                              </td>
+                              <td className={clsx(
+                                "text-right font-semibold text-sm",
+                                handProfit > 0 ? "text-emerald-400" : handProfit < 0 ? "text-rose-400" : "text-gray-400"
+                              )}>
+                                {handProfit > 0 ? '+' : ''}{handProfit.toFixed(0)}
+                              </td>
+                              <td className="px-2">
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenReplayer(hand.id);
+                                  }}
+                                  className="p-1.5 rounded hover:bg-primary-500/20 text-gray-500 hover:text-primary-400 transition-all opacity-0 group-hover:opacity-100"
+                                  title="Replay Hand"
+                                >
+                                  <Play size={14} fill="currentColor" />
+                                </button>
+                              </td>
+                            </tr>
 
-                      {hand.result && (
-                        <div className="mt-2 text-xs text-gray-500 line-clamp-2">
-                          {hand.result}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                            {isExpanded && (
+                              <tr>
+                                <td colSpan={8} className="p-0 bg-dark-900/30">
+                                  <div className="border-l-2 border-primary-500/50 ml-4 my-2">
+                                    <div className="p-4 space-y-3">
+                                      <div className="flex items-center gap-6 flex-wrap">
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-xs text-gray-500">Room:</span>
+                                          <span className="text-xs text-gray-300 uppercase font-bold">{hand.room || '-'}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-xs text-gray-500">Buy-in:</span>
+                                          <span className="text-xs text-gray-300">{hand.buy_in ? `${hand.buy_in}€` : '-'}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-xs text-gray-500">Table:</span>
+                                          <span className="text-xs text-gray-300">{hand.table_id || '-'}</span>
+                                        </div>
+                                        {(hand.dyn_hero_all_in || hand.hero_all_in) && (
+                                          <span className="px-2 py-0.5 rounded text-xs font-bold bg-red-500/20 text-red-400">
+                                            ALL-IN
+                                          </span>
+                                        )}
+                                        {hand.went_to_showdown && (
+                                          <span className="px-2 py-0.5 rounded text-xs font-medium bg-dark-400 text-gray-400">
+                                            SD
+                                          </span>
+                                        )}
+                                      </div>
+
+                                      {(hand.flop || hand.turn || hand.river) && (
+                                        <div className="flex items-center gap-3">
+                                          <span className="text-xs text-gray-500">Board:</span>
+                                          <div className="flex gap-0.5">
+                                            {hand.flop && parseCards(hand.flop).map((card, i) => (
+                                              <PlayingCard key={`flop-${i}`} card={card} size="sm" />
+                                            ))}
+                                            {hand.turn && <PlayingCard card={hand.turn} size="sm" />}
+                                            {hand.river && <PlayingCard card={hand.river} size="sm" />}
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {hand.result && (
+                                        <div className="text-xs text-gray-500 bg-dark-400/50 rounded p-2 max-w-md">
+                                          <span className="text-gray-400">Showdown: </span>
+                                          {hand.result}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
               ) : (
-                <div className="text-center text-gray-400 py-8">
-                  {t('players.no_hands', 'Aucune main trouvée')}
+                <div className="text-center text-gray-400 py-12">
+                  <Users className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                  <p>{t('players.no_hands', 'Aucune main trouvée')}</p>
                 </div>
               )}
 
               {playerHands && playerHands.hands?.length < playerHands.total && (
-                <div className="mt-4 text-center">
+                <div className="p-4 border-t border-white/5 text-center">
                   <button
                     onClick={loadMoreHands}
                     disabled={handsLoading}
