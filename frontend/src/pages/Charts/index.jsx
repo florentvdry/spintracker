@@ -563,13 +563,14 @@ export default function Charts() {
                         <p className="text-[9px] text-gray-500">Heads-Up</p>
                         {(() => {
                           const getCevValue = (positionKey) => {
-                            const totalTournaments = globalStats?.total_tournaments || 1;
                             if (chartPosition === 'all') {
+                              const totalTournaments = globalStats?.total_tournaments || 1;
                               const value = globalStats.cev_by_position?.[positionKey] || 0;
                               return (value / totalTournaments).toFixed(2);
                             } else {
                               if (positionKey === chartPosition) {
-                                const value = stats?.cev_by_position?.[positionKey] || 0;
+                                const totalTournaments = globalStats?.tournaments_by_position?.[positionKey] || 1;
+                                const value = globalStats.cev_by_position?.[positionKey] || 0;
                                 return (value / totalTournaments).toFixed(2);
                               }
                               return '0.00';
@@ -584,30 +585,31 @@ export default function Charts() {
                         })()}
                       </div>
                         <div>
-                        <p className="text-[9px] text-gray-500">3-Way</p>
-                        {(() => {
-                          const getCevValue = (positionKey) => {
-                            const totalTournaments = globalStats?.total_tournaments || 1;
-                            if (chartPosition === 'all') {
-                              const value = globalStats.cev_by_position?.[positionKey] || 0;
-                              return (value / totalTournaments).toFixed(2);
-                            } else {
-                              if (positionKey === chartPosition) {
-                                const value = stats?.cev_by_position?.[positionKey] || 0;
+                          <p className="text-[9px] text-gray-500">3-Way</p>
+                          {(() => {
+                            const getCevValue = (positionKey) => {
+                              if (chartPosition === 'all') {
+                                const totalTournaments = globalStats?.total_tournaments || 1;
+                                const value = globalStats.cev_by_position?.[positionKey] || 0;
                                 return (value / totalTournaments).toFixed(2);
+                              } else {
+                                if (positionKey === chartPosition) {
+                                  const totalTournaments = globalStats?.tournaments_by_position?.[positionKey] || 1;
+                                  const value = globalStats.cev_by_position?.[positionKey] || 0;
+                                  return (value / totalTournaments).toFixed(2);
+                                }
+                                return '0.00';
                               }
-                              return '0.00';
-                            }
-                          };
-                          return (
-                            <>
-                              <PositionStat label="BTN" value={getCevValue('3W_BTN')} isSelected={chartPosition === '3W_BTN'} />
-                              <PositionStat label="SB" value={getCevValue('3W_SB')} isSelected={chartPosition === '3W_SB'} />
-                              <PositionStat label="BB" value={getCevValue('3W_BB')} isSelected={chartPosition === '3W_BB'} />
-                            </>
-                          );
-                        })()}
-                      </div>
+                            };
+                            return (
+                              <>
+                                <PositionStat label="BTN" value={getCevValue('3W_BTN')} isSelected={chartPosition === '3W_BTN'} />
+                                <PositionStat label="SB" value={getCevValue('3W_SB')} isSelected={chartPosition === '3W_SB'} />
+                                <PositionStat label="BB" value={getCevValue('3W_BB')} isSelected={chartPosition === '3W_BB'} />
+                              </>
+                            );
+                          })()}
+                        </div>
                     </div>
                   </div>
                 )}
