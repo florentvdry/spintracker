@@ -26,7 +26,6 @@ public record ChartQueryOptions
     public string? DateTo { get; set; }
     public string? HeroName { get; set; }
     public double? BuyIn { get; set; }
-    public string? Position { get; set; }
 }
 public record RangeHeatmapFilters 
 { 
@@ -36,6 +35,7 @@ public record PlayersQueryOptions
 {
     public int? Limit { get; set; }
     public int? MinHands { get; set; }
+    public string? IsRegFilter { get; set; }
 }
 public record EquityRequest(string? HeroCards, string? VillainCards, string? Board, int? Iterations);
 public record BatchEquityRequest(List<BatchEquityHand> Hands, int? Iterations);

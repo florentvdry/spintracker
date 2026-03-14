@@ -21,33 +21,13 @@ public class StatsRepository
 
     // Placeholder: extract GetDashboardStatsAsync, GetSessionHistoryAsync, etc.
 
-    public async Task<object> GetDashboardStatsAsync(string? heroName = null, string? dateFrom = null, string? dateTo = null, double? buyIn = null, string? position = null)
+    public async Task<object> GetDashboardStatsAsync(string? heroName = null, string? dateFrom = null, string? dateTo = null, double? buyIn = null)
     {
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
         var profitCol = "ph.net_profit";
         var joinClause = "";
-        
-        string? dbPosition = null;
-        int? dbPlayerCount = null;
-        if (!string.IsNullOrEmpty(position) && position != "all")
-        {
-            if (position.StartsWith("HU_"))
-            {
-                dbPosition = position.Replace("HU_", "");
-                dbPlayerCount = 2;
-            }
-            else if (position.StartsWith("3W_"))
-            {
-                dbPosition = position.Replace("3W_", "");
-                dbPlayerCount = 3;
-            }
-            else
-            {
-                dbPosition = position;
-            }
-        }
         
         if (!string.IsNullOrEmpty(heroName))
         {
@@ -71,14 +51,6 @@ public class StatsRepository
         if (buyIn.HasValue)
         {
             whereClauses.Add("h.buy_in = @buyIn");
-        }
-        if (!string.IsNullOrEmpty(dbPosition))
-        {
-            whereClauses.Add("ph.position = @position");
-        }
-        if (dbPlayerCount.HasValue)
-        {
-            whereClauses.Add("h.player_count = @playerCount");
         }
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
 
@@ -108,14 +80,6 @@ public class StatsRepository
         if (buyIn.HasValue)
         {
             cmd.Parameters.AddWithValue("@buyIn", buyIn.Value);
-        }
-        if (!string.IsNullOrEmpty(dbPosition))
-        {
-            cmd.Parameters.AddWithValue("@position", dbPosition);
-        }
-        if (dbPlayerCount.HasValue)
-        {
-            cmd.Parameters.AddWithValue("@playerCount", dbPlayerCount.Value);
         }
 
         int totalHands = 0;
@@ -153,8 +117,6 @@ public class StatsRepository
             if (!string.IsNullOrEmpty(dateFrom)) cmdItm.Parameters.AddWithValue("@dateFrom", dateFrom);
             if (!string.IsNullOrEmpty(dateTo)) cmdItm.Parameters.AddWithValue("@dateTo", dateTo);
             if (buyIn.HasValue) cmdItm.Parameters.AddWithValue("@buyIn", buyIn.Value);
-            if (!string.IsNullOrEmpty(dbPosition)) cmdItm.Parameters.AddWithValue("@position", dbPosition);
-            if (dbPlayerCount.HasValue) cmdItm.Parameters.AddWithValue("@playerCount", dbPlayerCount.Value);
 
             using var reader = await cmdItm.ExecuteReaderAsync();
             while (await reader.ReadAsync())
@@ -202,11 +164,9 @@ public class StatsRepository
             _logger.LogError($"Error calculating ITM: {ex.Message}");
         }
 
-        // 1.2 Position-based EV and tournament count calculation
+        // 1.2 Position-based EV calculation
         var cevByPosition = new Dictionary<string, double>();
         var countByPosition = new Dictionary<string, int>();
-        var tournamentsByPosition = new Dictionary<string, int>();
-        var avgCevByPosition = new Dictionary<string, double>();
         try
         {
             using (var cmdPos = connection.CreateCommand())
@@ -216,8 +176,7 @@ public class StatsRepository
                         ph.position,
                         COALESCE(SUM(ph.net_won_adjusted), 0) as pos_ev,
                         h.player_count,
-                        COUNT(*) as hand_count,
-                        COUNT(DISTINCT h.game_id) as tournament_count
+                        COUNT(*) as hand_count
                     FROM hands h
                     {joinClause}
                     {whereClause}
@@ -227,8 +186,6 @@ public class StatsRepository
                 if (!string.IsNullOrEmpty(dateFrom)) cmdPos.Parameters.AddWithValue("@dateFrom", dateFrom);
                 if (!string.IsNullOrEmpty(dateTo)) cmdPos.Parameters.AddWithValue("@dateTo", dateTo);
                 if (buyIn.HasValue) cmdPos.Parameters.AddWithValue("@buyIn", buyIn.Value);
-                if (!string.IsNullOrEmpty(dbPosition)) cmdPos.Parameters.AddWithValue("@position", dbPosition);
-                if (dbPlayerCount.HasValue) cmdPos.Parameters.AddWithValue("@playerCount", dbPlayerCount.Value);
 
                 using var reader = await cmdPos.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
@@ -237,13 +194,10 @@ public class StatsRepository
                     var ev = reader.GetDouble(1);
                     var playerCount = reader.GetInt32(2);
                     var count = reader.GetInt32(3);
-                    var tournamentCount = reader.GetInt32(4);
                     
                     var key = (playerCount == 2 ? "HU_" : "3W_") + pos;
                     cevByPosition[key] = ev;
                     countByPosition[key] = count;
-                    tournamentsByPosition[key] = tournamentCount;
-                    avgCevByPosition[key] = tournamentCount > 0 ? Math.Round(ev / tournamentCount, 2) : 0;
                 }
             }
         }
@@ -256,19 +210,7 @@ public class StatsRepository
         var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo, buyIn); 
         
         double totalProfitEuro = sessions.Sum(s => s.Profit);
-        
-        // Use position-filtered tournament count if a position is selected
-        int totalTournaments;
-        if (!string.IsNullOrEmpty(dbPosition))
-        {
-            // When position is filtered, use the tournament count from position stats
-            totalTournaments = tournamentsByPosition.Values.Sum();
-        }
-        else
-        {
-            totalTournaments = sessions.Sum(s => s.Tournaments);
-        }
-        
+        int totalTournaments = sessions.Sum(s => s.Tournaments);
         double avgChipsEv = totalTournaments > 0 ? Math.Round(totalEv / totalTournaments, 2) : 0;
         
         // Sessions this month
@@ -287,8 +229,6 @@ public class StatsRepository
             avg_chips_ev = avgChipsEv,
             cev_by_position = cevByPosition,
             count_by_position = countByPosition,
-            tournaments_by_position = tournamentsByPosition,
-            avg_cev_by_position = avgCevByPosition,
             sessions_this_month = sessionsThisMonth,
             total_sessions = sessions.Count,
             avg_multiplier = 0.0,
@@ -496,35 +436,6 @@ public class StatsRepository
             parameters.Add(new SqliteParameter("@buyIn", options.BuyIn.Value));
         }
 
-        if (!string.IsNullOrEmpty(options.Position) && options.Position != "all")
-        {
-            string dbPosition;
-            int? playerCount = null;
-            if (options.Position.StartsWith("HU_"))
-            {
-                dbPosition = options.Position.Replace("HU_", "");
-                playerCount = 2;
-            }
-            else if (options.Position.StartsWith("3W_"))
-            {
-                dbPosition = options.Position.Replace("3W_", "");
-                playerCount = 3;
-            }
-            else
-            {
-                dbPosition = options.Position;
-            }
-            
-            whereClauses.Add("ph.position = @position");
-            parameters.Add(new SqliteParameter("@position", dbPosition));
-            
-            if (playerCount.HasValue)
-            {
-                whereClauses.Add("h.player_count = @playerCount");
-                parameters.Add(new SqliteParameter("@playerCount", playerCount.Value));
-            }
-        }
-
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
 
         using var cmd = connection.CreateCommand();
@@ -555,8 +466,7 @@ public class StatsRepository
                 h.buy_in,
                 h.prize_pool,
                 h.player_count,
-                {profitCol} as hand_profit,
-                ph.went_to_showdown as hand_went_to_showdown
+                {profitCol} as hand_profit
             FROM hands h
             {joinClause}
             {whereClause}
@@ -576,13 +486,12 @@ public class StatsRepository
                 profit = reader.GetDouble(1),
                 chips_won_showdown = reader.GetDouble(2),
                 chips_won_no_showdown = reader.GetDouble(3),
-                cumulative_ev = reader.GetDouble(4),
+                cumulative = reader.GetDouble(4),
                 game_id = reader.IsDBNull(5) ? null : reader.GetString(5),
                 buy_in = reader.IsDBNull(6) ? 0.0 : reader.GetDouble(6),
                 prize_pool = reader.IsDBNull(7) ? 0.0 : reader.GetDouble(7),
                 player_count = reader.IsDBNull(8) ? 0 : reader.GetInt32(8),
-                hand_profit = reader.GetDouble(9),
-                hand_went_to_showdown = reader.GetInt32(10) == 1
+                hand_profit = reader.GetDouble(9)
             });
         }
 
@@ -641,51 +550,22 @@ public class StatsRepository
 
         _logger.LogInformation($"WinrateChart: Calculated profit for {gameProfitEuro.Count} games.");
 
-        // Calculate showdown/non-showdown totals per game (session)
-        var gameShowdown = new Dictionary<string, double>();
-        var gameNoShowdown = new Dictionary<string, double>();
-        var gamesSD = rawData.Where(x => !string.IsNullOrEmpty(x.game_id)).GroupBy(x => x.game_id!);
-        foreach (var game in gamesSD)
-        {
-            double showdownTotal = 0;
-            double noShowdownTotal = 0;
-            foreach (var hand in game)
-            {
-                if (hand.hand_went_to_showdown)
-                {
-                    showdownTotal += hand.hand_profit;
-                }
-                else
-                {
-                    noShowdownTotal += hand.hand_profit;
-                }
-            }
-            gameShowdown[game.Key] = showdownTotal;
-            gameNoShowdown[game.Key] = noShowdownTotal;
-        }
-
-        _logger.LogInformation($"WinrateChart: Calculated showdown/non-showdown for {gameShowdown.Count} games.");
-
         var finalData = new List<object>();
         double currentCumulativeEuro = 0;
-        double cumulativeShowdown = 0;
-        double cumulativeNoShowdown = 0;
         for (int i = 0; i < rawData.Count; i++)
         {
             var h = rawData[i];
             if (!string.IsNullOrEmpty(h.game_id) && lastHandsMap.ContainsKey(h.game_id!) && lastHandsMap[h.game_id!] == i)
             {
                 currentCumulativeEuro += gameProfitEuro[h.game_id!];
-                cumulativeShowdown += gameShowdown.GetValueOrDefault(h.game_id!, 0);
-                cumulativeNoShowdown += gameNoShowdown.GetValueOrDefault(h.game_id!, 0);
             }
 
             finalData.Add(new {
                 date = h.date,
                 profit = h.profit,
-                cumulative = h.cumulative_ev,
-                chips_won_showdown = cumulativeShowdown,
-                chips_won_no_showdown = cumulativeNoShowdown,
+                cumulative = h.cumulative,
+                chips_won_showdown = h.chips_won_showdown,
+                chips_won_no_showdown = h.chips_won_no_showdown,
                 euro_profit = currentCumulativeEuro
             });
         }
@@ -705,13 +585,11 @@ public class StatsRepository
         public double chips_won_showdown { get; set; }
         public double chips_won_no_showdown { get; set; }
         public double cumulative { get; set; }
-        public double cumulative_ev { get; set; }
         public string? game_id { get; set; }
         public double buy_in { get; set; }
         public double prize_pool { get; set; }
         public int player_count { get; set; }
         public double hand_profit { get; set; }
-        public bool hand_went_to_showdown { get; set; }
     }
 
     public async Task<List<double>> GetUniqueBuyInsAsync()

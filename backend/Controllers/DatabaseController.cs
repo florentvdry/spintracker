@@ -143,8 +143,7 @@ public class DatabaseController : ControllerBase
         [FromQuery] string? heroName, 
         [FromQuery] string? dateFrom, 
         [FromQuery] string? dateTo, 
-        [FromQuery] double? buyIn,
-        [FromQuery] string? position)
+        [FromQuery] double? buyIn)
     {
         try
         {
@@ -152,8 +151,7 @@ public class DatabaseController : ControllerBase
                 string.IsNullOrEmpty(heroName) ? null : heroName,
                 string.IsNullOrEmpty(dateFrom) ? null : dateFrom,
                 string.IsNullOrEmpty(dateTo) ? null : dateTo,
-                buyIn,
-                string.IsNullOrEmpty(position) ? null : position
+                buyIn
             );
             return Ok(new { success = true, data = stats });
         }
@@ -270,27 +268,30 @@ public class DatabaseController : ControllerBase
         }
     }
 
-    [HttpPost("db/delete-tournament")]
-    public async Task<IActionResult> DeleteTournament([FromBody] DeleteTournamentRequest request)
+    [HttpGet("db/hands-against/{opponentName}")]
+    [HttpPost("db/hands-against/{opponentName}")]
+    public async Task<IActionResult> GetHandsAgainstPlayer(string opponentName, [FromBody] HandsAgainstPlayerRequest? request)
     {
         try
         {
-            if (string.IsNullOrEmpty(request.GameId))
-            {
-                return BadRequest(new { success = false, message = "GameId is required" });
-            }
+            var heroName = request?.HeroName;
+            var limit = request?.Limit ?? 50;
+            var page = request?.Page ?? 1;
 
-            var result = await _db.DeleteTournamentAsync(request.GameId);
-            return Ok(result);
+            var result = await _handRepo.GetHandsAgainstPlayerAsync(opponentName, heroName, limit, page);
+            return Ok(new { success = true, data = result });
         }
         catch (Exception e)
         {
+            _logger.LogError($"Get hands against player error: {e.Message}");
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
 }
 
-public class DeleteTournamentRequest
+public class HandsAgainstPlayerRequest
 {
-    public string GameId { get; set; } = string.Empty;
+    public string? HeroName { get; set; }
+    public int Limit { get; set; } = 50;
+    public int Page { get; set; } = 1;
 }

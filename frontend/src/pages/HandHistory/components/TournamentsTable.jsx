@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { formatDate } from '../../../utils/formatters';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, ChevronRight, ArrowUpDown, Play, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, ArrowUpDown, Play } from 'lucide-react';
 import PlayingCard from '../../../components/common/PlayingCard';
 import { parseCards } from '../../../utils/handNormalizer';
 
@@ -16,8 +16,7 @@ export default function TournamentsTable({
   sortBy,
   onSort,
   onReplayTournament,
-  onReplayHand,
-  onDeleteTournament
+  onReplayHand
 }) {
   const { t } = useTranslation();
 
@@ -102,28 +101,16 @@ export default function TournamentsTable({
                     {isPositive ? '+' : ''}{profit.toFixed(2)}€
                   </td>
                   <td className="px-2">
-                    <div className="flex items-center gap-1">
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onReplayTournament(tourn.gameId || tourn.GameId);
-                        }}
-                        className="p-1.5 rounded hover:bg-primary-500/20 text-gray-500 hover:text-primary-400 transition-all"
-                        title="Replay Tournament"
-                      >
-                        <Play size={14} fill="currentColor" />
-                      </button>
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDeleteTournament(tourn.gameId || tourn.GameId);
-                        }}
-                        className="p-1.5 rounded hover:bg-rose-500/20 text-gray-500 hover:text-rose-400 transition-all"
-                        title={t('hand_history.delete_tournament')}
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onReplayTournament(tourn.gameId || tourn.GameId);
+                      }}
+                      className="p-1.5 rounded hover:bg-primary-500/20 text-gray-500 hover:text-primary-400 transition-all"
+                      title="Replay Tournament"
+                    >
+                      <Play size={14} fill="currentColor" />
+                    </button>
                   </td>
                 </tr>
 

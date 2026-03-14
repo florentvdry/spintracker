@@ -41,4 +41,28 @@ public class PlayerController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
+
+    [HttpPost("db/players/{playerId}/reg-status")]
+    public async Task<IActionResult> UpdatePlayerRegStatus(int playerId, [FromBody] UpdateRegStatusRequest request)
+    {
+        try
+        {
+            var result = await _playerRepo.UpdatePlayerRegStatusAsync(playerId, request.IsReg);
+            if (result)
+            {
+                return Ok(new { success = true });
+            }
+            return NotFound(new { success = false, error = "Player not found" });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Update reg status error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+}
+
+public class UpdateRegStatusRequest
+{
+    public bool IsReg { get; set; }
 }

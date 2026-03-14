@@ -681,6 +681,14 @@ ipcMain.handle('get-players', async (event, options = {}) => {
   return callBackendAPI('/db/players', options);
 });
 
+ipcMain.handle('update-player-reg-status', async (event, playerId, isReg) => {
+  return callBackendAPI(`/db/players/${playerId}/reg-status`, { isReg }, 'POST');
+});
+
+ipcMain.handle('get-hands-against-player', async (event, opponentName, heroName, limit = 50, page = 1) => {
+  return callBackendAPI(`/db/hands-against/${encodeURIComponent(opponentName)}`, { heroName, limit, page }, 'POST');
+});
+
 ipcMain.handle('delete-all-hands', async () => {
   const result = await dialog.showMessageBox(mainWindow, {
     type: 'warning',
@@ -699,24 +707,6 @@ ipcMain.handle('delete-all-hands', async () => {
       await callBackendAPI('/reset-default-stats', {}, 'POST');
     }
     return deleteResult;
-  } else {
-    return { success: false, message: 'Action annulée par l\'utilisateur' };
-  }
-});
-
-ipcMain.handle('delete-tournament', async (event, gameId) => {
-  const result = await dialog.showMessageBox(mainWindow, {
-    type: 'warning',
-    buttons: ['Annuler', 'Supprimer'],
-    defaultId: 0,
-    cancelId: 0,
-    title: 'Confirmation',
-    message: 'Supprimer ce tournoi ?',
-    detail: 'Cette action est irréversible. Le tournoi et toutes ses mains seront définitivement supprimés.'
-  });
-
-  if (result.response === 1) {
-    return await callBackendAPI('/db/delete-tournament', { gameId }, 'POST');
   } else {
     return { success: false, message: 'Action annulée par l\'utilisateur' };
   }

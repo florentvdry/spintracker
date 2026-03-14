@@ -31,6 +31,7 @@ public class AnalysisFilters
     public string? SituationId { get; set; } // e.g., "rfi", "limp" for preflop situations
     public string? DateFrom { get; set; }
     public string? DateTo { get; set; }
+    public string? OpponentType { get; set; } // "all", "reg", "fish"
 }
 
 public class AnalysisHandsRequest : AnalysisFilters

@@ -21,9 +21,9 @@ export default function Sidebar() {
 
   const navigation = [
     { name: t('navigation.dashboard'), href: '/', icon: LayoutDashboard },
-    { name: t('navigation.charts'), href: '/charts', icon: BarChart2 },
     { name: t('navigation.history'), href: '/hands', icon: History },
     { name: t('navigation.ranges'), href: '/ranges', icon: Grid3X3 },
+    { name: t('navigation.players'), href: '/players', icon: Users },
     { name: t('navigation.settings'), href: '/settings', icon: Settings },
   ];
 
@@ -67,10 +67,10 @@ export default function Sidebar() {
           href="https://discord.gg/x9ZSQA2mN2" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex flex-col items-center justify-center gap-1 px-4 py-3 bg-[#5865F2] hover:bg-[#4752C4] rounded-lg transition-colors"
+          className="flex items-center gap-3 text-sm text-gray-500 hover:text-blue-400 transition-colors"
         >
-          <MessageCircle className="w-6 h-6 text-white" />
-          <span className="text-sm font-medium text-white text-center leading-tight">{t('sidebar.joinDiscord')}</span>
+          <MessageCircle className="w-4 h-4" />
+          <span>Discord</span>
         </a>
       </div>
     </aside>

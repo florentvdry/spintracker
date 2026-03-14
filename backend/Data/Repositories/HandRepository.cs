@@ -375,6 +375,7 @@ public class HandRepository
 
             // Dynamic fields from JOINs
             hand["hero_position"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_position");
+            hand["opponent_position"] = DatabaseUtils.GetStringOrNull(reader, "opponent_position");
             hand["hero_stack"] = DatabaseUtils.GetDoubleOrNull(reader, "dyn_hero_stack");
             hand["hero_cards"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_cards");
             hand["hero_name"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_name");
@@ -575,5 +576,84 @@ public class HandRepository
         _logger.LogInformation($"GetHandsByIdsAsync: Read {rowCount} rows");
 
         return hands;
+    }
+
+    public async Task<object> GetHandsAgainstPlayerAsync(string opponentName, string? heroName, int limit = 50, int page = 1)
+    {
+        try
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+
+            var parameters = new List<SqliteParameter>();
+            
+            var whereClauses = new List<string>();
+            whereClauses.Add("h.player_count <= 3");
+            
+            // Filter by opponent
+            whereClauses.Add("ph.player_name = @opponentName");
+            parameters.Add(new SqliteParameter("@opponentName", opponentName));
+            
+            // If hero name provided, filter by hero
+            if (!string.IsNullOrEmpty(heroName))
+            {
+                whereClauses.Add("h.id IN (SELECT hand_id FROM player_hands WHERE player_name = @heroName)");
+                parameters.Add(new SqliteParameter("@heroName", heroName));
+            }
+
+            var whereClause = "WHERE " + string.Join(" AND ", whereClauses);
+
+            // Get total count
+            using var countCmd = connection.CreateCommand();
+            countCmd.CommandText = $"SELECT COUNT(*) FROM hands h JOIN player_hands ph ON h.id = ph.hand_id {whereClause}";
+            foreach (var param in parameters)
+            {
+                countCmd.Parameters.Add(new SqliteParameter(param.ParameterName, param.Value));
+            }
+            var total = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
+
+            // Get paginated hands
+            var offset = (page - 1) * limit;
+            using var cmd = connection.CreateCommand();
+            
+            var selectFields = "h.*, ph.ev_chips, ph.equity_preflop, ph.equity_flop, ph.equity_turn, ph.equity_river";
+            selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as opponent_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name";
+
+            cmd.CommandText = $@"
+                SELECT {selectFields}
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id
+                {whereClause}
+                ORDER BY h.date_time DESC
+                LIMIT @limit OFFSET @offset";
+
+            foreach (var param in parameters)
+            {
+                cmd.Parameters.Add(new SqliteParameter(param.ParameterName, param.Value));
+            }
+            cmd.Parameters.AddWithValue("@limit", limit);
+            cmd.Parameters.AddWithValue("@offset", offset);
+
+            var hands = new List<object>();
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                hands.Add(ReadHandFromReader(reader));
+            }
+
+            return new
+            {
+                hands,
+                total,
+                page,
+                limit,
+                pages = (int)Math.Ceiling(total / (double)limit)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error in GetHandsAgainstPlayerAsync: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            throw;
+        }
     }
 }

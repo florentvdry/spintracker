@@ -1,14 +1,13 @@
 {
   "navigation": {
     "dashboard": "Dashboard",
-    "charts": "Charts",
     "history": "Tournament History",
     "ranges": "Ranges Analyzer",
+    "players": "Players",
     "settings": "Settings"
   },
   "sidebar": {
-    "sqlite_local": "SQLite Local",
-    "joinDiscord": "Join Discord"
+    "sqlite_local": "SQLite Local"
   },
   "common": {
     "loading": "Loading...",
@@ -104,7 +103,6 @@
     "loading_hands": "Loading hands...",
     "time": "Time",
     "avg_cev": "Avg CEV",
-    "delete_tournament": "Delete tournament",
     "table": {
       "ev_chips": "EV Chips",
       "pot": "Pot"
@@ -170,6 +168,10 @@
     "no_hands_match": "No hands match this filter",
     "select_prompt": "Select a hand to see detailed breakdown",
     "loading": "Building Range Data...",
+    "opponent_type": "Opponents",
+    "all_opponents": "All",
+    "regs_only": "Regs",
+    "fish_only": "Fish",
     "filters": {
       "table_size": "Table Size",
       "target_player": "Target Player",
@@ -273,16 +275,31 @@
     "all_in": "All-In",
     "any": "Any"
   },
-  "charts": {
-    "title": "Charts",
-    "subtitle": "Full screen winrate visualization",
-    "positions": {
-      "all": "All Positions",
-      "HU_SB": "HU SB",
-      "HU_BB": "HU BB",
-      "3W_BTN": "3W BTN",
-      "3W_SB": "3W SB",
-      "3W_BB": "3W BB"
-    }
+  "players": {
+    "title": "Players",
+    "subtitle": "Manage your opponents",
+    "filter_all": "All",
+    "filter_reg": "Regs",
+    "filter_fish": "Fish",
+    "list": "Player list",
+    "player": "Player",
+    "hands": "Hands",
+    "profit": "Profit",
+    "type": "Type",
+    "auto_detected": "Auto-detected",
+    "actions": "Actions",
+    "manual": "Manual",
+    "mark_fish": "Set as fish",
+    "mark_reg": "Set as reg",
+    "is_reg": "Reg",
+    "is_fish": "Fish",
+    "set_fish": "→ Fish",
+    "set_reg": "→ Reg",
+    "page": "Page",
+    "view_hands": "View hands",
+    "hands_against": "Hands against",
+    "total_hands": "hands total",
+    "no_hands": "No hands found",
+    "load_more": "Load more"
   }
 }

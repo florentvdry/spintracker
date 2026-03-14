@@ -70,8 +70,8 @@ class IPCService {
   // ============ API Methods ============
 
   // Dashboard
-  async getDashboardStats(heroName, dateFrom, dateTo, buyIn, position) {
-    return this.invoke('get-dashboard-stats', heroName, dateFrom, dateTo, buyIn, position);
+  async getDashboardStats(heroName, dateFrom, dateTo, buyIn) {
+    return this.invoke('get-dashboard-stats', heroName, dateFrom, dateTo, buyIn);
   }
 
   async getWinrateChartData(options = {}) {
@@ -107,6 +107,14 @@ class IPCService {
   // Players
   async getPlayers(options = {}) {
     return this.invoke('get-players', options);
+  }
+
+  async updatePlayerRegStatus(playerId, isReg) {
+    return this.invoke('update-player-reg-status', playerId, isReg);
+  }
+
+  async getHandsAgainstPlayer(opponentName, heroName, limit = 50, page = 1) {
+    return this.invoke('get-hands-against-player', opponentName, heroName, limit, page);
   }
 
   // Import
@@ -156,10 +164,6 @@ class IPCService {
   // Data Management
   async deleteAllHands() {
     return this.invoke('delete-all-hands');
-  }
-
-  async deleteTournament(gameId) {
-    return this.invoke('delete-tournament', gameId);
   }
 
   async resetDefaultStats() {

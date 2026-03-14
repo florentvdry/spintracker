@@ -143,19 +143,4 @@ export const useHandsStore = create((set, get) => ({
   clearSelection: () => {
     set({ selectedHand: null, selectedTournament: null, tournamentHands: [] });
   },
-
-  deleteTournament: async (gameId) => {
-    try {
-      const result = await ipcService.deleteTournament(gameId);
-      if (result && result.success) {
-        set({ selectedTournament: null, tournamentHands: [] });
-        await get().loadTournaments();
-        return { success: true };
-      }
-      return { success: false, error: result?.message };
-    } catch (error) {
-      console.error('Failed to delete tournament:', error);
-      return { success: false, error: error.message };
-    }
-  },
 }));

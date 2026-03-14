@@ -15,13 +15,15 @@ namespace SpinTrackerBackend.Services
         private readonly Database _db;
         private readonly HandRepository _handRepo;
         private readonly AnalyticsRepository _analyticsRepo;
+        private readonly PlayerRepository _playerRepo;
         private readonly ILogger<AnalysisService> _logger;
 
-        public AnalysisService(Database db, HandRepository handRepo, AnalyticsRepository analyticsRepo, ILogger<AnalysisService> logger)
+        public AnalysisService(Database db, HandRepository handRepo, AnalyticsRepository analyticsRepo, PlayerRepository playerRepo, ILogger<AnalysisService> logger)
         {
             _db = db;
             _handRepo = handRepo;
             _analyticsRepo = analyticsRepo;
+            _playerRepo = playerRepo;
             _logger = logger;
         }
 
@@ -127,6 +129,14 @@ namespace SpinTrackerBackend.Services
                         if (filters.MinStackBB.HasValue && stackBB < filters.MinStackBB.Value) continue;
                         if (filters.MaxStackBB.HasValue && stackBB > filters.MaxStackBB.Value) continue;
                     }
+                }
+
+                // Filter by Opponent Type (reg/fish)
+                if (!string.IsNullOrEmpty(filters.OpponentType) && filters.OpponentType != "all")
+                {
+                    var opponentIsReg = CheckOpponentIsReg(hand, heroName);
+                    if (filters.OpponentType == "reg" && !opponentIsReg) continue;
+                    if (filters.OpponentType == "fish" && opponentIsReg) continue;
                 }
 
                 // Filter by Situation (Street)
@@ -563,6 +573,29 @@ namespace SpinTrackerBackend.Services
                 case "river": return !string.IsNullOrEmpty(hand.RiverAction);
                 default: return true;
             }
+        }
+
+        private bool CheckOpponentIsReg(AnalysisHandData hand, string? heroName)
+        {
+            if (string.IsNullOrEmpty(hand.PlayerPositionsMap)) return false;
+
+            var currentHeroName = heroName ?? hand.HeroName;
+            if (string.IsNullOrEmpty(currentHeroName)) return false;
+
+            var players = hand.PlayerPositionsMap.Split('|');
+            foreach (var playerPos in players)
+            {
+                var parts = playerPos.Split(':');
+                if (parts.Length < 2) continue;
+
+                var playerName = parts[0].Trim();
+                if (string.Equals(playerName, currentHeroName, StringComparison.OrdinalIgnoreCase)) continue;
+
+                var isReg = _playerRepo.CheckPlayerIsRegAsync(playerName).Result;
+                return isReg;
+            }
+
+            return false;
         }
 
         private bool MatchesAction(AnalysisHandData hand, string? situation, string action, string? heroName)
