@@ -539,11 +539,10 @@ export default function Charts() {
                           const totalTournaments = stats.total_tournaments || 1;
                           const getCevValue = (positionKey) => {
                             const value = stats.cev_by_position?.[positionKey] || 0;
-                            const posTournaments = stats.tournaments_by_position?.[positionKey] || 1;
                             if (chartPosition === 'all') {
-                              return (value / posTournaments).toFixed(2);
+                              return (value / totalTournaments).toFixed(2);
                             }
-                            return chartPosition === positionKey ? (value / posTournaments).toFixed(2) : '0.00';
+                            return chartPosition === positionKey ? (value / totalTournaments).toFixed(2) : '0.00';
                           };
                           return (
                             <>
@@ -559,11 +558,10 @@ export default function Charts() {
                           const totalTournaments = stats.total_tournaments || 1;
                           const getCevValue = (positionKey) => {
                             const value = stats.cev_by_position?.[positionKey] || 0;
-                            const posTournaments = stats.tournaments_by_position?.[positionKey] || 1;
                             if (chartPosition === 'all') {
-                              return (value / posTournaments).toFixed(2);
+                              return (value / totalTournaments).toFixed(2);
                             }
-                            return chartPosition === positionKey ? (value / posTournaments).toFixed(2) : '0.00';
+                            return chartPosition === positionKey ? (value / totalTournaments).toFixed(2) : '0.00';
                           };
                           return (
                             <>

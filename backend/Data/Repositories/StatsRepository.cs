@@ -554,7 +554,7 @@ public class StatsRepository
                 profit = reader.GetDouble(1),
                 chips_won_showdown = reader.GetDouble(2),
                 chips_won_no_showdown = reader.GetDouble(3),
-                cumulative = reader.GetDouble(4),
+                cumulative_ev = reader.GetDouble(4),
                 game_id = reader.IsDBNull(5) ? null : reader.GetString(5),
                 buy_in = reader.IsDBNull(6) ? 0.0 : reader.GetDouble(6),
                 prize_pool = reader.IsDBNull(7) ? 0.0 : reader.GetDouble(7),
@@ -661,7 +661,7 @@ public class StatsRepository
             finalData.Add(new {
                 date = h.date,
                 profit = h.profit,
-                cumulative = h.cumulative,
+                cumulative = h.cumulative_ev,
                 chips_won_showdown = cumulativeShowdown,
                 chips_won_no_showdown = cumulativeNoShowdown,
                 euro_profit = currentCumulativeEuro
@@ -683,6 +683,7 @@ public class StatsRepository
         public double chips_won_showdown { get; set; }
         public double chips_won_no_showdown { get; set; }
         public double cumulative { get; set; }
+        public double cumulative_ev { get; set; }
         public string? game_id { get; set; }
         public double buy_in { get; set; }
         public double prize_pool { get; set; }
