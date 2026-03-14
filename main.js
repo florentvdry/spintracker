@@ -986,3 +986,33 @@ ipcMain.handle('rename-database', async (event, id, name) => {
   return callBackendAPI(`/api/databases/${id}`, { name }, 'PUT');
 });
 
+// ============ IPC Handlers - Video Recording ============
+
+ipcMain.handle('save-video', async (event, { videoData, exportType }) => {
+  try {
+    // Show folder selection dialog
+    const { filePath } = await dialog.showSaveDialog(mainWindow, {
+      title: 'Enregistrer la vidéo',
+      defaultPath: `poker-replay-${exportType}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`,
+      filters: [
+        { name: 'WebM Video', extensions: ['webm'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    });
+
+    if (!filePath) {
+      return { success: false, message: 'Enregistrement annulé par l\'utilisateur' };
+    }
+
+    // Convert base64 to buffer and save
+    const buffer = Buffer.from(videoData, 'base64');
+    fs.writeFileSync(filePath, buffer);
+
+    console.log(`[Video] Video saved to: ${filePath}`);
+    return { success: true, filePath };
+  } catch (error) {
+    console.error('Failed to save video:', error);
+    return { success: false, message: error.message };
+  }
+});
+

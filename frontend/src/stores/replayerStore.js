@@ -678,24 +678,35 @@ async function startVideoRecording(exportType) {
   await waitForCompletion;
 
   // Stop recording
-  recorder.stopRecording(() => {
+  recorder.stopRecording(async () => {
     const blob = recorder.getBlob();
     
-    // Prompt for filename
-    const defaultName = `poker-replay-${exportType}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`;
-    const filename = prompt('Enter filename for the video export:', defaultName);
-    
-    if (!filename) return; // User cancelled
-    
-    // Create download link
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
+    // Convert blob to base64 for IPC transfer
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64data = reader.result.split(',')[1];
+      
+      try {
+        // Send video to main process for saving (with folder selection)
+        const result = await ipcService.invoke('save-video', {
+          videoData: base64data,
+          exportType
+        });
+
+        if (result.success) {
+          console.log('Video saved successfully to:', result.filePath);
+        } else {
+          console.error('Failed to save video:', result.message);
+          alert('Erreur lors de l\'enregistrement: ' + result.message);
+        }
+      } catch (saveError) {
+        console.error('Error saving video:', saveError);
+        alert('Erreur lors de l\'enregistrement vidéo');
+      }
+    };
+    reader.readAsDataURL(blob);
     
     // Cleanup
-    URL.revokeObjectURL(url);
     stream.getTracks().forEach(track => track.stop());
     useReplayerStore.setState({ recorder: null, recordingType: null });
   });
