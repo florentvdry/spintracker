@@ -3,6 +3,7 @@ import { useReplayerStore } from '../../stores/replayerStore';
 import ReplayerTable from '../../components/replayer/ReplayerTable';
 import ReplayerControls from '../../components/replayer/ReplayerControls';
 import ReplayerTimeline from '../../components/replayer/ReplayerTimeline';
+import ExportModal from '../../components/ui/ExportModal';
 import { useTranslation } from 'react-i18next';
 
 const Replayer = () => {
@@ -19,15 +20,20 @@ const Replayer = () => {
         
         console.log('[Replayer] Received payload:', payload);
         
-        if (payload) {
-          if (payload.handData) {
-            setReplayerHand(payload.handData, {
-              handQueue: payload.handQueue,
-              currentHandIndex: payload.currentHandIndex
-            });
-          } else {
-            setReplayerHand(payload);
-          }
+        let handData = payload;
+        
+        // Handle array format (when wrapped in array by IPC)
+        if (Array.isArray(payload) && payload.length > 0) {
+          handData = payload[0];
+        }
+        
+        if (handData && handData.handData) {
+          setReplayerHand(handData.handData, {
+            handQueue: handData.handQueue,
+            currentHandIndex: handData.currentHandIndex
+          });
+        } else if (handData) {
+          setReplayerHand(handData);
         } else {
           setError(t('replayer.no_data'));
         }
@@ -82,7 +88,9 @@ const Replayer = () => {
   }
 
   return (
-    <div className="h-screen w-screen bg-gray-900 text-gray-100 flex flex-col overflow-hidden">
+    <>
+      <ExportModal />
+      <div className="h-screen w-screen bg-gray-900 text-gray-100 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="h-10 bg-gray-800 flex items-center justify-between px-4 border-b border-gray-700">
         <span className="font-semibold text-sm">{t('replayer.hand_title')} {hand?.id ? `- ${hand.id}` : ''}</span>
@@ -109,6 +117,7 @@ const Replayer = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

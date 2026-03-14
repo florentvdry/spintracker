@@ -330,7 +330,9 @@ function createReplayerWindow(handData) {
 
   replayerWindow.webContents.on('did-finish-load', () => {
     // Send the hand data to the replayer window
-    replayerWindow.webContents.send('load-replayer-data', handData);
+    // Double-serialize to ensure no non-clonable objects slip through
+    const serializedData = JSON.parse(JSON.stringify(handData));
+    replayerWindow.webContents.send('load-replayer-data', serializedData);
   });
 
   replayerWindow.on('closed', () => {
@@ -345,7 +347,9 @@ app.whenReady().then(() => {
 
   ipcMain.handle('replayer-get-data', () => {
     console.log('[Main] replayer-get-data invoked, returning stored data');
-    return lastReplayerData;
+    // Ensure data is serializable before returning
+    if (!lastReplayerData) return null;
+    return JSON.parse(JSON.stringify(lastReplayerData));
   });
 
   ipcMain.handle('get-app-version', () => {
@@ -970,5 +974,54 @@ ipcMain.handle('delete-database', async (event, id) => {
 
 ipcMain.handle('rename-database', async (event, id, name) => {
   return callBackendAPI(`/api/databases/${id}`, { name }, 'PUT');
+});
+
+// ============ IPC Handlers - Video Recording ============
+
+ipcMain.handle('get-recordable-windows', async () => {
+  try {
+    const sources = await desktopCapturer.getSources({
+      types: ['window', 'screen'],
+      thumbnailSize: { width: 320, height: 180 }
+    });
+
+    // Serialize safely for IPC
+    return JSON.parse(JSON.stringify(sources.map(source => ({
+      id: String(source.id),
+      name: String(source.name),
+      thumbnail: source.thumbnail ? source.thumbnail.toDataURL() : null
+    }))));
+  } catch (error) {
+    console.error('Failed to get sources:', error);
+    return [];
+  }
+});
+
+ipcMain.handle('save-video', async (event, { videoData, exportType }) => {
+  try {
+    // Show folder selection dialog
+    const { filePath } = await dialog.showSaveDialog(mainWindow, {
+      title: 'Enregistrer la vidéo',
+      defaultPath: `poker-replay-${exportType}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`,
+      filters: [
+        { name: 'WebM Video', extensions: ['webm'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    });
+
+    if (!filePath) {
+      return { success: false, message: 'Enregistrement annulé par l\'utilisateur' };
+    }
+
+    // Convert base64 to buffer and save
+    const buffer = Buffer.from(videoData, 'base64');
+    fs.writeFileSync(filePath, buffer);
+
+    console.log(`[Video] Video saved to: ${filePath}`);
+    return { success: true, filePath };
+  } catch (error) {
+    console.error('Failed to save video:', error);
+    return { success: false, message: error.message };
+  }
 });
 
