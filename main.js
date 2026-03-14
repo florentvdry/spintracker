@@ -997,12 +997,27 @@ ipcMain.handle('get-recordable-windows', async () => {
   }
 });
 
-ipcMain.handle('save-video', async (event, { videoData, exportType }) => {
+ipcMain.handle('save-video', async (event, data) => {
+  console.log('[Main] save-video handler called');
+  
   try {
+    // Validate input data
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid data format');
+    }
+    
+    const { videoData, exportType } = data;
+    
+    if (!videoData || typeof videoData !== 'string') {
+      throw new Error('Invalid video data');
+    }
+    
+    console.log('[Main] Video data length:', videoData.length, 'exportType:', exportType);
+    
     // Show folder selection dialog
     const { filePath } = await dialog.showSaveDialog(mainWindow, {
       title: 'Enregistrer la vidéo',
-      defaultPath: `poker-replay-${exportType}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`,
+      defaultPath: `poker-replay-${exportType || 'export'}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.webm`,
       filters: [
         { name: 'WebM Video', extensions: ['webm'] },
         { name: 'All Files', extensions: ['*'] }
@@ -1017,10 +1032,10 @@ ipcMain.handle('save-video', async (event, { videoData, exportType }) => {
     const buffer = Buffer.from(videoData, 'base64');
     fs.writeFileSync(filePath, buffer);
 
-    console.log(`[Video] Video saved to: ${filePath}`);
+    console.log(`[Main] Video saved to: ${filePath}, size: ${buffer.length} bytes`);
     return { success: true, filePath };
   } catch (error) {
-    console.error('Failed to save video:', error);
+    console.error('[Main] Failed to save video:', error);
     return { success: false, message: error.message };
   }
 });

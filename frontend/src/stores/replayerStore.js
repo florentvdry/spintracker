@@ -60,45 +60,57 @@ export const useReplayerStore = create((set, get) => ({
 
   confirmExport: async (exportType) => {
     const { handQueue } = get();
+    console.log('[VideoExport] confirmExport called, type:', exportType);
     set({ showExportModal: false, isRecording: true, recordingType: exportType });
     
     try {
+      console.log('[VideoExport] Calling startVideoRecording...');
       await startVideoRecording(exportType);
+      console.log('[VideoExport] startVideoRecording completed successfully');
     } catch (error) {
-      console.error('Video export failed:', error);
+      console.error('[VideoExport] Video export failed with error:', error);
+      console.error('[VideoExport] Error stack:', error?.stack);
+      
       let errorMessage = 'Unknown error';
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (typeof error === 'string') {
         errorMessage = error;
       } else if (error && typeof error === 'object') {
-        errorMessage = JSON.stringify(error);
+        // Handle Error-like objects
+        errorMessage = error.message || error.error?.message || JSON.stringify(error);
       }
       alert('Erreur lors de l\'export vidéo: ' + errorMessage);
     } finally {
+      console.log('[VideoExport] Cleaning up recording state');
       set({ isRecording: false, recordingType: null });
     }
   },
 
   exportVideo: async () => {
     const { handQueue, hand } = get();
-    if (!hand) return;
+    console.log('[VideoExport] exportVideo called, handQueue length:', handQueue?.length);
+    if (!hand) {
+      console.warn('[VideoExport] No hand loaded');
+      return;
+    }
 
     if (handQueue.length > 1) {
       set({ showExportModal: true });
     } else {
       set({ isRecording: true, recordingType: 'hand' });
       try {
+        console.log('[VideoExport] Starting single hand recording...');
         await startVideoRecording('hand');
       } catch (error) {
-        console.error('Video export failed:', error);
+        console.error('[VideoExport] Video export failed:', error);
         let errorMessage = 'Unknown error';
         if (error instanceof Error) {
           errorMessage = error.message;
         } else if (typeof error === 'string') {
           errorMessage = error;
         } else if (error && typeof error === 'object') {
-          errorMessage = JSON.stringify(error);
+          errorMessage = error.message || error.error?.message || JSON.stringify(error);
         }
         alert('Erreur lors de l\'export vidéo: ' + errorMessage);
       } finally {
@@ -507,71 +519,84 @@ let currentRecorder = null;
 let currentStream = null;
 
 async function startVideoRecording(exportType) {
-  const isElectron = typeof window !== 'undefined' && (window.process?.versions?.electron || window.require);
+  console.log('[VideoExport] Starting video recording, type:', exportType);
+  
+  const isElectron = typeof window !== 'undefined' && window.process?.versions?.electron;
   const isDev = import.meta.env.DEV;
-  let stream;
+  
+  console.log('[VideoExport] Environment - isElectron:', isElectron, 'isDev:', isDev);
 
   if (isDev && !isElectron) {
-    console.log('Development mode: Simulating video recording...');
+    console.log('[VideoExport] Development mode: Simulating video recording...');
     await simulateRecording(exportType);
     return;
   }
 
-  if (isElectron) {
-    try {
-      // Use getDisplayMedia directly - it shows a native picker for the user to select the window
-      console.log('Starting screen capture via getDisplayMedia...');
-      stream = await navigator.mediaDevices.getDisplayMedia({
-        video: {
-          displaySurface: 'window',
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-          frameRate: { ideal: 30 }
-        },
-        audio: false
-      });
-      console.log('Screen capture started, stream:', stream ? 'active' : 'null');
-    } catch (e) {
-      console.error('getDisplayMedia failed:', e);
-      // Try fallback with screen
-      try {
-        console.log('Trying fallback with screen source...');
-        stream = await navigator.mediaDevices.getDisplayMedia({
-          video: { mediaSource: 'screen' },
-          audio: false
-        });
-      } catch (err) {
-        console.error('Fallback also failed:', err);
-        const errorMsg = e?.message || err?.message || 'Failed to capture screen';
-        throw new Error('Échec de la capture d\'écran: ' + errorMsg);
-      }
-    }
+  if (!isElectron) {
+    throw new Error('Electron environment not detected. Video export only works in Electron app.');
   }
 
-  // Import RecordRTC dynamically
-  const RecordRTC = (await import('recordrtc')).default;
-  console.log('RecordRTC version:', RecordRTC.version);
+  let stream = null;
+  
+  try {
+    // Use getDisplayMedia directly - it shows a native picker for the user to select the window
+    console.log('[VideoExport] Requesting screen capture via getDisplayMedia...');
+    stream = await navigator.mediaDevices.getDisplayMedia({
+      video: {
+        displaySurface: 'window',
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+        frameRate: { ideal: 30 }
+      },
+      audio: false
+    });
+    console.log('[VideoExport] Screen capture started, stream active:', !!stream);
+  } catch (e) {
+    console.error('[VideoExport] getDisplayMedia failed:', e);
+    const errorMsg = e?.message || String(e) || 'Failed to capture screen';
+    throw new Error('Échec de la capture d\'écran: ' + errorMsg);
+  }
 
   if (!stream) {
     throw new Error('No stream available for recording');
   }
 
-  // Create recorder
-  const recorder = new RecordRTC(stream, {
-    type: 'video',
-    mimeType: 'video/webm;codecs=vp9',
-    recorderType: RecordRTC.MediaStreamRecorder
-  });
-  console.log('Created recorder, starting...');
+  // Import RecordRTC dynamically
+  let RecordRTC;
+  try {
+    const module = await import('recordrtc');
+    RecordRTC = module.default;
+    console.log('[VideoExport] RecordRTC loaded, version:', RecordRTC.version);
+  } catch (e) {
+    console.error('[VideoExport] Failed to load RecordRTC:', e);
+    throw new Error('Failed to load recording library');
+  }
 
-  // Start recording - wrap in try-catch to identify exact failure point
+  // Create recorder
+  console.log('[VideoExport] Creating recorder...');
+  let recorder;
+  try {
+    recorder = new RecordRTC(stream, {
+      type: 'video',
+      mimeType: 'video/webm;codecs=vp9',
+      recorderType: RecordRTC.MediaStreamRecorder
+    });
+    console.log('[VideoExport] Recorder created successfully');
+  } catch (e) {
+    console.error('[VideoExport] Failed to create recorder:', e);
+    stream.getTracks().forEach(t => t.stop());
+    throw new Error('Failed to create recorder: ' + (e.message || String(e)));
+  }
+
+  // Start recording
+  console.log('[VideoExport] Starting recording...');
   try {
     recorder.startRecording();
-    console.log('started recording video stream.');
-    console.log('Using recorderType:', recorder.recorderType);
-  } catch (recorderError) {
-    console.error('Error starting recorder:', recorderError);
-    throw recorderError;
+    console.log('[VideoExport] Recording started');
+  } catch (e) {
+    console.error('[VideoExport] Failed to start recording:', e);
+    stream.getTracks().forEach(t => t.stop());
+    throw new Error('Failed to start recording: ' + (e.message || String(e)));
   }
 
   // Store recorder in module variable (not in Zustand to avoid IPC cloning issues)
@@ -580,13 +605,15 @@ async function startVideoRecording(exportType) {
 
   // Start playback
   const store = useReplayerStore.getState();
+  console.log('[VideoExport] Starting playback for recording...');
   store.setPlaybackSpeed(2); // 2x speed for export
   if (exportType === 'hand') {
     store.jumpToStep(-1); // Start from beginning of current hand
-  } // For tournament, continue from current position or start current hand
+  }
   store.togglePlay(); // Start playing
 
   // Wait for completion
+  console.log('[VideoExport] Waiting for replay to complete...');
   const waitForCompletion = new Promise((resolve) => {
     const checkCompletion = () => {
       const state = useReplayerStore.getState();
@@ -600,12 +627,14 @@ async function startVideoRecording(exportType) {
       if (exportType === 'hand') {
         // Check if current hand is finished
         if (currentActionIndex >= hand.actions.length - 1 && !isPlaying) {
+          console.log('[VideoExport] Hand recording complete');
           resolve();
           return;
         }
       } else {
         // Tournament: check if all hands finished
         if (currentHandIndex >= handQueue.length - 1 && currentActionIndex >= hand.actions.length - 1 && !isPlaying) {
+          console.log('[VideoExport] Tournament recording complete');
           resolve();
           return;
         }
@@ -618,41 +647,71 @@ async function startVideoRecording(exportType) {
 
   await waitForCompletion;
 
-  // Stop recording
-  recorder.stopRecording(async () => {
-    const blob = recorder.getBlob();
-    
-    // Convert blob to base64 for IPC transfer
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64data = reader.result.split(',')[1];
+  // Stop recording and save
+  console.log('[VideoExport] Stopping recorder...');
+  
+  return new Promise((resolve, reject) => {
+    recorder.stopRecording(async () => {
+      console.log('[VideoExport] Recorder stopped, getting blob...');
+      const blob = recorder.getBlob();
       
-      try {
-        // Send video to main process for saving (with folder selection)
-        const result = await ipcService.invoke('save-video', {
-          videoData: base64data,
-          exportType
-        });
-
-        if (result.success) {
-          console.log('Video saved successfully to:', result.filePath);
-        } else {
-          console.error('Failed to save video:', result.message);
-          alert('Erreur lors de l\'enregistrement: ' + result.message);
-        }
-      } catch (saveError) {
-        console.error('Error saving video:', saveError);
-        alert('Erreur lors de l\'enregistrement vidéo');
+      if (!blob) {
+        console.error('[VideoExport] No blob generated');
+        reject(new Error('No video data generated'));
+        return;
       }
-    };
-    reader.readAsDataURL(blob);
-    
-    // Cleanup
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-    }
-    currentRecorder = null;
-    currentStream = null;
+      
+      console.log('[VideoExport] Blob size:', blob.size, 'type:', blob.type);
+      
+      // Convert blob to base64 for IPC transfer
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64data = reader.result.split(',')[1];
+        console.log('[VideoExport] Converted to base64, length:', base64data.length);
+        
+        try {
+          // Use direct ipcRenderer invoke to avoid any wrapper issues
+          console.log('[VideoExport] Sending to main process...');
+          
+          // Ensure we have valid serializable data
+          const payload = {
+            videoData: String(base64data),
+            exportType: String(exportType)
+          };
+          
+          console.log('[VideoExport] Payload prepared, videoData length:', payload.videoData.length);
+          
+          // Direct IPC call - avoid any potential wrapper issues
+          const { ipcRenderer } = window.require('electron');
+          const result = await ipcRenderer.invoke('save-video', payload);
+
+          console.log('[VideoExport] Save result:', result);
+
+          if (result.success) {
+            console.log('[VideoExport] Video saved successfully to:', result.filePath);
+            alert('Vidéo enregistrée avec succès !');
+          } else {
+            console.error('[VideoExport] Failed to save video:', result.message);
+            alert('Erreur lors de l\'enregistrement: ' + result.message);
+          }
+        } catch (saveError) {
+          console.error('[VideoExport] Error saving video:', saveError);
+          alert('Erreur lors de l\'enregistrement vidéo: ' + (saveError.message || String(saveError)));
+        }
+      };
+      reader.onerror = () => {
+        console.error('[VideoExport] FileReader error');
+        reject(new Error('Failed to read video data'));
+      };
+      reader.readAsDataURL(blob);
+      
+      // Cleanup
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      currentRecorder = null;
+      currentStream = null;
+    });
   });
 }
 
