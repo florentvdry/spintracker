@@ -19,7 +19,7 @@ spintracker/
 │   │   └── Repositories/
 │   ├── Models/               # Modèles de données
 │   └── Migrations/           # Migrations base de données
-├── frontend/                  # Application React
+├── frontend/                  # Application React (Electron)
 │   ├── src/
 │   │   ├── components/       # Composants UI
 │   │   │   ├── layout/       # Layout, Sidebar, Header
@@ -39,6 +39,12 @@ spintracker/
 │   │   ├── locales/          # Traductions (i18n)
 │   │   └── utils/            # Utilitaires
 │   └── package.json
+├── website/                   # Site web Next.js (Vercel)
+│   ├── src/
+│   │   ├── app/              # Pages Next.js
+│   │   ├── components/       # Composants React
+│   │   └── messages/         # Traductions i18n
+│   └── package.json
 └── assets/                    # Ressources (logo, icônes)
 ```
 
@@ -50,7 +56,7 @@ spintracker/
 - **.NET SDK** 8.0+ (https://dotnet.microsoft.com/download)
 - **npm**
 
-### Installation rapide
+### Installation rapide (Application Electron)
 
 ```bash
 npm run setup
@@ -61,21 +67,18 @@ Cela installera :
 2. Les dépendances React
 3. Le build du backend C#
 
-### Installation manuelle
+### Installation rapide (Website Next.js)
 
 ```bash
-# 1. Installer les dépendances
+cd website
 npm install
-
-# 2. Build du backend C#
-cd backend
-dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=true
-cd ..
 ```
 
 ## 🎮 Utilisation
 
-### Mode développement
+### Application Electron
+
+#### Mode développement
 
 ```bash
 npm run dev
@@ -86,11 +89,51 @@ Cela démarre :
 - L'application Electron avec DevTools
 - Le backend C# sur le port 5050
 
-### Build production (Windows)
+#### Lancer le backend seul
+
+```bash
+cd backend
+dotnet run
+```
+
+#### Build production (Windows)
 
 ```bash
 npm run build
 ```
+
+#### Créer l'installateur
+
+```bash
+npm run publish
+```
+
+### Website Next.js
+
+#### Mode développement
+
+```bash
+cd website
+npm run dev
+```
+
+#### Build production
+
+```bash
+cd website
+npm run build
+```
+
+#### Déployer sur Vercel
+
+Le website est automatiquement déployé sur Vercel via GitHub Actions. Pour déployer manuellement :
+
+```bash
+cd website
+vercel deploy
+```
+
+Ou connectez le repository GitHub à Vercel pour un déploiement automatique.
 
 ## 🧮 Backend C#
 
@@ -160,6 +203,8 @@ Le backend C# utilise :
 
 ## 🛠️ Technologies
 
+### Application Electron
+
 - **Electron 28** - Framework desktop cross-platform
 - **React 18** - Interface utilisateur
 - **Vite** - Build tool ultra-rapide
@@ -167,9 +212,20 @@ Le backend C# utilise :
 - **Zustand** - Gestion d'état légère
 - **Recharts / ECharts** - Graphiques React
 - **i18next** - Internationalisation (EN, FR)
+
+### Backend
+
 - **.NET 8** - Backend C#
+- **ASP.NET Core** - API REST performante
 - **SQLite** - Base de données embarquée
 - **Manjar** - Évaluation des mains de poker
+
+### Website
+
+- **Next.js 16** - Framework React full-stack
+- **Tailwind CSS v4** - Styling
+- **next-intl** - Internationalisation
+- **Framer Motion** - Animations
 
 ## 📝 License
 
