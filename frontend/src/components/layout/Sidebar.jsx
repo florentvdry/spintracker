@@ -22,6 +22,7 @@ export default function Sidebar() {
   const navigation = [
     { name: t('navigation.dashboard'), href: '/', icon: LayoutDashboard },
     { name: t('navigation.history'), href: '/hands', icon: History },
+    { name: t('navigation.analysis'), href: '/analysis', icon: BarChart2 },
     { name: t('navigation.ranges'), href: '/ranges', icon: Grid3X3 },
     { name: t('navigation.settings'), href: '/settings', icon: Settings },
   ];

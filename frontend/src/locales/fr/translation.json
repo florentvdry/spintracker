@@ -2,6 +2,7 @@
   "navigation": {
     "dashboard": "Tableau de bord",
     "history": "Historique des tournois",
+    "analysis": "Analyse statistique",
     "ranges": "Analyseur de ranges",
     "settings": "Paramètres"
   },
