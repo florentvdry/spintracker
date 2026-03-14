@@ -15,26 +15,68 @@
     "title": "Built for Spin Players",
     "subtitle": "Everything you need to analyze your game and improve.",
     "items": {
-      "analytics": {
-        "title": "Advanced Analytics",
-        "description": "Deep dive into your game with interactive graphs and CEV for every position."
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "View your performance at a glance. Recent sessions, winrate chart, and overall statistics."
+      },
+      "handhistory": {
+        "title": "Hand History",
+        "description": "Browse your entire hand history. Advanced filters by player, position, street and more."
+      },
+      "analysis": {
+        "title": "Deep Analysis",
+        "description": "Analyze your mistakes and leaks with detailed statistics by situation. Identify weaknesses in your game."
+      },
+      "replayer": {
+        "title": "Interactive Replayer",
+        "description": "Review your sessions hand by hand. Analyze every street, check equities, and take notes on opponents."
       },
       "range": {
-        "title": "Range Analysis",
-        "description": "Visualize and analyze your range, as well as your opponents."
+        "title": "Range Research",
+        "description": "Study and refine your ranges with our comprehensive tool. Compare against opponent tendencies."
       },
-      "performance": {
-        "title": "History & Replayer",
-        "description": "Review your previous sessions and relive them with our interactive replayer."
+      "settings": {
+        "title": "Settings",
+        "description": "Configure auto-import of hands, room detection, and user preferences."
       }
     }
   },
   "Screenshots": {
     "title": "See it in Action",
     "subtitle": "A clean, intuitive interface designed to keep you focused on the action.",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "View your performance at a glance. Track your sessions, winrate, and overall statistics.",
+      "alt": "Dashboard Screenshot",
+      "list": {
+        "sessions": "Recent sessions",
+        "winrate": "Winrate chart",
+        "stats": "Overall statistics"
+      }
+    },
+    "handhistory": {
+      "title": "Hand History",
+      "description": "Browse your entire hand history with advanced filters.",
+      "alt": "Hand History Screenshot",
+      "list": {
+        "filters": "Advanced filters",
+        "tournaments": "Tournament view",
+        "export": "Data export"
+      }
+    },
+    "analysis": {
+      "title": "Deep Analysis",
+      "description": "Analyze your mistakes and leaks with detailed statistics by situation.",
+      "alt": "Analysis Tool Screenshot",
+      "list": {
+        "situations": "Situation analysis",
+        "leaks": "Leak identification",
+        "filters": "Advanced filters"
+      }
+    },
     "replayer": {
       "title": "Interactive Replayer",
-      "description": "Review your sessions with our sleek hand replayer. Analyze every street, check equities, and take notes on opponents.",
+      "description": "Review your sessions with our sleek hand replayer. Analyze every street, check equities.",
       "list": {
         "analyze": "Hand-by-hand or tournament analysis",
         "export": "Video export"
@@ -44,7 +86,11 @@
     "range_research": {
       "title": "Range Research",
       "description": "Study and refine your ranges with our comprehensive range research tool. Compare against opponent tendencies and optimize your strategy.",
-      "alt": "Range Research Tool Screenshot"
+      "alt": "Range Research Tool Screenshot",
+      "list": {
+        "grid": "Interactive range grid",
+        "compare": "Opponent comparison"
+      }
     }
   },
   "Footer": {

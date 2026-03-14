@@ -15,26 +15,68 @@
     "title": "Conçu pour les joueurs de Spin",
     "subtitle": "Tout ce dont vous avez besoin pour commencer à analyser votre jeu et progresser.",
     "items": {
-      "analytics": {
-        "title": "Analyses Avancées",
-        "description": "Plongez dans votre jeu avec des graphiques interactifs et vos CEVs par position."
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "Visualisez vos performances en un coup d'œil. Sessions récentes, graphique de winrate et statistiques globales."
+      },
+      "handhistory": {
+        "title": "Historique des Mains",
+        "description": "Parcourez l'ensemble de votre historique de mains. Filtres avancés par joueur, position, улица et plus encore."
+      },
+      "analysis": {
+        "title": "Analyse Approfondie",
+        "description": "Analysez vos erreurs et fuites avec des statistiques détaillées par situation. Identifiez les points faibles de votre jeu."
+      },
+      "replayer": {
+        "title": "Replayer Interactif",
+        "description": "Revoyez vos sessions main par main. Analysez chaque rue, vérifiez les équités et prenez des notes sur vos adversaires."
       },
       "range": {
-        "title": "Analyse de Range",
-        "description": "Visualisez et analysez votre range, ainsi que celle de vos adversaires."
+        "title": "Recherche de Range",
+        "description": "Étudiez et affinez vos ranges avec notre outil complet. Comparez-les aux tendances de vos adversaires."
       },
-      "performance": {
-        "title": "Historique et Replayer",
-        "description": "Analyser vos parties passées et revivez-les avec notre replayer interactif."
+      "settings": {
+        "title": "Paramètres",
+        "description": "Configurez import automatique des mains, détection de la room, et préférences utilisateur."
       }
     }
   },
   "Screenshots": {
     "title": "Voir en Action",
     "subtitle": "Une interface propre et intuitive conçue pour vous garder concentré sur l'action.",
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Visualisez vos performances en un coup d'œil. Suivez vos sessions, votre winrate et vos statistiques globales.",
+      "alt": "Capture d'écran du Dashboard",
+      "list": {
+        "sessions": "Sessions récentes",
+        "winrate": "Graphique de winrate",
+        "stats": "Statistiques globales"
+      }
+    },
+    "handhistory": {
+      "title": "Historique des Mains",
+      "description": "Parcourez l'ensemble de votre historique de mains avec des filtres avancés.",
+      "alt": "Capture d'écran de l'historique des mains",
+      "list": {
+        "filters": "Filtres avancés",
+        "tournaments": "Vue par tournois",
+        "export": "Export des données"
+      }
+    },
+    "analysis": {
+      "title": "Analyse Approfondie",
+      "description": "Analysez vos erreurs et fuites avec des statistiques détaillées par situation.",
+      "alt": "Capture d'écran de l'outil d'analyse",
+      "list": {
+        "situations": "Analyse par situation",
+        "leaks": "Identification des fuites",
+        "filters": "Filtres avancés"
+      }
+    },
     "replayer": {
       "title": "Replayer Interactif",
-      "description": "Revoyez vos sessions avec notre replayer élégant.",
+      "description": "Revoyez vos sessions avec notre replayer élégant. Analysez chaque rue, vérifiez les équités.",
       "list": {
         "analyze": "Analyse main par main ou par tournois",
         "export": "Exportation au format vidéo"
@@ -44,7 +86,11 @@
     "range_research": {
       "title": "Recherche de Range",
       "description": "Étudiez et affinez vos ranges avec notre outil complet de recherche de range. Comparez-les aux tendances de vos adversaires et optimisez votre stratégie.",
-      "alt": "Capture d'écran de l'outil de recherche de range"
+      "alt": "Capture d'écran de l'outil de recherche de range",
+      "list": {
+        "grid": "Grille de range interactive",
+        "compare": "Comparaison avec les adversaires"
+      }
     }
   },
   "Footer": {
