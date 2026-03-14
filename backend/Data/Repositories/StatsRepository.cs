@@ -61,7 +61,7 @@ public class StatsRepository
             SELECT 
                 COUNT(*) as total_hands,
                 SUM(CASE WHEN ph.net_profit > 0 THEN 1 ELSE 0 END) as hands_won,
-                COALESCE(SUM(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1000.0), 0) as total_ev
+                COALESCE(SUM(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1625.0), 0) as total_ev
             FROM hands h
             {joinClause}
             {whereClause}";
@@ -175,7 +175,7 @@ public class StatsRepository
                 cmdPos.CommandText = $@"
                     SELECT 
                         ph.position,
-                        COALESCE(SUM(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1000.0), 0) as pos_ev,
+                        COALESCE(SUM(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1625.0), 0) as pos_ev,
                         h.player_count,
                         COUNT(*) as hand_count
                     FROM hands h
@@ -406,7 +406,7 @@ public class StatsRepository
 
         var joinClause = "";
         var profitCol = "ph.net_profit";
-        var evCol = "COALESCE(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1000.0, ph.net_profit)";
+        var evCol = "COALESCE(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1625.0, ph.net_profit)";
         var showdownCondition = "ph.went_to_showdown = 1";
 
         if (!string.IsNullOrEmpty(options.HeroName))
