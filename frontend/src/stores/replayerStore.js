@@ -355,17 +355,19 @@ export const selectReplayerState = (state) => {
       player.lastActionType = action.type;
       
       switch (action.type) {
-        case 'post': // Blinds/Antes
+        case 'post': {
+          const amount = action.amount || 0;
+          const blindLabel = player.position === 'SB' ? 'SB' : (player.position === 'BB' ? 'BB' : 'post');
+          
+          player.currentStack -= amount;
+          player.currentBet += amount;
+          player.actionLabel = `${blindLabel} ${amount}`;
+          break;
+        }
         case 'bet':
         case 'raise':
         case 'call':
         case 'all-in':
-          const amount = action.amount || 0;
-          
-          player.currentStack -= amount;
-          player.currentBet += amount;
-          player.actionLabel = `${action.type} ${amount}`;
-          break;
           
         case 'check':
           player.actionLabel = 'Check';
