@@ -228,19 +228,6 @@ class IPCService {
   async renameDatabase(id, name) {
     return this.invoke('rename-database', id, name);
   }
-
-  // Video Recording
-  async getRecordableWindows() {
-    return this.invoke('get-recordable-windows');
-  }
-
-  async getDesktopSources() {
-    return this.invoke('record-desktop-get-sources');
-  }
-
-  async saveVideo(videoData, exportType) {
-    return this.invoke('save-video', { videoData, exportType });
-  }
 }
 
 export const ipcService = new IPCService();

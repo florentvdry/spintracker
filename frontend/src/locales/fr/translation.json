@@ -149,8 +149,6 @@
     "loading": "Chargement de la main...",
     "start": "DÉBUT",
     "action_log": "Journal d'actions",
-    "export_video": "Exporter Vidéo",
-    "recording": "Enregistrement...",
     "error_title": "Erreur du Replayer",
     "no_data": "Aucune donnée de main n'a été trouvée pour cette fenêtre.",
     "load_error": "Erreur lors de la récupération des données: ",
