@@ -365,7 +365,22 @@ public class StatsRepository
         {
             var first = game.First();
             double chipProfit = game.Sum(h => h.h_p);
-            int? tournamentPosition = first.tp;
+            
+            // Get tournament position - prefer the last hand with a position (usually the summary)
+            int? tournamentPosition = null;
+            int maxPlayerCount = 0;
+            foreach (var h in game)
+            {
+                if (h.tp.HasValue)
+                {
+                    tournamentPosition = h.tp;
+                }
+                if (h.pc > maxPlayerCount)
+                {
+                    maxPlayerCount = h.pc;
+                }
+            }
+            
             double profit = 0;
             if (first.p > 0)
             {
@@ -381,7 +396,7 @@ public class StatsRepository
                     }
                     else if (tournamentPosition.Value == 2)
                     {
-                        double consolation = (first.pc == 2) ? (first.p * 0.15) : (first.p * 0.10);
+                        double consolation = (maxPlayerCount == 2) ? (first.p * 0.15) : (first.p * 0.10);
                         profit = consolation - first.b;
                     }
                     else if (tournamentPosition.Value == 3)
@@ -402,7 +417,7 @@ public class StatsRepository
                 {
                     if (hasSharing)
                     {
-                        double consolation = (first.pc == 2) ? (first.p * 0.15) : (first.p * 0.10);
+                        double consolation = (maxPlayerCount == 2) ? (first.p * 0.15) : (first.p * 0.10);
                         profit = consolation - first.b;
                     }
                     else
