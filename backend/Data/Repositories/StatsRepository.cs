@@ -293,13 +293,13 @@ public class StatsRepository
 
         // Fetch necessary columns to group sessions and calculate profit
         cmd.CommandText = $@"
-            SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, {profitCol}, h.player_count 
+            SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, {profitCol}, h.player_count, ph.tournament_position
             FROM hands h 
             {joinClause}
             {whereClause}
             ORDER BY h.date_time ASC";
         
-        var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)>();
+        var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int? tp)>();
         using (var reader = await cmd.ExecuteReaderAsync())
         {
             while(await reader.ReadAsync())
@@ -309,6 +309,8 @@ public class StatsRepository
                  dtStr = dtStr.Replace("(UTC)", "").Trim();
                  if(!DateTime.TryParse(dtStr, out var dt)) continue;
                  
+                 int? tournamentPosition = reader.IsDBNull(7) ? null : reader.GetInt32(7);
+                 
                  rawHands.Add((
                     dt,
                     reader.IsDBNull(1) ? "Unknown" : reader.GetString(1),
@@ -316,14 +318,15 @@ public class StatsRepository
                     reader.IsDBNull(3) ? 0.0 : reader.GetDouble(3),
                     reader.IsDBNull(4) ? 0.0 : reader.GetDouble(4),
                     reader.IsDBNull(5) ? 0.0 : reader.GetDouble(5),
-                    reader.IsDBNull(6) ? 3 : reader.GetInt32(6)
+                    reader.IsDBNull(6) ? 3 : reader.GetInt32(6),
+                    tournamentPosition
                  ));
             }
         }
 
         // Group by sessions (hands within 2 hours are same session)
         var sessions = new List<SessionInfo>();
-        var currentSession = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)>();
+        var currentSession = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int? tp)>();
         DateTime? lastTime = null;
 
         foreach (var hand in rawHands.OrderBy(h => h.t))
@@ -348,7 +351,7 @@ public class StatsRepository
         return limit.HasValue ? sessions.Take(limit.Value).ToList() : sessions;
     }
 
-    private SessionInfo CreateSessionInfo(List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)> hands)
+    private SessionInfo CreateSessionInfo(List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int? tp)> hands)
     {
         var startTime = hands.Min(h => h.t);
         var room = hands.First().r;
@@ -362,11 +365,35 @@ public class StatsRepository
         {
             var first = game.First();
             double chipProfit = game.Sum(h => h.h_p);
+            int? tournamentPosition = first.tp;
             double profit = 0;
             if (first.p > 0)
             {
                 bool hasSharing = (first.b > 0 && (first.p / first.b) >= 20);
-                if (chipProfit > 0)
+                
+                // Use actual tournament position if available, otherwise fallback to chip profit logic
+                if (tournamentPosition.HasValue && hasSharing)
+                {
+                    // x20+ spins: 1st=75%, 2nd=15% (HU) or 10% (3-way), 3rd=10%
+                    if (tournamentPosition.Value == 1)
+                    {
+                        profit = (first.p * 0.75) - first.b;
+                    }
+                    else if (tournamentPosition.Value == 2)
+                    {
+                        double consolation = (first.pc == 2) ? (first.p * 0.15) : (first.p * 0.10);
+                        profit = consolation - first.b;
+                    }
+                    else if (tournamentPosition.Value == 3)
+                    {
+                        profit = (first.p * 0.10) - first.b;
+                    }
+                    else
+                    {
+                        profit = -first.b;
+                    }
+                }
+                else if (chipProfit > 0)
                 {
                     double winAmount = hasSharing ? (first.p * 0.75) : first.p;
                     profit = winAmount - first.b;

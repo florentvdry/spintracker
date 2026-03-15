@@ -192,12 +192,14 @@ public class Database
                 hand_id, player_name, position, stack, cards, investment, 
                 chips_won, net_profit, is_all_in, went_to_showdown,
                 ev_chips, net_won_adjusted, showdown_winning, non_showdown_winning,
-                equity_preflop, equity_flop, equity_turn, equity_river, cev_contribution
+                equity_preflop, equity_flop, equity_turn, equity_river, cev_contribution,
+                tournament_position
             ) VALUES (
                 @hand_id, @player_name, @position, @stack, @cards, @investment,
                 @chips_won, @net_profit, @is_all_in, @went_to_showdown,
                 @ev_chips, @net_won_adjusted, @showdown_winning, @non_showdown_winning,
-                @equity_preflop, @equity_flop, @equity_turn, @equity_river, @cev_contribution
+                @equity_preflop, @equity_flop, @equity_turn, @equity_river, @cev_contribution,
+                @tournament_position
             )";
 
             var playerCount = 0;
@@ -255,6 +257,7 @@ public class Database
                     playerCmd.Parameters.AddWithValue("@equity_turn", eqTurn);
                     playerCmd.Parameters.AddWithValue("@equity_river", eqRiver);
                     playerCmd.Parameters.AddWithValue("@cev_contribution", cevContrib);
+                    playerCmd.Parameters.AddWithValue("@tournament_position", p.TournamentPosition.HasValue ? p.TournamentPosition.Value : DBNull.Value);
 
                     await playerCmd.ExecuteNonQueryAsync();
                     playerCount++;

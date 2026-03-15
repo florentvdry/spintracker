@@ -69,7 +69,8 @@ public class TournamentsRepository
                 COUNT(*) as hand_count,
                 SUM({profitCol}) as chip_profit,
                 AVG(ph.ev_chips) as avg_cev,
-                MAX(h.player_count) as max_players
+                MAX(h.player_count) as max_players,
+                MAX(ph.tournament_position) as tournament_position
             FROM hands h
             {joinHero}
             {whereClause}
@@ -95,12 +96,35 @@ public class TournamentsRepository
                 };
 
                 int lastPlayerCount = reader.IsDBNull(8) ? 3 : reader.GetInt32(8);
+                int? tournamentPosition = reader.IsDBNull(9) ? null : reader.GetInt32(9);
 
                 // Tournament Profit Logic (Prize Sharing handling)
                 if (t.PrizePool > 0)
                 {
                     bool hasSharing = (t.BuyIn > 0 && (t.PrizePool / t.BuyIn) >= 20);
-                    if (t.ChipProfit > 0)
+                    
+                    // Use actual tournament position if available
+                    if (tournamentPosition.HasValue && hasSharing)
+                    {
+                        if (tournamentPosition.Value == 1)
+                        {
+                            t.NetProfit = (t.PrizePool * 0.75) - t.BuyIn;
+                        }
+                        else if (tournamentPosition.Value == 2)
+                        {
+                            double consolation = (lastPlayerCount == 2) ? (t.PrizePool * 0.15) : (t.PrizePool * 0.10);
+                            t.NetProfit = consolation - t.BuyIn;
+                        }
+                        else if (tournamentPosition.Value == 3)
+                        {
+                            t.NetProfit = (t.PrizePool * 0.10) - t.BuyIn;
+                        }
+                        else
+                        {
+                            t.NetProfit = -t.BuyIn;
+                        }
+                    }
+                    else if (t.ChipProfit > 0)
                     {
                         double winAmount = hasSharing ? (t.PrizePool * 0.75) : t.PrizePool;
                         t.NetProfit = winAmount - t.BuyIn;

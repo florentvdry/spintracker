@@ -35,6 +35,7 @@ public class BetclicParser : IHandParser
     private static readonly Regex SummaryShowMatchRegex = new(@"Seat \d+: (.+?) .*showed \[(.+?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex PotWinRegex = new(@"^(.+?) wins .*?pot (?:of )?(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex TotalPotSummaryRegex = new(@"(\d+\.?\d*)", RegexOptions.Compiled);
+    private static readonly Regex TournamentPositionRegex = new(@"^(.+?)\s+finished\s+(1st|2nd|3rd)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     // Investment Regex Patterns
     private static readonly Regex PostsSbRegex = new(@"Posts SB (\d+)", RegexOptions.Compiled);
@@ -543,6 +544,27 @@ public class BetclicParser : IHandParser
                     hand.WentToShowdown = true;
                     pWin.WentToShowdown = true;
                 }
+            }
+        }
+
+        // Extract tournament position (1st, 2nd, 3rd) for all players
+        var positionMatch = TournamentPositionRegex.Match(line);
+        if (positionMatch.Success)
+        {
+            var playerName = positionMatch.Groups[1].Value.Trim();
+            var positionStr = positionMatch.Groups[2].Value.ToLower();
+            int position = positionStr switch
+            {
+                "1st" => 1,
+                "2nd" => 2,
+                "3rd" => 3,
+                _ => 0
+            };
+
+            var pPos = hand.Players.FirstOrDefault(x => x.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase));
+            if (pPos != null && position > 0)
+            {
+                pPos.TournamentPosition = position;
             }
         }
 

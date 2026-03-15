@@ -54,4 +54,5 @@ public class PlayerInfo
     public bool IsAllIn { get; set; }
     public string Position { get; set; } = "";
     public bool WentToShowdown { get; set; }
+    public int? TournamentPosition { get; set; }
 }
