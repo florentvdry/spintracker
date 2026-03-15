@@ -64,6 +64,7 @@
     "title": "Dashboard",
     "subtitle": "Overview of your performance",
     "total_profit": "Total Profit",
+    "total_ev": "Total EV",
     "played_hands": "Hands Played",
     "win_rate": "Win Rate",
     "played_tournaments": "Tournaments Played",

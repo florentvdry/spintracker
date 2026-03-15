@@ -62,10 +62,16 @@ export default function Dashboard() {
       </div>
 
       {/* Stats cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
           label={t('dashboard.total_profit') + rangeLabel}
           value={stats.total_profit || 0}
+          format="profit"
+          icon={DollarSign}
+        />
+        <StatCard
+          label={t('dashboard.total_ev') + rangeLabel}
+          value={stats.total_ev || 0}
           format="profit"
           icon={DollarSign}
         />
