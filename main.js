@@ -1091,3 +1091,122 @@ ipcMain.handle('start-video-export', async (event, options) => {
   }
 });
 
+// ============ Video Recording using desktopCapturer + ffmpeg ============
+
+let currentRecordingProcess = null;
+let isRecording = false;
+
+ipcMain.handle('record-desktop-get-sources', async () => {
+  try {
+    console.log('[Main] Getting desktop sources for recording...');
+    const sources = await desktopCapturer.getSources({
+      types: ['window', 'screen'],
+      thumbnailSize: { width: 320, height: 180 },
+      fetchWindowIcons: true
+    });
+
+    const serializedSources = sources.map(source => ({
+      id: source.id,
+      name: source.name,
+      thumbnail: source.thumbnail ? source.thumbnail.toDataURL() : null
+    }));
+
+    console.log('[Main] Found', serializedSources.length, 'sources');
+    return { success: true, sources: serializedSources };
+  } catch (error) {
+    console.error('[Main] Failed to get sources:', error.message);
+    return { success: false, message: error.message };
+  }
+});
+
+ipcMain.handle('record-desktop-start', async (event, options) => {
+  console.log('[Main] record-desktop-start called with options:', options);
+  
+  try {
+    const { sourceId, outputPath } = options;
+    
+    if (!sourceId) {
+      throw new Error('No source ID provided');
+    }
+    
+    if (isRecording) {
+      throw new Error('Recording already in progress');
+    }
+
+    // Get the source to verify it exists
+    const sources = await desktopCapturer.getSources({
+      types: ['window', 'screen'],
+      thumbnailSize: { width: 1, height: 1 }
+    });
+    
+    const source = sources.find(s => s.id === sourceId);
+    if (!source) {
+      throw new Error('Source not found: ' + sourceId);
+    }
+
+    console.log('[Main] Starting recording for source:', source.name);
+
+    // For window capture, we use the source ID directly with ffmpeg
+    // The format varies by platform
+    let ffmpegInput;
+    if (source.id.startsWith('window:')) {
+      // Windows: use gdigrab
+      ffmpegInput = `-f gdigrab -framerate 30 -draw_mouse 1 -i title="${source.name}"`;
+    } else if (source.id.startsWith('screen:')) {
+      // Windows: use screen-capture-recorder
+      const screenIndex = source.id.match(/screen:(\d+)/)?.[1] || '0';
+      ffmpegInput = `-f dshow -framerate 30 -i video=screen-capture-recorder`;
+    } else {
+      // Fallback - try as window
+      ffmpegInput = `-f gdigrab -framerate 30 -draw_mouse 1 -i title="${source.name}"`;
+    }
+
+    // For now, we'll use a simpler approach - save dialog first
+    const { filePath, canceled } = await dialog.showSaveDialog({
+      title: 'Enregistrer la vidéo de replay',
+      defaultPath: outputPath || `poker-replay-${Date.now()}.mp4`,
+      filters: [
+        { name: 'MP4 Video', extensions: ['mp4'] },
+        { name: 'WebM Video', extensions: ['webm'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    });
+
+    if (canceled || !filePath) {
+      return { success: false, canceled: true };
+    }
+
+    console.log('[Main] Recording to:', filePath);
+
+    // Try to use ffmpeg if available, otherwise return error
+    // For now, return instructions for the frontend
+    return {
+      success: true,
+      message: 'Please use frontend recording',
+      filePath,
+      sourceId: source.id,
+      sourceName: source.name
+    };
+
+  } catch (error) {
+    console.error('[Main] record-desktop-start error:', error.message);
+    return { success: false, message: error.message };
+  }
+});
+
+ipcMain.handle('record-desktop-stop', async () => {
+  console.log('[Main] record-desktop-stop called');
+  
+  try {
+    if (currentRecordingProcess) {
+      currentRecordingProcess.stdin.write('q');
+      currentRecordingProcess = null;
+    }
+    isRecording = false;
+    return { success: true };
+  } catch (error) {
+    console.error('[Main] record-desktop-stop error:', error.message);
+    return { success: false, message: error.message };
+  }
+});
+

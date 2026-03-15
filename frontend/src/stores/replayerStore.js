@@ -545,17 +545,60 @@ async function startVideoRecording(exportType) {
   let stream = null;
   
   try {
-    console.log('[VideoExport] Requesting screen capture via getDisplayMedia...');
-    stream = await navigator.mediaDevices.getDisplayMedia({
-      video: {
-        displaySurface: 'window',
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        frameRate: { ideal: 30 }
-      },
-      audio: false
-    });
-    console.log('[VideoExport] Screen capture started, stream active:', !!stream);
+    // First, get available sources using IPC
+    console.log('[VideoExport] Getting desktop sources via IPC...');
+    let sources = [];
+    try {
+      const sourcesResult = await ipcService.getRecordableWindows();
+      if (sourcesResult && Array.isArray(sourcesResult)) {
+        sources = sourcesResult;
+        console.log('[VideoExport] Got', sources.length, 'desktop sources');
+      }
+    } catch (sourcesError) {
+      console.log('[VideoExport] Could not get sources via IPC:', sourcesError.message);
+    }
+
+    // Try Electron-specific getUserMedia with chromeMediaSource first
+    if (sources.length > 0) {
+      console.log('[VideoExport] Trying Electron-specific capture with source:', sources[0].name);
+      try {
+        // Use the first available window/source
+        const sourceId = sources[0].id;
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            mandatory: {
+              chromeMediaSource: 'desktop',
+              chromeMediaSourceId: sourceId,
+              minWidth: 1280,
+              maxWidth: 1920,
+              minHeight: 720,
+              maxHeight: 1080,
+              minFrameRate: 30,
+              maxFrameRate: 30
+            }
+          },
+          audio: false
+        });
+        console.log('[VideoExport] Electron-specific capture succeeded, stream active:', !!stream);
+      } catch (electronError) {
+        console.log('[VideoExport] Electron capture failed:', electronError.message);
+      }
+    }
+
+    // Fallback to getDisplayMedia if Electron-specific method didn't work
+    if (!stream) {
+      console.log('[VideoExport] Falling back to getDisplayMedia...');
+      stream = await navigator.mediaDevices.getDisplayMedia({
+        video: {
+          displaySurface: 'window',
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          frameRate: { ideal: 30 }
+        },
+        audio: false
+      });
+      console.log('[VideoExport] getDisplayMedia succeeded, stream active:', !!stream);
+    }
   } catch (e) {
     let errorMsg = 'Failed to capture screen';
     let isUserCancelled = false;
