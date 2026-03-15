@@ -26,6 +26,15 @@ const Replayer = () => {
           handData = payload[0];
         }
         
+        // Parse if it's still a string
+        if (typeof handData === 'string') {
+          try {
+            handData = JSON.parse(handData);
+          } catch (e) {
+            console.error('[Replayer] Failed to parse handData string:', e);
+          }
+        }
+        
         if (handData && handData.handData) {
           setReplayerHand(handData.handData, {
             handQueue: handData.handQueue,
