@@ -18,6 +18,11 @@ export default function Analysis() {
   
   const [activeTab, setActiveTab] = useState('stats'); // 'stats' | 'hands'
 
+  const [handsPage, setHandsPage] = useState(1);
+  const [handsSort, setHandsSort] = useState('date_desc');
+  const [handsData, setHandsData] = useState({ hands: [], total: 0, page: 1, pages: 1 });
+  const [handsLoading, setHandsLoading] = useState(false);
+
   const [localFilters, setLocalFilters] = useState({
     Situation: '',
     Action: '',
