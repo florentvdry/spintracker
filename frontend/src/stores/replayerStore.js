@@ -254,13 +254,135 @@ export const useReplayerStore = create((set, get) => ({
   }
 }));
 
-export const selectReplayerState = (state) => ({
-  hand: state.hand,
-  currentActionIndex: state.currentActionIndex,
-  isPlaying: state.isPlaying,
-  playbackSpeed: state.playbackSpeed,
-  showVillainHands: state.showVillainHands,
-  showInBB: state.showInBB,
-  handQueue: state.handQueue,
-  currentHandIndex: state.currentHandIndex
-});
+export const selectReplayerState = (state) => {
+  const { hand, currentActionIndex, isPlaying, playbackSpeed, showVillainHands, showInBB, handQueue, currentHandIndex } = state;
+  
+  if (!hand) return null;
+  
+  // Compute derived state for ReplayerTable
+  const players = hand.players || [];
+  const board = hand.board || [];
+  const actions = hand.actions || [];
+  const blinds = hand.blinds || { bb: 0 };
+  const bbSize = blinds.bb || 0;
+  const dealerSeat = hand.buttonSeat || 1;
+  
+  // Calculate current street based on action index
+  let currentStreet = 0;
+  if (currentActionIndex >= 0 && actions.length > 0) {
+    const currentAction = actions[currentActionIndex];
+    if (currentAction) {
+      currentStreet = currentAction.street !== undefined ? currentAction.street : 0;
+    }
+  }
+  
+  // Calculate pot and player states based on current action
+  let pot = 0;
+  const currentPlayers = players.map(p => ({
+    ...p,
+    currentStack: p.stack || 0,
+    currentBet: 0,
+    isFolded: false,
+    isWinner: false,
+    actionLabel: null,
+    lastActionType: null,
+    cards: p.cards
+  }));
+  
+  // Process actions up to current index
+  for (let i = 0; i <= currentActionIndex && i < actions.length; i++) {
+    const action = actions[i];
+    if (!action) continue;
+    
+    const player = currentPlayers.find(p => p.name === action.player);
+    if (!player) continue;
+    
+    switch (action.type) {
+      case 'post':
+        player.currentStack -= action.amount;
+        player.currentBet += action.amount;
+        pot += action.amount;
+        break;
+      case 'fold':
+        player.isFolded = true;
+        break;
+      case 'check':
+        player.actionLabel = 'Check';
+        player.lastActionType = 'check';
+        break;
+      case 'call':
+        const callAmount = action.amount || 0;
+        player.currentStack -= callAmount;
+        player.currentBet += callAmount;
+        pot += callAmount;
+        player.actionLabel = `Call ${callAmount}`;
+        player.lastActionType = 'call';
+        break;
+      case 'bet':
+        player.currentStack -= action.amount;
+        player.currentBet += action.amount;
+        pot += action.amount;
+        player.actionLabel = `Bet ${action.amount}`;
+        player.lastActionType = 'bet';
+        break;
+      case 'raise':
+        player.currentStack -= action.amount;
+        player.currentBet += action.amount;
+        pot += action.amount;
+        player.actionLabel = `Raise ${action.amount}`;
+        player.lastActionType = 'raise';
+        break;
+      case 'all-in':
+        const allInAmount = action.amount || player.currentStack;
+        player.currentStack -= allInAmount;
+        player.currentBet += allInAmount;
+        pot += allInAmount;
+        player.actionLabel = `All-In ${allInAmount}`;
+        player.lastActionType = 'all-in';
+        break;
+      case 'win':
+      case 'showdown':
+      case 'summary':
+        // Determine winners from action text
+        if (action.player) {
+          const winner = currentPlayers.find(p => p.name === action.player);
+          if (winner) {
+            winner.isWinner = true;
+            winner.currentStack += action.amount || 0;
+          }
+        }
+        player.actionLabel = `Wins ${action.amount || 0}`;
+        player.lastActionType = 'win';
+        break;
+    }
+  }
+  
+  // Get community cards based on current street
+  let communityCards = [];
+  if (currentStreet >= 1 && board.length >= 3) {
+    communityCards = board.slice(0, 3);
+  }
+  if (currentStreet >= 2 && board.length >= 4) {
+    communityCards = board.slice(0, 4);
+  }
+  if (currentStreet >= 3 && board.length >= 5) {
+    communityCards = board.slice(0, 5);
+  }
+  
+  return {
+    hand,
+    players: currentPlayers,
+    pot,
+    communityCards,
+    dealerSeat,
+    showVillainHands,
+    currentStreet,
+    showInBB,
+    bbSize,
+    currentActionIndex,
+    isPlaying,
+    playbackSpeed,
+    handQueue,
+    currentHandIndex
+  };
+};
