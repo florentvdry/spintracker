@@ -375,6 +375,7 @@ export const selectReplayerState = (state) => {
     pot,
     communityCards,
     dealerSeat,
+    buttonSeat,
     showVillainHands,
     currentStreet,
     showInBB,

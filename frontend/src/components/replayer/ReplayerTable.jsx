@@ -32,11 +32,12 @@ const SEAT_POSITIONS_2 = [
     { top: '85%', left: '50%' }, // 1 - Bottom
 ];
 
-// 3-Max Positions
+// 3-Max Positions (clockwise: BTN -> SB -> BB)
+// BTN at bottom, SB at top-right (clockwise from BTN), BB at top-left
 const SEAT_POSITIONS_3 = [
-    { top: '25%', left: '20%' }, // 0 - Top Left
-    { top: '85%', left: '50%' }, // 1 - Bottom
-    { top: '25%', left: '80%' }, // 2 - Top Right
+    { top: '25%', left: '80%' }, // 0 - Top Right (BB - to the right of SB when BTN at bottom)
+    { top: '85%', left: '50%' }, // 1 - Bottom (BTN)
+    { top: '25%', left: '20%' }, // 2 - Top Left (SB - to the left of BTN, clockwise from BTN when BTN at bottom)
 ];
 
 const ReplayerTable = () => {
@@ -45,7 +46,7 @@ const ReplayerTable = () => {
   
   if (!state) return <div className="flex items-center justify-center h-full text-gray-500">{t('replayer.loading')}</div>;
 
-  const { players, pot, communityCards, dealerSeat, showVillainHands, currentStreet, showInBB, bbSize } = state;
+  const { players, pot, communityCards, dealerSeat, showVillainHands, currentStreet, showInBB, bbSize, buttonSeat } = state;
   
   let positions = SEAT_POSITIONS_9;
   if (players.length <= 2) positions = SEAT_POSITIONS_2;
@@ -182,6 +183,7 @@ const ReplayerTable = () => {
             {/* Avatar Circle (Moved below cards) */}
             <div className={`relative flex items-center justify-center`}>
               <span className={`text-xs font-bold text-white overflow-hidden text-ellipsis px-3 py-1 rounded w-full text-center whitespace-nowrap bg-black/70 border border-white/20 shadow-md ${player.isWinner ? 'text-yellow-400 border-yellow-400/50' : ''}`}>
+                {player.position && <span className="text-blue-400 mr-1">{player.position}</span>}
                 {player.name}
               </span>
               {/* Dealer Button */}
