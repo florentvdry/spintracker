@@ -493,7 +493,8 @@ public class StatsRepository
                 h.buy_in,
                 h.prize_pool,
                 h.player_count,
-                {profitCol} as hand_profit
+                {profitCol} as hand_profit,
+                ph.tournament_position
             FROM hands h
             {joinClause}
             {whereClause}
@@ -518,7 +519,8 @@ public class StatsRepository
                 buy_in = reader.IsDBNull(6) ? 0.0 : reader.GetDouble(6),
                 prize_pool = reader.IsDBNull(7) ? 0.0 : reader.GetDouble(7),
                 player_count = reader.IsDBNull(8) ? 0 : reader.GetInt32(8),
-                hand_profit = reader.GetDouble(9)
+                hand_profit = reader.GetDouble(9),
+                tournament_position = reader.IsDBNull(10) ? null : reader.GetInt32(10)
             });
         }
 
@@ -545,11 +547,43 @@ public class StatsRepository
             double chipProfit = 0;
             foreach (var h in game) chipProfit += h.hand_profit;
 
+            // Get tournament position - prefer the last hand with a position (usually the summary)
+            int? tournamentPosition = null;
+            foreach (var h in game)
+            {
+                if (h.tournament_position.HasValue)
+                {
+                    tournamentPosition = h.tournament_position;
+                }
+            }
+
             double profit = 0;
             if (first.prize_pool > 0)
             {
                 bool hasSharing = (first.buy_in > 0 && (first.prize_pool / first.buy_in) >= 20);
-                if (chipProfit > 0)
+                
+                // Use actual tournament position if available
+                if (tournamentPosition.HasValue && hasSharing)
+                {
+                    if (tournamentPosition.Value == 1)
+                    {
+                        profit = (first.prize_pool * 0.75) - first.buy_in;
+                    }
+                    else if (tournamentPosition.Value == 2)
+                    {
+                        double consolation = (last.player_count == 2) ? (first.prize_pool * 0.15) : (first.prize_pool * 0.10);
+                        profit = consolation - first.buy_in;
+                    }
+                    else if (tournamentPosition.Value == 3)
+                    {
+                        profit = (first.prize_pool * 0.10) - first.buy_in;
+                    }
+                    else
+                    {
+                        profit = -first.buy_in;
+                    }
+                }
+                else if (chipProfit > 0)
                 {
                     double winAmount = hasSharing ? (first.prize_pool * 0.75) : first.prize_pool;
                     profit = winAmount - first.buy_in;
@@ -617,6 +651,7 @@ public class StatsRepository
         public double prize_pool { get; set; }
         public int player_count { get; set; }
         public double hand_profit { get; set; }
+        public int? tournament_position { get; set; }
     }
 
     public async Task<List<double>> GetUniqueBuyInsAsync()
