@@ -76,28 +76,33 @@ const ReplayerTable = () => {
   const btnIndex = players.findIndex(p => p.position === 'BTN');
   
   const getDisplayPosition = (playerIndex) => {
-     if (heroIndex === -1) return positions[playerIndex];
+      if (heroIndex === -1) return positions[playerIndex];
 
-     const N = players.length;
-     let positionIndex = (playerIndex - heroIndex + N) % N;
-     
-      if (btnIndex !== -1) {
-        const btnRotatedPos = (btnIndex - heroIndex + N) % N;
+      const N = players.length;
+      
+      let rotationOffset = N;
+      if (N === 3) {
+        rotationOffset = 1;
+      }
+      
+      let positionIndex = (playerIndex - heroIndex + rotationOffset) % N;
+      
+      if (btnIndex !== -1 && N > 2) {
+        const btnRotatedPos = (btnIndex - heroIndex + rotationOffset) % N;
         const sbIndex = players.findIndex(p => p.position === 'SB');
         
         if (sbIndex !== -1) {
-          const sbRotatedPos = (sbIndex - heroIndex + N) % N;
-          const sbShouldBeRightOfBtn = (sbRotatedPos === (btnRotatedPos + 1) % N) || 
-                                       (sbRotatedPos === (btnRotatedPos + 2) % N && N > 3);
+          const sbRotatedPos = (sbIndex - heroIndex + rotationOffset) % N;
+          const sbShouldBeRightOfBtn = (sbRotatedPos === (btnRotatedPos + 1) % N);
           
           if (!sbShouldBeRightOfBtn) {
-            positionIndex = (playerIndex - heroIndex + N - 1) % N;
+            positionIndex = (playerIndex - heroIndex + rotationOffset - 1 + N) % N;
           }
         }
       }
-     
-     return positions[positionIndex] || { top: '50%', left: '50%' };
-  };
+      
+      return positions[positionIndex] || { top: '50%', left: '50%' };
+   };
 
   // Calculate position for player's current bet (moved 40% towards center)
   const getBetPosition = (playerPos) => {
