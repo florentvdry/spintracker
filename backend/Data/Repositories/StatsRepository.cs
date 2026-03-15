@@ -384,12 +384,10 @@ public class StatsRepository
             double profit = 0;
             if (first.p > 0)
             {
-                bool hasSharing = (first.b > 0 && (first.p / first.b) >= 20);
-                
                 // Use actual tournament position if available, otherwise fallback to chip profit logic
-                if (tournamentPosition.HasValue && hasSharing)
+                if (tournamentPosition.HasValue)
                 {
-                    // x20+ spins: 1st=75%, 2nd=15% (HU) or 10% (3-way), 3rd=10%
+                    // All prize pools use the same percentages: 1st=75%, 2nd=15%(HU)/10%(3-way), 3rd=10%
                     if (tournamentPosition.Value == 1)
                     {
                         profit = (first.p * 0.75) - first.b;
@@ -410,11 +408,13 @@ public class StatsRepository
                 }
                 else if (chipProfit > 0)
                 {
-                    double winAmount = hasSharing ? (first.p * 0.75) : first.p;
-                    profit = winAmount - first.b;
+                    // Fallback: assume 1st place if chip profit is positive
+                    profit = (first.p * 0.75) - first.b;
                 }
                 else
                 {
+                    // Fallback: assume 2nd place (consolation prize) for x20+, otherwise lost
+                    bool hasSharing = (first.b > 0 && (first.p / first.b) >= 20);
                     if (hasSharing)
                     {
                         double consolation = (maxPlayerCount == 2) ? (first.p * 0.15) : (first.p * 0.10);
@@ -580,11 +580,10 @@ public class StatsRepository
             double profit = 0;
             if (first.prize_pool > 0)
             {
-                bool hasSharing = (first.buy_in > 0 && (first.prize_pool / first.buy_in) >= 20);
-                
-                // Use actual tournament position if available
-                if (tournamentPosition.HasValue && hasSharing)
+                // Use actual tournament position if available, otherwise fallback to chip profit logic
+                if (tournamentPosition.HasValue)
                 {
+                    // All prize pools use the same percentages: 1st=75%, 2nd=15%(HU)/10%(3-way), 3rd=10%
                     if (tournamentPosition.Value == 1)
                     {
                         profit = (first.prize_pool * 0.75) - first.buy_in;
@@ -605,11 +604,13 @@ public class StatsRepository
                 }
                 else if (chipProfit > 0)
                 {
-                    double winAmount = hasSharing ? (first.prize_pool * 0.75) : first.prize_pool;
-                    profit = winAmount - first.buy_in;
+                    // Fallback: assume 1st place if chip profit is positive
+                    profit = (first.prize_pool * 0.75) - first.buy_in;
                 }
                 else
                 {
+                    // Fallback: assume 2nd place (consolation prize) for x20+, otherwise lost
+                    bool hasSharing = (first.buy_in > 0 && (first.prize_pool / first.buy_in) >= 20);
                     if (hasSharing)
                     {
                         double consolation = (maxPlayerCount == 2) ? (first.prize_pool * 0.15) : (first.prize_pool * 0.10);

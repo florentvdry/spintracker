@@ -101,11 +101,10 @@ public class TournamentsRepository
                 // Tournament Profit Logic (Prize Sharing handling)
                 if (t.PrizePool > 0)
                 {
-                    bool hasSharing = (t.BuyIn > 0 && (t.PrizePool / t.BuyIn) >= 20);
-                    
-                    // Use actual tournament position if available
-                    if (tournamentPosition.HasValue && hasSharing)
+                    // Use actual tournament position if available, otherwise fallback to chip profit logic
+                    if (tournamentPosition.HasValue)
                     {
+                        // All prize pools use the same percentages: 1st=75%, 2nd=15%(HU)/10%(3-way), 3rd=10%
                         if (tournamentPosition.Value == 1)
                         {
                             t.NetProfit = (t.PrizePool * 0.75) - t.BuyIn;
@@ -126,11 +125,13 @@ public class TournamentsRepository
                     }
                     else if (t.ChipProfit > 0)
                     {
-                        double winAmount = hasSharing ? (t.PrizePool * 0.75) : t.PrizePool;
-                        t.NetProfit = winAmount - t.BuyIn;
+                        // Fallback: assume 1st place if chip profit is positive
+                        t.NetProfit = (t.PrizePool * 0.75) - t.BuyIn;
                     }
                     else
                     {
+                        // Fallback: assume 2nd place (consolation prize) for x20+, otherwise lost
+                        bool hasSharing = (t.BuyIn > 0 && (t.PrizePool / t.BuyIn) >= 20);
                         if (hasSharing)
                         {
                             double consolation = (lastPlayerCount == 2) ? (t.PrizePool * 0.15) : (t.PrizePool * 0.10);
