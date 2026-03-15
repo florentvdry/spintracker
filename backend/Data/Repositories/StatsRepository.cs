@@ -107,7 +107,9 @@ public class StatsRepository
                     h.buy_in, 
                     h.prize_pool, 
                     SUM({profitCol}) as chip_profit,
-                    MAX(h.player_count) as max_players
+                    MAX(h.player_count) as max_players,
+                    MAX(h.multiplier) as multiplier,
+                    MAX(h.position) as position
                 FROM hands h
                 {joinClause}
                 {whereClause}
@@ -121,39 +123,27 @@ public class StatsRepository
             using var reader = await cmdItm.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                double tBuyIn = reader.IsDBNull(0) ? 0 : reader.GetDouble(0);
-                double tPrizePool = reader.IsDBNull(1) ? 0 : reader.GetDouble(1);
-                double tChipProfit = reader.IsDBNull(2) ? 0 : reader.GetDouble(2);
-                int tLastPlayerCount = reader.IsDBNull(3) ? 3 : reader.GetInt32(3); // Approximation if null
+                double b = reader.IsDBNull(0) ? 0 : reader.GetDouble(0);
+                double p = reader.IsDBNull(1) ? 0 : reader.GetDouble(1);
+                double cp = reader.IsDBNull(2) ? 0 : reader.GetDouble(2);
+                int pc = reader.IsDBNull(3) ? 3 : reader.GetInt32(3);
+                int m = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
+                int pos = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
 
                 bool isITM = false;
-
-                if (tPrizePool > 0)
+                if (p > 0 || m > 0)
                 {
-                    // Winner always ITM
-                    if (tChipProfit > 0) 
+                    bool hasSharing = (b > 0 && (p / b) >= 19.5) || m >= 20;
+                    int finishPos = pos != 0 ? pos : (cp > 0 ? 1 : (pc == 2 ? 2 : 3));
+
+                    if (finishPos == 1 || (hasSharing && (finishPos == 2 || finishPos == 3)))
                     {
                         isITM = true;
                     }
-                    else
-                    {
-                        // Check for shared prize (Multiplier >= 20x typically)
-                        // If pool/buyin >= 20, losers get a share
-                        bool hasSharing = (tBuyIn > 0 && (tPrizePool / tBuyIn) >= 20);
-                        if (hasSharing)
-                        {
-                            // In shared prize tournaments, 2nd and 3rd place get money.
-                            // Since standard Spin is 3-handed:
-                            // If I lost (chip profit <= 0), I am either 2nd or 3rd.
-                            // Both get a prize in high multipliers.
-                            isITM = true;
-                        }
-                    }
                 }
-                else
+                else if (cp > 0)
                 {
-                    // Fallback for non-tournament or unknown
-                    if (tChipProfit > 0) isITM = true;
+                    isITM = true;
                 }
 
                 if (isITM) tournamentsWon++;
@@ -209,7 +199,63 @@ public class StatsRepository
         // 2. Calculate Euro Profit and Sessions using the session logic
         var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo, buyIn); 
         
-        double totalProfitEuro = sessions.Sum(s => s.Profit);
+        // Accurate total profit calculation by tournament to match TournamentsRepository
+        double totalProfitEuro = 0;
+        try
+        {
+            using var cmdProfit = connection.CreateCommand();
+            cmdProfit.CommandText = $@"
+                SELECT 
+                    h.buy_in, 
+                    h.prize_pool, 
+                    SUM({profitCol}) as chip_profit,
+                    MAX(h.player_count) as max_players,
+                    MAX(h.multiplier) as multiplier,
+                    MAX(h.position) as position
+                FROM hands h
+                {joinClause}
+                {whereClause}
+                GROUP BY h.game_id";
+            
+            if (!string.IsNullOrEmpty(heroName)) cmdProfit.Parameters.AddWithValue("@heroName", heroName);
+            if (!string.IsNullOrEmpty(dateFrom)) cmdProfit.Parameters.AddWithValue("@dateFrom", dateFrom);
+            if (!string.IsNullOrEmpty(dateTo)) cmdProfit.Parameters.AddWithValue("@dateTo", dateTo);
+            if (buyIn.HasValue) cmdProfit.Parameters.AddWithValue("@buyIn", buyIn.Value);
+
+            using var reader = await cmdProfit.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                double b = reader.IsDBNull(0) ? 0 : reader.GetDouble(0);
+                double p = reader.IsDBNull(1) ? 0 : reader.GetDouble(1);
+                double cp = reader.IsDBNull(2) ? 0 : reader.GetDouble(2);
+                int pc = reader.IsDBNull(3) ? 3 : reader.GetInt32(3);
+                int m = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
+                int pos = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
+
+                if (p > 0 || m > 0)
+                {
+                    bool hasSharing = (b > 0 && (p / b) >= 19.5) || m >= 20;
+                    double totalPrize = (p > (m * b * 0.5)) ? p : (b * m);
+                    int finishPos = pos != 0 ? pos : (cp > 0 ? 1 : (pc == 2 ? 2 : 3));
+
+                    double winAmount = 0;
+                    if (finishPos == 1) winAmount = hasSharing ? (totalPrize * 0.75) : totalPrize;
+                    else if (hasSharing) winAmount = (finishPos == 2) ? (totalPrize * 0.15) : (totalPrize * 0.10);
+
+                    totalProfitEuro += (winAmount - b);
+                }
+                else
+                {
+                    totalProfitEuro += cp;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error calculating accurate total profit: {ex.Message}");
+            totalProfitEuro = sessions.Sum(s => s.Profit); // Fallback
+        }
+
         int totalTournaments = sessions.Sum(s => s.Tournaments);
         double avgChipsEv = totalTournaments > 0 ? Math.Round(totalEv / totalTournaments, 2) : 0;
         
@@ -293,13 +339,13 @@ public class StatsRepository
 
         // Fetch necessary columns to group sessions and calculate profit
         cmd.CommandText = $@"
-            SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, {profitCol}, h.player_count 
+            SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, {profitCol}, h.player_count, h.multiplier, h.position
             FROM hands h 
             {joinClause}
             {whereClause}
             ORDER BY h.date_time ASC";
         
-        var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)>();
+        var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos)>();
         using (var reader = await cmd.ExecuteReaderAsync())
         {
             while(await reader.ReadAsync())
@@ -316,14 +362,16 @@ public class StatsRepository
                     reader.IsDBNull(3) ? 0.0 : reader.GetDouble(3),
                     reader.IsDBNull(4) ? 0.0 : reader.GetDouble(4),
                     reader.IsDBNull(5) ? 0.0 : reader.GetDouble(5),
-                    reader.IsDBNull(6) ? 3 : reader.GetInt32(6)
+                    reader.IsDBNull(6) ? 3 : reader.GetInt32(6),
+                    reader.IsDBNull(7) ? 0 : reader.GetInt32(7),
+                    reader.IsDBNull(8) ? 0 : reader.GetInt32(8)
                  ));
             }
         }
 
         // Group by sessions (hands within 2 hours are same session)
         var sessions = new List<SessionInfo>();
-        var currentSession = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)>();
+        var currentSession = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos)>();
         DateTime? lastTime = null;
 
         foreach (var hand in rawHands.OrderBy(h => h.t))
@@ -348,7 +396,7 @@ public class StatsRepository
         return limit.HasValue ? sessions.Take(limit.Value).ToList() : sessions;
     }
 
-    private SessionInfo CreateSessionInfo(List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)> hands)
+    private SessionInfo CreateSessionInfo(List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos)> hands)
     {
         var startTime = hands.Min(h => h.t);
         var room = hands.First().r;
@@ -361,32 +409,40 @@ public class StatsRepository
         foreach (var game in games)
         {
             var first = game.First();
+            // Use MAX(multiplier) and MAX(position) for the tournament
+            int multiplier = game.Max(h => h.m);
+            int position = game.Max(h => h.pos);
+            int lastPlayerCount = game.Max(h => h.pc);
             double chipProfit = game.Sum(h => h.h_p);
+
             double profit = 0;
-            if (first.p > 0)
+            if (first.p > 0 || multiplier > 0)
             {
-                bool hasSharing = (first.b > 0 && (first.p / first.b) >= 20);
-                if (chipProfit > 0)
+                bool hasSharing = (first.b > 0 && (first.p / first.b) >= 19.5) || multiplier >= 20;
+                double totalPrize = (first.p > (multiplier * first.b * 0.5)) ? first.p : (first.b * multiplier);
+                
+                int finishPos = position;
+                if (finishPos == 0)
                 {
-                    double winAmount = hasSharing ? (first.p * 0.75) : first.p;
-                    profit = winAmount - first.b;
+                    finishPos = (chipProfit > 0) ? 1 : (lastPlayerCount == 2 ? 2 : 3);
                 }
-                else
+
+                double winAmount = 0;
+                if (finishPos == 1)
                 {
-                    if (hasSharing)
-                    {
-                        double consolation = (first.pc == 2) ? (first.p * 0.15) : (first.p * 0.10);
-                        profit = consolation - first.b;
-                    }
-                    else
-                    {
-                        profit = -first.b;
-                    }
+                    winAmount = hasSharing ? (totalPrize * 0.75) : totalPrize;
                 }
+                else if (hasSharing)
+                {
+                    if (finishPos == 2) winAmount = totalPrize * 0.15;
+                    else if (finishPos == 3) winAmount = totalPrize * 0.10;
+                }
+
+                profit = winAmount - first.b;
             }
             else
             {
-                profit = chipProfit; // Fallback
+                profit = chipProfit; 
             }
             totalProfitEuro += profit;
         }
@@ -466,7 +522,9 @@ public class StatsRepository
                 h.buy_in,
                 h.prize_pool,
                 h.player_count,
-                {profitCol} as hand_profit
+                {profitCol} as hand_profit,
+                h.multiplier,
+                h.position
             FROM hands h
             {joinClause}
             {whereClause}
@@ -491,7 +549,9 @@ public class StatsRepository
                 buy_in = reader.IsDBNull(6) ? 0.0 : reader.GetDouble(6),
                 prize_pool = reader.IsDBNull(7) ? 0.0 : reader.GetDouble(7),
                 player_count = reader.IsDBNull(8) ? 0 : reader.GetInt32(8),
-                hand_profit = reader.GetDouble(9)
+                hand_profit = reader.GetDouble(9),
+                multiplier = reader.IsDBNull(10) ? 0 : reader.GetInt32(10),
+                position = reader.IsDBNull(11) ? 0 : reader.GetInt32(11)
             });
         }
 
@@ -515,34 +575,38 @@ public class StatsRepository
         {
             var first = game.First();
             var last = game.Last();
-            double chipProfit = 0;
-            foreach (var h in game) chipProfit += h.hand_profit;
+            int multiplier = game.Max(h => h.multiplier);
+            int position = game.Max(h => h.position);
+            int lastPlayerCount = game.Max(h => h.player_count);
+            double chipProfit = game.Sum(h => h.hand_profit);
 
             double profit = 0;
-            if (first.prize_pool > 0)
+            if (first.prize_pool > 0 || multiplier > 0)
             {
-                bool hasSharing = (first.buy_in > 0 && (first.prize_pool / first.buy_in) >= 20);
-                if (chipProfit > 0)
+                bool hasSharing = (first.buy_in > 0 && (first.prize_pool / first.buy_in) >= 19.5) || multiplier >= 20;
+                double totalPrize = (first.prize_pool > (multiplier * first.buy_in * 0.5)) ? first.prize_pool : (first.buy_in * multiplier);
+                
+                int finishPos = position;
+                if (finishPos == 0)
                 {
-                    double winAmount = hasSharing ? (first.prize_pool * 0.75) : first.prize_pool;
-                    profit = winAmount - first.buy_in;
+                    finishPos = (chipProfit > 0) ? 1 : (lastPlayerCount == 2 ? 2 : 3);
                 }
-                else
+
+                double winAmount = 0;
+                if (finishPos == 1)
                 {
-                    if (hasSharing)
-                    {
-                        double consolation = (last.player_count == 2) ? (first.prize_pool * 0.15) : (first.prize_pool * 0.10);
-                        profit = consolation - first.buy_in;
-                    }
-                    else
-                    {
-                        profit = -first.buy_in;
-                    }
+                    winAmount = hasSharing ? (totalPrize * 0.75) : totalPrize;
                 }
+                else if (hasSharing)
+                {
+                    if (finishPos == 2) winAmount = totalPrize * 0.15;
+                    else if (finishPos == 3) winAmount = totalPrize * 0.10;
+                }
+
+                profit = winAmount - first.buy_in;
             }
             else
             {
-                // If prize_pool is 0, it might be a cash game or missing data
                 profit = chipProfit; 
             }
             gameProfitEuro[game.Key] = profit;
@@ -590,6 +654,8 @@ public class StatsRepository
         public double prize_pool { get; set; }
         public int player_count { get; set; }
         public double hand_profit { get; set; }
+        public int multiplier { get; set; }
+        public int position { get; set; }
     }
 
     public async Task<List<double>> GetUniqueBuyInsAsync()
@@ -612,23 +678,59 @@ public class StatsRepository
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
+        var joinClause = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)";
+        var profitCol = "ph.net_profit";
+
         using var cmd = connection.CreateCommand();
-        cmd.CommandText = @"
-            SELECT COALESCE(SUM(ph.net_profit), 0) as total_profit, COUNT(*) as total_hands 
+        cmd.CommandText = $@"
+            SELECT 
+                h.buy_in, 
+                h.prize_pool, 
+                SUM({profitCol}) as chip_profit,
+                MAX(h.player_count) as max_players,
+                MAX(h.multiplier) as multiplier,
+                MAX(h.position) as position
             FROM hands h
-            JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)
-            WHERE h.player_count <= 3";
+            {joinClause}
+            WHERE h.player_count <= 3
+            GROUP BY h.game_id";
 
         double totalProfit = 0;
-        int totalHands = 0;
+        int totalTournaments = 0;
         using (var reader = await cmd.ExecuteReaderAsync())
         {
-            if (await reader.ReadAsync())
+            while (await reader.ReadAsync())
             {
-                totalProfit = reader.IsDBNull(0) ? 0.0 : reader.GetDouble(0);
-                totalHands = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+                double b = reader.IsDBNull(0) ? 0 : reader.GetDouble(0);
+                double p = reader.IsDBNull(1) ? 0 : reader.GetDouble(1);
+                double cp = reader.IsDBNull(2) ? 0 : reader.GetDouble(2);
+                int pc = reader.IsDBNull(3) ? 3 : reader.GetInt32(3);
+                int m = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
+                int pos = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
+
+                if (p > 0 || m > 0)
+                {
+                    bool hasSharing = (b > 0 && (p / b) >= 19.5) || m >= 20;
+                    double totalPrize = (p > (m * b * 0.5)) ? p : (b * m);
+                    int finishPos = pos != 0 ? pos : (cp > 0 ? 1 : (pc == 2 ? 2 : 3));
+
+                    double winAmount = 0;
+                    if (finishPos == 1) winAmount = hasSharing ? (totalPrize * 0.75) : totalPrize;
+                    else if (hasSharing) winAmount = (finishPos == 2) ? (totalPrize * 0.15) : (totalPrize * 0.10);
+
+                    totalProfit += (winAmount - b);
+                }
+                else
+                {
+                    totalProfit += cp;
+                }
+                totalTournaments++;
             }
         }
+
+        using var countHandsCmd = connection.CreateCommand();
+        countHandsCmd.CommandText = "SELECT COUNT(*) FROM hands WHERE player_count <= 3";
+        int totalHands = Convert.ToInt32(await countHandsCmd.ExecuteScalarAsync());
 
         using var sampleCmd = connection.CreateCommand();
         sampleCmd.CommandText = $@"

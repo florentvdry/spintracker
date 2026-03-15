@@ -24,7 +24,7 @@ public class BetclicParser : IHandParser
     // Regex Patterns
     private static readonly Regex FlopRegex = new(@"\[(.*?)\]", RegexOptions.Compiled);
     private static readonly Regex TurnRiverRegex = new(@"\[(.*?)\]", RegexOptions.Compiled);
-    private static readonly Regex PrizePoolRegex = new(@"[\d.]+", RegexOptions.Compiled);
+    private static readonly Regex PrizePoolRegex = new(@"(?<!x)(\d+\.?\d*)", RegexOptions.Compiled);
     private static readonly Regex MultiplierRegex = new(@"x(\d+)", RegexOptions.Compiled);
     private static readonly Regex BuyInRegex = new(@"[\d.]+", RegexOptions.Compiled);
     private static readonly Regex SeatRegex = new(@"Seat (\d+): (.+?) \((\d+)\)(.*)", RegexOptions.Compiled);
@@ -33,8 +33,9 @@ public class BetclicParser : IHandParser
     private static readonly Regex DealtToRegex = new(@"^Dealt to (.+?) \[(.+?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex NoShowMatchRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?)\s+does not show", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex SummaryShowMatchRegex = new(@"Seat \d+: (.+?) .*showed \[(.+?)\]", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-    private static readonly Regex PotWinRegex = new(@"^(.+?) wins .*?pot (?:of )?(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex PotWinRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}:[0-9]{2}\s*-\s*)?(.+?) wins .*?pot (?:of )?(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Regex TotalPotSummaryRegex = new(@"(\d+\.?\d*)", RegexOptions.Compiled);
+    private static readonly Regex FinishPositionRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}:[0-9]{2}\s*-\s*)?(.+?) finished (\d+)(?:st|nd|rd)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     // Investment Regex Patterns
     private static readonly Regex PostsSbRegex = new(@"Posts SB (\d+)", RegexOptions.Compiled);
@@ -496,6 +497,20 @@ public class BetclicParser : IHandParser
                 hand.Showdown = line;
             else
                 hand.Showdown += "\n" + line;
+        }
+
+        // Extract finishing position
+        var posMatch = FinishPositionRegex.Match(line);
+        if (posMatch.Success)
+        {
+            var playerName = posMatch.Groups[1].Value.Trim();
+            var pos = int.Parse(posMatch.Groups[2].Value);
+            bool isHero = IsHeroName(playerName, heroName);
+            
+            if (isHero)
+            {
+                hand.Position = pos;
+            }
         }
 
         if (lowerLine.Contains("total pot"))

@@ -1,3 +1,5 @@
+- Correction: Fix de la répartition des gains sur les jackpot
+
 - Ajout: Nouveau analyseur de range, plus facile à comprendre, avec de l'opacité selon la fréquence.
 - Ajout: Pouvoir avoir plusieurs base de données.
 - Ajout: Ajout d'une page "joueurs", vous pouvez y définir un fish / reg manuellement, et voir vos mains contre lui.

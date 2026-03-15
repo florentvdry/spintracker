@@ -132,13 +132,13 @@ public class Database
                 prize_pool, multiplier, buy_in, date_time, table_id, blinds,
                 total_pot, rake, preflop_action,
                 flop, flop_action, turn, turn_action, river, river_action,
-                showdown, result, all_in_street, went_to_showdown, player_count
+                showdown, result, all_in_street, went_to_showdown, player_count, position
             ) VALUES (
                 @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
                 @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
                 @total_pot, @rake, @preflop_action,
                 @flop, @flop_action, @turn, @turn_action, @river, @river_action,
-                @showdown, @result, @all_in_street, @went_to_showdown, @player_count
+                @showdown, @result, @all_in_street, @went_to_showdown, @player_count, @position
             )";
 
             _logger.LogInformation($"[DB] SQL prepared, starting insert loop for {hands.Count} hands");
@@ -179,6 +179,7 @@ public class Database
                 handCmd.Parameters.AddWithValue("@all_in_street", hand.AllInStreet ?? "");
                 handCmd.Parameters.AddWithValue("@went_to_showdown", hand.WentToShowdown ? 1 : 0);
                 handCmd.Parameters.AddWithValue("@player_count", hand.PlayerCount);
+                handCmd.Parameters.AddWithValue("@position", hand.Position);
 
                 inserted += await handCmd.ExecuteNonQueryAsync();
             }

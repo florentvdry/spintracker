@@ -69,7 +69,9 @@ public class TournamentsRepository
                 COUNT(*) as hand_count,
                 SUM({profitCol}) as chip_profit,
                 AVG(ph.ev_chips) as avg_cev,
-                MAX(h.player_count) as max_players
+                MAX(h.player_count) as max_players,
+                MAX(h.multiplier) as multiplier,
+                MAX(h.position) as position
             FROM hands h
             {joinHero}
             {whereClause}
@@ -91,32 +93,38 @@ public class TournamentsRepository
                     PrizePool = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
                     HandCount = reader.GetInt32(5),
                     ChipProfit = reader.IsDBNull(6) ? 0 : reader.GetDouble(6),
-                    AvgCev = reader.IsDBNull(7) ? 0 : reader.GetDouble(7)
+                    AvgCev = reader.IsDBNull(7) ? 0 : reader.GetDouble(7),
+                    Multiplier = reader.IsDBNull(9) ? 0 : reader.GetInt32(9),
+                    Position = reader.IsDBNull(10) ? 0 : reader.GetInt32(10)
                 };
 
                 int lastPlayerCount = reader.IsDBNull(8) ? 3 : reader.GetInt32(8);
 
                 // Tournament Profit Logic (Prize Sharing handling)
-                if (t.PrizePool > 0)
+                if (t.PrizePool > 0 || t.Multiplier > 0)
                 {
-                    bool hasSharing = (t.BuyIn > 0 && (t.PrizePool / t.BuyIn) >= 20);
-                    if (t.ChipProfit > 0)
+                    bool hasSharing = (t.BuyIn > 0 && (t.PrizePool / t.BuyIn) >= 19.5) || t.Multiplier >= 20;
+                    double totalPrize = (t.PrizePool > (t.Multiplier * t.BuyIn * 0.5)) ? t.PrizePool : (t.BuyIn * t.Multiplier);
+                    
+                    // Determine finish position: use explicit position if available, otherwise fallback to ChipProfit
+                    int finishPos = t.Position;
+                    if (finishPos == 0)
                     {
-                        double winAmount = hasSharing ? (t.PrizePool * 0.75) : t.PrizePool;
-                        t.NetProfit = winAmount - t.BuyIn;
+                        finishPos = (t.ChipProfit > 0) ? 1 : (lastPlayerCount == 2 ? 2 : 3);
                     }
-                    else
+
+                    double winAmount = 0;
+                    if (finishPos == 1)
                     {
-                        if (hasSharing)
-                        {
-                            double consolation = (lastPlayerCount == 2) ? (t.PrizePool * 0.15) : (t.PrizePool * 0.10);
-                            t.NetProfit = consolation - t.BuyIn;
-                        }
-                        else
-                        {
-                            t.NetProfit = -t.BuyIn;
-                        }
+                        winAmount = hasSharing ? (totalPrize * 0.75) : totalPrize;
                     }
+                    else if (hasSharing)
+                    {
+                        if (finishPos == 2) winAmount = totalPrize * 0.15;
+                        else if (finishPos == 3) winAmount = totalPrize * 0.10;
+                    }
+
+                    t.NetProfit = winAmount - t.BuyIn;
                 }
                 else
                 {

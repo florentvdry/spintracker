@@ -57,6 +57,8 @@ public class TournamentSummary
     public DateTime DateTime { get; set; }
     public double BuyIn { get; set; }
     public double PrizePool { get; set; }
+    public int Multiplier { get; set; }
+    public int Position { get; set; }
     public double NetProfit { get; set; }
     public double ChipProfit { get; set; }
     public double AvgCev { get; set; }

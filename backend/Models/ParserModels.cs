@@ -36,6 +36,7 @@ public class ParsedHand
     public string Result { get; set; } = "";
     public string? AllInStreet { get; set; }
     public int PlayerCount { get; set; } = 2;
+    public int Position { get; set; } = 0; // 1, 2, 3 (0 if unknown)
     public bool WentToShowdown { get; set; }
     public List<PlayerInfo> Players { get; set; } = new();
 }
