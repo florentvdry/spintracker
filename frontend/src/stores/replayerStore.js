@@ -64,9 +64,9 @@ export const useReplayerStore = create((set, get) => ({
     set({ showExportModal: false, isRecording: true, recordingType: exportType });
     
     try {
-      console.log('[VideoExport] Calling startVideoRecording...');
-      await startVideoRecording(exportType);
-      console.log('[VideoExport] startVideoRecording completed successfully');
+      console.log('[VideoExport] Using backend video generation...');
+      await generateVideoBackend(exportType);
+      console.log('[VideoExport] Backend video generation completed successfully');
     } catch (error) {
       // Extract error message safely - error objects may not be clonable
       let errorMessage = 'Unknown error';
@@ -102,8 +102,8 @@ export const useReplayerStore = create((set, get) => ({
     } else {
       set({ isRecording: true, recordingType: 'hand' });
       try {
-        console.log('[VideoExport] Starting single hand recording...');
-        await startVideoRecording('hand');
+        console.log('[VideoExport] Starting backend video generation...');
+        await generateVideoBackend('hand');
       } catch (error) {
         let errorMessage = 'Unknown error';
         try {
@@ -892,4 +892,213 @@ async function simulateRecording(exportType) {
   URL.revokeObjectURL(url);
   
   alert('Development mode: Video export simulated successfully! The file has been downloaded.');
+}
+
+// Backend Video Generation - renders frames on server side using C# + FFmpeg
+async function generateVideoBackend(exportType) {
+  console.log('[VideoExport-Backend] Starting backend video generation, type:', exportType);
+  
+  const isElectron = typeof window !== 'undefined' && window.process?.versions?.electron;
+  const isDev = import.meta.env.DEV;
+  
+  if (isDev && !isElectron) {
+    console.log('[VideoExport-Backend] Development mode: Using simulation');
+    await simulateRecording(exportType);
+    return;
+  }
+
+  if (!isElectron) {
+    throw new Error('Electron environment not detected. Video export only works in Electron app.');
+  }
+
+  const store = useReplayerStore.getState();
+  const { hand, handQueue, currentHandIndex } = store;
+
+  if (!hand) {
+    throw new Error('No hand loaded');
+  }
+
+  // Collect frames for the video
+  const frames = [];
+  
+  // Determine which hands to process
+  let handsToProcess = [];
+  if (exportType === 'hand') {
+    handsToProcess = [hand];
+  } else {
+    // Tournament - get all hands from queue
+    // For now, just process the current hand
+    console.log('[VideoExport-Backend] Tournament export not fully implemented, using current hand');
+    handsToProcess = [hand];
+  }
+
+  console.log('[VideoExport-Backend] Processing', handsToProcess.length, 'hands');
+
+  // Process each hand and generate frames
+  for (const handData of handsToProcess) {
+    if (!handData.actions) continue;
+    
+    // Initial state (before any action)
+    const initialState = computeReplayerState(handData, -1, store.showVillainHands, store.showInBB);
+    if (initialState) {
+      frames.push(convertToFrame(initialState, -1, handData));
+    }
+
+    // Each action step
+    for (let i = 0; i < handData.actions.length; i++) {
+      const state = computeReplayerState(handData, i, store.showVillainHands, store.showInBB);
+      if (state) {
+        frames.push(convertToFrame(state, i, handData));
+      }
+    }
+  }
+
+  console.log('[VideoExport-Backend] Generated', frames.length, 'frames');
+
+  if (frames.length === 0) {
+    throw new Error('No frames generated');
+  }
+
+  // Send to backend for video rendering
+  try {
+    console.log('[VideoExport-Backend] Sending frames to backend...');
+    
+    // Use direct IPC call
+    const { ipcRenderer } = window.require('electron');
+    const result = await ipcRenderer.invoke('generate-video', {
+      frames,
+      width: 1280,
+      height: 720,
+      frameRate: 2
+    });
+
+    if (result.success) {
+      console.log('[VideoExport-Backend] Video saved to:', result.filePath);
+      alert('Vidéo enregistrée avec succès !');
+    } else if (result.canceled) {
+      console.log('[VideoExport-Backend] User canceled');
+    } else {
+      console.error('[VideoExport-Backend] Failed:', result.message);
+      alert('Erreur lors de la génération vidéo: ' + result.message);
+    }
+  } catch (error) {
+    console.error('[VideoExport-Backend] Error:', error);
+    throw error;
+  }
+}
+
+// Compute replayer state for a given action index
+function computeReplayerState(hand, actionIndex, showVillainHands, showInBB) {
+  if (!hand) return null;
+
+  let pot = 0;
+  let communityCards = [];
+  let currentStreet = 0; // PREFLOP
+
+  // Initialize players
+  const players = hand.players.map(p => ({
+    ...p,
+    currentStack: p.stack,
+    currentBet: p.initialBet || 0,
+    isActive: true,
+    isFolded: false,
+    actionLabel: null,
+    lastActionType: null,
+    isWinner: false,
+    wonAmount: 0
+  }));
+
+  const STREETS = { PREFLOP: 0, FLOP: 1, TURN: 2, RIVER: 3, SHOWDOWN: 4 };
+
+  // Process actions up to current index
+  for (let i = 0; i <= actionIndex; i++) {
+    const action = hand.actions[i];
+    if (!action) continue;
+
+    const player = players.find(p => p.seat === action.seat);
+
+    if (action.street !== currentStreet) {
+      players.forEach(p => {
+        pot += p.currentBet;
+        p.currentBet = 0;
+        p.actionLabel = null;
+      });
+      currentStreet = action.street;
+
+      if (currentStreet === STREETS.FLOP) communityCards = hand.board?.slice(0, 3) || [];
+      else if (currentStreet === STREETS.TURN) communityCards = hand.board?.slice(0, 4) || [];
+      else if (currentStreet === STREETS.RIVER) communityCards = hand.board?.slice(0, 5) || [];
+    }
+
+    if (player) {
+      player.lastActionType = action.type;
+
+      switch (action.type) {
+        case 'post':
+        case 'bet':
+        case 'raise':
+        case 'call':
+        case 'all-in':
+          const amount = action.amount || 0;
+          player.currentStack -= amount;
+          player.currentBet += amount;
+          player.actionLabel = `${action.type} ${amount}`;
+          break;
+        case 'check':
+          player.actionLabel = 'Check';
+          break;
+        case 'fold':
+          player.isFolded = true;
+          player.isActive = false;
+          player.actionLabel = 'Fold';
+          break;
+        case 'win':
+          player.isWinner = true;
+          player.wonAmount = action.amount;
+          player.currentStack += action.amount;
+          player.actionLabel = `Win ${action.amount}`;
+          pot -= action.amount;
+          break;
+      }
+    }
+  }
+
+  const currentPot = Math.max(0, pot + players.reduce((sum, p) => sum + p.currentBet, 0));
+
+  return {
+    players,
+    pot: currentPot,
+    communityCards,
+    currentStreet,
+    dealerSeat: hand.buttonSeat || 0,
+    bbSize: hand.blinds?.bb || 0,
+    showVillainHands
+  };
+}
+
+// Convert replayer state to frame data for backend
+function convertToFrame(state, actionIndex, hand) {
+  const STREET_NAMES = ['Preflop', 'Flop', 'Turn', 'River', 'Showdown'];
+  
+  const frame = {
+    index: actionIndex + 1,
+    pot: state.pot,
+    dealerSeat: state.dealerSeat,
+    communityCards: state.communityCards || [],
+    streetName: STREET_NAMES[state.currentStreet] || 'Preflop',
+    players: state.players.map(p => ({
+      name: p.name || '',
+      seat: p.seat || 0,
+      stack: p.currentStack || 0,
+      currentBet: p.currentBet || 0,
+      cards: p.cards || '',
+      isHero: p.isHero || false,
+      isFolded: p.isFolded || false,
+      isWinner: p.isWinner || false,
+      actionLabel: p.actionLabel || null,
+      actionType: p.lastActionType || null
+    }))
+  };
+
+  return frame;
 }

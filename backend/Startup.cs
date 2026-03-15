@@ -64,6 +64,7 @@ public static class Startup
         services.AddSingleton<IEquityCalculator, EquityCalculator>();
         services.AddSingleton<IAnalyticsCalculator, AnalyticsCalculator>();
         services.AddSingleton<IAnalysisService, AnalysisService>();
+        services.AddSingleton<VideoRendererService>();
         services.AddSingleton<IImporterService>(sp => 
             new ImporterService(
                 sp.GetRequiredService<Database>(),

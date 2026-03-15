@@ -1210,3 +1210,62 @@ ipcMain.handle('record-desktop-stop', async () => {
   }
 });
 
+// ============ Backend Video Generation ============
+
+ipcMain.handle('generate-video', async (event, data) => {
+  console.log('[Main] generate-video handler called');
+  
+  try {
+    if (!data || !data.frames || data.frames.length === 0) {
+      throw new Error('No frames provided');
+    }
+    
+    console.log('[Main] Generating video with', data.frames.length, 'frames');
+    
+    // First, show save dialog to get the output path
+    let parentWindow = mainWindow;
+    if (BrowserWindow.getAllWindows().length > 1) {
+      const windows = BrowserWindow.getAllWindows();
+      parentWindow = windows.find(w => w.webContents.getURL().includes('replayer')) || windows[0];
+    }
+    
+    const { filePath, canceled } = await dialog.showSaveDialog(parentWindow, {
+      title: 'Enregistrer la vidéo de replay',
+      defaultPath: `poker-replay-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.mp4`,
+      filters: [
+        { name: 'MP4 Video', extensions: ['mp4'] },
+        { name: 'WebM Video', extensions: ['webm'] }
+      ]
+    });
+    
+    if (canceled || !filePath) {
+      return { success: false, canceled: true };
+    }
+    
+    console.log('[Main] User selected save path:', filePath);
+    
+    // Call backend to generate video
+    const requestData = {
+      frames: data.frames,
+      width: data.width || 1280,
+      height: data.height || 720,
+      frameRate: data.frameRate || 2,
+      outputPath: filePath
+    };
+    
+    const result = await callBackendAPI('/video/generate', requestData);
+    
+    if (result && result.success) {
+      // The backend already saved the video to filePath
+      console.log('[Main] Video generated successfully');
+      return { success: true, filePath };
+    } else {
+      console.error('[Main] Video generation failed:', result?.error);
+      return { success: false, message: result?.error || 'Video generation failed' };
+    }
+  } catch (error) {
+    console.error('[Main] generate-video error:', error.message);
+    return { success: false, message: error.message };
+  }
+});
+

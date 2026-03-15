@@ -21,6 +21,8 @@
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
     <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
     <PackageReference Include="FluentMigrator.Runner.Sqlite" Version="3.3.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
   </ItemGroup>
 
   <ItemGroup>
