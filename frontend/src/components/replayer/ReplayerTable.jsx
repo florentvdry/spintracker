@@ -72,20 +72,29 @@ const ReplayerTable = () => {
     }
   };
 
-  // Helper to normalize seat index for display so Hero is always bottom center?
-  // For now, we just map seat number to position index roughly.
-  // Ideally we rotate so hero is at index 0.
   const heroIndex = players.findIndex(p => p.isHero);
-  
-  // Calculate rotation to put Hero at index 1 (bottom)
-  // Formula: (playerIndex - heroIndex + N + 1) % N
+  const btnIndex = players.findIndex(p => p.position === 'BTN');
   
   const getDisplayPosition = (playerIndex) => {
-     if (heroIndex === -1) return positions[playerIndex]; // Fallback if no hero
+     if (heroIndex === -1) return positions[playerIndex];
 
      const N = players.length;
-     // Rotate so hero is always at position 1 (Bottom)
-     const positionIndex = (playerIndex - heroIndex + N + 1) % N;
+     let positionIndex = (playerIndex - heroIndex + N) % N;
+     
+     if (btnIndex !== -1) {
+       const btnRotatedPos = (btnIndex - heroIndex + N) % N;
+       const sbIndex = players.findIndex(p => p.position === 'SB');
+       
+       if (sbIndex !== -1) {
+         const sbRotatedPos = (sbIndex - heroIndex + N) % N;
+         const sbShouldBeLeftOfBtn = (sbRotatedPos === (btnRotatedPos - 1 + N) % N) || 
+                                      (sbRotatedPos === (btnRotatedPos - 2 + N) % N && N > 3);
+         
+         if (!sbShouldBeLeftOfBtn) {
+           positionIndex = (playerIndex - heroIndex + N - 1) % N;
+         }
+       }
+     }
      
      return positions[positionIndex] || { top: '50%', left: '50%' };
   };
