@@ -411,11 +411,13 @@ export default function Charts() {
     }
   };
 
-  const PositionStat = ({ label, value, isSelected }) => {
+  const PositionStat = ({ label, value, count, isSelected }) => {
     const displayValue = value || 0;
     return (
       <div className="flex justify-between items-center text-xs">
-        <span className={isSelected ? 'text-primary-400 font-medium' : 'text-gray-500'}>{label}</span>
+        <span className={isSelected ? 'text-primary-400 font-medium' : 'text-gray-500'}>
+          {label} {isSelected && count !== undefined && <span className="text-[10px] opacity-70">({count})</span>}
+        </span>
         <span className={`font-mono font-medium ${displayValue >= 0 ? 'text-green-500' : 'text-red-500'}`}>
           {displayValue > 0 ? '+' : ''}{displayValue}
         </span>
@@ -544,12 +546,6 @@ export default function Charts() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">Total</span>
-                  <span className="text-sm font-mono font-medium text-white">
-                    {(chartPosition === 'all' ? globalStats?.total_hands : stats?.total_hands) || 0}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-400">CEV</span>
                   <span className={clsx('text-sm font-mono font-medium', finalStats.cev >= 0 ? 'text-green-400' : 'text-red-400')}>
                     {finalStats.cev >= 0 ? '+' : ''}{finalStats.cev.toFixed(2)}
@@ -562,24 +558,29 @@ export default function Charts() {
                       <div>
                         <p className="text-[9px] text-gray-500">Heads-Up</p>
                         {(() => {
-                          const getCevValue = (positionKey) => {
+                          const getPosData = (positionKey) => {
                             if (chartPosition === 'all') {
                               const totalTournaments = globalStats?.total_tournaments || 1;
                               const value = globalStats.cev_by_position?.[positionKey] || 0;
-                              return (value / totalTournaments).toFixed(2);
+                              return { value: (value / totalTournaments).toFixed(2) };
                             } else {
                               if (positionKey === chartPosition) {
                                 const totalTournaments = globalStats?.tournaments_by_position?.[positionKey] || 1;
                                 const value = globalStats.cev_by_position?.[positionKey] || 0;
-                                return (value / totalTournaments).toFixed(2);
+                                return { 
+                                  value: (value / totalTournaments).toFixed(2),
+                                  count: globalStats?.tournaments_by_position?.[positionKey] || 0
+                                };
                               }
-                              return '0.00';
+                              return { value: '0.00' };
                             }
                           };
+                          const sb = getPosData('HU_SB');
+                          const bb = getPosData('HU_BB');
                           return (
                             <>
-                              <PositionStat label="SB" value={getCevValue('HU_SB')} isSelected={chartPosition === 'HU_SB'} />
-                              <PositionStat label="BB" value={getCevValue('HU_BB')} isSelected={chartPosition === 'HU_BB'} />
+                              <PositionStat label="SB" value={sb.value} count={sb.count} isSelected={chartPosition === 'HU_SB'} />
+                              <PositionStat label="BB" value={bb.value} count={bb.count} isSelected={chartPosition === 'HU_BB'} />
                             </>
                           );
                         })()}
@@ -587,25 +588,31 @@ export default function Charts() {
                         <div>
                           <p className="text-[9px] text-gray-500">3-Way</p>
                           {(() => {
-                            const getCevValue = (positionKey) => {
+                            const getPosData = (positionKey) => {
                               if (chartPosition === 'all') {
                                 const totalTournaments = globalStats?.total_tournaments || 1;
                                 const value = globalStats.cev_by_position?.[positionKey] || 0;
-                                return (value / totalTournaments).toFixed(2);
+                                return { value: (value / totalTournaments).toFixed(2) };
                               } else {
                                 if (positionKey === chartPosition) {
                                   const totalTournaments = globalStats?.tournaments_by_position?.[positionKey] || 1;
                                   const value = globalStats.cev_by_position?.[positionKey] || 0;
-                                  return (value / totalTournaments).toFixed(2);
+                                  return { 
+                                    value: (value / totalTournaments).toFixed(2),
+                                    count: globalStats?.tournaments_by_position?.[positionKey] || 0
+                                  };
                                 }
-                                return '0.00';
+                                return { value: '0.00' };
                               }
                             };
+                            const btn = getPosData('3W_BTN');
+                            const sb = getPosData('3W_SB');
+                            const bb = getPosData('3W_BB');
                             return (
                               <>
-                                <PositionStat label="BTN" value={getCevValue('3W_BTN')} isSelected={chartPosition === '3W_BTN'} />
-                                <PositionStat label="SB" value={getCevValue('3W_SB')} isSelected={chartPosition === '3W_SB'} />
-                                <PositionStat label="BB" value={getCevValue('3W_BB')} isSelected={chartPosition === '3W_BB'} />
+                                <PositionStat label="BTN" value={btn.value} count={btn.count} isSelected={chartPosition === '3W_BTN'} />
+                                <PositionStat label="SB" value={sb.value} count={sb.count} isSelected={chartPosition === '3W_SB'} />
+                                <PositionStat label="BB" value={bb.value} count={bb.count} isSelected={chartPosition === '3W_BB'} />
                               </>
                             );
                           })()}

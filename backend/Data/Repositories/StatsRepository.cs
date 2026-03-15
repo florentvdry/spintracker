@@ -157,6 +157,7 @@ public class StatsRepository
         // 1.2 Position-based EV calculation
         var cevByPosition = new Dictionary<string, double>();
         var countByPosition = new Dictionary<string, int>();
+        var tournamentsByPosition = new Dictionary<string, int>();
         try
         {
             using (var cmdPos = connection.CreateCommand())
@@ -166,7 +167,8 @@ public class StatsRepository
                         ph.position,
                         COALESCE(SUM(ph.net_won_adjusted), 0) as pos_ev,
                         h.player_count,
-                        COUNT(*) as hand_count
+                        COUNT(*) as hand_count,
+                        COUNT(DISTINCT h.game_id) as tour_count
                     FROM hands h
                     {joinClause}
                     {whereClause}
@@ -183,11 +185,13 @@ public class StatsRepository
                     var pos = reader.IsDBNull(0) ? "Unknown" : reader.GetString(0);
                     var ev = reader.GetDouble(1);
                     var playerCount = reader.GetInt32(2);
-                    var count = reader.GetInt32(3);
+                    var handsCount = reader.GetInt32(3);
+                    var tourCount = reader.GetInt32(4);
                     
                     var key = (playerCount == 2 ? "HU_" : "3W_") + pos;
                     cevByPosition[key] = ev;
-                    countByPosition[key] = count;
+                    countByPosition[key] = handsCount;
+                    tournamentsByPosition[key] = tourCount;
                 }
             }
         }
@@ -275,6 +279,7 @@ public class StatsRepository
             avg_chips_ev = avgChipsEv,
             cev_by_position = cevByPosition,
             count_by_position = countByPosition,
+            tournaments_by_position = tournamentsByPosition,
             sessions_this_month = sessionsThisMonth,
             total_sessions = sessions.Count,
             avg_multiplier = 0.0,
@@ -490,6 +495,22 @@ public class StatsRepository
         {
             whereClauses.Add("h.buy_in = @buyIn");
             parameters.Add(new SqliteParameter("@buyIn", options.BuyIn.Value));
+        }
+
+        if (!string.IsNullOrEmpty(options.Position))
+        {
+            if (options.Position.StartsWith("HU_"))
+            {
+                whereClauses.Add("h.player_count = 2");
+                whereClauses.Add("ph.position = @pos");
+                parameters.Add(new SqliteParameter("@pos", options.Position.Substring(3)));
+            }
+            else if (options.Position.StartsWith("3W_"))
+            {
+                whereClauses.Add("h.player_count = 3");
+                whereClauses.Add("ph.position = @pos");
+                parameters.Add(new SqliteParameter("@pos", options.Position.Substring(3)));
+            }
         }
 
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";

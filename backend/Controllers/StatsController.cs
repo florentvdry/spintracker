@@ -35,7 +35,8 @@ public class StatsController : ControllerBase
                     DateFrom = Request.Query["dateFrom"],
                     DateTo = Request.Query["dateTo"],
                     HeroName = Request.Query["heroName"],
-                    BuyIn = double.TryParse(Request.Query["buyIn"], out var b) ? b : null
+                    BuyIn = double.TryParse(Request.Query["buyIn"], out var b) ? b : null,
+                    Position = Request.Query["position"]
                 };
             }
 

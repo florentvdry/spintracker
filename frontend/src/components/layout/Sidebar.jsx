@@ -23,6 +23,7 @@ export default function Sidebar() {
     { name: t('navigation.dashboard'), href: '/', icon: LayoutDashboard },
     { name: t('navigation.history'), href: '/hands', icon: History },
     { name: t('navigation.ranges'), href: '/ranges', icon: Grid3X3 },
+    { name: t('navigation.charts'), href: '/charts', icon: BarChart2 },
     { name: t('navigation.players'), href: '/players', icon: Users },
     { name: t('navigation.settings'), href: '/settings', icon: Settings },
   ];

@@ -5,6 +5,7 @@ import Dashboard from '@pages/Dashboard';
 import HandHistory from '@pages/HandHistory';
 import RangeResearch from '@pages/RangeResearch';
 import Analysis from '@pages/Analysis';
+import Charts from '@pages/Charts';
 import Settings from '@pages/Settings';
 import Players from '@pages/Players';
 import { useAppStore } from '@stores/appStore';
@@ -40,6 +41,7 @@ function App() {
             <Route path="/hands" element={<HandHistory />} />
             <Route path="/analysis" element={<Analysis />} />
             <Route path="/ranges" element={<RangeResearch />} />
+            <Route path="/charts" element={<Charts />} />
             <Route path="/players" element={<Players />} />
             <Route path="/settings" element={<Settings />} />
         </Routes>
