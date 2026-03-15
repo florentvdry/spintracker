@@ -89,7 +89,7 @@ export default function Charts() {
             }
             const entry = groupedData.get(label);
             entry.lastProfit = item.profit ?? item.realWin ?? 0;
-            entry.lastCumulative = item.cumulative ?? item.theoricalWin ?? 0;
+            entry.lastCumulative = item.cumulative_ev ?? item.cumulative ?? item.theoricalWin ?? 0;
             entry.lastShowdown = item.chips_won_showdown ?? item.chipsWonShowdown ?? 0;
             entry.lastNoShowdown = item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0;
           });

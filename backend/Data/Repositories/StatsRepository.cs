@@ -61,7 +61,7 @@ public class StatsRepository
             SELECT 
                 COUNT(*) as total_hands,
                 SUM(CASE WHEN ph.net_profit > 0 THEN 1 ELSE 0 END) as hands_won,
-                COALESCE(SUM(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1625.0), 0) as total_ev
+                COALESCE(SUM(ph.net_won_adjusted / 1000.0), 0) as total_ev
             FROM hands h
             {joinClause}
             {whereClause}";
@@ -175,7 +175,7 @@ public class StatsRepository
                 cmdPos.CommandText = $@"
                     SELECT 
                         ph.position,
-                        COALESCE(SUM(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1625.0), 0) as pos_ev,
+                        COALESCE(SUM(ph.net_won_adjusted / 1000.0), 0) as pos_ev,
                         h.player_count,
                         COUNT(*) as hand_count
                     FROM hands h
@@ -294,13 +294,13 @@ public class StatsRepository
 
         // Fetch necessary columns to group sessions and calculate profit
         cmd.CommandText = $@"
-            SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, {profitCol}, h.player_count 
+            SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, h.rake, {profitCol}, h.player_count 
             FROM hands h 
             {joinClause}
             {whereClause}
             ORDER BY h.date_time ASC";
         
-        var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)>();
+        var rawHands = new List<(DateTime t, string r, string g, double b, double p, double rk, double h_p, int pc)>();
         using (var reader = await cmd.ExecuteReaderAsync())
         {
             while(await reader.ReadAsync())
@@ -317,14 +317,15 @@ public class StatsRepository
                     reader.IsDBNull(3) ? 0.0 : reader.GetDouble(3),
                     reader.IsDBNull(4) ? 0.0 : reader.GetDouble(4),
                     reader.IsDBNull(5) ? 0.0 : reader.GetDouble(5),
-                    reader.IsDBNull(6) ? 3 : reader.GetInt32(6)
+                    reader.IsDBNull(6) ? 0.0 : reader.GetDouble(6),
+                    reader.IsDBNull(7) ? 3 : reader.GetInt32(7)
                  ));
             }
         }
 
         // Group by sessions (hands within 2 hours are same session)
         var sessions = new List<SessionInfo>();
-        var currentSession = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)>();
+        var currentSession = new List<(DateTime t, string r, string g, double b, double p, double rk, double h_p, int pc)>();
         DateTime? lastTime = null;
 
         foreach (var hand in rawHands.OrderBy(h => h.t))
@@ -349,7 +350,7 @@ public class StatsRepository
         return limit.HasValue ? sessions.Take(limit.Value).ToList() : sessions;
     }
 
-    private SessionInfo CreateSessionInfo(List<(DateTime t, string r, string g, double b, double p, double h_p, int pc)> hands)
+    private SessionInfo CreateSessionInfo(List<(DateTime t, string r, string g, double b, double p, double rk, double h_p, int pc)> hands)
     {
         var startTime = hands.Min(h => h.t);
         var room = hands.First().r;
@@ -363,6 +364,7 @@ public class StatsRepository
         {
             var first = game.First();
             double chipProfit = game.Sum(h => h.h_p);
+            double rake = first.rk;
             double profit = 0;
             if (first.p > 0)
             {
@@ -370,18 +372,18 @@ public class StatsRepository
                 if (chipProfit > 0)
                 {
                     double winAmount = hasSharing ? (first.p * 0.75) : first.p;
-                    profit = winAmount - first.b;
+                    profit = winAmount - first.b - rake;
                 }
                 else
                 {
                     if (hasSharing)
                     {
                         double consolation = (first.pc == 2) ? (first.p * 0.15) : (first.p * 0.10);
-                        profit = consolation - first.b;
+                        profit = consolation - first.b - rake;
                     }
                     else
                     {
-                        profit = -first.b;
+                        profit = -first.b - rake;
                     }
                 }
             }
@@ -406,7 +408,7 @@ public class StatsRepository
 
         var joinClause = "";
         var profitCol = "ph.net_profit";
-        var evCol = "COALESCE(ph.net_won_adjusted * COALESCE(h.prize_pool, h.buy_in * 2) / 1625.0, ph.net_profit)";
+        var evCol = "COALESCE(ph.net_won_adjusted / 1000.0, ph.net_profit)";
         var showdownCondition = "ph.went_to_showdown = 1";
 
         if (!string.IsNullOrEmpty(options.HeroName))
@@ -466,6 +468,7 @@ public class StatsRepository
                 h.game_id,
                 h.buy_in,
                 h.prize_pool,
+                h.rake,
                 h.player_count,
                 {profitCol} as hand_profit
             FROM hands h
@@ -488,11 +491,13 @@ public class StatsRepository
                 chips_won_showdown = reader.GetDouble(2),
                 chips_won_no_showdown = reader.GetDouble(3),
                 cumulative = reader.GetDouble(4),
+                cumulativeEv = reader.GetDouble(10),
                 game_id = reader.IsDBNull(5) ? null : reader.GetString(5),
                 buy_in = reader.IsDBNull(6) ? 0.0 : reader.GetDouble(6),
                 prize_pool = reader.IsDBNull(7) ? 0.0 : reader.GetDouble(7),
-                player_count = reader.IsDBNull(8) ? 0 : reader.GetInt32(8),
-                hand_profit = reader.GetDouble(9)
+                rake = reader.IsDBNull(8) ? 0.0 : reader.GetDouble(8),
+                player_count = reader.IsDBNull(9) ? 0 : reader.GetInt32(9),
+                hand_profit = reader.GetDouble(11)
             });
         }
 
@@ -520,24 +525,25 @@ public class StatsRepository
             foreach (var h in game) chipProfit += h.hand_profit;
 
             double profit = 0;
+            double rake = first.rake;
             if (first.prize_pool > 0)
             {
                 bool hasSharing = (first.buy_in > 0 && (first.prize_pool / first.buy_in) >= 20);
                 if (chipProfit > 0)
                 {
                     double winAmount = hasSharing ? (first.prize_pool * 0.75) : first.prize_pool;
-                    profit = winAmount - first.buy_in;
+                    profit = winAmount - first.buy_in - rake;
                 }
                 else
                 {
                     if (hasSharing)
                     {
                         double consolation = (last.player_count == 2) ? (first.prize_pool * 0.15) : (first.prize_pool * 0.10);
-                        profit = consolation - first.buy_in;
+                        profit = consolation - first.buy_in - rake;
                     }
                     else
                     {
-                        profit = -first.buy_in;
+                        profit = -first.buy_in - rake;
                     }
                 }
             }
@@ -565,6 +571,7 @@ public class StatsRepository
                 date = h.date,
                 profit = h.profit,
                 cumulative = h.cumulative,
+                cumulative_ev = h.cumulativeEv,
                 chips_won_showdown = h.chips_won_showdown,
                 chips_won_no_showdown = h.chips_won_no_showdown,
                 euro_profit = currentCumulativeEuro
@@ -586,9 +593,11 @@ public class StatsRepository
         public double chips_won_showdown { get; set; }
         public double chips_won_no_showdown { get; set; }
         public double cumulative { get; set; }
+        public double cumulativeEv { get; set; }
         public string? game_id { get; set; }
         public double buy_in { get; set; }
         public double prize_pool { get; set; }
+        public double rake { get; set; }
         public int player_count { get; set; }
         public double hand_profit { get; set; }
     }
