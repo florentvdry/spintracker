@@ -72,20 +72,16 @@ const ReplayerTable = () => {
     }
   };
 
-  // Helper to normalize seat index for display so Hero is always bottom center?
-  // For now, we just map seat number to position index roughly.
-  // Ideally we rotate so hero is at index 0.
-  const heroIndex = players.findIndex(p => p.isHero);
+  // Spin & Go (3-max): BTN at bottom (1), SB at top-left (0, LEFT of BTN), BB at top-right (2, RIGHT of BTN)
   
-  // Calculate rotation to put Hero at index 1 (bottom)
-  // Formula: (playerIndex - heroIndex + N + 1) % N
-  
-  const getDisplayPosition = (playerIndex) => {
-     if (heroIndex === -1) return positions[playerIndex]; // Fallback if no hero
+  const getDisplayPosition = (playerSeat) => {
+     if (dealerSeat === undefined || dealerSeat === null) return positions[playerSeat - 1] || positions[0];
 
-     const N = players.length;
-     // Rotate so hero is always at position 1 (Bottom)
-     const positionIndex = (playerIndex - heroIndex + N + 1) % N;
+     const seatDiff = playerSeat - dealerSeat;
+     let positionIndex;
+     if (seatDiff === 0) positionIndex = 1;       // BTN -> bottom
+     else if (seatDiff === 1 || seatDiff === -2) positionIndex = 0;  // SB -> left
+     else positionIndex = 2;                     // BB -> right
      
      return positions[positionIndex] || { top: '50%', left: '50%' };
   };
@@ -137,7 +133,7 @@ const ReplayerTable = () => {
 
       {/* Players */}
       {players.map((player, idx) => {
-        const pos = getDisplayPosition(idx);
+        const pos = getDisplayPosition(player.seat);
         
         return (
           <div 
@@ -199,7 +195,7 @@ const ReplayerTable = () => {
       {players.map((player, idx) => {
         if (player.currentBet <= 0) return null;
         
-        const pos = getDisplayPosition(idx);
+        const pos = getDisplayPosition(player.seat);
         const betPos = getBetPosition(pos);
         
         return (

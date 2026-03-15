@@ -1,4 +1,5 @@
 - Correction: Fix de la répartition des gains sur les jackpot
+- Correction: Dans certain cas, les positions dans le replayer était incorrect.
 
 - Ajout: Nouveau analyseur de range, plus facile à comprendre, avec de l'opacité selon la fréquence.
 - Ajout: Pouvoir avoir plusieurs base de données.
