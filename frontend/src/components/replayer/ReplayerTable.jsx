@@ -81,20 +81,20 @@ const ReplayerTable = () => {
      const N = players.length;
      let positionIndex = (playerIndex - heroIndex + N) % N;
      
-     if (btnIndex !== -1) {
-       const btnRotatedPos = (btnIndex - heroIndex + N) % N;
-       const sbIndex = players.findIndex(p => p.position === 'SB');
-       
-       if (sbIndex !== -1) {
-         const sbRotatedPos = (sbIndex - heroIndex + N) % N;
-         const sbShouldBeLeftOfBtn = (sbRotatedPos === (btnRotatedPos - 1 + N) % N) || 
-                                      (sbRotatedPos === (btnRotatedPos - 2 + N) % N && N > 3);
-         
-         if (!sbShouldBeLeftOfBtn) {
-           positionIndex = (playerIndex - heroIndex + N - 1) % N;
-         }
-       }
-     }
+      if (btnIndex !== -1) {
+        const btnRotatedPos = (btnIndex - heroIndex + N) % N;
+        const sbIndex = players.findIndex(p => p.position === 'SB');
+        
+        if (sbIndex !== -1) {
+          const sbRotatedPos = (sbIndex - heroIndex + N) % N;
+          const sbShouldBeRightOfBtn = (sbRotatedPos === (btnRotatedPos + 1) % N) || 
+                                       (sbRotatedPos === (btnRotatedPos + 2) % N && N > 3);
+          
+          if (!sbShouldBeRightOfBtn) {
+            positionIndex = (playerIndex - heroIndex + N - 1) % N;
+          }
+        }
+      }
      
      return positions[positionIndex] || { top: '50%', left: '50%' };
   };
