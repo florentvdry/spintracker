@@ -66,7 +66,7 @@ export default function TournamentsTable({
             const cev = tourn.avgCev ?? tourn.AvgCev ?? 0;
 
             return (
-              <React.Fragment key={t.gameId || t.GameId}>
+              <React.Fragment key={tourn.gameId || tourn.GameId}>
                 <tr
                   onClick={() => onSelectTournament(isSelected ? null : tourn)}
                   className={clsx(

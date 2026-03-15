@@ -46,6 +46,17 @@ export default function Analysis() {
     RiverInteractionPattern: ''
   });
 
+  // Combined filters for API requests
+  const combinedFilters = useMemo(() => {
+    const { dateFrom, dateTo } = getDateRangeParams();
+    return {
+      HeroName: heroName,
+      DateFrom: dateFrom,
+      DateTo: dateTo,
+      ...localFilters
+    };
+  }, [heroName, dateRange, customDateFrom, customDateTo, selectedSession, localFilters, getDateRangeParams]);
+
   // Dashboard Data
   const [dashboardData, setDashboardData] = useState(null);
   const [dashboardLoading, setDashboardLoading] = useState(false);
@@ -72,29 +83,6 @@ export default function Analysis() {
     fetchDashboard();
     return () => { mounted = false; };
   }, [combinedFilters, activeTab]);
-
-  // Hands List Data
-  const [handsData, setHandsData] = useState({
-    hands: [],
-    total: 0,
-    page: 1,
-    limit: 50,
-    pages: 1
-  });
-  const [handsLoading, setHandsLoading] = useState(false);
-  const [handsSort, setHandsSort] = useState('date_desc');
-  const [handsPage, setHandsPage] = useState(1);
-
-  // Combined filters for API requests
-  const combinedFilters = useMemo(() => {
-    const { dateFrom, dateTo } = getDateRangeParams();
-    return {
-      HeroName: heroName,
-      DateFrom: dateFrom,
-      DateTo: dateTo,
-      ...localFilters
-    };
-  }, [heroName, dateRange, customDateFrom, customDateTo, selectedSession, localFilters, getDateRangeParams]);
 
   // Load players list on mount
   useEffect(() => {
