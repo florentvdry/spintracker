@@ -10,7 +10,7 @@ export default function AnalysisFilters({ filters, onChange }) {
   
   const situations = ['Preflop', 'Flop', 'Turn', 'River'];
   const actions = ['Check', 'Bet', 'Raise', 'Fold', 'Call'];
-  const positions = ['SB', 'BB', 'UTG', 'MP', 'CO', 'BTN'];
+  const positions = ['BB', 'SB', 'BTN', 'CO', 'MP', 'UTG'];
 
   const handleChange = (key, value) => {
     onChange({ ...filters, [key]: value });
@@ -223,7 +223,7 @@ export default function AnalysisFilters({ filters, onChange }) {
             >
                 {t('common.any', 'Any')}
             </button>
-            {['BTN', 'SB', 'BB'].map(pos => {
+            {['BB', 'SB', 'BTN'].map(pos => {
                 // If HU (2 players), disable BTN selection if desired, or handle logic
                 // User said: "not need BTN" for HU.
                 if (filters.PlayerCount === 2 && pos === 'BTN') return null;
