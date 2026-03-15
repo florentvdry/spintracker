@@ -549,11 +549,16 @@ public class StatsRepository
 
             // Get tournament position - prefer the last hand with a position (usually the summary)
             int? tournamentPosition = null;
+            int maxPlayerCount = 0;
             foreach (var h in game)
             {
                 if (h.tournament_position.HasValue)
                 {
                     tournamentPosition = h.tournament_position;
+                }
+                if (h.player_count > maxPlayerCount)
+                {
+                    maxPlayerCount = h.player_count;
                 }
             }
 
@@ -571,7 +576,7 @@ public class StatsRepository
                     }
                     else if (tournamentPosition.Value == 2)
                     {
-                        double consolation = (last.player_count == 2) ? (first.prize_pool * 0.15) : (first.prize_pool * 0.10);
+                        double consolation = (maxPlayerCount == 2) ? (first.prize_pool * 0.15) : (first.prize_pool * 0.10);
                         profit = consolation - first.buy_in;
                     }
                     else if (tournamentPosition.Value == 3)
@@ -592,7 +597,7 @@ public class StatsRepository
                 {
                     if (hasSharing)
                     {
-                        double consolation = (last.player_count == 2) ? (first.prize_pool * 0.15) : (first.prize_pool * 0.10);
+                        double consolation = (maxPlayerCount == 2) ? (first.prize_pool * 0.15) : (first.prize_pool * 0.10);
                         profit = consolation - first.buy_in;
                     }
                     else
