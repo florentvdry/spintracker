@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useReplayerStore, STREETS } from '../../stores/replayerStore';
-import { Play, Pause, SkipBack, SkipForward, FastForward, Rewind, Eye, EyeOff, Video } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, FastForward, Rewind, Eye, EyeOff } from 'lucide-react';
 
 const ReplayerControls = () => {
   const { t } = useTranslation();
@@ -20,9 +20,7 @@ const ReplayerControls = () => {
     showVillainHands,
     toggleShowVillainHands,
     showInBB,
-    toggleShowInBB,
-    exportVideo,
-    isRecording
+    toggleShowInBB
   } = useReplayerStore();
 
   const speeds = [0.5, 1, 2, 4];
@@ -80,15 +78,6 @@ const ReplayerControls = () => {
 
       {/* Right Side: Speed & Hide Hands */}
       <div className="flex items-center gap-4">
-        <button 
-          onClick={exportVideo}
-          disabled={isRecording}
-          className={`p-1.5 rounded hover:bg-gray-800 transition-colors ${isRecording ? 'text-red-400 bg-red-900/30' : 'text-gray-400 hover:text-white'}`}
-          title={isRecording ? t('replayer.recording', 'Recording...') : t('replayer.export_video', 'Export Video')}
-        >
-          <Video size={18} />
-        </button>
-
         <button 
           onClick={toggleShowInBB}
           className={`px-2 py-1 rounded text-xs font-bold hover:bg-gray-800 transition-colors ${showInBB ? 'text-blue-400 bg-blue-900/30' : 'text-gray-400'}`}

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, shell, desktopCapturer } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 const path = require('path');
@@ -910,30 +910,6 @@ ipcMain.handle('export-data', async (event, format = 'json') => {
   } catch (error) {
     console.error('Export error:', error);
     return { success: false, message: error.message };
-  }
-});
-
-ipcMain.handle('get-desktop-sources', async () => {
-  try {
-    const sources = await desktopCapturer.getSources({ 
-      types: ['window', 'screen'],
-      thumbnailSize: { width: 0, height: 0 }
-    });
-    
-    if (!sources) return [];
-
-    // Simplification stricte pour éviter les erreurs de clonage IPC
-    // On ne garde que l'essentiel et on s'assure que ce sont des primitives
-    const safeSources = sources.map(source => ({
-      id: String(source.id),
-      name: String(source.name)
-    }));
-    
-    // Double sécurité : JSON serialization/deserialization
-    return JSON.parse(JSON.stringify(safeSources));
-  } catch (error) {
-    console.error('Failed to get desktop sources:', error);
-    return [];
   }
 });
 

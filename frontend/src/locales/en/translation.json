@@ -144,8 +144,6 @@
     "loading": "Loading Hand...",
     "start": "START",
     "action_log": "Action Log",
-    "export_video": "Export Video",
-    "recording": "Recording...",
     "error_title": "Replayer Error",
     "no_data": "No hand data found for this window.",
     "load_error": "Error loading data: ",
