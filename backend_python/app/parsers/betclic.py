@@ -50,6 +50,9 @@ class BetclicParser(BaseParser):
             if "Tournament" in line or "Tournoi" in line:
                 hand.game_mode = "Tournament"
             
+            if "Spin" in line:
+                hand.game_mode = "Spin"
+            
             if "Buy In:" in line or "Buy-in:" in line:
                 match = re.search(r"([\d.,]+)", line.replace(",", "."))
                 if match:
@@ -65,6 +68,21 @@ class BetclicParser(BaseParser):
                 if match:
                     hand.blinds = f"{match.group(1)}/{match.group(2)}"
             
+            if line.startswith("*** FLOP ***"):
+                match = re.search(r"\[([^\]]+)\]", line)
+                if match:
+                    hand.flop = match.group(1).strip()
+            
+            if line.startswith("*** TURN ***"):
+                match = re.search(r"\[([^\]]+)\]", line)
+                if match:
+                    hand.turn = match.group(1).strip()
+            
+            if line.startswith("*** RIVER ***"):
+                match = re.search(r"\[([^\]]+)\]", line)
+                if match:
+                    hand.river = match.group(1).strip()
+            
             if "Table" in line or "Table" in line:
                 match = re.search(r"Table '?([^']+)'?", line)
                 if match:
@@ -78,6 +96,14 @@ class BetclicParser(BaseParser):
                     if "[BTN SB Hero]" in line or "[BB Hero]" in line or "[SB Hero]" in line or "[BTN Hero]" in line or "[Hero]" in line:
                         player.is_hero = True
                         hand.hero_name = player.name
+                    
+                    if "[BTN SB Hero]" in line or "[BTN Hero]" in line:
+                        player.position = "BTN"
+                    elif "[BB Hero]" in line:
+                        player.position = "BB"
+                    elif "[SB Hero]" in line:
+                        player.position = "SB"
+                    
                     if match.group(3):
                         player.stack = float(match.group(3))
                     hand.players.append(player)
@@ -102,6 +128,15 @@ class BetclicParser(BaseParser):
                         if p.is_hero:
                             p.cards = cards_match.group(1)
             
+            hole_cards_match = re.search(r"^(\w+): \[([^\]]+)\]", line)
+            if hole_cards_match:
+                player_name = hole_cards_match.group(1)
+                cards = hole_cards_match.group(2)
+                for p in hand.players:
+                    if p.name == player_name:
+                        p.cards = cards
+                        break
+            
             if "Total Pot" in line:
                 match = re.search(r"([\d.,]+)", line.replace(",", "."))
                 if match:
@@ -111,5 +146,29 @@ class BetclicParser(BaseParser):
                 match = re.search(r"([\d.,]+)", line.replace(",", "."))
                 if match:
                     hand.rake = float(match.group(1))
+            
+            if "is all-in" in line:
+                if "PRE-FLOP" in block:
+                    hand.all_in_street = "preflop"
+                elif "FLOP" in block:
+                    hand.all_in_street = "flop"
+                elif "TURN" in block:
+                    hand.all_in_street = "turn"
+                elif "RIVER" in block:
+                    hand.all_in_street = "river"
+            
+            if "wins main pot of" in line:
+                match = re.search(r"wins main pot of ([\d.,]+)", line.replace(",", "."))
+                if match:
+                    winner_match = re.search(r"(\w+) wins main pot", line)
+                    if winner_match:
+                        winner_name = winner_match.group(1)
+                        for p in hand.players:
+                            if p.name == winner_name:
+                                p.chips_won = hand.total_pot
+                                p.net_profit = hand.total_pot - (p.stack or 0) + (p.stack or 0)
+                            else:
+                                p.chips_won = 0
+                                p.net_profit = -(p.stack or 0)
 
         return hand

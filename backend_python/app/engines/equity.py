@@ -20,18 +20,23 @@ async def calculate_equity(
     deck = [i for i in range(52) if i not in all_known]
 
     cards_to_deal = 5 - len(board_indices)
-    if villain_indices is None:
+    if villain_indices is None and cards_to_deal > 0:
         cards_to_deal += 2
+    
+    if cards_to_deal <= 0:
+        cards_to_deal = 0
 
     if len(deck) < cards_to_deal:
         return {"error": "Not enough cards in deck"}
 
-    all_combos = list(combinations(deck, cards_to_deal))
+    all_combos = list(combinations(deck, cards_to_deal)) if cards_to_deal > 0 else [None]
 
     hero_wins = 0
     ties = 0
+    total = 0
 
     for combo in all_combo_generator(all_combos, villain_indices, board_indices, hero_indices):
+        total += 1
         hero_board, villain_board, villain_cards_combo = combo
 
         hero_score, hero_kickers = evaluate_hand(hero_indices, hero_board)
@@ -49,9 +54,8 @@ async def calculate_equity(
             elif hero_kickers == villain_kickers:
                 ties += 1
 
-    total = len(all_combos)
-    hero_equity = (hero_wins / total) * 100
-    tie_equity = (ties / total) * 100
+    hero_equity = (hero_wins / total) * 100 if total > 0 else 0
+    tie_equity = (ties / total) * 100 if total > 0 else 0
 
     return {
         "hero_equity": round(hero_equity, 2),
@@ -70,6 +74,9 @@ def all_combo_generator(
     board_len = 5 - len(board_indices)
 
     for combo in all_combos:
+        if combo is None:
+            yield (list(board_indices), list(board_indices), None)
+            continue
         if villain_indices is None:
             villain_cards = combo[:2]
             remaining_board = combo[2:]

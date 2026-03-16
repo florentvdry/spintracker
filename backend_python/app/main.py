@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.database import init_db, close_db
-from app.routers import health, parser, database, tournaments, players, stats, equity, analysis
+from app.routers import health, parser, database, tournaments, players, stats, equity, analysis, cev
 from app.config import get_settings
 
 settings = get_settings()
@@ -28,6 +28,7 @@ app.include_router(players.router)
 app.include_router(stats.router)
 app.include_router(equity.router)
 app.include_router(analysis.router)
+app.include_router(cev.router)
 
 
 if __name__ == "__main__":

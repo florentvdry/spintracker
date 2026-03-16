@@ -1,4 +1,4 @@
-from app.routers import health, parser, database, tournaments, players, stats, equity, analysis
+from app.routers import health, parser, database, tournaments, players, stats, equity, analysis, cev
 
 __all__ = [
     "health",
@@ -8,5 +8,6 @@ __all__ = [
     "players",
     "stats",
     "equity",
-    "analysis"
+    "analysis",
+    "cev"
 ]
