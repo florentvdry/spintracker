@@ -1,0 +1,129 @@
+{
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "history": "Historique des tournois",
+    "ranges": "Analyseur de ranges",
+    "charts": "Graphiques",
+    "players": "Joueurs",
+    "settings": "Paramètres"
+  },
+  "sidebar": {
+    "sqlite_local": "SQLite Local"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "search": "Rechercher...",
+    "no_data": "Aucune donnée",
+    "refresh": "Actualiser",
+    "import": "Importer",
+    "date": "Date",
+    "from": "Du",
+    "to": "Au",
+    "custom": "Personnalisé",
+    "apply": "Appliquer",
+    "position": "Position",
+    "result": "Résultat",
+    "won": "Gagné",
+    "lost": "Perdu",
+    "details": "Détails",
+    "cards": "Cartes",
+    "chips": "Jetons",
+    "profit": "Profit",
+    "hands": "Mains",
+    "tournaments": "Tournois",
+    "sessions": "Sessions",
+    "player": "Joueur",
+    "hero": "Héro",
+    "villain": "Vilain",
+    "villain_cards": "Cartes Vilain",
+    "retry": "Redémarrer",
+    "all_read": "Tout lire",
+    "clear_all": "Tout effacer",
+    "notifications": "Notifications",
+    "no_notifications": "Aucune notification",
+    "any": "N'importe",
+    "skipped": "ignorées"
+  },
+  "header": {
+    "search_placeholder": "Rechercher une main, joueur...",
+    "select_hero": "Sélectionner...",
+    "hero_detected": "Héro détecté",
+    "hero_selected_auto": "Le joueur {{name}} a été sélectionné automatiquement.",
+    "update_required": "Mise à jour requise",
+    "reimport_needed": "Veuillez réimporter vos mains pour activer la sélection du Héro et les nouvelles statistiques.",
+    "import_hands": "Import des mains",
+    "calculating": "Calcul en cours...",
+    "processing": "Traitement...",
+    "import_success": "Import réussi",
+    "import_stats": "{{hands}} mains importées, {{skipped}} ignorées (doublons)",
+    "import_recap": "Recap: {{hands}} importées, {{skipped}} ignorées",
+    "import_error": "Erreur d'import",
+    "data_refreshed": "Données actualisées",
+    "no_player_found": "Aucun joueur trouvé"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Vue d'ensemble de vos performances",
+    "total_profit": "Profit Total",
+    "played_hands": "Mains Jouées",
+    "win_rate": "Taux de Victoire",
+    "played_tournaments": "Tournois Joués",
+    "chips_ev_avg": "ChipsEV (Moy)",
+    "activity": "Activité",
+    "sessions_month": "Sessions ce mois",
+    "chip_evolution": "Evolution des jetons",
+    "profit_ev": "Profit et EV",
+    "recent_sessions": "Sessions Récentes",
+    "latest_games": "Dernières parties",
+    "cev_per_positions": "CEV par Positions",
+    "no_hero": "Aucun joueur sélectionné",
+    "select_hero_prompt": "Veuillez sélectionner un joueur ou importer des mains",
+    "no_data": "Aucune donnée disponible",
+    "no_data_chart": "Importez des mains pour voir votre courbe de gains",
+    "no_sessions": "Aucune session",
+    "select_hero_sessions": "Sélectionnez un joueur pour voir ses sessions",
+    "sessions_placeholder": "Vos sessions apparaîtront ici",
+    "filters": {
+      "today": "Aujourd'hui",
+      "week": "Cette semaine",
+      "month": "Ce mois",
+      "all": "Tout"
+    }
+  },
+  "hand_history": {
+    "title": "Historique des tournois",
+    "subtitle": "Parcourez vos tournois et mains",
+    "total_tournaments": "{{count}} tournois trouvés",
+    "no_hands": "Aucun historique",
+    "import_prompt": "Importez vos mains pour commencer",
+    "hand_details": "Détails de la main",
+    "select_prompt": "Sélectionnez une main pour voir les détails",
+    "page_info": "Page {{current}} sur {{total}}"
+  },
+  "analysis": {
+    "title": "Analyse",
+    "subtitle": "Analysez vos performances"
+  },
+  "ranges": {
+    "title": "Analyseur de Ranges",
+    "subtitle": "Étudiez vos ranges de'ouverture"
+  },
+  "charts": {
+    "title": "Graphiques",
+    "subtitle": "Visualisez vos statistiques"
+  },
+  "players": {
+    "title": "Joueurs",
+    "subtitle": "Statistiques des joueurs"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Configurez l'application"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "history": "Tournament History",
+    "ranges": "Range Analyzer",
+    "charts": "Charts",
+    "players": "Players",
+    "settings": "Settings"
+  },
+  "sidebar": {
+    "sqlite_local": "SQLite Local"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search...",
+    "no_data": "No data",
+    "refresh": "Refresh",
+    "import": "Import",
+    "date": "Date",
+    "from": "From",
+    "to": "To",
+    "custom": "Custom",
+    "apply": "Apply",
+    "position": "Position",
+    "result": "Result",
+    "won": "Won",
+    "lost": "Lost",
+    "details": "Details",
+    "cards": "Cards",
+    "chips": "Chips",
+    "profit": "Profit",
+    "hands": "Hands",
+    "tournaments": "Tournaments",
+    "sessions": "Sessions",
+    "player": "Player",
+    "hero": "Hero",
+    "villain": "Villain",
+    "villain_cards": "Villain Cards",
+    "retry": "Retry",
+    "all_read": "Mark all as read",
+    "clear_all": "Clear all",
+    "notifications": "Notifications",
+    "no_notifications": "No notifications",
+    "any": "Any",
+    "skipped": "skipped"
+  },
+  "header": {
+    "search_placeholder": "Search hand, player...",
+    "select_hero": "Select...",
+    "hero_detected": "Hero detected",
+    "hero_selected_auto": "Player {{name}} was automatically selected.",
+    "update_required": "Update required",
+    "reimport_needed": "Please reimport your hands to enable Hero selection and new statistics.",
+    "import_hands": "Import hands",
+    "calculating": "Calculating...",
+    "processing": "Processing...",
+    "import_success": "Import successful",
+    "import_stats": "{{hands}} hands imported, {{skipped}} skipped (duplicates)",
+    "import_recap": "Recap: {{hands}} imported, {{skipped}} skipped",
+    "import_error": "Import error",
+    "data_refreshed": "Data refreshed",
+    "no_player_found": "No player found"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Overview of your performance",
+    "total_profit": "Total Profit",
+    "played_hands": "Played Hands",
+    "win_rate": "Win Rate",
+    "played_tournaments": "Played Tournaments",
+    "chips_ev_avg": "ChipsEV (Avg)",
+    "activity": "Activity",
+    "sessions_month": "Sessions this month",
+    "chip_evolution": "Chip Evolution",
+    "profit_ev": "Profit and EV",
+    "recent_sessions": "Recent Sessions",
+    "latest_games": "Latest games",
+    "cev_per_positions": "CEV by Positions",
+    "no_hero": "No player selected",
+    "select_hero_prompt": "Please select a player or import hands",
+    "no_data": "No data available",
+    "no_data_chart": "Import hands to see your profit chart",
+    "no_sessions": "No sessions",
+    "select_hero_sessions": "Select a player to see their sessions",
+    "sessions_placeholder": "Your sessions will appear here",
+    "filters": {
+      "today": "Today",
+      "week": "This week",
+      "month": "This month",
+      "all": "All"
+    }
+  },
+  "hand_history": {
+    "title": "Tournament History",
+    "subtitle": "Browse your tournaments and hands",
+    "total_tournaments": "{{count}} tournaments found",
+    "no_hands": "No history",
+    "import_prompt": "Import your hands to get started",
+    "hand_details": "Hand Details",
+    "select_prompt": "Select a hand to view details",
+    "page_info": "Page {{current}} of {{total}}"
+  },
+  "analysis": {
+    "title": "Analysis",
+    "subtitle": "Analyze your performance"
+  },
+  "ranges": {
+    "title": "Range Analyzer",
+    "subtitle": "Study your opening ranges"
+  },
+  "charts": {
+    "title": "Charts",
+    "subtitle": "Visualize your statistics"
+  },
+  "players": {
+    "title": "Players",
+    "subtitle": "Player statistics"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Configure the application"
+  }
+}
