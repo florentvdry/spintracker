@@ -7,15 +7,18 @@ class IPCService {
   }
 
   async invoke(channel, ...args) {
+    console.log(`[IPC →] ${channel}`, ...args)
     if (!ipcRenderer) {
       console.warn(`IPC not available. Channel: ${channel}`)
       return { success: false, message: 'IPC not available' }
     }
 
     try {
-      return await ipcRenderer.invoke(channel, ...args)
+      const result = await ipcRenderer.invoke(channel, ...args)
+      console.log(`[IPC ←] ${channel}`, result)
+      return result
     } catch (error) {
-      console.error(`IPC Error (${channel}):`, error)
+      console.error(`[IPC Error] ${channel}:`, error)
       return { success: false, message: error.message }
     }
   }

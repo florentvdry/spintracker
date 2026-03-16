@@ -266,14 +266,14 @@ function createWindow() {
 
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000').catch(() => {
-      const reactBuildPath = path.join(__dirname, 'frontend/dist/index.html');
+      const reactBuildPath = path.join(__dirname, 'frontend-vue/dist/index.html');
       if (fs.existsSync(reactBuildPath)) {
         mainWindow.loadFile(reactBuildPath);
       }
     });
     mainWindow.webContents.openDevTools();
   } else {
-    const reactBuildPath = path.join(__dirname, 'frontend/dist/index.html');
+    const reactBuildPath = path.join(__dirname, 'frontend-vue/dist/index.html');
     if (fs.existsSync(reactBuildPath)) {
       mainWindow.loadFile(reactBuildPath);
     }
@@ -316,13 +316,13 @@ function createReplayerWindow(handData) {
 
   if (isDev) {
     replayerWindow.loadURL('http://localhost:3000/replayer.html').catch(() => {
-      const replayerPath = path.join(__dirname, 'frontend/dist/replayer.html');
+      const replayerPath = path.join(__dirname, 'frontend-vue/dist/replayer.html');
       if (fs.existsSync(replayerPath)) {
         replayerWindow.loadFile(replayerPath);
       }
     });
   } else {
-    const replayerPath = path.join(__dirname, 'frontend/dist/replayer.html');
+    const replayerPath = path.join(__dirname, 'frontend-vue/dist/replayer.html');
     if (fs.existsSync(replayerPath)) {
       replayerWindow.loadFile(replayerPath);
     }
