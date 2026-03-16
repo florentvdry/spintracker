@@ -17,5 +17,8 @@ export default defineConfig({
   server: {
     port: 3000,
     strictPort: true,
+    headers: {
+      'Content-Security-Policy': "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+    },
   },
 })

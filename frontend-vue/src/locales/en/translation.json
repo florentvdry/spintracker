@@ -48,7 +48,10 @@
     "notifications": "Notifications",
     "no_notifications": "No notifications",
     "any": "Any",
-    "skipped": "skipped"
+    "skipped": "skipped",
+    "chips_won": "Chips Won",
+    "showdown_winning": "Showdown Won",
+    "non_showdown_winning": "Non-Showdown Won"
   },
   "header": {
     "search_placeholder": "Search hand, player...",
@@ -104,11 +107,60 @@
     "import_prompt": "Import your hands to get started",
     "hand_details": "Hand Details",
     "select_prompt": "Select a hand to view details",
-    "page_info": "Page {{current}} of {{total}}"
+    "page_info": "Page {{current}} of {{total}}",
+    "time": "Time",
+    "loading_hands": "Loading hands...",
+    "table": {
+      "ev_chips": "EV Chips",
+      "pot": "Pot"
+    }
+  },
+  "players": {
+    "title": "Players",
+    "subtitle": "Player statistics",
+    "filter_all": "All",
+    "filter_reg": "Regs",
+    "filter_fish": "Fish",
+    "list": "Player List",
+    "player": "Player",
+    "hands": "Hands",
+    "profit": "Profit",
+    "type": "Type",
+    "auto_detected": "Auto-detected",
+    "actions": "Actions",
+    "manual": "Manual",
+    "mark_fish": "Mark as fish",
+    "mark_reg": "Mark as reg",
+    "is_reg": "Reg",
+    "is_fish": "Fish",
+    "set_fish": "→ Fish",
+    "set_reg": "→ Reg",
+    "page": "Page",
+    "view_hands": "View hands",
+    "hands_against": "Hands against",
+    "total_hands": "total hands",
+    "no_hands": "No hands found",
+    "load_more": "Load more",
+    "blinds": "Blinds",
+    "see_more": "See more"
   },
   "analysis": {
     "title": "Analysis",
-    "subtitle": "Analyze your performance"
+    "subtitle": "Analyze your performance",
+    "config_saved": "Configuration saved",
+    "config_loaded": "Configuration loaded",
+    "coming_soon": "Coming soon",
+    "tabs": {
+      "hands": "Hands List"
+    },
+    "filters": {
+      "situation": "Situation",
+      "table_size": "Table",
+      "position": "Position",
+      "stack_depth": "Stack (BB)",
+      "action": "Action",
+      "preflop": "Preflop"
+    }
   },
   "ranges": {
     "title": "Range Analyzer",
@@ -116,14 +168,139 @@
   },
   "charts": {
     "title": "Charts",
-    "subtitle": "Visualize your statistics"
-  },
-  "players": {
-    "title": "Players",
-    "subtitle": "Player statistics"
+    "subtitle": "Visualize your statistics",
+    "positions": {
+      "all": "All positions",
+      "HU_SB": "HU SB",
+      "HU_BB": "HU BB",
+      "3W_BTN": "3W BTN",
+      "3W_SB": "3W SB",
+      "3W_BB": "3W BB"
+    }
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Configure the application"
+    "subtitle": "Configure the application",
+    "general": {
+      "title": "General",
+      "language": "Language",
+      "language_desc": "Choose your preferred language"
+    },
+    "database": {
+      "title": "Database",
+      "subtitle": "Data management",
+      "multiple": {
+        "title": "Multiple Databases",
+        "desc": "Manage your different databases",
+        "create": "Create database",
+        "name": "Database name",
+        "active": "Active",
+        "set_active": "Set as active",
+        "delete": "Delete",
+        "cannot_delete_last": "Cannot delete the last database",
+        "cannot_delete_active": "Cannot delete the active database",
+        "confirm_delete": "Are you sure you want to delete this database?",
+        "delete_warning": "This action is irreversible. All data will be lost.",
+        "hands_count": "{{count}} hands",
+        "created": "Created on {{date}}"
+      },
+      "export": {
+        "title": "Export data",
+        "desc": "Download all your hands as ZIP (grouped by date)",
+        "button": "Export"
+      },
+      "delete": {
+        "title": "Delete all data",
+        "desc": "Permanently delete all hands and statistics",
+        "button": "Delete all"
+      }
+    },
+    "server": {
+      "title": "Server",
+      "subtitle": "Advanced equity calculations",
+      "status": {
+        "title": "Server Status",
+        "desc": "The backend performs equity calculations in parallel",
+        "active": "Active",
+        "inactive": "Inactive"
+      }
+    },
+    "stats": {
+      "title": "Statistics Management"
+    },
+    "about": {
+      "title": "About",
+      "description": "Spin & Go tracking and analysis application - Developed by Nelfrot"
+    },
+    "maintenance": {
+      "title": "Maintenance & Support",
+      "logs": {
+        "title": "Application logs",
+        "desc": "Open the folder containing log files for technical support",
+        "button": "Open folder"
+      }
+    }
+  },
+  "actions": {
+    "raise": "Raise",
+    "call": "Call",
+    "fold": "Fold",
+    "bet": "Bet",
+    "check": "Check",
+    "all_in": "All-In",
+    "any": "Any"
+  },
+  "range_analysis": {
+    "title": "Range Analyzer",
+    "subtitle": "Study your ranges",
+    "save_config": "Save",
+    "load_preset": "Load",
+    "config_saved": "Configuration saved",
+    "config_loaded": "Configuration loaded",
+    "loading": "Loading...",
+    "matrix_title": "Range Matrix",
+    "distributions": "Distributions",
+    "selected_hand": "Selected Hand",
+    "occurrences": "Occurrences",
+    "total_profit": "Total Profit",
+    "ev_realized": "Realized EV",
+    "frequencies": "Frequencies",
+    "history": "History",
+    "select_prompt": "Select a hand to see details",
+    "replay_filtered": "Replay",
+    "opponent_type": "Opponent Type",
+    "all_opponents": "All",
+    "regs_only": "Regs",
+    "fish_only": "Fish",
+    "filters": {
+      "table_size": "Table Size",
+      "target_player": "Target Player",
+      "population": "Population",
+      "stack_depth": "Stack Depth",
+      "period": "Period",
+      "position": "Position",
+      "situation": "Situation",
+      "first_to_act": "First to act",
+      "active": "Active",
+      "reset": "Reset",
+      "info_tip": "Range of {{player}} in {{position}}"
+    },
+    "situations": {
+      "rfi": "Open from {{position}}",
+      "limp": "Limp from {{position}}",
+      "sb_rfi": "SB Open",
+      "vs_btn_open": "vs BTN Open",
+      "vs_btn_limp": "vs BTN Limp",
+      "vs_btn_open_sb_fold": "vs BTN Open (SB fold)",
+      "vs_sb_open": "vs SB Open",
+      "vs_btn_open_sb_call": "vs BTN Open (SB call)",
+      "vs_sb_limp": "vs SB Limp",
+      "vs_btn_limp_sb_limp": "vs BTN Limp (SB limp)",
+      "vs_btn_limp_sb_fold": "vs BTN Limp (SB fold)",
+      "hu_sb_rfi": "SB Open",
+      "hu_sb_limp": "SB Limp",
+      "hu_vs_sb_open": "vs SB Open",
+      "hu_vs_sb_limp": "vs SB Limp"
+    }
   }
 }
