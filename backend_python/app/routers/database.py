@@ -86,3 +86,20 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
         "total_hands": total_hands or 0,
         "total_players": total_players or 0
     }
+
+
+@router.post("/reset")
+async def reset_database(db: AsyncSession = Depends(get_db)):
+    from app.models.database import Hand, Player, Tournament, TournamentPlayer, HandPlayer, Session
+    try:
+        await db.execute(HandPlayer.__table__.delete())
+        await db.execute(Hand.__table__.delete())
+        await db.execute(TournamentPlayer.__table__.delete())
+        await db.execute(Tournament.__table__.delete())
+        await db.execute(Player.__table__.delete())
+        await db.execute(Session.__table__.delete())
+        await db.commit()
+        return {"success": True, "message": "Database reset successfully"}
+    except Exception as e:
+        await db.rollback()
+        return {"success": False, "error": str(e)}
