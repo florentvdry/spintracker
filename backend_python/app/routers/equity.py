@@ -10,6 +10,7 @@ async def calculate(request: EquityRequest):
     result = await calculate_equity(
         hero_cards=request.hero_cards,
         villain_cards=request.villain_cards,
+        villain2_cards=request.villain2_cards,
         board=request.board,
         iterations=request.iterations
     )

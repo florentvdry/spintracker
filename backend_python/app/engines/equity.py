@@ -6,6 +6,7 @@ from typing import Generator, Tuple, List, Optional
 async def calculate_equity(
     hero_cards: str | None = None,
     villain_cards: str | None = None,
+    villain2_cards: str | None = None,
     board: str | None = None,
     iterations: int = 1000
 ) -> dict:
@@ -14,13 +15,18 @@ async def calculate_equity(
 
     hero_indices = parse_cards(hero_cards)
     villain_indices: Optional[List[int]] = parse_cards(villain_cards) if villain_cards else None
+    villain2_indices: Optional[List[int]] = parse_cards(villain2_cards) if villain2_cards else None
     board_indices = parse_board(board) if board else []
 
-    all_known = set(hero_indices + (villain_indices if villain_indices else []) + board_indices)
+    all_known = set(hero_indices + (villain_indices if villain_indices else []) + (villain2_indices if villain2_indices else []) + board_indices)
     deck = [i for i in range(52) if i not in all_known]
 
     cards_to_deal = 5 - len(board_indices)
+    has_two_villains = villain_indices is not None and villain2_cards is not None
+    
     if villain_indices is None and cards_to_deal > 0:
+        cards_to_deal += 2
+    if villain2_indices is None and villain2_cards is not None and cards_to_deal > 0:
         cards_to_deal += 2
     
     if cards_to_deal <= 0:
@@ -35,58 +41,103 @@ async def calculate_equity(
     ties = 0
     total = 0
 
-    for combo in all_combo_generator(all_combos, villain_indices, board_indices, hero_indices):
+    for combo in all_combo_generator(all_combos, villain_indices, villain2_indices, board_indices, hero_indices):
         total += 1
-        hero_board, villain_board, villain_cards_combo = combo
+        hero_board, villain_board, villain2_board, villain_cards_combo, villain2_cards_combo = combo
 
         hero_score, hero_kickers = evaluate_hand(hero_indices, hero_board)
+        
         if villain_indices:
             villain_score, villain_kickers = evaluate_hand(villain_indices, villain_board)
         else:
             assert villain_cards_combo is not None
             villain_score, villain_kickers = evaluate_hand(list(villain_cards_combo), villain_board)
+        
+        if villain2_indices:
+            villain2_score, villain2_kickers = evaluate_hand(villain2_indices, villain2_board)
+        elif villain2_cards_combo is not None:
+            villain2_score, villain2_kickers = evaluate_hand(list(villain2_cards_combo), villain2_board)
+        else:
+            villain2_score = -1
+            villain2_kickers = []
 
-        if hero_score > villain_score:
+        hero_wins_this = hero_score > villain_score and hero_score > villain2_score
+        is_tie = hero_score == villain_score and hero_score == villain2_score
+        
+        if hero_wins_this:
             hero_wins += 1
-        elif hero_score == villain_score:
-            if hero_kickers >= villain_kickers:
-                hero_wins += 1
-            elif hero_kickers == villain_kickers:
-                ties += 1
+        elif is_tie:
+            if villain2_score >= 0:
+                if hero_kickers >= villain_kickers and hero_kickers >= villain2_kickers:
+                    hero_wins += 1
+                elif hero_kickers == villain_kickers == villain2_kickers:
+                    ties += 1
+            else:
+                if hero_kickers >= villain_kickers:
+                    hero_wins += 1
+                elif hero_kickers == villain_kickers:
+                    ties += 1
 
     hero_equity = (hero_wins / total) * 100 if total > 0 else 0
     tie_equity = (ties / total) * 100 if total > 0 else 0
 
-    return {
+    result = {
         "hero_equity": round(hero_equity, 2),
         "villain_equity": round(100 - hero_equity - tie_equity, 2),
         "tie_equity": round(tie_equity, 2),
         "iterations": total
     }
+    
+    if villain2_indices is not None or (villain2_cards is not None):
+        result["villain2_equity"] = round((100 - hero_equity - tie_equity) / 2, 2)
+    
+    return result
 
 
 def all_combo_generator(
     all_combos,
     villain_indices: Optional[List[int]],
+    villain2_indices: Optional[List[int]],
     board_indices: List[int],
     hero_indices: List[int]
-) -> Generator[Tuple[List[int], List[int], Optional[Tuple[int, ...]]], None, None]:
+) -> Generator[Tuple[List[int], List[int], List[int], Optional[Tuple[int, ...]], Optional[Tuple[int, ...]]], None, None]:
     board_len = 5 - len(board_indices)
+    has_two_villains_known = villain_indices is not None and villain2_indices is not None
+    has_two_villains = villain_indices is not None or villain2_indices is not None
 
     for combo in all_combos:
         if combo is None:
-            yield (list(board_indices), list(board_indices), None)
+            yield (list(board_indices), list(board_indices), list(board_indices), None, None)
             continue
-        if villain_indices is None:
+        
+        if villain_indices is None and villain2_indices is None:
+            villain_cards = combo[:2]
+            villain2_cards = combo[2:4]
+            remaining_board = combo[4:]
+            hero_board = list(board_indices) + list(remaining_board)
+            villain_board = list(board_indices) + list(remaining_board)
+            villain2_board = list(board_indices) + list(remaining_board)
+            yield (hero_board, villain_board, villain2_board, villain_cards, villain2_cards)
+        elif villain_indices is None:
             villain_cards = combo[:2]
             remaining_board = combo[2:]
             hero_board = list(board_indices) + list(remaining_board)
             villain_board = list(board_indices) + list(remaining_board)
-            yield (hero_board, villain_board, villain_cards)
+            villain2_board = list(board_indices) + list(remaining_board)
+            yield (hero_board, villain_board, villain2_board, villain_cards, None)
+        elif villain2_indices is None:
+            villain2_cards = combo[board_len:board_len + 2] if len(combo) >= board_len + 2 else None
+            remaining_board = combo[:board_len]
+            hero_board = list(board_indices) + list(remaining_board)
+            villain_board = list(board_indices) + list(remaining_board)
+            villain2_board = list(board_indices) + list(remaining_board)
+            yield (hero_board, villain_board, villain2_board, None, villain2_cards)
         else:
-            hero_board = list(board_indices) + list(combo[:board_len])
-            villain_board = list(board_indices) + list(combo[:board_len])
-            yield (hero_board, villain_board, None)
+            remaining_board = combo[:board_len]
+            hero_board = list(board_indices) + list(remaining_board)
+            villain_board = list(board_indices) + list(remaining_board)
+            villain2_board = list(board_indices) + list(remaining_board)
+            yield (hero_board, villain_board, villain2_board, None, None)
 
 
 async def calculate_batch_equity(hands: list, iterations: int = 1000) -> list:

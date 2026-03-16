@@ -120,6 +120,7 @@ class PlayersQueryOptions(BaseModel):
 class EquityRequest(BaseModel):
     hero_cards: Optional[str] = None
     villain_cards: Optional[str] = None
+    villain2_cards: Optional[str] = None
     board: Optional[str] = None
     iterations: Optional[int] = None
 

@@ -62,6 +62,7 @@ async def calculate_cev_for_player(
             continue
         
         villain_cards = None
+        villain2_cards = None
         villain_query = select(HandPlayer).where(
             and_(
                 HandPlayer.hand_id == hand.id,
@@ -70,10 +71,12 @@ async def calculate_cev_for_player(
             )
         )
         villain_result = await db.execute(villain_query)
-        villain = villain_result.first()
+        villains = villain_result.all()
         
-        if villain:
-            villain_cards = villain[0].cards
+        if len(villains) >= 1:
+            villain_cards = villains[0][0].cards
+        if len(villains) >= 2:
+            villain2_cards = villains[1][0].cards
         
         board = ""
         if hand.flop:
@@ -86,6 +89,7 @@ async def calculate_cev_for_player(
         equity_result = await calculate_equity(
             hero_cards=hero_cards,
             villain_cards=villain_cards,
+            villain2_cards=villain2_cards,
             board=board if board else None
         )
         
@@ -210,9 +214,10 @@ async def calculate_cev_for_hand(hand_id: int, db: AsyncSession) -> dict:
         )
     )
     villain_result = await db.execute(villain_query)
-    villain = villain_result.first()
+    villains = villain_result.all()
     
-    villain_cards = villain[0].cards if villain else None
+    villain_cards = villains[0][0].cards if len(villains) >= 1 else None
+    villain2_cards = villains[1][0].cards if len(villains) >= 2 else None
     
     board = ""
     if hand.flop:
@@ -225,6 +230,7 @@ async def calculate_cev_for_hand(hand_id: int, db: AsyncSession) -> dict:
     equity_result = await calculate_equity(
         hero_cards=hero_cards,
         villain_cards=villain_cards,
+        villain2_cards=villain2_cards,
         board=board if board else None
     )
     
@@ -241,6 +247,7 @@ async def calculate_cev_for_hand(hand_id: int, db: AsyncSession) -> dict:
         "hand_id": hand.hand_id,
         "hero_cards": hero_cards,
         "villain_cards": villain_cards,
+        "villain2_cards": villain2_cards,
         "board": board,
         "total_pot": total_pot,
         "hero_equity": equity_result.get("hero_equity", 0),
