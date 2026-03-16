@@ -25,10 +25,10 @@ async def parse(request: ParseFileRequest):
 
 
 @router.post("/import", response_model=ImportProgress)
-async def import_hands(request: ImportFileRequest):
+async def import_hands(request: ImportFileRequest, db: AsyncSession = Depends(get_db)):
     if not request.file_path:
         raise HTTPException(status_code=400, detail="File path is required")
-    return await import_file(request.file_path)
+    return await import_file(request.file_path, db)
 
 
 @router.post("/insert", response_model=ImportProgress)

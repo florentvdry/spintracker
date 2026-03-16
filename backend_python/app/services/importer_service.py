@@ -5,18 +5,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 
-async def import_file(file_path: str) -> ImportProgress:
+async def import_file(file_path: str, db: AsyncSession = None) -> ImportProgress:
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
         
         result = await parse_file(content, None)
         
-        if result.success:
+        if result.success and result.hands and db:
+            return await insert_hands(result.hands, db)
+        elif result.success:
             return ImportProgress(
-                message=f"Parsed {result.count} hands",
+                message=f"Parsed {result.count} hands (no DB session - not saved)",
                 percent=100,
-                hands_imported=result.count,
+                hands_imported=0,
                 total_hands=result.count,
                 success=True
             )
