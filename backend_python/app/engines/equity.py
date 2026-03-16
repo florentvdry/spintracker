@@ -55,6 +55,7 @@ async def calculate_batch_equity(hands: list, iterations: int = 1000) -> list:
 def parse_cards(cards_str: str) -> list[int]:
     if not cards_str:
         return []
+    cards_str = cards_str.replace(" ", "").replace("-", "")
     ranks = "23456789TJQKA"
     suits = "shdc"
     cards = []
@@ -72,7 +73,7 @@ def parse_board(board_str: str) -> list[int]:
 
 def evaluate_hand(hole_cards: list[int], board: list[int]) -> int:
     all_cards = hole_cards + board
-    if len(all_cards) < 5:
+    if len(all_cards) < 2:
         return 0
     
     ranks = [c // 4 for c in all_cards]
@@ -84,13 +85,15 @@ def evaluate_hand(hole_cards: list[int], board: list[int]) -> int:
     
     sorted_counts = sorted(rank_counts.values(), reverse=True)
     
-    if sorted_counts[0] == 4:
-        return 8
-    elif sorted_counts[0] == 3 and len(sorted_counts) > 1 and sorted_counts[1] == 2:
-        return 7
-    elif len(set(suits)) == 1:
-        return 5
-    elif len(set(ranks)) != len(ranks):
-        return max(sorted_counts)
+    if len(all_cards) >= 5:
+        if sorted_counts[0] == 4:
+            return 8
+        elif sorted_counts[0] == 3 and len(sorted_counts) > 1 and sorted_counts[1] == 2:
+            return 7
+        elif len(set(suits)) == 1:
+            return 5
+        elif len(set(ranks)) != len(ranks):
+            return max(sorted_counts)
     
-    return max(sorted_counts)
+    high_card = max(ranks) if ranks else 0
+    return high_card + 1

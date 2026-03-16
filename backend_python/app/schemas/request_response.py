@@ -30,6 +30,7 @@ class ParsedHand(BaseModel):
     multiplier: int = 1
     buy_in: float = 0.0
     date_time: Optional[str] = None
+    hand_datetime: Optional[datetime] = None
     table_id: Optional[str] = None
     blinds: Optional[str] = None
     total_pot: float = 0.0
@@ -48,6 +49,8 @@ class ParsedHand(BaseModel):
     position: int = 0
     went_to_showdown: bool = False
     players: list[PlayerInfo] = []
+    hero_name: Optional[str] = None
+    tournament_id: Optional[str] = None
 
 
 class ParseResult(BaseModel):
@@ -211,9 +214,9 @@ class TournamentResponse(BaseModel):
     room: str
     game_type: str
     buy_in: float
-    prize_pool: float
+    prize_pool: Optional[float] = None
     multiplier: int
-    players_count: int
+    players_count: Optional[int] = None
     start_time: datetime
     net_profit: float
     rank: Optional[int] = None

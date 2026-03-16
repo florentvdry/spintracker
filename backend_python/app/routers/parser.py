@@ -4,8 +4,8 @@ from app.database import get_db
 from app.schemas.request_response import (
     ParseResult, ParseFileRequest, ParseDetectRequest, ImportFileRequest, InsertHandsRequest, ImportProgress
 )
-from app.services.parser_service import detect_and_parse, parse_file, import_file
-from app.services.importer_service import insert_hands
+from app.services.parser_service import detect_and_parse, parse_file
+from app.services.importer_service import insert_hands, import_file
 
 router = APIRouter(prefix="/parser", tags=["Parser"])
 
@@ -32,5 +32,5 @@ async def import_hands(request: ImportFileRequest):
 
 
 @router.post("/insert", response_model=ImportProgress)
-async def insert(request: InsertHandsRequest):
-    return await insert_hands(request.hands)
+async def insert(request: InsertHandsRequest, db: AsyncSession = Depends(get_db)):
+    return await insert_hands(request.hands, db)

@@ -32,6 +32,7 @@ class Tournament(Base):
     prize_pool = Column(Float)
     multiplier = Column(Integer, default=1)
     players_count = Column(Integer)
+    net_profit = Column(Float, default=0)
     start_time = Column(DateTime)
     end_time = Column(DateTime)
     created_at = Column(DateTime, default=datetime.utcnow)

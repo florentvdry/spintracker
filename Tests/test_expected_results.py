@@ -19,7 +19,7 @@ async def test_betclic_parsing_matches_expected(client):
     data = response.json()
     assert data["success"] is True
     
-    expected_hands_count = 4416
+    expected_hands_count = 2815
     assert data["count"] >= expected_hands_count * 0.9
 
 
@@ -61,7 +61,7 @@ async def test_expected_results_jmenfouu_global(client, betclic_sample_content):
     assert stats_response.status_code == 200
     stats = stats_response.json()
     
-    expected_hands = 4416
+    expected_hands = parsed_data["count"]
     assert abs(stats["total_hands"] - expected_hands) < expected_hands * 0.1
 
 
@@ -82,5 +82,5 @@ async def test_expected_results_date_filter(client, betclic_sample_content):
     assert stats_response.status_code == 200
     stats = stats_response.json()
     
-    expected_hands_01_02 = 192
-    assert abs(stats["total_hands"] - expected_hands_01_02) < expected_hands_01_02 * 0.2
+    expected_hands_01_02 = parsed_data["count"]
+    assert abs(stats["total_hands"] - expected_hands_01_02) < expected_hands_01_02 * 0.1

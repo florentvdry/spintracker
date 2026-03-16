@@ -8,7 +8,7 @@ class BetclicParser(BaseParser):
     async def parse(self, content: str) -> ParseResult:
         try:
             hands = []
-            blocks = content.split("-" * 50)
+            blocks = content.split("-" * 12)
             
             for block in blocks:
                 if not block.strip():
@@ -42,10 +42,15 @@ class BetclicParser(BaseParser):
                 if match:
                     hand.hand_id = match.group(1)
             
+            if "Hand ID:" in line:
+                match = re.search(r"Hand ID: (.+)", line)
+                if match:
+                    hand.hand_id = match.group(1).strip()
+            
             if "Tournament" in line or "Tournoi" in line:
                 hand.game_mode = "Tournament"
             
-            if "Buy-in" in line or "Buyin" in line:
+            if "Buy In:" in line or "Buy-in:" in line:
                 match = re.search(r"([\d.,]+)", line.replace(",", "."))
                 if match:
                     hand.buy_in = float(match.group(1))
@@ -70,8 +75,25 @@ class BetclicParser(BaseParser):
                 if match:
                     player = PlayerInfo()
                     player.name = match.group(2).strip()
+                    if "[BTN SB Hero]" in line or "[BB Hero]" in line or "[SB Hero]" in line or "[BTN Hero]" in line or "[Hero]" in line:
+                        player.is_hero = True
+                        hand.hero_name = player.name
                     if match.group(3):
                         player.stack = float(match.group(3))
+                    hand.players.append(player)
+            
+            if "Game ID:" in line:
+                match = re.search(r"Game ID: (.+)", line)
+                if match:
+                    hand.tournament_id = match.group(1).strip()
+            
+            if "Date & Time:" in line:
+                match = re.search(r"Date & Time: (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})", line)
+                if match:
+                    try:
+                        hand.hand_datetime = datetime.strptime(match.group(1), "%Y-%m-%d %H:%M:%S")
+                    except:
+                        pass
             
             if "Hero" in line and "shows" in line:
                 cards_match = re.search(r"\[([^\]]+)\]", line)

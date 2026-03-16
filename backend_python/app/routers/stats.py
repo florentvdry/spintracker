@@ -32,6 +32,7 @@ async def get_stats(
 
     if date_to:
         dt_to = datetime.fromisoformat(date_to)
+        dt_to = dt_to.replace(hour=23, minute=59, second=59)
         query = query.where(Hand.hand_datetime <= dt_to)
         count_query = count_query.where(Hand.hand_datetime <= dt_to)
         tournament_query = tournament_query.where(Tournament.start_time <= dt_to)
