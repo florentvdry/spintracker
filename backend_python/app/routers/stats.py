@@ -39,12 +39,24 @@ async def get_stats(
 
     total_hands = (await db.execute(count_query)).scalar() or 0
 
-    result = await db.execute(
-        select(
-            func.sum(Hand.total_pot).label('total_profit'),
-            func.avg(Hand.buy_in).label('avg_buy_in')
-        )
+    profit_query = select(
+        func.sum(Hand.total_pot).label('total_profit'),
+        func.avg(Hand.buy_in).label('avg_buy_in')
     )
+    
+    if hero_name:
+        profit_query = profit_query.join(Player).where(Player.name == hero_name)
+    
+    if date_from:
+        dt_from = datetime.fromisoformat(date_from)
+        profit_query = profit_query.where(Hand.hand_datetime >= dt_from)
+    
+    if date_to:
+        dt_to = datetime.fromisoformat(date_to)
+        dt_to = dt_to.replace(hour=23, minute=59, second=59)
+        profit_query = profit_query.where(Hand.hand_datetime <= dt_to)
+
+    result = await db.execute(profit_query)
     row = result.one()
 
     total_profit = row.total_profit or 0.0
