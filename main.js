@@ -39,7 +39,9 @@ let backendProcess = null;
 let isBackendStarting = false;
 const BACKEND_PORT = 5050;
 
-// ============ C# Backend Management ============
+// ============ Backend Configuration ============
+// Set to 'python' for Python backend, 'dotnet' for C# backend
+const BACKEND_TYPE = 'python'; // 'python' or 'dotnet'
 
 function getDbPath() {
   const userDataPath = app.getPath('userData');
@@ -85,33 +87,97 @@ function startBackend() {
   
   const isDev = !app.isPackaged || process.argv.includes('--dev');
   
-  if (isDev) {
-    const dotnetPath = 'dotnet';
-    const backendDir = path.join(__dirname, 'backend');
-    const dllPath = path.join(backendDir, 'bin', 'Debug', 'net8.0', 'SpinTrackerBackend.dll');
+  if (BACKEND_TYPE === 'python') {
+    startPythonBackend(isDev);
+  } else {
+    if (isDev) {
+      const dotnetPath = 'dotnet';
+      const backendDir = path.join(__dirname, 'backend');
+      const dllPath = path.join(backendDir, 'bin', 'Debug', 'net8.0', 'SpinTrackerBackend.dll');
 
-    // Check if compiled DLL exists
-    if (!fs.existsSync(dllPath)) {
-      // Try to build the project first
-      const buildProcess = spawn(dotnetPath, ['build'], {
-        cwd: backendDir,
-        stdio: 'inherit'
-      });
+      // Check if compiled DLL exists
+      if (!fs.existsSync(dllPath)) {
+        // Try to build the project first
+        const buildProcess = spawn(dotnetPath, ['build'], {
+          cwd: backendDir,
+          stdio: 'inherit'
+        });
 
-      buildProcess.on('close', (code) => {
-        if (code === 0) {
-          startBackendProcess();
-        } else {
-          console.error('[Backend] Build failed!');
-          isBackendStarting = false;
-        }
-      });
+        buildProcess.on('close', (code) => {
+          if (code === 0) {
+            startBackendProcess();
+          } else {
+            console.error('[Backend] Build failed!');
+            isBackendStarting = false;
+          }
+        });
+      } else {
+        startBackendProcess();
+      }
     } else {
       startBackendProcess();
     }
-  } else {
-    startBackendProcess();
   }
+}
+
+function startPythonBackend(isDev) {
+  const dbPath = getDbPath();
+  const pythonDir = path.join(__dirname, 'backend_python');
+  
+  let command;
+  let args;
+  let cwd;
+
+  if (isDev) {
+    command = 'python3';
+    args = ['-m', 'uvicorn', 'app.main:app', '--host', '0.0.0.0', '--port', BACKEND_PORT.toString(), '--reload'];
+    cwd = pythonDir;
+  } else {
+    command = 'python3';
+    args = ['-m', 'uvicorn', 'app.main:app', '--host', '0.0.0.0', '--port', BACKEND_PORT.toString()];
+    cwd = pythonDir;
+  }
+
+  // Pass database path via environment variable
+  const env = { ...process.env, DATABASE_URL: `sqlite+aiosqlite:///${dbPath}` };
+
+  backendProcess = spawn(command, args, {
+    cwd: cwd,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env: env
+  });
+
+  backendProcess.stdout.on('data', (data) => {
+    const lines = data.toString().split('\n');
+    lines.forEach(line => {
+      const message = line.trim();
+      if (!message) return;
+      console.log(`[Python Backend] ${message}`);
+    });
+  });
+
+  backendProcess.stderr.on('data', (data) => {
+    const lines = data.toString().split('\n');
+    lines.forEach(line => {
+      const message = line.trim();
+      if (!message) return;
+      console.error(`[Python Backend Err] ${message}`);
+    });
+  });
+
+  backendProcess.on('close', (code) => {
+    if (code !== 0 && code !== null) {
+      console.error(`Python backend exited with code ${code}`);
+    }
+    backendProcess = null;
+    isBackendStarting = false;
+  });
+
+  backendProcess.on('error', (err) => {
+    console.error('Failed to start Python backend:', err.message);
+    backendProcess = null;
+    isBackendStarting = false;
+  });
 }
 
 function startBackendProcess() {
