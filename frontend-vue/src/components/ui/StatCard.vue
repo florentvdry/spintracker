@@ -27,7 +27,7 @@ const props = defineProps({
   label: String,
   value: [Number, String],
   format: String,
-  icon: Object,
+  icon: [Object, Function],
   subStats: Array
 })
 

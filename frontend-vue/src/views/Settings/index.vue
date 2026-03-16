@@ -94,7 +94,7 @@
                 <span v-if="db.isActive" class="badge badge-success text-xs">{{ $t('settings.database.multiple.active') }}</span>
               </div>
               <p class="text-sm text-gray-400">
-                {{ $t('settings.database.multiple.created', { date: new Date(db.createdAt).toLocaleDateString() }) }}
+                Créée le {{ formatDate(db.createdAt) }}
               </p>
             </div>
           </div>
@@ -226,6 +226,12 @@ let statusInterval = null
 
 const changeLanguage = (lng) => {
   locale.value = lng
+}
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return '?'
+  const date = new Date(dateStr)
+  return isNaN(date.getTime()) ? '?' : date.toLocaleDateString()
 }
 
 const loadVersion = async () => {

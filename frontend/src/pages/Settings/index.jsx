@@ -72,6 +72,12 @@ export default function Settings() {
     }
   };
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '?';
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? '?' : date.toLocaleDateString();
+  };
+
   const handleDeleteAll = async () => {
     try {
       const result = await ipcService.deleteAllHands();
@@ -387,8 +393,8 @@ export default function Settings() {
                           <span className="badge badge-success text-xs">{t('settings.database.multiple.active')}</span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-400">
-                        {t('settings.database.multiple.created', { date: new Date(db.createdAt).toLocaleDateString() })}
+                        <p className="text-sm text-gray-400">
+                        Créée le {formatDate(db.createdAt)}
                       </p>
                     </>
                   )}

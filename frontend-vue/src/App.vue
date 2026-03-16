@@ -33,7 +33,7 @@ watch(
     appStore.isInitialized
   ],
   () => {
-    if (filterStore._hasHydrated && appStore.isInitialized && filterStore.heroName) {
+    if (filterStore._hasHydrated && appStore.isInitialized && filterStore.heroName?.value) {
       appStore.refreshAll()
     }
   }

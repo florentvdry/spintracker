@@ -156,7 +156,7 @@ const formatCev = (value) => {
 }
 
 onMounted(() => {
-  if (!appStore.dashboardStats) {
+  if (!appStore.dashboardStats && appStore.isInitialized) {
     appStore.refreshAll()
   }
 })

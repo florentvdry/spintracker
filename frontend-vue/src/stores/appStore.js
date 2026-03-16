@@ -32,11 +32,11 @@ export const useAppStore = defineStore('app', () => {
       loadingMessage.value = 'Connexion au serveur...'
       let backendReady = false
       let attempts = 0
-      const maxAttempts = 20
+      const maxAttempts = 120
 
       while (!backendReady && attempts < maxAttempts) {
         try {
-          const res = await ipcService.getBuyIns()
+          const res = await ipcService.checkServerStatus()
           if (res && res.success) {
             backendReady = true
           } else {
@@ -49,10 +49,18 @@ export const useAppStore = defineStore('app', () => {
       }
 
       if (!backendReady) {
-        console.warn('[Init] Backend not responding after 10s')
+        console.warn('[Init] Backend not responding after 60s')
       }
 
       await loadBuyIns()
+
+      isLoading.value = true
+      await Promise.all([
+        loadDashboardStats(),
+        loadSessions(5),
+      ])
+      lastUpdate.value = Date.now()
+      isLoading.value = false
 
       isInitialized.value = true
       isLoading.value = false
@@ -74,16 +82,30 @@ export const useAppStore = defineStore('app', () => {
 
   const loadDashboardStats = async () => {
     const filterStore = useFilterStore()
+    if (!filterStore) {
+      return { success: true, data: null }
+    }
     const { heroName, buyIn, getDateRangeParams } = filterStore
 
-    if (!heroName.value) {
-      dashboardStats.value = null
-      return { success: true, data: null }
+    const { dateFrom, dateTo } = getDateRangeParams()
+    const buyInParam = buyIn.value === 'all' ? null : Number(buyIn.value)
+
+    if (!heroName || !heroName.value) {
+      const result = await ipcService.getDashboardStats(null, dateFrom, dateTo, buyInParam)
+      if (result.success && result.data) {
+        dashboardStats.value = {
+          ...result.data,
+          total_profit: Number(result.data.total_profit) || 0,
+          total_hands: Number(result.data.total_hands) || 0,
+          total_ev: Number(result.data.total_ev) || 0
+        }
+      } else {
+        dashboardStats.value = null
+      }
+      return result
     }
 
     try {
-      const { dateFrom, dateTo } = getDateRangeParams()
-      const buyInParam = buyIn.value === 'all' ? null : Number(buyIn.value)
 
       const result = await ipcService.getDashboardStats(heroName.value, dateFrom, dateTo, buyInParam)
       if (result.success) {
@@ -105,8 +127,20 @@ export const useAppStore = defineStore('app', () => {
   const loadSessions = async (limit = 50) => {
     try {
       const filterStore = useFilterStore()
+      if (!filterStore) {
+        return { success: true, data: [] }
+      }
       const { heroName, buyIn } = filterStore
+
       const buyInParam = buyIn.value === 'all' ? null : Number(buyIn.value)
+
+      if (!heroName || !heroName.value) {
+        const result = await ipcService.getSessionHistory(limit, null, null, null, buyInParam)
+        if (result.success) {
+          sessions.value = result.data || []
+        }
+        return result
+      }
 
       const result = await ipcService.getSessionHistory(limit, heroName.value, null, null, buyInParam)
       if (result.success) {
