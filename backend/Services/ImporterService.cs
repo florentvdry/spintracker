@@ -40,7 +40,10 @@ public class ImporterService : IImporterService
         new(@"(\d+)\s+and\s+is\s+all-in", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
     
     private static readonly ConcurrentDictionary<string, bool> HandIdCache = new();
-    private const int MaxCacheSize = 10000; 
+    private const int MaxCacheSize = 10000;
+    
+    private static readonly ConcurrentDictionary<string, EquityResult> EquityCache = new();
+    private const int MaxEquityCacheSize = 50000; 
 
     public ImporterService(Database db, IAnalyticsCalculator analyticsCalc, ILogger<ImporterService> logger, SpinTrackerBackend.Data.Repositories.PlayerRepository? playerRepo = null)
     {
@@ -152,8 +155,8 @@ public class ImporterService : IImporterService
         _logger.LogInformation($"[IMPORT] Parser detected in {detectStart.ElapsedMilliseconds}ms, separator: {separator}");
 
         // Pipeline channels - increased buffer size for better throughput
-        var handTextChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(2000) { FullMode = BoundedChannelFullMode.Wait });
-        var processedChannel = Channel.CreateBounded<(ParsedHand, HandAnalytics)>(new BoundedChannelOptions(2000) { FullMode = BoundedChannelFullMode.Wait });
+        var handTextChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(5000) { FullMode = BoundedChannelFullMode.Wait });
+        var processedChannel = Channel.CreateBounded<(ParsedHand, HandAnalytics)>(new BoundedChannelOptions(5000) { FullMode = BoundedChannelFullMode.Wait });
 
         // Statistics tracking
         int totalHandsFound = 0;
@@ -210,10 +213,12 @@ public class ImporterService : IImporterService
         int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
         _logger.LogInformation($"[IMPORT] Starting {workerCount} worker tasks");
         var workerSw = Stopwatch.StartNew();
-        var workerTasks = Enumerable.Range(0, workerCount).Select(_ => Task.Run(async () =>
+        var workerTasks = Enumerable.Range(0, workerCount).Select(workerId => Task.Run(async () =>
         {
+            var localParser = parser;
             int handsParsed = 0;
             int analyticsComputed = 0;
+            int cacheHits = 0;
             var parseSw = new Stopwatch();
             var analyticsSw = new Stopwatch();
             try
@@ -223,13 +228,12 @@ public class ImporterService : IImporterService
                     try
                     {
                         parseSw.Start();
-                        var hand = parser.ParseHand(handText);
+                        var hand = localParser.ParseHand(handText);
                         parseSw.Stop();
                         if (hand == null) continue;
 
                         handsParsed++;
 
-                        // Only calculate analytics when actually needed (all-in + showdown + cards known)
                         HandAnalytics analytics;
                         var hero = hand.Players.FirstOrDefault(p => p.IsHero);
                         bool needsAnalytics = hand.WentToShowdown && 
@@ -267,7 +271,7 @@ public class ImporterService : IImporterService
             catch (OperationCanceledException) { }
             finally
             {
-                _logger.LogInformation($"[IMPORT] Worker done: {handsParsed} parsed ({parseSw.ElapsedMilliseconds}ms), {analyticsComputed} analytics ({analyticsSw.ElapsedMilliseconds}ms)");
+                _logger.LogInformation($"[IMPORT] Worker {workerId} done: {handsParsed} parsed ({parseSw.ElapsedMilliseconds}ms), {analyticsComputed} analytics ({analyticsSw.ElapsedMilliseconds}ms), {cacheHits} cache hits");
             }
         }, cancellationToken)).ToArray();
 
@@ -335,6 +339,8 @@ public class ImporterService : IImporterService
             await _playerRepo.UpdatePlayerStatsAsync();
         }
 
+        var equityStats = AnalyticsCalculator.GetEquityCacheStats();
+        
         await onProgress(new ImportProgress 
         { 
             Message = "Import completed successfully", 
@@ -345,6 +351,6 @@ public class ImporterService : IImporterService
             Success = true
         });
         
-        _logger.LogInformation($"Imported {importedHands} hands in {stopwatch.ElapsedMilliseconds}ms using {workerCount} workers");
+        _logger.LogInformation($"Imported {importedHands} hands in {stopwatch.ElapsedMilliseconds}ms using {workerCount} workers. Equity cache: {equityStats.hits} hits, {equityStats.misses} misses, {equityStats.size} entries");
     }
 }

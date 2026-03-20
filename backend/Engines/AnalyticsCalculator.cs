@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using SpinTrackerBackend.Interfaces;
 using SpinTrackerBackend;
 
@@ -25,6 +26,11 @@ public class AnalyticsCalculator : IAnalyticsCalculator
     
     private static readonly System.Text.RegularExpressions.Regex AllInRegex = 
         new(@"(\d+)\s+and\s+is\s+all-in", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly ConcurrentDictionary<string, EquityResult> EquityCache = new();
+    private const int MaxEquityCacheSize = 50000;
+    private static long _cacheHits = 0;
+    private static long _cacheMisses = 0;
 
     public AnalyticsCalculator(IEquityCalculator equityCalc, ILogger<AnalyticsCalculator> logger)
     {
@@ -215,13 +221,13 @@ public class AnalyticsCalculator : IAnalyticsCalculator
             if (string.IsNullOrEmpty(heroCards) || string.IsNullOrEmpty(villainCards))
                 return null;
 
-            var equity = _equityCalc.Calculate(heroCards, villainCards, board);
+            var equity = GetCachedEquity(heroCards, villainCards, board ?? "");
             var totalPot = hand.TotalPot;
 
             var heroInvestment = hero.Investment > 0 ? hero.Investment : (ParseHeroInvestment(hand) ?? (totalPot / 2.0));
             var perPlayer = ParseInvestmentsPerPlayer(hand);
             var heroName = hero.Name;
-            var villainInvestment = perPlayer.Where(kv => !kv.Key.Equals(heroName, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Value).DefaultIfEmpty(0.0).Max();
+            var villainInvestment = perPlayer.Where(kv => !string.Equals(kv.Key, heroName, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Value).DefaultIfEmpty(0.0).Max();
             var ev = (equity.HeroEquity / 100.0) * totalPot - heroInvestment;
 
             return ev;
@@ -233,6 +239,30 @@ public class AnalyticsCalculator : IAnalyticsCalculator
         }
     }
 
+    private EquityResult GetCachedEquity(string heroCards, string villainCards, string board, string? deadCards = null)
+    {
+        var boardKey = board ?? "";
+        var deadKey = deadCards ?? "";
+        var cacheKey = $"{heroCards}|{villainCards}|{boardKey}|{deadKey}";
+        
+        if (EquityCache.TryGetValue(cacheKey, out var cached))
+        {
+            System.Threading.Interlocked.Increment(ref _cacheHits);
+            return cached;
+        }
+        
+        System.Threading.Interlocked.Increment(ref _cacheMisses);
+        
+        var result = _equityCalc.Calculate(heroCards, villainCards, boardKey, deadCards);
+        
+        if (EquityCache.Count < MaxEquityCacheSize)
+        {
+            EquityCache.TryAdd(cacheKey, result);
+        }
+        
+        return result;
+    }
+    
     private double? CalculateMultiwayEv(ParsedHand hand)
     {
         try
@@ -334,7 +364,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                         
                         var deadCardsStr = string.Join(" ", deadCardsList);
 
-                        var equityResult = _equityCalc.Calculate(heroCards, villainCardsStr, board, deadCardsStr);
+                        var equityResult = GetCachedEquity(heroCards, villainCardsStr, board, deadCardsStr);
                         double heroEq = equityResult.HeroEquity / 100.0;
                         
                         totalEv += heroEq * stepPot;
@@ -359,6 +389,18 @@ public class AnalyticsCalculator : IAnalyticsCalculator
             _logger.LogWarning($"Multiway Split Pot EV calculation error: {e.Message}");
             return null;
         }
+    }
+    
+    public static void ClearEquityCache()
+    {
+        EquityCache.Clear();
+        System.Threading.Interlocked.Exchange(ref _cacheHits, 0);
+        System.Threading.Interlocked.Exchange(ref _cacheMisses, 0);
+    }
+    
+    public static (long hits, long misses, int size) GetEquityCacheStats()
+    {
+        return (_cacheHits, _cacheMisses, EquityCache.Count);
     }
 
     private Dictionary<string, double> ParseInvestmentsPerPlayer(ParsedHand hand)
