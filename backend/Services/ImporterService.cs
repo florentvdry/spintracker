@@ -2,6 +2,8 @@ using System.Text;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Threading.Channels;
+using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using SpinTrackerBackend.Interfaces;
 using SpinTrackerBackend;
 using SpinTrackerBackend.Engines;
@@ -14,7 +16,31 @@ public class ImporterService : IImporterService
     private readonly Database _db;
     private readonly IAnalyticsCalculator _analyticsCalc;
     private readonly ILogger<ImporterService> _logger;
-    private const int InternalBatchSize = 500; 
+    private const int InternalBatchSize = 500;
+    
+    private static readonly System.Text.RegularExpressions.Regex HandIdRegex = 
+        new(@"Hand #(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled);
+    
+    private static readonly System.Text.RegularExpressions.Regex PlayerActionRegex = 
+        new(@"^(?:[0-9:]+\s*-\s*)?([^:]+):", System.Text.RegularExpressions.RegexOptions.Compiled);
+    
+    private static readonly System.Text.RegularExpressions.Regex PostsRegex = 
+        new(@"posts\s+\w+\s+(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly System.Text.RegularExpressions.Regex RaisesToRegex = 
+        new(@"raises\s+to\s+(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly System.Text.RegularExpressions.Regex CallsRegex = 
+        new(@"calls\s+(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly System.Text.RegularExpressions.Regex BetsRegex = 
+        new(@"bets\s+(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly System.Text.RegularExpressions.Regex AllInRegex = 
+        new(@"(\d+)\s+and\s+is\s+all-in", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+    
+    private static readonly ConcurrentDictionary<string, bool> HandIdCache = new();
+    private const int MaxCacheSize = 10000; 
 
     public ImporterService(Database db, IAnalyticsCalculator analyticsCalc, ILogger<ImporterService> logger, SpinTrackerBackend.Data.Repositories.PlayerRepository? playerRepo = null)
     {
@@ -26,19 +52,23 @@ public class ImporterService : IImporterService
 
     private readonly SpinTrackerBackend.Data.Repositories.PlayerRepository? _playerRepo;
 
-    private static readonly System.Text.RegularExpressions.Regex QuickHandIdRegex = 
-        new(@"Hand #(\d+)", System.Text.RegularExpressions.RegexOptions.Compiled);
-
-    private string? TryExtractHandIdQuick(string handText, IHandParser parser)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private string? TryExtractHandIdQuick(string handText)
     {
         if (string.IsNullOrEmpty(handText)) return null;
         
-        var firstLine = handText.Split('\n').FirstOrDefault() ?? "";
+        var firstLine = handText.IndexOf('\n') > 0 ? handText.Substring(0, handText.IndexOf('\n')) : handText;
         
-        var match = QuickHandIdRegex.Match(firstLine);
+        var match = HandIdRegex.Match(firstLine);
         if (match.Success)
         {
-            return match.Groups[1].Value;
+            var handId = match.Groups[1].Value;
+            if (HandIdCache.Count > MaxCacheSize)
+            {
+                HandIdCache.Clear();
+            }
+            HandIdCache.TryAdd(handId, true);
+            return handId;
         }
         
         return null;
