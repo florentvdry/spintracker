@@ -33,8 +33,7 @@ public class EquityController : ControllerBase
             var result = _equityCalc.Calculate(
                 data.HeroCards,
                 data.VillainCards,
-                data.Board ?? "",
-                data.Iterations ?? 10000
+                data.Board ?? ""
             );
 
             return Ok(new { success = true, data = result });
@@ -56,7 +55,6 @@ public class EquityController : ControllerBase
                 return BadRequest(new { success = false, error = "Invalid request" });
             }
 
-            var iterations = data.Iterations ?? 5000;
             var results = new List<object>();
 
             foreach (var hand in data.Hands)
@@ -64,8 +62,7 @@ public class EquityController : ControllerBase
                 var result = _equityCalc.Calculate(
                     hand.HeroCards ?? "",
                     hand.VillainCards ?? "",
-                    hand.Board ?? "",
-                    iterations
+                    hand.Board ?? ""
                 );
 
                 results.Add(new

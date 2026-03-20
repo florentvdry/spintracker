@@ -38,8 +38,8 @@ public record PlayersQueryOptions
     public int? MinHands { get; set; }
     public string? IsRegFilter { get; set; }
 }
-public record EquityRequest(string? HeroCards, string? VillainCards, string? Board, int? Iterations);
-public record BatchEquityRequest(List<BatchEquityHand> Hands, int? Iterations);
+public record EquityRequest(string? HeroCards, string? VillainCards, string? Board);
+public record BatchEquityRequest(List<BatchEquityHand> Hands);
 public record BatchEquityHand(string? Id, string? HeroCards, string? VillainCards, string? Board);        
 public record AnalyzeRangeRequest(string? Position, string? Action, int? Stack);
 

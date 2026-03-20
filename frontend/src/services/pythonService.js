@@ -30,7 +30,7 @@ class PythonService {
   /**
    * Calcul d'équité avec progression
    */
-  async calculateEquity({ heroCards, villainCards, board = '', iterations = 10000 }) {
+  async calculateEquity({ heroCards, villainCards, board = '' }) {
     const progressStore = useProgressStore.getState();
     
     progressStore.startProgress({
@@ -49,7 +49,6 @@ class PythonService {
         heroCards,
         villainCards,
         board,
-        iterations,
       });
 
       unsubscribe();
