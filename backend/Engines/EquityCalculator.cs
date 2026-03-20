@@ -10,6 +10,18 @@ namespace SpinTrackerBackend.Engines;
 
 public static class HandEvaluator
 {
+    private static readonly int[] StraightTable = new int[8192];
+    private static readonly int[] HighCardTable = new int[8192];
+
+    static HandEvaluator()
+    {
+        for (int i = 0; i < 8192; i++)
+        {
+            StraightTable[i] = ComputeStraightHighCardFromMask(i);
+            HighCardTable[i] = ComputeHighCardScoreFromMask(i);
+        }
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Evaluate7Cards(int c1, int c2, int c3, int c4, int c5, int c6, int c7)
     {
@@ -27,20 +39,17 @@ public static class HandEvaluator
         int r6 = c6 >> 2; int s6 = c6 & 3;
         int r7 = c7 >> 2; int s7 = c7 & 3;
 
-        int sc0 = 0, sc1 = 0, sc2 = 0, sc3 = 0;
-        if (s1 == 0) sc0++; else if (s1 == 1) sc1++; else if (s1 == 2) sc2++; else sc3++;
-        if (s2 == 0) sc0++; else if (s2 == 1) sc1++; else if (s2 == 2) sc2++; else sc3++;
-        if (s3 == 0) sc0++; else if (s3 == 1) sc1++; else if (s3 == 2) sc2++; else sc3++;
-        if (s4 == 0) sc0++; else if (s4 == 1) sc1++; else if (s4 == 2) sc2++; else sc3++;
-        if (s5 == 0) sc0++; else if (s5 == 1) sc1++; else if (s5 == 2) sc2++; else sc3++;
-        if (s6 == 0) sc0++; else if (s6 == 1) sc1++; else if (s6 == 2) sc2++; else sc3++;
-        if (s7 == 0) sc0++; else if (s7 == 1) sc1++; else if (s7 == 2) sc2++; else sc3++;
-
+        // Fast suit counting using bitwise (4 bits per suit)
+        int suitCounts = (1 << (s1 << 2)) + (1 << (s2 << 2)) + (1 << (s3 << 2)) + (1 << (s4 << 2)) + (1 << (s5 << 2)) + (1 << (s6 << 2)) + (1 << (s7 << 2));
+        
         int flushSuit = -1;
-        if (sc0 >= 5) flushSuit = 0;
-        else if (sc1 >= 5) flushSuit = 1;
-        else if (sc2 >= 5) flushSuit = 2;
-        else if (sc3 >= 5) flushSuit = 3;
+        if (((suitCounts + 0x3333) & 0x8888) != 0)
+        {
+            if ((suitCounts & 0xF) >= 5) flushSuit = 0;
+            else if (((suitCounts >> 4) & 0xF) >= 5) flushSuit = 1;
+            else if (((suitCounts >> 8) & 0xF) >= 5) flushSuit = 2;
+            else flushSuit = 3;
+        }
 
         if (flushSuit != -1)
         {
@@ -53,15 +62,15 @@ public static class HandEvaluator
             if (s6 == flushSuit) mask |= (1 << r6);
             if (s7 == flushSuit) mask |= (1 << r7);
 
-            int sfScore = GetStraightHighCardFromMask(mask);
+            int sfScore = StraightTable[mask];
             if (sfScore > 0) return 8000000 + sfScore;
 
-            return 5000000 + GetHighCardScoreFromMask(mask);
+            return 5000000 + HighCardTable[mask];
         }
 
         int rankMask = (1 << r1) | (1 << r2) | (1 << r3) | (1 << r4) | (1 << r5) | (1 << r6) | (1 << r7);
         
-        int[] counts = new int[13];
+        Span<int> counts = stackalloc int[13];
         counts[r1]++; counts[r2]++; counts[r3]++; counts[r4]++; counts[r5]++; counts[r6]++; counts[r7]++;
         
         int quads = -1, trips = -1, pairs1 = -1, pairs2 = -1;
@@ -94,7 +103,7 @@ public static class HandEvaluator
             return 6000000 + trips * 15 + pairs1;
         }
 
-        int stScore = GetStraightHighCardFromMask(rankMask);
+        int stScore = StraightTable[rankMask];
         if (stScore > 0) return 4000000 + stScore;
 
         if (trips != -1)
@@ -133,11 +142,10 @@ public static class HandEvaluator
             return 1000000 + pairs1 * 3375 + k1 * 225 + k2 * 15 + k3;
         }
 
-        return GetHighCardScoreFromMask(rankMask);
+        return HighCardTable[rankMask];
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetStraightHighCardFromMask(int mask)
+    private static int ComputeStraightHighCardFromMask(int mask)
     {
         if ((mask & 0x1F00) == 0x1F00) return 14;
         if ((mask & 0x0F80) == 0x0F80) return 13;
@@ -152,8 +160,7 @@ public static class HandEvaluator
         return 0;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetHighCardScoreFromMask(int mask)
+    private static int ComputeHighCardScoreFromMask(int mask)
     {
         int score = 0;
         int mult = 1;
@@ -272,6 +279,7 @@ public class EquityCalculator : IEquityCalculator
             Parallel.For(0, availCount - 4, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, () =>
                 (0L, 0L, 0L), (i1, loopState, localAcc) =>
             {
+                int c1 = available[i1];
                 for (int i2 = i1 + 1; i2 < availCount - 3; i2++)
                 {
                     int c2 = available[i2];
@@ -283,8 +291,9 @@ public class EquityCalculator : IEquityCalculator
                             int c4 = available[i4];
                             for (int i5 = i4 + 1; i5 < availCount; i5++)
                             {
-                                int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, available[i1], c2, c3, c4, available[i5]);
-                                int vScore = HandEvaluator.Evaluate7Cards(vc1, vc2, available[i1], c2, c3, c4, available[i5]);
+                                int c5 = available[i5];
+                                int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, c1, c2, c3, c4, c5);
+                                int vScore = HandEvaluator.Evaluate7Cards(vc1, vc2, c1, c2, c3, c4, c5);
                                 
                                 if (hScore > vScore) localAcc.Item1++;
                                 else if (vScore > hScore) localAcc.Item2++;
@@ -400,23 +409,24 @@ public class EquityCalculator : IEquityCalculator
             Parallel.For(0, availCount - 4, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, () =>
                 (0.0, 0L, 0L, 0L), (i1, loopState, localAcc) =>
             {
+                int c1 = available[i1];
                 for (int i2 = i1 + 1; i2 < availCount - 3; i2++)
                 {
+                    int c2 = available[i2];
                     for (int i3 = i2 + 1; i3 < availCount - 2; i3++)
                     {
+                        int c3 = available[i3];
                         for (int i4 = i3 + 1; i4 < availCount - 1; i4++)
                         {
+                            int c4 = available[i4];
                             for (int i5 = i4 + 1; i5 < availCount; i5++)
                             {
-                                int c1 = available[i1];
-                                int c2 = available[i2];
-                                int c3 = available[i3];
-                                int c4 = available[i4];
                                 int c5 = available[i5];
                                 
                                 int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, c1, c2, c3, c4, c5);
                                 int bestVillain = 0;
                                 int villainWinners = 0;
+                                
                                 foreach(var vh in vHandsInts)
                                 {
                                     int s = HandEvaluator.Evaluate7Cards(vh.Item1, vh.Item2, c1, c2, c3, c4, c5);
