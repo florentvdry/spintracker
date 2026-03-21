@@ -61,6 +61,8 @@ import { computed } from 'vue'
 import { X } from 'lucide-vue-next'
 import PlayingCard from '@/components/common/PlayingCard.vue'
 import { parseCards } from '@/utils/formatters'
+import InfoRow from './InfoRow.vue'
+import ActionBlock from './ActionBlock.vue'
 
 const props = defineProps({
   hand: Object,
@@ -73,24 +75,4 @@ const isPositive = computed(() => profit.value >= 0)
 const villain = computed(() => props.hand?.players?.find(p => !p.IsHero))
 const villainPosition = computed(() => props.hand?.villain_position || villain.value?.Position || '—')
 const villainCards = computed(() => props.hand?.villain_cards || villain.value?.Cards || '—')
-
-const InfoRow = {
-  props: ['label', 'value'],
-  template: `
-    <div class="flex items-center justify-between py-2 border-b border-dark-100/30">
-      <span class="text-gray-400">{{ label }}</span>
-      <span class="text-white font-medium"><slot></slot>{{ value }}</span>
-    </div>
-  `
-}
-
-const ActionBlock = {
-  props: ['title', 'content'],
-  template: `
-    <div class="p-3 bg-dark-200 rounded-lg">
-      <p class="text-xs text-gray-500 mb-1">{{ title }}</p>
-      <p class="text-sm text-gray-300 whitespace-pre-line">{{ content }}</p>
-    </div>
-  `
-}
 </script>

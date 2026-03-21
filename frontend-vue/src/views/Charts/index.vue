@@ -106,6 +106,7 @@ import * as echarts from 'echarts'
 import { BarChart2, GripHorizontal } from 'lucide-vue-next'
 import { ipcService } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
+import PositionStat from './components/PositionStat.vue'
 
 const { t } = useI18n()
 const filterStore = useFilterStore()
@@ -289,18 +290,6 @@ const getPosValue = (positionKey) => {
     }
     return '0.00'
   }
-}
-
-const PositionStat = {
-  props: ['label', 'value', 'isSelected'],
-  template: `
-    <div class="flex justify-between items-center text-xs">
-      <span :class="isSelected ? 'text-primary-400 font-medium' : 'text-gray-500'">{{ label }}</span>
-      <span :class="['font-mono font-medium', parseFloat(value) >= 0 ? 'text-green-500' : 'text-red-500']">
-        {{ parseFloat(value) > 0 ? '+' : '' }}{{ value }}
-      </span>
-    </div>
-  `
 }
 
 const getOption = computed(() => {
