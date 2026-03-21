@@ -11,6 +11,29 @@
         </div>
       </div>
       <div class="flex items-center gap-3">
+        <div class="flex gap-1 mr-2">
+          <button
+            v-for="f in ['all', 'reg', 'fish']"
+            :key="f"
+            @click="handleFilterChange(f)"
+            :class="[
+              'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+              filter === f 
+                ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20' 
+                : 'bg-dark-400 text-gray-400 hover:text-white hover:bg-dark-200 border border-white/5'
+            ]"
+          >
+            <span v-if="f === 'all'">{{ $t('players.filter_all') }}</span>
+            <span v-else-if="f === 'reg'" class="flex items-center gap-1.5">
+              <Crown class="w-3.5 h-3.5 text-yellow-400" />
+              {{ $t('players.filter_reg') }}
+            </span>
+            <span v-else-if="f === 'fish'" class="flex items-center gap-1.5">
+              <Fish class="w-3.5 h-3.5 text-blue-400" />
+              {{ $t('players.filter_fish') }}
+            </span>
+          </button>
+        </div>
         <div class="relative">
           <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -22,30 +45,6 @@
           />
         </div>
       </div>
-    </div>
-
-    <div class="flex gap-2">
-      <button
-        v-for="f in ['all', 'reg', 'fish']"
-        :key="f"
-        @click="handleFilterChange(f)"
-        :class="[
-          'px-4 py-2 rounded-lg text-sm font-medium transition-all',
-          filter === f 
-            ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20' 
-            : 'bg-dark-300 text-gray-400 hover:text-white hover:bg-dark-200'
-        ]"
-      >
-        <span v-if="f === 'all'">{{ $t('players.filter_all') }}</span>
-        <span v-else-if="f === 'reg'" class="flex items-center gap-2">
-          <Crown class="w-4 h-4 text-yellow-400" />
-          {{ $t('players.filter_reg') }}
-        </span>
-        <span v-else-if="f === 'fish'" class="flex items-center gap-2">
-          <Fish class="w-4 h-4 text-blue-400" />
-          {{ $t('players.filter_fish') }}
-        </span>
-      </button>
     </div>
 
     <div class="flex-1 bg-dark-200 rounded-2xl shadow-2xl border border-white/5 flex flex-col min-h-0 overflow-hidden">
@@ -125,7 +124,7 @@
                 <span v-if="player.is_reg_forced" class="text-xs text-gray-500">{{ $t('players.manual') }}</span>
                 <span v-else-if="player.total_hands >= 500" class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-green-500/20 text-green-400">
                   <Crown class="w-3 h-3" />
-                  Auto
+                  {{ $t('common.auto') }}
                 </span>
                 <span v-else class="text-xs text-gray-500">-</span>
               </td>
@@ -196,7 +195,7 @@
               <p class="text-xs text-gray-400">
                 {{ playerHands?.total || 0 }} {{ $t('players.total_hands') }}
                 <span v-if="heroName" class="ml-2 text-primary-400">• Hero: {{ heroName }}</span>
-                <span v-else class="ml-2 text-yellow-400">• Sélectionnez un héros</span>
+                <span v-else class="ml-2 text-yellow-400">• {{ $t('common.select_hero') }}</span>
               </p>
             </div>
           </div>
@@ -228,7 +227,7 @@
                   <th class="text-right">{{ $t('common.blinds') }}</th>
                   <th class="text-right cursor-pointer hover:bg-dark-300 transition-colors" @click="handleHandsSort('cev')">
                     <div class="flex items-center justify-end gap-1">
-                      CEV
+                      {{ $t('common.cev') }}
                       <ArrowUpDown :class="['w-3 h-3', handsSortBy?.startsWith('cev') ? 'opacity-100 text-primary-400' : 'opacity-0']" />
                     </div>
                   </th>
@@ -294,7 +293,7 @@
                       <button 
                         @click.stop="handleOpenReplayer(hand.id)"
                         class="p-1.5 rounded hover:bg-primary-500/20 text-gray-500 hover:text-primary-400 transition-all opacity-0 group-hover:opacity-100"
-                        title="Replay Hand"
+                        :title="$t('common.replay_hand')"
                       >
                         <Play class="w-3.5 h-3.5" fill="currentColor" />
                       </button>
@@ -307,27 +306,27 @@
                         <div class="p-4 space-y-3">
                           <div class="flex items-center gap-6 flex-wrap">
                             <div class="flex items-center gap-2">
-                              <span class="text-xs text-gray-500">Room:</span>
+                              <span class="text-xs text-gray-500">{{ $t('common.room') }}:</span>
                               <span class="text-xs text-gray-300 uppercase font-bold">{{ hand.room || '-' }}</span>
                             </div>
                             <div class="flex items-center gap-2">
-                              <span class="text-xs text-gray-500">Buy-in:</span>
+                              <span class="text-xs text-gray-500">{{ $t('common.buy_in') }}:</span>
                               <span class="text-xs text-gray-300">{{ hand.buy_in ? hand.buy_in + '€' : '-' }}</span>
                             </div>
                             <div class="flex items-center gap-2">
-                              <span class="text-xs text-gray-500">Table:</span>
+                              <span class="text-xs text-gray-500">{{ $t('common.table') }}:</span>
                               <span class="text-xs text-gray-300">{{ hand.table_id || '-' }}</span>
                             </div>
                             <span v-if="hand.dyn_hero_all_in || hand.hero_all_in" class="px-2 py-0.5 rounded text-xs font-bold bg-red-500/20 text-red-400">
-                              ALL-IN
+                              {{ $t('common.all_in') }}
                             </span>
                             <span v-if="hand.went_to_showdown" class="px-2 py-0.5 rounded text-xs font-medium bg-dark-400 text-gray-400">
-                              SD
+                              {{ $t('common.showdown_short') }}
                             </span>
                           </div>
 
                           <div v-if="hand.flop || hand.turn || hand.river" class="flex items-center gap-3">
-                            <span class="text-xs text-gray-500">Board:</span>
+                            <span class="text-xs text-gray-500">{{ $t('common.board') }}:</span>
                             <div class="flex gap-0.5">
                               <PlayingCard v-for="(card, i) in parseCards(hand.flop || '')" :key="'flop-'+i" :card="card" size="sm" />
                               <PlayingCard v-if="hand.turn" :card="hand.turn" size="sm" />
@@ -336,13 +335,13 @@
                           </div>
 
                           <div v-if="hand.went_to_showdown" class="flex items-center gap-2 text-xs">
-                            <span class="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 font-medium">SD</span>
+                            <span class="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 font-medium">{{ $t('common.showdown_short') }}</span>
                             <span :class="(hand.dyn_hero_profit || hand.hero_profit || 0) > 0 ? 'text-emerald-400' : 'text-rose-400'">
                               {{ (hand.dyn_hero_profit || hand.hero_profit || 0) > 0 ? $t('common.won') : $t('common.lost') }}
                             </span>
                           </div>
                           <div v-else-if="(hand.dyn_hero_profit || hand.hero_profit || 0) > 0" class="flex items-center gap-2 text-xs">
-                            <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-medium">Fold</span>
+                            <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-medium">{{ $t('common.fold') }}</span>
                             <span class="text-emerald-400">{{ $t('common.won') }}</span>
                           </div>
                         </div>

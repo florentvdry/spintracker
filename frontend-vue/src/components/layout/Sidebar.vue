@@ -27,10 +27,10 @@
         href="https://discord.gg/x9ZSQA2mN2" 
         target="_blank" 
         rel="noopener noreferrer"
-        class="flex items-center gap-3 text-sm text-gray-500 hover:text-blue-400 transition-colors"
+        class="flex items-center justify-center gap-3 px-4 py-4 bg-[#5865F2]/10 hover:bg-[#5865F2]/20 text-[#5865F2] hover:text-[#5865F2] rounded-xl transition-all border border-[#5865F2]/20 hover:border-[#5865F2]/40 w-full group shadow-lg shadow-[#5865F2]/5"
       >
-        <MessageCircle class="w-4 h-4" />
-        <span>Discord</span>
+        <MessageCircle class="w-6 h-6 group-hover:scale-110 transition-transform" />
+        <span class="text-base font-bold whitespace-nowrap">Rejoindre le discord</span>
       </a>
     </div>
   </aside>

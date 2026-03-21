@@ -49,9 +49,21 @@
     "no_notifications": "Aucune notification",
     "any": "N'importe",
     "skipped": "ignorées",
-    "chips_won": "Chips Won",
-    "showdown_winning": "Showdown Won",
-    "non_showdown_winning": "Non-Showdown Won"
+    "chips_won": "Jetons gagnés",
+    "showdown_winning": "Gains à l'abattage",
+    "non_showdown_winning": "Gains hors abattage",
+    "blinds": "Blinds",
+    "room": "Salle",
+    "buy_in": "Buy-in",
+    "table": "Table",
+    "board": "Tableau",
+    "replay_hand": "Revoir la main",
+    "select_hero": "Sélectionnez un héros",
+    "all_in": "TAPIS",
+    "showdown_short": "SD",
+    "cev": "CEV",
+    "fold": "Fold",
+    "auto": "Auto"
   },
   "header": {
     "search_placeholder": "Rechercher une main, joueur...",
@@ -231,10 +243,6 @@
       "hu_vs_sb_open": "vs SB Open",
       "hu_vs_sb_limp": "vs SB Limp"
     }
-  },
-  "players": {
-    "title": "Joueurs",
-    "subtitle": "Statistiques des joueurs"
   },
   "settings": {
     "title": "Paramètres",
