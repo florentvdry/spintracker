@@ -14,6 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="HoldemPoker.Cards" Version="0.0.1" />
+    <PackageReference Include="HoldemPoker.Evaluator" Version="1.0.1" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.1" />
     <PackageReference Include="Npgsql" Version="10.0.1" />

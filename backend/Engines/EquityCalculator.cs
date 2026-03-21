@@ -292,8 +292,8 @@ public class EquityCalculator : IEquityCalculator
                             for (int i5 = i4 + 1; i5 < availCount; i5++)
                             {
                                 int c5 = available[i5];
-                                int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, c1, c2, c3, c4, c5);
-                                int vScore = HandEvaluator.Evaluate7Cards(vc1, vc2, c1, c2, c3, c4, c5);
+                                int hScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(hc1, hc2, c1, c2, c3, c4, c5);
+                                int vScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(vc1, vc2, c1, c2, c3, c4, c5);
                                 
                                 if (hScore > vScore) localAcc.Item1++;
                                 else if (vScore > hScore) localAcc.Item2++;
@@ -322,8 +322,8 @@ public class EquityCalculator : IEquityCalculator
                 {
                     int c2 = available[i2];
                     
-                    int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, c1, c2);
-                    int vScore = HandEvaluator.Evaluate7Cards(vc1, vc2, b1, b2, b3, c1, c2);
+                    int hScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, c1, c2);
+                    int vScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(vc1, vc2, b1, b2, b3, c1, c2);
                     
                     if (hScore > vScore) heroWins++;
                     else if (vScore > hScore) villainWins++;
@@ -337,8 +337,8 @@ public class EquityCalculator : IEquityCalculator
             {
                 int c1 = available[i1];
                 
-                int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, b4, c1);
-                int vScore = HandEvaluator.Evaluate7Cards(vc1, vc2, b1, b2, b3, b4, c1);
+                int hScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, b4, c1);
+                int vScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(vc1, vc2, b1, b2, b3, b4, c1);
                 
                 if (hScore > vScore) heroWins++;
                 else if (vScore > hScore) villainWins++;
@@ -347,8 +347,8 @@ public class EquityCalculator : IEquityCalculator
         }
         else if (cardsNeeded == 0)
         {
-            int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, b4, b5);
-            int vScore = HandEvaluator.Evaluate7Cards(vc1, vc2, b1, b2, b3, b4, b5);
+            int hScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, b4, b5);
+            int vScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(vc1, vc2, b1, b2, b3, b4, b5);
             if (hScore > vScore) heroWins++;
             else if (vScore > hScore) villainWins++;
             else ties++;
@@ -423,13 +423,13 @@ public class EquityCalculator : IEquityCalculator
                             {
                                 int c5 = available[i5];
                                 
-                                int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, c1, c2, c3, c4, c5);
+                                int hScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(hc1, hc2, c1, c2, c3, c4, c5);
                                 int bestVillain = 0;
                                 int villainWinners = 0;
                                 
                                 foreach(var vh in vHandsInts)
                                 {
-                                    int s = HandEvaluator.Evaluate7Cards(vh.Item1, vh.Item2, c1, c2, c3, c4, c5);
+                                    int s = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(vh.Item1, vh.Item2, c1, c2, c3, c4, c5);
                                     if (s > bestVillain) 
                                     {
                                         bestVillain = s;
@@ -474,12 +474,12 @@ public class EquityCalculator : IEquityCalculator
                 {
                     int c2 = available[i2];
                     
-                    int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, c1, c2);
+                    int hScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, c1, c2);
                     int bestVillain = 0;
                     int villainWinners = 0;
                     foreach (var vh in vHandsInts)
                     {
-                        int s = HandEvaluator.Evaluate7Cards(vh.Item1, vh.Item2, b1, b2, b3, c1, c2);
+                        int s = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(vh.Item1, vh.Item2, b1, b2, b3, c1, c2);
                         if (s > bestVillain) 
                         {
                             bestVillain = s;
@@ -508,12 +508,12 @@ public class EquityCalculator : IEquityCalculator
             {
                 int c1 = available[i1];
                 
-                int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, b4, c1);
+                int hScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, b4, c1);
                 int bestVillain = 0;
                 int villainWinners = 0;
                 foreach (var vh in vHandsInts)
                 {
-                    int s = HandEvaluator.Evaluate7Cards(vh.Item1, vh.Item2, b1, b2, b3, b4, c1);
+                    int s = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(vh.Item1, vh.Item2, b1, b2, b3, b4, c1);
                     if (s > bestVillain) 
                     {
                         bestVillain = s;
@@ -537,12 +537,12 @@ public class EquityCalculator : IEquityCalculator
         }
         else if (cardsNeeded == 0)
         {
-            int hScore = HandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, b4, b5);
+            int hScore = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(hc1, hc2, b1, b2, b3, b4, b5);
             int bestVillain = 0;
             int villainWinners = 0;
             foreach (var vh in vHandsInts)
             {
-                int s = HandEvaluator.Evaluate7Cards(vh.Item1, vh.Item2, b1, b2, b3, b4, b5);
+                int s = PokerStove.PokerStoveHandEvaluator.Evaluate7Cards(vh.Item1, vh.Item2, b1, b2, b3, b4, b5);
                 if (s > bestVillain) 
                 {
                     bestVillain = s;
