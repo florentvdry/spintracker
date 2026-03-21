@@ -7,14 +7,27 @@ class IPCService {
   }
 
   async invoke(channel, ...args) {
-    console.log(`[IPC →] ${channel}`, ...args)
+    // Sanitize arguments to avoid "An object could not be cloned" errors
+    // which can happen with Vue reactive objects/proxies
+    const sanitizedArgs = args.map(arg => {
+      try {
+        if (arg !== null && typeof arg === 'object') {
+          return JSON.parse(JSON.stringify(arg))
+        }
+      } catch (e) {
+        console.error(`[IPC] Failed to sanitize argument for ${channel}:`, e)
+      }
+      return arg
+    })
+
+    console.log(`[IPC →] ${channel}`, ...sanitizedArgs)
     if (!ipcRenderer) {
       console.warn(`IPC not available. Channel: ${channel}`)
       return { success: false, message: 'IPC not available' }
     }
 
     try {
-      const result = await ipcRenderer.invoke(channel, ...args)
+      const result = await ipcRenderer.invoke(channel, ...sanitizedArgs)
       console.log(`[IPC ←] ${channel}`, result)
       return result
     } catch (error) {
