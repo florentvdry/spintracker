@@ -55,48 +55,54 @@ public static class PokerEvaluatorBenchmark
 
         Console.WriteLine("Calculating EV for all hands...");
         var sw = Stopwatch.StartNew();
-        var results = new List<BenchResult>();
+        
+        var total = allHands.Count;
+        var progress = 0;
+        var processedCount = 0;
+        var threadResults = new System.Collections.Concurrent.ConcurrentBag<BenchResult>();
         var allInCount = 0;
         var showdownCount = 0;
-
-        var progress = 0;
-        var total = allHands.Count;
+        var allInCountLock = new object();
+        var showdownCountLock = new object();
 
         await Task.Run(() =>
         {
-            Parallel.ForEach(allHands, hand =>
+            Parallel.ForEach(allHands, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, hand =>
             {
                 var analytics = analyticsCalc.CalculateHandAnalytics(hand);
                 var hero = hand.Players.FirstOrDefault(p => p.IsHero);
                 
                 var position = hero?.Position ?? "";
                 var playerCount = hand.PlayerCount;
-                var isAllIn = hero?.IsAllIn == true || hand.Players.Any(p => p.IsAllIn);
-                var wentToShowdown = hand.WentToShowdown || (hero?.WentToShowdown == true);
+                bool isAllIn = hero?.IsAllIn == true || hand.Players.Any(p => p.IsAllIn);
+                bool wentToShowdown = hand.WentToShowdown || (hero?.WentToShowdown == true);
                 
-                lock (results)
+                threadResults.Add(new BenchResult
                 {
-                    results.Add(new BenchResult
-                    {
-                        HandId = hand.Id ?? "",
-                        Position = position,
-                        PlayerCount = playerCount,
-                        Profit = hero?.NetProfit ?? 0,
-                        Ev = analytics.NetWonAdjusted ?? hero?.NetProfit ?? 0,
-                        CevContribution = analytics.CevContribution ?? 0,
-                        IsAllIn = isAllIn,
-                        WentToShowdown = wentToShowdown,
-                        GameId = hand.GameId ?? ""
-                    });
+                    HandId = hand.Id ?? "",
+                    Position = position,
+                    PlayerCount = playerCount,
+                    Profit = hero?.NetProfit ?? 0,
+                    Ev = analytics.NetWonAdjusted ?? hero?.NetProfit ?? 0,
+                    CevContribution = analytics.CevContribution ?? 0,
+                    IsAllIn = isAllIn,
+                    WentToShowdown = wentToShowdown,
+                    GameId = hand.GameId ?? ""
+                });
 
-                    if (isAllIn) allInCount++;
-                    if (wentToShowdown) showdownCount++;
+                if (isAllIn)
+                {
+                    lock (allInCountLock) { allInCount++; }
+                }
+                if (wentToShowdown)
+                {
+                    lock (showdownCountLock) { showdownCount++; }
+                }
 
-                    progress++;
-                    if (progress % 500 == 0)
-                    {
-                        Console.Write($"\r  Progress: {progress}/{total} ({progress * 100.0 / total:F1}%)");
-                    }
+                var currentProgress = Interlocked.Increment(ref processedCount);
+                if (currentProgress % 500 == 0)
+                {
+                    Console.Write($"\r  Progress: {currentProgress}/{total} ({currentProgress * 100.0 / total:F1}%)");
                 }
             });
         });
@@ -104,6 +110,7 @@ public static class PokerEvaluatorBenchmark
         Console.WriteLine($"\r  Progress: {total}/{total} (100.0%)");
         sw.Stop();
 
+        var results = threadResults.ToList();
         Console.WriteLine();
         Console.WriteLine($"Calculation time: {sw.ElapsedMilliseconds}ms");
         Console.WriteLine($"Hands per second: {allHands.Count * 1000.0 / sw.ElapsedMilliseconds:F0}");

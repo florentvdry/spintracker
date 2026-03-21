@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using SpinTrackerBackend.Interfaces;
 using SpinTrackerBackend;
 
@@ -31,6 +32,9 @@ public class AnalyticsCalculator : IAnalyticsCalculator
     private const int MaxEquityCacheSize = 50000;
     private static long _cacheHits = 0;
     private static long _cacheMisses = 0;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsNullOrEmptyFast(string? s) => string.IsNullOrEmpty(s);
 
     public AnalyticsCalculator(IEquityCalculator equityCalc, ILogger<AnalyticsCalculator> logger)
     {
@@ -67,19 +71,30 @@ public class AnalyticsCalculator : IAnalyticsCalculator
         }
 
         var heroAllIn = hero.IsAllIn;
-        var villainAllIn = hand.Players.Any(p => !p.IsHero && p.IsAllIn);
-        var heroCards = hero.Cards;
-        var villainCards = string.Join("|", hand.Players.Where(p => !p.IsHero && !string.IsNullOrEmpty(p.Cards)).Select(p => p.Cards));
+        bool villainAllIn = false;
+        bool hasVillainCards = false;
+        int playerCountWithCards = 0;
+        bool anyAllIn = heroAllIn;
 
-        var isMultiway = hand.Players.Count(p => !string.IsNullOrEmpty(p.Cards)) > 2;
-        var hasBothCards = !string.IsNullOrEmpty(heroCards) && !string.IsNullOrEmpty(villainCards);
-        var anyAllIn = heroAllIn || villainAllIn;
+        foreach (var p in hand.Players)
+        {
+            if (!p.IsHero)
+            {
+                if (p.IsAllIn) villainAllIn = true;
+                if (!IsNullOrEmptyFast(p.Cards))
+                {
+                    hasVillainCards = true;
+                    playerCountWithCards++;
+                }
+            }
+            if (p.IsAllIn) anyAllIn = true;
+        }
+
+        var heroCards = hero.Cards;
 
         var isRiverAllIn = IsRiverAllIn(hand);
-        var isPreflopAllIn = !string.IsNullOrEmpty(hand.AllInStreet) && 
-                             hand.AllInStreet.Equals("PREFLOP", StringComparison.OrdinalIgnoreCase);
 
-        var shouldCalculateEv = isShowdown && anyAllIn && hasBothCards && !isRiverAllIn;
+        var shouldCalculateEv = isShowdown && anyAllIn && hasVillainCards && !isRiverAllIn;
 
         // Enable EV calculation for preflop all-in - exact enumeration is now fast with caching + parallel
 
@@ -136,16 +151,19 @@ public class AnalyticsCalculator : IAnalyticsCalculator
         return analytics;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool IsRiverAllIn(ParsedHand hand)
     {
-        return !string.IsNullOrEmpty(hand.AllInStreet) && 
-               hand.AllInStreet.Equals("RIVER", StringComparison.OrdinalIgnoreCase);
+        var allInStreet = hand.AllInStreet;
+        return !IsNullOrEmptyFast(allInStreet) && 
+               allInStreet.Equals("RIVER", StringComparison.OrdinalIgnoreCase);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool HasSideAction(ParsedHand hand)
     {
         var allInStreet = hand.AllInStreet;
-        if (string.IsNullOrEmpty(allInStreet)) return false;
+        if (IsNullOrEmptyFast(allInStreet)) return false;
 
         bool checkFlop = false, checkTurn = false, checkRiver = false;
 
@@ -199,12 +217,15 @@ public class AnalyticsCalculator : IAnalyticsCalculator
         }
     }
 
-    private bool HasPlayerAction(string actionText)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool HasPlayerAction(string? actionText)
     {
-        if (string.IsNullOrEmpty(actionText)) return false;
-        var lower = actionText.ToLower();
-        return lower.Contains("bets") || lower.Contains("calls") || 
-               lower.Contains("raises") || lower.Contains("checks");
+        if (IsNullOrEmptyFast(actionText)) return false;
+        var span = actionText.AsSpan();
+        return span.Contains("bets", System.StringComparison.OrdinalIgnoreCase) ||
+               span.Contains("calls", System.StringComparison.OrdinalIgnoreCase) ||
+               span.Contains("raises", System.StringComparison.OrdinalIgnoreCase) ||
+               span.Contains("checks", System.StringComparison.OrdinalIgnoreCase);
     }
 
     private double? CalculateAllInEv(ParsedHand hand)
@@ -215,13 +236,27 @@ public class AnalyticsCalculator : IAnalyticsCalculator
             if (hero == null) return null;
 
             var heroCards = hero.Cards;
-            var villainCards = string.Join("|", hand.Players.Where(p => !p.IsHero && !string.IsNullOrEmpty(p.Cards)).Select(p => p.Cards));
+            if (IsNullOrEmptyFast(heroCards)) return null;
+
+            var villainCardsBuilder = new System.Text.StringBuilder();
+            bool first = true;
+            bool hasVillain = false;
+            foreach (var p in hand.Players)
+            {
+                if (!p.IsHero && !IsNullOrEmptyFast(p.Cards))
+                {
+                    if (!first) villainCardsBuilder.Append('|');
+                    villainCardsBuilder.Append(p.Cards);
+                    first = false;
+                    hasVillain = true;
+                }
+            }
+            if (!hasVillain) return null;
+
+            var villainCards = villainCardsBuilder.ToString();
             var board = GetBoardAtAllIn(hand);
 
-            if (string.IsNullOrEmpty(heroCards) || string.IsNullOrEmpty(villainCards))
-                return null;
-
-            var equity = GetCachedEquity(heroCards, villainCards, board ?? "");
+            var equity = GetCachedEquity(heroCards, villainCards, board);
             var totalPot = hand.TotalPot;
 
             var heroInvestment = hero.Investment > 0 ? hero.Investment : (ParseHeroInvestment(hand) ?? (totalPot / 2.0));
@@ -239,11 +274,12 @@ public class AnalyticsCalculator : IAnalyticsCalculator
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private EquityResult GetCachedEquity(string heroCards, string villainCards, string board, string? deadCards = null)
     {
-        var boardKey = board ?? "";
-        var deadKey = deadCards ?? "";
-        var cacheKey = $"{heroCards}|{villainCards}|{boardKey}|{deadKey}";
+        var cacheKey = deadCards != null 
+            ? $"{heroCards}|{villainCards}|{board}|{deadCards}"
+            : $"{heroCards}|{villainCards}|{board}|";
         
         if (EquityCache.TryGetValue(cacheKey, out var cached))
         {
@@ -253,7 +289,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
         
         System.Threading.Interlocked.Increment(ref _cacheMisses);
         
-        var result = _equityCalc.Calculate(heroCards, villainCards, boardKey, deadCards);
+        var result = _equityCalc.Calculate(heroCards, villainCards, board, deadCards);
         
         if (EquityCache.Count < MaxEquityCacheSize)
         {
@@ -275,7 +311,9 @@ public class AnalyticsCalculator : IAnalyticsCalculator
 
             // Filter players who have cards (Hero + Villains with known cards)
             // We assume players with known cards are the ones competing for EV (went to showdown or all-in revealed)
-            var activePlayers = hand.Players.Where(p => !string.IsNullOrEmpty(p.Cards) && !p.Folded).ToList();
+            var activePlayers = new List<PlayerInfo>(hand.Players.Count);
+            foreach (var p in hand.Players)
+                if (!string.IsNullOrEmpty(p.Cards) && !p.Folded) activePlayers.Add(p);
             
             // If we don't have players info (old parser?), fallback to legacy
             if (activePlayers.Count == 0)
@@ -328,7 +366,9 @@ public class AnalyticsCalculator : IAnalyticsCalculator
                 if (heroPlayer != null)
                 {
                     // Calculate Equity for Hero vs Competing Villains in this side pot
-                    var villainCardsList = competingPlayers.Where(x => !x.IsHero).Select(x => x.Cards).ToList();
+                    var villainCardsList = new List<string>(competingPlayers.Count);
+                    foreach (var x in competingPlayers)
+                        if (!x.IsHero) villainCardsList.Add(x.Cards);
                     
                     if (villainCardsList.Count == 0)
                     {
@@ -449,6 +489,7 @@ public class AnalyticsCalculator : IAnalyticsCalculator
         return totalPerPlayer;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private string GetBoardAtAllIn(ParsedHand hand)
     {
         var flop = hand.Flop ?? "";
