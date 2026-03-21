@@ -57,15 +57,15 @@
     "search_placeholder": "Search hand, player...",
     "select_hero": "Select...",
     "hero_detected": "Hero detected",
-    "hero_selected_auto": "Player {{name}} was automatically selected.",
+    "hero_selected_auto": "Player {name} was automatically selected.",
     "update_required": "Update required",
     "reimport_needed": "Please reimport your hands to enable Hero selection and new statistics.",
     "import_hands": "Import hands",
     "calculating": "Calculating...",
     "processing": "Processing...",
     "import_success": "Import successful",
-    "import_stats": "{{hands}} hands imported, {{skipped}} skipped (duplicates)",
-    "import_recap": "Recap: {{hands}} imported, {{skipped}} skipped",
+    "import_stats": "{hands} hands imported, {skipped} skipped (duplicates)",
+    "import_recap": "Recap: {hands} imported, {skipped} skipped",
     "import_error": "Import error",
     "data_refreshed": "Data refreshed",
     "no_player_found": "No player found"
@@ -103,12 +103,12 @@
   "hand_history": {
     "title": "Tournament History",
     "subtitle": "Browse your tournaments and hands",
-    "total_tournaments": "{{count}} tournaments found",
+    "total_tournaments": "{count} tournaments found",
     "no_hands": "No history",
     "import_prompt": "Import your hands to get started",
     "hand_details": "Hand Details",
     "select_prompt": "Select a hand to view details",
-    "page_info": "Page {{current}} of {{total}}",
+    "page_info": "Page {current} of {total}",
     "time": "Time",
     "loading_hands": "Loading hands...",
     "table": {
@@ -202,8 +202,8 @@
         "cannot_delete_active": "Cannot delete the active database",
         "confirm_delete": "Are you sure you want to delete this database?",
         "delete_warning": "This action is irreversible. All data will be lost.",
-        "hands_count": "{{count}} hands",
-        "created": "Created on {{date}}"
+        "hands_count": "{count} hands",
+        "created": "Created on {date}"
       },
       "export": {
         "title": "Export data",
@@ -284,11 +284,11 @@
       "first_to_act": "First to act",
       "active": "Active",
       "reset": "Reset",
-      "info_tip": "Range of {{player}} in {{position}}"
+      "info_tip": "Range of {player} in {position}"
     },
     "situations": {
-      "rfi": "Open from {{position}}",
-      "limp": "Limp from {{position}}",
+      "rfi": "Open from {position}",
+      "limp": "Limp from {position}",
       "sb_rfi": "SB Open",
       "vs_btn_open": "vs BTN Open",
       "vs_btn_limp": "vs BTN Limp",

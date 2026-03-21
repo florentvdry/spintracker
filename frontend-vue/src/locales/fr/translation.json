@@ -57,15 +57,15 @@
     "search_placeholder": "Rechercher une main, joueur...",
     "select_hero": "Sélectionner...",
     "hero_detected": "Héro détecté",
-    "hero_selected_auto": "Le joueur {{name}} a été sélectionné automatiquement.",
+    "hero_selected_auto": "Le joueur {name} a été sélectionné automatiquement.",
     "update_required": "Mise à jour requise",
     "reimport_needed": "Veuillez réimporter vos mains pour activer la sélection du Héro et les nouvelles statistiques.",
     "import_hands": "Import des mains",
     "calculating": "Calcul en cours...",
     "processing": "Traitement...",
     "import_success": "Import réussi",
-    "import_stats": "{{hands}} mains importées, {{skipped}} ignorées (doublons)",
-    "import_recap": "Recap: {{hands}} importées, {{skipped}} ignorées",
+    "import_stats": "{hands} mains importées, {skipped} ignorées (doublons)",
+    "import_recap": "Recap: {hands} importées, {skipped} ignorées",
     "import_error": "Erreur d'import",
     "data_refreshed": "Données actualisées",
     "no_player_found": "Aucun joueur trouvé"
@@ -103,12 +103,12 @@
   "hand_history": {
     "title": "Historique des tournois",
     "subtitle": "Parcourez vos tournois et mains",
-    "total_tournaments": "{{count}} tournois trouvés",
+    "total_tournaments": "{count} tournois trouvés",
     "no_hands": "Aucun historique",
     "import_prompt": "Importez vos mains pour commencer",
     "hand_details": "Détails de la main",
     "select_prompt": "Sélectionnez une main pour voir les détails",
-    "page_info": "Page {{current}} sur {{total}}",
+    "page_info": "Page {current} sur {total}",
     "time": "Heure",
     "loading_hands": "Chargement des mains...",
     "table": {
@@ -212,11 +212,11 @@
       "first_to_act": "Premier à parler",
       "active": "Actif",
       "reset": "Réinitialiser",
-      "info_tip": "Range de {{player}} en {{position}}"
+      "info_tip": "Range de {player} en {position}"
     },
     "situations": {
-      "rfi": "Open from {{position}}",
-      "limp": "Limp from {{position}}",
+      "rfi": "Open from {position}",
+      "limp": "Limp from {position}",
       "sb_rfi": "SB Open",
       "vs_btn_open": "vs BTN Open",
       "vs_btn_limp": "vs BTN Limp",
@@ -259,8 +259,8 @@
         "cannot_delete_active": "Impossible de supprimer la base de données active",
         "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette base de données ?",
         "delete_warning": "Cette action est irréversible. Toutes les données seront perdues.",
-        "hands_count": "{{count}} mains",
-        "created": "Créée le {{date}}"
+        "hands_count": "{count} mains",
+        "created": "Créée le {date}"
       },
       "export": {
         "title": "Exporter les données",
