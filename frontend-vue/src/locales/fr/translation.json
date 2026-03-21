@@ -215,19 +215,19 @@
       "info_tip": "Range de {player} en {position}"
     },
     "situations": {
-      "rfi": "Open from {position}",
-      "limp": "Limp from {position}",
-      "sb_rfi": "SB Open",
+      "rfi": "Open (RFI)",
+      "limp": "Limp",
+      "sb_rfi": "SB Open (BTN fold)",
       "vs_btn_open": "vs BTN Open",
       "vs_btn_limp": "vs BTN Limp",
       "vs_btn_open_sb_fold": "vs BTN Open (SB fold)",
-      "vs_sb_open": "vs SB Open",
+      "vs_sb_open": "vs SB Open (BTN fold)",
       "vs_btn_open_sb_call": "vs BTN Open (SB call)",
-      "vs_sb_limp": "vs SB Limp",
+      "vs_sb_limp": "vs SB Limp (BTN fold)",
       "vs_btn_limp_sb_limp": "vs BTN Limp (SB limp)",
       "vs_btn_limp_sb_fold": "vs BTN Limp (SB fold)",
-      "hu_sb_rfi": "SB Open",
-      "hu_sb_limp": "SB Limp",
+      "hu_sb_rfi": "Open (RFI)",
+      "hu_sb_limp": "Limp",
       "hu_vs_sb_open": "vs SB Open",
       "hu_vs_sb_limp": "vs SB Limp"
     }
@@ -305,7 +305,7 @@
     "fold": "Fold",
     "bet": "Bet",
     "check": "Check",
-    "all_in": "All-In",
+    "allin": "All-In",
     "any": "N'importe"
   }
 }

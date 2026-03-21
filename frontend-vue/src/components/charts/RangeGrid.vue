@@ -1,9 +1,9 @@
 <template>
   <div :class="['inline-block p-1 bg-dark-200 rounded-lg shadow-lg', className]">
     <div class="grid gap-0.5" style="grid-template-columns: repeat(13, 1fr)">
-      <template v-for="(_, row) in cards" :key="row">
+      <template v-for="(_, row) in CARDS" :key="row">
         <div
-          v-for="(_, col) in cards"
+          v-for="(_, col) in CARDS"
           :key="`${row}-${col}`"
         >
           <div
