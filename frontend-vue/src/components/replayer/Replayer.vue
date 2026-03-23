@@ -1,3 +1,4 @@
+<script>
 import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable.vue'
@@ -7,52 +8,70 @@ import {
   ChevronLeft, ChevronRight
 } from 'lucide-vue-next'
 
-const store = useReplayerStore()
-const showLogs = ref(false)
-const showSettings = ref(false)
+export default {
+  components: {
+    PokerTable,
+    Play, Pause, SkipBack, SkipForward, 
+    FastForward, Rewind, Info, List, Settings2,
+    ChevronLeft, ChevronRight
+  },
+  setup() {
+    const store = useReplayerStore()
+    const showLogs = ref(false)
 
-const bbValue = computed(() => {
-  if (!store.handData?.blinds) return 0
-  const parts = store.handData.blinds.split('/')
-  return parts.length === 2 ? parseFloat(parts[1]) : 0
-})
+    const bbValue = computed(() => {
+      if (!store.handData?.blinds) return 0
+      const parts = store.handData.blinds.split('/')
+      return parts.length === 2 ? parseFloat(parts[1]) : 0
+    })
 
-const formatValue = (val) => {
-  if (store.viewMode === 'bb' && bbValue.value > 0) {
-    return (val / bbValue.value).toFixed(2) + ' bb'
+    const formatValue = (val) => {
+      if (store.viewMode === 'bb' && bbValue.value > 0) {
+        return (val / bbValue.value).toFixed(2) + ' bb'
+      }
+      return val.toFixed(1) + ' chips'
+    }
+
+    onUnmounted(() => {
+      store.stop()
+    })
+
+    const speeds = [
+      { label: '0.5x', value: 2000 },
+      { label: '1x', value: 1000 },
+      { label: '2x', value: 500 },
+      { label: '4x', value: 250 }
+    ]
+
+    const togglePlay = () => {
+      if (store.isPlaying) store.stop()
+      else store.play()
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === ' ') {
+        e.preventDefault()
+        togglePlay()
+      } else if (e.key === 'ArrowRight') {
+        store.nextStep()
+      } else if (e.key === 'ArrowLeft') {
+        store.prevStep()
+      }
+    }
+
+    onMounted(() => window.addEventListener('keydown', handleKeyDown))
+    onUnmounted(() => window.removeEventListener('keydown', handleKeyDown))
+
+    return {
+      store,
+      showLogs,
+      bbValue,
+      formatValue,
+      speeds,
+      togglePlay
+    }
   }
-  return val.toFixed(1) + ' chips'
 }
-
-onUnmounted(() => {
-  store.stop()
-})
-
-const speeds = [
-  { label: '0.5x', value: 2000 },
-  { label: '1x', value: 1000 },
-  { label: '2x', value: 500 },
-  { label: '4x', value: 250 }
-]
-
-const togglePlay = () => {
-  if (store.isPlaying) store.stop()
-  else store.play()
-}
-
-const handleKeyDown = (e) => {
-  if (e.key === ' ') {
-    e.preventDefault()
-    togglePlay()
-  } else if (e.key === 'ArrowRight') {
-    store.nextStep()
-  } else if (e.key === 'ArrowLeft') {
-    store.prevStep()
-  }
-}
-
-onMounted(() => window.addEventListener('keydown', handleKeyDown))
-onUnmounted(() => window.removeEventListener('keydown', handleKeyDown))
 </script>
 
 <template>
