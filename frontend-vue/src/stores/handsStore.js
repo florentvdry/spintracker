@@ -28,15 +28,17 @@ export const useHandsStore = defineStore('hands', () => {
     isLoading.value = true
 
     const filterStore = useFilterStore()
-    const { heroName, getDateRangeParams, buyIn } = filterStore
+    const heroName = filterStore.heroName
+    const buyIn = filterStore.buyIn
+    const { getDateRangeParams } = filterStore
     const { dateFrom, dateTo } = getDateRangeParams()
-    const buyInParam = buyIn.value === 'all' ? null : Number(buyIn.value)
+    const buyInParam = buyIn === 'all' ? null : Number(buyIn)
 
     try {
       const result = await ipcService.getTournaments({
         page: currentPage.value,
         limit: pageSize.value,
-        heroName: heroName.value,
+        heroName: heroName,
         sortBy: filters.value.sortBy,
         dateFrom,
         dateTo,
@@ -63,8 +65,8 @@ export const useHandsStore = defineStore('hands', () => {
     isLoadingHands.value = true
     try {
       const filterStore = useFilterStore()
-      const { heroName } = filterStore
-      const result = await ipcService.getTournamentHands(gameId, heroName.value)
+      const heroName = filterStore.heroName
+      const result = await ipcService.getTournamentHands(gameId, heroName)
       if (result && result.success) {
         tournamentHands.value = result.data || []
       }
@@ -104,8 +106,8 @@ export const useHandsStore = defineStore('hands', () => {
     selectedHand.value = null
     try {
       const filterStore = useFilterStore()
-      const { heroName } = filterStore
-      const result = await ipcService.getHandDetails(handId, heroName.value)
+      const heroName = filterStore.heroName
+      const result = await ipcService.getHandDetails(handId, heroName)
       if (result.success) {
         selectedHand.value = result.data
       }

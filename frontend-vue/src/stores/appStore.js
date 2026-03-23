@@ -85,12 +85,14 @@ export const useAppStore = defineStore('app', () => {
     if (!filterStore) {
       return { success: true, data: null }
     }
-    const { heroName, buyIn, getDateRangeParams } = filterStore
+    const heroName = filterStore.heroName
+    const buyIn = filterStore.buyIn
+    const { getDateRangeParams } = filterStore
 
     const { dateFrom, dateTo } = getDateRangeParams()
-    const buyInParam = buyIn.value === 'all' ? null : Number(buyIn.value)
+    const buyInParam = buyIn === 'all' ? null : Number(buyIn)
 
-    if (!heroName || !heroName.value) {
+    if (!heroName) {
       const result = await ipcService.getDashboardStats(null, dateFrom, dateTo, buyInParam)
       if (result.success && result.data) {
         dashboardStats.value = {
@@ -107,7 +109,7 @@ export const useAppStore = defineStore('app', () => {
 
     try {
 
-      const result = await ipcService.getDashboardStats(heroName.value, dateFrom, dateTo, buyInParam)
+      const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam)
       if (result.success) {
         const stats = result.data || {}
         dashboardStats.value = {
@@ -130,11 +132,12 @@ export const useAppStore = defineStore('app', () => {
       if (!filterStore) {
         return { success: true, data: [] }
       }
-      const { heroName, buyIn } = filterStore
+      const heroName = filterStore.heroName
+      const buyIn = filterStore.buyIn
 
-      const buyInParam = buyIn.value === 'all' ? null : Number(buyIn.value)
+      const buyInParam = buyIn === 'all' ? null : Number(buyIn)
 
-      if (!heroName || !heroName.value) {
+      if (!heroName) {
         const result = await ipcService.getSessionHistory(limit, null, null, null, buyInParam)
         if (result.success) {
           sessions.value = result.data || []
@@ -142,7 +145,7 @@ export const useAppStore = defineStore('app', () => {
         return result
       }
 
-      const result = await ipcService.getSessionHistory(limit, heroName.value, null, null, buyInParam)
+      const result = await ipcService.getSessionHistory(limit, heroName, null, null, buyInParam)
       if (result.success) {
         sessions.value = result.data
       }

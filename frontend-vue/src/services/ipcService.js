@@ -95,6 +95,10 @@ class IPCService {
     return this.invoke('get-hand-details', handId, heroName)
   }
 
+  async getHandReplay(handId, heroName = null) {
+    return this.invoke('get-hand-replay', handId, heroName)
+  }
+
   async getPlayers(options = {}) {
     return this.invoke('get-players', options)
   }

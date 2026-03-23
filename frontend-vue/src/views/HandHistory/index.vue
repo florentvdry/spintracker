@@ -129,15 +129,15 @@ const handleResultFilter = (e) => {
 }
 
 const handleReplayTournament = async (gameId) => {
-  const result = await loadTournamentHands(gameId)
+  const result = await handsStore.loadTournamentHands(gameId)
   if (result && result.success && result.data) {
     const handIds = result.data.map(h => h.id)
-    replayerStore.loadHandQueue(handIds, heroName.value)
+    replayerStore.openReplayerWindowForQueue(handIds, 0, heroName.value)
   }
 }
 
 const handleReplayHand = async (handId) => {
-  replayerStore.loadHandQueue([handId], heroName.value)
+  replayerStore.openSingleHandReplayer(handId, heroName.value)
 }
 
 onMounted(() => {

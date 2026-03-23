@@ -13,6 +13,12 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        replayer: path.resolve(__dirname, 'replayer.html'),
+      },
+    },
   },
   server: {
     port: 3000,

@@ -314,7 +314,7 @@ watch(() => [filterStore.heroName, filterStore.customDateFrom, filterStore.custo
 })
 
 watch(() => [filterStore.heroName, appStore.dashboardStats, () => players.value.length], () => {
-  if (!filterStore.heroName?.value && players.value.length > 0) {
+  if (!filterStore.heroName && players.value.length > 0) {
     const best = players.value.reduce((prev, current) => 
       (prev.total_hands > current.total_hands) ? prev : current
     )

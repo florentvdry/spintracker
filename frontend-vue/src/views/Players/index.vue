@@ -542,11 +542,7 @@ const closeModal = () => {
 }
 
 const handleOpenReplayer = async (handId) => {
-  try {
-    await replayerStore.loadHand(handId)
-  } catch (error) {
-    console.error('Failed to open replayer:', error)
-  }
+  replayerStore.openSingleHandReplayer(handId, heroName.value)
 }
 
 onMounted(() => {

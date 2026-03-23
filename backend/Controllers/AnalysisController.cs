@@ -94,4 +94,20 @@ public class AnalysisController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
+
+    [HttpGet("analysis/replayer/{handId}")]
+    public async Task<IActionResult> GetHandReplay(string handId, [FromQuery] string? heroName)
+    {
+        try
+        {
+            var result = await _analysisService.GetHandReplayAsync(handId, heroName);
+            if (result == null) return NotFound(new { success = false, error = "Hand not found" });
+            return Ok(new { success = true, data = result });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Replayer error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
 }

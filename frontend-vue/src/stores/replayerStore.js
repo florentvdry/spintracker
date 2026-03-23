@@ -1,98 +1,320 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 import { ipcService } from '@/services/ipcService'
 
-export const useReplayerStore = defineStore('replayer', () => {
-  const handQueue = ref([])
-  const currentIndex = ref(0)
-  const currentHand = ref(null)
-  const isLoading = ref(false)
-  const isPlaying = ref(false)
-  const playbackSpeed = ref(1)
-  const isModalOpen = ref(false)
+export const useReplayerStore = defineStore('replayer', {
+  state: () => ({
+    handId: null,
+    handData: null,
+    loading: false,
+    error: null,
+    currentIndex: 0,
+    isPlaying: false,
+    playbackSpeed: 1000,
+    timer: null,
+    
+    // Queue support
+    handQueue: [], // Array of hand IDs
+    queueIndex: 0,
+    heroName: null,
+    
+    // Derived state for current step
+    players: [],
+    pot: 0,
+    board: [],
+    street: 'Preflop',
+    actionLog: [],
+    viewMode: 'chips' // 'chips' or 'bb'
+  }),
 
-  const loadHandQueue = async (handIds, heroName) => {
-    if (!handIds || handIds.length === 0) return
+  persist: {
+    paths: ['viewMode']
+  },
 
-    handQueue.value = handIds
-    currentIndex.value = 0
-    isModalOpen.value = true
-    await loadCurrentHand(heroName)
-  }
+  getters: {
+    currentAction: (state) => {
+      if (!state.handData || state.currentIndex === 0) return null
+      return state.handData.actions[state.currentIndex - 1]
+    },
+    totalActions: (state) => state.handData?.actions?.length || 0,
+    progress: (state) => {
+      if (!state.handData) return 0
+      return (state.currentIndex / state.handData.actions.length) * 100
+    }
+  },
 
-  const loadCurrentHand = async (heroName) => {
-    if (!handQueue.value[currentIndex.value]) return
-
-    isLoading.value = true
-    try {
-      const handId = handQueue.value[currentIndex.value]
-      const result = await ipcService.getHandDetails(handId, heroName)
-      if (result.success) {
-        currentHand.value = result.data
+  actions: {
+    async loadHand(handId, heroName = null) {
+      this.loading = true
+      this.error = null
+      this.currentIndex = 0
+      this.stop()
+      
+      try {
+        const response = await ipcService.getHandReplay(handId, heroName)
+        if (response.success) {
+          this.handData = response.data
+          this.handId = handId
+          this.resetTable()
+        } else {
+          this.error = response.error || 'Failed to load hand'
+        }
+      } catch (err) {
+        this.error = err.message
+      } finally {
+        this.loading = false
       }
-    } catch (error) {
-      console.error('Failed to load hand:', error)
-    } finally {
-      isLoading.value = false
+    },
+
+    setHand(handData) {
+      this.stop()
+      this.error = null
+      this.loading = false
+      this.handData = handData
+      this.handId = handData.id
+      this.resetTable()
+    },
+
+    resetTable() {
+      if (!this.handData) return
+      
+      this.currentIndex = 0
+      this.pot = 0
+      this.board = []
+      this.street = 'Preflop'
+      this.actionLog = []
+      
+      // Initialize players with initial stacks
+      this.players = this.handData.players.map(p => ({
+        ...p,
+        currentStack: p.initialStack,
+        bet: 0,
+        isFolded: false,
+        isActive: false,
+        showCards: false
+      }))
+
+      // Auto-apply setup actions (Blinds, DealCards Preflop)
+      while (this.currentIndex < this.handData.actions.length) {
+        const action = this.handData.actions[this.currentIndex]
+        if (this.isRealAction(action)) break
+        
+        this.applyAction(action)
+        this.currentIndex++
+      }
+    },
+
+    isRealAction(action) {
+      const realTypes = ['Bet', 'Call', 'Raise', 'Fold', 'Check', 'AllIn']
+      return realTypes.includes(action.type)
+    },
+
+    nextStep() {
+      if (!this.handData || this.currentIndex >= this.handData.actions.length) {
+        this.stop()
+        return
+      }
+
+      // 1. Apply the current real action
+      const action = this.handData.actions[this.currentIndex]
+      this.applyAction(action)
+      this.currentIndex++
+
+      // 2. Automatically skip/apply all following non-actions (DealCards, etc.) 
+      while (this.currentIndex < this.handData.actions.length) {
+        const nextAction = this.handData.actions[this.currentIndex]
+        if (this.isRealAction(nextAction)) break
+        
+        this.applyAction(nextAction)
+        this.currentIndex++
+      }
+    },
+
+    prevStep() {
+      if (this.currentIndex <= 0) return
+      
+      this.currentIndex--
+      while (this.currentIndex > 0) {
+        const action = this.handData.actions[this.currentIndex - 1]
+        if (this.isRealAction(action)) break
+        this.currentIndex--
+      }
+      
+      this.rebuildStateToCurrentIndex()
+    },
+
+    rebuildStateToCurrentIndex() {
+      const targetIndex = this.currentIndex
+      
+      this.currentIndex = 0
+      this.pot = 0
+      this.board = []
+      this.street = 'Preflop'
+      this.actionLog = []
+      this.players = this.handData.players.map(p => ({
+        ...p,
+        currentStack: p.initialStack,
+        bet: 0,
+        isFolded: false,
+        isActive: false,
+        showCards: false
+      }))
+
+      for (let i = 0; i < targetIndex; i++) {
+        this.applyAction(this.handData.actions[i])
+      }
+      this.currentIndex = targetIndex
+    },
+
+    applyAction(action) {
+      this.street = action.street
+      this.actionLog.push(action)
+
+      const player = this.players.find(p => p.name === action.playerName)
+
+      switch (action.type) {
+        case 'PostSB':
+        case 'PostBB':
+        case 'Bet':
+        case 'Raise':
+        case 'Call':
+        case 'AllIn':
+          if (player) {
+            const diff = action.amount - player.bet
+            player.currentStack -= diff
+            player.bet = action.amount
+            this.pot = action.potAfter
+          }
+          break;
+
+        case 'Fold':
+          if (player) {
+            player.isFolded = true
+            player.bet = 0
+          }
+          break;
+
+        case 'Check':
+          if (player) player.bet = 0
+          break;
+
+        case 'DealCards':
+          if (action.street !== 'Preflop') {
+            this.players.forEach(p => p.bet = 0)
+          }
+          if (action.cards) {
+            const newCards = action.cards.match(/.{1,2}/g) || []
+            this.board = [...this.board, ...newCards]
+          }
+          break;
+
+        case 'ShowCards':
+          if (player) player.showCards = true
+          break;
+
+        case 'CollectPot':
+          this.players.forEach(p => p.bet = 0)
+          
+          if (action.playerName) {
+              const winner = this.players.find(p => p.name === action.playerName)
+              if (winner) winner.currentStack += action.amount
+          } else {
+              this.players.forEach(p => {
+                  if (action.description.toLowerCase().includes(p.name.toLowerCase()) && 
+                      action.description.toLowerCase().includes('wins')) {
+                      p.currentStack += action.amount
+                  }
+              })
+          }
+          this.pot = 0
+          break;
+      }
+
+      this.players.forEach(p => p.isActive = (p.name === action.playerName))
+    },
+
+    play() {
+      if (this.isPlaying) return
+      this.isPlaying = true
+      
+      this.timer = setInterval(() => {
+        if (this.currentIndex >= this.totalActions) {
+          this.stop()
+        } else {
+          this.nextStep()
+        }
+      }, this.playbackSpeed)
+    },
+
+    stop() {
+      this.isPlaying = false
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+    },
+
+    setSpeed(ms) {
+      this.playbackSpeed = ms
+      if (this.isPlaying) {
+        this.stop()
+        this.play()
+      }
+    },
+
+    jumpTo(index) {
+      this.currentIndex = index
+      this.rebuildStateToCurrentIndex()
+    },
+
+    async loadHandQueue(data) {
+      this.handQueue = data.handIds || []
+      this.queueIndex = data.startIndex || 0
+      this.heroName = data.heroName
+      
+      if (this.handQueue.length > 0) {
+        const handIdToLoad = this.handQueue[this.queueIndex]
+        await this.loadHand(handIdToLoad, this.heroName)
+      }
+    },
+
+    async nextHand() {
+      if (this.queueIndex < this.handQueue.length - 1) {
+        this.queueIndex++
+        const nextHandId = this.handQueue[this.queueIndex]
+        await this.loadHand(nextHandId, this.heroName)
+      }
+    },
+
+    async prevHand() {
+      if (this.queueIndex > 0) {
+        this.queueIndex--
+        const prevHandId = this.handQueue[this.queueIndex]
+        await this.loadHand(prevHandId, this.heroName)
+      }
+    },
+
+    async openReplayerWindowForQueue(handIds, startIndex, heroName) {
+      ipcService.invoke('open-replayer', {
+        handIds,
+        startIndex,
+        heroName
+      })
+    },
+
+    async openSingleHandReplayer(handId, heroName = null) {
+      this.loading = true
+      try {
+        const response = await ipcService.getHandReplay(handId, heroName || this.heroName)
+        if (response.success) {
+          ipcService.invoke('open-replayer', response.data)
+        } else {
+          this.error = response.error || 'Failed to get hand details for replayer'
+        }
+      } catch (err) {
+        this.error = err.message
+      } finally {
+        this.loading = false
+      }
     }
   }
-
-  const nextHand = async (heroName) => {
-    if (currentIndex.value < handQueue.value.length - 1) {
-      currentIndex.value++
-      await loadCurrentHand(heroName)
-    }
-  }
-
-  const prevHand = async (heroName) => {
-    if (currentIndex.value > 0) {
-      currentIndex.value--
-      await loadCurrentHand(heroName)
-    }
-  }
-
-  const setPlaybackSpeed = (speed) => {
-    playbackSpeed.value = speed
-  }
-
-  const togglePlay = async (heroName) => {
-    isPlaying.value = !isPlaying.value
-    if (isPlaying.value) {
-      playNext(heroName)
-    }
-  }
-
-  const playNext = async (heroName) => {
-    if (isPlaying.value && currentIndex.value < handQueue.value.length - 1) {
-      await nextHand(heroName)
-      setTimeout(() => playNext(heroName), 2000 / playbackSpeed.value)
-    } else {
-      isPlaying.value = false
-    }
-  }
-
-  const closeModal = () => {
-    isModalOpen.value = false
-    isPlaying.value = false
-    handQueue.value = []
-    currentIndex.value = 0
-    currentHand.value = null
-  }
-
-  return {
-    handQueue,
-    currentIndex,
-    currentHand,
-    isLoading,
-    isPlaying,
-    playbackSpeed,
-    isModalOpen,
-    loadHandQueue,
-    loadCurrentHand,
-    nextHand,
-    prevHand,
-    setPlaybackSpeed,
-    togglePlay,
-    closeModal
-  }
-})
+      })

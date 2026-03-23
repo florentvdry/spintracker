@@ -127,3 +127,37 @@ public class RangeAnalysisResult
     public double Vpip { get; set; }
     public double Pfr { get; set; }
 }
+
+public class ReplayAction
+{
+    public int Order { get; set; }
+    public string Street { get; set; } = ""; // Preflop, Flop, Turn, River, Showdown
+    public string Type { get; set; } = "";   // DealCards, Bet, Call, Raise, Fold, Check, AllIn, CollectPot, ShowCards
+    public string? PlayerName { get; set; }
+    public double Amount { get; set; }
+    public double PotBefore { get; set; }
+    public double PotAfter { get; set; }
+    public string? Description { get; set; }
+    public string? Cards { get; set; } // For DealCards (Board) or ShowCards (Players)
+}
+
+public class ReplayPlayer
+{
+    public string Name { get; set; } = "";
+    public string Position { get; set; } = ""; // BTN, SB, BB
+    public double InitialStack { get; set; }
+    public string? Cards { get; set; }
+    public bool IsHero { get; set; }
+}
+
+public class HandReplayData
+{
+    public string HandId { get; set; } = "";
+    public string Room { get; set; } = "";
+    public string Blinds { get; set; } = "";
+    public string Date { get; set; } = "";
+    public List<ReplayPlayer> Players { get; set; } = new();
+    public List<ReplayAction> Actions { get; set; } = new();
+    public string? Board { get; set; } // Full final board
+    public double TotalPot { get; set; }
+}

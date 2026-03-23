@@ -358,21 +358,20 @@ const formatHandDate = (date) => {
 const handleReplayHand = async (hand) => {
   const id = hand.id || hand.Id
   if (id) {
-    await replayerStore.loadHand(id)
+    replayerStore.openSingleHandReplayer(id, heroName.value)
   }
 }
 
 const handleReplayFiltered = async () => {
   const list = selectedRangeStats.value?.Hands || []
-  const filtered = selectedActionFilter.value 
+  const filtered = selectedActionFilter.value
     ? list.filter(h => handMatchesAction(h, selectedActionFilter.value))
     : list
   const handIds = filtered.map(h => h.id || h.Id).filter(Boolean)
   if (handIds.length > 0) {
-    replayerStore.loadHandQueue(handIds, heroName.value)
+    replayerStore.openReplayerWindowForQueue(handIds, 0, heroName.value)
   }
 }
-
 const handMatchesAction = (hand, action) => {
   if (!action) return true
   const handAction = hand.action || hand.Action || ''

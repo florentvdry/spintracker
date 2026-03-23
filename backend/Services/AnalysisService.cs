@@ -812,6 +812,261 @@ namespace SpinTrackerBackend.Services
             }
         }
 
+        public async Task<HandReplayData?> GetHandReplayAsync(string handId, string? heroName)
+        {
+            var rawHand = await _handRepo.GetHandByIdAsync(handId, heroName);
+            if (rawHand == null) return null;
+
+            // Convert rawHand (Dictionary) to a typed object or dynamic for easier access
+            var json = System.Text.Json.JsonSerializer.Serialize(rawHand);
+            var hand = System.Text.Json.JsonSerializer.Deserialize<HandDetailsDto>(json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            
+            if (hand == null) return null;
+
+            var replay = new HandReplayData
+            {
+                HandId = hand.Id,
+                Room = hand.Room,
+                Blinds = hand.Blinds,
+                Date = hand.Date_Time,
+                TotalPot = hand.Total_Pot,
+                Board = string.Join("", new[] { hand.Flop, hand.Turn, hand.River }
+                    .Where(s => !string.IsNullOrEmpty(s))
+                    .Select(s => s.Replace(" ", "").Replace("[", "").Replace("]", "").Replace("|", "")))
+            };
+
+            // Set Players
+            foreach (var p in hand.Players)
+            {
+                // Fix: Ensure only 2 cards for players and remove formatting
+                string cleanCards = (p.Cards ?? "").Replace(" ", "").Replace("[", "").Replace("]", "").Replace("|", "");
+                if (cleanCards.Length > 4) cleanCards = cleanCards.Substring(0, 4);
+
+                replay.Players.Add(new ReplayPlayer
+                {
+                    Name = p.Name,
+                    Position = p.Position,
+                    InitialStack = p.Stack,
+                    Cards = cleanCards,
+                    IsHero = p.IsHero
+                });
+            }
+
+            // Parse Actions
+            int order = 1;
+            double currentPot = 0;
+            var actions = new List<ReplayAction>();
+
+            // 1. Post Blinds
+            var bbAmount = ParseBigBlind(hand.Blinds);
+            var sbAmount = bbAmount / 2.0;
+
+            foreach (var p in replay.Players)
+            {
+                if (p.Position.Contains("SB"))
+                {
+                    actions.Add(new ReplayAction { 
+                        Order = order++, Street = "Preflop", Type = "PostSB", 
+                        PlayerName = p.Name, Amount = sbAmount, PotBefore = currentPot, 
+                        PotAfter = currentPot + sbAmount, Description = $"{p.Name} posts SB {sbAmount}" 
+                    });
+                    currentPot += sbAmount;
+                }
+                else if (p.Position.Contains("BB"))
+                {
+                    actions.Add(new ReplayAction { 
+                        Order = order++, Street = "Preflop", Type = "PostBB", 
+                        PlayerName = p.Name, Amount = bbAmount, PotBefore = currentPot, 
+                        PotAfter = currentPot + bbAmount, Description = $"{p.Name} posts BB {bbAmount}" 
+                    });
+                    currentPot += bbAmount;
+                }
+            }
+
+            // 2. Deal Hero Cards
+            actions.Add(new ReplayAction { Order = order++, Street = "Preflop", Type = "DealCards", Description = "Dealing hole cards" });
+
+            // 3. Preflop Actions
+            currentPot = ParseActionText(hand.Preflop_Action, "Preflop", order, currentPot, actions, bbAmount);
+            order = actions.Count + 1;
+
+            // 4. Flop
+            if (!string.IsNullOrEmpty(hand.Flop))
+            {
+                var cleanCards = hand.Flop.Replace(" ", "").Replace("[", "").Replace("]", "").Replace("|", "");
+                actions.Add(new ReplayAction { Order = order++, Street = "Flop", Type = "DealCards", Cards = cleanCards, Description = $"Flop: {hand.Flop}" });
+                currentPot = ParseActionText(hand.Flop_Action, "Flop", order, currentPot, actions, bbAmount);
+                order = actions.Count + 1;
+            }
+
+            // 5. Turn
+            if (!string.IsNullOrEmpty(hand.Turn))
+            {
+                var cleanCards = hand.Turn.Replace(" ", "").Replace("[", "").Replace("]", "").Replace("|", "");
+                actions.Add(new ReplayAction { Order = order++, Street = "Turn", Type = "DealCards", Cards = cleanCards, Description = $"Turn: {hand.Turn}" });
+                currentPot = ParseActionText(hand.Turn_Action, "Turn", order, currentPot, actions, bbAmount);
+                order = actions.Count + 1;
+            }
+
+            // 6. River
+            if (!string.IsNullOrEmpty(hand.River))
+            {
+                var cleanCards = hand.River.Replace(" ", "").Replace("[", "").Replace("]", "").Replace("|", "");
+                actions.Add(new ReplayAction { Order = order++, Street = "River", Type = "DealCards", Cards = cleanCards, Description = $"River: {hand.River}" });
+                currentPot = ParseActionText(hand.River_Action, "River", order, currentPot, actions, bbAmount);
+                order = actions.Count + 1;
+            }
+
+            // 7. Showdown
+            if (hand.Went_To_Showdown)
+            {
+                foreach (var p in hand.Players)
+                {
+                    if (!string.IsNullOrEmpty(p.Cards))
+                    {
+                        var cleanCards = p.Cards.Replace(" ", "").Replace("[", "").Replace("]", "").Replace("|", "");
+                        actions.Add(new ReplayAction { 
+                            Order = order++, Street = "Showdown", Type = "ShowCards", 
+                            PlayerName = p.Name, Cards = cleanCards, Description = $"{p.Name} shows {p.Cards}" 
+                        });
+                    }
+                }
+            }
+
+            // 8. Collect Pot
+            var winners = hand.Players.Where(p => p.ChipsWon > 0).ToList();
+            if (winners.Count > 0)
+            {
+                foreach (var w in winners)
+                {
+                    actions.Add(new ReplayAction
+                    {
+                        Order = order++,
+                        Street = "Showdown",
+                        Type = "CollectPot",
+                        PlayerName = w.Name,
+                        Amount = w.ChipsWon,
+                        Description = $"{w.Name} wins {w.ChipsWon}"
+                    });
+                }
+            }
+            else
+            {
+                // Fallback if no specific winners found
+                actions.Add(new ReplayAction
+                {
+                    Order = order++,
+                    Street = "Showdown",
+                    Type = "CollectPot",
+                    Amount = hand.Total_Pot,
+                    Description = "Pot collection"
+                });
+            }
+
+            replay.Actions = actions;
+            return replay;
+        }
+
+        private double ParseActionText(string actionText, string street, int startOrder, double initialPot, List<ReplayAction> actions, double bb)
+        {
+            if (string.IsNullOrEmpty(actionText)) return initialPot;
+
+            var lines = actionText.Split('\n');
+            double currentPot = initialPot;
+            int order = startOrder;
+
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrEmpty(line)) continue;
+
+                var processingLine = line.Trim();
+                var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
+                if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
+
+                var colonIndex = processingLine.IndexOf(':');
+                if (colonIndex == -1) continue;
+
+                var playerName = processingLine.Substring(0, colonIndex).Trim();
+                var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+
+                string type = "Unknown";
+                double amount = 0;
+
+                if (content.Contains("folds")) type = "Fold";
+                else if (content.Contains("checks")) type = "Check";
+                else if (content.Contains("calls"))
+                {
+                    type = "Call";
+                    var match = Regex.Match(content, @"(\d+\.?\d*)");
+                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                }
+                else if (content.Contains("raises"))
+                {
+                    type = "Raise";
+                    var match = Regex.Match(content, @"to\s+(\d+\.?\d*)");
+                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                }
+                else if (content.Contains("bets"))
+                {
+                    type = "Bet";
+                    var match = Regex.Match(content, @"(\d+\.?\d*)");
+                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                }
+
+                if (content.Contains("all-in")) type = "AllIn";
+                
+                double addedToPot = 0;
+                if (type == "Call" || type == "Bet") addedToPot = amount;
+                else if (type == "Raise")
+                {
+                    addedToPot = amount;
+                }
+
+                actions.Add(new ReplayAction
+                {
+                    Order = order++,
+                    Street = street,
+                    Type = type,
+                    PlayerName = playerName,
+                    Amount = amount,
+                    PotBefore = currentPot,
+                    PotAfter = currentPot + (type == "Fold" || type == "Check" ? 0 : addedToPot), // Simplified
+                    Description = processingLine
+                });
+            }
+
+            return currentPot;
+        }
+
+        // DTOs for JSON deserialization of DB result
+        private class HandDetailsDto
+        {
+            public string Id { get; set; } = "";
+            public string Room { get; set; } = "";
+            public string Blinds { get; set; } = "";
+            public string Date_Time { get; set; } = "";
+            public double Total_Pot { get; set; }
+            public string Preflop_Action { get; set; } = "";
+            public string? Flop { get; set; }
+            public string? Flop_Action { get; set; }
+            public string? Turn { get; set; }
+            public string? Turn_Action { get; set; }
+            public string? River { get; set; }
+            public string? River_Action { get; set; }
+            public bool Went_To_Showdown { get; set; }
+            public List<PlayerDto> Players { get; set; } = new();
+        }
+
+        private class PlayerDto
+        {
+            public string Name { get; set; } = "";
+            public string Position { get; set; } = "";
+            public double Stack { get; set; }
+            public string? Cards { get; set; }
+            public bool IsHero { get; set; }
+            public double ChipsWon { get; set; }
+        }
+
         public async Task<object> GetRangeAnalysisAsync(AnalysisFilters filters)
         {
             _logger.LogInformation($"GetRangeAnalysisAsync: Starting analysis for Hero='{filters.HeroName}', Situation='{filters.Situation}'");
@@ -825,7 +1080,6 @@ namespace SpinTrackerBackend.Services
             _logger.LogInformation($"GetRangeAnalysisAsync: After filtering {filteredHands.Count} hands");
 
             // Determine Target Position. 
-            // Priority: 1. filters.Positions, 2. last action in ActionSequence
             string? targetPosition = null;
             if (filters.Positions != null && filters.Positions.Length > 0)
             {
@@ -835,9 +1089,9 @@ namespace SpinTrackerBackend.Services
             {
                 var lastItem = filters.ActionSequence.Last();
                 var parts = lastItem.Split(':');
-                if (parts.Length > 0) 
+                if (parts.Length > 0)
                 {
-                    targetPosition = parts[0].Trim(); 
+                    targetPosition = parts[0].Trim();
                 }
             }
 
@@ -849,36 +1103,29 @@ namespace SpinTrackerBackend.Services
 
             foreach (var hand in filteredHands)
             {
-                // Fix: Handle empty string in filters.HeroName (Field Analysis) correctly
                 var heroName = !string.IsNullOrEmpty(filters.HeroName) ? filters.HeroName : hand.HeroName;
-                
-                if (string.IsNullOrEmpty(heroName)) 
+
+                if (string.IsNullOrEmpty(heroName))
                 {
                     skippedNoHeroName++;
-                    if (skippedNoHeroName <= 5) _logger.LogWarning($"Skipped hand {hand.HandId} because HeroName is null/empty. Filter='{filters.HeroName}', Hand='{hand.HeroName}'");
                     continue;
                 }
 
-                // Filter by Target Position if implied by sequence
                 if (!string.IsNullOrEmpty(targetPosition))
                 {
-                    // hand.HeroPosition is the position of the player for this specific row
                     if (!string.Equals(hand.HeroPosition, targetPosition, StringComparison.OrdinalIgnoreCase))
                     {
                         continue;
                     }
                 }
 
-                // Normalize cards
                 var cards = NormalizeCards(hand.HeroCards);
-                if (cards == null) 
+                if (cards == null)
                 {
                     skippedNoCards++;
-                    if (skippedNoCards <= 5) _logger.LogWarning($"Skipped hand {hand.HandId} due to invalid cards: '{hand.HeroCards}'");
                     continue;
                 }
 
-                // Determine Action
                 var actionType = DetermineActionType(hand, filters.Situation, filters.SituationId, heroName);
                 if (actionType == "None") continue;
 
@@ -891,9 +1138,9 @@ namespace SpinTrackerBackend.Services
                 stats.TotalCount++;
                 stats.TotalProfit += hand.Profit;
                 stats.TotalEv += hand.EvChips.GetValueOrDefault();
-                
-                // Add hand summary
-                stats.Hands.Add(new RangeHandSummary {
+
+                stats.Hands.Add(new RangeHandSummary
+                {
                     Id = hand.HandId,
                     Date = hand.Date,
                     Profit = hand.Profit,
@@ -916,8 +1163,6 @@ namespace SpinTrackerBackend.Services
 
         public RangeAnalysisResult AnalyzeRange(string? position, string? action, int stack)
         {
-            // Placeholder logic for range analysis (Nash based)
-            // In a real app, this would query pre-calculated tables
             return new RangeAnalysisResult
             {
                 Position = position ?? "BTN",
@@ -946,12 +1191,10 @@ namespace SpinTrackerBackend.Services
             var lines = actionText.Split('\n');
             foreach (var line in lines)
             {
-                // Clean up line if it contains timestamp
-                var processingLine = line.Trim(); 
+                var processingLine = line.Trim();
                 var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
                 if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
 
-                // Try strict Split match first
                 var parts = processingLine.Split(':');
                 bool isHero = false;
                 string act = "";
@@ -961,7 +1204,6 @@ namespace SpinTrackerBackend.Services
                     isHero = true;
                     act = parts[1].Trim().ToLower();
                 }
-                // Fallback to StartsWith if Split failed (e.g. weird formatting)
                 else if (processingLine.StartsWith(heroName + ":", StringComparison.OrdinalIgnoreCase))
                 {
                     isHero = true;
@@ -971,7 +1213,7 @@ namespace SpinTrackerBackend.Services
                 if (isHero)
                 {
                     if (act.Contains("all-in")) return "AllIn";
-                    
+
                     if (act.Contains("raises"))
                     {
                         if (isRfiSituation)
@@ -982,14 +1224,11 @@ namespace SpinTrackerBackend.Services
                         }
                         return "Raise";
                     }
-                    
+
                     if (act.Contains("bets")) return "Bet";
                     if (act.Contains("calls")) return "Call";
                     if (act.Contains("folds")) return "Fold";
                     if (act.Contains("checks")) return "Check";
-                    
-                    // Log if we found hero line but couldn't parse action
-                    _logger.LogWarning($"DetermineActionType: Found hero line but unknown action. Line: '{processingLine}', Act: '{act}'");
                 }
             }
 
@@ -998,7 +1237,7 @@ namespace SpinTrackerBackend.Services
 
         private double ParseActionAmount(string act, string blinds)
         {
-            var amountMatch = System.Text.RegularExpressions.Regex.Match(act, @"to\s+(\d+\.?\d*)");
+            var amountMatch = Regex.Match(act, @"to\s+(\d+\.?\d*)");
             if (amountMatch.Success)
             {
                 var bb = ParseBigBlind(blinds);
@@ -1013,8 +1252,7 @@ namespace SpinTrackerBackend.Services
         private string? NormalizeCards(string? cardsRaw)
         {
             if (string.IsNullOrEmpty(cardsRaw)) return null;
-            
-            // Robust parsing: handle "Ah Kh", "AhKh", "Ah,Kh", etc.
+
             var clean = cardsRaw.Replace(" ", "").Replace(",", "").Trim();
             if (clean.Length != 4) return null;
 
@@ -1035,9 +1273,9 @@ namespace SpinTrackerBackend.Services
                 (s1, s2) = (s2, s1);
             }
 
-            if (r1 == r2) return $"{r1}{r2}"; // Pair
-            else if (s1 == s2) return $"{r1}{r2}s"; // Suited
-            else return $"{r1}{r2}o"; // Offsuit
+            if (r1 == r2) return $"{r1}{r2}";
+            else if (s1 == s2) return $"{r1}{r2}s";
+            else return $"{r1}{r2}o";
         }
 
         public class RangeHandSummary

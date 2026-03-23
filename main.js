@@ -295,7 +295,7 @@ function createWindow() {
   });
 }
 
-function createReplayerWindow(handData) {
+function createReplayerWindow() {
   const isDev = process.argv.includes('--dev');
   
   const replayerWindow = new BrowserWindow({
@@ -330,7 +330,7 @@ function createReplayerWindow(handData) {
 
   replayerWindow.webContents.on('did-finish-load', () => {
     // Send the hand data to the replayer window
-    replayerWindow.webContents.send('load-replayer-data', handData);
+    replayerWindow.webContents.send('load-replayer-data', lastReplayerData);
   });
 
   replayerWindow.on('closed', () => {
@@ -640,6 +640,17 @@ ipcMain.handle('get-hand-details', async (event, handId, heroName) => {
   }
 });
 
+ipcMain.handle('get-hand-replay', async (event, handId, heroName) => {
+  const fetch = (await import('node-fetch')).default;
+  try {
+    const query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
+    const response = await fetch(`http://127.0.0.1:${BACKEND_PORT}/analysis/replayer/${encodeURIComponent(handId)}${query}`);
+    return await response.json();
+  } catch (error) {
+    return { success: false, message: error.message };
+  }
+});
+
 ipcMain.handle('get-hands', async (event, options = {}) => {
   return callBackendAPI('/db/hands', options);
 });
@@ -780,9 +791,10 @@ ipcMain.handle('python-analyze-range', async (event, params) => {
   return callBackendAPI('/analyze/range', params);
 });
 
-ipcMain.handle('open-replayer', async (event, handData) => {
-  lastReplayerData = handData;
-  createReplayerWindow(handData);
+ipcMain.handle('open-replayer', async (event, data) => {
+  // data can be either handData (old) or { handIds, startIndex, heroName } (new)
+  lastReplayerData = data;
+  createReplayerWindow();
 });
 
 ipcMain.handle('stats-builder-evaluate', async (event, stat) => {
