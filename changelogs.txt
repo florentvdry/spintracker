@@ -8,8 +8,7 @@ done:
 - Ajout: Date dans la partie haute du site, prise en compte sur toutes les pages de l'application.
 
 - Changement: Amélioration des performances d'import (de 56 secondes à 16 secondes sur mes données de test)
-- Changement: refactorisation de la majorité du code de l'application
-- Changement: Retrait de code plus utilisé
+- Changement: refactorisation de la majorité du code de l'application / Retrait de code plus utilisé
 
 
 todo:
@@ -17,3 +16,4 @@ todo:
 - gain théorique et rakeback
 - analyse postflop
 - pouvoir supprimé une parti
+- actions table machin
