@@ -39,19 +39,19 @@
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
       </div>
 
-      <div v-else-if="!heroName" class="flex flex-col items-center justify-center h-full text-gray-400">
+      <div v-show="!isLoading && !heroName" class="flex flex-col items-center justify-center h-full text-gray-400">
         <BarChart2 class="w-16 h-16 mb-4" />
         <p class="text-lg">{{ $t('dashboard.no_hero') }}</p>
         <p class="text-sm">{{ $t('dashboard.select_hero_prompt') }}</p>
       </div>
 
-      <div v-else-if="!data || data.length === 0" class="flex flex-col items-center justify-center h-full text-gray-400">
+      <div v-show="!isLoading && heroName && (!data || data.length === 0)" class="flex flex-col items-center justify-center h-full text-gray-400">
         <BarChart2 class="w-16 h-16 mb-4" />
         <p class="text-lg">{{ $t('dashboard.no_data') }}</p>
         <p class="text-sm">{{ $t('dashboard.no_data_chart') }}</p>
       </div>
 
-      <div v-else ref="chartRef" class="w-full h-full"></div>
+      <div v-show="!isLoading && heroName && data && data.length > 0" ref="chartRef" class="w-full h-full"></div>
       
       <div 
         v-if="finalStats"

@@ -296,11 +296,12 @@ public class StatsRepository
             tournaments = s.Tournaments,
             hands_played = s.Hands,
             profit = s.Profit,
-            session_date = s.StartTime.ToString("yyyy-MM-dd HH:mm")
+            session_date = s.StartTime.ToString("yyyy-MM-dd HH:mm:ss"),
+            session_end = s.EndTime.ToString("yyyy-MM-dd HH:mm:ss")
         }).ToList();
     }
 
-    private record SessionInfo(DateTime StartTime, string Room, int Tournaments, int Hands, double Profit);
+    private record SessionInfo(DateTime StartTime, DateTime EndTime, string Room, int Tournaments, int Hands, double Profit);
 
     private async Task<List<SessionInfo>> GetSessionsInternalAsync(int? limit, string? heroName = null, string? dateFrom = null, string? dateTo = null, double? buyIn = null)
     {
@@ -404,6 +405,7 @@ public class StatsRepository
     private SessionInfo CreateSessionInfo(List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos)> hands)
     {
         var startTime = hands.Min(h => h.t);
+        var endTime = hands.Max(h => h.t);
         var room = hands.First().r;
         var uniqueTournaments = hands.Select(h => h.g).Distinct().Count();
         var totalHands = hands.Count;
@@ -452,7 +454,7 @@ public class StatsRepository
             totalProfitEuro += profit;
         }
         
-        return new SessionInfo(startTime, room, uniqueTournaments, totalHands, totalProfitEuro);
+        return new SessionInfo(startTime, endTime, room, uniqueTournaments, totalHands, totalProfitEuro);
     }
 
     public async Task<object> GetWinrateChartDataAsync(ChartQueryOptions options)
@@ -482,13 +484,15 @@ public class StatsRepository
         if (!string.IsNullOrEmpty(options.DateFrom))
         {
             whereClauses.Add("h.date_time >= @dateFrom");
-            parameters.Add(new SqliteParameter("@dateFrom", options.DateFrom + " 00:00:00"));
+            var dFrom = options.DateFrom.Contains(" ") ? options.DateFrom : options.DateFrom + " 00:00:00";
+            parameters.Add(new SqliteParameter("@dateFrom", dFrom));
         }
 
         if (!string.IsNullOrEmpty(options.DateTo))
         {
             whereClauses.Add("h.date_time <= @dateTo");
-            parameters.Add(new SqliteParameter("@dateTo", options.DateTo + " 23:59:59"));
+            var dTo = options.DateTo.Contains(" ") ? options.DateTo : options.DateTo + " 23:59:59";
+            parameters.Add(new SqliteParameter("@dateTo", dTo));
         }
 
         if (options.BuyIn.HasValue)

@@ -56,11 +56,11 @@
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
     </div>
 
-    <div v-else-if="!data || data.length === 0" class="flex flex-col items-center justify-center h-[500px] text-gray-400">
+    <div v-show="!isLoading && (!data || data.length === 0)" class="flex flex-col items-center justify-center h-[500px] text-gray-400">
       <p class="mb-2">{{ $t('dashboard.no_data_chart') }}</p>
     </div>
 
-    <div v-else ref="chartContainer" class="h-[500px] w-full"></div>
+    <div v-show="!isLoading && data && data.length > 0" ref="chartContainer" class="h-[500px] w-full"></div>
   </div>
 </template>
 

@@ -1,11 +1,12 @@
 - Correction: Fix de la répartition des gains sur les jackpot
 - Correction: Dans certain cas, les positions dans le replayer était incorrect.
 
-done:
 - Ajout: Nouveau analyseur de range, plus facile à comprendre, avec de l'opacité selon la fréquence.
-- Ajout: Pouvoir avoir plusieurs base de données.
+- Ajout: Possibilité de créer et switcher entre plusieurs base de données.
 - Ajout: Ajout d'une page "joueurs", vous pouvez y définir un fish / reg manuellement, et voir vos mains contre lui.
 - Ajout: Date dans la partie haute du site, prise en compte sur toutes les pages de l'application.
+- Ajout: Nouveau replayer, plus rapide, plus beau
+- Ajout: Possibilité de cliquer sur une session sur la page d'accueil et la filtrer.
 
 - Changement: Amélioration des performances d'import (de 56 secondes à 16 secondes sur mes données de test)
 - Changement: refactorisation de la majorité du code de l'application / Retrait de code plus utilisé
@@ -15,5 +16,5 @@ todo:
 - Plage horaire
 - gain théorique et rakeback
 - analyse postflop
-- pouvoir supprimé une parti
+- pouvoir supprimé une partie
 - actions table machin

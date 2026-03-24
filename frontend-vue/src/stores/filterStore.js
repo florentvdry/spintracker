@@ -97,10 +97,8 @@ export const useFilterStore = defineStore('filter', () => {
       dateFrom = customDateFrom.value ? `${customDateFrom.value} 00:00:00` : null
       dateTo = customDateTo.value ? `${customDateTo.value} 23:59:59` : null
     } else if (dateRange.value === 'session' && selectedSession.value) {
-      const sessionDate = new Date(selectedSession.value.session_date)
-      dateFrom = formatDate(sessionDate)
-      const sessionEnd = new Date(sessionDate.getTime() + 2 * 60 * 60 * 1000)
-      dateTo = formatDate(sessionEnd)
+      dateFrom = selectedSession.value.session_date
+      dateTo = selectedSession.value.session_end
     }
 
     return { dateFrom, dateTo }
