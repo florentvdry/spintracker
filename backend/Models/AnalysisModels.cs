@@ -156,6 +156,7 @@ public class HandReplayData
     public string Room { get; set; } = "";
     public string Blinds { get; set; } = "";
     public string Date { get; set; } = "";
+    public double BuyIn { get; set; }
     public List<ReplayPlayer> Players { get; set; } = new();
     public List<ReplayAction> Actions { get; set; } = new();
     public string? Board { get; set; } // Full final board

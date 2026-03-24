@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { useReplayerStore } from './stores/replayerStore'
 import Replayer from './components/replayer/Replayer.vue'
 import './index.css'
@@ -10,6 +11,7 @@ const ipcRenderer = isElectron ? window.require('electron').ipcRenderer : null
 
 const app = createApp(Replayer)
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 
 const store = useReplayerStore()
@@ -19,7 +21,7 @@ if (ipcRenderer) {
     console.log('[Replayer Window] Received data:', data)
     if (data && data.handIds) {
       store.loadHandQueue(data)
-    } else if (data && data.id) {
+    } else if (data && (data.id || data.handId || data.HandId)) {
       store.setHand(data)
     }
   })

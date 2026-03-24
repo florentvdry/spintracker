@@ -51,6 +51,20 @@ const betPositionClass = computed(() => {
   
   return 'top-[105%] left-1/2 -translate-x-1/2'
 })
+
+const betDx = computed(() => {
+  const pos = props.position
+  if (pos.includes('seat-1') || pos.includes('seat-6-1') || pos.includes('seat-6-2')) return '-40px'
+  if (pos.includes('seat-2') || pos.includes('seat-6-4') || pos.includes('seat-6-5')) return '40px'
+  return '0px'
+})
+
+const betDy = computed(() => {
+  const pos = props.position
+  if (pos === 'seat-0' || pos === 'seat-6-0') return '40px'
+  if (pos === 'seat-6-3') return '-40px'
+  return '0px'
+})
 </script>
 
 <template>
@@ -77,6 +91,16 @@ const betPositionClass = computed(() => {
     <div 
       class="relative group"
     >
+      <!-- Action Bubble -->
+      <div 
+        v-if="store.currentAction?.playerName === player.name && store.isRealAction(store.currentAction)"
+        class="absolute -top-[135%] left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-300 pointer-events-none"
+      >
+        <div class="bg-blue-600/95 text-white text-[min(2.5cqw,0.85rem)] font-bold px-[min(2.5cqw,14px)] py-[min(0.8cqw,6px)] rounded-full whitespace-nowrap shadow-[0_8px_20px_rgba(37,99,235,0.6)] border border-blue-400/40 tracking-wide">
+          {{ store.currentAction.description }}
+        </div>
+      </div>
+
       <!-- Active Glow -->
       <div v-if="player.isActive" class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg blur opacity-40 animate-pulse"></div>
       
@@ -107,13 +131,17 @@ const betPositionClass = computed(() => {
       <!-- Bet Amount (Floating Bubble) - Relative to Player Info Box -->
       <div 
         v-if="player.bet > 0"
-        class="absolute flex flex-col items-center gap-1.5 animate-in zoom-in slide-in-from-top-4 duration-300 z-50 pointer-events-none"
+        class="absolute z-50 pointer-events-none"
         :class="betPositionClass"
       >
-        <Chips :amount="player.bet" :bb-value="bbValue" size="sm" />
-        <div class="bg-black/90 backdrop-blur-md border border-white/20 text-white px-[min(2.5cqw,16px)] py-[min(0.6cqw,6px)] rounded-full text-[min(3cqw,1rem)] font-mono font-black shadow-[0_10px_30px_rgba(0,0,0,0.8)] whitespace-nowrap">
-          <span class="text-yellow-400 mr-1.5">●</span> {{ formatValue(player.bet) }}
-        </div>
+        <transition name="bet" appear>
+          <div :key="player.bet" class="flex flex-col items-center gap-1.5" :style="{'--bet-dx': betDx, '--bet-dy': betDy}">
+            <Chips :amount="player.bet" :bb-value="bbValue" size="sm" />
+            <div class="bg-black/90 backdrop-blur-md border border-white/20 text-white px-[min(2.5cqw,16px)] py-[min(0.6cqw,6px)] rounded-full text-[min(3cqw,1rem)] font-mono font-black shadow-[0_10px_30px_rgba(0,0,0,0.8)] whitespace-nowrap">
+              <span class="text-yellow-400 mr-1.5">●</span> {{ formatValue(player.bet) }}
+            </div>
+          </div>
+        </transition>
       </div>
     </div>
   </div>
@@ -132,4 +160,20 @@ const betPositionClass = computed(() => {
 .seat-6-3 { top: -8%; left: 50%; transform: translateX(-50%); }
 .seat-6-4 { top: 25%; right: -2%; }
 .seat-6-5 { bottom: 25%; right: -2%; }
+
+/* Bet Chip CSS Animation */
+.bet-enter-active {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.bet-leave-active {
+  transition: all 0.2s ease-in;
+}
+.bet-enter-from {
+  opacity: 0;
+  transform: translate(var(--bet-dx), var(--bet-dy)) scale(0.3);
+}
+.bet-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
+}
 </style>

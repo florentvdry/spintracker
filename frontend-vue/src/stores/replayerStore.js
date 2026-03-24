@@ -70,7 +70,7 @@ export const useReplayerStore = defineStore('replayer', {
       this.error = null
       this.loading = false
       this.handData = handData
-      this.handId = handData.id
+      this.handId = handData.id || handData.handId || handData.HandId
       this.resetTable()
     },
 
@@ -114,31 +114,15 @@ export const useReplayerStore = defineStore('replayer', {
         return
       }
 
-      // 1. Apply the current real action
       const action = this.handData.actions[this.currentIndex]
       this.applyAction(action)
       this.currentIndex++
-
-      // 2. Automatically skip/apply all following non-actions (DealCards, etc.) 
-      while (this.currentIndex < this.handData.actions.length) {
-        const nextAction = this.handData.actions[this.currentIndex]
-        if (this.isRealAction(nextAction)) break
-        
-        this.applyAction(nextAction)
-        this.currentIndex++
-      }
     },
 
     prevStep() {
       if (this.currentIndex <= 0) return
       
       this.currentIndex--
-      while (this.currentIndex > 0) {
-        const action = this.handData.actions[this.currentIndex - 1]
-        if (this.isRealAction(action)) break
-        this.currentIndex--
-      }
-      
       this.rebuildStateToCurrentIndex()
     },
 

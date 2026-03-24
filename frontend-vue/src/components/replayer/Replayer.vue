@@ -59,6 +59,14 @@ export default {
       }
     }
 
+    const currentRealActionIndex = computed(() => {
+      if (!store.handData || store.currentIndex === 0) return -1
+      for (let i = store.currentIndex - 1; i >= 0; i--) {
+        if (store.isRealAction(store.handData.actions[i])) return i
+      }
+      return -1
+    })
+
     onMounted(() => window.addEventListener('keydown', handleKeyDown))
     onUnmounted(() => window.removeEventListener('keydown', handleKeyDown))
 
@@ -68,7 +76,8 @@ export default {
       bbValue,
       formatValue,
       speeds,
-      togglePlay
+      togglePlay,
+      currentRealActionIndex
     }
   }
 }
@@ -95,7 +104,7 @@ export default {
         <div class="flex items-center gap-3">
           <span class="text-lg font-black text-white tracking-tighter uppercase">{{ store.handData.room }}</span>
           <div class="h-4 w-px bg-white/20"></div>
-          <span class="text-blue-400 font-mono font-bold">{{ store.handData.blinds }}</span>
+          <span class="text-blue-400 font-mono font-bold">{{ store.handData.buyIn }}€</span>
         </div>
         <div class="text-[10px] text-gray-400 mt-1 uppercase tracking-widest font-medium opacity-60">
           {{ store.handData.date }}
@@ -136,11 +145,12 @@ export default {
           <div 
             v-for="(action, i) in store.handData?.actions" 
             :key="i"
+            v-show="store.isRealAction(action)"
             @click="store.jumpTo(i + 1)"
             class="p-3 rounded-xl text-xs cursor-pointer transition-all duration-200"
             :class="[
-              i < store.currentIndex ? 'bg-blue-500/5 text-blue-300' : 'text-gray-600 hover:bg-white/5',
-              i === store.currentIndex - 1 ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20 scale-[1.02]' : ''
+              i < currentRealActionIndex ? 'bg-blue-500/5 text-blue-300' : 'text-gray-600 hover:bg-white/5',
+              i === currentRealActionIndex ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20 scale-[1.02]' : ''
             ]"
           >
             <div class="flex justify-between items-center mb-1">
@@ -195,9 +205,9 @@ export default {
             </button>
           </div>
 
-          <!-- Current Action Info -->
+          <!-- Current Action Info (Bottom Bar) -->
           <div class="hidden lg:flex flex-col items-center">
-            <div v-if="store.currentAction" class="bg-blue-500/10 border border-blue-500/20 px-6 py-2 rounded-full text-sm font-bold text-blue-400 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div v-if="store.currentAction" :key="store.currentAction.order" class="bg-blue-500/10 border border-blue-500/20 px-6 py-2 rounded-full text-sm font-bold text-blue-400 animate-in fade-in slide-in-from-top-2 duration-300">
               {{ store.currentAction.description }}
             </div>
             <div v-else class="text-sm font-bold text-gray-600 tracking-widest uppercase opacity-50">Prêt</div>

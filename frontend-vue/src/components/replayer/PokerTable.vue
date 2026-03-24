@@ -42,6 +42,24 @@ const getSeatPosition = (index) => {
     return `seat-6-${relativeIndex}`
   }
 }
+
+const getWinnerPositionClass = (playerName) => {
+  if (!playerName) return 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+  const idx = store.players.findIndex(p => p.name === playerName)
+  if (idx === -1) return 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+  
+  const pos = getSeatPosition(idx)
+  if (pos === 'seat-0' || pos === 'seat-6-0') return 'top-[90%] left-[50%] -translate-x-1/2 -translate-y-1/2'
+  if (pos === 'seat-6-3') return 'top-[0%] left-[50%] -translate-x-1/2 -translate-y-1/2'
+  if (pos === 'seat-1') return 'top-[20%] left-[5%] -translate-x-1/2 -translate-y-1/2'
+  if (pos === 'seat-2') return 'top-[20%] left-[95%] -translate-x-1/2 -translate-y-1/2'
+  if (pos === 'seat-6-1') return 'top-[75%] left-[5%] -translate-x-1/2 -translate-y-1/2'
+  if (pos === 'seat-6-2') return 'top-[25%] left-[5%] -translate-x-1/2 -translate-y-1/2'
+  if (pos === 'seat-6-4') return 'top-[25%] left-[95%] -translate-x-1/2 -translate-y-1/2'
+  if (pos === 'seat-6-5') return 'top-[75%] left-[95%] -translate-x-1/2 -translate-y-1/2'
+  
+  return 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+}
 </script>
 
 <template>
@@ -96,6 +114,22 @@ const getSeatPosition = (index) => {
               <span class="text-gray-500 text-[min(1.5vw,0.6rem)] font-bold uppercase tracking-widest">{{ unitLabel }}</span>
             </div>
           </div>
+
+          <!-- Winner Chips Animation -->
+          <div v-if="store.currentAction?.type === 'CollectPot'" class="absolute inset-0 pointer-events-none z-30">
+            <transition name="pot-fly" appear>
+              <div 
+                :key="store.currentAction.order"
+                class="absolute flex flex-col items-center justify-center drop-shadow-2xl"
+                :class="getWinnerPositionClass(store.currentAction.playerName)"
+              >
+                <div class="bg-green-500/20 text-green-400 font-black px-4 py-1 rounded-full border border-green-500/50 mb-2 shadow-[0_0_20px_rgba(34,197,94,0.4)]">
+                  +{{ formatValue(store.currentAction.amount) }}
+                </div>
+                <Chips :amount="store.currentAction.amount" :bb-value="bbValue" size="lg" />
+              </div>
+            </transition>
+          </div>
         </div>
       </div>
 
@@ -138,5 +172,23 @@ const getSeatPosition = (index) => {
     height: 100%;
     width: auto;
   }
+}
+
+/* Winner Pot Fly Animation */
+.pot-fly-enter-active {
+  transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.pot-fly-leave-active {
+  transition: all 0.3s ease-in;
+}
+.pot-fly-enter-from {
+  top: 32% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(1.5) !important;
+  opacity: 0;
+}
+.pot-fly-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
 }
 </style>

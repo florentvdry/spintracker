@@ -828,6 +828,7 @@ namespace SpinTrackerBackend.Services
                 HandId = hand.Id,
                 Room = hand.Room,
                 Blinds = hand.Blinds,
+                BuyIn = hand.Buy_In,
                 Date = hand.Date_Time,
                 TotalPot = hand.Total_Pot,
                 Board = string.Join("", new[] { hand.Flop, hand.Turn, hand.River }
@@ -1045,6 +1046,7 @@ namespace SpinTrackerBackend.Services
             public string Room { get; set; } = "";
             public string Blinds { get; set; } = "";
             public string Date_Time { get; set; } = "";
+            public double Buy_In { get; set; }
             public double Total_Pot { get; set; }
             public string Preflop_Action { get; set; } = "";
             public string? Flop { get; set; }
