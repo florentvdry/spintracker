@@ -305,7 +305,15 @@ const loadPlayers = async () => {
 }
 
 onMounted(async () => {
-  await loadPlayers()
+  if (appStore.isInitialized) {
+    await loadPlayers()
+  }
+})
+
+watch(() => appStore.isInitialized, async (isInit) => {
+  if (isInit) {
+    await loadPlayers()
+  }
 })
 
 watch(() => [filterStore.heroName, filterStore.customDateFrom, filterStore.customDateTo], () => {
