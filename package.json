@@ -11,7 +11,7 @@
     "react:dev": "cd frontend-vue && npm run dev",
     "react:build": "cd frontend-vue && npm run build",
     "react:install": "cd frontend-vue && npm install",
-    "backend:build": "cd backend && dotnet publish SpinTracker.sln -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=true",
+    "backend:build": "cd backend && dotnet publish SpinTrackerBackend.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=true",
     "postinstall": "npm run react:install",
     "setup": "npm install && npm run react:install && npm run backend:build"
   },
