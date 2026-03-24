@@ -19,8 +19,8 @@
       <p :class="['text-2xl font-bold', isPositive ? 'profit-positive' : 'profit-negative']">
         {{ isPositive ? '+' : '' }}{{ profit.toFixed(2) }} {{ $t('common.chips') }}
       </p>
-      <p v-if="hand.ev_chips !== null" class="text-sm text-gray-400 mt-1">
-        EV: {{ hand.ev_chips >= 0 ? '+' : '' }}{{ hand.ev_chips?.toFixed(2) }}
+      <p class="text-sm text-gray-400 mt-1">
+        EV: {{ ev >= 0 ? '+' : '' }}{{ ev.toFixed(2) }}
       </p>
     </div>
 
@@ -71,6 +71,13 @@ const props = defineProps({
 
 const profit = computed(() => props.hand?.hero_profit || 0)
 const isPositive = computed(() => profit.value >= 0)
+
+const ev = computed(() => {
+  if (props.hand?.ev_chips !== null && props.hand?.ev_chips !== undefined) {
+    return props.hand.ev_chips
+  }
+  return profit.value
+})
 
 const villain = computed(() => props.hand?.players?.find(p => !p.IsHero))
 const villainPosition = computed(() => props.hand?.villain_position || villain.value?.Position || '—')

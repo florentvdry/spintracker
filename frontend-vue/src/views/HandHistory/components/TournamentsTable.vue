@@ -131,9 +131,9 @@
                         </td>
                         <td :class="[
                           'px-4 py-2 text-right font-mono',
-                          (hand.ev_chips || 0) > 0 ? 'text-emerald-500/80' : (hand.ev_chips || 0) < 0 ? 'text-rose-500/80' : 'text-gray-500'
+                          getHandCev(hand) > 0 ? 'text-emerald-500/80' : getHandCev(hand) < 0 ? 'text-rose-500/80' : 'text-gray-500'
                         ]">
-                          {{ formatCev(hand.ev_chips) }}
+                          {{ formatCev(getHandCev(hand)) }}
                         </td>
                         <td :class="[
                           'px-4 py-2 text-right font-semibold',
@@ -188,6 +188,13 @@ const isSelected = (tourn) => {
 const getProfit = (tourn) => tourn.netProfit ?? tourn.NetProfit ?? 0
 const getCev = (tourn) => tourn.avgCev ?? tourn.AvgCev ?? 0
 const getHandProfit = (hand) => hand.hero_profit || hand.dyn_hero_profit || 0
+
+const getHandCev = (hand) => {
+  if (hand.ev_chips !== null && hand.ev_chips !== undefined) {
+    return hand.ev_chips
+  }
+  return getHandProfit(hand)
+}
 
 const formatProfit = (profit) => {
   const isPositive = profit >= 0

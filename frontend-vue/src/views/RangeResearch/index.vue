@@ -249,9 +249,9 @@ const localFilters = ref({
   PlayerCount: 3,
   MinStackBB: null,
   MaxStackBB: null,
-  Positions: ['BTN'],
+  Positions: [],
   ActionSequence: [],
-  SituationId: 'rfi'
+  SituationId: ''
 })
 
 const opponentType = ref('all')
@@ -277,11 +277,11 @@ const opponentTypes = computed(() => [
 const combinedFilters = computed(() => {
   const { dateFrom, dateTo } = filterStore.getDateRangeParams()
   return {
+    ...localFilters.value,
     HeroName: heroName.value,
     DateFrom: dateFrom,
     DateTo: dateTo,
-    OpponentType: opponentType.value,
-    ...localFilters.value
+    OpponentType: opponentType.value
   }
 })
 

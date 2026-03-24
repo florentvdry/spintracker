@@ -104,25 +104,7 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-1.5">
-        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest ml-1">{{ $t('range_analysis.filters.period') }}</span>
-        <div class="flex items-center gap-3 bg-dark-400 border border-white/5 rounded-lg px-4 py-1.5 shadow-inner">
-          <Calendar class="w-4 h-4 text-gray-500" />
-          <input 
-            type="date" 
-            :value="filters.DateFrom || ''"
-            @input="handleDateFromChange"
-            class="bg-transparent border-none p-0 text-sm text-white w-28 focus:ring-0 invert-calendar"
-          />
-          <span class="text-gray-600">→</span>
-          <input 
-            type="date" 
-            :value="filters.DateTo || ''"
-            @input="handleDateToChange"
-            class="bg-transparent border-none p-0 text-sm text-white w-28 focus:ring-0 invert-calendar"
-          />
-        </div>
-      </div>
+
 
       <button 
         @click="handleReset" 
@@ -213,7 +195,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { User, Calendar, RotateCcw, Layers, Search, ChevronDown, Info } from 'lucide-vue-next'
+import { User, RotateCcw, Layers, Search, ChevronDown, Info } from 'lucide-vue-next'
 import { usePlayersStore } from '@/stores/playersStore'
 
 const props = defineProps({
@@ -232,7 +214,7 @@ const playersStore = usePlayersStore()
 
 const isDropdownOpen = ref(false)
 const searchTerm = ref('')
-const selectedPosition = ref(props.filters.Positions?.[0] || (props.filters.PlayerCount === 2 ? 'SB' : 'BTN'))
+const selectedPosition = ref(props.filters.Positions?.[0] || '')
 
 const SITUATIONS = computed(() => {
   return {
@@ -279,11 +261,12 @@ const availablePositions = computed(() => {
 })
 
 const currentSituations = computed(() => {
+  if (!selectedPosition.value) return []
   return SITUATIONS.value[props.filters.PlayerCount]?.[selectedPosition.value] || []
 })
 
 const currentSitId = computed(() => {
-  return props.filters.SituationId || currentSituations.value[0]?.situationId
+  return props.filters.SituationId || ''
 })
 
 watch(() => props.filters.Positions, (newPositions) => {
@@ -305,26 +288,18 @@ const handleMaxStackChange = (e) => {
   props.onChange({ ...props.filters, MaxStackBB: e.target.value ? parseFloat(e.target.value) : null })
 }
 
-const handleDateFromChange = (e) => {
-  props.onChange({ ...props.filters, DateFrom: e.target.value })
-}
 
-const handleDateToChange = (e) => {
-  props.onChange({ ...props.filters, DateTo: e.target.value })
-}
 
 const handleReset = () => {
-  selectedPosition.value = props.filters.PlayerCount === 2 ? 'SB' : 'BTN'
+  selectedPosition.value = ''
   props.onChange({
     ...props.filters,
     HeroName: '',
     MinStackBB: null,
     MaxStackBB: null,
-    DateFrom: '',
-    DateTo: '',
-    Positions: ['BTN'],
+    Positions: [],
     ActionSequence: [],
-    SituationId: 'rfi'
+    SituationId: ''
   })
 }
 
@@ -346,16 +321,13 @@ const handlePositionChange = (pos) => {
 }
 
 const handlePlayerCountChange = (count) => {
-  const newPos = count === 2 ? 'SB' : 'BTN'
-  selectedPosition.value = newPos
-  const firstSit = SITUATIONS.value[count]?.[newPos]?.[0]
-  
+  selectedPosition.value = ''
   props.onChange({
     ...props.filters,
     PlayerCount: count,
-    Positions: firstSit?.positions || [newPos],
-    ActionSequence: firstSit?.sequence || [],
-    SituationId: firstSit?.situationId || 'rfi'
+    Positions: [],
+    ActionSequence: [],
+    SituationId: ''
   })
 }
 
