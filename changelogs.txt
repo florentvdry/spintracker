@@ -18,3 +18,287 @@ todo:
 - analyse postflop
 - pouvoir supprimé une partie
 - actions table machin
+
+================================================================================
+                    CHAMPS MANQUANTS DANS LE PARSER
+                    Comparaison avec autres parsers poker
+================================================================================
+
+================================================================================
+1. CHAMPS MISSING / INCOMPLETS
+================================================================================
+
+--------------------
+MANQUANTS:
+--------------------
+
+- limit_type          # NL (No Limit), PL (Pot Limit), FL (Fixed Limit), SL (Spread Limit)
+- game                # HOLDEM, OMAHA, OMAHA8, RAZZ, STUD, etc.
+- currency            # USD, EUR, GBP, etc.
+- button_seat         # Numéro du siège du bouton (dealer)
+- ante                # Montant des antes (pour tournois)
+- tournament_id       # ID du tournoi
+- tournament_name     # Nom du tournoi
+- tournament_level    # Niveau actuel du tournoi
+- buyin_currency      # Devise du buy-in
+-rake_per_player      # Rake payé par chaque joueur
+
+--------------------
+INCOMPLETS:
+--------------------
+
+- position            # Stocké comme string (BTN, SB...) mais devrait être INT (0-9)
+- blinds              # String "0.10/0.25" mais devrait être structuré: {sb: 0.10, bb: 0.25}
+- total_pot           # Float seul, devrait avoir: main_pot, side_pots[]
+
+--------------------
+NON TRAITÉS:
+--------------------
+
+- split_pot           # Pots partagés (plusieurs gagnants)
+- run_it_twice        # Multiple runouts ( river )
+- side_pots           # Pots secondaires quand all-in
+
+
+================================================================================
+2. STRUCTURED ACTIONS - EXEMPLES
+================================================================================
+
+Format recommandé (JSON):
+
+--------------------
+EXEMPLE 1: MAIN SIMPLE
+--------------------
+
+Texte original:
+"""
+PokerStars Hand #123456789: Table 'Mango' 6-max Seat #3 is the button
+Seat 1: Hero ($100)
+Seat 2: Villain ($50)
+Seat 3: Button ($80)
+*** HOLE CARDS ***
+Dealt to Hero [As Kh]
+*** FLOP *** [Js 7d 2c]
+Hero: bets 10
+Villain: folds
+Hero: wins 12.50
+"""
+
+Structured actions:
+```json
+{
+  "info": {
+    "hand_id": "123456789",
+    "room": "PokerStars",
+    "table": "Mango",
+    "table_size": 6,
+    "button_seat": 3,
+    "date": "2024-01-15T14:30:00",
+    "limit": "NL",
+    "game": "HOLDEM",
+    "blinds": {"sb": 0.10, "bb": 0.25},
+    "currency": "USD"
+  },
+  "players": [
+    {"seat": 1, "name": "Hero", "stack": 100, "is_hero": true},
+    {"seat": 2, "name": "Villain", "stack": 50, "is_hero": false},
+    {"seat": 3, "name": "Button", "stack": 80, "is_hero": false}
+  ],
+  "actions": [
+    {"street": "preflop", "order": 1, "player": "Button", "type": "post", "post_type": "sb", "amount": 0.10},
+    {"street": "preflop", "order": 2, "player": "Hero", "type": "post", "post_type": "bb", "amount": 0.25},
+    {"street": "preflop", "order": 3, "player": "Villain", "type": "fold"},
+    {"street": "preflop", "order": 4, "player": "Button", "type": "fold"},
+    {"street": "preflop", "order": 5, "player": "Hero", "type": "check"},
+    {"street": "flop", "order": 1, "player": "Hero", "type": "deal_board", "cards": ["Js", "7d", "2c"]},
+    {"street": "flop", "order": 2, "player": "Hero", "type": "bet", "amount": 10, "is_all_in": false},
+    {"street": "flop", "order": 3, "player": "Villain", "type": "fold"}
+  ],
+  "board": {
+    "flop": ["Js", "7d", "2c"],
+    "turn": null,
+    "river": null
+  },
+  "summary": {
+    "total_pot": 12.50,
+    "rake": 0.50,
+    "winners": [
+      {"player": "Hero", "amount": 12.50, "hand": null}
+    ]
+  }
+}
+```
+
+--------------------
+EXEMPLE 2: BET -> CALL -> RAISE -> RERAISE
+--------------------
+
+Texte original:
+"""
+*** FLOP *** [Js 7d 2c]
+Hero: bets 10
+Villain: calls 10
+Button: raises to 30
+Hero: raises to 70
+Button: calls 70
+*** TURN *** [Js 7d 2c] [4h]
+"""
+
+Structured actions:
+```json
+{
+  "actions": [
+    {"street": "flop", "order": 1, "player": "Hero",       "type": "deal_board",  "cards": ["Js", "7d", "2c"]},
+    {"street": "flop", "order": 2, "player": "Hero",       "type": "bet",        "amount": 10,   "effective": 10, "is_all_in": false},
+    {"street": "flop", "order": 3, "player": "Villain",    "type": "call",       "amount": 10,   "effective": 10, "is_all_in": false},
+    {"street": "flop", "order": 4, "player": "Button",     "type": "raise",      "amount": 30,   "effective": 20, "is_all_in": false},
+    {"street": "flop", "order": 5, "player": "Hero",       "type": "raise",      "amount": 70,   "effective": 40, "is_all_in": false},
+    {"street": "flop", "order": 6, "player": "Button",      "type": "call",       "amount": 70,   "effective": 40, "is_all_in": false},
+    {"street": "turn", "order": 1, "player": "Button",      "type": "deal_board", "cards": ["4h"]}
+  ]
+}
+```
+
+Requête pour trouver ce pattern:
+```sql
+-- PostgreSQL avec JSON
+SELECT * FROM hands 
+WHERE actions @> '[{"type":"bet"},{"type":"call"},{"type":"raise"},{"type":"raise"}]'
+  AND jsonb_array_length(actions) >= 4;
+```
+
+--------------------
+EXEMPLE 3: ALL-IN ET SIDE POTS
+--------------------
+
+Texte original:
+"""
+*** RIVER *** [Js 7d 2c] [4h] [Qh]
+Hero: bets 100
+Villain: raises to 200
+Hero: calls 200
+*** SHOWDOWN ***
+Hero: shows [As Ah] (two pair, Aces and Sevens)
+Villain: shows [Ks Qs] (flush, Ace high)
+Villain: wins 450
+"""
+
+Structured actions:
+```json
+{
+  "actions": [
+    {"street": "river", "order": 1, "player": "Hero",    "type": "deal_board", "cards": ["Qh"]},
+    {"street": "river", "order": 2, "player": "Hero",    "type": "bet",       "amount": 100, "is_all_in": false},
+    {"street": "river", "order": 3, "player": "Villain", "type": "raise",     "amount": 200, "effective": 100, "is_all_in": true},
+    {"street": "river", "order": 4, "player": "Hero",    "type": "call",      "amount": 200, "effective": 100, "is_all_in": true}
+  ],
+  "pots": {
+    "main_pot": 200,
+    "side_pots": [
+      {"amount": 100, "eligible_players": ["Hero", "Villain"]},
+      {"amount": 300, "eligible_players": ["Villain"]}  -- Hero cover
+    ]
+  },
+  "summary": {
+    "total_pot": 450,
+    "rake": 0,
+    "winners": [
+      {"player": "Villain", "amount": 450, "hand": "flush", "cards": ["Ks", "Qs", "Js", "7d", "4h"]}
+    ]
+  }
+}
+```
+
+--------------------
+EXEMPLE 4: TOURNOI SPIN & GO
+--------------------
+
+Structured actions:
+```json
+{
+  "info": {
+    "hand_id": "123456789",
+    "room": "Betclic",
+    "game_type": "tournament",
+    "tournament_id": "SPIN-123456",
+    "tournament_name": "Spin & Go",
+    "tournament_level": 3,
+    "buyin": 10,
+    "buyin_currency": "EUR",
+    "multiplier": 4,
+    "prize_pool": 40,
+    "position": 2,  -- Position finale du hero (2eme)
+    "blinds": {"sb": 100, "bb": 200, "ante": 25},
+    "players_remaining": 3,
+    "total_players": 3
+  }
+}
+```
+
+--------------------
+EXEMPLE 5: RUN IT TWICE
+--------------------
+
+Texte original:
+"""
+*** RIVER *** [Js 7d 2c] [4h] [Qh]
+*** FIRST RUNOUT *** [2d]
+*** SECOND RUNOUT *** [8c]
+"""
+
+Structured actions:
+```json
+{
+  "actions": [
+    {"street": "river", "order": 1, "player": "Board",    "type": "deal_board", "cards": ["Qh"]},
+    {"street": "river", "order": 2, "player": "Board",    "type": "runout",     "runout_number": 1, "cards": ["2d"]},
+    {"street": "river", "order": 3, "player": "Board",    "type": "runout",     "runout_number": 2, "cards": ["8c"]}
+  ],
+  "runouts": [
+    {"runout": 1, "board": ["Js", "7d", "2c", "4h", "Qh", "2d"], "winner": "Hero"},
+    {"runout": 2, "board": ["Js", "7d", "2c", "4h", "Qh", "8c"], "winner": "Villain"}
+  ]
+}
+```
+
+
+================================================================================
+3. RECOMMANDATION STOCKAGE
+================================================================================
+
+Pour les stats rapides (VPIP, PFR, etc):
+- Colonnes BOOL pré-calculées à l'import
+
+Pour les patterns complexes (bet->call->raise):
+- Stocker actions en JSONB dans PostgreSQL
+- Utiliser index GIN pour requêtes rapides
+
+Volume < 500k mains: JSONB suffit
+Volume > 500k mains: Table HandActions séparée recommandée
+
+
+================================================================================
+4. SCHÉMA JSONB SUGGÉRÉ POUR POSTGRESQL
+================================================================================
+
+```sql
+-- Ajout colonne actions JSONB
+ALTER TABLE hands ADD COLUMN actions JSONB;
+
+-- Index pour requêtes patterns
+CREATE INDEX idx_hands_actions_gin ON hands USING gin(actions);
+
+-- Exemples de requêtes:
+
+-- Trouver toutes les mains ou hero a bet sur le flop
+SELECT * FROM hands WHERE actions @> '[{"street": "flop", "type": "bet"}]';
+
+-- Trouver bet -> call -> raise -> reraise
+SELECT * FROM hands WHERE actions @> '[{"type":"bet"},{"type":"call"},{"type":"raise"},{"type":"raise"}]';
+
+-- Compter les fois ou hero 3-bet preflop
+SELECT COUNT(*) FROM hands 
+WHERE actions @> '[{"street": "preflop", "type": "raise"}]'
+  AND jsonb_path_exists(actions, '$[*] ? (@.type == "raise" && @.effective >= 20)');
+```
+
