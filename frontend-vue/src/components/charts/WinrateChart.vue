@@ -142,10 +142,10 @@ const loadChartData = async () => {
           netExpected: item.cumulative ?? item.theoricalWin ?? 0,
           wonWithShowdown: item.chips_won_showdown ?? item.chipsWonShowdown ?? 0,
           wonWithoutShowdown: item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0,
-          euroProfit: item.euro_profit ?? 0
+          euroProfit: item.euroProfit ?? item.euro_profit ?? 0
         }))
       } else if (raw.labels && Array.isArray(raw.labels)) {
-        const { labels, realWin, theoricalWin, wonWithShowdown, wonWithoutShowdown, euro_profit } = raw
+        const { labels, realWin, theoricalWin, wonWithShowdown, wonWithoutShowdown, euroProfit } = raw
         chartData = labels.map((label, index) => ({
           time: index + 1,
           label: label,
@@ -153,7 +153,7 @@ const loadChartData = async () => {
           netExpected: (theoricalWin && theoricalWin[index]) || 0,
           wonWithShowdown: (wonWithShowdown && wonWithShowdown[index]) || 0,
           wonWithoutShowdown: (wonWithoutShowdown && wonWithoutShowdown[index]) || 0,
-          euroProfit: (euro_profit && euro_profit[index]) || 0
+          euroProfit: (euroProfit && euroProfit[index]) || 0
         }))
       }
       data.value = chartData
@@ -327,7 +327,7 @@ const initChart = () => {
 
 const updateChart = () => {
   if (chartInstance && getOption.value) {
-    chartInstance.setOption(getOption.value)
+    chartInstance.setOption(getOption.value, { notMerge: true })
     
     chartInstance.dispatchAction({
       type: 'takeGlobalCursor',
