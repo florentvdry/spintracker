@@ -69,7 +69,6 @@
               <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#ff9800] shadow-sm shadow-orange-500/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">{{ $t('actions.bet') }}</span></div>
               <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#4caf50] shadow-sm shadow-green-500/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">{{ $t('actions.call') }}</span></div>
               <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#9e9e9e] shadow-sm shadow-gray-500/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">{{ $t('actions.check') }}</span></div>
-              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#2196f3] shadow-sm shadow-blue-500/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">{{ $t('actions.fold') }}</span></div>
               <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#b71c1c] shadow-sm shadow-red-900/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">{{ $t('actions.allin') }}</span></div>
             </div>
           </div>

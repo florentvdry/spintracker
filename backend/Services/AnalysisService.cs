@@ -308,8 +308,9 @@ namespace SpinTrackerBackend.Services
             var action = heroAction.Value.action;
             var amountBB = heroAction.Value.amountBB;
             
-            var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi", "vs_sb_open" };
+            var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi" };
             var limpSituations = new[] { "limp", "vs_btn_limp", "hu_sb_limp" };
+            var bbVsOpenSituations = new[] { "vs_sb_open", "vs_btn_open_sb_fold", "vs_btn_open_sb_call" };
             var bbVsLimpSituations = new[] { "vs_sb_limp", "vs_btn_limp_sb_limp", "vs_btn_limp_sb_fold", "hu_vs_sb_limp" };
             
             if (rfiSituations.Contains(situationId.ToLower()))
@@ -323,7 +324,14 @@ namespace SpinTrackerBackend.Services
                 // Limp: Call approximately 1 BB (just call the blind)
                 // Note: SB calls SB amount = 0.5bb (since SB posted 0.5bb already)
                 // BTN limp calls 1bb
-                return action == "call" && amountBB >= 0.3 && amountBB <= 1.5;
+                // Also include all-in calls
+                return (action == "call" && amountBB >= 0.3 && amountBB <= 1.5) || action == "all-in";
+            }
+
+            if (bbVsOpenSituations.Contains(situationId.ToLower()))
+            {
+                // BB vs Open: Raise, All-in, or Call (flatting)
+                return action == "raise" || action == "all-in" || action == "call";
             }
             
             if (bbVsLimpSituations.Contains(situationId.ToLower()))
@@ -1187,7 +1195,7 @@ namespace SpinTrackerBackend.Services
 
             if (string.IsNullOrEmpty(actionText)) return "None";
 
-            var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi", "vs_sb_open" };
+            var rfiSituations = new[] { "rfi", "sb_rfi", "hu_sb_rfi" };
             bool isRfiSituation = !string.IsNullOrEmpty(situationId) && rfiSituations.Contains(situationId.ToLower());
 
             var lines = actionText.Split('\n');

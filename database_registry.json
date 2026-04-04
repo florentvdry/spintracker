@@ -1,0 +1,12 @@
+[
+  {
+    "Id": "7c0c0d16-a75e-44d4-a236-f98c3a1803d7",
+    "Name": "Base de donn\u00E9es principale",
+    "FileName": "poker_tracker.db",
+    "FilePath": "C:\\Users\\flore\\Desktop\\Tracker_clean\\databases\\poker_tracker.db",
+    "CreatedAt": "2026-04-04T12:19:23.0000757Z",
+    "LastUsedAt": "2026-04-04T12:19:23.0000921Z",
+    "IsActive": true,
+    "HandsCount": 0
+  }
+]

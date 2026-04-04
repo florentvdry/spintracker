@@ -4,18 +4,12 @@ todo:
 - analyse postflop
 - pouvoir supprimé une partie
 - actions table machin
+- unibet
 
-================================================================================
-                    CHAMPS MANQUANTS DANS LE PARSER
-                    Comparaison avec autres parsers poker
-================================================================================
-
-================================================================================
-1. CHAMPS MISSING / INCOMPLETS
 ================================================================================
 
 --------------------
-MANQUANTS:
+CHAMPS MANQUANTS:
 --------------------
 
 - limit_type          # NL (No Limit), PL (Pot Limit), FL (Fixed Limit), SL (Spread Limit)
@@ -246,45 +240,3 @@ Structured actions:
   ]
 }
 ```
-
-
-================================================================================
-3. RECOMMANDATION STOCKAGE
-================================================================================
-
-Pour les stats rapides (VPIP, PFR, etc):
-- Colonnes BOOL pré-calculées à l'import
-
-Pour les patterns complexes (bet->call->raise):
-- Stocker actions en JSONB dans PostgreSQL
-- Utiliser index GIN pour requêtes rapides
-
-Volume < 500k mains: JSONB suffit
-Volume > 500k mains: Table HandActions séparée recommandée
-
-
-================================================================================
-4. SCHÉMA JSONB SUGGÉRÉ POUR POSTGRESQL
-================================================================================
-
-```sql
--- Ajout colonne actions JSONB
-ALTER TABLE hands ADD COLUMN actions JSONB;
-
--- Index pour requêtes patterns
-CREATE INDEX idx_hands_actions_gin ON hands USING gin(actions);
-
--- Exemples de requêtes:
-
--- Trouver toutes les mains ou hero a bet sur le flop
-SELECT * FROM hands WHERE actions @> '[{"street": "flop", "type": "bet"}]';
-
--- Trouver bet -> call -> raise -> reraise
-SELECT * FROM hands WHERE actions @> '[{"type":"bet"},{"type":"call"},{"type":"raise"},{"type":"raise"}]';
-
--- Compter les fois ou hero 3-bet preflop
-SELECT COUNT(*) FROM hands 
-WHERE actions @> '[{"street": "preflop", "type": "raise"}]'
-  AND jsonb_path_exists(actions, '$[*] ? (@.type == "raise" && @.effective >= 20)');
-```
-
