@@ -373,6 +373,18 @@ public class HandRepository
                 }
             }
 
+            hand["limit_type"] = DatabaseUtils.GetStringOrNull(reader, "limit_type");
+            hand["game_variant"] = DatabaseUtils.GetStringOrNull(reader, "game_variant");
+            hand["currency"] = DatabaseUtils.GetStringOrNull(reader, "currency");
+            hand["button_seat"] = DatabaseUtils.GetIntOrNull(reader, "button_seat");
+            hand["ante"] = DatabaseUtils.GetDoubleOrNull(reader, "ante");
+            hand["tournament_id"] = DatabaseUtils.GetStringOrNull(reader, "tournament_id");
+            hand["tournament_name"] = DatabaseUtils.GetStringOrNull(reader, "tournament_name");
+            hand["tournament_level"] = DatabaseUtils.GetIntOrNull(reader, "tournament_level");
+            hand["buyin_currency"] = DatabaseUtils.GetStringOrNull(reader, "buyin_currency");
+            hand["rake_per_player"] = DatabaseUtils.GetDoubleOrNull(reader, "rake_per_player");
+            hand["structured_actions"] = DatabaseUtils.GetStringOrNull(reader, "structured_actions");
+
             // Dynamic fields from JOINs
             hand["hero_position"] = DatabaseUtils.GetStringOrNull(reader, "dyn_hero_position");
             hand["opponent_position"] = DatabaseUtils.GetStringOrNull(reader, "opponent_position");

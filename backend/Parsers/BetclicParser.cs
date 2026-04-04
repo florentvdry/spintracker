@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Globalization;
 using SpinTrackerBackend;
+using System.Text.Json;
 
 namespace SpinTrackerBackend;
 
@@ -167,6 +168,7 @@ public class BetclicParser : IHandParser
 
             // Post-Processing Calculations
             BuildActionStrings(hand, actions); // Build action strings before calculations
+            BuildStructuredActions(hand, actions, heroName);
             CalculateInvestmentsAndProfits(hand, players, actions, heroName, totalPotWon);
             NormalizeHandData(hand, players, heroName);
             GenerateHandId(hand);
@@ -261,7 +263,10 @@ public class BetclicParser : IHandParser
         else if (line.Contains("Table ID:"))
             hand.TableId = line.Split(new[] { ':' }, 2)[1].Trim();
         else if (line.Contains("Blinds:"))
+        {
             hand.Blinds = line.Split(new[] { ':' }, 2)[1].Trim();
+            ParseBetclicBlinds(hand, hand.Blinds);
+        }
         else if (line.Contains("Total Pot:"))
         {
             var match = PrizePoolRegex.Match(line);
@@ -718,6 +723,28 @@ public class BetclicParser : IHandParser
         return "Unknown";
     }
 
+    private void ParseBetclicBlinds(ParsedHand hand, string blindsStr)
+    {
+        var blindMatch = Regex.Match(blindsStr, @"(\d+\.?\d*)/(\d+\.?\d*)");
+        if (blindMatch.Success)
+        {
+            var sb = double.Parse(blindMatch.Groups[1].Value, CultureInfo.InvariantCulture);
+            var bb = double.Parse(blindMatch.Groups[2].Value, CultureInfo.InvariantCulture);
+            hand.StructuredBlinds = new BlindsInfo { Sb = sb, Bb = bb };
+            hand.LimitType = "NL";
+            hand.GameVariant = "HOLDEM";
+        }
+
+        var anteMatch = Regex.Match(blindsStr, @"ante (\d+\.?\d*)", RegexOptions.IgnoreCase);
+        if (anteMatch.Success)
+        {
+            hand.Ante = double.Parse(anteMatch.Groups[1].Value, CultureInfo.InvariantCulture);
+            if (hand.StructuredBlinds == null)
+                hand.StructuredBlinds = new BlindsInfo();
+            hand.StructuredBlinds.Ante = hand.Ante;
+        }
+    }
+
     private double CalculatePlayerInvestment(Dictionary<string, List<string>> actions, string playerName)
     {
         double total = 0;
@@ -746,5 +773,187 @@ public class BetclicParser : IHandParser
             total += streetInvestment;
         }
         return total;
+    }
+
+    private void BuildStructuredActions(ParsedHand hand, Dictionary<string, List<string>> rawActions, string? heroName)
+    {
+        var structured = new HandActions
+        {
+            Info = new HandInfo
+            {
+                HandId = hand.HandId,
+                Room = hand.Room,
+                Table = hand.TableId,
+                TableSize = hand.PlayerCount,
+                ButtonSeat = hand.ButtonSeat,
+                Date = hand.DateTime,
+                Limit = hand.LimitType,
+                Game = hand.GameVariant,
+                Blinds = hand.StructuredBlinds,
+                Currency = hand.Currency,
+                GameType = hand.GameMode,
+                TournamentId = hand.GameId,
+                TournamentName = hand.GameName,
+                TournamentLevel = hand.TournamentLevel,
+                BuyIn = hand.BuyIn > 0 ? hand.BuyIn : null,
+                BuyinCurrency = hand.BuyinCurrency,
+                Multiplier = hand.Multiplier > 1 ? hand.Multiplier : null,
+                PrizePool = hand.PrizePool > 0 ? hand.PrizePool : null,
+                Position = hand.Position > 0 ? hand.Position : null,
+                Ante = hand.Ante,
+                RakePerPlayer = hand.RakePerPlayer
+            },
+            Players = hand.Players.Select(p => new PlayerHandInfo
+            {
+                Seat = 0,
+                Name = p.Name,
+                Stack = p.Stack,
+                IsHero = p.IsHero
+            }).ToList(),
+            Board = new BoardInfo
+            {
+                Flop = !string.IsNullOrEmpty(hand.Flop) ? hand.Flop.Split(' ').ToList() : null,
+                Turn = hand.Turn,
+                River = hand.River
+            },
+            Summary = new HandSummary
+            {
+                TotalPot = hand.TotalPot,
+                Rake = hand.Rake,
+                Winners = hand.Players.Where(p => p.ChipsWon > 0).Select(p => new WinnerInfo
+                {
+                    Player = p.Name,
+                    Amount = p.ChipsWon,
+                    Hand = null
+                }).ToList()
+            }
+        };
+
+        var orderCounters = new Dictionary<string, int>
+        {
+            ["preflop"] = 0,
+            ["flop"] = 0,
+            ["turn"] = 0,
+            ["river"] = 0
+        };
+
+        foreach (var street in new[] { "preflop", "flop", "turn", "river" })
+        {
+            if (!rawActions.TryGetValue(street, out var streetActions) || streetActions == null)
+                continue;
+
+            foreach (var actionLine in streetActions)
+            {
+                orderCounters[street]++;
+                var action = ParseBetclicActionLineToStructured(actionLine, street, orderCounters[street], heroName);
+                if (action != null)
+                    structured.Actions.Add(action);
+            }
+        }
+
+        hand.StructuredActions = structured;
+    }
+
+    private StreetAction? ParseBetclicActionLineToStructured(string line, string street, int order, string? heroName)
+    {
+        var lowerLine = line.ToLower();
+
+        var playerMatch = Regex.Match(line, @"^(?:[0-9]{1,2}:[0-9]{2}\s*-\s*)?(.+?):");
+        var playerName = playerMatch.Success ? playerMatch.Groups[1].Value.Trim() : "Unknown";
+
+        if (lowerLine.Contains("posts sb"))
+        {
+            var amountMatch = Regex.Match(line, @"Posts SB (\d+)");
+            return new StreetAction
+            {
+                Street = street,
+                Order = order,
+                Player = playerName,
+                Type = ActionType.post,
+                PostType = "sb",
+                Amount = amountMatch.Success ? double.Parse(amountMatch.Groups[1].Value) : null
+            };
+        }
+        else if (lowerLine.Contains("posts bb"))
+        {
+            var amountMatch = Regex.Match(line, @"Posts BB (\d+)");
+            return new StreetAction
+            {
+                Street = street,
+                Order = order,
+                Player = playerName,
+                Type = ActionType.post,
+                PostType = "bb",
+                Amount = amountMatch.Success ? double.Parse(amountMatch.Groups[1].Value) : null
+            };
+        }
+        else if (lowerLine.Contains("folds"))
+        {
+            return new StreetAction
+            {
+                Street = street,
+                Order = order,
+                Player = playerName,
+                Type = ActionType.fold
+            };
+        }
+        else if (lowerLine.Contains("checks"))
+        {
+            return new StreetAction
+            {
+                Street = street,
+                Order = order,
+                Player = playerName,
+                Type = ActionType.check
+            };
+        }
+        else if (lowerLine.Contains("bets"))
+        {
+            var amountMatch = Regex.Match(line, @"Bets (\d+)");
+            var isAllIn = lowerLine.Contains("all-in");
+            return new StreetAction
+            {
+                Street = street,
+                Order = order,
+                Player = playerName,
+                Type = ActionType.bet,
+                Amount = amountMatch.Success ? double.Parse(amountMatch.Groups[1].Value) : null,
+                Effective = amountMatch.Success ? double.Parse(amountMatch.Groups[1].Value) : null,
+                IsAllIn = isAllIn
+            };
+        }
+        else if (lowerLine.Contains("calls"))
+        {
+            var amountMatch = Regex.Match(line, @"Calls (\d+)");
+            var isAllIn = lowerLine.Contains("all-in");
+            return new StreetAction
+            {
+                Street = street,
+                Order = order,
+                Player = playerName,
+                Type = ActionType.call,
+                Amount = amountMatch.Success ? double.Parse(amountMatch.Groups[1].Value) : null,
+                Effective = amountMatch.Success ? double.Parse(amountMatch.Groups[1].Value) : null,
+                IsAllIn = isAllIn
+            };
+        }
+        else if (lowerLine.Contains("raises"))
+        {
+            var amountMatch = Regex.Match(line, @"Raises to (\d+)");
+            var isAllIn = lowerLine.Contains("all-in");
+            double? amount = amountMatch.Success ? double.Parse(amountMatch.Groups[1].Value) : null;
+            return new StreetAction
+            {
+                Street = street,
+                Order = order,
+                Player = playerName,
+                Type = ActionType.raise,
+                Amount = amount,
+                Effective = amount,
+                IsAllIn = isAllIn
+            };
+        }
+
+        return null;
     }
 }

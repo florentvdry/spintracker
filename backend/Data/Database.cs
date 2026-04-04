@@ -132,13 +132,19 @@ public class Database
                 prize_pool, multiplier, buy_in, date_time, table_id, blinds,
                 total_pot, rake, preflop_action,
                 flop, flop_action, turn, turn_action, river, river_action,
-                showdown, result, all_in_street, went_to_showdown, player_count, position
+                showdown, result, all_in_street, went_to_showdown, player_count, position,
+                limit_type, game_variant, currency, button_seat, ante, tournament_id,
+                tournament_name, tournament_level, buyin_currency, rake_per_player,
+                structured_actions
             ) VALUES (
                 @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
                 @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
                 @total_pot, @rake, @preflop_action,
                 @flop, @flop_action, @turn, @turn_action, @river, @river_action,
-                @showdown, @result, @all_in_street, @went_to_showdown, @player_count, @position
+                @showdown, @result, @all_in_street, @went_to_showdown, @player_count, @position,
+                @limit_type, @game_variant, @currency, @button_seat, @ante, @tournament_id,
+                @tournament_name, @tournament_level, @buyin_currency, @rake_per_player,
+                @structured_actions
             )";
 
             _logger.LogInformation($"[DB] SQL prepared, starting insert loop for {hands.Count} hands");
@@ -180,6 +186,21 @@ public class Database
                 handCmd.Parameters.AddWithValue("@went_to_showdown", hand.WentToShowdown ? 1 : 0);
                 handCmd.Parameters.AddWithValue("@player_count", hand.PlayerCount);
                 handCmd.Parameters.AddWithValue("@position", hand.Position);
+
+                var structuredActionsJson = hand.StructuredActions != null 
+                    ? JsonSerializer.Serialize(hand.StructuredActions) 
+                    : null;
+                handCmd.Parameters.AddWithValue("@limit_type", hand.LimitType ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@game_variant", hand.GameVariant ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@currency", hand.Currency ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@button_seat", hand.ButtonSeat ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@ante", hand.Ante ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@tournament_id", hand.TournamentId ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@tournament_name", hand.TournamentName ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@tournament_level", hand.TournamentLevel ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@buyin_currency", hand.BuyinCurrency ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@rake_per_player", hand.RakePerPlayer ?? (object)DBNull.Value);
+                handCmd.Parameters.AddWithValue("@structured_actions", structuredActionsJson ?? (object)DBNull.Value);
 
                 inserted += await handCmd.ExecuteNonQueryAsync();
             }

@@ -56,4 +56,17 @@ public static class DatabaseUtils
             return null;
         }
     }
+
+    public static int? GetIntOrNull(SqliteDataReader reader, string columnName)
+    {
+        try
+        {
+            var ordinal = reader.GetOrdinal(columnName);
+            return reader.IsDBNull(ordinal) ? null : reader.GetInt32(ordinal);
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }
