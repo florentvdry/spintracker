@@ -1,0 +1,322 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707534209411973121-1-1776262331 - Holdem no limit (10/20) - 2026/04/15 14:12:11 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #2 is the button
+Seat 1: MOLEN.DEK (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: jaumehl (500)
+*** ANTE/BLINDS ***
+jaumehl posts small blind 10
+MOLEN.DEK posts big blind 20
+Dealt to Nelfrot-YT [5c Jd]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+jaumehl folds
+MOLEN.DEK collected 30 from pot
+*** SUMMARY ***
+Total pot 30 | No rake
+Seat 1: MOLEN.DEK (big blind) won 30
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707534209411973121-2-1776262341 - Holdem no limit (10/20) - 2026/04/15 14:12:21 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #3 is the button
+Seat 1: MOLEN.DEK (510)
+Seat 2: Nelfrot-YT (500)
+Seat 3: jaumehl (490)
+*** ANTE/BLINDS ***
+MOLEN.DEK posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [8s 2s]
+*** PRE-FLOP *** 
+jaumehl folds
+MOLEN.DEK raises 20 to 40
+Nelfrot-YT calls 20
+*** FLOP *** [9h Qc 9d]
+MOLEN.DEK checks
+Nelfrot-YT checks
+*** TURN *** [9h Qc 9d][4s]
+MOLEN.DEK checks
+Nelfrot-YT checks
+*** RIVER *** [9h Qc 9d 4s][Ts]
+MOLEN.DEK bets 30
+Nelfrot-YT folds
+MOLEN.DEK collected 110 from pot
+*** SUMMARY ***
+Total pot 110 | No rake
+Board: [9h Qc 9d 4s Ts]
+Seat 1: MOLEN.DEK (small blind) won 110
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707534209411973121-3-1776262359 - Holdem no limit (10/20) - 2026/04/15 14:12:39 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #1 is the button
+Seat 1: MOLEN.DEK (550)
+Seat 2: Nelfrot-YT (460)
+Seat 3: jaumehl (490)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+jaumehl posts big blind 20
+Dealt to Nelfrot-YT [4d 9h]
+*** PRE-FLOP *** 
+MOLEN.DEK raises 20 to 40
+Nelfrot-YT folds
+jaumehl folds
+MOLEN.DEK collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 1: MOLEN.DEK (button) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707534209411973121-4-1776262366 - Holdem no limit (10/20) - 2026/04/15 14:12:46 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #2 is the button
+Seat 1: MOLEN.DEK (580)
+Seat 2: Nelfrot-YT (450)
+Seat 3: jaumehl (470)
+*** ANTE/BLINDS ***
+jaumehl posts small blind 10
+MOLEN.DEK posts big blind 20
+Dealt to Nelfrot-YT [Qd 9d]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+jaumehl calls 30
+MOLEN.DEK folds
+*** FLOP *** [6h 7d 9h]
+jaumehl checks
+Nelfrot-YT bets 75
+jaumehl folds
+Nelfrot-YT collected 175 from pot
+*** SUMMARY ***
+Total pot 175 | No rake
+Board: [6h 7d 9h]
+Seat 2: Nelfrot-YT (button) won 175
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707534209411973121-5-1776262379 - Holdem no limit (10/20) - 2026/04/15 14:12:59 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #3 is the button
+Seat 1: MOLEN.DEK (560)
+Seat 2: Nelfrot-YT (510)
+Seat 3: jaumehl (430)
+*** ANTE/BLINDS ***
+MOLEN.DEK posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Kc Ad]
+*** PRE-FLOP *** 
+jaumehl raises 30 to 50
+MOLEN.DEK folds
+Nelfrot-YT raises 460 to 510 and is all-in
+jaumehl folds
+Nelfrot-YT collected 570 from pot
+*** SUMMARY ***
+Total pot 570 | No rake
+Seat 2: Nelfrot-YT (big blind) won 570
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707534209411973121-6-1776262398 - Holdem no limit (10/20) - 2026/04/15 14:13:18 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #1 is the button
+Seat 1: MOLEN.DEK (550)
+Seat 2: Nelfrot-YT (570)
+Seat 3: jaumehl (380)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+jaumehl posts big blind 20
+Dealt to Nelfrot-YT [Qc 7d]
+*** PRE-FLOP *** 
+MOLEN.DEK folds
+Nelfrot-YT calls 10
+jaumehl checks
+*** FLOP *** [Qh Js 2s]
+Nelfrot-YT bets 20
+jaumehl calls 20
+*** TURN *** [Qh Js 2s][8c]
+Nelfrot-YT bets 60
+jaumehl calls 60
+*** RIVER *** [Qh Js 2s 8c][9d]
+Nelfrot-YT checks
+jaumehl checks
+*** SHOW DOWN ***
+Nelfrot-YT shows [Qc 7d] (One pair : Queens)
+jaumehl shows [Jh 9s] (Two pairs : Jacks and 9)
+jaumehl collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [Qh Js 2s 8c 9d]
+Seat 2: Nelfrot-YT (small blind) showed [Qc 7d] and lost with One pair : Queens
+Seat 3: jaumehl (big blind) showed [Jh 9s] and won 200 with Two pairs : Jacks and 9
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707534209411973121-7-1776262421 - Holdem no limit (15/30) - 2026/04/15 14:13:41 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #2 is the button
+Seat 1: MOLEN.DEK (550)
+Seat 2: Nelfrot-YT (470)
+Seat 3: jaumehl (480)
+*** ANTE/BLINDS ***
+jaumehl posts small blind 15
+MOLEN.DEK posts big blind 30
+Dealt to Nelfrot-YT [Ts Kd]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 30 to 60
+jaumehl folds
+MOLEN.DEK raises 30 to 90
+Nelfrot-YT calls 30
+*** FLOP *** [9s Ks 5d]
+MOLEN.DEK bets 75
+Nelfrot-YT raises 305 to 380 and is all-in
+MOLEN.DEK folds
+Nelfrot-YT collected 650 from pot
+*** SUMMARY ***
+Total pot 650 | No rake
+Board: [9s Ks 5d]
+Seat 2: Nelfrot-YT (button) won 650
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707534209411973121-8-1776262447 - Holdem no limit (15/30) - 2026/04/15 14:14:07 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #3 is the button
+Seat 1: MOLEN.DEK (385)
+Seat 2: Nelfrot-YT (650)
+Seat 3: jaumehl (465)
+*** ANTE/BLINDS ***
+MOLEN.DEK posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [3h Kd]
+*** PRE-FLOP *** 
+jaumehl folds
+MOLEN.DEK folds
+Nelfrot-YT collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 2: Nelfrot-YT (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707534209411973121-9-1776262453 - Holdem no limit (15/30) - 2026/04/15 14:14:13 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #1 is the button
+Seat 1: MOLEN.DEK (370)
+Seat 2: Nelfrot-YT (665)
+Seat 3: jaumehl (465)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+jaumehl posts big blind 30
+Dealt to Nelfrot-YT [4s Jd]
+*** PRE-FLOP *** 
+MOLEN.DEK folds
+Nelfrot-YT calls 15
+jaumehl checks
+*** FLOP *** [5d 3h 7c]
+Nelfrot-YT checks
+jaumehl bets 39
+Nelfrot-YT folds
+jaumehl collected 99 from pot
+*** SUMMARY ***
+Total pot 99 | No rake
+Board: [5d 3h 7c]
+Seat 3: jaumehl (big blind) won 99
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707534209411973121-10-1776262472 - Holdem no limit (15/30) - 2026/04/15 14:14:32 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #2 is the button
+Seat 1: MOLEN.DEK (370)
+Seat 2: Nelfrot-YT (635)
+Seat 3: jaumehl (495)
+*** ANTE/BLINDS ***
+jaumehl posts small blind 15
+MOLEN.DEK posts big blind 30
+Dealt to Nelfrot-YT [Th 2d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+jaumehl raises 465 to 495 and is all-in
+MOLEN.DEK calls 340 and is all-in
+*** FLOP *** [8s 6c Qc]
+*** TURN *** [8s 6c Qc][Kd]
+*** RIVER *** [8s 6c Qc Kd][6h]
+*** SHOW DOWN ***
+MOLEN.DEK shows [7s Kh] (Two pairs : Kings and 6)
+jaumehl shows [Js Ah] (One pair : 6)
+jaumehl collected 125 from side pot 1
+MOLEN.DEK collected 740 from main pot
+*** SUMMARY ***
+Total pot 865 | No rake
+Board: [8s 6c Qc Kd 6h]
+Seat 1: MOLEN.DEK (big blind) showed [7s Kh] and won 740 with Two pairs : Kings and 6
+Seat 3: jaumehl (small blind) showed [Js Ah] and won 125 with One pair : 6
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707534209411973121-11-1776262487 - Holdem no limit (15/30) - 2026/04/15 14:14:47 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #3 is the button
+Seat 1: MOLEN.DEK (740)
+Seat 2: Nelfrot-YT (635)
+Seat 3: jaumehl (125)
+*** ANTE/BLINDS ***
+MOLEN.DEK posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Jd 5c]
+*** PRE-FLOP *** 
+jaumehl raises 95 to 125 and is all-in
+MOLEN.DEK calls 110
+Nelfrot-YT folds
+*** FLOP *** [5h Ad 8d]
+*** TURN *** [5h Ad 8d][8s]
+*** RIVER *** [5h Ad 8d 8s][7d]
+*** SHOW DOWN ***
+jaumehl shows [Qd Kc] (One pair : 8)
+MOLEN.DEK shows [6h 6s] (Two pairs : 8 and 6)
+MOLEN.DEK collected 280 from pot
+*** SUMMARY ***
+Total pot 280 | No rake
+Board: [5h Ad 8d 8s 7d]
+Seat 1: MOLEN.DEK (small blind) showed [6h 6s] and won 280 with Two pairs : 8 and 6
+Seat 3: jaumehl (button) showed [Qd Kc] and lost with One pair : 8
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707534209411973121-12-1776262503 - Holdem no limit (15/30) - 2026/04/15 14:15:03 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #2 is the button
+Seat 1: MOLEN.DEK (895)
+Seat 2: Nelfrot-YT (605)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+MOLEN.DEK posts big blind 30
+Dealt to Nelfrot-YT [5c Jc]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 15
+MOLEN.DEK checks
+*** FLOP *** [Js Kd 5h]
+MOLEN.DEK bets 30
+Nelfrot-YT raises 60 to 90
+MOLEN.DEK calls 60
+*** TURN *** [Js Kd 5h][4h]
+MOLEN.DEK bets 30
+Nelfrot-YT raises 455 to 485 and is all-in
+MOLEN.DEK calls 455
+*** RIVER *** [Js Kd 5h 4h][2s]
+*** SHOW DOWN ***
+MOLEN.DEK shows [Jh 8c] (One pair : Jacks)
+Nelfrot-YT shows [5c Jc] (Two pairs : Jacks and 5)
+Nelfrot-YT collected 1210 from pot
+*** SUMMARY ***
+Total pot 1210 | No rake
+Board: [Js Kd 5h 4h 2s]
+Seat 1: MOLEN.DEK (big blind) showed [Jh 8c] and lost with One pair : Jacks
+Seat 2: Nelfrot-YT (small blind) (button) showed [5c Jc] and won 1210 with Two pairs : Jacks and 5
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707534209411973121-13-1776262523 - Holdem no limit (20/40) - 2026/04/15 14:15:23 UTC
+Table: 'Expresso(1096058220)#0' 3-max (real money) Seat #1 is the button
+Seat 1: MOLEN.DEK (290)
+Seat 2: Nelfrot-YT (1210)
+*** ANTE/BLINDS ***
+MOLEN.DEK posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [5d 5c]
+*** PRE-FLOP *** 
+MOLEN.DEK calls 20
+Nelfrot-YT raises 1170 to 1210 and is all-in
+MOLEN.DEK calls 250 and is all-in
+*** FLOP *** [6s Ts Ac]
+*** TURN *** [6s Ts Ac][4c]
+*** RIVER *** [6s Ts Ac 4c][3d]
+*** SHOW DOWN ***
+MOLEN.DEK shows [3h 5h] (One pair : 3)
+Nelfrot-YT shows [5d 5c] (One pair : 5)
+Nelfrot-YT collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [6s Ts Ac 4c 3d]
+Seat 1: MOLEN.DEK (small blind) (button) showed [3h 5h] and lost with One pair : 3
+Seat 2: Nelfrot-YT (big blind) showed [5d 5c] and won 1500 with One pair : 5
+
+

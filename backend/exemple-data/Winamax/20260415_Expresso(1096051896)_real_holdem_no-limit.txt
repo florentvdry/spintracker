@@ -1,0 +1,680 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707507048038793217-1-1776261445 - Holdem no limit (10/20) - 2026/04/15 13:57:25 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: pat161616 (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+pat161616 posts big blind 20
+Dealt to Nelfrot-YT [6c 9d]
+*** PRE-FLOP *** 
+Drisco69 calls 20
+Nelfrot-YT folds
+pat161616 checks
+*** FLOP *** [Qs 6s 3s]
+pat161616 checks
+Drisco69 checks
+*** TURN *** [Qs 6s 3s][7s]
+pat161616 checks
+Drisco69 checks
+*** RIVER *** [Qs 6s 3s 7s][8c]
+pat161616 checks
+Drisco69 checks
+*** SHOW DOWN ***
+pat161616 shows [4c Kh] (High card : King)
+Drisco69 shows [Tc Kc] (High card : King)
+Drisco69 collected 50 from pot
+*** SUMMARY ***
+Total pot 50 | No rake
+Board: [Qs 6s 3s 7s 8c]
+Seat 1: Drisco69 (button) showed [Tc Kc] and won 50 with High card : King
+Seat 3: pat161616 (big blind) showed [4c Kh] and lost with High card : King
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707507048038793217-2-1776261465 - Holdem no limit (10/20) - 2026/04/15 13:57:45 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (530)
+Seat 2: Nelfrot-YT (490)
+Seat 3: pat161616 (480)
+*** ANTE/BLINDS ***
+pat161616 posts small blind 10
+Drisco69 posts big blind 20
+Dealt to Nelfrot-YT [9h 3s]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+pat161616 calls 10
+Drisco69 checks
+*** FLOP *** [9s 8c Ac]
+pat161616 checks
+Drisco69 checks
+*** TURN *** [9s 8c Ac][Ah]
+pat161616 checks
+Drisco69 checks
+*** RIVER *** [9s 8c Ac Ah][As]
+pat161616 checks
+Drisco69 checks
+*** SHOW DOWN ***
+Drisco69 shows [4c 7d] (Trips of Aces)
+pat161616 shows [Ts 2d] (Trips of Aces)
+pat161616 collected 40 from pot
+*** SUMMARY ***
+Total pot 40 | No rake
+Board: [9s 8c Ac Ah As]
+Seat 1: Drisco69 (big blind) showed [4c 7d] and lost with Trips of Aces
+Seat 3: pat161616 (small blind) showed [Ts 2d] and won 40 with Trips of Aces
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707507048038793217-3-1776261485 - Holdem no limit (10/20) - 2026/04/15 13:58:05 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Drisco69 (510)
+Seat 2: Nelfrot-YT (490)
+Seat 3: pat161616 (500)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [4s Ts]
+*** PRE-FLOP *** 
+pat161616 calls 20
+Drisco69 raises 20 to 40
+Nelfrot-YT calls 20
+pat161616 calls 20
+*** FLOP *** [9d 8d Js]
+Drisco69 bets 20
+Nelfrot-YT calls 20
+pat161616 folds
+*** TURN *** [9d 8d Js][6h]
+Drisco69 bets 20
+Nelfrot-YT calls 20
+*** RIVER *** [9d 8d Js 6h][8h]
+Drisco69 checks
+Nelfrot-YT bets 110
+Drisco69 folds
+Nelfrot-YT collected 310 from pot
+*** SUMMARY ***
+Total pot 310 | No rake
+Board: [9d 8d Js 6h 8h]
+Seat 2: Nelfrot-YT (big blind) won 310
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707507048038793217-4-1776261522 - Holdem no limit (10/20) - 2026/04/15 13:58:42 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (430)
+Seat 2: Nelfrot-YT (610)
+Seat 3: pat161616 (460)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+pat161616 posts big blind 20
+Dealt to Nelfrot-YT [7c Ac]
+*** PRE-FLOP *** 
+Drisco69 calls 20
+Nelfrot-YT raises 590 to 610 and is all-in
+pat161616 folds
+Drisco69 folds
+Nelfrot-YT collected 650 from pot
+*** SUMMARY ***
+Total pot 650 | No rake
+Seat 2: Nelfrot-YT (small blind) won 650
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707507048038793217-5-1776261532 - Holdem no limit (10/20) - 2026/04/15 13:58:52 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (410)
+Seat 2: Nelfrot-YT (650)
+Seat 3: pat161616 (440)
+*** ANTE/BLINDS ***
+pat161616 posts small blind 10
+Drisco69 posts big blind 20
+Dealt to Nelfrot-YT [Jd Ad]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+pat161616 folds
+Drisco69 calls 20
+*** FLOP *** [5c Qh 3s]
+Drisco69 checks
+Nelfrot-YT bets 27
+Drisco69 folds
+Nelfrot-YT collected 117 from pot
+*** SUMMARY ***
+Total pot 117 | No rake
+Board: [5c Qh 3s]
+Seat 2: Nelfrot-YT (button) won 117
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707507048038793217-6-1776261551 - Holdem no limit (15/30) - 2026/04/15 13:59:11 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Drisco69 (370)
+Seat 2: Nelfrot-YT (700)
+Seat 3: pat161616 (430)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [4s 5d]
+*** PRE-FLOP *** 
+pat161616 calls 30
+Drisco69 calls 15
+Nelfrot-YT checks
+*** FLOP *** [8s Qc 3c]
+Drisco69 checks
+Nelfrot-YT checks
+pat161616 bets 90
+Drisco69 folds
+Nelfrot-YT folds
+pat161616 collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Board: [8s Qc 3c]
+Seat 3: pat161616 (button) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707507048038793217-7-1776261590 - Holdem no limit (15/30) - 2026/04/15 13:59:50 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (340)
+Seat 2: Nelfrot-YT (670)
+Seat 3: pat161616 (490)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+pat161616 posts big blind 30
+Dealt to Nelfrot-YT [Js 7h]
+*** PRE-FLOP *** 
+Drisco69 folds
+Nelfrot-YT calls 15
+pat161616 checks
+*** FLOP *** [2h 2c 6s]
+Nelfrot-YT bets 30
+pat161616 folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [2h 2c 6s]
+Seat 2: Nelfrot-YT (small blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707507048038793217-8-1776261603 - Holdem no limit (15/30) - 2026/04/15 14:00:03 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (340)
+Seat 2: Nelfrot-YT (700)
+Seat 3: pat161616 (460)
+*** ANTE/BLINDS ***
+pat161616 posts small blind 15
+Drisco69 posts big blind 30
+Dealt to Nelfrot-YT [4c Js]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+pat161616 calls 15
+Drisco69 raises 30 to 60
+pat161616 calls 30
+*** FLOP *** [3h 3c 8c]
+pat161616 checks
+Drisco69 bets 78
+pat161616 folds
+Drisco69 collected 198 from pot
+*** SUMMARY ***
+Total pot 198 | No rake
+Board: [3h 3c 8c]
+Seat 1: Drisco69 (big blind) won 198
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707507048038793217-9-1776261620 - Holdem no limit (15/30) - 2026/04/15 14:00:20 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Drisco69 (400)
+Seat 2: Nelfrot-YT (700)
+Seat 3: pat161616 (400)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [3c 4c]
+*** PRE-FLOP *** 
+pat161616 folds
+Drisco69 calls 15
+Nelfrot-YT checks
+*** FLOP *** [Th Qs 5d]
+Drisco69 bets 30
+Nelfrot-YT folds
+Drisco69 collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [Th Qs 5d]
+Seat 1: Drisco69 (small blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707507048038793217-10-1776261634 - Holdem no limit (20/40) - 2026/04/15 14:00:34 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (430)
+Seat 2: Nelfrot-YT (670)
+Seat 3: pat161616 (400)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+pat161616 posts big blind 40
+Dealt to Nelfrot-YT [8c 5c]
+*** PRE-FLOP *** 
+Drisco69 calls 40
+Nelfrot-YT calls 20
+pat161616 checks
+*** FLOP *** [8d Ad 6h]
+Nelfrot-YT checks
+pat161616 checks
+Drisco69 bets 40
+Nelfrot-YT calls 40
+pat161616 folds
+*** TURN *** [8d Ad 6h][4s]
+Nelfrot-YT checks
+Drisco69 checks
+*** RIVER *** [8d Ad 6h 4s][7c]
+Nelfrot-YT checks
+Drisco69 bets 70
+Nelfrot-YT calls 70
+*** SHOW DOWN ***
+Drisco69 shows [Kh Qc] (High card : Ace)
+Nelfrot-YT shows [8c 5c] (Straight 8 high)
+Nelfrot-YT collected 340 from pot
+*** SUMMARY ***
+Total pot 340 | No rake
+Board: [8d Ad 6h 4s 7c]
+Seat 1: Drisco69 (button) showed [Kh Qc] and lost with High card : Ace
+Seat 2: Nelfrot-YT (small blind) showed [8c 5c] and won 340 with Straight 8 high
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707507048038793217-11-1776261674 - Holdem no limit (20/40) - 2026/04/15 14:01:14 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (280)
+Seat 2: Nelfrot-YT (860)
+Seat 3: pat161616 (360)
+*** ANTE/BLINDS ***
+pat161616 posts small blind 20
+Drisco69 posts big blind 40
+Dealt to Nelfrot-YT [6h 8s]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+pat161616 calls 20
+Drisco69 checks
+*** FLOP *** [Ts 9h 3c]
+pat161616 checks
+Drisco69 checks
+*** TURN *** [Ts 9h 3c][6d]
+pat161616 bets 320 and is all-in
+Drisco69 folds
+pat161616 collected 400 from pot
+*** SUMMARY ***
+Total pot 400 | No rake
+Board: [Ts 9h 3c 6d]
+Seat 3: pat161616 (small blind) won 400
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707507048038793217-12-1776261693 - Holdem no limit (20/40) - 2026/04/15 14:01:33 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Drisco69 (240)
+Seat 2: Nelfrot-YT (860)
+Seat 3: pat161616 (400)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [4s Th]
+*** PRE-FLOP *** 
+pat161616 folds
+Drisco69 raises 40 to 80
+Nelfrot-YT folds
+Drisco69 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 1: Drisco69 (small blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707507048038793217-13-1776261701 - Holdem no limit (20/40) - 2026/04/15 14:01:41 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (280)
+Seat 2: Nelfrot-YT (820)
+Seat 3: pat161616 (400)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+pat161616 posts big blind 40
+Dealt to Nelfrot-YT [7c 3h]
+*** PRE-FLOP *** 
+Drisco69 raises 240 to 280 and is all-in
+Nelfrot-YT folds
+pat161616 calls 240
+*** FLOP *** [2c 4s Kc]
+*** TURN *** [2c 4s Kc][As]
+*** RIVER *** [2c 4s Kc As][7h]
+*** SHOW DOWN ***
+pat161616 shows [Qc 8c] (High card : Ace)
+Drisco69 shows [Qh Js] (High card : Ace)
+Drisco69 collected 580 from pot
+*** SUMMARY ***
+Total pot 580 | No rake
+Board: [2c 4s Kc As 7h]
+Seat 1: Drisco69 (button) showed [Qh Js] and won 580 with High card : Ace
+Seat 3: pat161616 (big blind) showed [Qc 8c] and lost with High card : Ace
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507048038793217-14-1776261715 - Holdem no limit (30/60) - 2026/04/15 14:01:55 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (580)
+Seat 2: Nelfrot-YT (800)
+Seat 3: pat161616 (120)
+*** ANTE/BLINDS ***
+pat161616 posts small blind 30
+Drisco69 posts big blind 60
+Dealt to Nelfrot-YT [3c 7d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+pat161616 raises 60 to 120 and is all-in
+Drisco69 calls 60
+*** FLOP *** [2s Ah Kh]
+*** TURN *** [2s Ah Kh][8d]
+*** RIVER *** [2s Ah Kh 8d][6s]
+*** SHOW DOWN ***
+pat161616 shows [Ts Qc] (High card : Ace)
+Drisco69 shows [As Jd] (One pair : Aces)
+Drisco69 collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Board: [2s Ah Kh 8d 6s]
+Seat 1: Drisco69 (big blind) showed [As Jd] and won 240 with One pair : Aces
+Seat 3: pat161616 (small blind) showed [Ts Qc] and lost with High card : Ace
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507048038793217-15-1776261729 - Holdem no limit (30/60) - 2026/04/15 14:02:09 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (700)
+Seat 2: Nelfrot-YT (800)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [5s Jc]
+*** PRE-FLOP *** 
+Drisco69 calls 30
+Nelfrot-YT checks
+*** FLOP *** [2c 2d 3d]
+Nelfrot-YT checks
+Drisco69 checks
+*** TURN *** [2c 2d 3d][Kh]
+Nelfrot-YT checks
+Drisco69 checks
+*** RIVER *** [2c 2d 3d Kh][Qc]
+Nelfrot-YT checks
+Drisco69 checks
+*** SHOW DOWN ***
+Nelfrot-YT shows [5s Jc] (One pair : 2)
+Drisco69 shows [6h Ac] (One pair : 2)
+Drisco69 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [2c 2d 3d Kh Qc]
+Seat 1: Drisco69 (small blind) (button) showed [6h Ac] and won 120 with One pair : 2
+Seat 2: Nelfrot-YT (big blind) showed [5s Jc] and lost with One pair : 2
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507048038793217-16-1776261754 - Holdem no limit (30/60) - 2026/04/15 14:02:34 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (760)
+Seat 2: Nelfrot-YT (740)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+Drisco69 posts big blind 60
+Dealt to Nelfrot-YT [9c 9h]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 680 to 740 and is all-in
+Drisco69 folds
+Nelfrot-YT collected 800 from pot
+*** SUMMARY ***
+Total pot 800 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 800
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507048038793217-17-1776261760 - Holdem no limit (30/60) - 2026/04/15 14:02:40 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (700)
+Seat 2: Nelfrot-YT (800)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Js 7d]
+*** PRE-FLOP *** 
+Drisco69 calls 30
+Nelfrot-YT checks
+*** FLOP *** [Tc Ah 4s]
+Nelfrot-YT checks
+Drisco69 checks
+*** TURN *** [Tc Ah 4s][Jh]
+Nelfrot-YT bets 90
+Drisco69 folds
+Nelfrot-YT collected 210 from pot
+*** SUMMARY ***
+Total pot 210 | No rake
+Board: [Tc Ah 4s Jh]
+Seat 2: Nelfrot-YT (big blind) won 210
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507048038793217-18-1776261792 - Holdem no limit (30/60) - 2026/04/15 14:03:12 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (640)
+Seat 2: Nelfrot-YT (860)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+Drisco69 posts big blind 60
+Dealt to Nelfrot-YT [Ts Ad]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 800 to 860 and is all-in
+Drisco69 folds
+Nelfrot-YT collected 920 from pot
+*** SUMMARY ***
+Total pot 920 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 920
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507048038793217-19-1776261802 - Holdem no limit (30/60) - 2026/04/15 14:03:22 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (580)
+Seat 2: Nelfrot-YT (920)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Tc Ks]
+*** PRE-FLOP *** 
+Drisco69 folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 2: Nelfrot-YT (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707507048038793217-20-1776261806 - Holdem no limit (40/80) - 2026/04/15 14:03:26 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (550)
+Seat 2: Nelfrot-YT (950)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+Drisco69 posts big blind 80
+Dealt to Nelfrot-YT [Jh Jd]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 870 to 950 and is all-in
+Drisco69 calls 470 and is all-in
+*** FLOP *** [9h 6c 2c]
+*** TURN *** [9h 6c 2c][5d]
+*** RIVER *** [9h 6c 2c 5d][Ks]
+*** SHOW DOWN ***
+Drisco69 shows [Qs Qc] (One pair : Queens)
+Nelfrot-YT shows [Jh Jd] (One pair : Jacks)
+Nelfrot-YT collected 400 from side pot 1
+Drisco69 collected 1100 from main pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [9h 6c 2c 5d Ks]
+Seat 1: Drisco69 (big blind) showed [Qs Qc] and won 1100 with One pair : Queens
+Seat 2: Nelfrot-YT (small blind) (button) showed [Jh Jd] and won 400 with One pair : Jacks
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707507048038793217-21-1776261819 - Holdem no limit (40/80) - 2026/04/15 14:03:39 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (1100)
+Seat 2: Nelfrot-YT (400)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [Th Qh]
+*** PRE-FLOP *** 
+Drisco69 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 2: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707507048038793217-22-1776261824 - Holdem no limit (40/80) - 2026/04/15 14:03:44 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (1060)
+Seat 2: Nelfrot-YT (440)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+Drisco69 posts big blind 80
+Dealt to Nelfrot-YT [4s Kc]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 360 to 440 and is all-in
+Drisco69 folds
+Nelfrot-YT collected 520 from pot
+*** SUMMARY ***
+Total pot 520 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 520
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707507048038793217-23-1776261832 - Holdem no limit (40/80) - 2026/04/15 14:03:52 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (980)
+Seat 2: Nelfrot-YT (520)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [Ac 8c]
+*** PRE-FLOP *** 
+Drisco69 calls 40
+Nelfrot-YT raises 440 to 520 and is all-in
+Drisco69 folds
+Nelfrot-YT collected 600 from pot
+*** SUMMARY ***
+Total pot 600 | No rake
+Seat 2: Nelfrot-YT (big blind) won 600
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707507048038793217-24-1776261846 - Holdem no limit (40/80) - 2026/04/15 14:04:06 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (900)
+Seat 2: Nelfrot-YT (600)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+Drisco69 posts big blind 80
+Dealt to Nelfrot-YT [4d Tc]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Drisco69 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 1: Drisco69 (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707507048038793217-25-1776261854 - Holdem no limit (40/80) - 2026/04/15 14:04:14 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (940)
+Seat 2: Nelfrot-YT (560)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [7h Qd]
+*** PRE-FLOP *** 
+Drisco69 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 2: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707507048038793217-26-1776261859 - Holdem no limit (40/80) - 2026/04/15 14:04:19 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (900)
+Seat 2: Nelfrot-YT (600)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+Drisco69 posts big blind 80
+Dealt to Nelfrot-YT [9s 5s]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 40
+Drisco69 checks
+*** FLOP *** [3s 5h 4h]
+Drisco69 checks
+Nelfrot-YT bets 80
+Drisco69 calls 80
+*** TURN *** [3s 5h 4h][8d]
+Drisco69 checks
+Nelfrot-YT checks
+*** RIVER *** [3s 5h 4h 8d][7c]
+Drisco69 bets 80
+Nelfrot-YT calls 80
+*** SHOW DOWN ***
+Nelfrot-YT shows [9s 5s] (One pair : 5)
+Drisco69 shows [5c 7s] (Two pairs : 7 and 5)
+Drisco69 collected 480 from pot
+*** SUMMARY ***
+Total pot 480 | No rake
+Board: [3s 5h 4h 8d 7c]
+Seat 1: Drisco69 (big blind) showed [5c 7s] and won 480 with Two pairs : 7 and 5
+Seat 2: Nelfrot-YT (small blind) (button) showed [9s 5s] and lost with One pair : 5
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707507048038793217-27-1776261889 - Holdem no limit (40/80) - 2026/04/15 14:04:49 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (1140)
+Seat 2: Nelfrot-YT (360)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [7d 3s]
+*** PRE-FLOP *** 
+Drisco69 raises 1060 to 1140 and is all-in
+Nelfrot-YT folds
+Drisco69 collected 1220 from pot
+*** SUMMARY ***
+Total pot 1220 | No rake
+Seat 1: Drisco69 (small blind) (button) won 1220
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 6 - HandId: #4707507048038793217-28-1776261896 - Holdem no limit (50/100) - 2026/04/15 14:04:56 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Drisco69 (1220)
+Seat 2: Nelfrot-YT (280)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 50
+Drisco69 posts big blind 100
+Dealt to Nelfrot-YT [3d Jd]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 180 to 280 and is all-in
+Drisco69 folds
+Nelfrot-YT collected 380 from pot
+*** SUMMARY ***
+Total pot 380 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 380
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 6 - HandId: #4707507048038793217-29-1776261901 - Holdem no limit (50/100) - 2026/04/15 14:05:01 UTC
+Table: 'Expresso(1096051896)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Drisco69 (1120)
+Seat 2: Nelfrot-YT (380)
+*** ANTE/BLINDS ***
+Drisco69 posts small blind 50
+Nelfrot-YT posts big blind 100
+Dealt to Nelfrot-YT [2c Qh]
+*** PRE-FLOP *** 
+Drisco69 raises 1020 to 1120 and is all-in
+Nelfrot-YT calls 280 and is all-in
+*** FLOP *** [8d Ks 5h]
+*** TURN *** [8d Ks 5h][Th]
+*** RIVER *** [8d Ks 5h Th][4c]
+*** SHOW DOWN ***
+Nelfrot-YT shows [2c Qh] (High card : King)
+Drisco69 shows [Js Kc] (One pair : Kings)
+Drisco69 collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [8d Ks 5h Th 4c]
+Seat 1: Drisco69 (small blind) (button) showed [Js Kc] and won 1500 with One pair : Kings
+Seat 2: Nelfrot-YT (big blind) showed [2c Qh] and lost with High card : King
+
+

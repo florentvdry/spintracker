@@ -1,0 +1,35 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707552488792784897-1-1776262922 - Holdem no limit (10/20) - 2026/04/15 14:22:02 UTC
+Table: 'Expresso(1096062476)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Nelfrot-YT (500)
+Seat 2: Gris 127237 (500)
+Seat 3: jkiuuu (500)
+*** ANTE/BLINDS ***
+Gris 127237 posts small blind 10
+jkiuuu posts big blind 20
+Dealt to Nelfrot-YT [Ts Th]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+Gris 127237 calls 30
+jkiuuu calls 20
+*** FLOP *** [8c Qd Tc]
+Gris 127237 bets 20
+jkiuuu calls 20
+Nelfrot-YT raises 80 to 100
+Gris 127237 calls 80
+jkiuuu folds
+*** TURN *** [8c Qd Tc][Jh]
+Gris 127237 bets 20
+Nelfrot-YT raises 340 to 360 and is all-in
+Gris 127237 calls 340 and is all-in
+*** RIVER *** [8c Qd Tc Jh][Jc]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Ts Th] (Full of Tens and Jacks)
+Gris 127237 shows [8d Js] (Full of Jacks and 8)
+Gris 127237 collected 1060 from pot
+*** SUMMARY ***
+Total pot 1060 | No rake
+Board: [8c Qd Tc Jh Jc]
+Seat 1: Nelfrot-YT (button) showed [Ts Th] and lost with Full of Tens and Jacks
+Seat 2: Gris 127237 (small blind) showed [8d Js] and won 1060 with Full of Jacks and 8
+
+

@@ -1,0 +1,169 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707541579575853057-1-1776262571 - Holdem no limit (10/20) - 2026/04/15 14:16:11 UTC
+Table: 'Expresso(1096059936)#0' 3-max (real money) Seat #2 is the button
+Seat 1: hernatadmel (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Pato9 (500)
+*** ANTE/BLINDS ***
+Pato9 posts small blind 10
+hernatadmel posts big blind 20
+Dealt to Nelfrot-YT [2h 8d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+Pato9 raises 20 to 40
+hernatadmel calls 20
+*** FLOP *** [Tc Jd 6s]
+Pato9 bets 40
+hernatadmel calls 40
+*** TURN *** [Tc Jd 6s][8s]
+Pato9 checks
+hernatadmel bets 420 and is all-in
+Pato9 folds
+hernatadmel collected 580 from pot
+*** SUMMARY ***
+Total pot 580 | No rake
+Board: [Tc Jd 6s 8s]
+Seat 1: hernatadmel (big blind) won 580
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707541579575853057-2-1776262594 - Holdem no limit (10/20) - 2026/04/15 14:16:34 UTC
+Table: 'Expresso(1096059936)#0' 3-max (real money) Seat #3 is the button
+Seat 1: hernatadmel (580)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Pato9 (420)
+*** ANTE/BLINDS ***
+hernatadmel posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [7h 6c]
+*** PRE-FLOP *** 
+Pato9 raises 20 to 40
+hernatadmel raises 100 to 140
+Nelfrot-YT folds
+Pato9 raises 280 to 420 and is all-in
+hernatadmel calls 280
+*** FLOP *** [Ts 3h 3s]
+*** TURN *** [Ts 3h 3s][5d]
+*** RIVER *** [Ts 3h 3s 5d][5h]
+*** SHOW DOWN ***
+hernatadmel shows [Ks Jc] (Two pairs : 5 and 3)
+Pato9 shows [Jd Kc] (Two pairs : 5 and 3)
+Pato9 collected 430 from pot
+hernatadmel collected 430 from pot
+*** SUMMARY ***
+Total pot 860 | No rake
+Board: [Ts 3h 3s 5d 5h]
+Seat 1: hernatadmel (small blind) showed [Ks Jc] and won 430 with Two pairs : 5 and 3
+Seat 3: Pato9 (button) showed [Jd Kc] and won 430 with Two pairs : 5 and 3
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707541579575853057-3-1776262614 - Holdem no limit (10/20) - 2026/04/15 14:16:54 UTC
+Table: 'Expresso(1096059936)#0' 3-max (real money) Seat #1 is the button
+Seat 1: hernatadmel (590)
+Seat 2: Nelfrot-YT (480)
+Seat 3: Pato9 (430)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Pato9 posts big blind 20
+Dealt to Nelfrot-YT [7c Kd]
+*** PRE-FLOP *** 
+hernatadmel calls 20
+Nelfrot-YT folds
+Pato9 checks
+*** FLOP *** [6s 9c Qh]
+Pato9 checks
+hernatadmel checks
+*** TURN *** [6s 9c Qh][8d]
+Pato9 checks
+hernatadmel checks
+*** RIVER *** [6s 9c Qh 8d][5h]
+Pato9 checks
+hernatadmel bets 75
+Pato9 calls 75
+*** SHOW DOWN ***
+hernatadmel shows [Kc Tc] (High card : King)
+Pato9 shows [3s 9d] (One pair : 9)
+Pato9 collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [6s 9c Qh 8d 5h]
+Seat 1: hernatadmel (button) showed [Kc Tc] and lost with High card : King
+Seat 3: Pato9 (big blind) showed [3s 9d] and won 200 with One pair : 9
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707541579575853057-4-1776262639 - Holdem no limit (10/20) - 2026/04/15 14:17:19 UTC
+Table: 'Expresso(1096059936)#0' 3-max (real money) Seat #2 is the button
+Seat 1: hernatadmel (495)
+Seat 2: Nelfrot-YT (470)
+Seat 3: Pato9 (535)
+*** ANTE/BLINDS ***
+Pato9 posts small blind 10
+hernatadmel posts big blind 20
+Dealt to Nelfrot-YT [7h Qh]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+Pato9 folds
+hernatadmel calls 20
+*** FLOP *** [Jd Kh 5d]
+hernatadmel checks
+Nelfrot-YT bets 27
+hernatadmel folds
+Nelfrot-YT collected 117 from pot
+*** SUMMARY ***
+Total pot 117 | No rake
+Board: [Jd Kh 5d]
+Seat 2: Nelfrot-YT (button) won 117
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707541579575853057-5-1776262658 - Holdem no limit (10/20) - 2026/04/15 14:17:38 UTC
+Table: 'Expresso(1096059936)#0' 3-max (real money) Seat #3 is the button
+Seat 1: hernatadmel (455)
+Seat 2: Nelfrot-YT (520)
+Seat 3: Pato9 (525)
+*** ANTE/BLINDS ***
+hernatadmel posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Ts Qc]
+*** PRE-FLOP *** 
+Pato9 calls 20
+hernatadmel calls 10
+Nelfrot-YT checks
+*** FLOP *** [7d 2h Kh]
+hernatadmel checks
+Nelfrot-YT checks
+Pato9 bets 39
+hernatadmel folds
+Nelfrot-YT folds
+Pato9 collected 99 from pot
+*** SUMMARY ***
+Total pot 99 | No rake
+Board: [7d 2h Kh]
+Seat 3: Pato9 (button) won 99
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707541579575853057-6-1776262677 - Holdem no limit (15/30) - 2026/04/15 14:17:57 UTC
+Table: 'Expresso(1096059936)#0' 3-max (real money) Seat #1 is the button
+Seat 1: hernatadmel (435)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Pato9 (565)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Pato9 posts big blind 30
+Dealt to Nelfrot-YT [Js Jd]
+*** PRE-FLOP *** 
+hernatadmel calls 30
+Nelfrot-YT raises 470 to 500 and is all-in
+Pato9 calls 470
+hernatadmel folds
+*** FLOP *** [7c 4c 5s]
+*** TURN *** [7c 4c 5s][4s]
+*** RIVER *** [7c 4c 5s 4s][Qd]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Js Jd] (Two pairs : Jacks and 4)
+Pato9 shows [Qs Ac] (Two pairs : Queens and 4)
+Pato9 collected 1030 from pot
+*** SUMMARY ***
+Total pot 1030 | No rake
+Board: [7c 4c 5s 4s Qd]
+Seat 2: Nelfrot-YT (small blind) showed [Js Jd] and lost with Two pairs : Jacks and 4
+Seat 3: Pato9 (big blind) showed [Qs Ac] and won 1030 with Two pairs : Queens and 4
+
+

@@ -1,0 +1,395 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707517897126182913-1-1776261799 - Holdem no limit (10/20) - 2026/04/15 14:03:19 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ghislain39 (500)
+Seat 2: MRCrack87446 (500)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+ghislain39 posts big blind 20
+Dealt to Nelfrot-YT [Td 8s]
+*** PRE-FLOP *** 
+MRCrack87446 raises 20 to 40
+Nelfrot-YT folds
+ghislain39 calls 20
+*** FLOP *** [2h 8d 3h]
+ghislain39 checks
+MRCrack87446 checks
+*** TURN *** [2h 8d 3h][8h]
+ghislain39 checks
+MRCrack87446 bets 30
+ghislain39 folds
+MRCrack87446 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [2h 8d 3h 8h]
+Seat 2: MRCrack87446 (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707517897126182913-2-1776261816 - Holdem no limit (10/20) - 2026/04/15 14:03:36 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ghislain39 (460)
+Seat 2: MRCrack87446 (550)
+Seat 3: Nelfrot-YT (490)
+*** ANTE/BLINDS ***
+ghislain39 posts small blind 10
+MRCrack87446 posts big blind 20
+Dealt to Nelfrot-YT [8c 7h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+ghislain39 calls 10
+MRCrack87446 checks
+*** FLOP *** [3d 4d 5d]
+ghislain39 bets 20
+MRCrack87446 calls 20
+*** TURN *** [3d 4d 5d][7d]
+ghislain39 bets 20
+MRCrack87446 raises 40 to 60
+ghislain39 folds
+MRCrack87446 collected 160 from pot
+*** SUMMARY ***
+Total pot 160 | No rake
+Board: [3d 4d 5d 7d]
+Seat 2: MRCrack87446 (big blind) won 160
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707517897126182913-3-1776261831 - Holdem no limit (10/20) - 2026/04/15 14:03:51 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ghislain39 (400)
+Seat 2: MRCrack87446 (610)
+Seat 3: Nelfrot-YT (490)
+*** ANTE/BLINDS ***
+MRCrack87446 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [4d 9d]
+*** PRE-FLOP *** 
+ghislain39 folds
+MRCrack87446 folds
+Nelfrot-YT collected 30 from pot
+*** SUMMARY ***
+Total pot 30 | No rake
+Seat 3: Nelfrot-YT (big blind) won 30
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707517897126182913-4-1776261837 - Holdem no limit (10/20) - 2026/04/15 14:03:57 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ghislain39 (400)
+Seat 2: MRCrack87446 (600)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+ghislain39 posts big blind 20
+Dealt to Nelfrot-YT [Ts 3s]
+*** PRE-FLOP *** 
+MRCrack87446 folds
+Nelfrot-YT calls 10
+ghislain39 checks
+*** FLOP *** [Ah Qh 3c]
+Nelfrot-YT bets 20
+ghislain39 folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [Ah Qh 3c]
+Seat 3: Nelfrot-YT (small blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707517897126182913-5-1776261853 - Holdem no limit (10/20) - 2026/04/15 14:04:13 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ghislain39 (380)
+Seat 2: MRCrack87446 (600)
+Seat 3: Nelfrot-YT (520)
+*** ANTE/BLINDS ***
+ghislain39 posts small blind 10
+MRCrack87446 posts big blind 20
+Dealt to Nelfrot-YT [5c 3h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+ghislain39 calls 10
+MRCrack87446 checks
+*** FLOP *** [4s Qd Kh]
+ghislain39 checks
+MRCrack87446 bets 20
+ghislain39 calls 20
+*** TURN *** [4s Qd Kh][9s]
+ghislain39 checks
+MRCrack87446 bets 60
+ghislain39 calls 60
+*** RIVER *** [4s Qd Kh 9s][6s]
+ghislain39 checks
+MRCrack87446 checks
+*** SHOW DOWN ***
+ghislain39 shows [Th 9c] (One pair : 9)
+MRCrack87446 shows [3d Kd] (One pair : Kings)
+MRCrack87446 collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [4s Qd Kh 9s 6s]
+Seat 1: ghislain39 (small blind) showed [Th 9c] and lost with One pair : 9
+Seat 2: MRCrack87446 (big blind) showed [3d Kd] and won 200 with One pair : Kings
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707517897126182913-6-1776261875 - Holdem no limit (10/20) - 2026/04/15 14:04:35 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ghislain39 (280)
+Seat 2: MRCrack87446 (700)
+Seat 3: Nelfrot-YT (520)
+*** ANTE/BLINDS ***
+MRCrack87446 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [5s Kc]
+*** PRE-FLOP *** 
+ghislain39 folds
+MRCrack87446 folds
+Nelfrot-YT collected 30 from pot
+*** SUMMARY ***
+Total pot 30 | No rake
+Seat 3: Nelfrot-YT (big blind) won 30
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707517897126182913-7-1776261880 - Holdem no limit (10/20) - 2026/04/15 14:04:40 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ghislain39 (280)
+Seat 2: MRCrack87446 (690)
+Seat 3: Nelfrot-YT (530)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+ghislain39 posts big blind 20
+Dealt to Nelfrot-YT [3s 2s]
+*** PRE-FLOP *** 
+MRCrack87446 calls 20
+Nelfrot-YT calls 10
+ghislain39 raises 20 to 40
+MRCrack87446 calls 20
+Nelfrot-YT folds
+*** FLOP *** [Ts 6s 3c]
+ghislain39 checks
+MRCrack87446 bets 30
+ghislain39 folds
+MRCrack87446 collected 130 from pot
+*** SUMMARY ***
+Total pot 130 | No rake
+Board: [Ts 6s 3c]
+Seat 2: MRCrack87446 (button) won 130
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707517897126182913-8-1776261899 - Holdem no limit (15/30) - 2026/04/15 14:04:59 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ghislain39 (240)
+Seat 2: MRCrack87446 (750)
+Seat 3: Nelfrot-YT (510)
+*** ANTE/BLINDS ***
+ghislain39 posts small blind 15
+MRCrack87446 posts big blind 30
+Dealt to Nelfrot-YT [2h 3h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+ghislain39 calls 15
+MRCrack87446 checks
+*** FLOP *** [4d 6d 9h]
+ghislain39 checks
+MRCrack87446 checks
+*** TURN *** [4d 6d 9h][Ac]
+ghislain39 checks
+MRCrack87446 checks
+*** RIVER *** [4d 6d 9h Ac][6h]
+ghislain39 checks
+MRCrack87446 bets 30
+ghislain39 folds
+MRCrack87446 collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [4d 6d 9h Ac 6h]
+Seat 2: MRCrack87446 (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707517897126182913-9-1776261919 - Holdem no limit (15/30) - 2026/04/15 14:05:19 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ghislain39 (210)
+Seat 2: MRCrack87446 (780)
+Seat 3: Nelfrot-YT (510)
+*** ANTE/BLINDS ***
+MRCrack87446 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Ks Qs]
+*** PRE-FLOP *** 
+ghislain39 calls 30
+MRCrack87446 raises 30 to 60
+Nelfrot-YT calls 30
+ghislain39 raises 150 to 210 and is all-in
+MRCrack87446 calls 150
+Nelfrot-YT calls 150
+*** FLOP *** [6d As 2d]
+MRCrack87446 bets 45
+Nelfrot-YT calls 45
+*** TURN *** [6d As 2d][7h]
+MRCrack87446 bets 45
+Nelfrot-YT folds
+*** RIVER *** [6d As 2d 7h][4d]
+*** SHOW DOWN ***
+ghislain39 shows [Jc Ac] (One pair : Aces)
+MRCrack87446 shows [Ts Ad] (One pair : Aces)
+MRCrack87446 collected 135 from side pot 1
+ghislain39 collected 630 from main pot
+*** SUMMARY ***
+Total pot 765 | No rake
+Board: [6d As 2d 7h 4d]
+Seat 1: ghislain39 (button) showed [Jc Ac] and won 630 with One pair : Aces
+Seat 2: MRCrack87446 (small blind) showed [Ts Ad] and won 135 with One pair : Aces
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707517897126182913-10-1776261948 - Holdem no limit (15/30) - 2026/04/15 14:05:48 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ghislain39 (630)
+Seat 2: MRCrack87446 (615)
+Seat 3: Nelfrot-YT (255)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+ghislain39 posts big blind 30
+Dealt to Nelfrot-YT [2h 6h]
+*** PRE-FLOP *** 
+MRCrack87446 raises 60 to 90
+Nelfrot-YT folds
+ghislain39 folds
+MRCrack87446 collected 135 from pot
+*** SUMMARY ***
+Total pot 135 | No rake
+Seat 2: MRCrack87446 (button) won 135
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707517897126182913-11-1776261955 - Holdem no limit (15/30) - 2026/04/15 14:05:55 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ghislain39 (600)
+Seat 2: MRCrack87446 (660)
+Seat 3: Nelfrot-YT (240)
+*** ANTE/BLINDS ***
+ghislain39 posts small blind 15
+MRCrack87446 posts big blind 30
+Dealt to Nelfrot-YT [4s 5d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+ghislain39 folds
+MRCrack87446 collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 2: MRCrack87446 (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707517897126182913-12-1776261963 - Holdem no limit (15/30) - 2026/04/15 14:06:03 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ghislain39 (585)
+Seat 2: MRCrack87446 (675)
+Seat 3: Nelfrot-YT (240)
+*** ANTE/BLINDS ***
+MRCrack87446 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Qh Kh]
+*** PRE-FLOP *** 
+ghislain39 calls 30
+MRCrack87446 folds
+Nelfrot-YT raises 210 to 240 and is all-in
+ghislain39 folds
+Nelfrot-YT collected 285 from pot
+*** SUMMARY ***
+Total pot 285 | No rake
+Seat 3: Nelfrot-YT (big blind) won 285
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707517897126182913-13-1776261970 - Holdem no limit (15/30) - 2026/04/15 14:06:10 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ghislain39 (555)
+Seat 2: MRCrack87446 (660)
+Seat 3: Nelfrot-YT (285)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+ghislain39 posts big blind 30
+Dealt to Nelfrot-YT [2d 7h]
+*** PRE-FLOP *** 
+MRCrack87446 calls 30
+Nelfrot-YT folds
+ghislain39 checks
+*** FLOP *** [5c 5s 4h]
+ghislain39 bets 30
+MRCrack87446 folds
+ghislain39 collected 105 from pot
+*** SUMMARY ***
+Total pot 105 | No rake
+Board: [5c 5s 4h]
+Seat 1: ghislain39 (big blind) won 105
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707517897126182913-14-1776261982 - Holdem no limit (20/40) - 2026/04/15 14:06:22 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ghislain39 (600)
+Seat 2: MRCrack87446 (630)
+Seat 3: Nelfrot-YT (270)
+*** ANTE/BLINDS ***
+ghislain39 posts small blind 20
+MRCrack87446 posts big blind 40
+Dealt to Nelfrot-YT [Qs 3h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+ghislain39 raises 40 to 80
+MRCrack87446 calls 40
+*** FLOP *** [Td 9h 7d]
+ghislain39 checks
+MRCrack87446 bets 120
+ghislain39 folds
+MRCrack87446 collected 280 from pot
+*** SUMMARY ***
+Total pot 280 | No rake
+Board: [Td 9h 7d]
+Seat 2: MRCrack87446 (big blind) won 280
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707517897126182913-15-1776261998 - Holdem no limit (20/40) - 2026/04/15 14:06:38 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ghislain39 (520)
+Seat 2: MRCrack87446 (710)
+Seat 3: Nelfrot-YT (270)
+*** ANTE/BLINDS ***
+MRCrack87446 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [5c 4h]
+*** PRE-FLOP *** 
+ghislain39 calls 40
+MRCrack87446 folds
+Nelfrot-YT checks
+*** FLOP *** [3c Th 8s]
+Nelfrot-YT checks
+ghislain39 bets 40
+Nelfrot-YT folds
+ghislain39 collected 140 from pot
+*** SUMMARY ***
+Total pot 140 | No rake
+Board: [3c Th 8s]
+Seat 1: ghislain39 (button) won 140
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707517897126182913-16-1776262017 - Holdem no limit (20/40) - 2026/04/15 14:06:57 UTC
+Table: 'Expresso(1096054422)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ghislain39 (580)
+Seat 2: MRCrack87446 (690)
+Seat 3: Nelfrot-YT (230)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+ghislain39 posts big blind 40
+Dealt to Nelfrot-YT [Ac 2s]
+*** PRE-FLOP *** 
+MRCrack87446 calls 40
+Nelfrot-YT raises 190 to 230 and is all-in
+ghislain39 calls 190
+MRCrack87446 folds
+*** FLOP *** [5s 8h Qs]
+*** TURN *** [5s 8h Qs][6c]
+*** RIVER *** [5s 8h Qs 6c][Th]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Ac 2s] (High card : Ace)
+ghislain39 shows [Qc Qh] (Trips of Queens)
+ghislain39 collected 500 from pot
+*** SUMMARY ***
+Total pot 500 | No rake
+Board: [5s 8h Qs 6c Th]
+Seat 1: ghislain39 (big blind) showed [Qc Qh] and won 500 with Trips of Queens
+Seat 3: Nelfrot-YT (small blind) showed [Ac 2s] and lost with High card : Ace
+
+

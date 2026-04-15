@@ -1,0 +1,601 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707525829930778625-1-1776262058 - Holdem no limit (10/20) - 2026/04/15 14:07:38 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #1 is the button
+Seat 1: titoffe34090 (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: SandyCobos (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+SandyCobos posts big blind 20
+Dealt to Nelfrot-YT [6d 4s]
+*** PRE-FLOP *** 
+titoffe34090 calls 20
+Nelfrot-YT folds
+SandyCobos checks
+*** FLOP *** [2s Jd Qh]
+SandyCobos checks
+titoffe34090 checks
+*** TURN *** [2s Jd Qh][3c]
+SandyCobos bets 33
+titoffe34090 calls 33
+*** RIVER *** [2s Jd Qh 3c][6c]
+SandyCobos checks
+titoffe34090 checks
+*** SHOW DOWN ***
+SandyCobos shows [5c Td] (High card : Queen)
+titoffe34090 shows [Kh Jc] (One pair : Jacks)
+titoffe34090 collected 116 from pot
+*** SUMMARY ***
+Total pot 116 | No rake
+Board: [2s Jd Qh 3c 6c]
+Seat 1: titoffe34090 (button) showed [Kh Jc] and won 116 with One pair : Jacks
+Seat 3: SandyCobos (big blind) showed [5c Td] and lost with High card : Queen
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707525829930778625-2-1776262086 - Holdem no limit (10/20) - 2026/04/15 14:08:06 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 1: titoffe34090 (563)
+Seat 2: Nelfrot-YT (490)
+Seat 3: SandyCobos (447)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 10
+titoffe34090 posts big blind 20
+Dealt to Nelfrot-YT [6c Kc]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+SandyCobos raises 20 to 60
+titoffe34090 folds
+Nelfrot-YT calls 20
+*** FLOP *** [2d 3d Tc]
+SandyCobos bets 91
+Nelfrot-YT folds
+SandyCobos collected 231 from pot
+*** SUMMARY ***
+Total pot 231 | No rake
+Board: [2d 3d Tc]
+Seat 3: SandyCobos (small blind) won 231
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707525829930778625-3-1776262114 - Holdem no limit (10/20) - 2026/04/15 14:08:34 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 1: titoffe34090 (543)
+Seat 2: Nelfrot-YT (430)
+Seat 3: SandyCobos (527)
+*** ANTE/BLINDS ***
+titoffe34090 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [2s Jh]
+*** PRE-FLOP *** 
+SandyCobos raises 20 to 40
+titoffe34090 folds
+Nelfrot-YT folds
+SandyCobos collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 3: SandyCobos (button) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707525829930778625-4-1776262124 - Holdem no limit (10/20) - 2026/04/15 14:08:44 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #1 is the button
+Seat 1: titoffe34090 (533)
+Seat 2: Nelfrot-YT (410)
+Seat 3: SandyCobos (557)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+SandyCobos posts big blind 20
+Dealt to Nelfrot-YT [Ah Qd]
+*** PRE-FLOP *** 
+titoffe34090 folds
+Nelfrot-YT raises 30 to 50
+SandyCobos folds
+Nelfrot-YT collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 2: Nelfrot-YT (small blind) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707525829930778625-5-1776262141 - Holdem no limit (10/20) - 2026/04/15 14:09:01 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 1: titoffe34090 (533)
+Seat 2: Nelfrot-YT (430)
+Seat 3: SandyCobos (537)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 10
+titoffe34090 posts big blind 20
+Dealt to Nelfrot-YT [9c Js]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+SandyCobos folds
+titoffe34090 collected 30 from pot
+*** SUMMARY ***
+Total pot 30 | No rake
+Seat 1: titoffe34090 (big blind) won 30
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707525829930778625-6-1776262151 - Holdem no limit (15/30) - 2026/04/15 14:09:11 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 1: titoffe34090 (543)
+Seat 2: Nelfrot-YT (430)
+Seat 3: SandyCobos (527)
+*** ANTE/BLINDS ***
+titoffe34090 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [6d 5c]
+*** PRE-FLOP *** 
+SandyCobos raises 30 to 60
+titoffe34090 calls 45
+Nelfrot-YT folds
+*** FLOP *** [4d 9c Jd]
+titoffe34090 checks
+SandyCobos checks
+*** TURN *** [4d 9c Jd][7s]
+titoffe34090 bets 98
+SandyCobos calls 98
+*** RIVER *** [4d 9c Jd 7s][3h]
+titoffe34090 bets 225
+SandyCobos raises 144 to 369 and is all-in
+titoffe34090 calls 144
+*** SHOW DOWN ***
+titoffe34090 shows [4c 4s] (Trips of 4)
+SandyCobos shows [5s 6s] (Straight 7 high)
+SandyCobos collected 1084 from pot
+*** SUMMARY ***
+Total pot 1084 | No rake
+Board: [4d 9c Jd 7s 3h]
+Seat 1: titoffe34090 (small blind) showed [4c 4s] and lost with Trips of 4
+Seat 3: SandyCobos (button) showed [5s 6s] and won 1084 with Straight 7 high
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707525829930778625-7-1776262192 - Holdem no limit (15/30) - 2026/04/15 14:09:52 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #1 is the button
+Seat 1: titoffe34090 (16)
+Seat 2: Nelfrot-YT (400)
+Seat 3: SandyCobos (1084)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+SandyCobos posts big blind 30
+Dealt to Nelfrot-YT [2d Ad]
+*** PRE-FLOP *** 
+titoffe34090 calls 16 and is all-in
+Nelfrot-YT raises 370 to 400 and is all-in
+SandyCobos calls 370
+*** FLOP *** [4c 2h 6d]
+*** TURN *** [4c 2h 6d][Kd]
+*** RIVER *** [4c 2h 6d Kd][Jd]
+*** SHOW DOWN ***
+titoffe34090 shows [Kc 8h] (One pair : Kings)
+SandyCobos shows [7c 5c] (High card : King)
+Nelfrot-YT shows [2d Ad] (Flush Ace high)
+Nelfrot-YT collected 816 from pot
+*** SUMMARY ***
+Total pot 816 | No rake
+Board: [4c 2h 6d Kd Jd]
+Seat 1: titoffe34090 (button) showed [Kc 8h] and lost with One pair : Kings
+Seat 2: Nelfrot-YT (small blind) showed [2d Ad] and won 816 with Flush Ace high
+Seat 3: SandyCobos (big blind) showed [7c 5c] and lost with High card : King
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707525829930778625-8-1776262213 - Holdem no limit (15/30) - 2026/04/15 14:10:13 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (816)
+Seat 3: SandyCobos (684)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [2s 8h]
+*** PRE-FLOP *** 
+SandyCobos folds
+Nelfrot-YT collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 2: Nelfrot-YT (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707525829930778625-9-1776262220 - Holdem no limit (15/30) - 2026/04/15 14:10:20 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (831)
+Seat 3: SandyCobos (669)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+SandyCobos posts big blind 30
+Dealt to Nelfrot-YT [3d 8s]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 15
+SandyCobos checks
+*** FLOP *** [2s 8h Tc]
+SandyCobos checks
+Nelfrot-YT bets 30
+SandyCobos folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [2s 8h Tc]
+Seat 2: Nelfrot-YT (small blind) (button) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707525829930778625-10-1776262233 - Holdem no limit (15/30) - 2026/04/15 14:10:33 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (861)
+Seat 3: SandyCobos (639)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [7c 2s]
+*** PRE-FLOP *** 
+SandyCobos raises 30 to 60
+Nelfrot-YT folds
+SandyCobos collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 3: SandyCobos (small blind) (button) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707525829930778625-11-1776262244 - Holdem no limit (20/40) - 2026/04/15 14:10:44 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (831)
+Seat 3: SandyCobos (669)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SandyCobos posts big blind 40
+Dealt to Nelfrot-YT [2d 3d]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+SandyCobos checks
+*** FLOP *** [5s 7s 4c]
+SandyCobos checks
+Nelfrot-YT checks
+*** TURN *** [5s 7s 4c][Jh]
+SandyCobos checks
+Nelfrot-YT bets 40
+SandyCobos raises 40 to 80
+Nelfrot-YT folds
+SandyCobos collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [5s 7s 4c Jh]
+Seat 3: SandyCobos (big blind) won 200
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707525829930778625-12-1776262264 - Holdem no limit (20/40) - 2026/04/15 14:11:04 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (751)
+Seat 3: SandyCobos (749)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Qc 3d]
+*** PRE-FLOP *** 
+SandyCobos folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 2: Nelfrot-YT (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707525829930778625-13-1776262272 - Holdem no limit (20/40) - 2026/04/15 14:11:12 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (771)
+Seat 3: SandyCobos (729)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SandyCobos posts big blind 40
+Dealt to Nelfrot-YT [Jd 8s]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+SandyCobos checks
+*** FLOP *** [Qs Qc 7d]
+SandyCobos bets 52
+Nelfrot-YT folds
+SandyCobos collected 132 from pot
+*** SUMMARY ***
+Total pot 132 | No rake
+Board: [Qs Qc 7d]
+Seat 3: SandyCobos (big blind) won 132
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707525829930778625-14-1776262287 - Holdem no limit (20/40) - 2026/04/15 14:11:27 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (731)
+Seat 3: SandyCobos (769)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [8c 4s]
+*** PRE-FLOP *** 
+SandyCobos folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 2: Nelfrot-YT (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707525829930778625-15-1776262294 - Holdem no limit (20/40) - 2026/04/15 14:11:34 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (751)
+Seat 3: SandyCobos (749)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SandyCobos posts big blind 40
+Dealt to Nelfrot-YT [5h 5c]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 711 to 751 and is all-in
+SandyCobos folds
+Nelfrot-YT collected 791 from pot
+*** SUMMARY ***
+Total pot 791 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 791
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707525829930778625-16-1776262301 - Holdem no limit (20/40) - 2026/04/15 14:11:41 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (791)
+Seat 3: SandyCobos (709)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Jh 9h]
+*** PRE-FLOP *** 
+SandyCobos folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 2: Nelfrot-YT (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707525829930778625-17-1776262307 - Holdem no limit (20/40) - 2026/04/15 14:11:47 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (811)
+Seat 3: SandyCobos (689)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+SandyCobos posts big blind 40
+Dealt to Nelfrot-YT [Ac Th]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 771 to 811 and is all-in
+SandyCobos folds
+Nelfrot-YT collected 851 from pot
+*** SUMMARY ***
+Total pot 851 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 851
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707525829930778625-18-1776262319 - Holdem no limit (20/40) - 2026/04/15 14:11:59 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (851)
+Seat 3: SandyCobos (649)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [8h 8c]
+*** PRE-FLOP *** 
+SandyCobos raises 40 to 80
+Nelfrot-YT raises 771 to 851 and is all-in
+SandyCobos folds
+Nelfrot-YT collected 931 from pot
+*** SUMMARY ***
+Total pot 931 | No rake
+Seat 2: Nelfrot-YT (big blind) won 931
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707525829930778625-19-1776262337 - Holdem no limit (30/60) - 2026/04/15 14:12:17 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (931)
+Seat 3: SandyCobos (569)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SandyCobos posts big blind 60
+Dealt to Nelfrot-YT [2c Js]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+SandyCobos raises 60 to 120
+Nelfrot-YT folds
+SandyCobos collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Seat 3: SandyCobos (big blind) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707525829930778625-20-1776262347 - Holdem no limit (30/60) - 2026/04/15 14:12:27 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (871)
+Seat 3: SandyCobos (629)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Tc Qs]
+*** PRE-FLOP *** 
+SandyCobos folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 2: Nelfrot-YT (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707525829930778625-21-1776262359 - Holdem no limit (30/60) - 2026/04/15 14:12:39 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (901)
+Seat 3: SandyCobos (599)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SandyCobos posts big blind 60
+Dealt to Nelfrot-YT [2c 6h]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+SandyCobos raises 60 to 120
+Nelfrot-YT folds
+SandyCobos collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Seat 3: SandyCobos (big blind) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707525829930778625-22-1776262370 - Holdem no limit (30/60) - 2026/04/15 14:12:50 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (841)
+Seat 3: SandyCobos (659)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [4c 5c]
+*** PRE-FLOP *** 
+SandyCobos raises 60 to 120
+Nelfrot-YT calls 60
+*** FLOP *** [Jd Tc Th]
+Nelfrot-YT checks
+SandyCobos checks
+*** TURN *** [Jd Tc Th][9s]
+Nelfrot-YT checks
+SandyCobos bets 84
+Nelfrot-YT folds
+SandyCobos collected 324 from pot
+*** SUMMARY ***
+Total pot 324 | No rake
+Board: [Jd Tc Th 9s]
+Seat 3: SandyCobos (small blind) (button) won 324
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707525829930778625-23-1776262394 - Holdem no limit (30/60) - 2026/04/15 14:13:14 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (721)
+Seat 3: SandyCobos (779)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+SandyCobos posts big blind 60
+Dealt to Nelfrot-YT [Th 3h]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+SandyCobos checks
+*** FLOP *** [5c 7d 7s]
+SandyCobos bets 78
+Nelfrot-YT folds
+SandyCobos collected 198 from pot
+*** SUMMARY ***
+Total pot 198 | No rake
+Board: [5c 7d 7s]
+Seat 3: SandyCobos (big blind) won 198
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707525829930778625-24-1776262417 - Holdem no limit (40/80) - 2026/04/15 14:13:37 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (661)
+Seat 3: SandyCobos (839)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [7h 3d]
+*** PRE-FLOP *** 
+SandyCobos folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 2: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707525829930778625-25-1776262423 - Holdem no limit (40/80) - 2026/04/15 14:13:43 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (701)
+Seat 3: SandyCobos (799)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+SandyCobos posts big blind 80
+Dealt to Nelfrot-YT [Kc 7c]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 621 to 701 and is all-in
+SandyCobos folds
+Nelfrot-YT collected 781 from pot
+*** SUMMARY ***
+Total pot 781 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 781
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707525829930778625-26-1776262434 - Holdem no limit (40/80) - 2026/04/15 14:13:54 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (781)
+Seat 3: SandyCobos (719)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [6s 8s]
+*** PRE-FLOP *** 
+SandyCobos raises 80 to 160
+Nelfrot-YT calls 80
+*** FLOP *** [Tc Th 2s]
+Nelfrot-YT checks
+SandyCobos bets 112
+Nelfrot-YT folds
+SandyCobos collected 432 from pot
+*** SUMMARY ***
+Total pot 432 | No rake
+Board: [Tc Th 2s]
+Seat 3: SandyCobos (small blind) (button) won 432
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707525829930778625-27-1776262455 - Holdem no limit (40/80) - 2026/04/15 14:14:15 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (621)
+Seat 3: SandyCobos (879)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+SandyCobos posts big blind 80
+Dealt to Nelfrot-YT [9s Kh]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 541 to 621 and is all-in
+SandyCobos folds
+Nelfrot-YT collected 701 from pot
+*** SUMMARY ***
+Total pot 701 | No rake
+Seat 2: Nelfrot-YT (small blind) (button) won 701
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707525829930778625-28-1776262471 - Holdem no limit (40/80) - 2026/04/15 14:14:31 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (701)
+Seat 3: SandyCobos (799)
+*** ANTE/BLINDS ***
+SandyCobos posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [Jd 7h]
+*** PRE-FLOP *** 
+SandyCobos raises 80 to 160
+Nelfrot-YT calls 80
+*** FLOP *** [7d 8h 9c]
+Nelfrot-YT bets 541 and is all-in
+SandyCobos raises 98 to 639 and is all-in
+*** TURN *** [7d 8h 9c][3d]
+*** RIVER *** [7d 8h 9c 3d][Ts]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Jd 7h] (Straight Jack high)
+SandyCobos shows [Kh Th] (One pair : Tens)
+SandyCobos collected 98 from side pot 1
+Nelfrot-YT collected 1402 from main pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [7d 8h 9c 3d Ts]
+Seat 2: Nelfrot-YT (big blind) showed [Jd 7h] and won 1402 with Straight Jack high
+Seat 3: SandyCobos (small blind) (button) showed [Kh Th] and won 98 with One pair : Tens
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707525829930778625-29-1776262498 - Holdem no limit (40/80) - 2026/04/15 14:14:58 UTC
+Table: 'Expresso(1096056269)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (1402)
+Seat 3: SandyCobos (98)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+SandyCobos posts big blind 80
+Dealt to Nelfrot-YT [2h Ks]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1322 to 1402 and is all-in
+SandyCobos calls 18 and is all-in
+*** FLOP *** [3d Ad 5s]
+*** TURN *** [3d Ad 5s][Td]
+*** RIVER *** [3d Ad 5s Td][6h]
+*** SHOW DOWN ***
+SandyCobos shows [Qd 2s] (High card : Ace)
+Nelfrot-YT shows [2h Ks] (High card : Ace)
+Nelfrot-YT collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [3d Ad 5s Td 6h]
+Seat 2: Nelfrot-YT (small blind) (button) showed [2h Ks] and won 1500 with High card : Ace
+Seat 3: SandyCobos (big blind) showed [Qd 2s] and lost with High card : Ace
+
+

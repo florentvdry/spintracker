@@ -1,0 +1,184 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707555950536425473-1-1776263033 - Holdem no limit (10/20) - 2026/04/15 14:23:53 UTC
+Table: 'Expresso(1096063282)#0' 3-max (real money) Seat #1 is the button
+Seat 1: IssBen (500)
+Seat 2: charms_devil (500)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+charms_devil posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Qh Ts]
+*** PRE-FLOP *** 
+IssBen raises 20 to 40
+charms_devil calls 30
+Nelfrot-YT calls 20
+*** FLOP *** [Jd Jc Kd]
+charms_devil checks
+Nelfrot-YT checks
+IssBen bets 60
+charms_devil folds
+Nelfrot-YT calls 60
+*** TURN *** [Jd Jc Kd][7h]
+Nelfrot-YT checks
+IssBen bets 120
+Nelfrot-YT folds
+IssBen collected 360 from pot
+*** SUMMARY ***
+Total pot 360 | No rake
+Board: [Jd Jc Kd 7h]
+Seat 1: IssBen (button) won 360
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707555950536425473-2-1776263098 - Holdem no limit (10/20) - 2026/04/15 14:24:58 UTC
+Table: 'Expresso(1096063282)#0' 3-max (real money) Seat #2 is the button
+Seat 1: IssBen (640)
+Seat 2: charms_devil (460)
+Seat 3: Nelfrot-YT (400)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+IssBen posts big blind 20
+Dealt to Nelfrot-YT [5h As]
+*** PRE-FLOP *** 
+charms_devil folds
+Nelfrot-YT raises 380 to 400 and is all-in
+IssBen folds
+Nelfrot-YT collected 420 from pot
+*** SUMMARY ***
+Total pot 420 | No rake
+Seat 3: Nelfrot-YT (small blind) won 420
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707555950536425473-3-1776263116 - Holdem no limit (10/20) - 2026/04/15 14:25:16 UTC
+Table: 'Expresso(1096063282)#0' 3-max (real money) Seat #3 is the button
+Seat 1: IssBen (620)
+Seat 2: charms_devil (460)
+Seat 3: Nelfrot-YT (420)
+*** ANTE/BLINDS ***
+IssBen posts small blind 10
+charms_devil posts big blind 20
+Dealt to Nelfrot-YT [6s 4c]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+IssBen raises 30 to 50
+charms_devil calls 30
+*** FLOP *** [Ah Td 2c]
+IssBen bets 33
+charms_devil folds
+IssBen collected 133 from pot
+*** SUMMARY ***
+Total pot 133 | No rake
+Board: [Ah Td 2c]
+Seat 1: IssBen (small blind) won 133
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707555950536425473-4-1776263147 - Holdem no limit (15/30) - 2026/04/15 14:25:47 UTC
+Table: 'Expresso(1096063282)#0' 3-max (real money) Seat #1 is the button
+Seat 1: IssBen (670)
+Seat 2: charms_devil (410)
+Seat 3: Nelfrot-YT (420)
+*** ANTE/BLINDS ***
+charms_devil posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [3h 6d]
+*** PRE-FLOP *** 
+IssBen raises 30 to 60
+charms_devil calls 45
+Nelfrot-YT folds
+*** FLOP *** [7h 8h Jd]
+charms_devil checks
+IssBen bets 50
+charms_devil folds
+IssBen collected 200 from pot
+*** SUMMARY ***
+Total pot 200 | No rake
+Board: [7h 8h Jd]
+Seat 1: IssBen (button) won 200
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707555950536425473-5-1776263175 - Holdem no limit (15/30) - 2026/04/15 14:26:15 UTC
+Table: 'Expresso(1096063282)#0' 3-max (real money) Seat #2 is the button
+Seat 1: IssBen (760)
+Seat 2: charms_devil (350)
+Seat 3: Nelfrot-YT (390)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+IssBen posts big blind 30
+Dealt to Nelfrot-YT [2d Ks]
+*** PRE-FLOP *** 
+charms_devil calls 30
+Nelfrot-YT folds
+IssBen checks
+*** FLOP *** [Qc Kh As]
+IssBen checks
+charms_devil checks
+*** TURN *** [Qc Kh As][2h]
+IssBen checks
+charms_devil checks
+*** RIVER *** [Qc Kh As 2h][3h]
+IssBen checks
+charms_devil checks
+*** SHOW DOWN ***
+charms_devil shows [8s 6s] (High card : Ace)
+IssBen shows [3c 7d] (One pair : 3)
+IssBen collected 75 from pot
+*** SUMMARY ***
+Total pot 75 | No rake
+Board: [Qc Kh As 2h 3h]
+Seat 1: IssBen (big blind) showed [3c 7d] and won 75 with One pair : 3
+Seat 2: charms_devil (button) showed [8s 6s] and lost with High card : Ace
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707555950536425473-6-1776263246 - Holdem no limit (20/40) - 2026/04/15 14:27:26 UTC
+Table: 'Expresso(1096063282)#0' 3-max (real money) Seat #3 is the button
+Seat 1: IssBen (805)
+Seat 2: charms_devil (320)
+Seat 3: Nelfrot-YT (375)
+*** ANTE/BLINDS ***
+IssBen posts small blind 20
+charms_devil posts big blind 40
+Dealt to Nelfrot-YT [3d As]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 335 to 375 and is all-in
+IssBen folds
+charms_devil calls 280 and is all-in
+*** FLOP *** [3s Kd 8c]
+*** TURN *** [3s Kd 8c][2d]
+*** RIVER *** [3s Kd 8c 2d][5h]
+*** SHOW DOWN ***
+charms_devil shows [2h 2c] (Trips of 2)
+Nelfrot-YT shows [3d As] (One pair : 3)
+Nelfrot-YT collected 55 from side pot 1
+charms_devil collected 660 from main pot
+*** SUMMARY ***
+Total pot 715 | No rake
+Board: [3s Kd 8c 2d 5h]
+Seat 2: charms_devil (big blind) showed [2h 2c] and won 660 with Trips of 2
+Seat 3: Nelfrot-YT (button) showed [3d As] and won 55 with One pair : 3
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707555950536425473-7-1776263279 - Holdem no limit (20/40) - 2026/04/15 14:27:59 UTC
+Table: 'Expresso(1096063282)#0' 3-max (real money) Seat #1 is the button
+Seat 1: IssBen (785)
+Seat 2: charms_devil (660)
+Seat 3: Nelfrot-YT (55)
+*** ANTE/BLINDS ***
+charms_devil posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [9h 2h]
+*** PRE-FLOP *** 
+IssBen raises 40 to 80
+charms_devil folds
+Nelfrot-YT calls 15 and is all-in
+*** FLOP *** [3d As 7s]
+*** TURN *** [3d As 7s][Ah]
+*** RIVER *** [3d As 7s Ah][3s]
+*** SHOW DOWN ***
+Nelfrot-YT shows [9h 2h] (Two pairs : Aces and 3)
+IssBen shows [Qs Tc] (Two pairs : Aces and 3)
+IssBen collected 155 from pot
+*** SUMMARY ***
+Total pot 155 | No rake
+Board: [3d As 7s Ah 3s]
+Seat 1: IssBen (button) showed [Qs Tc] and won 155 with Two pairs : Aces and 3
+Seat 3: Nelfrot-YT (big blind) showed [9h 2h] and lost with Two pairs : Aces and 3
+
+

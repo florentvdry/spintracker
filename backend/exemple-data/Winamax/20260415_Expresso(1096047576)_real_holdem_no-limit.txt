@@ -1,0 +1,501 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707488493780074497-6-1776261096 - Holdem no limit (15/30) - 2026/04/15 13:51:36 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #3 is the button
+Seat 1: riickyy777 (380)
+Seat 2: CG_Boss2336 (410)
+Seat 3: Nelfrot-YT (710)
+*** ANTE/BLINDS ***
+riickyy777 posts small blind 15
+CG_Boss2336 posts big blind 30
+Dealt to Nelfrot-YT [5d 7d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+riickyy777 calls 15
+CG_Boss2336 checks
+*** FLOP *** [Qc Ts 9d]
+riickyy777 checks
+CG_Boss2336 bets 60
+riickyy777 calls 60
+*** TURN *** [Qc Ts 9d][Jd]
+riickyy777 checks
+CG_Boss2336 bets 320 and is all-in
+riickyy777 calls 290 and is all-in
+*** RIVER *** [Qc Ts 9d Jd][Js]
+*** SHOW DOWN ***
+riickyy777 shows [8h 7s] (Straight Queen high)
+CG_Boss2336 shows [Qs 9s] (Two pairs : Queens and Jacks)
+CG_Boss2336 collected 30 from side pot 1
+riickyy777 collected 760 from main pot
+*** SUMMARY ***
+Total pot 790 | No rake
+Board: [Qc Ts 9d Jd Js]
+Seat 1: riickyy777 (small blind) showed [8h 7s] and won 760 with Straight Queen high
+Seat 2: CG_Boss2336 (big blind) showed [Qs 9s] and won 30 with Two pairs : Queens and Jacks
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707488493780074497-7-1776261126 - Holdem no limit (15/30) - 2026/04/15 13:52:06 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #1 is the button
+Seat 1: riickyy777 (760)
+Seat 2: CG_Boss2336 (30)
+Seat 3: Nelfrot-YT (710)
+*** ANTE/BLINDS ***
+CG_Boss2336 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [5s 7c]
+*** PRE-FLOP *** 
+riickyy777 folds
+CG_Boss2336 calls 15 and is all-in
+*** FLOP *** [Jc Qd As]
+*** TURN *** [Jc Qd As][Kd]
+*** RIVER *** [Jc Qd As Kd][Js]
+*** SHOW DOWN ***
+Nelfrot-YT shows [5s 7c] (One pair : Jacks)
+CG_Boss2336 shows [Kc Ad] (Two pairs : Aces and Kings)
+CG_Boss2336 collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [Jc Qd As Kd Js]
+Seat 2: CG_Boss2336 (small blind) showed [Kc Ad] and won 60 with Two pairs : Aces and Kings
+Seat 3: Nelfrot-YT (big blind) showed [5s 7c] and lost with One pair : Jacks
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707488493780074497-8-1776261139 - Holdem no limit (15/30) - 2026/04/15 13:52:19 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #2 is the button
+Seat 1: riickyy777 (760)
+Seat 2: CG_Boss2336 (60)
+Seat 3: Nelfrot-YT (680)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+riickyy777 posts big blind 30
+Dealt to Nelfrot-YT [3s Qs]
+*** PRE-FLOP *** 
+CG_Boss2336 calls 30
+Nelfrot-YT calls 15
+riickyy777 checks
+*** FLOP *** [6c 3h 9d]
+Nelfrot-YT checks
+riickyy777 checks
+CG_Boss2336 bets 30 and is all-in
+Nelfrot-YT folds
+riickyy777 calls 30
+*** TURN *** [6c 3h 9d][9c]
+*** RIVER *** [6c 3h 9d 9c][Ts]
+*** SHOW DOWN ***
+riickyy777 shows [4h 2h] (One pair : 9)
+CG_Boss2336 shows [Qh 4d] (One pair : 9)
+CG_Boss2336 collected 150 from pot
+*** SUMMARY ***
+Total pot 150 | No rake
+Board: [6c 3h 9d 9c Ts]
+Seat 1: riickyy777 (big blind) showed [4h 2h] and lost with One pair : 9
+Seat 2: CG_Boss2336 (button) showed [Qh 4d] and won 150 with One pair : 9
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707488493780074497-9-1776261172 - Holdem no limit (20/40) - 2026/04/15 13:52:52 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #3 is the button
+Seat 1: riickyy777 (700)
+Seat 2: CG_Boss2336 (150)
+Seat 3: Nelfrot-YT (650)
+*** ANTE/BLINDS ***
+riickyy777 posts small blind 20
+CG_Boss2336 posts big blind 40
+Dealt to Nelfrot-YT [4d 2s]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+riickyy777 calls 20
+CG_Boss2336 checks
+*** FLOP *** [Ad 5d 9s]
+riickyy777 checks
+CG_Boss2336 checks
+*** TURN *** [Ad 5d 9s][2d]
+riickyy777 checks
+CG_Boss2336 checks
+*** RIVER *** [Ad 5d 9s 2d][5h]
+riickyy777 bets 40
+CG_Boss2336 folds
+riickyy777 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [Ad 5d 9s 2d 5h]
+Seat 1: riickyy777 (small blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707488493780074497-10-1776261193 - Holdem no limit (20/40) - 2026/04/15 13:53:13 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #1 is the button
+Seat 1: riickyy777 (740)
+Seat 2: CG_Boss2336 (110)
+Seat 3: Nelfrot-YT (650)
+*** ANTE/BLINDS ***
+CG_Boss2336 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [3d 8h]
+*** PRE-FLOP *** 
+riickyy777 raises 40 to 80
+CG_Boss2336 raises 30 to 110 and is all-in
+Nelfrot-YT folds
+riickyy777 calls 30
+*** FLOP *** [Kc Ks 4h]
+*** TURN *** [Kc Ks 4h][4d]
+*** RIVER *** [Kc Ks 4h 4d][4s]
+*** SHOW DOWN ***
+riickyy777 shows [Ts 7s] (Full of 4 and Kings)
+CG_Boss2336 shows [Jd Tc] (Full of 4 and Kings)
+CG_Boss2336 collected 130 from pot
+riickyy777 collected 130 from pot
+*** SUMMARY ***
+Total pot 260 | No rake
+Board: [Kc Ks 4h 4d 4s]
+Seat 1: riickyy777 (button) showed [Ts 7s] and won 130 with Full of 4 and Kings
+Seat 2: CG_Boss2336 (small blind) showed [Jd Tc] and won 130 with Full of 4 and Kings
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707488493780074497-11-1776261206 - Holdem no limit (20/40) - 2026/04/15 13:53:26 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #2 is the button
+Seat 1: riickyy777 (760)
+Seat 2: CG_Boss2336 (130)
+Seat 3: Nelfrot-YT (610)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+riickyy777 posts big blind 40
+Dealt to Nelfrot-YT [6d 7h]
+*** PRE-FLOP *** 
+CG_Boss2336 calls 40
+Nelfrot-YT folds
+riickyy777 checks
+*** FLOP *** [Ts Kc 2s]
+riickyy777 checks
+CG_Boss2336 bets 90 and is all-in
+riickyy777 folds
+CG_Boss2336 collected 190 from pot
+*** SUMMARY ***
+Total pot 190 | No rake
+Board: [Ts Kc 2s]
+Seat 2: CG_Boss2336 (button) won 190
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707488493780074497-12-1776261228 - Holdem no limit (20/40) - 2026/04/15 13:53:48 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #3 is the button
+Seat 1: riickyy777 (720)
+Seat 2: CG_Boss2336 (190)
+Seat 3: Nelfrot-YT (590)
+*** ANTE/BLINDS ***
+riickyy777 posts small blind 20
+CG_Boss2336 posts big blind 40
+Dealt to Nelfrot-YT [8h Ks]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+riickyy777 calls 20
+CG_Boss2336 checks
+*** FLOP *** [2d Jc 5d]
+riickyy777 bets 40
+CG_Boss2336 folds
+riickyy777 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [2d Jc 5d]
+Seat 1: riickyy777 (small blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707488493780074497-13-1776261242 - Holdem no limit (20/40) - 2026/04/15 13:54:02 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #1 is the button
+Seat 1: riickyy777 (760)
+Seat 2: CG_Boss2336 (150)
+Seat 3: Nelfrot-YT (590)
+*** ANTE/BLINDS ***
+CG_Boss2336 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [8c 2c]
+*** PRE-FLOP *** 
+riickyy777 folds
+CG_Boss2336 calls 20
+Nelfrot-YT checks
+*** FLOP *** [3d Qc 8h]
+CG_Boss2336 checks
+Nelfrot-YT bets 40
+CG_Boss2336 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [3d Qc 8h]
+Seat 3: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707488493780074497-14-1776261258 - Holdem no limit (30/60) - 2026/04/15 13:54:18 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #2 is the button
+Seat 1: riickyy777 (760)
+Seat 2: CG_Boss2336 (110)
+Seat 3: Nelfrot-YT (630)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+riickyy777 posts big blind 60
+Dealt to Nelfrot-YT [5s Qd]
+*** PRE-FLOP *** 
+CG_Boss2336 folds
+Nelfrot-YT calls 30
+riickyy777 checks
+*** FLOP *** [5c Js Ah]
+Nelfrot-YT bets 60
+riickyy777 folds
+Nelfrot-YT collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Board: [5c Js Ah]
+Seat 3: Nelfrot-YT (small blind) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707488493780074497-15-1776261269 - Holdem no limit (30/60) - 2026/04/15 13:54:29 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #3 is the button
+Seat 1: riickyy777 (700)
+Seat 2: CG_Boss2336 (110)
+Seat 3: Nelfrot-YT (690)
+*** ANTE/BLINDS ***
+riickyy777 posts small blind 30
+CG_Boss2336 posts big blind 60
+Dealt to Nelfrot-YT [9d 5c]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+riickyy777 raises 60 to 120
+CG_Boss2336 folds
+riickyy777 collected 180 from pot
+*** SUMMARY ***
+Total pot 180 | No rake
+Seat 1: riickyy777 (small blind) won 180
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707488493780074497-16-1776261280 - Holdem no limit (30/60) - 2026/04/15 13:54:40 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #1 is the button
+Seat 1: riickyy777 (760)
+Seat 2: CG_Boss2336 (50)
+Seat 3: Nelfrot-YT (690)
+*** ANTE/BLINDS ***
+CG_Boss2336 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [3s Kc]
+*** PRE-FLOP *** 
+riickyy777 raises 60 to 120
+CG_Boss2336 calls 20 and is all-in
+Nelfrot-YT folds
+*** FLOP *** [3h Ks 2c]
+*** TURN *** [3h Ks 2c][4h]
+*** RIVER *** [3h Ks 2c 4h][7h]
+*** SHOW DOWN ***
+riickyy777 shows [9c Qc] (High card : King)
+CG_Boss2336 shows [2h Qs] (One pair : 2)
+CG_Boss2336 collected 150 from main pot
+riickyy777 collected 80 from side pot 1
+*** SUMMARY ***
+Total pot 230 | No rake
+Board: [3h Ks 2c 4h 7h]
+Seat 1: riickyy777 (button) showed [9c Qc] and won 80 with High card : King
+Seat 2: CG_Boss2336 (small blind) showed [2h Qs] and won 150 with One pair : 2
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707488493780074497-17-1776261293 - Holdem no limit (30/60) - 2026/04/15 13:54:53 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #2 is the button
+Seat 1: riickyy777 (720)
+Seat 2: CG_Boss2336 (150)
+Seat 3: Nelfrot-YT (630)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+riickyy777 posts big blind 60
+Dealt to Nelfrot-YT [Jd Jh]
+*** PRE-FLOP *** 
+CG_Boss2336 folds
+Nelfrot-YT raises 60 to 120
+riickyy777 calls 60
+*** FLOP *** [4s Qh 3s]
+Nelfrot-YT bets 150
+riickyy777 folds
+Nelfrot-YT collected 390 from pot
+*** SUMMARY ***
+Total pot 390 | No rake
+Board: [4s Qh 3s]
+Seat 3: Nelfrot-YT (small blind) won 390
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707488493780074497-18-1776261315 - Holdem no limit (30/60) - 2026/04/15 13:55:15 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #3 is the button
+Seat 1: riickyy777 (600)
+Seat 2: CG_Boss2336 (150)
+Seat 3: Nelfrot-YT (750)
+*** ANTE/BLINDS ***
+riickyy777 posts small blind 30
+CG_Boss2336 posts big blind 60
+Dealt to Nelfrot-YT [9c 3d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+riickyy777 calls 30
+CG_Boss2336 checks
+*** FLOP *** [3h 2h 8c]
+riickyy777 bets 60
+CG_Boss2336 raises 30 to 90 and is all-in
+riickyy777 folds
+CG_Boss2336 collected 270 from pot
+*** SUMMARY ***
+Total pot 270 | No rake
+Board: [3h 2h 8c]
+Seat 2: CG_Boss2336 (big blind) won 270
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707488493780074497-19-1776261332 - Holdem no limit (30/60) - 2026/04/15 13:55:32 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #1 is the button
+Seat 1: riickyy777 (480)
+Seat 2: CG_Boss2336 (270)
+Seat 3: Nelfrot-YT (750)
+*** ANTE/BLINDS ***
+CG_Boss2336 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [3c Qh]
+*** PRE-FLOP *** 
+riickyy777 raises 60 to 120
+CG_Boss2336 raises 150 to 270 and is all-in
+Nelfrot-YT folds
+riickyy777 calls 150
+*** FLOP *** [Qd Ah 9d]
+*** TURN *** [Qd Ah 9d][Ac]
+*** RIVER *** [Qd Ah 9d Ac][8c]
+*** SHOW DOWN ***
+riickyy777 shows [Td 7d] (One pair : Aces)
+CG_Boss2336 shows [8s As] (Full of Aces and 8)
+CG_Boss2336 collected 600 from pot
+*** SUMMARY ***
+Total pot 600 | No rake
+Board: [Qd Ah 9d Ac 8c]
+Seat 1: riickyy777 (button) showed [Td 7d] and lost with One pair : Aces
+Seat 2: CG_Boss2336 (small blind) showed [8s As] and won 600 with Full of Aces and 8
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707488493780074497-20-1776261349 - Holdem no limit (40/80) - 2026/04/15 13:55:49 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #2 is the button
+Seat 1: riickyy777 (210)
+Seat 2: CG_Boss2336 (600)
+Seat 3: Nelfrot-YT (690)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+riickyy777 posts big blind 80
+Dealt to Nelfrot-YT [Ah 7d]
+*** PRE-FLOP *** 
+CG_Boss2336 folds
+Nelfrot-YT raises 610 to 690 and is all-in
+riickyy777 folds
+Nelfrot-YT collected 770 from pot
+*** SUMMARY ***
+Total pot 770 | No rake
+Seat 3: Nelfrot-YT (small blind) won 770
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707488493780074497-21-1776261360 - Holdem no limit (40/80) - 2026/04/15 13:56:00 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #3 is the button
+Seat 1: riickyy777 (130)
+Seat 2: CG_Boss2336 (600)
+Seat 3: Nelfrot-YT (770)
+*** ANTE/BLINDS ***
+riickyy777 posts small blind 40
+CG_Boss2336 posts big blind 80
+Dealt to Nelfrot-YT [7c 8h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+riickyy777 raises 50 to 130 and is all-in
+CG_Boss2336 raises 80 to 210
+*** FLOP *** [9s 2s Ad]
+*** TURN *** [9s 2s Ad][3s]
+*** RIVER *** [9s 2s Ad 3s][6d]
+*** SHOW DOWN ***
+riickyy777 shows [3h 7d] (One pair : 3)
+CG_Boss2336 shows [Ah Qc] (One pair : Aces)
+CG_Boss2336 collected 340 from pot
+*** SUMMARY ***
+Total pot 340 | No rake
+Board: [9s 2s Ad 3s 6d]
+Seat 1: riickyy777 (small blind) showed [3h 7d] and lost with One pair : 3
+Seat 2: CG_Boss2336 (big blind) showed [Ah Qc] and won 340 with One pair : Aces
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707488493780074497-22-1776261377 - Holdem no limit (40/80) - 2026/04/15 13:56:17 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #2 is the button
+Seat 2: CG_Boss2336 (730)
+Seat 3: Nelfrot-YT (770)
+*** ANTE/BLINDS ***
+CG_Boss2336 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [Ts Qd]
+*** PRE-FLOP *** 
+CG_Boss2336 calls 40
+Nelfrot-YT raises 690 to 770 and is all-in
+CG_Boss2336 folds
+Nelfrot-YT collected 850 from pot
+*** SUMMARY ***
+Total pot 850 | No rake
+Seat 3: Nelfrot-YT (big blind) won 850
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707488493780074497-23-1776261392 - Holdem no limit (40/80) - 2026/04/15 13:56:32 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #3 is the button
+Seat 2: CG_Boss2336 (650)
+Seat 3: Nelfrot-YT (850)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+CG_Boss2336 posts big blind 80
+Dealt to Nelfrot-YT [8h 2d]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 40
+CG_Boss2336 checks
+*** FLOP *** [6h 7c 3d]
+CG_Boss2336 bets 570 and is all-in
+Nelfrot-YT folds
+CG_Boss2336 collected 730 from pot
+*** SUMMARY ***
+Total pot 730 | No rake
+Board: [6h 7c 3d]
+Seat 2: CG_Boss2336 (big blind) won 730
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707488493780074497-24-1776261405 - Holdem no limit (40/80) - 2026/04/15 13:56:45 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #2 is the button
+Seat 2: CG_Boss2336 (730)
+Seat 3: Nelfrot-YT (770)
+*** ANTE/BLINDS ***
+CG_Boss2336 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [9s Qh]
+*** PRE-FLOP *** 
+CG_Boss2336 calls 40
+Nelfrot-YT raises 690 to 770 and is all-in
+CG_Boss2336 calls 650 and is all-in
+*** FLOP *** [3h 4s 8d]
+*** TURN *** [3h 4s 8d][Ts]
+*** RIVER *** [3h 4s 8d Ts][5d]
+*** SHOW DOWN ***
+CG_Boss2336 shows [Jd 8c] (One pair : 8)
+Nelfrot-YT shows [9s Qh] (High card : Queen)
+Nelfrot-YT collected 40 from side pot 1
+CG_Boss2336 collected 1460 from main pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [3h 4s 8d Ts 5d]
+Seat 2: CG_Boss2336 (small blind) (button) showed [Jd 8c] and won 1460 with One pair : 8
+Seat 3: Nelfrot-YT (big blind) showed [9s Qh] and won 40 with High card : Queen
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707488493780074497-25-1776261422 - Holdem no limit (40/80) - 2026/04/15 13:57:02 UTC
+Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #3 is the button
+Seat 2: CG_Boss2336 (1460)
+Seat 3: Nelfrot-YT (40)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40 and is all-in
+CG_Boss2336 posts big blind 80
+Dealt to Nelfrot-YT [3d 7h]
+*** PRE-FLOP *** 
+*** FLOP *** [9d 8h 2c]
+*** TURN *** [9d 8h 2c][Tc]
+*** RIVER *** [9d 8h 2c Tc][9h]
+*** SHOW DOWN ***
+Nelfrot-YT shows [3d 7h] (One pair : 9)
+CG_Boss2336 shows [Kd Th] (Two pairs : Tens and 9)
+CG_Boss2336 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [9d 8h 2c Tc 9h]
+Seat 2: CG_Boss2336 (big blind) showed [Kd Th] and won 120 with Two pairs : Tens and 9
+Seat 3: Nelfrot-YT (small blind) (button) showed [3d 7h] and lost with One pair : 9
+
+
