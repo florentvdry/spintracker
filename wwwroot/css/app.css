@@ -1,0 +1,228 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: #0f0f1a;
+    color: #ffffff;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background: #1a1a2e;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #6366f1;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #2d2d4a;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.menu a {
+    color: #9ca3af;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.menu a:hover, .menu a.active {
+    background: #2d2d4a;
+    color: #ffffff;
+}
+
+.hero-select {
+    padding: 1rem 0;
+    border-top: 1px solid #2d2d4a;
+}
+
+.hero-select label {
+    display: block;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.hero-select select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background: #2d2d4a;
+    color: #ffffff;
+    border: 1px solid #3d3d5a;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.header {
+    padding: 1rem 2rem;
+    background: #1a1a2e;
+    border-bottom: 1px solid #2d2d4a;
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.page-content {
+    flex: 1;
+    padding: 2rem;
+    overflow: auto;
+}
+
+.dashboard h1, .hand-history h1, .players h1, .charts h1, .analysis h1, .settings h1 {
+    margin-bottom: 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: #1a1a2e;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+}
+
+.stat-label {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.profit-positive {
+    color: #22c55e;
+}
+
+.profit-negative {
+    color: #ef4444;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #2d2d4a;
+}
+
+th {
+    color: #9ca3af;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.no-data {
+    color: #6b7280;
+    text-align: center;
+    padding: 2rem;
+}
+
+.recent-sessions table {
+    margin-top: 1rem;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filters input, .filters select {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: #1a1a2e;
+    color: #ffffff;
+    border: 1px solid #2d2d4a;
+}
+
+.hands-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hand-card {
+    background: #1a1a2e;
+    padding: 1rem;
+    border-radius: 0.75rem;
+}
+
+.hand-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.hand-cards {
+    font-family: monospace;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.hand-info {
+    display: flex;
+    gap: 1rem;
+    color: #9ca3af;
+    font-size: 0.875rem;
+}
+
+.setting-section {
+    background: #1a1a2e;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.setting-section h2 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #9ca3af;
+}
+
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+}
+
+.setting-row label {
+    color: #9ca3af;
+}

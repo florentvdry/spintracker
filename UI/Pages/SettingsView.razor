@@ -1,0 +1,20 @@
+@namespace SpinTracker.UI.Pages
+
+<div class="settings">
+    <div class="setting-section">
+        <h2>Database</h2>
+        <div class="setting-row">
+            <label>Database Path:</label>
+            <span>@DbPath</span>
+        </div>
+    </div>
+
+    <div class="setting-section">
+        <h2>Import</h2>
+        <p class="no-data">Import functionality coming soon.</p>
+    </div>
+</div>
+
+@code {
+    string DbPath = "poker_tracker.db";
+}

@@ -1,0 +1,91 @@
+@page "/"
+@using SpinTracker.Repositories
+@using SpinTracker.Models
+
+<PageTitle>SpinTracker</PageTitle>
+
+<div class="app-container">
+    <nav class="sidebar">
+        <div class="logo">SpinTracker</div>
+        <div class="menu">
+            <button class="@(CurrentPage == "Dashboard" ? "active" : "")" @onclick="() => CurrentPage = "Dashboard"">Dashboard</button>
+            <button class="@(CurrentPage == "Hands" ? "active" : "")" @onclick="() => CurrentPage = "Hands"">Hand History</button>
+            <button class="@(CurrentPage == "Charts" ? "active" : "")" @onclick="() => CurrentPage = "Charts"">Charts</button>
+            <button class="@(CurrentPage == "Analysis" ? "active" : "")" @onclick="() => CurrentPage = "Analysis"">Analysis</button>
+            <button class="@(CurrentPage == "Players" ? "active" : "")" @onclick="() => CurrentPage = "Players"">Players</button>
+            <button class="@(CurrentPage == "Settings" ? "active" : "")" @onclick="() => CurrentPage = "Settings"">Settings</button>
+        </div>
+        <div class="hero-select">
+            <label>Hero:</label>
+            <select @bind="HeroName">
+                <option value="">Select hero...</option>
+                @foreach (var p in Players)
+                {
+                    <option value="@p.Name">@p.Name</option>
+                }
+            </select>
+        </div>
+    </nav>
+
+    <main class="content">
+        <header class="header">
+            <h1>@PageTitle</h1>
+        </header>
+        <div class="page-content">
+            @if (CurrentPage == "Dashboard")
+            {
+                <DashboardView HeroName="@HeroName" />
+            }
+            else if (CurrentPage == "Hands")
+            {
+                <HandHistoryView HeroName="@HeroName" />
+            }
+            else if (CurrentPage == "Charts")
+            {
+                <ChartsView HeroName="@HeroName" />
+            }
+            else if (CurrentPage == "Analysis")
+            {
+                <AnalysisView HeroName="@HeroName" />
+            }
+            else if (CurrentPage == "Players")
+            {
+                <PlayersView />
+            }
+            else if (CurrentPage == "Settings")
+            {
+                <SettingsView />
+            }
+        </div>
+    </main>
+</div>
+
+@code {
+    string CurrentPage = "Dashboard";
+    string HeroName = "";
+    List<Models.PlayerInfo> Players = new();
+
+    string PageTitle => CurrentPage switch
+    {
+        "Dashboard" => "Dashboard",
+        "Hands" => "Hand History",
+        "Charts" => "Charts",
+        "Analysis" => "Analysis",
+        "Players" => "Players",
+        "Settings" => "Settings",
+        _ => "Dashboard"
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var playerRepo = new PlayerRepository("Data Source=poker_tracker.db", null!);
+            Players = await playerRepo.GetAllAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading players: {ex.Message}");
+        }
+    }
+}

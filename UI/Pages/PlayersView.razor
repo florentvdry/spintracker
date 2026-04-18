@@ -1,0 +1,48 @@
+@namespace SpinTracker.UI.Pages
+@using SpinTracker.Models
+
+<div class="players">
+    @if (Players.Any())
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Total Hands</th>
+                    <th>Reg</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var player in Players)
+                {
+                    <tr>
+                        <td>@player.Name</td>
+                        <td>@player.TotalHands</td>
+                        <td>@(player.IsReg ? "Yes" : "No")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="no-data">No players found.</p>
+    }
+</div>
+
+@code {
+    List<PlayerInfo> Players = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var playerRepo = new PlayerRepository("Data Source=poker_tracker.db", null!);
+            Players = await playerRepo.GetAllAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}

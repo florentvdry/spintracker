@@ -1,0 +1,92 @@
+@namespace SpinTracker.UI.Pages
+@using SpinTracker.ViewModels
+
+<div class="dashboard">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Total Profit</div>
+            <div class="stat-value @GetProfitClass(TotalProfit)">@FormatProfit(TotalProfit)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Tournaments</div>
+            <div class="stat-value">@TotalTournaments</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Hands</div>
+            <div class="stat-value">@TotalHands</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Win Rate</div>
+            <div class="stat-value">@WinRate%</div>
+        </div>
+    </div>
+
+    <div class="recent-sessions">
+        <h2>Recent Sessions</h2>
+        @if (Sessions.Count > 0)
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Buy-In</th>
+                        <th>Profit</th>
+                        <th>Hands</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var session in Sessions)
+                    {
+                        <tr>
+                            <td>@session.Date</td>
+                            <td>@session.BuyIn</td>
+                            <td class="@GetProfitClass(session.Profit)">@FormatProfit(session.Profit)</td>
+                            <td>@session.Hands</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="no-data">No sessions found. Select a hero and import some hands.</p>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? HeroName { get; set; }
+
+    double TotalProfit = 0;
+    int TotalTournaments = 0;
+    int TotalHands = 0;
+    int TournamentsWon = 0;
+    double WinRate => TotalTournaments > 0 ? Math.Round((double)TournamentsWon / TotalTournaments * 100, 1) : 0;
+    List<SessionInfo> Sessions = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var statsRepo = new StatsRepository("Data Source=poker_tracker.db", null!);
+            var statsResult = await statsRepo.GetDashboardStatsAsync(HeroName);
+            if (statsResult is Dictionary<string, object> statsDict)
+            {
+                TotalProfit = statsDict.TryGetValue("total_ev", out var ev) ? Convert.ToDouble(ev) : 0;
+                TotalHands = statsDict.TryGetValue("total_hands", out var h) ? Convert.ToInt32(h) : 0;
+                TournamentsWon = statsDict.TryGetValue("tournaments_won", out var tw) ? Convert.ToInt32(tw) : 0;
+                TotalTournaments = statsDict.TryGetValue("total_tournaments", out var tt) ? Convert.ToInt32(tt) : 0;
+            }
+            
+            var tournamentsRepo = new TournamentsRepository("Data Source=poker_tracker.db", null!);
+            Sessions = await tournamentsRepo.GetRecentSessionsAsync(10, HeroName);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    string FormatProfit(double value) => value >= 0 ? $"+{value:N0}" : $"{value:N0}";
+    string GetProfitClass(double value) => value >= 0 ? "profit-positive" : "profit-negative";
+}

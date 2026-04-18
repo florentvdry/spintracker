@@ -1,0 +1,63 @@
+@namespace SpinTracker.UI.Pages
+@using SpinTracker.Models
+
+<div class="hand-history">
+    <div class="filters">
+        <input type="text" placeholder="Search hands..." @bind="SearchTerm" />
+        <select @bind="PositionFilter">
+            <option value="">All Positions</option>
+            <option value="SB">SB</option>
+            <option value="BB">BB</option>
+            <option value="BTN">BTN</option>
+        </select>
+    </div>
+
+    @if (Hands.Any())
+    {
+        <div class="hands-list">
+            @foreach (var hand in Hands)
+            {
+                <div class="hand-card">
+                    <div class="hand-header">
+                        <span class="date">@hand.DateTime</span>
+                        <span class="position">@hand.Position</span>
+                        <span class="result @GetProfitClass(hand.Result ?? 0)">@hand.Result</span>
+                    </div>
+                    <div class="hand-cards">@hand.Cards</div>
+                    <div class="hand-info">
+                        <span>Pot: @hand.TotalPot</span>
+                        <span>Players: @hand.PlayerCount</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="no-data">No hands found. Import some hands to get started.</p>
+    }
+</div>
+
+@code {
+    [Parameter] public string? HeroName { get; set; }
+
+    List<HandInfo> Hands = new();
+    string SearchTerm = "";
+    string PositionFilter = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var handRepo = new HandRepository("Data Source=poker_tracker.db", null!, null!);
+            var result = await handRepo.GetHandsAsync(new HandsQueryOptions { Limit = 50, HeroName = HeroName });
+            Hands = result as List<HandInfo> ?? new List<HandInfo>();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    string GetProfitClass(double value) => value >= 0 ? "profit-positive" : "profit-negative";
+}

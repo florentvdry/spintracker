@@ -1,0 +1,8 @@
+/home/runner/work/spintracker/spintracker/obj/Debug/net8.0/SpinTracker.csproj.AssemblyReference.cache
+/home/runner/work/spintracker/spintracker/obj/Debug/net8.0/rpswa.dswa.cache.json
+/home/runner/work/spintracker/spintracker/obj/Debug/net8.0/SpinTracker.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/spintracker/spintracker/obj/Debug/net8.0/SpinTracker.AssemblyInfoInputs.cache
+/home/runner/work/spintracker/spintracker/obj/Debug/net8.0/SpinTracker.AssemblyInfo.cs
+/home/runner/work/spintracker/spintracker/obj/Debug/net8.0/SpinTracker.csproj.CoreCompileInputs.cache
+/home/runner/work/spintracker/spintracker/obj/Debug/net8.0/SpinTracker.MvcApplicationPartsAssemblyInfo.cache
+/home/runner/work/spintracker/spintracker/obj/Debug/net8.0/SpinTracker.sourcelink.json
