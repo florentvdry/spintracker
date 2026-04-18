@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:SpinTracker.ViewModels"
+             x:DataType="vm:HandHistoryViewModel"
+             Title="Hand History">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Filters -->
+        <Frame Grid.Row="0" Padding="20" CornerRadius="12" Background="#F7FAFC" Margin="10">
+            <HorizontalStackLayout Spacing="15">
+                <Entry Placeholder="Hero Name" Text="{Binding HeroName}" WidthRequest="150"/>
+                <Entry Placeholder="Position" Text="{Binding Position}" WidthRequest="100"/>
+                <Entry Placeholder="Result" Text="{Binding Result}" WidthRequest="100"/>
+                <Button Text="Apply" Command="{Binding LoadCommand}" WidthRequest="100"/>
+            </HorizontalStackLayout>
+        </Frame>
+
+        <!-- Hands List -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding HandsResult.Hands}" Margin="10,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="15" Margin="0,5" CornerRadius="8" Background="White">
+                        <Grid ColumnDefinitions="*,*,*,*,*,*,*">
+                            <Label Grid.Column="0" Text="{Binding Date}" VerticalOptions="Center"/>
+                            <Label Grid.Column="1" Text="{Binding Position}" VerticalOptions="Center"/>
+                            <Label Grid.Column="2" Text="{Binding Cards}" VerticalOptions="Center"/>
+                            <Label Grid.Column="3" Text="{Binding Action}" VerticalOptions="Center"/>
+                            <Label Grid.Column="4" Text="{Binding Pot, StringFormat='{}{0:C2}'}" VerticalOptions="Center"/>
+                            <Label Grid.Column="5" Text="{Binding Result}" VerticalOptions="Center"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Pagination -->
+        <HorizontalStackLayout Grid.Row="2" HorizontalOptions="Center" Spacing="20" Margin="10">
+            <Label Text="{Binding CurrentPage, StringFormat='Page {0}'}" VerticalOptions="Center"/>
+            <Button Text="Previous" Command="{Binding PreviousPageCommand}" WidthRequest="100"/>
+            <Button Text="Next" Command="{Binding NextPageCommand}" WidthRequest="100"/>
+        </HorizontalStackLayout>
+    </Grid>
+
+</ContentPage>

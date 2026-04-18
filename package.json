@@ -1,79 +1,19 @@
 {
   "name": "spintracker",
-  "version": "1.1.2",
-  "description": "Professional Poker Tracker with React UI, C# Backend, Leak Detection and EV Analysis",
-  "main": "main.js",
+  "version": "2.0.0",
+  "description": "Professional Poker Tracker with C# MAUI Desktop App",
   "scripts": {
-    "start": "electron .",
-    "dev": "concurrently \"npm run react:dev\" \"wait-on http://localhost:3000 && electron . --dev\"",
-    "build": "npm run react:build && npm run backend:build && electron-builder --win",
-    "publish": "npm run react:build && npm run backend:build && electron-builder --win --publish always",
-    "react:dev": "cd frontend-vue && npm run dev",
-    "react:build": "cd frontend-vue && npm run build",
-    "react:install": "cd frontend-vue && npm install",
-    "backend:build": "cd backend && dotnet publish SpinTrackerBackend.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=true",
-    "postinstall": "npm run react:install",
-    "setup": "npm install && npm run react:install && npm run backend:build"
+    "build": "cd SpinTracker && dotnet build",
+    "run": "cd SpinTracker && dotnet run",
+    "publish": "cd SpinTracker && dotnet publish -c Release"
   },
   "keywords": [
     "poker",
     "tracker",
     "spin-and-go",
-    "electron",
-    "react",
+    "maui",
     "csharp"
   ],
   "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/florentvdry/spintracker.git"
-  },
-  "dependencies": {
-    "adm-zip": "^0.5.16",
-    "electron-log": "^5.4.3",
-    "electron-store": "^8.1.0",
-    "electron-updater": "^6.7.3",
-    "node-fetch": "^3.3.2"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2",
-    "electron": "^28.1.0",
-    "electron-builder": "^24.9.1",
-    "wait-on": "^7.2.0"
-  },
-  "build": {
-    "appId": "com.spintracker.app",
-    "productName": "SpinTracker",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "main.js",
-      "frontend-vue/dist/**/*",
-      "assets/**/*"
-    ],
-    "extraResources": [
-      {
-        "from": "backend/bin/Release/net8.0/win-x64/publish",
-        "to": "backend",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
-    "win": {
-      "target": "nsis",
-      "icon": "assets/logo.png",
-      "publish": {
-        "provider": "github",
-        "owner": "florentvdry",
-        "repo": "spintracker-releases"
-      }
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
-  }
+  "license": "MIT"
 }

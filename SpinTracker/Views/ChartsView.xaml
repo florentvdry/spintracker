@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:SpinTracker.ViewModels"
+             x:DataType="vm:ChartsViewModel"
+             Title="Charts">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Filters -->
+        <Frame Grid.Row="0" Padding="20" CornerRadius="12" Background="#F7FAFC" Margin="10">
+            <HorizontalStackLayout Spacing="15">
+                <Entry Placeholder="Hero Name" Text="{Binding HeroName}" WidthRequest="150"/>
+                <DatePicker Date="{Binding DateFrom}" WidthRequest="150"/>
+                <DatePicker Date="{Binding DateTo}" WidthRequest="150"/>
+                <Entry Placeholder="BuyIn" Text="{Binding BuyIn}" WidthRequest="100"/>
+                <Button Text="Apply" Command="{Binding LoadCommand}" WidthRequest="100"/>
+            </HorizontalStackLayout>
+        </Frame>
+
+        <!-- Winrate Chart -->
+        <Frame Grid.Row="1" Margin="10" Padding="20" CornerRadius="12" Background="White">
+            <VerticalStackLayout>
+                <Label Text="Winrate Over Time" FontSize="20" FontAttributes="Bold" Margin="0,0,0,20"/>
+                <ListView ItemsSource="{Binding WinrateData}" HeightRequest="400">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="100,*" HeightRequest="30">
+                                <Label Grid.Column="0" Text="{Binding Date}" VerticalOptions="Center"/>
+                                <BoxView Grid.Column="1" HeightRequest="20" Color="#1E3A5F"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+
+</ContentPage>

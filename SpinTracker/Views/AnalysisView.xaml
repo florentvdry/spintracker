@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:SpinTracker.ViewModels"
+             x:DataType="vm:AnalysisViewModel"
+             Title="Analysis">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Stats Cards -->
+        <HorizontalStackLayout Grid.Row="0" Margin="20" Spacing="20">
+            <Frame Background="#1E3A5F" Padding="20" CornerRadius="12" WidthRequest="180">
+                <VerticalStackLayout>
+                    <Label Text="VPIP" TextColor="White" FontSize="14"/>
+                    <Label Text="{Binding Stats.Vpip, StringFormat='{}{0:F1}%'}" TextColor="#38B2AC" FontSize="24" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+            <Frame Background="#2C5282" Padding="20" CornerRadius="12" WidthRequest="180">
+                <VerticalStackLayout>
+                    <Label Text="PFR" TextColor="White" FontSize="14"/>
+                    <Label Text="{Binding Stats.Pfr, StringFormat='{}{0:F1}%'}" TextColor="White" FontSize="24" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+            <Frame Background="#38B2AC" Padding="20" CornerRadius="12" WidthRequest="180">
+                <VerticalStackLayout>
+                    <Label Text="3-Bet" TextColor="White" FontSize="14"/>
+                    <Label Text="{Binding Stats.ThreeBet, StringFormat='{}{0:F1}%'}" TextColor="White" FontSize="24" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+            <Frame Background="#1E3A5F" Padding="20" CornerRadius="12" WidthRequest="180">
+                <VerticalStackLayout>
+                    <Label Text="WTS" TextColor="White" FontSize="14"/>
+                    <Label Text="{Binding Stats.Wts, StringFormat='{}{0:F1}%'}" TextColor="#38B2AC" FontSize="24" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+        </HorizontalStackLayout>
+
+        <!-- Hands Grid -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding HandsResult.Hands}" Margin="20,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="15" Margin="0,5" CornerRadius="8" Background="White">
+                        <Grid ColumnDefinitions="*,*,*,*,*,*,*">
+                            <Label Grid.Column="0" Text="{Binding Date}" VerticalOptions="Center"/>
+                            <Label Grid.Column="1" Text="{Binding Position}" VerticalOptions="Center"/>
+                            <Label Grid.Column="2" Text="{Binding Cards}" VerticalOptions="Center"/>
+                            <Label Grid.Column="3" Text="{Binding Action}" VerticalOptions="Center"/>
+                            <Label Grid.Column="4" Text="{Binding Pot, StringFormat='{}{0:C2}'}" VerticalOptions="Center"/>
+                            <Label Grid.Column="5" Text="{Binding Result}" VerticalOptions="Center"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Filters -->
+        <Frame Grid.Row="2" Padding="20" CornerRadius="12" Background="#F7FAFC" Margin="10">
+            <HorizontalStackLayout Spacing="15">
+                <Entry Placeholder="Hero Name" Text="{Binding HeroName}" WidthRequest="150"/>
+                <Entry Placeholder="Position" Text="{Binding Position}" WidthRequest="100"/>
+                <Button Text="Apply" Command="{Binding ApplyFiltersCommand}" WidthRequest="100"/>
+            </HorizontalStackLayout>
+        </Frame>
+    </Grid>
+
+</ContentPage>

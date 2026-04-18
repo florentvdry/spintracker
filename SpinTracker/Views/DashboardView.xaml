@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:SpinTracker.ViewModels"
+             x:DataType="vm:DashboardViewModel"
+             Title="Dashboard">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Header Stats -->
+        <VerticalStackLayout Grid.Row="0" Margin="20">
+            <Label Text="Dashboard" FontSize="28" FontAttributes="Bold"/>
+            <HorizontalStackLayout Margin="0,20,0,0" Spacing="20">
+                <Frame Background="#1E3A5F" Padding="20" CornerRadius="12" WidthRequest="200">
+                    <VerticalStackLayout>
+                        <Label Text="Total Profit" TextColor="White" FontSize="14"/>
+                        <Label Text="{Binding Stats.TotalProfit, StringFormat='{}{0:C2}'}" TextColor="#38B2AC" FontSize="24" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                </Frame>
+                <Frame Background="#2C5282" Padding="20" CornerRadius="12" WidthRequest="200">
+                    <VerticalStackLayout>
+                        <Label Text="Hands Played" TextColor="White" FontSize="14"/>
+                        <Label Text="{Binding Stats.TotalHands}" TextColor="White" FontSize="24" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                </Frame>
+                <Frame Background="#38B2AC" Padding="20" CornerRadius="12" WidthRequest="200">
+                    <VerticalStackLayout>
+                        <Label Text="Winrate" TextColor="White" FontSize="14"/>
+                        <Label Text="{Binding Stats.WinRate, StringFormat='{}{0:F1} bb/100'}" TextColor="White" FontSize="24" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                </Frame>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <!-- Session List -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Sessions}" Margin="20,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="15" Margin="0,5" CornerRadius="8" Background="White">
+                        <Grid ColumnDefinitions="2*,*,*,*,*">
+                            <Label Grid.Column="0" Text="{Binding Date}" VerticalOptions="Center"/>
+                            <Label Grid.Column="1" Text="{Binding BuyIn, StringFormat='{}{0:C0}'}" VerticalOptions="Center"/>
+                            <Label Grid.Column="2" Text="{Binding Hands}" VerticalOptions="Center"/>
+                            <Label Grid.Column="3" Text="{Binding Profit, StringFormat='{}{0:C2}'}" VerticalOptions="Center"/>
+                            <Label Grid.Column="4" Text="{Binding Duration}" VerticalOptions="Center"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Filters -->
+        <Frame Grid.Row="2" Padding="20" CornerRadius="12" Background="#F7FAFC">
+            <HorizontalStackLayout Spacing="15">
+                <Entry Placeholder="Hero Name" Text="{Binding HeroName}" WidthRequest="150"/>
+                <DatePicker Date="{Binding DateFrom}" WidthRequest="150"/>
+                <DatePicker Date="{Binding DateTo}" WidthRequest="150"/>
+                <Button Text="Apply" Command="{Binding ApplyFiltersCommand}" WidthRequest="100"/>
+                <Button Text="Clear" Command="{Binding ClearFiltersCommand}" WidthRequest="100"/>
+            </HorizontalStackLayout>
+        </Frame>
+    </Grid>
+
+</ContentPage>

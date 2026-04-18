@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:SpinTracker.ViewModels"
+             x:DataType="vm:PlayersViewModel"
+             Title="Players">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Filters -->
+        <Frame Grid.Row="0" Padding="20" CornerRadius="12" Background="#F7FAFC" Margin="10">
+            <HorizontalStackLayout Spacing="15">
+                <Entry Placeholder="Min Hands" Text="{Binding MinHands}" WidthRequest="100"/>
+                <Entry Placeholder="Reg Only" Text="{Binding IsRegFilter}" WidthRequest="100"/>
+                <Button Text="Load" Command="{Binding LoadCommand}" WidthRequest="100"/>
+            </HorizontalStackLayout>
+        </Frame>
+
+        <!-- Players List -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Players}" Margin="10,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="15" Margin="0,5" CornerRadius="8" Background="White">
+                        <Grid ColumnDefinitions="*,*,*,*,*,Auto">
+                            <Label Grid.Column="0" Text="{Binding Name}" VerticalOptions="Center" FontAttributes="Bold"/>
+                            <Label Grid.Column="1" Text="{Binding Hands, StringFormat='{}{0} hands'}" VerticalOptions="Center"/>
+                            <Label Grid.Column="2" Text="{Binding Vpip, StringFormat='VPIP {0:F1}%'}" VerticalOptions="Center"/>
+                            <Label Grid.Column="3" Text="{Binding Pfr, StringFormat='PFR {0:F1}%'}" VerticalOptions="Center"/>
+                            <Button Grid.Column="4" Text="{Binding IsReg, StringFormat='Reg: {0}'}" 
+                                    Command="{Binding DataContext.ToggleRegStatusCommand, RelativeSource={RelativeSource AncestorType=CollectionView}}" 
+                                    CommandParameter="{Binding Id}"
+                                    WidthRequest="80"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+
+</ContentPage>

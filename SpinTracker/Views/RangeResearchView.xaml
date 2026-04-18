@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:SpinTracker.ViewModels"
+             x:DataType="vm:RangeResearchViewModel"
+             Title="Range Research">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Situation Selector -->
+        <Frame Grid.Row="0" Padding="20" CornerRadius="12" Background="#F7FAFC" Margin="10">
+            <HorizontalStackLayout Spacing="15">
+                <Label Text="Situation:" VerticalOptions="Center" WidthRequest="80"/>
+                <Picker WidthRequest="150">
+                    <Picker.Items>
+                        <x:String>BTN vs SB</x:String>
+                        <x:String>BTN vs BB</x:String>
+                        <x:String>SB vs BB</x:String>
+                        <x:String>CO vs BTN</x:String>
+                    </Picker.Items>
+                </Picker>
+                <Entry Placeholder="Stack" Text="{Binding SelectedStack}" WidthRequest="80"/>
+                <Button Text="Analyze" Command="{Binding LoadCommand}" WidthRequest="120"/>
+            </HorizontalStackLayout>
+        </Frame>
+
+        <!-- Heatmap Grid -->
+        <Frame Grid.Row="1" Margin="10" Padding="20" CornerRadius="12" Background="White">
+            <VerticalStackLayout>
+                <Label Text="Range Heatmap" FontSize="20" FontAttributes="Bold" Margin="0,0,0,20"/>
+                <Grid RowDefinitions="Repeat(13, 35)" ColumnDefinitions="Repeat(13, 35)">
+                    <!-- Dynamic content based on heatmap data -->
+                    <ListView ItemsSource="{Binding Heatmap}" Grid.Row="0" Grid.Column="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <BoxView Color="{Binding Color}" WidthRequest="35" HeightRequest="35"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+                <Label Text="Legend:" Margin="0,20,0,5"/>
+                <HorizontalStackLayout Spacing="10">
+                    <BoxView Color="#FFCDD2" WidthRequest="30" HeightRequest="30"/>
+                    <Label Text="0-5%" VerticalOptions="Center"/>
+                    <BoxView Color="#EF9A9A" WidthRequest="30" HeightRequest="30"/>
+                    <Label Text="5-10%" VerticalOptions="Center"/>
+                    <BoxView Color="#E57373" WidthRequest="30" HeightRequest="30"/>
+                    <Label Text="10-20%" VerticalOptions="Center"/>
+                    <BoxView Color="#E53935" WidthRequest="30" HeightRequest="30"/>
+                    <Label Text="20%+ VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Frame>
+    </Grid>
+
+</ContentPage>

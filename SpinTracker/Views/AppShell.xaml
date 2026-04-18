@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:views="clr-namespace:SpinTracker.Views"
+      Title="SpinTracker">
+
+    <FlyoutItem Title="Dashboard" Icon="dashboard.png">
+        <ShellContent Route="Dashboard" ContentTemplate="{DataTemplate views:DashboardView}" />
+    </FlyoutItem>
+    
+    <FlyoutItem Title="Hand History" Icon="hands.png">
+        <ShellContent Route="HandHistory" ContentTemplate="{DataTemplate views:HandHistoryView}" />
+    </FlyoutItem>
+    
+    <FlyoutItem Title="Charts" Icon="chart.png">
+        <ShellContent Route="Charts" ContentTemplate="{DataTemplate views:ChartsView}" />
+    </FlyoutItem>
+    
+    <FlyoutItem Title="Analysis" Icon="analysis.png">
+        <ShellContent Route="Analysis" ContentTemplate="{DataTemplate views:AnalysisView}" />
+    </FlyoutItem>
+    
+    <FlyoutItem Title="Players" Icon="players.png">
+        <ShellContent Route="Players" ContentTemplate="{DataTemplate views:PlayersView}" />
+    </FlyoutItem>
+    
+    <FlyoutItem Title="Range Research" Icon="range.png">
+        <ShellContent Route="RangeResearch" ContentTemplate="{DataTemplate views:RangeResearchView}" />
+    </FlyoutItem>
+    
+    <FlyoutItem Title="Settings" Icon="settings.png">
+        <ShellContent Route="Settings" ContentTemplate="{DataTemplate views:SettingsView}" />
+    </FlyoutItem>
+
+</Shell>

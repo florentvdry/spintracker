@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:SpinTracker.ViewModels"
+             x:DataType="vm:SettingsViewModel"
+             Title="Settings">
+
+    <VerticalStackLayout Margin="20" Spacing="20">
+        <Label Text="Settings" FontSize="28" FontAttributes="Bold"/>
+
+        <Frame Padding="20" CornerRadius="12" Background="White">
+            <VerticalStackLayout Spacing="20">
+                <Label Text="General" FontSize="18" FontAttributes="Bold"/>
+                
+                <StackLayout Orientation="Horizontal" Spacing="10">
+                    <Label Text="Hero Name:" VerticalOptions="Center" WidthRequest="120"/>
+                    <Entry Text="{Binding HeroName}" WidthRequest="200"/>
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" Spacing="10">
+                    <Label Text="Language:" VerticalOptions="Center" WidthRequest="120"/>
+                    <Picker SelectedItem="{Binding Language}" WidthRequest="200">
+                        <Picker.Items>
+                            <x:String>Français</x:String>
+                            <x:String>English</x:String>
+                        </Picker.Items>
+                    </Picker>
+                </StackLayout>
+
+                <StackLayout Orientation="Horizontal" Spacing="10">
+                    <Label Text="Dark Mode:" VerticalOptions="Center" WidthRequest="120"/>
+                    <Switch IsToggled="{Binding IsDarkMode}"/>
+                </StackLayout>
+            </VerticalStackLayout>
+        </Frame>
+
+        <Frame Padding="20" CornerRadius="12" Background="White">
+            <VerticalStackLayout Spacing="20">
+                <Label Text="Data" FontSize="18" FontAttributes="Bold"/>
+                
+                <Button Text="Export Data" WidthRequest="150"/>
+                <Button Text="Reset Stats" WidthRequest="150"/>
+                <Button Text="Import Hands" WidthRequest="150"/>
+            </VerticalStackLayout>
+        </Frame>
+
+        <Button Text="Save" Command="{Binding SaveCommand}" WidthRequest="150" HorizontalOptions="Start"/>
+    </VerticalStackLayout>
+
+</ContentPage>
