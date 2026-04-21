@@ -656,4 +656,24 @@ conn.createStatement().execute("""
         }
         return PlayerStats()
     }
+
+    fun deleteAllData() {
+        val conn = getConnection()
+        try {
+            conn.autoCommit = false
+            val stmt = conn.createStatement()
+            stmt.execute("DELETE FROM player_hands")
+            stmt.execute("DELETE FROM hands")
+            stmt.execute("DELETE FROM tournaments")
+            stmt.execute("DELETE FROM stats")
+            // We keep players but their stats will be 0
+            conn.commit()
+            println("All data deleted successfully.")
+        } catch (e: Exception) {
+            conn.rollback()
+            println("Error deleting data: ${e.message}")
+        } finally {
+            conn.close()
+        }
+    }
 }

@@ -34,13 +34,13 @@ class AppState {
     }
     
     fun deleteAllHands() {
-        database.deleteAllHands()
+        database.deleteAllData()
     }
     
-    fun importFile(filePath: String): Int {
+    fun importFile(filePath: String, onProgress: (ImportService.ImportProgress) -> Unit = {}): Int {
         var imported = 0
         try {
-            val result = importService.importFiles(listOf(filePath), "jmenfouu") {}
+            val result = importService.importFiles(listOf(filePath), "jmenfouu", onProgress)
             imported = result.handsImported
             
             // If hero is default, try to find the player with most hands

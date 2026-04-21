@@ -5,12 +5,11 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
-}
-
-sourceSets {
-    main {
-        kotlin.srcDirs("src/desktopMain/kotlin")
-        resources.srcDirs("seven-card-evaluator/evaluator/src/main/resources")
+    sourceSets {
+        main {
+            kotlin.srcDirs("src/desktopMain/kotlin")
+            resources.srcDirs("src/desktopMain/resources", "seven-card-evaluator/evaluator/src/main/resources")
+        }
     }
 }
 
