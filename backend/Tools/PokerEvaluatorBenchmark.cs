@@ -21,7 +21,7 @@ public static class PokerEvaluatorBenchmark
 
         var dataDir = Path.Combine(Directory.GetCurrentDirectory(), "exemple-data", "Betclic");
         var files = Directory.GetFiles(dataDir, "*.txt")
-            .Where(f => !Path.GetFileName(f).Contains("excepted"))
+            .Where(f => !Path.GetFileName(f).Contains("expected_result"))
             .ToArray();
 
         Console.WriteLine($"Found {files.Length} data files to process");
@@ -40,8 +40,8 @@ public static class PokerEvaluatorBenchmark
         Console.WriteLine($"Total hands parsed: {totalHands.Count}");
         Console.WriteLine();
 
-        var expected = ReadExpectedResults(Path.Combine(dataDir, "excepted_result.txt"));
-        
+        var expected = ReadExpectedResults(Path.Combine(dataDir, "expected_result.txt"));
+
         Console.WriteLine("=== BENCHMARK STARTING ===");
         Console.WriteLine();
 
@@ -152,7 +152,7 @@ public static class PokerEvaluatorBenchmark
         }
 
         Console.WriteLine();
-        Console.WriteLine("=== COMPARISON WITH EXPECTED (from excepted_result.txt) ===");
+        Console.WriteLine("=== COMPARISON WITH EXPECTED (from expected_result.txt) ===");
         Console.WriteLine();
         
         if (expected.Count == 0)
@@ -268,7 +268,7 @@ public static class PokerEvaluatorBenchmark
                 var key = trimmed.Substring(3).Trim();
                 results[key] = value;
             }
-            else if (trimmed.Contains("Net excepted Chips Won"))
+            else if (trimmed.Contains("Net expected Chips Won"))
             {
                 results["Net Expected Chips Won"] = value;
             }

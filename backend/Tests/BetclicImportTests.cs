@@ -21,13 +21,13 @@ public class BetclicImportTests
     public void ParseBetclicExampleData_MatchesExpectedResults()
     {
         var dataDir = GetExampleDataPath();
-        var expectedFile = Path.Combine(dataDir, "excepted_result.txt");
-        
+        var expectedFile = Path.Combine(dataDir, "expected_result.txt");
+
         Assert.True(Directory.Exists(dataDir), $"Example data directory not found: {dataDir}");
         Assert.True(File.Exists(expectedFile), $"Expected results file not found: {expectedFile}");
 
         var files = Directory.GetFiles(dataDir, "*.txt")
-            .Where(f => Path.GetFileName(f) != "excepted_result.txt")
+            .Where(f => Path.GetFileName(f) != "expected_result.txt")
             .ToArray();
 
         var allHands = new List<ParsedHand>();

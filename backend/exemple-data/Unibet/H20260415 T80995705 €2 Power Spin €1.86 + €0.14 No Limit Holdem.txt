@@ -1,0 +1,211 @@
+Unibet Hand #1489941675, Tournament #80995705, €1.86 + €0.14 - 10.00/20.00 - No Limit Hold'Em - Total prize €6 - UTC 18:09:27 2026/04/15
+Table "81495656" 3-max
+*** Seated players ***
+Seat 1: TibTib22620 (500)
+Seat 3: Trpn19 (500)
+Seat 5: Koudur[Unibet_5362bfc439408f11] (500)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+TibTib22620 posts small blind 10
+Trpn19 posts big blind 20
+*** Hole cards ***
+Dealt to TibTib22620 [2d 2s]
+Dealt to Trpn19 [7d 7c]
+Dealt to Koudur[Unibet_5362bfc439408f11] [9c 6d]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] folds
+TibTib22620 calls 10
+Trpn19 raises 20 to 40
+TibTib22620 calls 20
+*** Flop *** [3h Qh 5h]
+TibTib22620 checks
+Trpn19 checks
+*** Turn *** [3h Qh 5h] [Jd]
+TibTib22620 bets 20
+Trpn19 calls 20
+*** River *** [3h Qh 5h] [Jd] [Tc]
+TibTib22620 bets 20
+Trpn19 calls 20
+*** Showdown ***
+TibTib22620 shows [2d 2s], A Pair of Deuces
+Trpn19 shows [7d 7c], A Pair of Sevens
+Trpn19 wins 160
+*** Summary ***
+Total pot 160
+Seat 1: TibTib22620: bet 80 and won 0, net result: -80
+Seat 3: Trpn19: bet 80 and won 160, net result: 80
+
+
+
+Unibet Hand #1489942516, Tournament #80995705, €1.86 + €0.14 - 10.00/20.00 - No Limit Hold'Em - Total prize €6 - UTC 18:10:01 2026/04/15
+Table "81495656" 3-max
+*** Seated players ***
+Seat 1: TibTib22620 (420)
+Seat 3: Trpn19 (580)
+Seat 5: Koudur[Unibet_5362bfc439408f11] (500)
+*** Blinds and button ***
+TibTib22620 has the button
+Trpn19 posts small blind 10
+Koudur[Unibet_5362bfc439408f11] posts big blind 20
+*** Hole cards ***
+Dealt in Trpn19
+Dealt to Koudur[Unibet_5362bfc439408f11] [9h 3c]
+Dealt in TibTib22620
+*** Preflop ***
+TibTib22620 calls 20
+Trpn19 calls 10
+Koudur[Unibet_5362bfc439408f11] checks
+*** Flop *** [5d Td 2s]
+Trpn19 checks
+Koudur[Unibet_5362bfc439408f11] checks
+TibTib22620 checks
+*** Turn *** [5d Td 2s] [Jh]
+Trpn19 bets 20
+Koudur[Unibet_5362bfc439408f11] folds
+TibTib22620 folds
+Uncalled bet returned to Trpn19: 20
+Trpn19 wins 60
+*** Summary ***
+Total pot 60
+Seat 1: TibTib22620: bet 20 and won 0, net result: -20
+Seat 3: Trpn19: bet 40 and won 80, net result: 40
+Seat 5: Koudur[Unibet_5362bfc439408f11]: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1489943482, Tournament #80995705, €1.86 + €0.14 - 10.00/20.00 - No Limit Hold'Em - Total prize €6 - UTC 18:10:40 2026/04/15
+Table "81495656" 3-max
+*** Seated players ***
+Seat 1: TibTib22620 (400)
+Seat 3: Trpn19 (620)
+Seat 5: Koudur[Unibet_5362bfc439408f11] (480)
+*** Blinds and button ***
+Trpn19 has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 10
+TibTib22620 posts big blind 20
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [Qc Qs]
+Dealt in TibTib22620
+Dealt in Trpn19
+*** Preflop ***
+Trpn19 calls 20
+Koudur[Unibet_5362bfc439408f11] raises 70 to 80
+TibTib22620 folds
+Trpn19 calls 60
+*** Flop *** [7h 8h 5d]
+Koudur[Unibet_5362bfc439408f11] bets 59
+Trpn19 calls 59
+*** Turn *** [7h 8h 5d] [6d]
+Koudur[Unibet_5362bfc439408f11] bets 230
+Trpn19 calls 230
+*** River *** [7h 8h 5d] [6d] [2h]
+Koudur[Unibet_5362bfc439408f11] bets 111, and is all-in
+Trpn19 folds
+Uncalled bet returned to Koudur[Unibet_5362bfc439408f11]: 111
+Koudur[Unibet_5362bfc439408f11] wins 758
+*** Summary ***
+Total pot 758
+Seat 1: TibTib22620: bet 20 and won 0, net result: -20
+Seat 3: Trpn19: bet 369 and won 0, net result: -369
+Seat 5: Koudur[Unibet_5362bfc439408f11]: bet 480 and won 869, net result: 389
+
+
+
+Unibet Hand #1489944964, Tournament #80995705, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €6 - UTC 18:11:39 2026/04/15
+Table "81495656" 3-max
+*** Seated players ***
+Seat 1: TibTib22620 (380)
+Seat 3: Trpn19 (251)
+Seat 5: Koudur[Unibet_5362bfc439408f11] (869)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+TibTib22620 posts small blind 15
+Trpn19 posts big blind 30
+*** Hole cards ***
+Dealt in TibTib22620
+Dealt to Trpn19 [2d Qc]
+Dealt to Koudur[Unibet_5362bfc439408f11] [Ad Ks]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] raises 60 to 60
+TibTib22620 calls 45
+Trpn19 calls 30
+*** Flop *** [2h Qd 8d]
+TibTib22620 checks
+Trpn19 bets 45
+Koudur[Unibet_5362bfc439408f11] calls 45
+TibTib22620 folds
+*** Turn *** [2h Qd 8d] [Ac]
+Trpn19 bets 93
+Koudur[Unibet_5362bfc439408f11] raises 186 to 186
+Trpn19 calls 53, and is all-in
+Uncalled bet returned to Koudur[Unibet_5362bfc439408f11]: 40
+*** Showdown ***
+*** River *** [2h Qd 8d] [Ac] [8s]
+Trpn19 shows [2d Qc], Two pairs, Queens up
+Koudur[Unibet_5362bfc439408f11] shows [Ad Ks], Two pairs, Aces up
+Koudur[Unibet_5362bfc439408f11] wins 562
+Trpn19 finished the tournament in 3rd place
+*** Summary ***
+Total pot 562
+Seat 1: TibTib22620: bet 60 and won 0, net result: -60
+Seat 3: Trpn19: bet 251 and won 0, net result: -251
+Seat 5: Koudur[Unibet_5362bfc439408f11]: bet 291 and won 602, net result: 311
+
+
+
+Unibet Hand #1489945844, Tournament #80995705, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €6 - UTC 18:12:15 2026/04/15
+Table "81495656" 3-max
+*** Seated players ***
+Seat 1: TibTib22620 (320)
+Seat 5: Koudur[Unibet_5362bfc439408f11] (1180)
+*** Blinds and button ***
+TibTib22620 has the button
+TibTib22620 posts small blind 15
+Koudur[Unibet_5362bfc439408f11] posts big blind 30
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [7d 7s]
+Dealt in TibTib22620
+*** Preflop ***
+TibTib22620 calls 15
+Koudur[Unibet_5362bfc439408f11] raises 1150 to 1180, and is all-in
+TibTib22620 folds
+Koudur[Unibet_5362bfc439408f11] wins 1210
+*** Summary ***
+Total pot 1210
+Seat 1: TibTib22620: bet 30 and won 0, net result: -30
+Seat 5: Koudur[Unibet_5362bfc439408f11]: bet 1180 and won 1210, net result: 30
+
+
+
+Unibet Hand #1489946153, Tournament #80995705, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €6 - UTC 18:12:27 2026/04/15
+Table "81495656" 3-max
+*** Seated players ***
+Seat 1: TibTib22620 (290)
+Seat 5: Koudur[Unibet_5362bfc439408f11] (1210)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 15
+TibTib22620 posts big blind 30
+*** Hole cards ***
+Dealt to TibTib22620 [9h 9s]
+Dealt to Koudur[Unibet_5362bfc439408f11] [Ac Td]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] raises 1195 to 1210, and is all-in
+TibTib22620 calls 260, and is all-in
+Uncalled bet returned to Koudur[Unibet_5362bfc439408f11]: 920
+*** Showdown ***
+*** Flop *** [Kh 2c Jc]
+*** Turn *** [Kh 2c Jc] [Th]
+*** River *** [Kh 2c Jc] [Th] [7c]
+TibTib22620 shows [9h 9s], A Pair of Nines
+Koudur[Unibet_5362bfc439408f11] shows [Ac Td], A Pair of Tens
+Koudur[Unibet_5362bfc439408f11] wins 580
+TibTib22620 finished the tournament in 2nd place
+Koudur[Unibet_5362bfc439408f11] finished the tournament in 1st place, and won €6
+*** Summary ***
+Total pot 580
+Seat 1: TibTib22620: bet 290 and won 0, net result: -290
+Seat 5: Koudur[Unibet_5362bfc439408f11]: bet 1210 and won 1500, net result: 290
+
+
+

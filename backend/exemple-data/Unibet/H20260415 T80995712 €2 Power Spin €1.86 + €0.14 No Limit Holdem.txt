@@ -1,0 +1,732 @@
+Unibet Hand #1489941798, Tournament #80995712, €1.86 + €0.14 - 10.00/20.00 - No Limit Hold'Em - Total prize €8 - UTC 18:09:33 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (500)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (500)
+Seat 5: Bumbezy (500)
+*** Blinds and button ***
+Bumbezy has the button
+Picosse6771 posts small blind 10
+Koudur[Unibet_5362bfc439408f11] posts big blind 20
+*** Hole cards ***
+Dealt to Picosse6771 [Js Ts]
+Dealt to Koudur[Unibet_5362bfc439408f11] [9c 4h]
+Dealt to Bumbezy [Jd 7d]
+*** Preflop ***
+Bumbezy calls 20
+Picosse6771 calls 10
+Koudur[Unibet_5362bfc439408f11] checks
+*** Flop *** [Kd 5s Kc]
+Picosse6771 checks
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy checks
+*** Turn *** [Kd 5s Kc] [8h]
+Picosse6771 checks
+Koudur[Unibet_5362bfc439408f11] checks  (timed out)
+Bumbezy checks
+*** River *** [Kd 5s Kc] [8h] [6h]
+Picosse6771 checks
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy checks
+*** Showdown ***
+Picosse6771 shows [Js Ts], A Pair of Kings with a Ten kicker
+Koudur[Unibet_5362bfc439408f11] shows [9c 4h], A Pair of Kings with a Nine kicker
+Bumbezy shows [Jd 7d], A Pair of Kings with an Eight kicker
+Picosse6771 wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Picosse6771: bet 20 and won 60, net result: 40
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 20 and won 0, net result: -20
+Seat 5: Bumbezy: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1489943805, Tournament #80995712, €1.86 + €0.14 - 10.00/20.00 - No Limit Hold'Em - Total prize €8 - UTC 18:10:52 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (540)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (480)
+Seat 5: Bumbezy (480)
+*** Blinds and button ***
+Picosse6771 has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 10
+Bumbezy posts big blind 20
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [9d 7s]
+Dealt to Bumbezy [Td Qc]
+Dealt to Picosse6771 [Qh Tc]
+*** Preflop ***
+Picosse6771 raises 40 to 40
+Koudur[Unibet_5362bfc439408f11] folds
+Bumbezy calls 20
+*** Flop *** [Ah 6d Kc]
+Bumbezy checks
+Picosse6771 checks
+*** Turn *** [Ah 6d Kc] [7h]
+Bumbezy checks
+Picosse6771 checks
+*** River *** [Ah 6d Kc] [7h] [Qd]
+Bumbezy bets 40
+Picosse6771 raises 80 to 80
+Bumbezy calls 40
+*** Showdown ***
+Picosse6771 shows [Qh Tc], A Pair of Queens, tied
+Bumbezy shows [Td Qc], A Pair of Queens, tied
+Picosse6771 wins 125 from main pot
+Bumbezy wins 125 from main pot
+*** Summary ***
+Total pot 250
+Seat 1: Picosse6771: bet 120 and won 125, net result: 5
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 10 and won 0, net result: -10
+Seat 5: Bumbezy: bet 120 and won 125, net result: 5
+
+
+
+Unibet Hand #1489944367, Tournament #80995712, €1.86 + €0.14 - 10.00/20.00 - No Limit Hold'Em - Total prize €8 - UTC 18:11:16 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (545)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (470)
+Seat 5: Bumbezy (485)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+Bumbezy posts small blind 10
+Picosse6771 posts big blind 20
+*** Hole cards ***
+Dealt in Bumbezy
+Dealt in Picosse6771
+Dealt to Koudur[Unibet_5362bfc439408f11] [3h Qh]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] folds
+Bumbezy calls 10
+Picosse6771 checks
+*** Flop *** [9c 9s 7c]
+Bumbezy checks
+Picosse6771 checks
+*** Turn *** [9c 9s 7c] [2d]
+Bumbezy bets 20
+Picosse6771 folds
+Uncalled bet returned to Bumbezy: 20
+Bumbezy wins 40
+*** Summary ***
+Total pot 40
+Seat 1: Picosse6771: bet 20 and won 0, net result: -20
+Seat 5: Bumbezy: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1489945027, Tournament #80995712, €1.86 + €0.14 - 10.00/20.00 - No Limit Hold'Em - Total prize €8 - UTC 18:11:41 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (525)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (470)
+Seat 5: Bumbezy (505)
+*** Blinds and button ***
+Bumbezy has the button
+Picosse6771 posts small blind 10
+Koudur[Unibet_5362bfc439408f11] posts big blind 20
+*** Hole cards ***
+Dealt to Picosse6771 [Qd As]
+Dealt to Koudur[Unibet_5362bfc439408f11] [Ah Kd]
+Dealt in Bumbezy
+*** Preflop ***
+Bumbezy folds
+Picosse6771 calls 10
+Koudur[Unibet_5362bfc439408f11] raises 450 to 470, and is all-in
+Picosse6771 calls 450
+*** Showdown ***
+*** Flop *** [4s Ac Tc]
+*** Turn *** [4s Ac Tc] [7c]
+*** River *** [4s Ac Tc] [7c] [6s]
+Picosse6771 shows [Qd As], A Pair of Aces with a Queen kicker
+Koudur[Unibet_5362bfc439408f11] shows [Ah Kd], A Pair of Aces with a King kicker
+Koudur[Unibet_5362bfc439408f11] wins 940
+*** Summary ***
+Total pot 940
+Seat 1: Picosse6771: bet 470 and won 0, net result: -470
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 470 and won 940, net result: 470
+
+
+
+Unibet Hand #1489945687, Tournament #80995712, €1.86 + €0.14 - 10.00/20.00 - No Limit Hold'Em - Total prize €8 - UTC 18:12:08 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (55)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (940)
+Seat 5: Bumbezy (505)
+*** Blinds and button ***
+Picosse6771 has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 10
+Bumbezy posts big blind 20
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [2c Tc]
+Dealt to Bumbezy [Jc 8h]
+Dealt in Picosse6771
+*** Preflop ***
+Picosse6771 is disconnected
+Picosse6771 folds  (timed out)
+Koudur[Unibet_5362bfc439408f11] raises 30 to 40
+Bumbezy calls 20
+*** Flop *** [7s 2d 9s]
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy checks
+*** Turn *** [7s 2d 9s] [5h]
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy bets 20
+Koudur[Unibet_5362bfc439408f11] calls 20
+*** River *** [7s 2d 9s] [5h] [As]
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy bets 20
+Koudur[Unibet_5362bfc439408f11] calls 20
+*** Showdown ***
+Koudur[Unibet_5362bfc439408f11] shows [2c Tc], A Pair of Deuces
+Bumbezy shows [Jc 8h], High card
+Koudur[Unibet_5362bfc439408f11] wins 160
+*** Summary ***
+Total pot 160
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 80 and won 160, net result: 80
+Seat 5: Bumbezy: bet 80 and won 0, net result: -80
+
+
+
+Unibet Hand #1489947245, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:13:12 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (55)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1020)
+Seat 5: Bumbezy (425)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+Bumbezy posts small blind 15
+Picosse6771 posts big blind 30
+*** Hole cards ***
+Dealt in Bumbezy
+Dealt in Picosse6771
+Dealt to Koudur[Unibet_5362bfc439408f11] [Jd 9d]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] raises 1020 to 1020, and is all-in
+Bumbezy folds
+Picosse6771 folds  (timed out)
+Koudur[Unibet_5362bfc439408f11] wins 1065
+*** Summary ***
+Total pot 1065
+Seat 1: Picosse6771: bet 30 and won 0, net result: -30
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 1020 and won 1065, net result: 45
+Seat 5: Bumbezy: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1489947588, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:13:27 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (25)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1065)
+Seat 5: Bumbezy (410)
+*** Blinds and button ***
+Bumbezy has the button
+Picosse6771 posts small blind 15
+Koudur[Unibet_5362bfc439408f11] posts big blind 30
+*** Hole cards ***
+Dealt in Picosse6771
+Dealt to Koudur[Unibet_5362bfc439408f11] [Td 9c]
+Dealt in Bumbezy
+*** Preflop ***
+Bumbezy folds
+Picosse6771 folds  (timed out)
+Koudur[Unibet_5362bfc439408f11] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: Picosse6771: bet 15 and won 0, net result: -15
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 30 and won 45, net result: 15
+
+
+
+Unibet Hand #1489947780, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:13:34 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (10)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1080)
+Seat 5: Bumbezy (410)
+*** Blinds and button ***
+Picosse6771 has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 15
+Bumbezy posts big blind 30
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [Qc 4s]
+Dealt in Bumbezy
+Dealt in Picosse6771
+*** Preflop ***
+Picosse6771 folds  (timed out)
+Koudur[Unibet_5362bfc439408f11] raises 45 to 60
+Bumbezy calls 30
+*** Flop *** [Ac 3c 2s]
+Koudur[Unibet_5362bfc439408f11] bets 30
+Bumbezy folds
+Uncalled bet returned to Koudur[Unibet_5362bfc439408f11]: 30
+Koudur[Unibet_5362bfc439408f11] wins 120
+*** Summary ***
+Total pot 120
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 90 and won 150, net result: 60
+Seat 5: Bumbezy: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1489948311, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:13:57 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (10)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1140)
+Seat 5: Bumbezy (350)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+Bumbezy posts small blind 15
+Picosse6771 posts big blind 10, and is all-in
+*** Hole cards ***
+Dealt to Bumbezy [5s 4d]
+Dealt to Picosse6771 [Js Jh]
+Dealt to Koudur[Unibet_5362bfc439408f11] [8h 9c]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] folds
+Uncalled bet returned to Bumbezy: 5
+*** Showdown ***
+*** Flop *** [8s 7c Ts]
+*** Turn *** [8s 7c Ts] [2s]
+*** River *** [8s 7c Ts] [2s] [4c]
+Picosse6771 shows [Js Jh], A Pair of Jacks
+Bumbezy shows [5s 4d], A Pair of Fours
+Picosse6771 wins 20
+*** Summary ***
+Total pot 20
+Seat 1: Picosse6771: bet 10 and won 20, net result: 10
+Seat 5: Bumbezy: bet 15 and won 5, net result: -10
+
+
+
+Unibet Hand #1489948671, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:14:11 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (20)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1140)
+Seat 5: Bumbezy (340)
+*** Blinds and button ***
+Bumbezy has the button
+Picosse6771 posts small blind 15
+Koudur[Unibet_5362bfc439408f11] posts big blind 30
+*** Hole cards ***
+Dealt in Picosse6771
+Dealt to Koudur[Unibet_5362bfc439408f11] [Qc 4h]
+Dealt in Bumbezy
+*** Preflop ***
+Bumbezy folds
+Picosse6771 folds  (timed out)
+Koudur[Unibet_5362bfc439408f11] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: Picosse6771: bet 15 and won 0, net result: -15
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 30 and won 45, net result: 15
+
+
+
+Unibet Hand #1489948863, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:14:19 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (5)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1155)
+Seat 5: Bumbezy (340)
+*** Blinds and button ***
+Picosse6771 has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 15
+Bumbezy posts big blind 30
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [8d 4d]
+Dealt in Bumbezy
+Dealt in Picosse6771
+*** Preflop ***
+Picosse6771 folds  (timed out)
+Koudur[Unibet_5362bfc439408f11] raises 45 to 60
+Bumbezy calls 30
+*** Flop *** [7s 6d 2h]
+Koudur[Unibet_5362bfc439408f11] bets 30
+Bumbezy calls 30
+*** Turn *** [7s 6d 2h] [Ac]
+Koudur[Unibet_5362bfc439408f11] bets 99
+Bumbezy folds
+Uncalled bet returned to Koudur[Unibet_5362bfc439408f11]: 99
+Koudur[Unibet_5362bfc439408f11] wins 180
+*** Summary ***
+Total pot 180
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 189 and won 279, net result: 90
+Seat 5: Bumbezy: bet 90 and won 0, net result: -90
+
+
+
+Unibet Hand #1489949377, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:14:40 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (5)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1245)
+Seat 5: Bumbezy (250)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+Bumbezy posts small blind 15
+Picosse6771 posts big blind 5, and is all-in
+*** Hole cards ***
+Dealt to Bumbezy [7s 3c]
+Dealt to Picosse6771 [6d 9d]
+Dealt to Koudur[Unibet_5362bfc439408f11] [Ks 8h]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] folds
+Uncalled bet returned to Bumbezy: 10
+*** Showdown ***
+*** Flop *** [5s Qc Th]
+*** Turn *** [5s Qc Th] [Ah]
+*** River *** [5s Qc Th] [Ah] [2s]
+Picosse6771 shows [6d 9d], High card, Ace with a Nine kicker
+Bumbezy shows [7s 3c], High card, Ace with a Seven kicker
+Picosse6771 wins 10
+*** Summary ***
+Total pot 10
+Seat 1: Picosse6771: bet 5 and won 10, net result: 5
+Seat 5: Bumbezy: bet 15 and won 10, net result: -5
+
+
+
+Unibet Hand #1489949766, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:14:55 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (10)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1245)
+Seat 5: Bumbezy (245)
+*** Blinds and button ***
+Bumbezy has the button
+Picosse6771 posts small blind 10, and is all-in
+Koudur[Unibet_5362bfc439408f11] posts big blind 30
+*** Hole cards ***
+Dealt to Picosse6771 [7d Ah]
+Dealt to Koudur[Unibet_5362bfc439408f11] [Ad 5s]
+Dealt to Bumbezy [Kd 7s]
+*** Preflop ***
+Bumbezy calls 30
+Koudur[Unibet_5362bfc439408f11] raises 1215 to 1245, and is all-in
+Bumbezy calls 215, and is all-in
+Uncalled bet returned to Koudur[Unibet_5362bfc439408f11]: 1000
+*** Showdown ***
+*** Flop *** [Th 4s Qd]
+*** Turn *** [Th 4s Qd] [7h]
+*** River *** [Th 4s Qd] [7h] [Tc]
+Picosse6771 shows [7d Ah], Two pairs, Tens and Sevens with an Ace kicker
+Koudur[Unibet_5362bfc439408f11] shows [Ad 5s], A Pair of Tens
+Bumbezy shows [Kd 7s], Two pairs, Tens and Sevens with a King kicker
+Picosse6771 wins main pot, 30
+Bumbezy wins side pot #1, 470
+*** Summary ***
+Total pot 500
+Seat 1: Picosse6771: bet 10 and won 30, net result: 20
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 1245 and won 1000, net result: -245
+Seat 5: Bumbezy: bet 245 and won 470, net result: 225
+
+
+
+Unibet Hand #1489950376, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:15:20 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (30)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1000)
+Seat 5: Bumbezy (470)
+*** Blinds and button ***
+Picosse6771 has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 15
+Bumbezy posts big blind 30
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [Tc 2h]
+Dealt in Bumbezy
+Dealt in Picosse6771
+*** Preflop ***
+Picosse6771 folds  (timed out)
+Koudur[Unibet_5362bfc439408f11] folds
+Bumbezy wins 45
+*** Summary ***
+Total pot 45
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 15 and won 0, net result: -15
+Seat 5: Bumbezy: bet 30 and won 45, net result: 15
+
+
+
+Unibet Hand #1489950594, Tournament #80995712, €1.86 + €0.14 - 15.00/30.00 - No Limit Hold'Em - Total prize €8 - UTC 18:15:29 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (30)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (985)
+Seat 5: Bumbezy (485)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+Bumbezy posts small blind 15
+Picosse6771 posts big blind 30, and is all-in
+*** Hole cards ***
+Dealt to Bumbezy [9d 5s]
+Dealt to Picosse6771 [6h 4s]
+Dealt to Koudur[Unibet_5362bfc439408f11] [2h 9s]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] folds
+Bumbezy calls 15
+*** Showdown ***
+*** Flop *** [Kd Jd 4c]
+*** Turn *** [Kd Jd 4c] [8d]
+*** River *** [Kd Jd 4c] [8d] [Th]
+Picosse6771 shows [6h 4s], A Pair of Fours
+Bumbezy shows [9d 5s], High card
+Picosse6771 wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Picosse6771: bet 30 and won 60, net result: 30
+Seat 5: Bumbezy: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1489951019, Tournament #80995712, €1.86 + €0.14 - 20.00/40.00 - No Limit Hold'Em - Total prize €8 - UTC 18:15:47 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (60)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (985)
+Seat 5: Bumbezy (455)
+*** Blinds and button ***
+Bumbezy has the button
+Picosse6771 posts small blind 20
+Koudur[Unibet_5362bfc439408f11] posts big blind 40
+*** Hole cards ***
+Dealt in Picosse6771
+Dealt to Koudur[Unibet_5362bfc439408f11] [7h 2c]
+Dealt in Bumbezy
+*** Preflop ***
+Bumbezy folds
+Picosse6771 folds  (timed out)
+Koudur[Unibet_5362bfc439408f11] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Picosse6771: bet 20 and won 0, net result: -20
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1489951201, Tournament #80995712, €1.86 + €0.14 - 20.00/40.00 - No Limit Hold'Em - Total prize €8 - UTC 18:15:54 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (40)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (1005)
+Seat 5: Bumbezy (455)
+*** Blinds and button ***
+Picosse6771 has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 20
+Bumbezy posts big blind 40
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [5d 4c]
+Dealt in Bumbezy
+Dealt in Picosse6771
+*** Preflop ***
+Picosse6771 folds  (timed out)
+Koudur[Unibet_5362bfc439408f11] raises 60 to 80
+Bumbezy raises 80 to 120
+Koudur[Unibet_5362bfc439408f11] calls 40
+*** Flop *** [9c 9s 3h]
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy checks
+*** Turn *** [9c 9s 3h] [6s]
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy bets 80
+Koudur[Unibet_5362bfc439408f11] calls 80
+*** River *** [9c 9s 3h] [6s] [Ac]
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy bets 255, and is all-in
+Koudur[Unibet_5362bfc439408f11] folds
+Uncalled bet returned to Bumbezy: 255
+Bumbezy wins 400
+*** Summary ***
+Total pot 400
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 200 and won 0, net result: -200
+Seat 5: Bumbezy: bet 455 and won 655, net result: 200
+
+
+
+Unibet Hand #1489952306, Tournament #80995712, €1.86 + €0.14 - 20.00/40.00 - No Limit Hold'Em - Total prize €8 - UTC 18:16:38 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 1: Picosse6771 (40)
+Seat 3: Koudur[Unibet_5362bfc439408f11] (805)
+Seat 5: Bumbezy (655)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+Bumbezy posts small blind 20
+Picosse6771 posts big blind 40, and is all-in
+*** Hole cards ***
+Dealt to Bumbezy [6c 6h]
+Dealt to Picosse6771 [4d 8c]
+Dealt to Koudur[Unibet_5362bfc439408f11] [Kh 7c]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] folds
+Bumbezy calls 20
+*** Showdown ***
+*** Flop *** [Js 6d Jd]
+*** Turn *** [Js 6d Jd] [Jh]
+*** River *** [Js 6d Jd] [Jh] [2d]
+Picosse6771 shows [4d 8c], Three of a kind, Jacks
+Bumbezy shows [6c 6h], Full House
+Bumbezy wins 80
+Picosse6771 finished the tournament in 3rd place
+*** Summary ***
+Total pot 80
+Seat 1: Picosse6771: bet 40 and won 0, net result: -40
+Seat 5: Bumbezy: bet 40 and won 80, net result: 40
+
+
+
+Unibet Hand #1489952710, Tournament #80995712, €1.86 + €0.14 - 20.00/40.00 - No Limit Hold'Em - Total prize €8 - UTC 18:16:55 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 3: Koudur[Unibet_5362bfc439408f11] (805)
+Seat 5: Bumbezy (695)
+*** Blinds and button ***
+Bumbezy has the button
+Bumbezy posts small blind 20
+Koudur[Unibet_5362bfc439408f11] posts big blind 40
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [Ts 4h]
+Dealt to Bumbezy [Jc 5h]
+*** Preflop ***
+Bumbezy calls 20
+Koudur[Unibet_5362bfc439408f11] checks
+*** Flop *** [6h Qd Ac]
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy checks
+*** Turn *** [6h Qd Ac] [Kh]
+Koudur[Unibet_5362bfc439408f11] checks
+Bumbezy checks
+*** River *** [6h Qd Ac] [Kh] [8s]
+Koudur[Unibet_5362bfc439408f11] bets 40
+Bumbezy calls 40
+*** Showdown ***
+Koudur[Unibet_5362bfc439408f11] shows [Ts 4h], High card, Ace with a Ten kicker
+Bumbezy shows [Jc 5h], High card, Ace with a Jack kicker
+Bumbezy wins 160
+*** Summary ***
+Total pot 160
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 80 and won 0, net result: -80
+Seat 5: Bumbezy: bet 80 and won 160, net result: 80
+
+
+
+Unibet Hand #1489953408, Tournament #80995712, €1.86 + €0.14 - 20.00/40.00 - No Limit Hold'Em - Total prize €8 - UTC 18:17:24 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 3: Koudur[Unibet_5362bfc439408f11] (725)
+Seat 5: Bumbezy (775)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 20
+Bumbezy posts big blind 40
+*** Hole cards ***
+Dealt in Bumbezy
+Dealt to Koudur[Unibet_5362bfc439408f11] [5s 8c]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] raises 60 to 80
+Bumbezy calls 40
+*** Flop *** [Jc 5d Jd]
+Bumbezy checks
+Koudur[Unibet_5362bfc439408f11] bets 52
+Bumbezy raises 104 to 104
+Koudur[Unibet_5362bfc439408f11] folds
+Uncalled bet returned to Bumbezy: 52
+Bumbezy wins 264
+*** Summary ***
+Total pot 264
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 132 and won 0, net result: -132
+Seat 5: Bumbezy: bet 184 and won 316, net result: 132
+
+
+
+Unibet Hand #1489953921, Tournament #80995712, €1.86 + €0.14 - 20.00/40.00 - No Limit Hold'Em - Total prize €8 - UTC 18:17:46 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 3: Koudur[Unibet_5362bfc439408f11] (593)
+Seat 5: Bumbezy (907)
+*** Blinds and button ***
+Bumbezy has the button
+Bumbezy posts small blind 20
+Koudur[Unibet_5362bfc439408f11] posts big blind 40
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [3d 3s]
+Dealt in Bumbezy
+*** Preflop ***
+Bumbezy calls 20
+Koudur[Unibet_5362bfc439408f11] raises 553 to 593, and is all-in
+Bumbezy folds
+Koudur[Unibet_5362bfc439408f11] wins 633
+*** Summary ***
+Total pot 633
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 593 and won 633, net result: 40
+Seat 5: Bumbezy: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1489954355, Tournament #80995712, €1.86 + €0.14 - 20.00/40.00 - No Limit Hold'Em - Total prize €8 - UTC 18:18:05 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 3: Koudur[Unibet_5362bfc439408f11] (633)
+Seat 5: Bumbezy (867)
+*** Blinds and button ***
+Koudur[Unibet_5362bfc439408f11] has the button
+Koudur[Unibet_5362bfc439408f11] posts small blind 20
+Bumbezy posts big blind 40
+*** Hole cards ***
+Dealt in Bumbezy
+Dealt to Koudur[Unibet_5362bfc439408f11] [6c 7h]
+*** Preflop ***
+Koudur[Unibet_5362bfc439408f11] raises 60 to 80
+Bumbezy calls 40
+*** Flop *** [9s 6s Qd]
+Bumbezy checks
+Koudur[Unibet_5362bfc439408f11] bets 40
+Bumbezy calls 40
+*** Turn *** [9s 6s Qd] [As]
+Bumbezy bets 155
+Koudur[Unibet_5362bfc439408f11] folds
+Uncalled bet returned to Bumbezy: 155
+Bumbezy wins 240
+*** Summary ***
+Total pot 240
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 120 and won 0, net result: -120
+Seat 5: Bumbezy: bet 275 and won 395, net result: 120
+
+
+
+Unibet Hand #1489954963, Tournament #80995712, €1.86 + €0.14 - 20.00/40.00 - No Limit Hold'Em - Total prize €8 - UTC 18:18:30 2026/04/15
+Table "81495665" 3-max
+*** Seated players ***
+Seat 3: Koudur[Unibet_5362bfc439408f11] (513)
+Seat 5: Bumbezy (987)
+*** Blinds and button ***
+Bumbezy has the button
+Bumbezy posts small blind 20
+Koudur[Unibet_5362bfc439408f11] posts big blind 40
+*** Hole cards ***
+Dealt to Koudur[Unibet_5362bfc439408f11] [6s 5s]
+Dealt to Bumbezy [Td Qd]
+*** Preflop ***
+Bumbezy calls 20
+Koudur[Unibet_5362bfc439408f11] raises 473 to 513, and is all-in
+Bumbezy calls 473
+*** Showdown ***
+*** Flop *** [8d 7c Ah]
+*** Turn *** [8d 7c Ah] [Ac]
+*** River *** [8d 7c Ah] [Ac] [As]
+Koudur[Unibet_5362bfc439408f11] shows [6s 5s], Three of a kind, Aces with an Eight kicker
+Bumbezy shows [Td Qd], Three of a kind, Aces with a Queen kicker
+Bumbezy wins 1026
+Koudur[Unibet_5362bfc439408f11] finished the tournament in 2nd place
+Bumbezy finished the tournament in 1st place, and won €8
+*** Summary ***
+Total pot 1026
+Seat 3: Koudur[Unibet_5362bfc439408f11]: bet 513 and won 0, net result: -513
+Seat 5: Bumbezy: bet 513 and won 1026, net result: 513
+
+
+

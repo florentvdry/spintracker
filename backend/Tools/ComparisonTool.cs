@@ -26,7 +26,7 @@ public static class ComparisonTool
         var localHands = new List<ParsedHand>();
         foreach (var file in files)
         {
-            if (Path.GetFileName(file) == "excepted_result.txt") continue;
+            if (Path.GetFileName(file) == "expected_result.txt") continue;
             var content = await File.ReadAllTextAsync(file);
             var result = parser.ParseFile(content);
             localHands.AddRange(result.Hands);

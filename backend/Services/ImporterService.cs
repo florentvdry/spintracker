@@ -77,6 +77,20 @@ public class ImporterService : IImporterService
         return null;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsExactSeparatorLine(string line, string separator)
+    {
+        return line.Trim().Equals(separator, StringComparison.Ordinal);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsHeaderSeparatorLine(string line, string separator)
+    {
+        var trimmed = line.Trim();
+        return !trimmed.Equals(separator, StringComparison.Ordinal) &&
+               trimmed.StartsWith(separator, StringComparison.Ordinal);
+    }
+
     public async Task<int> CountHandsInFileAsync(string filePath, CancellationToken cancellationToken)
     {
         if (!File.Exists(filePath))
@@ -109,7 +123,7 @@ public class ImporterService : IImporterService
             {
                 if (cancellationToken.IsCancellationRequested) break;
 
-                if (line.Trim() == separator)
+                if (IsExactSeparatorLine(line, separator) || IsHeaderSeparatorLine(line, separator))
                 {
                     count++;
                 }
@@ -172,14 +186,15 @@ public class ImporterService : IImporterService
             {
                 var handBuffer = new StringBuilder();
                 using var reader = new StreamReader(filePath);
-                string? line;
-                while ((line = await reader.ReadLineAsync()) != null)
+                while (await reader.ReadLineAsync() is { } line)
                 {
                     if (cancellationToken.IsCancellationRequested) break;
 
                     processedBytes += Encoding.UTF8.GetByteCount(line) + 2;
 
-                    if (line.Trim() == separator)
+                    var isExactSeparator = IsExactSeparatorLine(line, separator);
+                    var isHeaderSeparator = IsHeaderSeparatorLine(line, separator);
+                    if (isExactSeparator || isHeaderSeparator)
                     {
                         if (handBuffer.Length > 0)
                         {
@@ -187,6 +202,11 @@ public class ImporterService : IImporterService
                             await handTextChannel.Writer.WriteAsync(handText, cancellationToken);
                             totalHandsFound++;
                             handBuffer.Clear();
+                        }
+
+                        if (isHeaderSeparator)
+                        {
+                            handBuffer.AppendLine(line);
                         }
                     }
                     else
@@ -341,10 +361,10 @@ public class ImporterService : IImporterService
 
         var equityStats = AnalyticsCalculator.GetEquityCacheStats();
         
-        await onProgress(new ImportProgress 
-        { 
-            Message = "Import completed successfully", 
-            Percent = 100, 
+        await onProgress(new ImportProgress
+        {
+            Message = "Import completed successfully",
+            Percent = 100,
             HandsImported = importedHands,
             HandsSkipped = skippedHands,
             TotalHands = importedHands + skippedHands,

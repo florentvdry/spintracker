@@ -38,6 +38,7 @@ let lastReplayerData = null;
 let backendProcess = null;
 let isBackendStarting = false;
 const BACKEND_PORT = 5050;
+const skipBackendAutostart = process.env.SKIP_BACKEND_AUTOSTART === '1';
 
 // ============ C# Backend Management ============
 
@@ -145,6 +146,10 @@ function startBackendProcess() {
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
+  console.log(`[Backend] Process started (pid=${backendProcess.pid})`);
+  console.log(`[Backend] Command: ${command} ${args.join(' ')}`);
+  console.log(`[Backend] CWD: ${cwd}`);
+
   backendProcess.stdout.on('data', (data) => {
     const lines = data.toString().split('\n');
     lines.forEach(line => {
@@ -178,7 +183,9 @@ function startBackendProcess() {
 
   backendProcess.on('close', (code) => {
     if (code !== 0 && code !== null) {
-      console.error(`Backend exited with code ${code}`);
+      console.error(`Backend exited with code ${code} (pid=${backendProcess?.pid ?? 'n/a'})`);
+    } else {
+      console.log(`[Backend] Process closed (pid=${backendProcess?.pid ?? 'n/a'})`);
     }
     backendProcess = null;
     isBackendStarting = false;
@@ -193,6 +200,7 @@ function startBackendProcess() {
 
 function stopBackend() {
   if (backendProcess) {
+    console.log(`[Backend] Stopping process (pid=${backendProcess.pid})`);
     if (process.platform === 'win32') {
       // On Windows, child_process.kill() doesn't kill the entire process tree (orphans dotnet run apps)
       // Use taskkill to ensure the whole tree is gone

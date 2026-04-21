@@ -18,6 +18,7 @@ public static class ParserFactory
 {
     private static readonly List<IHandParser> _parsers = new()
     {
+        new UnibetParser(),
         new BetclicParser(),
         new PokerStarsParser(),
         new IPokerParser()
