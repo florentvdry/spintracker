@@ -21,6 +21,9 @@ class AnalyticsService(private val equityService: EquityService) {
     fun calculateHandAnalytics(hand: ParsedHand, heroName: String): HandAnalytics? {
         val hero = hand.players.find { it.name == heroName || it.isHero } ?: return null
         
+        val heroProfit = hero.winnings - hero.investment
+        val isShowdown = hero.wentToShowdown
+        
         val heroAllIn = hero.isAllIn
         var villainAllIn = false
         var hasVillainCards = false
@@ -35,7 +38,7 @@ class AnalyticsService(private val equityService: EquityService) {
         }
         
         val isRiverAllIn = hand.allInStreet?.uppercase() == "RIVER"
-        val shouldCalculateEv = hand.wentToShowdown && anyAllIn && hasVillainCards && !isRiverAllIn
+        val shouldCalculateEv = isShowdown && anyAllIn && hasVillainCards && !isRiverAllIn
         
         var evChips: Double? = null
         var cevContribution = 0.0

@@ -10,6 +10,7 @@ kotlin {
 sourceSets {
     main {
         kotlin.srcDirs("src/desktopMain/kotlin")
+        resources.srcDirs("seven-card-evaluator/evaluator/src/main/resources")
     }
 }
 
@@ -27,6 +28,9 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3")
+    
+    // 7-card poker hand evaluator (same algorithm as .NET HoldenPoker.Evaluator)
+    implementation(files("libs/poker-evaluator.jar"))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
@@ -43,6 +47,13 @@ tasks.register<JavaExec>("testImport") {
     description = "Run import test"
     classpath = sourceSets.get("main").runtimeClasspath
     mainClass.set("spintracker.tests.ImportTestKt")
+}
+
+tasks.register<JavaExec>("testEquity") {
+    group = "verification"
+    description = "Run equity test"
+    classpath = sourceSets.get("main").runtimeClasspath
+    mainClass.set("spintracker.tests.EquityTestKt")
 }
 
 compose.desktop {

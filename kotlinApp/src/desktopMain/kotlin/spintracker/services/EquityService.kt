@@ -77,12 +77,12 @@ class EquityService {
             1 -> {
                 for (i in deck.indices) {
                     val simBoard = knownBoard + deck[i]
-                    val res = evaluateResult(hero, villains, simBoard)
-                    heroShare += res.win
-                    ties += (res.tie * 1).toLong() // this is simplified, evaluateResult returns share
-                    // Wait, evaluateResult should return raw win/tie/loss counts to be aggregated correctly
+                    val r = evaluateRound(hero, villains, simBoard)
+                    heroShare += r.heroShare
+                    if (r.isTie) ties++
+                    if (r.villainWon) villainWins++
+                    totalCombos++
                 }
-                totalCombos = deck.size.toLong()
             }
             2 -> {
                 for (i in 0 until deck.size - 1) {

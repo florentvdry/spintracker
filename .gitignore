@@ -11,3 +11,4 @@ website/public/updates/
 backend/bin/Release/net8.0/win-x64/publish/SpinTrackerBackend.exe
 gradle-temp/
 gradle.zip
+kotlinApp/*.zip

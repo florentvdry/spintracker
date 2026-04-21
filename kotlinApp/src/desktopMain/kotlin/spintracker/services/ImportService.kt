@@ -61,6 +61,9 @@ class ImportService(private val database: Database) {
                     val analytics = analyticsService.calculateHandAnalytics(parsedHand, heroPlayer.name)
                     val heroEv = analytics?.evChips ?: heroResult
                     
+                    // Use hero's wentToShowdown (like .NET backend)
+                    val heroWentToShowdown = heroParsed?.wentToShowdown ?: parsedHand.wentToShowdown
+                    
                     // Map position to integer (0=BTN, 1=SB, 2=BB etc or custom mapping)
                     val heroPosInt = when (heroParsed?.position) {
                         "BTN" -> 0
@@ -84,7 +87,7 @@ class ImportService(private val database: Database) {
                         handType = "",
                         result = heroResult,
                         ev = heroEv,
-                        wentToShowdown = parsedHand.wentToShowdown,
+                        wentToShowdown = heroWentToShowdown,
                         rawContent = parsedHand.result
                     )
                     
