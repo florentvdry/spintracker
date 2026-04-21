@@ -2,12 +2,12 @@ Betclic: pseudo: jmenfouu
 4416 Mains.
 Date: Global
 Tornaments 300
-CEV SpinnPro 86
-HU SB 32
-HU BB 21
-BTN 24
-3W SB 5
-3W BB 4
+Chgips ev / Tournaments 86
+HeadsUp SB 32
+HeadsUp BB 21
+Button 3W 24
+3Way Small Blind 5
+3Way BigBlinds 4
 28500 chips won
 25786 Net excepted Chips Won
 25372 chips won with showdown
