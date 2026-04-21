@@ -52,7 +52,7 @@ class ImportService(private val database: Database) {
                     // Get or create players
                     val heroParsed = parsedHand.players.find { it.isHero }
                     val heroNameFromHand = heroParsed?.name ?: heroName
-                    val heroPlayer = database.getOrCreatePlayer(heroNameFromHand, conn)
+                    val heroPlayer = database.getOrCreatePlayer(heroNameFromHand, parsedHand.room, conn)
                     
                     // Calculate hero result and EV
                     val heroResult = heroParsed?.let { it.winnings - it.investment } ?: 0.0
@@ -96,7 +96,7 @@ class ImportService(private val database: Database) {
                     
                     // Save player hands
                     for (parsedPlayer in parsedHand.players) {
-                        val player = database.getOrCreatePlayer(parsedPlayer.name, conn)
+                        val player = database.getOrCreatePlayer(parsedPlayer.name, parsedHand.room, conn)
                         val playerHand = PlayerHand(
                             handId = dbHandId,
                             playerId = player.id,

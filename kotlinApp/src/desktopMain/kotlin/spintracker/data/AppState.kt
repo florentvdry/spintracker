@@ -9,16 +9,24 @@ class AppState {
     
     var heroName: String = "Hero"
     
-    fun getDashboardStats(): DashboardStats {
-        return database.getDashboardStats(null) // Show stats for all imported hands
+    fun getDashboardStats(hero: String? = null): DashboardStats {
+        return database.getDashboardStats(hero ?: heroName)
     }
     
-    fun getHands(limit: Int = 100): List<Hand> {
-        return database.getHands(null, limit) // Show all imported hands
+    fun getHands(hero: String? = null, limit: Int = 100): List<Hand> {
+        return database.getHands(hero ?: heroName, limit)
+    }
+    
+    fun getGraphData(hero: String? = null): List<GraphPoint> {
+        return database.getGraphData(hero ?: heroName)
     }
     
     fun getAllPlayers(): List<Player> {
         return database.getAllPlayers()
+    }
+    
+    fun getPlayerStats(playerId: Long): PlayerStats {
+        return database.getPlayerStats(playerId)
     }
     
     fun getBuyIns(): List<Double> {
@@ -32,9 +40,16 @@ class AppState {
     fun importFile(filePath: String): Int {
         var imported = 0
         try {
-            // heroName passed to importFiles - could be used if needed, otherwise parser detects hero from hand
             val result = importService.importFiles(listOf(filePath), "jmenfouu") {}
             imported = result.handsImported
+            
+            // If hero is default, try to find the player with most hands
+            if (heroName == "Hero" || heroName.isEmpty()) {
+                val players = database.getAllPlayers()
+                if (players.isNotEmpty()) {
+                    heroName = players.first().name
+                }
+            }
         } catch (e: Exception) {
             println("Import error: ${e.message}")
         }

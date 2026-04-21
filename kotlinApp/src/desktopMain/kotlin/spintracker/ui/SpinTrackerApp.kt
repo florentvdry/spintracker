@@ -26,7 +26,7 @@ import spintracker.ui.screens.SettingsScreen
 val appState = AppState()
 
 @Composable
-fun SpinTrackerApp() {
+fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
     var selectedScreen by remember { mutableStateOf(NavScreen.Dashboard) }
     var refreshKey by remember { mutableIntStateOf(0) }
     var heroName by remember { mutableStateOf(appState.heroName) }
@@ -34,7 +34,7 @@ fun SpinTrackerApp() {
     var buyIn by remember { mutableStateOf("all") }
 
     val players = remember { appState.getAllPlayers() }
-    val availableHeroes = remember(players) { players.map { it.name to it.name } }
+    val availableHeroes = remember(players) { players.map { Triple(it.id.toString(), it.name, it.room) } }
     val availableBuyIns = listOf(1, 2, 3, 5, 10, 20, 50, 100)
 
     Row(modifier = Modifier.fillMaxSize().background(Dark500)) {
@@ -51,7 +51,25 @@ fun SpinTrackerApp() {
                 onHeroChange = { name -> heroName = name; appState.heroName = name },
                 onDateRangeChange = { range -> dateRange = range },
                 onBuyInChange = { bi -> buyIn = bi },
-                onImport = { },
+                onImport = {
+                    try {
+                        val dialog = java.awt.FileDialog(window, "Import Hands", java.awt.FileDialog.LOAD)
+                        dialog.setFilenameFilter { _, name -> name.endsWith(".txt") }
+                        dialog.isVisible = true
+                        
+                        val file = dialog.file
+                        val directory = dialog.directory
+                        
+                        if (file != null && directory != null) {
+                            val fullPath = java.io.File(directory, file).absolutePath
+                            val imported = appState.importFile(fullPath)
+                            println("Imported $imported hands from $file")
+                            refreshKey++
+                        }
+                    } catch (e: Exception) {
+                        println("Error: ${e.message}")
+                    }
+                },
                 onRefresh = { refreshKey++ }
             )
 

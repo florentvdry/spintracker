@@ -38,9 +38,11 @@ class Database(dbPath: String? = null) {
             conn.createStatement().execute("""
                 CREATE TABLE IF NOT EXISTS players (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT UNIQUE NOT NULL,
+                    name TEXT NOT NULL,
+                    room TEXT NOT NULL DEFAULT '',
                     is_reg INTEGER DEFAULT 0,
-                    notes TEXT DEFAULT ''
+                    notes TEXT DEFAULT '',
+                    UNIQUE(name, room)
                 )
             """)
             
@@ -140,6 +142,11 @@ conn.createStatement().execute("""
             
             // Add missing columns for database migration from older versions
             try {
+                conn.createStatement().execute("ALTER TABLE players ADD COLUMN room TEXT DEFAULT ''")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
                 conn.createStatement().execute("ALTER TABLE hands ADD COLUMN went_to_showdown INTEGER DEFAULT 0")
             } catch (e: SQLException) {
                 // Column may already exist
@@ -189,19 +196,21 @@ conn.createStatement().execute("""
     }
     
     // Player operations
-    fun getOrCreatePlayer(name: String, existingConn: Connection? = null): Player {
+    fun getOrCreatePlayer(name: String, room: String = "", existingConn: Connection? = null): Player {
         val conn = existingConn ?: getConnection()
         try {
-            val stmt = conn.prepareStatement("SELECT id, name, is_reg, notes FROM players WHERE name = ?")
+            val stmt = conn.prepareStatement("SELECT id, name, room, is_reg, notes FROM players WHERE name = ? AND room = ?")
             stmt.setString(1, name)
+            stmt.setString(2, room)
             val rs = stmt.executeQuery()
             
             if (rs.next()) {
                 val p = Player(
                     id = rs.getLong(1),
                     name = rs.getString(2),
-                    isReg = rs.getInt(3) == 1,
-                    notes = rs.getString(4) ?: ""
+                    room = rs.getString(3),
+                    isReg = rs.getInt(4) == 1,
+                    notes = rs.getString(5) ?: ""
                 )
                 rs.close()
                 stmt.close()
@@ -209,8 +218,9 @@ conn.createStatement().execute("""
             } else {
                 rs.close()
                 stmt.close()
-                val insertStmt = conn.prepareStatement("INSERT INTO players (name) VALUES (?)")
+                val insertStmt = conn.prepareStatement("INSERT INTO players (name, room) VALUES (?, ?)")
                 insertStmt.setString(1, name)
+                insertStmt.setString(2, room)
                 insertStmt.executeUpdate()
                 insertStmt.close()
                 
@@ -223,6 +233,7 @@ conn.createStatement().execute("""
                 return Player(
                     id = lastId,
                     name = name,
+                    room = room,
                     isReg = false,
                     notes = ""
                 )
@@ -237,23 +248,24 @@ conn.createStatement().execute("""
         val players = mutableListOf<Player>()
         try {
             val rs = conn.createStatement().executeQuery("""
-                SELECT p.id, p.name, p.is_reg, p.notes,
+                SELECT p.id, p.name, p.room, p.is_reg, p.notes,
                        COUNT(DISTINCT h.id) as total_hands,
                        COALESCE(SUM(h.result), 0) as total_profit
                 FROM players p
                 LEFT JOIN player_hands ph ON p.id = ph.player_id AND ph.is_hero = 1
                 LEFT JOIN hands h ON ph.hand_id = h.id
-                GROUP BY p.id, p.name, p.is_reg, p.notes
+                GROUP BY p.id, p.name, p.room, p.is_reg, p.notes
                 ORDER BY total_hands DESC
             """)
             while (rs.next()) {
                 players.add(Player(
                     id = rs.getLong(1),
                     name = rs.getString(2),
-                    isReg = rs.getInt(3) == 1,
-                    notes = rs.getString(4) ?: "",
-                    totalHands = rs.getInt(5),
-                    totalProfit = rs.getDouble(6)
+                    room = rs.getString(3) ?: "",
+                    isReg = rs.getInt(4) == 1,
+                    notes = rs.getString(5) ?: "",
+                    totalHands = rs.getInt(6),
+                    totalProfit = rs.getDouble(7)
                 ))
             }
         } finally {
@@ -558,5 +570,90 @@ conn.createStatement().execute("""
             conn.close()
         }
         return tournaments
+    }
+
+    fun getGraphData(heroName: String? = null): List<GraphPoint> {
+        val conn = getConnection()
+        val points = mutableListOf<GraphPoint>()
+        try {
+            val sql = buildString {
+                append("SELECT ev, result, went_to_showdown FROM hands ")
+                // Only include hands for THIS hero, and where they actually participated (result/ev not 0)
+                // This removes the "flat line" of hands where the hero wasn't in the game
+                append("WHERE (hero_name = ?) ")
+                append("ORDER BY date_time ASC")
+            }
+            val stmt = conn.prepareStatement(sql)
+            stmt.setString(1, heroName ?: "")
+            
+            val rs = stmt.executeQuery()
+            var cumulativeEv = 0.0
+            var cumulativeProfit = 0.0
+            var cumulativeShowdown = 0.0
+            var cumulativeNonShowdown = 0.0
+            var count = 0
+            
+            // Add initial point
+            points.add(GraphPoint(0, 0.0, 0.0, 0.0, 0.0))
+            
+            while (rs.next()) {
+                val ev = rs.getDouble(1)
+                val result = rs.getDouble(2)
+                
+                // Skip hands where hero didn't contribute or win (0 chips movement)
+                if (ev == 0.0 && result == 0.0) continue
+                
+                count++
+                val wts = rs.getInt(3) == 1
+                
+                cumulativeEv += ev
+                cumulativeProfit += result
+                if (wts) {
+                    cumulativeShowdown += result
+                } else {
+                    cumulativeNonShowdown += result
+                }
+                
+                // Add every single hand
+                points.add(GraphPoint(count, cumulativeEv, cumulativeProfit, cumulativeShowdown, cumulativeNonShowdown))
+            }
+        } finally {
+            conn.close()
+        }
+        return points
+    }
+
+    fun getPlayerStats(playerId: Long): PlayerStats {
+        val conn = getConnection()
+        try {
+            val stmt = conn.prepareStatement("""
+                SELECT 
+                    COUNT(*) as total_hands,
+                    SUM(CASE WHEN preflop_action LIKE '%calls%' OR preflop_action LIKE '%raises%' OR preflop_action LIKE '%bets%' THEN 1 ELSE 0 END) as vpip_hands,
+                    SUM(CASE WHEN preflop_action LIKE '%raises%' OR preflop_action LIKE '%bets%' THEN 1 ELSE 0 END) as pfr_hands,
+                    SUM(CASE WHEN preflop_action LIKE '%3-bet%' OR preflop_action LIKE '%raises%' THEN 1 ELSE 0 END) as three_bet_hands,
+                    SUM(net_result) as total_profit
+                FROM player_hands
+                WHERE player_id = ?
+            """)
+            stmt.setLong(1, playerId)
+            val rs = stmt.executeQuery()
+            
+            if (rs.next()) {
+                val total = rs.getInt("total_hands")
+                if (total == 0) return PlayerStats()
+                
+                return PlayerStats(
+                    vpip = (rs.getDouble("vpip_hands") / total) * 100.0,
+                    pfr = (rs.getDouble("pfr_hands") / total) * 100.0,
+                    threeBet = (rs.getDouble("three_bet_hands") / total) * 100.0,
+                    handsPlayed = total,
+                    profit = rs.getDouble("total_profit")
+                )
+            }
+        } finally {
+            conn.close()
+        }
+        return PlayerStats()
     }
 }

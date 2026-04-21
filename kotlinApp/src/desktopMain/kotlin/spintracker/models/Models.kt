@@ -25,6 +25,7 @@ data class Hand(
 data class Player(
     val id: Long = 0,
     val name: String = "",
+    val room: String = "",
     val isReg: Boolean = false,
     val totalHands: Int = 0,
     val totalProfit: Double = 0.0,
@@ -80,6 +81,14 @@ data class DashboardStats(
     val chipsWonWithShowdown: Double = 0.0,
     val chipsWonWithoutShowdown: Double = 0.0,
     val cevByPosition: Map<String, Double> = emptyMap()
+)
+
+data class GraphPoint(
+    val x: Int,
+    val ev: Double,
+    val profit: Double,
+    val showdown: Double,
+    val nonShowdown: Double
 )
 
 data class PlayerStats(

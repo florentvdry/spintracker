@@ -17,7 +17,7 @@ fun main() = application {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            SpinTrackerApp()
+            SpinTrackerApp(window)
         }
     }
 }
