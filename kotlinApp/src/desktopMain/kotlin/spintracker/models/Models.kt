@@ -26,6 +26,8 @@ data class Player(
     val id: Long = 0,
     val name: String = "",
     val isReg: Boolean = false,
+    val totalHands: Int = 0,
+    val totalProfit: Double = 0.0,
     val notes: String = ""
 )
 
@@ -38,6 +40,8 @@ data class Tournament(
     val currency: String = "EUR",
     val speed: String = "Fast",
     val maxPlayers: Int = 0,
+    val playerCount: Int = 2,
+    val result: Double = 0.0,
     val dateTime: LocalDateTime = LocalDateTime.now(),
     val place: Int? = null,
     val prize: Double? = null,

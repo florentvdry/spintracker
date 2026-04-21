@@ -44,22 +44,24 @@ class Database(dbPath: String? = null) {
                 )
             """)
             
-            conn.createStatement().execute("""
-                CREATE TABLE IF NOT EXISTS tournaments (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    game_id TEXT UNIQUE NOT NULL,
-                    tournament_name TEXT,
-                    buy_in REAL,
-                    fee REAL,
-                    currency TEXT DEFAULT 'EUR',
-                    speed TEXT,
-                    max_players INTEGER,
-                    date_time TEXT,
-                    place INTEGER,
-                    prize REAL,
-                    rake REAL DEFAULT 0
-                )
-            """)
+conn.createStatement().execute("""
+                 CREATE TABLE IF NOT EXISTS tournaments (
+                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     game_id TEXT UNIQUE NOT NULL,
+                     tournament_name TEXT,
+                     buy_in REAL,
+                     fee REAL,
+                     currency TEXT DEFAULT 'EUR',
+                     speed TEXT,
+                     max_players INTEGER,
+                     player_count INTEGER DEFAULT 2,
+                     result REAL DEFAULT 0,
+                     date_time TEXT,
+                     place INTEGER,
+                     prize REAL,
+                     rake REAL DEFAULT 0
+                 )
+             """)
             
             conn.createStatement().execute("""
                 CREATE TABLE IF NOT EXISTS hands (
@@ -135,6 +137,23 @@ class Database(dbPath: String? = null) {
             conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_hands_hero ON hands(hero_name)")
             conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_player_hands_hand ON player_hands(hand_id)")
             conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_player_hands_player ON player_hands(player_id)")
+            
+            // Add missing columns for database migration from older versions
+            try {
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN went_to_showdown INTEGER DEFAULT 0")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE tournaments ADD COLUMN player_count INTEGER DEFAULT 2")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE tournaments ADD COLUMN result REAL DEFAULT 0")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
             
             conn.close()
             println("Database initialized at: $connectionString")

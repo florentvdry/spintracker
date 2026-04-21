@@ -44,22 +44,24 @@ class Database(dbPath: String? = null) {
                 )
             """)
             
-            conn.createStatement().execute("""
-                CREATE TABLE IF NOT EXISTS tournaments (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    game_id TEXT UNIQUE NOT NULL,
-                    tournament_name TEXT,
-                    buy_in REAL,
-                    fee REAL,
-                    currency TEXT DEFAULT 'EUR',
-                    speed TEXT,
-                    max_players INTEGER,
-                    date_time TEXT,
-                    place INTEGER,
-                    prize REAL,
-                    rake REAL DEFAULT 0
-                )
-            """)
+conn.createStatement().execute("""
+                 CREATE TABLE IF NOT EXISTS tournaments (
+                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     game_id TEXT UNIQUE NOT NULL,
+                     tournament_name TEXT,
+                     buy_in REAL,
+                     fee REAL,
+                     currency TEXT DEFAULT 'EUR',
+                     speed TEXT,
+                     max_players INTEGER,
+                     player_count INTEGER DEFAULT 2,
+                     result REAL DEFAULT 0,
+                     date_time TEXT,
+                     place INTEGER,
+                     prize REAL,
+                     rake REAL DEFAULT 0
+                 )
+             """)
             
             conn.createStatement().execute("""
                 CREATE TABLE IF NOT EXISTS hands (
@@ -135,6 +137,28 @@ class Database(dbPath: String? = null) {
             conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_hands_hero ON hands(hero_name)")
             conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_player_hands_hand ON player_hands(hand_id)")
             conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_player_hands_player ON player_hands(player_id)")
+            
+            // Add missing columns for database migration from older versions
+            try {
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN went_to_showdown INTEGER DEFAULT 0")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN player_count INTEGER DEFAULT 2")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE tournaments ADD COLUMN player_count INTEGER DEFAULT 2")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE tournaments ADD COLUMN result REAL DEFAULT 0")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
             
             conn.close()
             println("Database initialized at: $connectionString")
@@ -212,13 +236,24 @@ class Database(dbPath: String? = null) {
         val conn = getConnection()
         val players = mutableListOf<Player>()
         try {
-            val rs = conn.createStatement().executeQuery("SELECT id, name, is_reg, notes FROM players ORDER BY name")
+            val rs = conn.createStatement().executeQuery("""
+                SELECT p.id, p.name, p.is_reg, p.notes,
+                       COUNT(DISTINCT h.id) as total_hands,
+                       COALESCE(SUM(h.result), 0) as total_profit
+                FROM players p
+                LEFT JOIN player_hands ph ON p.id = ph.player_id AND ph.is_hero = 1
+                LEFT JOIN hands h ON ph.hand_id = h.id
+                GROUP BY p.id, p.name, p.is_reg, p.notes
+                ORDER BY total_hands DESC
+            """)
             while (rs.next()) {
                 players.add(Player(
                     id = rs.getLong(1),
                     name = rs.getString(2),
                     isReg = rs.getInt(3) == 1,
-                    notes = rs.getString(4) ?: ""
+                    notes = rs.getString(4) ?: "",
+                    totalHands = rs.getInt(5),
+                    totalProfit = rs.getDouble(6)
                 ))
             }
         } finally {
@@ -488,5 +523,40 @@ class Database(dbPath: String? = null) {
             conn.close()
         }
         return buyIns
+    }
+    
+    // Get tournaments
+    fun getTournaments(limit: Int = 50): List<Tournament> {
+        val conn = getConnection()
+        val tournaments = mutableListOf<Tournament>()
+        try {
+            val rs = conn.createStatement().executeQuery("""
+                SELECT id, game_id, tournament_name, buy_in, fee, currency, speed, max_players, player_count, result, date_time, place, prize, rake
+                FROM tournaments
+                ORDER BY date_time DESC
+                LIMIT ?
+            """)
+            while (rs.next()) {
+                tournaments.add(Tournament(
+                    id = rs.getLong(1),
+                    gameId = rs.getString(2),
+                    tournamentName = rs.getString(3),
+                    buyIn = rs.getDouble(4),
+                    fee = rs.getDouble(5),
+                    currency = rs.getString(6),
+                    speed = rs.getString(7),
+                    maxPlayers = rs.getInt(8),
+                    playerCount = rs.getInt(9),
+                    result = rs.getDouble(10),
+                    dateTime = LocalDateTime.parse(rs.getString(11), DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                    place = rs.getObject(12) as? Int,
+                    prize = rs.getObject(13) as? Double,
+                    rake = rs.getDouble(14)
+                ))
+            }
+        } finally {
+            conn.close()
+        }
+        return tournaments
     }
 }
