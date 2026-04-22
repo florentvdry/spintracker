@@ -1,0 +1,22 @@
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+mainClassName  = 'lt.solisnumus.poker.evaluator.Runner'
+
+group 'lt.solisnumus'
+version '1.0-SNAPSHOT'
+
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+dependencies {
+    implementation project(':evaluator')
+}

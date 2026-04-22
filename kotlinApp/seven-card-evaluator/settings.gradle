@@ -1,0 +1,3 @@
+rootProject.name = '7-card-poker-evaluator'
+include 'evaluator', 'app'
+
