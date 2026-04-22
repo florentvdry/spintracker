@@ -82,6 +82,8 @@ fun main() {
     println("  Total Profit: ${stats.totalProfit} chips")
     println("  Total EV: ${stats.totalEv} chips")
     println("  Avg Chips EV: ${stats.avgChipsEv}")
+    println("  Tournaments Won: ${stats.tournamentsWon}")
+    println("  Win Rate: ${stats.winRate}")
     println("  Chips With Showdown: ${stats.chipsWonWithShowdown}")
     println("  Chips Without Showdown: ${stats.chipsWonWithoutShowdown}")
     
@@ -112,13 +114,12 @@ fun main() {
         throw AssertionError("Expected 3128 chips won without showdown, got ${stats.chipsWonWithoutShowdown}")
     }
     
-    // Check positions
     val expectedCev = mapOf(
-        "HeadsUp SB" to 32.0,
-        "HeadsUp BB" to 21.0,
-        "Button 3W" to 24.0,
-        "3Way Small Blind" to 5.0,
-        "3Way BigBlinds" to 4.0
+        "HeadsUp SB" to 32.0 * 300,  // SUM = avg * total tournaments
+        "HeadsUp BB" to 21.0 * 300,
+        "Button 3W" to 24.0 * 300,
+        "3Way Small Blind" to 5.0 * 300,
+        "3Way BigBlinds" to 4.0 * 300
     )
     
     expectedCev.forEach { (pos, expected) ->

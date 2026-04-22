@@ -45,46 +45,97 @@ fun DashboardScreen(refreshKey: Int, heroName: String, dateRange: String, buyIn:
     }
     
     Column(modifier = Modifier.fillMaxSize()) {
-        Text("Dashboard", style = MaterialTheme.typography.headlineMedium, color = Color.White)
-        Text("Track your spin and go (Hero: $heroName)", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Column {
+                Text("Dashboard", style = MaterialTheme.typography.headlineLarge, color = Color.White)
+                Text("Track your spin and go performance", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodyMedium)
+            }
+            if (heroName.isNotEmpty()) {
+                AssistChip(onClick = { }, label = { Text("Hero: $heroName", style = MaterialTheme.typography.labelMedium) })
+            }
+        }
         Spacer(modifier = Modifier.height(24.dp))
         
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             Card(modifier = Modifier.weight(1f), colors = CardDefaults.cardColors(containerColor = DarkSurface)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Total Profit", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.TrendingUp, null, tint = Color(0xFF10b981), modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Profit", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
                     val profit = stats.totalProfit
-                    Text("%.2f €".format(profit), style = MaterialTheme.typography.headlineSmall, color = if (profit >= 0) Color(0xFF10b981) else Color(0xFFef4444))
+                    Text("%.2f €".format(profit), style = MaterialTheme.typography.headlineMedium, color = if (profit >= 0) Color(0xFF10b981) else Color(0xFFef4444))
                 }
             }
             Card(modifier = Modifier.weight(1f), colors = CardDefaults.cardColors(containerColor = DarkSurface)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Activity", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Hands", color = Color.White.copy(alpha = 0.5f)); Text("${stats.totalHands}", color = Color.White) }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.BarChart, null, tint = Color(0xFF3b82f6), modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Activity", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Tournaments", color = Color.White.copy(alpha = 0.5f)); Text("${stats.totalTournaments}", color = Color.White) }
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Hands", color = Color.White.copy(alpha = 0.5f)); Text("${stats.totalHands}", color = Color.White) }
                 }
             }
             Card(modifier = Modifier.weight(1f), colors = CardDefaults.cardColors(containerColor = DarkSurface)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Win Rate", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("%.1f%%".format(stats.winRate), style = MaterialTheme.typography.headlineSmall, color = Color.White)
-                    Text("Avg CEV: %.1f".format(stats.avgChipsEv), color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.EmojiEvents, null, tint = Color(0xFFf59e0b), modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Win Rate", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    val winRate = if (stats.totalTournaments > 0) (stats.tournamentsWon.toDouble() / stats.totalTournaments) * 100 else 0.0
+                    Text("%.1f%%".format(winRate), style = MaterialTheme.typography.headlineMedium, color = Color.White)
                 }
             }
             Card(modifier = Modifier.weight(1f), colors = CardDefaults.cardColors(containerColor = DarkSurface)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("CEV/Position", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelMedium)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.PieChart, null, tint = Color(0xFF8b5cf6), modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("CEV by Position", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("Global: %.1f".format(stats.avgChipsEv), color = Color.White, style = MaterialTheme.typography.bodyMedium)
                     Spacer(modifier = Modifier.height(8.dp))
-                    if (stats.cevByPosition.isEmpty()) {
-                        Text("No data", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
-                    } else {
-                        stats.cevByPosition.entries.sortedByDescending { it.value }.forEach { (pos, ev) ->
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { 
-                                Text(pos.take(12), color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
-                                Text("%.1f".format(ev), color = if (ev >= 0) Color(0xFF22c55e) else Color(0xFFef4444), style = MaterialTheme.typography.bodySmall) 
+                    val totalTournaments = stats.totalTournaments.coerceAtLeast(1)
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("3-Way", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.labelSmall)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            val cevBtn3W = (stats.cevByPosition["Button 3W"] ?: 0.0) / totalTournaments
+                            val cevSb3W = (stats.cevByPosition["3Way Small Blind"] ?: 0.0) / totalTournaments
+                            val cevBb3W = (stats.cevByPosition["3Way BigBlinds"] ?: 0.0) / totalTournaments
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text("BTN", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                                Text("%.1f".format(cevBtn3W), color = if (cevBtn3W >= 0) Color(0xFF22c55e) else Color(0xFFef4444), style = MaterialTheme.typography.bodySmall)
+                            }
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text("SB", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                                Text("%.1f".format(cevSb3W), color = if (cevSb3W >= 0) Color(0xFF22c55e) else Color(0xFFef4444), style = MaterialTheme.typography.bodySmall)
+                            }
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text("BB", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                                Text("%.1f".format(cevBb3W), color = if (cevBb3W >= 0) Color(0xFF22c55e) else Color(0xFFef4444), style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("Heads-Up", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.labelSmall)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            val cevHuSb = (stats.cevByPosition["HeadsUp SB"] ?: 0.0) / totalTournaments
+                            val cevHuBb = (stats.cevByPosition["HeadsUp BB"] ?: 0.0) / totalTournaments
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text("SB", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                                Text("%.1f".format(cevHuSb), color = if (cevHuSb >= 0) Color(0xFF22c55e) else Color(0xFFef4444), style = MaterialTheme.typography.bodySmall)
+                            }
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text("BB", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                                Text("%.1f".format(cevHuBb), color = if (cevHuBb >= 0) Color(0xFF22c55e) else Color(0xFFef4444), style = MaterialTheme.typography.bodySmall)
                             }
                         }
                     }

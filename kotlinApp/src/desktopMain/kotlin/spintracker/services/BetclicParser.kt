@@ -240,23 +240,30 @@ class BetclicParser {
                 }
             }
         }
-    }
+}
 
     private fun parseSummaryLine(line: String, hand: ParsedHand) {
-        // Summary looks like: "1337YAYA1337 wins main pot of 1360" or "Player collected pot of 100"
         val lowerLine = line.lowercase()
+        
+        val finishMatch = Regex("""(\S+)\s+finished\s+(\d+)(?:st|nd|rd|th)""").find(line)
+        if (finishMatch != null) {
+            val playerName = finishMatch.groupValues[1].trim()
+            val finishPos = finishMatch.groupValues[2].toIntOrNull() ?: 0
+            val player = hand.players.find { it.name.equals(playerName, ignoreCase = true) }
+            if (player != null && finishPos > 0) {
+                player.place = finishPos
+            }
+        }
+        
         if (lowerLine.contains("wins main pot") || lowerLine.contains("wins side pot") || lowerLine.contains("collected pot") || lowerLine.contains("wins pot") || (lowerLine.contains("wins") && lowerLine.contains("pot"))) {
-            // More specific regex to avoid matching "finished 1st and wins ... EUR"
-            val potMatch = Regex("^(?:[0-9:]+\\s*-\\s*)?(.+?)\\s+(?:wins|collected).+?pot").find(line)
+            val potMatch = Regex("""^(?:[0-9:]+\s*-\s*)?(.+?)\s+(?:wins|collected).+?pot""").find(line)
             val playerName = potMatch?.groupValues?.get(1)?.trim() ?: return
-            
+
             val player = hand.players.find { it.name.equals(playerName, ignoreCase = true) } ?: return
-            val amountMatch = Regex("(?:pot of |pot )(\\d+\\.?\\d*)").find(line)
+            val amountMatch = Regex("""(?:pot of |pot )(\d+\.?\d*)""").find(line)
             val amount = amountMatch?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
             player.winnings += amount
-            
-            // Implicit Showdown Detection: if someone wins and was all-in, 
-            // and at least one other player was also all-in, or if we are in showdown section
+
             if (player.isAllIn && hand.players.any { it.name != player.name && it.isAllIn }) {
                 hand.wentToShowdown = true
             }
@@ -396,5 +403,6 @@ data class ParsedPlayer(
     var winnings: Double = 0.0,
     var investment: Double = 0.0,
     var streetInvestment: Double = 0.0,
-    var wentToShowdown: Boolean = false
+    var wentToShowdown: Boolean = false,
+    var place: Int = 0
 )

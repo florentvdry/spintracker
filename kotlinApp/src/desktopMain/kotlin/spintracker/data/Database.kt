@@ -94,7 +94,7 @@ conn.createStatement().execute("""
                     hand_id INTEGER NOT NULL,
                     player_id INTEGER NOT NULL,
                     player_name TEXT,
-                    position INTEGER,
+                    position TEXT,
                     stack_size REAL,
                     is_hero INTEGER DEFAULT 0,
                     hole_cards TEXT,
@@ -107,6 +107,9 @@ conn.createStatement().execute("""
                     final_hand_rank INTEGER,
                     winnings REAL DEFAULT 0,
                     net_result REAL DEFAULT 0,
+                    net_won_adjusted REAL DEFAULT 0,
+                    place INTEGER DEFAULT 0,
+                    went_to_showdown INTEGER DEFAULT 0,
                     FOREIGN KEY (hand_id) REFERENCES hands(id),
                     FOREIGN KEY (player_id) REFERENCES players(id)
                 )
@@ -163,6 +166,21 @@ conn.createStatement().execute("""
             }
             try {
                 conn.createStatement().execute("ALTER TABLE tournaments ADD COLUMN result REAL DEFAULT 0")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE player_hands ADD COLUMN place INTEGER DEFAULT 0")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE player_hands ADD COLUMN went_to_showdown INTEGER DEFAULT 0")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE player_hands ADD COLUMN net_won_adjusted REAL DEFAULT 0")
             } catch (e: SQLException) {
                 // Column may already exist
             }
@@ -332,7 +350,7 @@ conn.createStatement().execute("""
             lastIdRs.close()
             lastIdStmt.close()
             
-            return lastId
+return lastId
         } finally {
             if (existingConn == null) conn.close()
         }
@@ -342,18 +360,21 @@ conn.createStatement().execute("""
         val conn = existingConn ?: getConnection()
         try {
             val stmt = conn.prepareStatement("""
-                INSERT INTO player_hands (hand_id, player_id, player_name, position, stack_size, is_hero, hole_cards, winnings, net_result)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO player_hands (hand_id, player_id, player_name, position, stack_size, is_hero, hole_cards, winnings, net_result, net_won_adjusted, place, went_to_showdown)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """)
             stmt.setLong(1, ph.handId)
             stmt.setLong(2, ph.playerId)
             stmt.setString(3, ph.playerName)
-            stmt.setInt(4, ph.position)
+            stmt.setString(4, ph.position)
             stmt.setDouble(5, ph.stackSize)
             stmt.setInt(6, if (ph.isHero) 1 else 0)
             stmt.setString(7, ph.holeCards ?: "")
             stmt.setDouble(8, ph.winnings)
             stmt.setDouble(9, ph.netResult)
+            stmt.setDouble(10, ph.netWonAdjusted)
+            stmt.setInt(11, ph.place)
+            stmt.setInt(12, if (ph.wentToShowdown) 1 else 0)
             stmt.executeUpdate()
             stmt.close()
         } finally {
@@ -430,84 +451,106 @@ conn.createStatement().execute("""
     fun getDashboardStats(heroName: String? = null): DashboardStats {
         val conn = getConnection()
         try {
-            val sql = buildString {
-                append("""
-                    SELECT SUM(ph.net_result), COUNT(*), 
-                           SUM(ph.net_result),
-                           COUNT(DISTINCT h.game_id),
-                           SUM(CASE WHEN h.went_to_showdown = 1 THEN ph.net_result ELSE 0 END),
-                           SUM(CASE WHEN h.went_to_showdown = 0 THEN ph.net_result ELSE 0 END)
-                    FROM player_hands ph
-                    JOIN hands h ON ph.hand_id = h.id
-                """)
-                if (heroName != null) append("WHERE ph.player_name = ?")
-            }
+            val targetHero = heroName ?: "jmenfouu"
             
-            val stmt = if (heroName != null) {
-                conn.prepareStatement(sql).apply { setString(1, heroName) }
-            } else {
-                conn.prepareStatement(sql)
-            }
+            val stmt = conn.prepareStatement("""
+                SELECT SUM(COALESCE(ph.net_won_adjusted, ph.net_result)), SUM(ph.net_result), COUNT(*),
+                       COUNT(DISTINCT h.game_id)
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                WHERE h.player_count <= 3
+            """)
+            stmt.setString(1, targetHero)
             
             val rs = stmt.executeQuery()
-            if (rs.next()) {
-                val totalProfit = rs.getDouble(1)
-                val totalHands = rs.getInt(2)
-                val totalEv = rs.getDouble(3)
-                val totalTournaments = rs.getInt(4)
-                val chipsWonWithShowdown = rs.getDouble(5)
-                val chipsWonWithoutShowdown = rs.getDouble(6)
+            if (!rs.next()) return DashboardStats()
+            
+            val totalEv = rs.getDouble(1)
+            val actualProfit = rs.getDouble(2)
+            val totalHands = rs.getInt(3)
+            val totalTournaments = rs.getInt(4)
+            val avgChipsEv = if (totalTournaments > 0) totalEv / totalTournaments else 0.0
+            
+            rs.close()
+            stmt.close()
+            
+            val showdownStmt = conn.prepareStatement("""
+                SELECT SUM(ph.net_result)
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                WHERE h.player_count <= 3 AND ph.went_to_showdown = 1
+            """)
+            showdownStmt.setString(1, targetHero)
+            val showdownRs = showdownStmt.executeQuery()
+            val chipsWonWithShowdown = if (showdownRs.next()) showdownRs.getDouble(1) else 0.0
+            showdownRs.close()
+            showdownStmt.close()
+            
+            val noShowdownStmt = conn.prepareStatement("""
+                SELECT SUM(ph.net_result)
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                WHERE h.player_count <= 3 AND ph.went_to_showdown = 0
+            """)
+            noShowdownStmt.setString(1, targetHero)
+            val noShowdownRs = noShowdownStmt.executeQuery()
+            val chipsWonWithoutShowdown = if (noShowdownRs.next()) noShowdownRs.getDouble(1) else 0.0
+            noShowdownRs.close()
+            noShowdownStmt.close()
+            
+            val wonStmt = conn.prepareStatement("""
+                SELECT COUNT(DISTINCT h.game_id)
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                WHERE h.player_count <= 3 AND ph.place = 1
+            """)
+            wonStmt.setString(1, targetHero)
+            val wonRs = wonStmt.executeQuery()
+            val tournamentsWon = if (wonRs.next()) wonRs.getInt(1) else 0
+            wonRs.close()
+            wonStmt.close()
+            
+            val cevByPosition = mutableMapOf<String, Double>()
+            val posStmt = conn.prepareStatement("""
+                SELECT ph.position, h.player_count,
+                       SUM(COALESCE(ph.net_won_adjusted, ph.net_result)), COUNT(DISTINCT h.game_id) as tour_count
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                WHERE h.player_count <= 3
+                GROUP BY ph.position, h.player_count
+            """)
+            posStmt.setString(1, targetHero)
+            
+            val posRs = posStmt.executeQuery()
+            while (posRs.next()) {
+                val pos = posRs.getString(1)
+                val pc = posRs.getInt(2)
+                val evSum = posRs.getDouble(3)
                 
-                val avgChipsEv = if (totalTournaments > 0) totalEv / totalTournaments else 0.0
-                
-                // Get CEV by position
-                val cevByPosition = mutableMapOf<String, Double>()
-                val posSql = buildString {
-                    append("""
-                        SELECT ph.position, h.player_count, SUM(ph.net_result), COUNT(DISTINCT h.game_id)
-                        FROM player_hands ph
-                        JOIN hands h ON ph.hand_id = h.id
-                    """)
-                    if (heroName != null) append("WHERE ph.player_name = ? ")
-                    append("GROUP BY ph.position, h.player_count")
+                val posName = when {
+                    pc == 2 && pos == "SB" -> "HeadsUp SB"
+                    pc == 2 && pos == "BB" -> "HeadsUp BB"
+                    pc == 3 && pos == "BTN" -> "Button 3W"
+                    pc == 3 && pos == "SB" -> "3Way Small Blind"
+                    pc == 3 && pos == "BB" -> "3Way BigBlinds"
+                    else -> "$pos ($pc players)"
                 }
-                val posStmt = if (heroName != null) {
-                    conn.prepareStatement(posSql).apply { setString(1, heroName) }
-                } else {
-                    conn.prepareStatement(posSql)
-                }
-                
-                val posRs = posStmt.executeQuery()
-                while (posRs.next()) {
-                    val pos = posRs.getInt(1)
-                    val pc = posRs.getInt(2)
-                    val ev = posRs.getDouble(3)
-                    val tCount = posRs.getInt(4)
-                    
-                    val posName = when {
-                        pc == 2 && pos == 1 -> "HeadsUp SB"
-                        pc == 2 && pos == 2 -> "HeadsUp BB"
-                        pc == 3 && pos == 0 -> "Button 3W"
-                        pc == 3 && pos == 1 -> "3Way Small Blind"
-                        pc == 3 && pos == 2 -> "3Way BigBlinds"
-                        else -> "Pos $pos ($pc players)"
-                    }
-                    cevByPosition[posName] = if (totalTournaments > 0) ev / totalTournaments else 0.0
-                }
-                posRs.close()
-                posStmt.close()
-                
-                return DashboardStats(
-                    totalProfit = totalProfit,
-                    totalHands = totalHands,
-                    totalEv = totalEv,
-                    totalTournaments = totalTournaments,
-                    chipsWonWithShowdown = chipsWonWithShowdown,
-                    chipsWonWithoutShowdown = chipsWonWithoutShowdown,
-                    avgChipsEv = avgChipsEv,
-                    cevByPosition = cevByPosition
-                )
+                cevByPosition[posName] = evSum
             }
+            posRs.close()
+            posStmt.close()
+            
+            return DashboardStats(
+                totalProfit = actualProfit,
+                totalHands = totalHands,
+                totalEv = totalEv,
+                totalTournaments = totalTournaments,
+                tournamentsWon = tournamentsWon,
+                chipsWonWithShowdown = chipsWonWithShowdown,
+                chipsWonWithoutShowdown = chipsWonWithoutShowdown,
+                avgChipsEv = avgChipsEv,
+                cevByPosition = cevByPosition
+            )
         } finally {
             conn.close()
         }

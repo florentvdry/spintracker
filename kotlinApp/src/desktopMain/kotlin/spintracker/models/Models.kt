@@ -54,7 +54,7 @@ data class PlayerHand(
     val handId: Long = 0,
     val playerId: Long = 0,
     val playerName: String = "",
-    val position: Int = 0,
+    val position: String = "",
     val stackSize: Double = 0.0,
     val isHero: Boolean = false,
     val holeCards: String? = null,
@@ -66,7 +66,10 @@ data class PlayerHand(
     val finalHand: String? = null,
     val finalHandRank: Int? = null,
     val winnings: Double = 0.0,
-    val netResult: Double = 0.0
+    val netResult: Double = 0.0,
+    val netWonAdjusted: Double = 0.0,
+    val place: Int = 0,
+    val wentToShowdown: Boolean = false
 )
 
 data class DashboardStats(

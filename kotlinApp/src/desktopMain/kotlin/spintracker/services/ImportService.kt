@@ -73,17 +73,10 @@ class ImportService(private val database: Database) {
                     // Real EV calculation
                     val analytics = analyticsService.calculateHandAnalytics(parsedHand, heroPlayer.name)
                     val heroEv = analytics?.evChips ?: heroResult
+                    val netWonAdjusted = analytics?.evChips ?: heroResult
                     
                     // Use hero's wentToShowdown (like .NET backend)
                     val heroWentToShowdown = heroParsed?.wentToShowdown ?: parsedHand.wentToShowdown
-                    
-                    // Map position to integer (0=BTN, 1=SB, 2=BB etc or custom mapping)
-                    val heroPosInt = when (heroParsed?.position) {
-                        "BTN" -> 0
-                        "SB" -> 1
-                        "BB" -> 2
-                        else -> 0
-                    }
                     
                     // Save hand
                     val hand = Hand(
@@ -93,7 +86,7 @@ class ImportService(private val database: Database) {
                         room = parsedHand.room,
                         dateTime = parsedHand.dateTime,
                         heroName = heroPlayer.name,
-                        heroPosition = heroPosInt,
+                        heroPosition = 0,
                         playerCount = parsedHand.playerCount,
                         bigBlind = parsedHand.bb,
                         handRank = 0,
@@ -110,21 +103,20 @@ class ImportService(private val database: Database) {
                     // Save player hands
                     for (parsedPlayer in parsedHand.players) {
                         val player = database.getOrCreatePlayer(parsedPlayer.name, parsedHand.room, conn)
+                        val playerNetWonAdjusted = if (parsedPlayer.isHero) netWonAdjusted else (parsedPlayer.winnings - parsedPlayer.investment)
                         val playerHand = PlayerHand(
                             handId = dbHandId,
                             playerId = player.id,
                             playerName = player.name,
-                            position = when (parsedPlayer.position) {
-                                "BTN" -> 0
-                                "SB" -> 1
-                                "BB" -> 2
-                                else -> 0
-                            },
+                            position = parsedPlayer.position,
                             stackSize = parsedPlayer.stack.toDouble(),
                             isHero = parsedPlayer.isHero,
                             holeCards = parsedPlayer.cards,
                             winnings = parsedPlayer.winnings,
-                            netResult = parsedPlayer.winnings - parsedPlayer.investment
+                            netResult = parsedPlayer.winnings - parsedPlayer.investment,
+                            netWonAdjusted = playerNetWonAdjusted,
+                            place = parsedPlayer.place,
+                            wentToShowdown = parsedPlayer.wentToShowdown
                         )
                         database.savePlayerHand(playerHand, conn)
                     }
