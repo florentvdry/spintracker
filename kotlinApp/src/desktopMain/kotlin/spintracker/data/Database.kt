@@ -84,6 +84,10 @@ conn.createStatement().execute("""
                     went_to_showdown INTEGER DEFAULT 0,
                     raw_content TEXT,
                     tournament_id INTEGER,
+                    buy_in REAL DEFAULT 0,
+                    prize_pool REAL DEFAULT 0,
+                    multiplier INTEGER DEFAULT 1,
+                    position INTEGER DEFAULT 0,
                     FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
                 )
             """)
@@ -156,10 +160,12 @@ conn.createStatement().execute("""
             }
             try {
                 conn.createStatement().execute("ALTER TABLE hands ADD COLUMN player_count INTEGER DEFAULT 2")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
+                
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN buy_in REAL DEFAULT 0")
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN prize_pool REAL DEFAULT 0")
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN multiplier INTEGER DEFAULT 1")
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN position INTEGER DEFAULT 0")
+                
                 conn.createStatement().execute("ALTER TABLE tournaments ADD COLUMN player_count INTEGER DEFAULT 2")
             } catch (e: SQLException) {
                 // Column may already exist
@@ -321,8 +327,8 @@ conn.createStatement().execute("""
             checkStmt.close()
             
             val stmt = conn.prepareStatement("""
-                INSERT INTO hands (hand_id, game_id, table_name, room, date_time, hero_name, hero_position, player_count, big_blind, hand_rank, hand_type, result, ev, went_to_showdown, raw_content)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO hands (hand_id, game_id, table_name, room, date_time, hero_name, hero_position, player_count, big_blind, hand_rank, hand_type, result, ev, went_to_showdown, raw_content, buy_in, prize_pool, multiplier, position)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """)
             
             stmt.setString(1, hand.handId)
@@ -340,6 +346,10 @@ conn.createStatement().execute("""
             stmt.setDouble(13, hand.ev)
             stmt.setInt(14, if (hand.wentToShowdown) 1 else 0)
             stmt.setString(15, hand.rawContent)
+            stmt.setDouble(16, hand.buyIn)
+            stmt.setDouble(17, hand.prizePool)
+            stmt.setInt(18, hand.multiplier)
+            stmt.setInt(19, hand.position)
             
             stmt.executeUpdate()
             stmt.close()
@@ -669,6 +679,145 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             conn.close()
         }
         return points
+    }
+
+    fun getRecentSessions(heroName: String? = null, limit: Int = 10): List<Session> {
+        val conn = getConnection()
+        val sessions = mutableListOf<Session>()
+        try {
+            val sql = """
+                SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, 
+                       ph.net_result, ph.net_won_adjusted, h.player_count, h.multiplier, ph.place
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                WHERE h.player_count <= 3
+                ORDER BY h.date_time ASC
+            """
+            val stmt = conn.prepareStatement(sql)
+            stmt.setString(1, heroName ?: "")
+            
+            val rs = stmt.executeQuery()
+            val rawHands = mutableListOf<HandData>()
+            
+            while (rs.next()) {
+                rawHands.add(
+                    HandData(
+                        dateTime = rs.getString(1),
+                        room = rs.getString(2) ?: "Unknown",
+                        gameId = rs.getString(3) ?: "",
+                        buyIn = rs.getDouble(4),
+                        prizePool = rs.getDouble(5),
+                        netResult = rs.getDouble(6),
+                        netWonAdjusted = rs.getDouble(7),
+                        playerCount = rs.getInt(8),
+                        multiplier = rs.getInt(9),
+                        place = rs.getInt(10)
+                    )
+                )
+            }
+            rs.close()
+            stmt.close()
+            
+            val currentSession = mutableListOf<HandData>()
+            var lastTime: java.time.LocalDateTime? = null
+            
+            for (hand in rawHands) {
+                val handTime = hand.localDateTime
+                if (lastTime != null && java.time.Duration.between(lastTime, handTime).toHours() > 2) {
+                    if (currentSession.isNotEmpty()) {
+                        sessions.add(createSessionInfo(currentSession))
+                        currentSession.clear()
+                    }
+                }
+                currentSession.add(hand)
+                lastTime = handTime
+            }
+            if (currentSession.isNotEmpty()) {
+                sessions.add(createSessionInfo(currentSession))
+            }
+        } finally {
+            conn.close()
+        }
+        return sessions.takeLast(limit).reversed()
+    }
+    
+    data class HandData(
+        val dateTime: String,
+        val room: String,
+        val gameId: String,
+        val buyIn: Double,
+        val prizePool: Double,
+        val netResult: Double,
+        val netWonAdjusted: Double,
+        val playerCount: Int,
+        val multiplier: Int,
+        val place: Int
+    ) {
+        val localDateTime: java.time.LocalDateTime by lazy {
+            try {
+                java.time.LocalDateTime.parse(dateTime, java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            } catch (e: Exception) {
+                try {
+                    java.time.LocalDateTime.parse(dateTime.replace("(UTC)", "").trim(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                } catch (e2: Exception) {
+                    java.time.LocalDateTime.now()
+                }
+            }
+        }
+    }
+    
+    private fun createSessionInfo(hands: List<HandData>): Session {
+        val startTime = hands.minBy { it.localDateTime }.localDateTime
+        val endTime = hands.maxBy { it.localDateTime }.localDateTime
+        val room = hands.first().room
+        val uniqueTournaments = hands.groupBy { it.gameId }.size
+        val totalHands = hands.size
+        
+        var totalProfitEuro = 0.0
+        val games = hands.groupBy { it.gameId }
+        
+        for ((_, gameHands) in games) {
+            val first = gameHands.first()
+            val multiplier = gameHands.maxOf { it.multiplier }
+            val position = gameHands.maxOf { it.place }
+            val lastPlayerCount = gameHands.maxOf { it.playerCount }
+            val chipProfit = gameHands.sumOf { it.netResult }
+            
+            var profit = 0.0
+            if (first.prizePool > 0 || multiplier > 0) {
+                val hasSharing = (first.buyIn > 0 && (first.prizePool / first.buyIn) >= 19.5) || multiplier >= 20
+                val totalPrize = if (first.prizePool > (multiplier * first.buyIn * 0.5)) first.prizePool else (first.buyIn * multiplier)
+                
+                var finishPos = position
+                if (finishPos == 0) {
+                    finishPos = if (chipProfit > 0) 1 else (if (lastPlayerCount == 2) 2 else 3)
+                }
+                
+                var winAmount = 0.0
+                if (finishPos == 1) {
+                    winAmount = if (hasSharing) (totalPrize * 0.75) else totalPrize
+                } else if (hasSharing) {
+                    winAmount = when (finishPos) {
+                        2 -> totalPrize * 0.15
+                        3 -> totalPrize * 0.10
+                        else -> 0.0
+                    }
+                }
+                profit = winAmount - first.buyIn
+            } else {
+                profit = chipProfit
+            }
+            totalProfitEuro += profit
+        }
+        
+        return Session(
+            startTime = startTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+            endTime = endTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+            room = room,
+            tournaments = uniqueTournaments,
+            hands = totalHands,
+            profit = totalProfitEuro
+        )
     }
 
     fun getPlayerStats(playerId: Long): PlayerStats {

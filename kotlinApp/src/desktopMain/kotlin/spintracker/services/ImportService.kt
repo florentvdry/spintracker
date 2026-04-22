@@ -94,7 +94,11 @@ class ImportService(private val database: Database) {
                         result = heroResult,
                         ev = heroEv,
                         wentToShowdown = heroWentToShowdown,
-                        rawContent = parsedHand.result
+                        rawContent = parsedHand.result,
+                        buyIn = parsedHand.buyIn,
+                        prizePool = parsedHand.prizePool,
+                        multiplier = parsedHand.multiplier,
+                        position = heroParsed?.place ?: 0
                     )
                     
                     val dbHandId = database.saveHand(hand, conn)

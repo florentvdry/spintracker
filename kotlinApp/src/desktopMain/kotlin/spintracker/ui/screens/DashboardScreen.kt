@@ -28,6 +28,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
+import spintracker.ui.components.RoomIcon
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import spintracker.data.AppState
@@ -42,6 +43,10 @@ fun DashboardScreen(refreshKey: Int, heroName: String, dateRange: String, buyIn:
     
     val graphData = remember(refreshKey, heroName, dateRange, buyIn) {
         appState.getGraphData(heroName)
+    }
+    
+    val recentSessions = remember(refreshKey, heroName, dateRange, buyIn) {
+        appState.getRecentSessions(heroName)
     }
     
     Column(modifier = Modifier.fillMaxSize()) {
@@ -170,9 +175,21 @@ fun DashboardScreen(refreshKey: Int, heroName: String, dateRange: String, buyIn:
             }
             Card(modifier = Modifier.weight(1f).height(500.dp), colors = CardDefaults.cardColors(containerColor = DarkSurface)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Recent Sessions", color = Color.White, style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Recent activity will appear here", color = Color.White.copy(alpha = 0.5f))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.AccessTime, null, tint = Color(0xFF06b6d4), modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Recent Sessions", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    if (recentSessions.isEmpty()) {
+                        Text("No recent sessions", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                    } else {
+                        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            items(recentSessions) { session ->
+                                SessionItem(session)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -185,6 +202,41 @@ fun LegendItem(label: String, color: Color) {
         Box(modifier = Modifier.size(8.dp).background(color))
         Spacer(modifier = Modifier.width(4.dp))
         Text(label, color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelSmall)
+    }
+}
+
+@Composable
+fun SessionItem(session: spintracker.models.Session) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1a1f2e)),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RoomIcon(session.room, 14)
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(session.room, style = MaterialTheme.typography.labelMedium, color = Color.White.copy(alpha = 0.7f))
+                }
+                Text(
+                    session.startTime.substring(0, 16).replace("T", " "),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White.copy(alpha = 0.5f)
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Column {
+                    Text("${session.tournaments} tournaments", style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.7f))
+                    Text("${session.hands} hands", style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.5f))
+                }
+                Text(
+                    "%+.2f €".format(session.profit),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = if (session.profit >= 0) Color(0xFF10b981) else Color(0xFFef4444)
+                )
+            }
+        }
     }
 }
 

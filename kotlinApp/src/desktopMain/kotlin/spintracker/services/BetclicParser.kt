@@ -292,7 +292,7 @@ class BetclicParser {
             line.startsWith("Game ID:") -> hand.gameId = line.substringAfter(":").trim()
             line.startsWith("Hand ID:") -> hand.handId = line.substringAfter(":").trim()
             line.startsWith("Date & Time:") -> {
-                val dateStr = line.substringAfter(":").replace("(UTC)", "").trim()
+                val dateStr = line.substringAfter("Date & Time:").replace("(UTC)", "").trim()
                 try {
                     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                     hand.dateTime = LocalDateTime.parse(dateStr, formatter)
@@ -312,6 +312,18 @@ class BetclicParser {
             line.startsWith("Total Pot:") || line.contains("Total Pot") -> {
                 val match = Regex("(\\d+\\.?\\d*)").find(line)
                 hand.totalPot = match?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
+            }
+            line.startsWith("Prize pool:") -> {
+                val match = Regex("(\\d+\\.?\\d*)").find(line)
+                hand.prizePool = match?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
+            }
+            line.startsWith("Multiplier:") -> {
+                val match = Regex("x(\\d+)").find(line)
+                hand.multiplier = match?.groupValues?.get(1)?.toIntOrNull() ?: 1
+            }
+            line.startsWith("Buy In:") -> {
+                val match = Regex("(\\d+\\.?\\d*)").find(line)
+                hand.buyIn = match?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
             }
         }
     }
@@ -389,7 +401,10 @@ data class ParsedHand(
     var flopAction: String = "",
     var turnAction: String = "",
     var riverAction: String = "",
-    val players: MutableList<ParsedPlayer> = mutableListOf()
+    val players: MutableList<ParsedPlayer> = mutableListOf(),
+    var buyIn: Double = 0.0,
+    var prizePool: Double = 0.0,
+    var multiplier: Int = 1
 )
 
 data class ParsedPlayer(

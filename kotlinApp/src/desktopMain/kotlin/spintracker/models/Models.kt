@@ -19,7 +19,11 @@ data class Hand(
     val ev: Double = 0.0,
     val wentToShowdown: Boolean = false,
     val rawContent: String = "",
-    val tournamentId: Long? = null
+    val tournamentId: Long? = null,
+    val buyIn: Double = 0.0,
+    val prizePool: Double = 0.0,
+    val multiplier: Int = 1,
+    val position: Int = 0
 )
 
 data class Player(
@@ -92,6 +96,15 @@ data class GraphPoint(
     val profit: Double,
     val showdown: Double,
     val nonShowdown: Double
+)
+
+data class Session(
+    val startTime: String,
+    val endTime: String,
+    val room: String,
+    val tournaments: Int,
+    val hands: Int,
+    val profit: Double
 )
 
 data class PlayerStats(
