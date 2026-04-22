@@ -31,7 +31,7 @@ class Database(dbPath: String? = null) {
             conn = DriverManager.getConnection(connectionString)
             
             // Set busy timeout and enable foreign keys
-            conn.createStatement().execute("PRAGMA busy_timeout=5000")
+            conn.createStatement().execute("PRAGMA busy_timeout=10000")
             conn.createStatement().execute("PRAGMA foreign_keys=ON")
             
             // Create tables
