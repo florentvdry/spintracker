@@ -476,13 +476,60 @@ return lastId
             if (!rs.next()) return DashboardStats()
             
             val totalEv = rs.getDouble(1)
-            val actualProfit = rs.getDouble(2)
+            val totalEvChips = rs.getDouble(2)
             val totalHands = rs.getInt(3)
             val totalTournaments = rs.getInt(4)
             val avgChipsEv = if (totalTournaments > 0) totalEv / totalTournaments else 0.0
             
             rs.close()
             stmt.close()
+            
+            val profitStmt = conn.prepareStatement("""
+                SELECT h.buy_in, h.prize_pool, SUM(ph.net_result) as chip_profit,
+                       MAX(h.player_count) as max_players, MAX(h.multiplier) as multiplier,
+                       MAX(ph.place) as position
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                WHERE h.player_count <= 3
+                GROUP BY h.game_id
+            """)
+            profitStmt.setString(1, targetHero)
+            val profitRs = profitStmt.executeQuery()
+            
+            var totalProfitEuro = 0.0
+            while (profitRs.next()) {
+                val b = profitRs.getDouble(1)
+                val p = profitRs.getDouble(2)
+                val cp = profitRs.getDouble(3)
+                val pc = profitRs.getInt(4)
+                val m = profitRs.getInt(5)
+                val pos = profitRs.getInt(6)
+                
+                if (p > 0 || m > 0) {
+                    val hasSharing = (b > 0 && (p / b) >= 19.5) || m >= 20
+                    val totalPrize = if (p > (m * b * 0.5)) p else (b * m)
+                    var finishPos = pos
+                    if (finishPos == 0) {
+                        finishPos = if (cp > 0) 1 else (if (pc == 2) 2 else 3)
+                    }
+                    
+                    var winAmount = 0.0
+                    if (finishPos == 1) {
+                        winAmount = if (hasSharing) (totalPrize * 0.75) else totalPrize
+                    } else if (hasSharing) {
+                        winAmount = when (finishPos) {
+                            2 -> totalPrize * 0.15
+                            3 -> totalPrize * 0.10
+                            else -> 0.0
+                        }
+                    }
+                    totalProfitEuro += (winAmount - b)
+                } else {
+                    totalProfitEuro += cp
+                }
+            }
+            profitRs.close()
+            profitStmt.close()
             
             val showdownStmt = conn.prepareStatement("""
                 SELECT SUM(ph.net_result)
@@ -551,7 +598,7 @@ return lastId
             posStmt.close()
             
             return DashboardStats(
-                totalProfit = actualProfit,
+                totalProfit = totalProfitEuro,
                 totalHands = totalHands,
                 totalEv = totalEv,
                 totalTournaments = totalTournaments,
