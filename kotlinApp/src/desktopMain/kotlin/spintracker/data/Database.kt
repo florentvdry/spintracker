@@ -249,11 +249,10 @@ conn.createStatement().execute("""
         try {
             val rs = conn.createStatement().executeQuery("""
                 SELECT p.id, p.name, p.room, p.is_reg, p.notes,
-                       COUNT(DISTINCT h.id) as total_hands,
-                       COALESCE(SUM(h.result), 0) as total_profit
+                       COUNT(DISTINCT ph.hand_id) as total_hands,
+                       COALESCE(SUM(ph.net_result), 0) as total_profit
                 FROM players p
-                LEFT JOIN player_hands ph ON p.id = ph.player_id AND ph.is_hero = 1
-                LEFT JOIN hands h ON ph.hand_id = h.id
+                LEFT JOIN player_hands ph ON p.id = ph.player_id
                 GROUP BY p.id, p.name, p.room, p.is_reg, p.notes
                 ORDER BY total_hands DESC
             """)
@@ -432,12 +431,16 @@ conn.createStatement().execute("""
         val conn = getConnection()
         try {
             val sql = buildString {
-                append("SELECT SUM(result), COUNT(*), SUM(ev), ")
-                append("COUNT(DISTINCT game_id), ")
-                append("SUM(CASE WHEN went_to_showdown = 1 THEN result ELSE 0 END), ")
-                append("SUM(CASE WHEN went_to_showdown = 0 THEN result ELSE 0 END) ")
-                append("FROM hands ")
-                if (heroName != null) append("WHERE hero_name = ?")
+                append("""
+                    SELECT SUM(ph.net_result), COUNT(*), 
+                           SUM(ph.net_result),
+                           COUNT(DISTINCT h.game_id),
+                           SUM(CASE WHEN h.went_to_showdown = 1 THEN ph.net_result ELSE 0 END),
+                           SUM(CASE WHEN h.went_to_showdown = 0 THEN ph.net_result ELSE 0 END)
+                    FROM player_hands ph
+                    JOIN hands h ON ph.hand_id = h.id
+                """)
+                if (heroName != null) append("WHERE ph.player_name = ?")
             }
             
             val stmt = if (heroName != null) {
@@ -460,10 +463,13 @@ conn.createStatement().execute("""
                 // Get CEV by position
                 val cevByPosition = mutableMapOf<String, Double>()
                 val posSql = buildString {
-                    append("SELECT hero_position, player_count, SUM(ev), COUNT(DISTINCT game_id) ")
-                    append("FROM hands ")
-                    if (heroName != null) append("WHERE hero_name = ? ")
-                    append("GROUP BY hero_position, player_count")
+                    append("""
+                        SELECT ph.position, h.player_count, SUM(ph.net_result), COUNT(DISTINCT h.game_id)
+                        FROM player_hands ph
+                        JOIN hands h ON ph.hand_id = h.id
+                    """)
+                    if (heroName != null) append("WHERE ph.player_name = ? ")
+                    append("GROUP BY ph.position, h.player_count")
                 }
                 val posStmt = if (heroName != null) {
                     conn.prepareStatement(posSql).apply { setString(1, heroName) }
@@ -572,16 +578,18 @@ conn.createStatement().execute("""
         return tournaments
     }
 
-    fun getGraphData(heroName: String? = null): List<GraphPoint> {
+fun getGraphData(heroName: String? = null): List<GraphPoint> {
         val conn = getConnection()
         val points = mutableListOf<GraphPoint>()
         try {
             val sql = buildString {
-                append("SELECT ev, result, went_to_showdown FROM hands ")
-                // Only include hands for THIS hero, and where they actually participated (result/ev not 0)
-                // This removes the "flat line" of hands where the hero wasn't in the game
-                append("WHERE (hero_name = ?) ")
-                append("ORDER BY date_time ASC")
+                append("""
+                    SELECT ph.net_result, h.ev, h.went_to_showdown
+                    FROM player_hands ph
+                    JOIN hands h ON ph.hand_id = h.id
+                    WHERE ph.player_name = ?
+                    ORDER BY h.date_time ASC
+                """)
             }
             val stmt = conn.prepareStatement(sql)
             stmt.setString(1, heroName ?: "")
@@ -597,14 +605,11 @@ conn.createStatement().execute("""
             points.add(GraphPoint(0, 0.0, 0.0, 0.0, 0.0))
             
             while (rs.next()) {
-                val ev = rs.getDouble(1)
-                val result = rs.getDouble(2)
-                
-                // Skip hands where hero didn't contribute or win (0 chips movement)
-                if (ev == 0.0 && result == 0.0) continue
+                val ev = rs.getDouble(2)  // Use the EV from hands table (calculated from equity)
+                val result = rs.getDouble(1)
+                val wts = rs.getInt(3) == 1
                 
                 count++
-                val wts = rs.getInt(3) == 1
                 
                 cumulativeEv += ev
                 cumulativeProfit += result

@@ -34,16 +34,30 @@ class AppState {
     }
     
     fun deleteAllHands() {
-        database.deleteAllData()
+        database.deleteAllHands()
+    }
+    
+    fun importFiles(filePaths: List<String>, onProgress: (ImportService.ImportProgress) -> Unit = {}) {
+        try {
+            val result = importService.importFiles(filePaths, heroName, onProgress)
+            
+            if (heroName == "Hero" || heroName.isEmpty()) {
+                val players = database.getAllPlayers()
+                if (players.isNotEmpty()) {
+                    heroName = players.first().name
+                }
+            }
+        } catch (e: Exception) {
+            println("Import error: ${e.message}")
+        }
     }
     
     fun importFile(filePath: String, onProgress: (ImportService.ImportProgress) -> Unit = {}): Int {
         var imported = 0
         try {
-            val result = importService.importFiles(listOf(filePath), "jmenfouu", onProgress)
+            val result = importService.importFiles(listOf(filePath), heroName, onProgress)
             imported = result.handsImported
             
-            // If hero is default, try to find the player with most hands
             if (heroName == "Hero" || heroName.isEmpty()) {
                 val players = database.getAllPlayers()
                 if (players.isNotEmpty()) {

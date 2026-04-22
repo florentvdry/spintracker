@@ -17,7 +17,7 @@ import spintracker.data.AppState
 import spintracker.ui.*
 
 @Composable
-fun SettingsScreen(refreshKey: Int, heroName: String, onHeroNameChange: (String) -> Unit) {
+fun SettingsScreen(refreshKey: Int, heroName: String, onHeroNameChange: (String) -> Unit, onDataDeleted: () -> Unit = {}) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -70,6 +70,7 @@ fun SettingsScreen(refreshKey: Int, heroName: String, onHeroNameChange: (String)
                         onClick = {
                             appState.deleteAllHands()
                             showDeleteConfirm = false
+                            onDataDeleted()
                         },
                         colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFFef4444))
                     ) {

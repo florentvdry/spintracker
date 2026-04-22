@@ -78,7 +78,8 @@ fun Header(
     onDateRangeChange: (String) -> Unit,
     onBuyInChange: (String) -> Unit,
     onImport: () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    isImporting: Boolean = false
 ) {
     var showHeroPicker by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -272,13 +273,22 @@ fun Header(
         // Import Button
         Button(
             onClick = onImport,
-            colors = ButtonDefaults.buttonColors(containerColor = Primary400),
+            enabled = !isImporting,
+            colors = ButtonDefaults.buttonColors(containerColor = Primary400, disabledContainerColor = Primary400.copy(alpha = 0.5f)),
             shape = RoundedCornerShape(8.dp),
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
         ) {
-            Icon(Icons.Default.FileUpload, null, modifier = Modifier.size(18.dp))
+            if (isImporting) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Icon(Icons.Default.FileUpload, null, modifier = Modifier.size(18.dp))
+            }
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Import", fontWeight = FontWeight.Bold)
+            Text(if (isImporting) "Importing..." else "Import", fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.width(8.dp))

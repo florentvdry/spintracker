@@ -40,19 +40,32 @@ class ImportService(private val database: Database) {
             }
         }
         
+        val total = allParsedHands.size
+        onProgress(ImportProgress.Counting(0, total))
+        
         // Save hands to database in a single transaction
         database.useTransaction { conn ->
-            for (parsedHand in allParsedHands) {
+            for ((index, parsedHand) in allParsedHands.withIndex()) {
                 if (existingIds.contains(parsedHand.id)) {
                     totalHandsSkipped++
+                    onProgress(ImportProgress.Importing(index + 1, total, totalHandsImported, totalHandsSkipped))
                     continue
                 }
                 
                 try {
-                    // Get or create players
+                    // Get or create players - add ALL players from this hand, not just hero
+                    val allPlayerNames = parsedHand.players.map { it.name }
+                    
+                    // Save all players first
+                    val savedPlayers = mutableMapOf<String, Player>()
+                    for (playerName in allPlayerNames) {
+                        savedPlayers[playerName] = database.getOrCreatePlayer(playerName, parsedHand.room, conn)
+                    }
+                    
+                    // Find hero
                     val heroParsed = parsedHand.players.find { it.isHero }
                     val heroNameFromHand = heroParsed?.name ?: heroName
-                    val heroPlayer = database.getOrCreatePlayer(heroNameFromHand, parsedHand.room, conn)
+                    val heroPlayer = savedPlayers[heroNameFromHand] ?: database.getOrCreatePlayer(heroNameFromHand, parsedHand.room, conn)
                     
                     // Calculate hero result and EV
                     val heroResult = heroParsed?.let { it.winnings - it.investment } ?: 0.0
@@ -115,6 +128,8 @@ class ImportService(private val database: Database) {
                         )
                         database.savePlayerHand(playerHand, conn)
                     }
+                    
+                    onProgress(ImportProgress.Importing(index + 1, total, totalHandsImported, totalHandsSkipped))
                 } catch (e: Exception) {
                     errors.add("Error saving hand ${parsedHand.id}: ${e.message}")
                 }

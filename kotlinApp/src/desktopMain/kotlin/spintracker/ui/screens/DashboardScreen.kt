@@ -78,10 +78,14 @@ fun DashboardScreen(refreshKey: Int, heroName: String, dateRange: String, buyIn:
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("CEV/Position", color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelMedium)
                     Spacer(modifier = Modifier.height(8.dp))
-                    stats.cevByPosition.entries.take(3).forEach { (pos, ev) ->
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { 
-                            Text(pos.take(10), color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
-                            Text("%.1f".format(ev), color = Color.White, style = MaterialTheme.typography.bodySmall) 
+                    if (stats.cevByPosition.isEmpty()) {
+                        Text("No data", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                    } else {
+                        stats.cevByPosition.entries.sortedByDescending { it.value }.forEach { (pos, ev) ->
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { 
+                                Text(pos.take(12), color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodySmall)
+                                Text("%.1f".format(ev), color = if (ev >= 0) Color(0xFF22c55e) else Color(0xFFef4444), style = MaterialTheme.typography.bodySmall) 
+                            }
                         }
                     }
                 }
