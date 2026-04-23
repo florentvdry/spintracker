@@ -20,13 +20,15 @@ import spintracker.services.ImportService
 import spintracker.ui.components.Header
 import spintracker.ui.components.NavScreen
 import spintracker.ui.components.Sidebar
-import spintracker.ui.screens.AnalysisScreen
 import spintracker.ui.screens.ChartsScreen
 import spintracker.ui.screens.DashboardScreen
-import spintracker.ui.screens.HandHistoryScreen
+import spintracker.ui.screens.TournamentsScreen
 import spintracker.ui.screens.PlayersScreen
 import spintracker.ui.screens.RangeResearchScreen
 import spintracker.ui.screens.SettingsScreen
+import spintracker.ui.screens.ReplayerWindow
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.rememberWindowState
 
 val appState = AppState()
 
@@ -37,6 +39,9 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
     var heroName by remember { mutableStateOf(appState.heroName) }
     var dateRange by remember { mutableStateOf("all") }
     var buyIn by remember { mutableStateOf("all") }
+    
+    var replayerHandId by remember { mutableStateOf<String?>(null) }
+    var showReplayer by remember { mutableStateOf(false) }
 
     val players = remember(refreshKey) { appState.getAllPlayers() }
     val availableHeroes = remember(players) { players.map { Triple(it.id.toString(), it.name, it.room) } }
@@ -44,6 +49,14 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
     var importProgress by remember { mutableStateOf<ImportService.ImportProgress?>(null) }
     var isImporting by remember { mutableStateOf(false) }
     var deleteSuccess by remember { mutableStateOf<String?>(null) }
+    
+    if (showReplayer && replayerHandId != null) {
+        ReplayerWindow(
+            handId = replayerHandId!!,
+            heroName = heroName,
+            onClose = { showReplayer = false; replayerHandId = null }
+        )
+    }
     
     Row(modifier = Modifier.fillMaxSize().background(Dark500)) {
         Sidebar(selectedScreen) { selectedScreen = it }
@@ -97,12 +110,23 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
             Box(modifier = Modifier.fillMaxSize().background(Dark500).padding(24.dp)) {
                 when (selectedScreen) {
                     NavScreen.Dashboard -> DashboardScreen(refreshKey, heroName, dateRange, buyIn)
-                    NavScreen.HandHistory -> HandHistoryScreen(refreshKey, heroName, dateRange, buyIn)
-                    NavScreen.RangeResearch -> RangeResearchScreen(heroName, dateRange, buyIn)
-                    NavScreen.Analysis -> AnalysisScreen(heroName, dateRange, buyIn)
-                    NavScreen.Charts -> ChartsScreen(heroName, dateRange, buyIn)
+                    NavScreen.Tournaments -> TournamentsScreen(refreshKey, heroName, dateRange, buyIn) { handId ->
+                        replayerHandId = handId
+                        showReplayer = true
+                    }
+                    NavScreen.RangeResearch -> RangeResearchScreen(heroName, dateRange, buyIn) { handId ->
+                        replayerHandId = handId
+                        showReplayer = true
+                    }
+                    NavScreen.Charts -> ChartsScreen(heroName, dateRange, buyIn, appState.database)
                     NavScreen.Players -> PlayersScreen(refreshKey, heroName, dateRange, buyIn)
-                    NavScreen.Settings -> SettingsScreen(refreshKey, heroName, onHeroNameChange = { name -> heroName = name; appState.heroName = name }, onDataDeleted = { deleteSuccess = "All data deleted successfully"; refreshKey++ })
+                    NavScreen.Settings -> SettingsScreen(
+                        appState = appState,
+                        refreshKey = refreshKey,
+                        heroName = heroName,
+                        onHeroNameChange = { name -> heroName = name; appState.heroName = name },
+                        onDataDeleted = { deleteSuccess = "All data deleted successfully"; refreshKey++ }
+                    )
                 }
                 
                 // Import Progress Overlay

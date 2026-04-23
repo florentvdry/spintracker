@@ -55,9 +55,6 @@ fun DashboardScreen(refreshKey: Int, heroName: String, dateRange: String, buyIn:
                 Text("Dashboard", style = MaterialTheme.typography.headlineLarge, color = Color.White)
                 Text("Track your spin and go performance", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodyMedium)
             }
-            if (heroName.isNotEmpty()) {
-                AssistChip(onClick = { }, label = { Text("Hero: $heroName", style = MaterialTheme.typography.labelMedium) })
-            }
         }
         Spacer(modifier = Modifier.height(24.dp))
         
@@ -313,107 +310,107 @@ fun ChipEvolutionGraph(data: List<GraphPoint>, modifier: Modifier = Modifier) {
             val width = size.width
             val height = size.height
             
-            if (filteredData.isEmpty()) return@Canvas
-            
-            val firstX = filteredData.first().x
-            val lastX = filteredData.last().x
-            val rangeX = (lastX - firstX).coerceAtLeast(1).toFloat()
-            
-            // For hover logic, we need to find the point relative to mouseX
-            val hoveredXInHands = (firstX + (mouseX / width) * rangeX).toInt()
-            hoveredPoint = filteredData.minByOrNull { Math.abs(it.x - hoveredXInHands) }
+            if (filteredData.isNotEmpty()) {
+                val firstX = filteredData.first().x
+                val lastX = filteredData.last().x
+                val rangeX = (lastX - firstX).coerceAtLeast(1).toFloat()
+                
+                // For hover logic, we need to find the point relative to mouseX
+                val hoveredXInHands = (firstX + (mouseX / width) * rangeX).toInt()
+                hoveredPoint = filteredData.minByOrNull { Math.abs(it.x - hoveredXInHands) }
 
-            val allValues = filteredData.flatMap { listOf(it.ev, it.profit, it.showdown, it.nonShowdown) }
-            val minVal = allValues.minOrNull()?.toFloat() ?: 0f
-            val maxVal = allValues.maxOrNull()?.toFloat() ?: 0f
-            val rangeY = (maxVal - minVal).coerceAtLeast(100f)
-            
-            fun getX(x: Int) = ((x - firstX).toFloat() / rangeX) * width
-            fun getY(y: Double) = height - (((y.toFloat() - minVal) / rangeY) * height)
-            
-            // Draw zero line
-            if (minVal < 0 && maxVal > 0) {
-                val zeroY = getY(0.0)
-                drawLine(
-                    color = Color.White.copy(alpha = 0.05f),
-                    start = Offset(0f, zeroY),
-                    end = Offset(width, zeroY),
-                    strokeWidth = 1f
-                )
-            }
-            
-            // Draw lines
-            val lines = listOf(
-                Triple(filteredData.map { it.ev }, Color(0xFFf59e0b), 2f),
-                Triple(filteredData.map { it.showdown }, Color(0xFF3b82f6), 1.5f),
-                Triple(filteredData.map { it.nonShowdown }, Color(0xFFef4444), 1.5f),
-                Triple(filteredData.map { it.profit }, Color(0xFF10b981), 2.5f)
-            )
-            
-            lines.forEach { (values, color, stroke) ->
-                val path = Path().apply {
-                    moveTo(getX(filteredData[0].x), getY(values[0]))
-                    for (i in 1 until filteredData.size) {
-                        lineTo(getX(filteredData[i].x), getY(values[i]))
-                    }
-                }
-                drawPath(
-                    path = path,
-                    color = color,
-                    style = Stroke(width = stroke, join = StrokeJoin.Round)
-                )
-            }
-
-            // Draw Drag Selection Box
-            if (dragStart != null && dragCurrent != null) {
-                val start = dragStart!!
-                val end = dragCurrent!!
-                drawRect(
-                    color = Color.White.copy(alpha = 0.1f),
-                    topLeft = Offset(Math.min(start, end), 0f),
-                    size = Size(Math.abs(start - end), height)
-                )
-            }
-
-            // Draw Hover Overlay
-            hoveredPoint?.let { pt ->
-                val hx = getX(pt.x)
+                val allValues = filteredData.flatMap { listOf(it.ev, it.profit, it.showdown, it.nonShowdown) }
+                val minVal = allValues.minOrNull()?.toFloat() ?: 0f
+                val maxVal = allValues.maxOrNull()?.toFloat() ?: 0f
+                val rangeY = (maxVal - minVal).coerceAtLeast(100f)
                 
-                drawLine(
-                    color = Color.White.copy(alpha = 0.2f),
-                    start = Offset(hx, 0f),
-                    end = Offset(hx, height),
-                    strokeWidth = 1f
-                )
+                fun getX(x: Int) = ((x - firstX).toFloat() / rangeX) * width
+                fun getY(y: Double) = height - (((y.toFloat() - minVal) / rangeY) * height)
                 
-                // Tooltip
-                val tooltipWidth = 140f
-                val tooltipHeight = 110f
-                var tx = hx + 10f
-                if (tx + tooltipWidth > width) tx = hx - tooltipWidth - 10f
-                
-                drawRoundRect(
-                    color = Color(0xFF1a1f2e).copy(alpha = 0.9f),
-                    topLeft = Offset(tx, 10f),
-                    size = Size(tooltipWidth, tooltipHeight),
-                    cornerRadius = CornerRadius(4f, 4f)
-                )
-                
-                val stats = listOf(
-                    "Hands: ${pt.x}" to Color.White,
-                    "Net: %.0f".format(pt.profit) to Color(0xFF10b981),
-                    "EV: %.0f".format(pt.ev) to Color(0xFFf59e0b),
-                    "SD: %.0f".format(pt.showdown) to Color(0xFF3b82f6),
-                    "NSD: %.0f".format(pt.nonShowdown) to Color(0xFFef4444)
-                )
-                
-                stats.forEachIndexed { index, (text, color) ->
-                    drawText(
-                        textMeasurer = textMeasurer,
-                        text = text,
-                        topLeft = Offset(tx + 8f, 15f + (index * 18f)),
-                        style = TextStyle(color = color, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                // Draw zero line
+                if (minVal < 0 && maxVal > 0) {
+                    val zeroY = getY(0.0)
+                    drawLine(
+                        color = Color.White.copy(alpha = 0.05f),
+                        start = Offset(0f, zeroY),
+                        end = Offset(width, zeroY),
+                        strokeWidth = 1f
                     )
+                }
+                
+                // Draw lines
+                val lines = listOf(
+                    Triple(filteredData.map { it.ev }, Color(0xFFf59e0b), 2f),
+                    Triple(filteredData.map { it.showdown }, Color(0xFF3b82f6), 1.5f),
+                    Triple(filteredData.map { it.nonShowdown }, Color(0xFFef4444), 1.5f),
+                    Triple(filteredData.map { it.profit }, Color(0xFF10b981), 2.5f)
+                )
+                
+                lines.forEach { (values, color, stroke) ->
+                    val path = Path().apply {
+                        moveTo(getX(filteredData[0].x), getY(values[0]))
+                        for (i in 1 until filteredData.size) {
+                            lineTo(getX(filteredData[i].x), getY(values[i]))
+                        }
+                    }
+                    drawPath(
+                        path = path,
+                        color = color,
+                        style = Stroke(width = stroke, join = StrokeJoin.Round)
+                    )
+                }
+
+                // Draw Drag Selection Box
+                if (dragStart != null && dragCurrent != null) {
+                    val start = dragStart!!
+                    val end = dragCurrent!!
+                    drawRect(
+                        color = Color.White.copy(alpha = 0.1f),
+                        topLeft = Offset(Math.min(start, end), 0f),
+                        size = Size(Math.abs(start - end), height)
+                    )
+                }
+
+                // Draw Hover Overlay
+                hoveredPoint?.let { pt ->
+                    val hx = getX(pt.x)
+                    
+                    drawLine(
+                        color = Color.White.copy(alpha = 0.2f),
+                        start = Offset(hx, 0f),
+                        end = Offset(hx, height),
+                        strokeWidth = 1f
+                    )
+                    
+                    // Tooltip
+                    val tooltipWidth = 140f
+                    val tooltipHeight = 110f
+                    var tx = hx + 10f
+                    if (tx + tooltipWidth > width) tx = hx - tooltipWidth - 10f
+                    
+                    drawRoundRect(
+                        color = Color(0xFF1a1f2e).copy(alpha = 0.9f),
+                        topLeft = Offset(tx, 10f),
+                        size = Size(tooltipWidth, tooltipHeight),
+                        cornerRadius = CornerRadius(4f, 4f)
+                    )
+                    
+                    val stats = listOf(
+                        "Hands: ${pt.x}" to Color.White,
+                        "Net: %.0f".format(pt.profit) to Color(0xFF10b981),
+                        "EV: %.0f".format(pt.ev) to Color(0xFFf59e0b),
+                        "SD: %.0f".format(pt.showdown) to Color(0xFF3b82f6),
+                        "NSD: %.0f".format(pt.nonShowdown) to Color(0xFFef4444)
+                    )
+                    
+                    stats.forEachIndexed { index, (text, color) ->
+                        drawText(
+                            textMeasurer = textMeasurer,
+                            text = text,
+                            topLeft = Offset(tx + 8f, 15f + (index * 18f)),
+                            style = TextStyle(color = color, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        )
+                    }
                 }
             }
         }

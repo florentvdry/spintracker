@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpinTracker Replayer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; }
+    .card {
+      width: 60px;
+      height: 84px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .card-red { background: #fff; color: #dc2626; border: 2px solid #ef4444; }
+    .card-black { background: #fff; color: #1f2937; border: 2px solid #374151; }
+    .card-back { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border: 2px solid #3b82f6; }
+    .table {
+      width: 800px;
+      height: 400px;
+      background: radial-gradient(ellipse at center, #166534 0%, #14532d 50%, #0f172a 100%);
+      border-radius: 200px;
+      border: 12px solid #16191d;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    }
+    .seat {
+      position: absolute;
+      background: rgba(0,0,0,0.7);
+      border-radius: 8px;
+      padding: 8px 12px;
+      min-width: 100px;
+      text-align: center;
+    }
+    .seat-hero { background: rgba(59,130,246,0.3); border: 2px solid #3b82f6; }
+    .seat-folded { opacity: 0.4; }
+    .seat-active { box-shadow: 0 0 15px rgba(59,130,246,0.5); }
+    .pot-display {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    .action-log { max-height: 300px; overflow-y: auto; }
+    .action-item { cursor: pointer; }
+    .action-item:hover { background: rgba(255,255,255,0.1); }
+    .action-current { background: rgba(59,130,246,0.3); border-left: 3px solid #3b82f6; }
+    input[type="range"] { accent-color: #3b82f6; }
+  </style>
+</head>
+<body class="bg-[#0f172a] text-white min-h-screen overflow-hidden">
+  <div id="app" class="flex flex-col h-screen">
+    <!-- Header -->
+    <header class="bg-black/40 px-6 py-3 flex justify-between items-center border-b border-white/10">
+      <div class="flex items-center gap-4">
+        <span id="hand-info" class="text-lg font-bold text-blue-400"></span>
+        <span id="date-info" class="text-sm text-gray-400"></span>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="toggleLogs()" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-sm">Logs</button>
+      </div>
+    </header>
+
+    <!-- Main Area -->
+    <main class="flex-1 flex relative">
+      <!-- Table -->
+      <div class="flex-1 flex items-center justify-center p-8">
+        <div class="table relative">
+          <!-- Board Cards -->
+          <div id="board" class="absolute inset-0 flex items-center justify-center gap-2">
+            <div id="card-0" class="card card-back"></div>
+            <div id="card-1" class="card card-back"></div>
+            <div id="card-2" class="card card-back"></div>
+            <div id="card-3" class="card card-back"></div>
+            <div id="card-4" class="card card-back"></div>
+          </div>
+          
+          <!-- Pot -->
+          <div id="pot-display" class="pot-display">
+            <span class="text-gray-400 text-xs mr-2">POT</span>
+            <span id="pot-amount" class="text-xl font-bold">0</span>
+          </div>
+          
+          <!-- Seats -->
+          <div id="seat-0" class="seat" style="bottom: -80px; left: 50%; transform: translateX(-50%);">-</div>
+          <div id="seat-1" class="seat" style="top: 50%; right: -120px; transform: translateY(-50%);">-</div>
+          <div id="seat-2" class="seat" style="top: -80px; left: 50%; transform: translateX(-50%);">-</div>
+        </div>
+      </div>
+
+      <!-- Action Log Sidebar -->
+      <aside id="log-sidebar" class="hidden w-80 bg-gray-900 border-l border-white/10 p-4 overflow-y-auto">
+        <div class="font-bold text-sm mb-4 flex justify-between">
+          <span>Action Log</span>
+          <button onclick="toggleLogs()" class="text-gray-500 hover:text-white">✕</button>
+        </div>
+        <div id="action-list" class="space-y-2 action-log"></div>
+      </aside>
+    </main>
+
+    <!-- Controls -->
+    <footer class="bg-black/40 px-6 py-4 border-t border-white/10">
+      <div class="flex items-center gap-6">
+        <!-- Progress -->
+        <input type="range" id="progress" min="0" max="100" value="0" class="flex-1" oninput="jumpTo(this.value)" />
+        
+        <!-- Playback Controls -->
+        <div class="flex items-center gap-2">
+          <button onclick="resetTable()" class="p-2 rounded-lg hover:bg-white/10" title="Reset">⏮</button>
+          <button onclick="prevStep()" class="p-2 rounded-lg hover:bg-white/10" title="Previous">◀</button>
+          <button onclick="togglePlay()" id="play-btn" class="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-500 flex items-center justify-center text-xl">▶</button>
+          <button onclick="nextStep()" class="p-2 rounded-lg hover:bg-white/10" title="Next">▶</button>
+          <button onclick="jumpToEnd()" class="p-2 rounded-lg hover:bg-white/10" title="End">⏭</button>
+        </div>
+
+        <!-- Speed -->
+        <div class="flex items-center gap-2">
+          <button onclick="setSpeed(2000)" class="px-3 py-1 rounded bg-white/10 text-sm speed-btn" data-speed="2000">0.5x</button>
+          <button onclick="setSpeed(1000)" class="px-3 py-1 rounded bg-blue-600 text-sm speed-btn" data-speed="1000">1x</button>
+          <button onclick="setSpeed(500)" class="px-3 py-1 rounded bg-white/10 text-sm speed-btn" data-speed="500">2x</button>
+        </div>
+
+        <!-- Current Action -->
+        <div id="current-action" class="px-4 py-2 rounded-full bg-blue-500/20 border border-blue-500/30 text-sm">
+          Ready
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Hand data from URL params or localStorage
+    let handData = null;
+    let currentIndex = 0;
+    let isPlaying = false;
+    let timer = null;
+    let playbackSpeed = 1000;
+    let players = [];
+
+    // Load hand data
+    function loadHand() {
+      const data = localStorage.getItem('replayerHandData');
+      if (data) {
+        handData = JSON.parse(data);
+        initTable();
+        updateUI();
+      } else {
+        document.getElementById('app').innerHTML = '<div class="flex items-center justify-center h-screen text-gray-400">No hand data. Close and open from Tournaments.</div>';
+      }
+    }
+
+    function initTable() {
+      if (!handData) return;
+      
+      document.getElementById('hand-info').textContent = `${handData.room} - ${handData.buyIn}€`;
+      document.getElementById('date-info').textContent = handData.dateTime;
+      
+      // Initialize players
+      players = handData.players.map(p => ({
+        ...p,
+        currentStack: p.initialStack,
+        bet: 0,
+        isFolded: false,
+        showCards: false
+      }));
+      
+      // Setup initial state (post blinds, deal cards)
+      for (let i = 0; i < handData.actions.length; i++) {
+        const action = handData.actions[i];
+        if (['Bet', 'Call', 'Raise', 'Fold', 'Check', 'AllIn'].includes(action.type)) break;
+        applyAction(action);
+      }
+      
+      currentIndex = 0;
+      updateUI();
+    }
+
+    function applyAction(action) {
+      const player = players.find(p => p.name === action.playerName);
+      
+      switch (action.type) {
+        case 'PostSB':
+        case 'PostBB':
+        case 'Bet':
+        case 'Raise':
+        case 'Call':
+        case 'AllIn':
+          if (player) {
+            const diff = action.amount - player.bet;
+            player.currentStack -= diff;
+            player.bet = action.amount;
+            document.getElementById('pot-amount').textContent = action.potAfter.toFixed(0);
+          }
+          break;
+        case 'Fold':
+          if (player) { player.isFolded = true; player.bet = 0; }
+          break;
+        case 'Check':
+          if (player) player.bet = 0;
+          break;
+        case 'DealCards':
+          // Update board
+          if (action.cards) {
+            const newCards = action.cards.match(/.{1,2}/g) || [];
+            newCards.forEach((card, i) => {
+              const idx = handData.board?.length || 0;
+              const cardEl = document.getElementById(`card-${idx}`);
+              if (cardEl) {
+                cardEl.textContent = card;
+                cardEl.className = `card ${card.includes('♥') || card.includes('♦') ? 'card-red' : 'card-black'}`;
+              }
+            });
+          }
+          break;
+        case 'ShowCards':
+          if (player) player.showCards = true;
+          break;
+        case 'CollectPot':
+          players.forEach(p => p.bet = 0);
+          document.getElementById('pot-amount').textContent = '0';
+          if (player) player.currentStack += action.amount;
+          break;
+      }
+      
+      players.forEach(p => p.isActive = (p.name === action.playerName));
+    }
+
+    function updateUI() {
+      // Update seats
+      players.forEach((p, i) => {
+        const seatEl = document.getElementById(`seat-${i}`);
+        if (seatEl) {
+          seatEl.innerHTML = `
+            <div class="font-bold text-sm ${p.isHero ? 'text-blue-400' : ''}">${p.name}</div>
+            <div class="text-lg font-bold">${p.currentStack.toFixed(0)}</div>
+            ${p.holeCards ? `<div class="text-xs mt-1">${p.holeCards}</div>` : ''}
+            ${p.isFolded ? '<div class="text-xs text-red-400 mt-1">FOLDED</div>' : ''}
+          `;
+          seatEl.className = `seat ${p.isHero ? 'seat-hero' : ''} ${p.isFolded ? 'seat-folded' : ''} ${p.isActive ? 'seat-active' : ''}`;
+        }
+      });
+      
+      // Update action list
+      const actionList = document.getElementById('action-list');
+      if (actionList && handData) {
+        actionList.innerHTML = handData.actions
+          .filter(a => ['Bet', 'Call', 'Raise', 'Fold', 'Check', 'AllIn'].includes(a.type))
+          .map((a, i) => `
+            <div class="action-item p-2 rounded ${i < currentIndex ? 'text-blue-300' : 'text-gray-500'} ${i === currentIndex - 1 ? 'action-current' : ''}" onclick="jumpTo(${handData.actions.indexOf(a) + 1})">
+              <div class="text-xs text-gray-500 uppercase">${a.street}</div>
+              <div class="text-sm">${a.description}</div>
+            </div>
+          `).join('');
+      }
+      
+      // Update current action
+      const currentAction = document.getElementById('current-action');
+      if (currentAction) {
+        if (handData && currentIndex > 0 && handData.actions[currentIndex - 1]) {
+          currentAction.textContent = handData.actions[currentIndex - 1].description;
+        } else {
+          currentAction.textContent = 'Ready';
+        }
+      }
+      
+      // Update progress
+      document.getElementById('progress').max = handData?.actions?.length || 100;
+      document.getElementById('progress').value = currentIndex;
+    }
+
+    function nextStep() {
+      if (!handData || currentIndex >= handData.actions.length) { stop(); return; }
+      applyAction(handData.actions[currentIndex]);
+      currentIndex++;
+      updateUI();
+    }
+
+    function prevStep() {
+      if (currentIndex <= 0) return;
+      currentIndex--;
+      rebuildState();
+    }
+
+    function rebuildState() {
+      // Reset and replay all actions up to currentIndex
+      players = handData.players.map(p => ({
+        ...p,
+        currentStack: p.initialStack,
+        bet: 0,
+        isFolded: false,
+        showCards: false
+      }));
+      
+      // Reset board
+      for (let i = 0; i < 5; i++) {
+        const cardEl = document.getElementById(`card-${i}`);
+        if (cardEl) { cardEl.textContent = ''; cardEl.className = 'card card-back'; }
+      }
+      document.getElementById('pot-amount').textContent = '0';
+      
+      for (let i = 0; i < currentIndex; i++) {
+        applyAction(handData.actions[i]);
+      }
+      updateUI();
+    }
+
+    function resetTable() { currentIndex = 0; rebuildState(); }
+    function jumpToEnd() { currentIndex = handData.actions.length; rebuildState(); }
+
+    function togglePlay() {
+      if (isPlaying) stop();
+      else play();
+    }
+
+    function play() {
+      if (isPlaying) return;
+      isPlaying = true;
+      document.getElementById('play-btn').textContent = '⏸';
+      timer = setInterval(() => {
+        if (currentIndex >= handData.actions.length) stop();
+        else nextStep();
+      }, playbackSpeed);
+    }
+
+    function stop() {
+      isPlaying = false;
+      document.getElementById('play-btn').textContent = '▶';
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    function setSpeed(speed) {
+      playbackSpeed = speed;
+      document.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.className = `px-3 py-1 rounded text-sm speed-btn ${btn.dataset.speed === speed.toString() ? 'bg-blue-600' : 'bg-white/10'}`;
+      });
+      if (isPlaying) { stop(); play(); }
+    }
+
+    function toggleLogs() {
+      document.getElementById('log-sidebar').classList.toggle('hidden');
+    }
+
+    function jumpTo(index) {
+      currentIndex = index;
+      document.getElementById('progress').value = index;
+      rebuildState();
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+      else if (e.key === 'ArrowRight') nextStep();
+      else if (e.key === 'ArrowLeft') prevStep();
+    });
+
+    // Initialize
+    loadHand();
+  </script>
+</body>
+</html>

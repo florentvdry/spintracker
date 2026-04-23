@@ -21,9 +21,8 @@ import spintracker.ui.Primary400
 
 enum class NavScreen(val title: String, val icon: ImageVector, val route: String) {
     Dashboard("Dashboard", Icons.Default.Dashboard, "/"),
-    HandHistory("Hands", Icons.Default.History, "/hands"),
+    Tournaments("Tournaments", Icons.Default.History, "/tournaments"),
     RangeResearch("Ranges", Icons.Default.Grid3x3, "/ranges"),
-    Analysis("Analysis", Icons.Default.Analytics, "/analysis"),
     Charts("Charts", Icons.Default.BarChart, "/charts"),
     Players("Players", Icons.Default.People, "/players"),
     Settings("Settings", Icons.Default.Settings, "/settings")

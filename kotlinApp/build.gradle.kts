@@ -21,6 +21,9 @@ dependencies {
     // SQLite
     implementation("org.xerial:sqlite-jdbc:3.44.0.0")
     
+    // JSON
+    implementation("org.json:json:20231013")
+    
     // Logging
     implementation("ch.qos.logback:logback-classic:1.4.14")
     

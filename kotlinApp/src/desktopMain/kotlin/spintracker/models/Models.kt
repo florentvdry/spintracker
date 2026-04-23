@@ -31,6 +31,7 @@ data class Player(
     val name: String = "",
     val room: String = "",
     val isReg: Boolean = false,
+    val isRegForced: Boolean = false,
     val totalHands: Int = 0,
     val totalProfit: Double = 0.0,
     val notes: String = ""
@@ -114,4 +115,36 @@ data class PlayerStats(
     val cBet: Double = 0.0,
     val handsPlayed: Int = 0,
     val profit: Double = 0.0
+)
+
+data class RangeHandSummary(
+    val id: String,
+    val date: LocalDateTime,
+    val profit: Double,
+    val ev: Double?,
+    val action: String
+)
+
+data class RangeHandStats(
+    val hand: String = "",
+    val totalCount: Int = 0,
+    val totalProfit: Double = 0.0,
+    val totalEv: Double = 0.0,
+    val actions: Map<String, Int> = emptyMap(),
+    val hands: List<RangeHandSummary> = emptyList()
+)
+
+data class AnalysisFilters(
+    val heroName: String? = null,
+    val situation: String? = null,
+    val action: String? = null,
+    val minStackBB: Double? = null,
+    val maxStackBB: Double? = null,
+    val positions: List<String>? = null,
+    val playerCount: Int? = null,
+    val actionSequence: List<String>? = null,
+    val situationId: String? = null,
+    val dateFrom: String? = null,
+    val dateTo: String? = null,
+    val opponentType: String? = null
 )

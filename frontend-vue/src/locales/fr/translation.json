@@ -1,7 +1,7 @@
 {
   "navigation": {
     "dashboard": "Tableau de bord",
-    "history": "Historique des tournois",
+    "tournaments": "Tournois",
     "ranges": "Analyseur de ranges",
     "charts": "Graphiques",
     "players": "Joueurs",

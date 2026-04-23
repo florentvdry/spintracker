@@ -65,32 +65,36 @@ conn.createStatement().execute("""
                  )
              """)
             
-            conn.createStatement().execute("""
-                CREATE TABLE IF NOT EXISTS hands (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    hand_id TEXT UNIQUE NOT NULL,
-                    game_id TEXT,
-                    table_name TEXT,
-                    room TEXT,
-                    date_time TEXT,
-                    hero_name TEXT,
-                    hero_position INTEGER,
-                    player_count INTEGER DEFAULT 2,
-                    big_blind REAL,
-                    hand_rank INTEGER,
-                    hand_type TEXT,
-                    result REAL DEFAULT 0,
-                    ev REAL DEFAULT 0,
-                    went_to_showdown INTEGER DEFAULT 0,
-                    raw_content TEXT,
-                    tournament_id INTEGER,
-                    buy_in REAL DEFAULT 0,
-                    prize_pool REAL DEFAULT 0,
-                    multiplier INTEGER DEFAULT 1,
-                    position INTEGER DEFAULT 0,
-                    FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
-                )
-            """)
+conn.createStatement().execute("""
+                 CREATE TABLE IF NOT EXISTS hands (
+                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     hand_id TEXT UNIQUE NOT NULL,
+                     game_id TEXT,
+                     table_name TEXT,
+                     room TEXT,
+                     date_time TEXT,
+                     hero_name TEXT,
+                     hero_position INTEGER,
+                     player_count INTEGER DEFAULT 2,
+                     big_blind REAL,
+                     hand_rank INTEGER,
+                     hand_type TEXT,
+                     result REAL DEFAULT 0,
+                     ev REAL DEFAULT 0,
+                     went_to_showdown INTEGER DEFAULT 0,
+                     raw_content TEXT,
+                     tournament_id INTEGER,
+                     buy_in REAL DEFAULT 0,
+                     prize_pool REAL DEFAULT 0,
+                     multiplier INTEGER DEFAULT 1,
+                     position INTEGER DEFAULT 0,
+                     flop TEXT,
+                     turn TEXT,
+                     river TEXT,
+                     total_pot REAL DEFAULT 0,
+                     FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
+                 )
+             """)
             
             conn.createStatement().execute("""
                 CREATE TABLE IF NOT EXISTS player_hands (
@@ -190,6 +194,26 @@ conn.createStatement().execute("""
             } catch (e: SQLException) {
                 // Column may already exist
             }
+            try {
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN flop TEXT")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN turn TEXT")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN river TEXT")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
+            try {
+                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN total_pot REAL DEFAULT 0")
+            } catch (e: SQLException) {
+                // Column may already exist
+            }
             
             conn.close()
             println("Database initialized at: $connectionString")
@@ -200,7 +224,7 @@ conn.createStatement().execute("""
         }
     }
     
-    private fun getConnection(): Connection {
+    fun getConnection(): Connection {
         return DriverManager.getConnection(connectionString)
     }
 
@@ -281,13 +305,17 @@ conn.createStatement().execute("""
                 ORDER BY total_hands DESC
             """)
             while (rs.next()) {
+                val totalHands = rs.getInt(6)
+                val isReg = rs.getInt(4) == 1
+                val isRegForced = totalHands < 500 && isReg
                 players.add(Player(
                     id = rs.getLong(1),
                     name = rs.getString(2),
                     room = rs.getString(3) ?: "",
-                    isReg = rs.getInt(4) == 1,
+                    isReg = isReg,
+                    isRegForced = isRegForced,
                     notes = rs.getString(5) ?: "",
-                    totalHands = rs.getInt(6),
+                    totalHands = totalHands,
                     totalProfit = rs.getDouble(7)
                 ))
             }
@@ -304,6 +332,81 @@ conn.createStatement().execute("""
             stmt.setInt(1, if (isReg) 1 else 0)
             stmt.setLong(2, playerId)
             stmt.executeUpdate()
+        } finally {
+            conn.close()
+        }
+    }
+    
+    fun getHandsAgainstPlayer(opponentName: String, heroName: String, limit: Int = 20, page: Int = 1): List<Map<String, Any?>> {
+        val conn = getConnection()
+        val hands = mutableListOf<Map<String, Any?>>()
+        try {
+            val offset = (page - 1) * limit
+            val sql = """
+                SELECT h.id, h.hand_id, h.date_time, h.room, h.big_blind, h.buy_in,
+                       h.flop, h.turn, h.river, h.went_to_showdown, h.player_count,
+                       ph_hero.hole_cards as hero_cards,
+                       ph_hero.position as hero_position,
+                       ph_hero.net_result as hero_profit,
+                       ph_hero.preflop_action as hero_preflop_action,
+                       ph_opp.net_result as opponent_profit,
+                       (h.ev) as ev_chips
+                FROM hands h
+                JOIN player_hands ph_opp ON h.id = ph_opp.hand_id AND ph_opp.player_name = ?
+                JOIN player_hands ph_hero ON h.id = ph_hero.hand_id AND ph_hero.player_name = ?
+                WHERE h.player_count <= 3
+                ORDER BY h.date_time DESC
+                LIMIT ? OFFSET ?
+            """
+            val stmt = conn.prepareStatement(sql)
+            stmt.setString(1, opponentName)
+            stmt.setString(2, heroName)
+            stmt.setInt(3, limit)
+            stmt.setInt(4, offset)
+            
+            val rs = stmt.executeQuery()
+            while (rs.next()) {
+                hands.add(mapOf(
+                    "id" to rs.getLong(1),
+                    "hand_id" to rs.getString(2),
+                    "date_time" to rs.getString(3),
+                    "room" to rs.getString(4),
+                    "blinds" to rs.getDouble(5),
+                    "buy_in" to rs.getDouble(6),
+                    "flop" to rs.getString(7),
+                    "turn" to rs.getString(8),
+                    "river" to rs.getString(9),
+                    "went_to_showdown" to (rs.getInt(10) == 1),
+                    "player_count" to rs.getInt(11),
+                    "hero_cards" to rs.getString(12),
+                    "hero_position" to rs.getString(13),
+                    "hero_profit" to rs.getDouble(14),
+                    "ev_chips" to rs.getDouble(15)
+                ))
+            }
+            rs.close()
+            stmt.close()
+        } finally {
+            conn.close()
+        }
+        return hands
+    }
+    
+    fun getCountHandsAgainstPlayer(opponentName: String, heroName: String): Int {
+        val conn = getConnection()
+        try {
+            val sql = """
+                SELECT COUNT(*)
+                FROM hands h
+                JOIN player_hands ph_opp ON h.id = ph_opp.hand_id AND ph_opp.player_name = ?
+                JOIN player_hands ph_hero ON h.id = ph_hero.hand_id AND ph_hero.player_name = ?
+                WHERE h.player_count <= 3
+            """
+            val stmt = conn.prepareStatement(sql)
+            stmt.setString(1, opponentName)
+            stmt.setString(2, heroName)
+            val rs = stmt.executeQuery()
+            return if (rs.next()) rs.getInt(1) else 0
         } finally {
             conn.close()
         }
@@ -644,39 +747,119 @@ return lastId
     }
     
     // Get tournaments
-    fun getTournaments(limit: Int = 50): List<Tournament> {
+    fun getTournaments(heroName: String? = null, limit: Int = 50): List<Map<String, Any?>> {
         val conn = getConnection()
-        val tournaments = mutableListOf<Tournament>()
+        val tournaments = mutableListOf<Map<String, Any?>>()
         try {
-            val rs = conn.createStatement().executeQuery("""
-                SELECT id, game_id, tournament_name, buy_in, fee, currency, speed, max_players, player_count, result, date_time, place, prize, rake
-                FROM tournaments
-                ORDER BY date_time DESC
+            val sql = """
+                SELECT h.game_id, h.room, h.buy_in, h.prize_pool, h.multiplier, h.date_time,
+                       COUNT(*) as hand_count,
+                       AVG(h.ev) as avg_cev,
+                       MAX(ph.place) as max_place,
+                       SUM(ph.net_result) as sum_net_result
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                WHERE h.player_count <= 3
+                GROUP BY h.game_id, h.room, h.buy_in, h.prize_pool, h.multiplier, h.date_time
+                ORDER BY h.date_time DESC
                 LIMIT ?
-            """)
+            """
+            val stmt = conn.prepareStatement(sql)
+            stmt.setString(1, heroName ?: "")
+            stmt.setInt(2, limit)
+            
+            val rs = stmt.executeQuery()
             while (rs.next()) {
-                tournaments.add(Tournament(
-                    id = rs.getLong(1),
-                    gameId = rs.getString(2),
-                    tournamentName = rs.getString(3),
-                    buyIn = rs.getDouble(4),
-                    fee = rs.getDouble(5),
-                    currency = rs.getString(6),
-                    speed = rs.getString(7),
-                    maxPlayers = rs.getInt(8),
-                    playerCount = rs.getInt(9),
-                    result = rs.getDouble(10),
-                    dateTime = LocalDateTime.parse(rs.getString(11), DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                    place = rs.getObject(12) as? Int,
-                    prize = rs.getObject(13) as? Double,
-                    rake = rs.getDouble(14)
+                val gameId = rs.getString(1)
+                val room = rs.getString(2)
+                val buyIn = rs.getDouble(3)
+                val prizePool = rs.getDouble(4)
+                val multiplier = rs.getInt(5)
+                val dateTime = rs.getString(6)
+                val handCount = rs.getInt(7)
+                val avgCev = rs.getDouble(8)
+                val maxPlace = rs.getInt(9)
+                val sumNetResult = rs.getDouble(10)
+                
+                var netProfit = 0.0
+                if (prizePool > 0 || multiplier > 0) {
+                    val hasSharing = (buyIn > 0 && (prizePool / buyIn) >= 19.5) || multiplier >= 20
+                    val totalPrize = if (prizePool > (multiplier * buyIn * 0.5)) prizePool else (buyIn * multiplier)
+                    var finishPos = maxPlace
+                    if (finishPos == 0) {
+                        finishPos = if (sumNetResult > 0) 1 else 3
+                    }
+                    
+                    if (finishPos == 1) {
+                        netProfit = (if (hasSharing) (totalPrize * 0.75) else totalPrize) - buyIn
+                    } else if (hasSharing) {
+                        netProfit = when (finishPos) {
+                            2 -> (totalPrize * 0.15) - buyIn
+                            3 -> (totalPrize * 0.10) - buyIn
+                            else -> -buyIn
+                        }
+                    } else {
+                        netProfit = -buyIn
+                    }
+                } else {
+                    netProfit = sumNetResult
+                }
+                
+                tournaments.add(mapOf(
+                    "gameId" to gameId,
+                    "room" to room,
+                    "buyIn" to buyIn,
+                    "dateTime" to dateTime,
+                    "handCount" to handCount,
+                    "avgCev" to avgCev,
+                    "netProfit" to netProfit
                 ))
             }
+            rs.close()
+            stmt.close()
         } finally {
             conn.close()
         }
         return tournaments
     }
+    
+    fun getHandsByGameId(gameId: String, heroName: String): List<Map<String, Any?>> {
+        val conn = getConnection()
+        val hands = mutableListOf<Map<String, Any?>>()
+        try {
+            val sql = """
+                SELECT h.id, h.date_time, ph.position, h.player_count,
+                       h.ev, ph.net_result, ph.hole_cards, ph.winnings
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                WHERE h.game_id = ?
+                ORDER BY h.date_time ASC
+            """
+            val stmt = conn.prepareStatement(sql)
+            stmt.setString(1, heroName)
+            stmt.setString(2, gameId)
+            
+            val rs = stmt.executeQuery()
+            while (rs.next()) {
+                hands.add(mapOf(
+                    "id" to rs.getLong(1),
+                    "dateTime" to rs.getString(2),
+                    "heroPosition" to rs.getString(3),
+                    "playerCount" to rs.getInt(4),
+                    "ev" to rs.getDouble(5),
+                    "netResult" to rs.getDouble(6),
+                    "heroCards" to rs.getString(7),
+                    "winnings" to rs.getDouble(8)
+                ))
+            }
+            rs.close()
+            stmt.close()
+        } finally {
+            conn.close()
+        }
+        return hands
+    }
+
 
 fun getGraphData(heroName: String? = null): List<GraphPoint> {
         val conn = getConnection()
@@ -918,6 +1101,237 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             println("Error deleting data: ${e.message}")
         } finally {
             conn.close()
+        }
+    }
+    
+    fun getHandReplayData(handId: String, heroName: String): Map<String, Any?>? {
+        val conn = getConnection()
+        try {
+            val sql = """
+                SELECT h.id, h.hand_id, h.date_time, h.room, h.big_blind, h.buy_in,
+                       ph.player_name, ph.position, ph.stack_size, ph.hole_cards, ph.winnings, ph.net_result,
+                       ph.preflop_action, ph.flop_action, ph.turn_action, ph.river_action,
+                       h.flop, h.turn, h.river, h.went_to_showdown
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id
+                WHERE h.id = ? AND ph.player_name = ?
+            """
+            val stmt = conn.prepareStatement(sql)
+            stmt.setString(1, handId)
+            stmt.setString(2, heroName)
+            val rs = stmt.executeQuery()
+            
+            if (rs.next()) {
+                val data = mutableMapOf<String, Any?>()
+                data["handId"] = rs.getLong(1)
+                data["dateTime"] = rs.getString(3)
+                data["room"] = rs.getString(4)
+                data["bigBlind"] = rs.getDouble(5)
+                data["buyIn"] = rs.getDouble(6)
+                data["playerName"] = rs.getString(7)
+                data["position"] = rs.getString(8)
+                data["stackSize"] = rs.getDouble(9)
+                data["holeCards"] = rs.getString(10)
+                data["winnings"] = rs.getDouble(11)
+                data["netResult"] = rs.getDouble(12)
+                data["preflopAction"] = rs.getString(13)
+                data["flopAction"] = rs.getString(14)
+                data["turnAction"] = rs.getString(15)
+                data["riverAction"] = rs.getString(16)
+                data["flop"] = rs.getString(17)
+                data["turn"] = rs.getString(18)
+                data["river"] = rs.getString(19)
+                data["wentToShowdown"] = rs.getInt(20) == 1
+                
+                rs.close()
+                stmt.close()
+                
+                // Get all players
+                val playersSql = """
+                    SELECT ph.player_name, ph.position, ph.stack_size, ph.hole_cards, ph.is_hero
+                    FROM player_hands ph
+                    WHERE ph.hand_id = ?
+                """
+                val playersStmt = conn.prepareStatement(playersSql)
+                playersStmt.setString(1, handId)
+                val playersRs = playersStmt.executeQuery()
+                val players = mutableListOf<Map<String, Any?>>()
+                while (playersRs.next()) {
+                    players.add(mapOf(
+                        "name" to playersRs.getString(1),
+                        "position" to playersRs.getString(2),
+                        "stackSize" to playersRs.getDouble(3),
+                        "holeCards" to playersRs.getString(4),
+                        "isHero" to (playersRs.getInt(5) == 1)
+                    ))
+                }
+                playersRs.close()
+                playersStmt.close()
+                data["players"] = players
+                
+                return data
+            }
+            rs.close()
+            stmt.close()
+        } finally {
+            conn.close()
+        }
+        return null
+    }
+
+    fun getRangeBreakdown(filters: AnalysisFilters): Map<String, RangeHandStats> {
+        val conn = getConnection()
+        val rangeData = mutableMapOf<String, RangeHandStats>()
+        try {
+            val sql = buildString {
+                append("""
+                    SELECT h.id, h.hand_id, h.date_time, h.hero_name, h.hero_position,
+                           h.player_count, h.big_blind, h.result, h.ev,
+                           ph.hole_cards, ph.preflop_action, ph.net_result
+                    FROM hands h
+                    JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
+                    WHERE h.player_count <= 3
+                """)
+                if (!filters.dateFrom.isNullOrBlank()) {
+                    append(" AND h.date_time >= ?")
+                }
+                if (!filters.dateTo.isNullOrBlank()) {
+                    append(" AND h.date_time <= ?")
+                }
+                if (filters.minStackBB != null) {
+                    append(" AND h.big_blind * ? <= ph.stack_size")
+                }
+                if (filters.maxStackBB != null) {
+                    append(" AND ph.stack_size <= h.big_blind * ?")
+                }
+                if (!filters.situationId.isNullOrBlank()) {
+                    append(" AND h.position = ?")
+                }
+                append(" ORDER BY h.date_time DESC")
+            }
+
+            val stmt = conn.prepareStatement(sql)
+            var paramIndex = 1
+            val heroName = filters.heroName ?: "jmenfouu"
+            stmt.setString(paramIndex++, heroName)
+
+            if (!filters.dateFrom.isNullOrBlank()) {
+                stmt.setString(paramIndex++, filters.dateFrom)
+            }
+            if (!filters.dateTo.isNullOrBlank()) {
+                stmt.setString(paramIndex++, filters.dateTo)
+            }
+            if (filters.minStackBB != null) {
+                stmt.setDouble(paramIndex++, filters.minStackBB)
+            }
+            if (filters.maxStackBB != null) {
+                stmt.setDouble(paramIndex++, filters.maxStackBB)
+            }
+            if (!filters.situationId.isNullOrBlank()) {
+                stmt.setString(paramIndex++, filters.situationId)
+            }
+
+            val rs = stmt.executeQuery()
+            val formatter = java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
+
+            while (rs.next()) {
+                val cards = rs.getString(10)
+                if (cards.isNullOrBlank()) continue
+
+                val normalizedCards = normalizeHandCards(cards)
+                if (normalizedCards == null) continue
+
+                val heroPosition = rs.getString(5)
+                val targetPositions = filters.positions
+                if (!targetPositions.isNullOrEmpty() && heroPosition !in targetPositions) {
+                    continue
+                }
+
+                val actionType = determineActionType(rs.getString(11), filters.situationId)
+
+                if (!rangeData.containsKey(normalizedCards)) {
+                    rangeData[normalizedCards] = RangeHandStats(
+                        hand = normalizedCards,
+                        totalCount = 0,
+                        totalProfit = 0.0,
+                        totalEv = 0.0,
+                        actions = emptyMap(),
+                        hands = emptyList()
+                    )
+                }
+
+                val existing = rangeData[normalizedCards]!!
+                val profit = rs.getDouble(9)
+                val ev = rs.getDouble(8)
+
+                val updatedActions = existing.actions.toMutableMap()
+                updatedActions[actionType] = (updatedActions[actionType] ?: 0) + 1
+
+                val newHand = RangeHandSummary(
+                    id = rs.getString(2),
+                    date = java.time.LocalDateTime.parse(rs.getString(3), formatter),
+                    profit = profit,
+                    ev = if (rs.wasNull()) null else ev,
+                    action = actionType
+                )
+
+                rangeData[normalizedCards] = existing.copy(
+                    totalCount = existing.totalCount + 1,
+                    totalProfit = existing.totalProfit + profit,
+                    totalEv = existing.totalEv + ev,
+                    actions = updatedActions,
+                    hands = existing.hands + newHand
+                )
+            }
+
+            rs.close()
+            stmt.close()
+        } finally {
+            conn.close()
+        }
+        return rangeData
+    }
+
+    private fun normalizeHandCards(cards: String): String? {
+        if (cards.isBlank() || cards.length < 4) return null
+        val clean = cards.replace("[^a-zA-Z0-9]", "").uppercase()
+        if (clean.length < 4) return null
+
+        val card1 = clean.substring(0, 2)
+        val card2 = clean.substring(2, 4)
+
+        val rankOrder = mapOf('A' to 14, 'K' to 13, 'Q' to 12, 'J' to 11, 'T' to 10, '9' to 9, '8' to 8, '7' to 7, '6' to 6, '5' to 5, '4' to 4, '3' to 3, '2' to 2)
+
+        val r1 = card1[0]
+        val r2 = card2[0]
+        val rank1 = rankOrder[r1] ?: 0
+        val rank2 = rankOrder[r2] ?: 0
+
+        val suited = clean.contains('s', ignoreCase = true) || (clean.length > 4 && clean[4] == 's')
+        val offsuit = clean.contains('o', ignoreCase = true) || (clean.length > 4 && clean[4] == 'o')
+
+        return if (rank1 == rank2) {
+            "${r1}${r2}"
+        } else if (rank1 > rank2) {
+            "${r1}${r2}${if (suited) "s" else if (offsuit) "o" else ""}"
+        } else {
+            "${r2}${r1}${if (suited) "s" else if (offsuit) "o" else ""}"
+        }
+    }
+
+    private fun determineActionType(preflopAction: String?, situationId: String?): String {
+        if (preflopAction.isNullOrBlank()) return "None"
+        val action = preflopAction.lowercase()
+        return when {
+            action.contains("all-in") || action.contains("allin") -> "AllIn"
+            action.contains("raise") && action.contains("4") -> "Raise4BB"
+            action.contains("raise") && (action.contains("2") || action.contains("3")) -> "Raise2_3BB"
+            action.contains("raise") -> "Raise"
+            action.contains("bet") -> "Bet"
+            action.contains("call") -> "Call"
+            action.contains("check") -> "Check"
+            action.contains("fold") -> "Fold"
+            else -> "None"
         }
     }
 }

@@ -7,8 +7,8 @@ const routes = [
     component: () => import('@/views/Dashboard/index.vue')
   },
   {
-    path: '/hands',
-    name: 'HandHistory',
+    path: '/tournaments',
+    name: 'Tournaments',
     component: () => import('@/views/HandHistory/index.vue')
   },
   {
