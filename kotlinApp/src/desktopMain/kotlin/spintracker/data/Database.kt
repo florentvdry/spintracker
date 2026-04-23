@@ -297,11 +297,51 @@ conn.createStatement().execute("""
         try {
             val rs = conn.createStatement().executeQuery("""
                 SELECT p.id, p.name, p.room, p.is_reg, p.notes,
-                       COUNT(DISTINCT ph.hand_id) as total_hands,
-                       COALESCE(SUM(ph.net_result), 0) as total_profit
+                       h_stats.total_hands,
+                       p_stats.total_profit_euro
                 FROM players p
-                LEFT JOIN player_hands ph ON p.id = ph.player_id
-                GROUP BY p.id, p.name, p.room, p.is_reg, p.notes
+                LEFT JOIN (
+                    SELECT player_id, COUNT(*) as total_hands
+                    FROM player_hands
+                    GROUP BY player_id
+                ) h_stats ON p.id = h_stats.player_id
+                LEFT JOIN (
+                    SELECT 
+                        player_id,
+                        SUM(
+                            CASE 
+                                WHEN prize_pool > 0 OR multiplier > 0 THEN
+                                    CASE 
+                                        WHEN (buy_in > 0 AND prize_pool/buy_in >= 19.5) OR multiplier >= 20 THEN
+                                            (CASE 
+                                                WHEN final_place = 1 THEN total_prize * 0.75
+                                                WHEN final_place = 2 THEN total_prize * 0.15
+                                                WHEN final_place = 3 THEN total_prize * 0.10
+                                                ELSE 0
+                                            END) - buy_in
+                                        ELSE
+                                            (CASE WHEN final_place = 1 THEN total_prize ELSE 0 END) - buy_in
+                                    END
+                                ELSE
+                                    chip_profit
+                            END
+                        ) as total_profit_euro
+                    FROM (
+                        SELECT 
+                            ph.player_id,
+                            h.game_id,
+                            MAX(h.buy_in) as buy_in,
+                            MAX(h.prize_pool) as prize_pool,
+                            MAX(h.multiplier) as multiplier,
+                            MAX(ph.place) as final_place,
+                            SUM(ph.net_result) as chip_profit,
+                            MAX(CASE WHEN h.prize_pool > (h.multiplier*h.buy_in*0.5) THEN h.prize_pool ELSE h.buy_in*h.multiplier END) as total_prize
+                        FROM player_hands ph
+                        JOIN hands h ON ph.hand_id = h.id
+                        GROUP BY ph.player_id, h.game_id
+                    )
+                    GROUP BY player_id
+                ) p_stats ON p.id = p_stats.player_id
                 ORDER BY total_hands DESC
             """)
             while (rs.next()) {
