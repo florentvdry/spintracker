@@ -1,4 +1,4 @@
-package spintracker.services
+package spintracker.parsers
 
 import spintracker.models.*
 import java.time.LocalDateTime
@@ -57,7 +57,6 @@ class BetclicParser {
             val newSection = detectSection(line)
             if (newSection != null) {
                 currentSection = newSection
-                // Reset street investment for all players on new street
                 if (currentSection == "PREFLOP" || currentSection == "FLOP" || currentSection == "TURN" || currentSection == "RIVER") {
                     hand.players.forEach { it.streetInvestment = 0.0 }
                 }
@@ -65,7 +64,6 @@ class BetclicParser {
                     hand.wentToShowdown = true
                 }
                 
-                // Parse board cards from section header if present
                 if (currentSection == "FLOP" || currentSection == "TURN" || currentSection == "RIVER") {
                     parseBoardLine(line, currentSection, hand)
                 }
@@ -97,15 +95,12 @@ class BetclicParser {
                 }
             }
             
-            // For result log
             val resultLine = if (heroName != null) line.replace(heroName, "Hero") else line
             hand.result += resultLine + "\n"
         }
         
-        // Post-processing
         hand.playerCount = hand.players.size
         
-        // Normalize Heads-Up positions
         if (hand.playerCount == 2) {
             for (p in hand.players) {
                 if (p.position == "BTN SB" || p.position == "BTN") {
@@ -114,7 +109,6 @@ class BetclicParser {
             }
         }
 
-        // Adjust for uncalled bets
         val totalInvestment = hand.players.sumOf { it.investment }
         if (totalInvestment > hand.totalPot && hand.players.isNotEmpty()) {
             val excess = totalInvestment - hand.totalPot
@@ -124,7 +118,6 @@ class BetclicParser {
             }
         }
 
-        // 2. Consolidate showdown status
         if (hand.wentToShowdown) {
             for (p in hand.players) {
                 if (!p.folded) {
@@ -145,7 +138,6 @@ class BetclicParser {
     }
     
     private fun parseActionLine(line: String, hand: ParsedHand, street: String) {
-        // Actions look like: "22:53:05 - jmenfouu: Posts SB 50"
         val actionPart = if (line.contains(" - ")) line.substringAfter(" - ") else line
         val playerName = actionPart.substringBefore(":").trim()
         val player = hand.players.find { it.name.equals(playerName, ignoreCase = true) } ?: return
@@ -192,7 +184,6 @@ class BetclicParser {
             return
         }
 
-        // More permissive regex to match cards in various formats [Kc 2d] or [Kc 2d 3h]
         val cardsMatch = Regex("\\[([\\dAKQJT10][hsdc](?: [\\dAKQJT10][hsdc])*)\\]").find(actionPart)
         if (cardsMatch != null) {
             val cards = cardsMatch.groupValues[1]
@@ -207,15 +198,12 @@ class BetclicParser {
                 else -> namePart
             }
             
-            // Clean player name
             val playerName = playerNameRaw.replace("Seat \\d+: ".toRegex(), "").trim()
             
             if (playerName.isNotEmpty()) {
                 val player = hand.players.find { it.name.equals(playerName, ignoreCase = true) }
                 if (player != null) {
                     player.cards = cards
-                    // Only mark as showdown if it's NOT the hero's hole cards (which are always present)
-                    // or if it's explicitly shown/mucked by someone, OR if it's a villain revealed card
                     if (actionPart.contains("shows") || actionPart.contains("showed") || actionPart.contains("mucks") || (!player.isHero && !actionPart.startsWith("Dealt to "))) {
                         hand.wentToShowdown = true
                     }
@@ -243,20 +231,27 @@ class BetclicParser {
     }
 
     private fun parseSummaryLine(line: String, hand: ParsedHand) {
-        // Summary looks like: "1337YAYA1337 wins main pot of 1360" or "Player collected pot of 100"
         val lowerLine = line.lowercase()
+        
+        val finishMatch = Regex("""(\S+)\s+finished\s+(\d+)(?:st|nd|rd|th)""").find(line)
+        if (finishMatch != null) {
+            val playerName = finishMatch.groupValues[1].trim()
+            val finishPos = finishMatch.groupValues[2].toIntOrNull() ?: 0
+            val player = hand.players.find { it.name.equals(playerName, ignoreCase = true) }
+            if (player != null && finishPos > 0) {
+                player.place = finishPos
+            }
+        }
+        
         if (lowerLine.contains("wins main pot") || lowerLine.contains("wins side pot") || lowerLine.contains("collected pot") || lowerLine.contains("wins pot") || (lowerLine.contains("wins") && lowerLine.contains("pot"))) {
-            // More specific regex to avoid matching "finished 1st and wins ... EUR"
-            val potMatch = Regex("^(?:[0-9:]+\\s*-\\s*)?(.+?)\\s+(?:wins|collected).+?pot").find(line)
+            val potMatch = Regex("""^(?:[0-9:]+\s*-\s*)?(.+?)\s+(?:wins|collected).+?pot""").find(line)
             val playerName = potMatch?.groupValues?.get(1)?.trim() ?: return
-            
+
             val player = hand.players.find { it.name.equals(playerName, ignoreCase = true) } ?: return
-            val amountMatch = Regex("(?:pot of |pot )(\\d+\\.?\\d*)").find(line)
+            val amountMatch = Regex("""(?:pot of |pot )(\d+\.?\d*)""").find(line)
             val amount = amountMatch?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
             player.winnings += amount
-            
-            // Implicit Showdown Detection: if someone wins and was all-in, 
-            // and at least one other player was also all-in, or if we are in showdown section
+
             if (player.isAllIn && hand.players.any { it.name != player.name && it.isAllIn }) {
                 hand.wentToShowdown = true
             }
@@ -285,7 +280,7 @@ class BetclicParser {
             line.startsWith("Game ID:") -> hand.gameId = line.substringAfter(":").trim()
             line.startsWith("Hand ID:") -> hand.handId = line.substringAfter(":").trim()
             line.startsWith("Date & Time:") -> {
-                val dateStr = line.substringAfter(":").replace("(UTC)", "").trim()
+                val dateStr = line.substringAfter("Date & Time:").replace("(UTC)", "").trim()
                 try {
                     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                     hand.dateTime = LocalDateTime.parse(dateStr, formatter)
@@ -306,6 +301,18 @@ class BetclicParser {
                 val match = Regex("(\\d+\\.?\\d*)").find(line)
                 hand.totalPot = match?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
             }
+            line.startsWith("Prize pool:") -> {
+                val match = Regex("(\\d+\\.?\\d*)").find(line)
+                hand.prizePool = match?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
+            }
+            line.startsWith("Multiplier:") -> {
+                val match = Regex("x(\\d+)").find(line)
+                hand.multiplier = match?.groupValues?.get(1)?.toIntOrNull() ?: 1
+            }
+            line.startsWith("Buy In:") -> {
+                val match = Regex("(\\d+\\.?\\d*)").find(line)
+                hand.buyIn = match?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
+            }
         }
     }
     
@@ -325,7 +332,6 @@ class BetclicParser {
                     position = extractPosition(extra)
                 )
                 
-                // Also check for cards in player line
                 val cardsMatch = Regex("\\[([\\dAKQJT][hsdc](?: [\\dAKQJT][hsdc])*)\\]").find(extra)
                 if (cardsMatch != null) {
                     player.cards = cardsMatch.groupValues[1]
@@ -382,7 +388,10 @@ data class ParsedHand(
     var flopAction: String = "",
     var turnAction: String = "",
     var riverAction: String = "",
-    val players: MutableList<ParsedPlayer> = mutableListOf()
+    val players: MutableList<ParsedPlayer> = mutableListOf(),
+    var buyIn: Double = 0.0,
+    var prizePool: Double = 0.0,
+    var multiplier: Int = 1
 )
 
 data class ParsedPlayer(
@@ -396,5 +405,6 @@ data class ParsedPlayer(
     var winnings: Double = 0.0,
     var investment: Double = 0.0,
     var streetInvestment: Double = 0.0,
-    var wentToShowdown: Boolean = false
+    var wentToShowdown: Boolean = false,
+    var place: Int = 0
 )

@@ -28,7 +28,7 @@ import spintracker.ui.screens.TournamentsScreen
 import spintracker.ui.screens.PlayersScreen
 import spintracker.ui.screens.RangeResearchScreen
 import spintracker.ui.screens.SettingsScreen
-import spintracker.ui.screens.LeakBusterScreen
+import spintracker.ui.screens.AnalyticsScreen
 import spintracker.ui.screens.BankrollScreen
 import spintracker.ui.screens.ReplayerWindow
 import androidx.compose.ui.window.Window
@@ -53,7 +53,23 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
     var importProgress by remember { mutableStateOf<ImportService.ImportProgress?>(null) }
     var isImporting by remember { mutableStateOf(false) }
     var deleteSuccess by remember { mutableStateOf<String?>(null) }
+    
     var showHUD by remember { mutableStateOf(false) }
+    var hudOpacity by remember { mutableStateOf(0.9f) }
+    var hudPosition by remember { mutableStateOf(spintracker.ui.components.HUDPosition.TOP_RIGHT) }
+    
+    LaunchedEffect(refreshKey) {
+        val settings = appState.database.getHUDSettings()
+        showHUD = settings?.showHUD ?: false
+        hudOpacity = settings?.opacity?.toFloat() ?: 0.9f
+        hudPosition = when (settings?.position) {
+            "TOP_LEFT" -> spintracker.ui.components.HUDPosition.TOP_LEFT
+            "TOP_RIGHT" -> spintracker.ui.components.HUDPosition.TOP_RIGHT
+            "BOTTOM_LEFT" -> spintracker.ui.components.HUDPosition.BOTTOM_LEFT
+            "BOTTOM_RIGHT" -> spintracker.ui.components.HUDPosition.BOTTOM_RIGHT
+            else -> spintracker.ui.components.HUDPosition.TOP_RIGHT
+        }
+    }
     
     if (showReplayer && replayerHandId != null) {
         ReplayerWindow(
@@ -119,7 +135,7 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
                         replayerHandId = handId
                         showReplayer = true
                     }
-                    NavScreen.LeakBuster -> LeakBusterScreen(heroName)
+                    NavScreen.Analytics -> AnalyticsScreen(heroName, dateRange, buyIn)
                     NavScreen.RangeResearch -> RangeResearchScreen(heroName, dateRange, buyIn) { handId ->
                         replayerHandId = handId
                         showReplayer = true
@@ -132,7 +148,8 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
                         refreshKey = refreshKey,
                         heroName = heroName,
                         onHeroNameChange = { name -> heroName = name; appState.heroName = name },
-                        onDataDeleted = { deleteSuccess = "All data deleted successfully"; refreshKey++ }
+                        onDataDeleted = { deleteSuccess = "All data deleted successfully"; refreshKey++ },
+                        onRefresh = { refreshKey++ }
                     )
                 }
                 
@@ -264,7 +281,7 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
                 
                 // HUD Overlay
                 HUDOverlay(
-                    state = HUDState(visible = showHUD, position = spintracker.ui.components.HUDPosition.TOP_RIGHT),
+                    state = HUDState(visible = showHUD, opacity = hudOpacity, position = hudPosition),
                     onClose = { showHUD = false }
                 )
             }

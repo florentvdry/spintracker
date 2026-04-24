@@ -22,7 +22,7 @@ import spintracker.ui.Primary400
 enum class NavScreen(val title: String, val icon: ImageVector, val route: String) {
     Dashboard("Dashboard", Icons.Default.Dashboard, "/"),
     Tournaments("Tournaments", Icons.Default.History, "/tournaments"),
-    LeakBuster("Leaks", Icons.Default.Warning, "/leaks"),
+    Analytics("Analytics", Icons.Default.Analytics, "/analytics"),
     RangeResearch("Ranges", Icons.Default.Grid3x3, "/ranges"),
     Charts("Charts", Icons.Default.BarChart, "/charts"),
     Bankroll("Bankroll", Icons.Default.ShowChart, "/bankroll"),

@@ -49,7 +49,8 @@ class Database(dbPath: String? = null) {
                 Migration010_PT4Parity(),
                 Migration011_PT4ParityHighPriority(),
                 Migration012_PT4ParityMediumPriority(),
-                Migration013_PT4ParityLowPriority()
+                Migration013_PT4ParityLowPriority(),
+                Migration014_HUD()
             )
             
             val runner = MigrationRunner(connectionString)
@@ -887,11 +888,19 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
         val points = mutableListOf<BankrollDataPoint>()
         try {
             val sql = """
-                SELECT ph.net_result
+                SELECT 
+                    h.game_id,
+                    h.buy_in,
+                    h.prize_pool,
+                    h.multiplier,
+                    ph.place,
+                    SUM(ph.net_result) as chip_profit,
+                    MAX(CASE WHEN h.prize_pool > (h.multiplier*h.buy_in*0.5) THEN h.prize_pool ELSE h.buy_in*h.multiplier END) as total_prize
                 FROM player_hands ph
                 JOIN hands h ON ph.hand_id = h.id
                 WHERE ph.player_name = ?
-                ORDER BY h.date_time ASC
+                GROUP BY h.game_id, h.buy_in, h.prize_pool, h.multiplier, ph.place
+                ORDER BY MIN(h.date_time) ASC
             """
             val stmt = conn.prepareStatement(sql)
             stmt.setString(1, heroName ?: "")
@@ -904,9 +913,35 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             points.add(BankrollDataPoint(0, 0.0, 0.0, 0.0, false, false))
             
             while (rs.next()) {
-                val result = rs.getDouble(1)
+                val buyIn = rs.getDouble(2)
+                val prizePool = rs.getDouble(3)
+                val multiplier = rs.getInt(4)
+                val finalPlace = rs.getInt(5)
+                val totalPrize = rs.getDouble(7)
+                
+                val euroProfit = when {
+                    prizePool > 0 || multiplier > 0 -> {
+                        when {
+                            (buyIn > 0 && prizePool / buyIn >= 19.5) || multiplier >= 20 -> {
+                                val icmShare = when (finalPlace) {
+                                    1 -> totalPrize * 0.75
+                                    2 -> totalPrize * 0.15
+                                    3 -> totalPrize * 0.10
+                                    else -> 0.0
+                                }
+                                icmShare - buyIn
+                            }
+                            else -> {
+                                val prizeShare = if (finalPlace == 1) totalPrize else 0.0
+                                prizeShare - buyIn
+                            }
+                        }
+                    }
+                    else -> rs.getDouble(6)
+                }
+                
                 count++
-                cumulativeBankroll += result
+                cumulativeBankroll += euroProfit
                 peak = maxOf(peak, cumulativeBankroll)
                 val drawdown = cumulativeBankroll - peak
                 
@@ -1350,6 +1385,527 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             conn.close()
         }
         return rangeData
+    }
+
+    data class PositionStats(
+        val position: String,
+        val hands: Int,
+        val profit: Double,
+        val ev: Double,
+        val winrate: Double,
+        val evbb100: Double,
+        val inPositionHands: Int,
+        val inPositionProfit: Double,
+        val outOfPositionHands: Int,
+        val outOfPositionProfit: Double
+    )
+
+    fun getPositionStats(heroName: String, dateFrom: String? = null, dateTo: String? = null): List<PositionStats> {
+        val conn = getConnection()
+        val stats = mutableListOf<PositionStats>()
+        try {
+            val sql = """
+                SELECT 
+                    ph.position,
+                    COUNT(*) as hands,
+                    SUM(ph.net_result) as profit,
+                    SUM(ph.equity_percent) as ev,
+                    SUM(ph.net_result) * 100.0 / COUNT(*) as winrate,
+                    SUM(ph.equity_percent) * 100.0 / COUNT(*) / (SELECT AVG(big_blind) FROM hands WHERE hero_name = ?) as evbb100,
+                    SUM(CASE WHEN ph.flg_f_has_position = 1 OR ph.flg_t_has_position = 1 OR ph.flg_r_has_position = 1 THEN 1 ELSE 0 END) as in_position_hands,
+                    SUM(CASE WHEN ph.flg_f_has_position = 1 OR ph.flg_t_has_position = 1 OR ph.flg_r_has_position = 1 THEN ph.net_result ELSE 0 END) as in_position_profit,
+                    SUM(CASE WHEN ph.flg_f_has_position = 0 AND ph.flg_t_has_position = 0 AND ph.flg_r_has_position = 0 THEN 1 ELSE 0 END) as out_of_position_hands,
+                    SUM(CASE WHEN ph.flg_f_has_position = 0 AND ph.flg_t_has_position = 0 AND ph.flg_r_has_position = 0 THEN ph.net_result ELSE 0 END) as out_of_position_profit
+                FROM player_hands ph
+                JOIN hands h ON h.id = ph.hand_id
+                WHERE ph.player_name = ? AND h.player_count <= 3
+            """ + buildString {
+                if (!dateFrom.isNullOrBlank()) append(" AND h.date_time >= ?")
+                if (!dateTo.isNullOrBlank()) append(" AND h.date_time <= ?")
+            } + """
+                GROUP BY ph.position
+                ORDER BY hands DESC
+            """
+            
+            val stmt = conn.prepareStatement(sql)
+            var i = 1
+            stmt.setString(i++, heroName)
+            stmt.setString(i++, heroName)
+            if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
+            if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
+            
+            val rs = stmt.executeQuery()
+            while (rs.next()) {
+                stats.add(PositionStats(
+                    position = rs.getString("position"),
+                    hands = rs.getInt("hands"),
+                    profit = rs.getDouble("profit"),
+                    ev = rs.getDouble("ev"),
+                    winrate = rs.getDouble("winrate"),
+                    evbb100 = rs.getDouble("evbb100"),
+                    inPositionHands = rs.getInt("in_position_hands"),
+                    inPositionProfit = rs.getDouble("in_position_profit"),
+                    outOfPositionHands = rs.getInt("out_of_position_hands"),
+                    outOfPositionProfit = rs.getDouble("out_of_position_profit")
+                ))
+            }
+            rs.close()
+            stmt.close()
+        } finally {
+            conn.close()
+        }
+        return stats
+    }
+
+    data class StealStats(
+        val stealAttempts: Int,
+        val stealSuccesses: Int,
+        val stealSuccessRate: Double,
+        val blindDefenses: Int,
+        val blindDefenseRate: Double,
+        val sbStealFolds: Int,
+        val bbStealFolds: Int,
+        val sbStealFoldRate: Double,
+        val bbStealFoldRate: Double
+    )
+
+    fun getStealStats(heroName: String, dateFrom: String? = null, dateTo: String? = null): StealStats {
+        val conn = getConnection()
+        try {
+            val sql = """
+                SELECT
+                    SUM(CASE WHEN ph.flg_steal_att = 1 THEN 1 ELSE 0 END) as steal_attempts,
+                    SUM(CASE WHEN ph.flg_steal_att = 1 AND ph.net_result > 0 THEN 1 ELSE 0 END) as steal_successes,
+                    SUM(CASE WHEN ph.flg_blind_def_opp = 1 THEN 1 ELSE 0 END) as blind_defenses,
+                    SUM(CASE WHEN ph.flg_sb_steal_fold = 1 THEN 1 ELSE 0 END) as sb_steal_folds,
+                    SUM(CASE WHEN ph.flg_bb_steal_fold = 1 THEN 1 ELSE 0 END) as bb_steal_folds,
+                    SUM(CASE WHEN ph.flg_sb_steal_fold = 1 OR ph.flg_bb_steal_fold = 1 THEN 1 ELSE 0 END) as total_steal_folds
+                FROM player_hands ph
+                JOIN hands h ON h.id = ph.hand_id
+                WHERE ph.player_name = ? AND h.player_count <= 3
+            """ + buildString {
+                if (!dateFrom.isNullOrBlank()) append(" AND h.date_time >= ?")
+                if (!dateTo.isNullOrBlank()) append(" AND h.date_time <= ?")
+            }
+            
+            val stmt = conn.prepareStatement(sql)
+            var i = 1
+            stmt.setString(i++, heroName)
+            if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
+            if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
+            
+            val rs = stmt.executeQuery()
+            var stealAttempts = 0
+            var stealSuccesses = 0
+            var blindDefenses = 0
+            var sbStealFolds = 0
+            var bbStealFolds = 0
+            
+            if (rs.next()) {
+                stealAttempts = rs.getInt("steal_attempts")
+                stealSuccesses = rs.getInt("steal_successes")
+                blindDefenses = rs.getInt("blind_defenses")
+                sbStealFolds = rs.getInt("sb_steal_folds")
+                bbStealFolds = rs.getInt("bb_steal_folds")
+            }
+            rs.close()
+            stmt.close()
+            
+            return StealStats(
+                stealAttempts = stealAttempts,
+                stealSuccesses = stealSuccesses,
+                stealSuccessRate = if (stealAttempts > 0) stealSuccesses * 100.0 / stealAttempts else 0.0,
+                blindDefenses = blindDefenses,
+                blindDefenseRate = 0.0,
+                sbStealFolds = sbStealFolds,
+                bbStealFolds = bbStealFolds,
+                sbStealFoldRate = if (stealAttempts > 0) sbStealFolds * 100.0 / stealAttempts else 0.0,
+                bbStealFoldRate = if (stealAttempts > 0) bbStealFolds * 100.0 / stealAttempts else 0.0
+            )
+        } finally {
+            conn.close()
+        }
+    }
+
+    data class ShowdownStats(
+        val totalHands: Int,
+        val showdownHands: Int,
+        val showdownRate: Double,
+        val wonAtShowdown: Int,
+        val lostAtShowdown: Int,
+        val wsdb: Double,
+        val foldedBeforeShowdown: Int
+    )
+
+    fun getShowdownStats(heroName: String, dateFrom: String? = null, dateTo: String? = null): ShowdownStats {
+        val conn = getConnection()
+        try {
+            val sql = """
+                SELECT
+                    COUNT(*) as total_hands,
+                    SUM(CASE WHEN h.went_to_showdown = 1 THEN 1 ELSE 0 END) as showdown_hands,
+                    SUM(CASE WHEN ph.won_at_showdown = 1 THEN 1 ELSE 0 END) as won_at_showdown,
+                    SUM(CASE WHEN h.went_to_showdown = 1 AND ph.won_at_showdown = 0 THEN 1 ELSE 0 END) as lost_at_showdown,
+                    SUM(CASE WHEN ph.folded_before_showdown = 1 THEN 1 ELSE 0 END) as folded_before_showdown
+                FROM player_hands ph
+                JOIN hands h ON h.id = ph.hand_id
+                WHERE ph.player_name = ? AND h.player_count <= 3
+            """ + buildString {
+                if (!dateFrom.isNullOrBlank()) append(" AND h.date_time >= ?")
+                if (!dateTo.isNullOrBlank()) append(" AND h.date_time <= ?")
+            }
+            
+            val stmt = conn.prepareStatement(sql)
+            var i = 1
+            stmt.setString(i++, heroName)
+            if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
+            if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
+            
+            val rs = stmt.executeQuery()
+            var totalHands = 0
+            var showdownHands = 0
+            var wonAtShowdown = 0
+            var lostAtShowdown = 0
+            var foldedBeforeShowdown = 0
+            
+            if (rs.next()) {
+                totalHands = rs.getInt("total_hands")
+                showdownHands = rs.getInt("showdown_hands")
+                wonAtShowdown = rs.getInt("won_at_showdown")
+                lostAtShowdown = rs.getInt("lost_at_showdown")
+                foldedBeforeShowdown = rs.getInt("folded_before_showdown")
+            }
+            rs.close()
+            stmt.close()
+            
+            return ShowdownStats(
+                totalHands = totalHands,
+                showdownHands = showdownHands,
+                showdownRate = if (totalHands > 0) showdownHands * 100.0 / totalHands else 0.0,
+                wonAtShowdown = wonAtShowdown,
+                lostAtShowdown = lostAtShowdown,
+                wsdb = if (showdownHands > 0) wonAtShowdown * 100.0 / showdownHands else 0.0,
+                foldedBeforeShowdown = foldedBeforeShowdown
+            )
+        } finally {
+            conn.close()
+        }
+    }
+
+    data class FrequencyStats(
+        val vpip: Double,
+        val pfr: Double,
+        val threeBet: Double,
+        val fourBet: Double,
+        val cbetFlop: Double,
+        val cbetTurn: Double,
+        val cbetRiver: Double,
+        val donkFlop: Double,
+        val donkTurn: Double,
+        val floatFlop: Double,
+        val checkRaiseFlop: Double,
+        val checkRaiseTurn: Double,
+        val checkRaiseRiver: Double,
+        val xcFlop: Double,
+        val xfFlop: Double,
+        val xcTurn: Double,
+        val xfTurn: Double,
+        val xcRiver: Double,
+        val xfRiver: Double,
+        val raiseFlop: Double,
+        val raiseTurn: Double,
+        val raiseRiver: Double,
+        val totalHands: Int
+    )
+
+    fun getFrequencyStats(heroName: String, dateFrom: String? = null, dateTo: String? = null): FrequencyStats {
+        val conn = getConnection()
+        try {
+            val sql = """
+                SELECT
+                    COUNT(*) as total_hands,
+                    SUM(CASE WHEN ph.flg_vpip = 1 THEN 1 ELSE 0 END) as vpip_count,
+                    SUM(CASE WHEN ph.flg_pfr = 1 THEN 1 ELSE 0 END) as pfr_count,
+                    SUM(CASE WHEN ph.flg_3bet = 1 THEN 1 ELSE 0 END) as three_bet_count,
+                    SUM(CASE WHEN ph.flg_4bet = 1 THEN 1 ELSE 0 END) as four_bet_count,
+                    SUM(CASE WHEN ph.flg_cbet_flop = 1 THEN 1 ELSE 0 END) as cbet_flop_count,
+                    SUM(CASE WHEN ph.flg_cbet_turn = 1 THEN 1 ELSE 0 END) as cbet_turn_count,
+                    SUM(CASE WHEN ph.flg_cbet_river = 1 THEN 1 ELSE 0 END) as cbet_river_count,
+                    SUM(CASE WHEN ph.flg_donk_flop = 1 THEN 1 ELSE 0 END) as donk_flop_count,
+                    SUM(CASE WHEN ph.flg_donk_turn = 1 THEN 1 ELSE 0 END) as donk_turn_count,
+                    SUM(CASE WHEN ph.flg_float_flop = 1 THEN 1 ELSE 0 END) as float_flop_count,
+                    SUM(CASE WHEN ph.flg_check_raise_flop = 1 THEN 1 ELSE 0 END) as check_raise_flop_count,
+                    SUM(CASE WHEN ph.flg_check_raise_turn = 1 THEN 1 ELSE 0 END) as check_raise_turn_count,
+                    SUM(CASE WHEN ph.flg_check_raise_river = 1 THEN 1 ELSE 0 END) as check_raise_river_count,
+                    SUM(CASE WHEN ph.flg_xc_flop = 1 THEN 1 ELSE 0 END) as xc_flop_count,
+                    SUM(CASE WHEN ph.flg_xf_flop = 1 THEN 1 ELSE 0 END) as xf_flop_count,
+                    SUM(CASE WHEN ph.flg_xc_turn = 1 THEN 1 ELSE 0 END) as xc_turn_count,
+                    SUM(CASE WHEN ph.flg_xf_turn = 1 THEN 1 ELSE 0 END) as xf_turn_count,
+                    SUM(CASE WHEN ph.flg_xc_river = 1 THEN 1 ELSE 0 END) as xc_river_count,
+                    SUM(CASE WHEN ph.flg_xf_river = 1 THEN 1 ELSE 0 END) as xf_river_count,
+                    SUM(CASE WHEN ph.flg_raise_flop = 1 THEN 1 ELSE 0 END) as raise_flop_count,
+                    SUM(CASE WHEN ph.flg_raise_turn = 1 THEN 1 ELSE 0 END) as raise_turn_count,
+                    SUM(CASE WHEN ph.flg_raise_river = 1 THEN 1 ELSE 0 END) as raise_river_count
+                FROM player_hands ph
+                JOIN hands h ON h.id = ph.hand_id
+                WHERE ph.player_name = ? AND h.player_count <= 3
+            """ + buildString {
+                if (!dateFrom.isNullOrBlank()) append(" AND h.date_time >= ?")
+                if (!dateTo.isNullOrBlank()) append(" AND h.date_time <= ?")
+            }
+            
+            val stmt = conn.prepareStatement(sql)
+            var i = 1
+            stmt.setString(i++, heroName)
+            if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
+            if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
+            
+            val rs = stmt.executeQuery()
+            var totalHands = 0
+            var vpipCount = 0
+            var pfrCount = 0
+            var threeBetCount = 0
+            var fourBetCount = 0
+            var cbetFlopCount = 0
+            var cbetTurnCount = 0
+            var cbetRiverCount = 0
+            var donkFlopCount = 0
+            var donkTurnCount = 0
+            var floatFlopCount = 0
+            var checkRaiseFlopCount = 0
+            var checkRaiseTurnCount = 0
+            var checkRaiseRiverCount = 0
+            var xcFlopCount = 0
+            var xfFlopCount = 0
+            var xcTurnCount = 0
+            var xfTurnCount = 0
+            var xcRiverCount = 0
+            var xfRiverCount = 0
+            var raiseFlopCount = 0
+            var raiseTurnCount = 0
+            var raiseRiverCount = 0
+            
+            if (rs.next()) {
+                totalHands = rs.getInt("total_hands")
+                vpipCount = rs.getInt("vpip_count")
+                pfrCount = rs.getInt("pfr_count")
+                threeBetCount = rs.getInt("three_bet_count")
+                fourBetCount = rs.getInt("four_bet_count")
+                cbetFlopCount = rs.getInt("cbet_flop_count")
+                cbetTurnCount = rs.getInt("cbet_turn_count")
+                cbetRiverCount = rs.getInt("cbet_river_count")
+                donkFlopCount = rs.getInt("donk_flop_count")
+                donkTurnCount = rs.getInt("donk_turn_count")
+                floatFlopCount = rs.getInt("float_flop_count")
+                checkRaiseFlopCount = rs.getInt("check_raise_flop_count")
+                checkRaiseTurnCount = rs.getInt("check_raise_turn_count")
+                checkRaiseRiverCount = rs.getInt("check_raise_river_count")
+                xcFlopCount = rs.getInt("xc_flop_count")
+                xfFlopCount = rs.getInt("xf_flop_count")
+                xcTurnCount = rs.getInt("xc_turn_count")
+                xfTurnCount = rs.getInt("xf_turn_count")
+                xcRiverCount = rs.getInt("xc_river_count")
+                xfRiverCount = rs.getInt("xf_river_count")
+                raiseFlopCount = rs.getInt("raise_flop_count")
+                raiseTurnCount = rs.getInt("raise_turn_count")
+                raiseRiverCount = rs.getInt("raise_river_count")
+            }
+            rs.close()
+            stmt.close()
+            
+            return FrequencyStats(
+                vpip = if (totalHands > 0) vpipCount * 100.0 / totalHands else 0.0,
+                pfr = if (totalHands > 0) pfrCount * 100.0 / totalHands else 0.0,
+                threeBet = if (totalHands > 0) threeBetCount * 100.0 / totalHands else 0.0,
+                fourBet = if (totalHands > 0) fourBetCount * 100.0 / totalHands else 0.0,
+                cbetFlop = if (cbetFlopCount > 0) cbetFlopCount * 100.0 / totalHands else 0.0,
+                cbetTurn = if (cbetTurnCount > 0) cbetTurnCount * 100.0 / totalHands else 0.0,
+                cbetRiver = if (cbetRiverCount > 0) cbetRiverCount * 100.0 / totalHands else 0.0,
+                donkFlop = if (donkFlopCount > 0) donkFlopCount * 100.0 / totalHands else 0.0,
+                donkTurn = if (donkTurnCount > 0) donkTurnCount * 100.0 / totalHands else 0.0,
+                floatFlop = if (floatFlopCount > 0) floatFlopCount * 100.0 / totalHands else 0.0,
+                checkRaiseFlop = if (checkRaiseFlopCount > 0) checkRaiseFlopCount * 100.0 / totalHands else 0.0,
+                checkRaiseTurn = if (checkRaiseTurnCount > 0) checkRaiseTurnCount * 100.0 / totalHands else 0.0,
+                checkRaiseRiver = if (checkRaiseRiverCount > 0) checkRaiseRiverCount * 100.0 / totalHands else 0.0,
+                xcFlop = if (xcFlopCount > 0) xcFlopCount * 100.0 / totalHands else 0.0,
+                xfFlop = if (xfFlopCount > 0) xfFlopCount * 100.0 / totalHands else 0.0,
+                xcTurn = if (xcTurnCount > 0) xcTurnCount * 100.0 / totalHands else 0.0,
+                xfTurn = if (xfTurnCount > 0) xfTurnCount * 100.0 / totalHands else 0.0,
+                xcRiver = if (xcRiverCount > 0) xcRiverCount * 100.0 / totalHands else 0.0,
+                xfRiver = if (xfRiverCount > 0) xfRiverCount * 100.0 / totalHands else 0.0,
+                raiseFlop = if (raiseFlopCount > 0) raiseFlopCount * 100.0 / totalHands else 0.0,
+                raiseTurn = if (raiseTurnCount > 0) raiseTurnCount * 100.0 / totalHands else 0.0,
+                raiseRiver = if (raiseRiverCount > 0) raiseRiverCount * 100.0 / totalHands else 0.0,
+                totalHands = totalHands
+            )
+        } finally {
+            conn.close()
+        }
+    }
+
+    data class HUDSettings(
+        val id: Int,
+        val showHUD: Boolean,
+        val opacity: Double,
+        val position: String,
+        val fontSize: Int,
+        val showStats: String
+    )
+
+    fun getHUDSettings(): HUDSettings? {
+        val conn = getConnection()
+        try {
+            val stmt = conn.prepareStatement("SELECT id, show_hud, opacity, position, font_size, show_stats FROM hud_settings WHERE id = 1")
+            val rs = stmt.executeQuery()
+            if (rs.next()) {
+                val settings = HUDSettings(
+                    id = rs.getInt("id"),
+                    showHUD = rs.getInt("show_hud") == 1,
+                    opacity = rs.getDouble("opacity"),
+                    position = rs.getString("position"),
+                    fontSize = rs.getInt("font_size"),
+                    showStats = rs.getString("show_stats")
+                )
+                rs.close()
+                stmt.close()
+                return settings
+            }
+            rs.close()
+            stmt.close()
+            return null
+        } finally {
+            conn.close()
+        }
+    }
+
+    fun saveHUDSettings(settings: HUDSettings) {
+        val conn = getConnection()
+        try {
+            val stmt = conn.prepareStatement("""
+                INSERT OR REPLACE INTO hud_settings (id, show_hud, opacity, position, font_size, show_stats)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """)
+            stmt.setInt(1, settings.id)
+            stmt.setInt(2, if (settings.showHUD) 1 else 0)
+            stmt.setDouble(3, settings.opacity)
+            stmt.setString(4, settings.position)
+            stmt.setInt(5, settings.fontSize)
+            stmt.setString(6, settings.showStats)
+            stmt.executeUpdate()
+            stmt.close()
+        } finally {
+            conn.close()
+        }
+    }
+
+    data class TournamentType(
+        val id: Int,
+        val typeName: String,
+        val isBounty: Boolean,
+        val isProgressive: Boolean
+    )
+
+    fun getTournamentTypes(): List<TournamentType> {
+        val types = mutableListOf<TournamentType>()
+        val conn = getConnection()
+        try {
+            val stmt = conn.prepareStatement("SELECT id, type_name, is_bounty, is_progressive FROM tourney_types ORDER BY id")
+            val rs = stmt.executeQuery()
+            while (rs.next()) {
+                types.add(TournamentType(
+                    id = rs.getInt("id"),
+                    typeName = rs.getString("type_name"),
+                    isBounty = rs.getInt("is_bounty") == 1,
+                    isProgressive = rs.getInt("is_progressive") == 1
+                ))
+            }
+            rs.close()
+            stmt.close()
+        } finally {
+            conn.close()
+        }
+        return types
+    }
+
+    data class OpponentStats(
+        val playerId: Long,
+        val playerName: String,
+        val hands: Int,
+        val vpip: Double,
+        val pfr: Double,
+        val threeBet: Double,
+        val fourBet: Double,
+        val cbetFlop: Double,
+        val donkFlop: Double,
+        val floatFlop: Double,
+        val stealAtt: Double,
+        val blindDef: Double,
+        val profit: Double
+    )
+
+    fun getOpponentStats(heroName: String, opponentName: String, dateFrom: String? = null, dateTo: String? = null): OpponentStats? {
+        val conn = getConnection()
+        try {
+            val sql = """
+                SELECT
+                    ph.player_id,
+                    ph.player_name,
+                    COUNT(*) as hands,
+                    SUM(CASE WHEN ph.flg_vpip_opp = 1 THEN 1 ELSE 0 END) as vpip_count,
+                    SUM(CASE WHEN ph.flg_pfr_opp = 1 THEN 1 ELSE 0 END) as pfr_count,
+                    SUM(CASE WHEN ph.flg_3bet_opp = 1 THEN 1 ELSE 0 END) as three_bet_count,
+                    SUM(CASE WHEN ph.flg_4bet_opp = 1 THEN 1 ELSE 0 END) as four_bet_count,
+                    SUM(CASE WHEN ph.flg_cbet_flop_opp = 1 THEN 1 ELSE 0 END) as cbet_flop_count,
+                    SUM(CASE WHEN ph.flg_donk_flop_opp = 1 THEN 1 ELSE 0 END) as donk_flop_count,
+                    SUM(CASE WHEN ph.flg_float_flop_opp = 1 THEN 1 ELSE 0 END) as float_flop_count,
+                    SUM(CASE WHEN ph.flg_steal_att = 1 THEN 1 ELSE 0 END) as steal_att_count,
+                    SUM(CASE WHEN ph.flg_blind_def_opp = 1 THEN 1 ELSE 0 END) as blind_def_count,
+                    SUM(ph.net_result) as profit
+                FROM player_hands ph
+                JOIN hands h ON h.id = ph.hand_id
+                WHERE ph.player_name = ? AND h.hero_name = ?
+            """ + buildString {
+                if (!dateFrom.isNullOrBlank()) append(" AND h.date_time >= ?")
+                if (!dateTo.isNullOrBlank()) append(" AND h.date_time <= ?")
+            } + """
+                GROUP BY ph.player_id, ph.player_name
+            """
+            
+            val stmt = conn.prepareStatement(sql)
+            var i = 1
+            stmt.setString(i++, opponentName)
+            stmt.setString(i++, heroName)
+            if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
+            if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
+            
+            val rs = stmt.executeQuery()
+            if (rs.next()) {
+                val hands = rs.getInt("hands")
+                val stats = OpponentStats(
+                    playerId = rs.getLong("player_id"),
+                    playerName = rs.getString("player_name"),
+                    hands = hands,
+                    vpip = if (hands > 0) rs.getInt("vpip_count") * 100.0 / hands else 0.0,
+                    pfr = if (hands > 0) rs.getInt("pfr_count") * 100.0 / hands else 0.0,
+                    threeBet = if (hands > 0) rs.getInt("three_bet_count") * 100.0 / hands else 0.0,
+                    fourBet = if (hands > 0) rs.getInt("four_bet_count") * 100.0 / hands else 0.0,
+                    cbetFlop = if (hands > 0) rs.getInt("cbet_flop_count") * 100.0 / hands else 0.0,
+                    donkFlop = if (hands > 0) rs.getInt("donk_flop_count") * 100.0 / hands else 0.0,
+                    floatFlop = if (hands > 0) rs.getInt("float_flop_count") * 100.0 / hands else 0.0,
+                    stealAtt = if (hands > 0) rs.getInt("steal_att_count") * 100.0 / hands else 0.0,
+                    blindDef = if (hands > 0) rs.getInt("blind_def_count") * 100.0 / hands else 0.0,
+                    profit = rs.getDouble("profit")
+                )
+                rs.close()
+                stmt.close()
+                return stats
+            }
+            rs.close()
+            stmt.close()
+            return null
+        } finally {
+            conn.close()
+        }
     }
 
     private fun normalizeHandCards(cards: String): String? {

@@ -2,6 +2,8 @@ package spintracker.services
 
 import spintracker.data.Database
 import spintracker.models.*
+import spintracker.parsers.BetclicParser
+import spintracker.parsers.ParsedHand
 import java.io.File
 
 class ImportService(private val database: Database) {

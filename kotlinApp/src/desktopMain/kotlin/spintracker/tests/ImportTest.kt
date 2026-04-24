@@ -1,6 +1,7 @@
 package spintracker.tests
 
 import spintracker.data.Database
+import spintracker.parsers.BetclicParser
 import spintracker.services.ImportService
 
 fun main() {
@@ -36,7 +37,7 @@ fun main() {
 
     // Quick test parse
     println("  Testing parser...")
-    val parser = spintracker.services.BetclicParser()
+    val parser = BetclicParser()
     val parseResult = parser.parseFile(content1)
     println("  Parsed ${parseResult.hands.size} hands from file 1")
 

@@ -18,9 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.ExperimentalMaterial3Api
 import spintracker.ui.*
 import spintracker.ui.components.RoomIcon
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TournamentsScreen(
     refreshKey: Int, 
@@ -29,7 +31,11 @@ fun TournamentsScreen(
     buyIn: String,
     onReplayHand: (String) -> Unit
 ) {
-    val tournaments = remember(refreshKey, heroName, dateRange, buyIn) {
+    val db = remember { spintracker.data.Database() }
+    val tournamentTypes = remember { db.getTournamentTypes() }
+    var selectedTournamentType by remember { mutableStateOf<String>("all") }
+    
+    val tournaments = remember(refreshKey, heroName, dateRange, buyIn, selectedTournamentType) {
         appState.getTournaments(heroName)
     }
     
@@ -53,6 +59,28 @@ fun TournamentsScreen(
             Column {
                 Text("Tournaments", style = MaterialTheme.typography.headlineLarge, color = Color.White)
                 Text("View your tournament history", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.bodyMedium)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                ExposedDropdownMenuBox(
+                    expanded = false,
+                    onExpandedChange = { }
+                ) {
+                    OutlinedTextField(
+                        value = selectedTournamentType,
+                        onValueChange = { },
+                        label = { Text("Type") },
+                        readOnly = true,
+                        modifier = Modifier.width(150.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Primary400,
+                            unfocusedBorderColor = Dark100,
+                            focusedLabelColor = Primary400,
+                            unfocusedLabelColor = Color.White.copy(alpha = 0.5f),
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White
+                        )
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(24.dp))

@@ -1,4 +1,4 @@
-package spintracker.services
+package spintracker.parsers
 
 import spintracker.models.*
 import java.time.LocalDateTime
@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 import java.util.regex.Pattern
 
 class WinamaxParser {
-    private val handSeparator = "\n\n\n" // Winamax hands are separated by 3 newlines
+    private val handSeparator = "\n\n\n"
     
     fun detectFormat(content: String): Boolean {
         return content.contains("Winamax Poker")
@@ -14,7 +14,6 @@ class WinamaxParser {
     
     fun parseFile(content: String): ParseResult {
         return try {
-            // Winamax hands usually start with "Winamax Poker - "
             val handTexts = content.split(Regex("(?=Winamax Poker - )"))
                 .map { it.trim() }
                 .filter { it.isNotEmpty() }
@@ -55,7 +54,6 @@ class WinamaxParser {
         var heroName: String? = null
         
         for (line in lines) {
-            // Section Detection
             val newSection = when {
                 line.startsWith("Winamax Poker - ") -> "HEADER"
                 line.startsWith("Table: ") -> "TABLE"
@@ -92,12 +90,10 @@ class WinamaxParser {
                 "SUMMARY" -> parseSummaryLine(line, hand)
             }
             
-            // For result log
             val resultLine = if (heroName != null) line.replace(heroName, "Hero") else line
             hand.result += resultLine + "\n"
         }
         
-        // Post-processing: Adjust for uncalled bets
         val totalInvestment = hand.players.sumOf { it.investment }
         if (totalInvestment > hand.totalPot && hand.players.isNotEmpty()) {
             val maxInvestor = hand.players.maxByOrNull { it.investment }
@@ -112,7 +108,6 @@ class WinamaxParser {
     }
     
     private fun parseHeaderLine(line: String, hand: ParsedHand) {
-        // Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707488493780074497-6-1776261096 - Holdem no limit (15/30) - 2026/04/15 13:51:36 UTC
         val handIdMatch = Regex("HandId: #([\\d-]+)").find(line)
         hand.handId = handIdMatch?.groupValues?.get(1)
         hand.gameId = hand.handId?.substringBefore("-")
@@ -133,14 +128,12 @@ class WinamaxParser {
     }
     
     private fun parseTableLine(line: String, hand: ParsedHand) {
-        // Table: 'Expresso(1096047576)#0' 3-max (real money) Seat #3 is the button
         if (line.startsWith("Table: ")) {
             hand.tableId = line.substringAfter("'").substringBefore("'")
         }
     }
     
     private fun parsePlayerLine(line: String, hand: ParsedHand): String? {
-        // Seat 1: riickyy777 (380)
         if (line.startsWith("Seat ")) {
             val match = Regex("Seat (\\d+): (.+?) \\((\\d+)\\)").find(line)
             if (match != null) {
@@ -148,8 +141,6 @@ class WinamaxParser {
                 val name = match.groupValues[2]
                 val stack = match.groupValues[3].toIntOrNull() ?: 0
                 
-                // Hero is usually detected via "Dealt to HeroName" line in BLINDS/PREFLOP section
-                // But we add them all now
                 hand.players.add(ParsedPlayer(name = name, stack = stack))
             }
         }
@@ -157,7 +148,6 @@ class WinamaxParser {
     }
     
     private fun parseActionLine(line: String, hand: ParsedHand) {
-        // Dealt to Nelfrot-YT [5d 7d]
         if (line.startsWith("Dealt to ")) {
             val name = line.substringAfter("Dealt to ").substringBefore("[").trim()
             val cards = line.substringAfter("[").substringBefore("]")
@@ -168,12 +158,6 @@ class WinamaxParser {
             }
             return
         }
-        
-        // Actions look like: "riickyy777 posts small blind 15"
-        // "riickyy777 calls 15"
-        // "CG_Boss2336 bets 60"
-        // "Nelfrot-YT raises 60 to 120"
-        // "Nelfrot-YT folds"
         
         val player = hand.players.find { line.startsWith(it.name) } ?: return
         val action = line.substringAfter(player.name).trim().lowercase()
@@ -201,7 +185,6 @@ class WinamaxParser {
     }
     
     private fun parseShowdownLine(line: String, hand: ParsedHand) {
-        // riickyy777 shows [8h 7s] (Straight Queen high)
         if (line.contains("shows")) {
             val name = line.substringBefore(" shows").trim()
             val cards = line.substringAfter("[").substringBefore("]")
@@ -210,12 +193,10 @@ class WinamaxParser {
     }
     
     private fun parseSummaryLine(line: String, hand: ParsedHand) {
-        // Total pot 790 | No rake
         if (line.startsWith("Total pot ")) {
             hand.totalPot = Regex("Total pot (\\d+)").find(line)?.groupValues?.get(1)?.toDoubleOrNull() ?: 0.0
         }
         
-        // Seat 1: riickyy777 (small blind) showed [8h 7s] and won 760 with Straight Queen high
         if (line.contains("won ")) {
             val nameMatch = Regex("Seat \\d+: (.+?) \\(").find(line)
             val name = nameMatch?.groupValues?.get(1) ?: line.substringAfter(": ").substringBefore(" ")
