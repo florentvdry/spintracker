@@ -22,8 +22,8 @@ class Migration010_PT4Parity : Migration {
         val ranks = arrayOf("", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A")
         
         var id = 1
-        for (r1 in 14 downTo 2) {
-            for (r2 in r1 downTo 2) {
+        for (r1 in 13 downTo 1) {
+            for (r2 in r1 downTo 1) {
                 val suited = if (r1 == r2) 0 else 1
                 val name1 = ranks[r1]
                 val name2 = ranks[r2]
