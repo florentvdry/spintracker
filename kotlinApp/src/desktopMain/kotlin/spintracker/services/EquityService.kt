@@ -235,4 +235,156 @@ class EquityService {
         backtrack(0, mutableListOf())
         return results
     }
+
+    private fun parseRange(range: String): List<List<Card>> {
+        if (range.isBlank()) return emptyList()
+        
+        val hands = mutableListOf<List<Card>>()
+        val parts = range.split(",").map { it.trim().uppercase() }
+        
+        for (part in parts) {
+            when {
+                part.length == 2 && part[0] == part[1] -> {
+                    for (s1 in "hsdc") {
+                        for (s2 in "hsdc") {
+                            if (s1 != s2) {
+                                hands.add(listOf(Card(part[0], s1), Card(part[1], s2)))
+                            }
+                        }
+                    }
+                }
+                part.length == 2 -> {
+                    for (s1 in "hsdc") {
+                        for (s2 in "hsdc") {
+                            if (s1 != s2) {
+                                hands.add(listOf(Card(part[0], s1), Card(part[1], s2)))
+                            }
+                        }
+                    }
+                }
+                part.length == 3 && part.endsWith("s") -> {
+                    val r1 = part[0]
+                    val r2 = part[1]
+                    for (s in "hsdc") {
+                        hands.add(listOf(Card(r1, s), Card(r2, s)))
+                    }
+                }
+                part.length == 3 && part.endsWith("o") -> {
+                    val r1 = part[0]
+                    val r2 = part[1]
+                    for (s1 in "hsdc") {
+                        for (s2 in "hsdc") {
+                            if (s1 != s2) {
+                                hands.add(listOf(Card(r1, s1), Card(r2, s2)))
+                            }
+                        }
+                    }
+                }
+                part.length == 3 && part.endsWith("+") -> {
+                    val ranks = "23456789TJQKA"
+                    val startIdx = ranks.indexOf(part[0])
+                    for (i in startIdx until ranks.length) {
+                        val r = ranks[i]
+                        for (s1 in "hsdc") {
+                            for (s2 in "hsdc") {
+                                if (s1 != s2) {
+                                    hands.add(listOf(Card(r, s1), Card(r, s2)))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return hands
+    }
+
+    fun analyzeSpot(
+        heroCards: String,
+        opponentRange: String,
+        board: String = "",
+        deadCards: String = ""
+    ): EquityResult {
+        val heroHands = parseRange(heroCards)
+        val villainHands = parseRange(opponentRange)
+        
+        if (heroHands.isEmpty() || villainHands.isEmpty()) {
+            return EquityResult(0.0, 0.0, 0.0)
+        }
+
+        var totalHeroShare = 0.0
+        var totalTies = 0L
+        var totalVillainWins = 0L
+        var totalCombos = 0L
+
+        for (hero in heroHands) {
+            for (villain in villainHands) {
+                val result = calculateMultiwayEquity(
+                    cardsToString(hero),
+                    listOf(cardsToString(villain)),
+                    board,
+                    deadCards
+                )
+                totalHeroShare += result.win
+                totalTies += result.tie.toLong()
+                totalVillainWins += result.loss.toLong()
+                totalCombos++
+            }
+        }
+
+        return if (totalCombos > 0) {
+            EquityResult(
+                win = totalHeroShare / totalCombos,
+                tie = totalTies.toDouble() / totalCombos,
+                loss = totalVillainWins.toDouble() / totalCombos
+            )
+        } else {
+            EquityResult(0.0, 0.0, 0.0)
+        }
+    }
+
+    fun analyzeSpotMultiway(
+        heroCards: String,
+        villainRanges: List<String>,
+        board: String = "",
+        deadCards: String = ""
+    ): EquityResult {
+        val heroHands = parseRange(heroCards)
+        val villainHandsList = villainRanges.map { parseRange(it) }
+        
+        if (heroHands.isEmpty() || villainHandsList.any { it.isEmpty() }) {
+            return EquityResult(0.0, 0.0, 0.0)
+        }
+
+        var totalHeroShare = 0.0
+        var totalTies = 0L
+        var totalVillainWins = 0L
+        var totalCombos = 0L
+
+        for (hero in heroHands) {
+            val villainsForThisHero = villainHandsList.map { it.random() }
+            val result = calculateMultiwayEquity(
+                cardsToString(hero),
+                villainsForThisHero.map { cardsToString(it) },
+                board,
+                deadCards
+            )
+            totalHeroShare += result.win * villainHandsList.size
+            totalTies += (result.tie * villainHandsList.size).toLong()
+            totalVillainWins += (result.loss * villainHandsList.size).toLong()
+            totalCombos += villainHandsList.size.toLong()
+        }
+
+        return if (totalCombos > 0) {
+            EquityResult(
+                win = totalHeroShare / totalCombos,
+                tie = totalTies.toDouble() / totalCombos,
+                loss = totalVillainWins.toDouble() / totalCombos
+            )
+        } else {
+            EquityResult(0.0, 0.0, 0.0)
+        }
+    }
+
+    private fun cardsToString(cards: List<Card>): String = cards.joinToString("") { "${it.rank}${it.suit}" }
 }
