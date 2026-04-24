@@ -29,6 +29,7 @@ import spintracker.ui.screens.PlayersScreen
 import spintracker.ui.screens.RangeResearchScreen
 import spintracker.ui.screens.SettingsScreen
 import spintracker.ui.screens.SessionScreen
+import spintracker.ui.screens.LeakBusterScreen
 import spintracker.ui.screens.BankrollScreen
 import spintracker.ui.screens.ReplayerWindow
 import androidx.compose.ui.window.Window

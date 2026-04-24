@@ -19,9 +19,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import spintracker.data.appState
-import spintracker.models.BankrollDataPoint
 import spintracker.ui.*
+import spintracker.models.BankrollDataPoint
+import spintracker.ui.appState
 
 @Composable
 fun BankrollScreen(heroName: String, dateRange: String, buyIn: String) {
@@ -55,7 +55,6 @@ fun BankrollScreen(heroName: String, dateRange: String, buyIn: String) {
                         LegendItem("Drawdown", ErrorRed)
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
                 
                 if (bankrollData.size > 1) {
                     BankrollGraph(bankrollData, modifier = Modifier.fillMaxSize())
@@ -110,15 +109,6 @@ fun BankrollScreen(heroName: String, dateRange: String, buyIn: String) {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun LegendItem(label: String, color: Color) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(modifier = Modifier.size(12.dp).background(color, RoundedCornerShape(2.dp)))
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(label, color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelMedium)
     }
 }
 
