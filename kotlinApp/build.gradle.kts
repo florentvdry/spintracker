@@ -58,6 +58,13 @@ tasks.register<JavaExec>("testEquity") {
     mainClass.set("spintracker.tests.EquityTestKt")
 }
 
+tasks.register<JavaExec>("testMigration") {
+    group = "verification"
+    description = "Run database migration test"
+    classpath = sourceSets.get("main").runtimeClasspath
+    mainClass.set("spintracker.tests.DatabaseMigrationTestKt")
+}
+
 compose.desktop {
     application {
         mainClass = "spintracker.MainKt"

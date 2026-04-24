@@ -4,6 +4,7 @@ import spintracker.models.*
 import spintracker.services.ImportService
 import spintracker.services.ApiClient
 import spintracker.services.DatabaseInfo
+import java.io.File
 
 class AppState {
     val database = Database()
@@ -12,12 +13,59 @@ class AppState {
     
     var heroName: String = "Hero"
     
+    // Tags
+    fun getAllTags(): List<Tag> {
+        return database.getTagsRepository().getAllTags()
+    }
+    
+    fun getPlayerTags(playerId: Long): List<Tag> {
+        return database.getTagsRepository().getPlayerTags(playerId)
+    }
+    
+    fun addTagToPlayer(playerId: Long, tagId: Long) {
+        database.getTagsRepository().addTagToPlayer(playerId, tagId)
+    }
+    
+    fun removeTagFromPlayer(playerId: Long, tagId: Long) {
+        database.getTagsRepository().removeTagFromPlayer(playerId, tagId)
+    }
+    
+    fun createTag(name: String, colorCode: String = "#808080"): Tag {
+        return database.getTagsRepository().createTag(name, colorCode)
+    }
+    
+    // Notes
+    fun addNote(playerId: Long, playerName: String, content: String, colorCode: String = "#FFFFFF") {
+        database.getNotesRepository().addNote(playerId, playerName, content, colorCode)
+    }
+    
+    fun getPlayerNotes(playerId: Long): List<Note> {
+        return database.getNotesRepository().getPlayerNotes(playerId)
+    }
+    
+    fun searchNotes(query: String): List<Note> {
+        return database.getNotesRepository().searchNotes(query)
+    }
+    
+    fun deleteNote(noteId: Long) {
+        database.getNotesRepository().deleteNote(noteId)
+    }
+    
+    // Stats cache
+    fun refreshStatsCache() {
+        database.getStatsCacheRepository().refreshAllStats(database)
+    }
+    
+    fun getPlayerCachedStats(playerId: Long): StatsCacheRepository.CachedStats? {
+        return database.getStatsCacheRepository().getStats(playerId)
+    }
+    
     suspend fun checkServerStatus(): Boolean {
         return apiClient.checkServerStatus()
     }
     
     suspend fun getAppVersion(): String {
-        return apiClient.getAppVersion()
+        return "1.0.0-local"
     }
     
     suspend fun getDatabases(): List<DatabaseInfo> {
@@ -41,7 +89,16 @@ class AppState {
     }
     
     suspend fun deleteAllHands(): Result<Unit> {
-        return apiClient.deleteAllHands()
+        return try {
+            database.deleteAllHands()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    fun deleteAllDataLocal() {
+        database.deleteAllData()
     }
     
     suspend fun exportData(): Result<String> {
@@ -49,7 +106,20 @@ class AppState {
     }
     
     suspend fun openLogsFolder(): Result<Unit> {
-        return apiClient.openLogsFolder()
+        return try {
+            val userHome = System.getProperty("user.home")
+            val logsDir = File("$userHome/spintracker/logs")
+            if (logsDir.exists()) {
+                java.awt.Desktop.getDesktop().open(logsDir)
+                Result.success(Unit)
+            } else {
+                logsDir.mkdirs()
+                java.awt.Desktop.getDesktop().open(logsDir)
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
     
     fun getDashboardStats(hero: String? = null): DashboardStats {
@@ -117,5 +187,14 @@ class AppState {
     
     fun getHandReplayData(handId: String, heroName: String): Map<String, Any?>? {
         return database.getHandReplayData(handId, heroName)
+    }
+    
+    // Database management (local, no API)
+    fun getDatabaseInfo(): DatabaseInfo {
+        return database.getDatabaseInfo()
+    }
+    
+    fun exportDataLocal(): Result<String> {
+        return database.exportData()
     }
 }

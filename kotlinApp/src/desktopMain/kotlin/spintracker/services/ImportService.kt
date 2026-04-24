@@ -9,6 +9,83 @@ class ImportService(private val database: Database) {
     private val equityService = EquityService()
     private val analyticsService = AnalyticsService(equityService)
     
+    private fun detectSite(roomName: String): Int {
+        return when {
+            roomName.contains("winamax", ignoreCase = true) -> 1
+            roomName.contains("pokerstars", ignoreCase = true) -> 2
+            roomName.contains("betclic", ignoreCase = true) -> 3
+            roomName.contains("unibet", ignoreCase = true) -> 4
+            roomName.contains("pmu", ignoreCase = true) -> 5
+            else -> 1
+        }
+    }
+    
+    private fun classifyHandGroup(holeCards: String?): String? {
+        if (holeCards.isNullOrBlank() || holeCards.length < 4) return null
+        val clean = holeCards.replace("[^a-zA-Z0-9]", "").uppercase()
+        if (clean.length < 4) return null
+        
+        val card1 = clean.substring(0, 2)
+        val card2 = clean.substring(2, 4)
+        
+        val rank1 = card1[0]
+        val rank2 = card2[0]
+        val suit1 = if (card1.length > 1) card1[1] else ' '
+        val suit2 = if (card2.length > 1) card2[1] else ' '
+        
+        val isSuited = suit1 == suit2
+        val isPair = rank1 == rank2
+        
+        if (isPair) return "PP"
+        
+        val highRank = maxOf(rank1, rank2)
+        val lowRank = minOf(rank1, rank2)
+        
+        return when {
+            isSuited -> "${highRank}${lowRank}s"
+            else -> "${highRank}${lowRank}o"
+        }
+    }
+    
+    private fun calculateActionFlags(playerHand: PlayerHand): PlayerHand {
+        val preflop = playerHand.preflopAction ?: ""
+        val flop = playerHand.flopAction ?: ""
+        val turn = playerHand.turnAction ?: ""
+        val river = playerHand.riverAction ?: ""
+        
+        val isAggressor = preflop.contains("raise", ignoreCase = true) || preflop.contains("bet", ignoreCase = true)
+        
+        return playerHand.copy(
+            flgVpip = preflop.contains("call", ignoreCase = true) || 
+                      preflop.contains("raise", ignoreCase = true) ||
+                      preflop.contains("bet", ignoreCase = true),
+            flgPfr = isAggressor,
+            flg3bet = preflop.contains("3-bet", ignoreCase = true) ||
+                      preflop.contains("3bet", ignoreCase = true),
+            flg4bet = preflop.contains("4-bet", ignoreCase = true) ||
+                      preflop.contains("4bet", ignoreCase = true),
+            flgLimp = preflop.contains("limp", ignoreCase = true),
+            flgCbetFlop = flop.contains("cbet", ignoreCase = true) ||
+                          (flop.contains("bet", ignoreCase = true) && isAggressor),
+            flgDonkFlop = flop.contains("donk", ignoreCase = true) ||
+                          (flop.contains("bet", ignoreCase = true) && !isAggressor),
+            flgSawFlop = !flop.contains("fold", ignoreCase = true),
+            flgCbetTurn = turn.contains("cbet", ignoreCase = true) ||
+                          (turn.contains("bet", ignoreCase = true) && isAggressor),
+            flgSawTurn = !turn.contains("fold", ignoreCase = true),
+            flgCbetRiver = river.contains("cbet", ignoreCase = true),
+            flgSawRiver = !river.contains("fold", ignoreCase = true),
+            flgIsAggressor = isAggressor,
+            handGroup = classifyHandGroup(playerHand.holeCards),
+            isSuited = playerHand.holeCards?.let { hc ->
+                if (hc.length >= 5) hc[1] == hc[3] else false
+            } ?: false,
+            isPair = playerHand.holeCards?.let { hc ->
+                if (hc.length >= 4) hc[0] == hc[2] else false
+            } ?: false
+        )
+    }
+    
     sealed class ImportProgress {
         data class Counting(val current: Int, val total: Int) : ImportProgress()
         data class Importing(val current: Int, val total: Int, val handsImported: Int, val handsSkipped: Int) : ImportProgress()
@@ -41,11 +118,16 @@ class ImportService(private val database: Database) {
         }
         
         val total = allParsedHands.size
+        println("DEBUG: Found $total hands to import")
         onProgress(ImportProgress.Counting(0, total))
         
         // Save hands to database in a single transaction
         database.useTransaction { conn ->
+            println("DEBUG: Starting transaction, existing hands count: ${existingIds.size}")
             for ((index, parsedHand) in allParsedHands.withIndex()) {
+                if (index % 100 == 0) {
+                    println("DEBUG: Processing hand ${index + 1}/$total")
+                }
                 if (existingIds.contains(parsedHand.id)) {
                     totalHandsSkipped++
                     onProgress(ImportProgress.Importing(index + 1, total, totalHandsImported, totalHandsSkipped))
@@ -53,6 +135,7 @@ class ImportService(private val database: Database) {
                 }
                 
                 try {
+                    println("DEBUG: Saving hand ${parsedHand.id} with ${parsedHand.players.size} players")
                     // Get or create players - add ALL players from this hand, not just hero
                     val allPlayerNames = parsedHand.players.map { it.name }
                     
@@ -84,6 +167,7 @@ class ImportService(private val database: Database) {
                         gameId = parsedHand.gameId ?: "",
                         tableName = parsedHand.tableId ?: "",
                         room = parsedHand.room,
+                        siteId = detectSite(parsedHand.room),
                         dateTime = parsedHand.dateTime,
                         heroName = heroPlayer.name,
                         heroPosition = 0,
@@ -104,7 +188,7 @@ class ImportService(private val database: Database) {
                     val dbHandId = database.saveHand(hand, conn)
                     totalHandsImported++
                     
-                    // Save player hands
+                    // Save player hands (use hand-level actions for all players)
                     for (parsedPlayer in parsedHand.players) {
                         val player = database.getOrCreatePlayer(parsedPlayer.name, parsedHand.room, conn)
                         val playerNetWonAdjusted = if (parsedPlayer.isHero) netWonAdjusted else (parsedPlayer.winnings - parsedPlayer.investment)
@@ -116,18 +200,26 @@ class ImportService(private val database: Database) {
                             stackSize = parsedPlayer.stack.toDouble(),
                             isHero = parsedPlayer.isHero,
                             holeCards = parsedPlayer.cards,
+                            preflopAction = parsedHand.preflopAction,
+                            flopAction = parsedHand.flopAction,
+                            turnAction = parsedHand.turnAction,
+                            riverAction = parsedHand.riverAction,
                             winnings = parsedPlayer.winnings,
                             netResult = parsedPlayer.winnings - parsedPlayer.investment,
                             netWonAdjusted = playerNetWonAdjusted,
                             place = parsedPlayer.place,
                             wentToShowdown = parsedPlayer.wentToShowdown
                         )
-                        database.savePlayerHand(playerHand, conn)
+                        val playerHandWithFlags = calculateActionFlags(playerHand)
+                        database.savePlayerHand(playerHandWithFlags, conn)
                     }
                     
                     onProgress(ImportProgress.Importing(index + 1, total, totalHandsImported, totalHandsSkipped))
                 } catch (e: Exception) {
-                    errors.add("Error saving hand ${parsedHand.id}: ${e.message}")
+                    val errorMsg = "Error saving hand ${parsedHand.id}: ${e.message}"
+                    errors.add(errorMsg)
+                    println("IMPORT ERROR: $errorMsg")
+                    e.printStackTrace()
                 }
             }
         }

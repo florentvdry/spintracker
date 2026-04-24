@@ -1,6 +1,8 @@
 package spintracker.data
 
+import spintracker.data.migrations.*
 import spintracker.models.*
+import spintracker.services.DatabaseInfo
 import java.io.File
 import java.sql.*
 import java.time.LocalDateTime
@@ -30,192 +32,25 @@ class Database(dbPath: String? = null) {
             DriverManager.setLoginTimeout(10)
             conn = DriverManager.getConnection(connectionString)
             
-            // Set busy timeout and enable foreign keys
             conn.createStatement().execute("PRAGMA busy_timeout=10000")
             conn.createStatement().execute("PRAGMA foreign_keys=ON")
-            
-            // Create tables
-            conn.createStatement().execute("""
-                CREATE TABLE IF NOT EXISTS players (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    room TEXT NOT NULL DEFAULT '',
-                    is_reg INTEGER DEFAULT 0,
-                    notes TEXT DEFAULT '',
-                    UNIQUE(name, room)
-                )
-            """)
-            
-conn.createStatement().execute("""
-                 CREATE TABLE IF NOT EXISTS tournaments (
-                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                     game_id TEXT UNIQUE NOT NULL,
-                     tournament_name TEXT,
-                     buy_in REAL,
-                     fee REAL,
-                     currency TEXT DEFAULT 'EUR',
-                     speed TEXT,
-                     max_players INTEGER,
-                     player_count INTEGER DEFAULT 2,
-                     result REAL DEFAULT 0,
-                     date_time TEXT,
-                     place INTEGER,
-                     prize REAL,
-                     rake REAL DEFAULT 0
-                 )
-             """)
-            
-conn.createStatement().execute("""
-                 CREATE TABLE IF NOT EXISTS hands (
-                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                     hand_id TEXT UNIQUE NOT NULL,
-                     game_id TEXT,
-                     table_name TEXT,
-                     room TEXT,
-                     date_time TEXT,
-                     hero_name TEXT,
-                     hero_position INTEGER,
-                     player_count INTEGER DEFAULT 2,
-                     big_blind REAL,
-                     hand_rank INTEGER,
-                     hand_type TEXT,
-                     result REAL DEFAULT 0,
-                     ev REAL DEFAULT 0,
-                     went_to_showdown INTEGER DEFAULT 0,
-                     raw_content TEXT,
-                     tournament_id INTEGER,
-                     buy_in REAL DEFAULT 0,
-                     prize_pool REAL DEFAULT 0,
-                     multiplier INTEGER DEFAULT 1,
-                     position INTEGER DEFAULT 0,
-                     flop TEXT,
-                     turn TEXT,
-                     river TEXT,
-                     total_pot REAL DEFAULT 0,
-                     FOREIGN KEY (tournament_id) REFERENCES tournaments(id)
-                 )
-             """)
-            
-            conn.createStatement().execute("""
-                CREATE TABLE IF NOT EXISTS player_hands (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    hand_id INTEGER NOT NULL,
-                    player_id INTEGER NOT NULL,
-                    player_name TEXT,
-                    position TEXT,
-                    stack_size REAL,
-                    is_hero INTEGER DEFAULT 0,
-                    hole_cards TEXT,
-                    preflop_action TEXT,
-                    flop_action TEXT,
-                    turn_action TEXT,
-                    river_action TEXT,
-                    showdown_cards TEXT,
-                    final_hand TEXT,
-                    final_hand_rank INTEGER,
-                    winnings REAL DEFAULT 0,
-                    net_result REAL DEFAULT 0,
-                    net_won_adjusted REAL DEFAULT 0,
-                    place INTEGER DEFAULT 0,
-                    went_to_showdown INTEGER DEFAULT 0,
-                    FOREIGN KEY (hand_id) REFERENCES hands(id),
-                    FOREIGN KEY (player_id) REFERENCES players(id)
-                )
-            """)
-            
-            conn.createStatement().execute("""
-                CREATE TABLE IF NOT EXISTS stats (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    player_id INTEGER NOT NULL,
-                    hero_name TEXT,
-                    buy_in REAL,
-                    vpip REAL DEFAULT 0,
-                    pfr REAL DEFAULT 0,
-                    three_bet REAL DEFAULT 0,
-                    c_bet REAL DEFAULT 0,
-                    hands_played INTEGER DEFAULT 0,
-                    FOREIGN KEY (player_id) REFERENCES players(id)
-                )
-            """)
-            
-            conn.createStatement().execute("""
-                CREATE TABLE IF NOT EXISTS config (
-                    key TEXT PRIMARY KEY,
-                    value TEXT
-                )
-            """)
-            
-            // Create indexes
-            conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_hands_date ON hands(date_time)")
-            conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_hands_hero ON hands(hero_name)")
-            conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_player_hands_hand ON player_hands(hand_id)")
-            conn.createStatement().execute("CREATE INDEX IF NOT EXISTS idx_player_hands_player ON player_hands(player_id)")
-            
-            // Add missing columns for database migration from older versions
-            try {
-                conn.createStatement().execute("ALTER TABLE players ADD COLUMN room TEXT DEFAULT ''")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN went_to_showdown INTEGER DEFAULT 0")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN player_count INTEGER DEFAULT 2")
-                
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN buy_in REAL DEFAULT 0")
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN prize_pool REAL DEFAULT 0")
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN multiplier INTEGER DEFAULT 1")
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN position INTEGER DEFAULT 0")
-                
-                conn.createStatement().execute("ALTER TABLE tournaments ADD COLUMN player_count INTEGER DEFAULT 2")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE tournaments ADD COLUMN result REAL DEFAULT 0")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE player_hands ADD COLUMN place INTEGER DEFAULT 0")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE player_hands ADD COLUMN went_to_showdown INTEGER DEFAULT 0")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE player_hands ADD COLUMN net_won_adjusted REAL DEFAULT 0")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN flop TEXT")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN turn TEXT")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN river TEXT")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            try {
-                conn.createStatement().execute("ALTER TABLE hands ADD COLUMN total_pot REAL DEFAULT 0")
-            } catch (e: SQLException) {
-                // Column may already exist
-            }
-            
             conn.close()
+            
+            val migrations = listOf(
+                Migration001_InitialSchema(),
+                Migration002_LookupTables(),
+                Migration003_MultiRoom(),
+                Migration004_ActionFlags(),
+                Migration005_TagsSystem(),
+                Migration006_HandHistories(),
+                Migration007_StatsCache(),
+                Migration008_TournamentExtensions(),
+                Migration009_AdvancedStats()
+            )
+            
+            val runner = MigrationRunner(connectionString)
+            runner.runPending(migrations)
+            
             println("Database initialized at: $connectionString")
         } catch (e: SQLException) {
             println("Database initialization error: ${e.message}")
@@ -470,29 +305,34 @@ conn.createStatement().execute("""
             checkStmt.close()
             
             val stmt = conn.prepareStatement("""
-                INSERT INTO hands (hand_id, game_id, table_name, room, date_time, hero_name, hero_position, player_count, big_blind, hand_rank, hand_type, result, ev, went_to_showdown, raw_content, buy_in, prize_pool, multiplier, position)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO hands (hand_id, game_id, table_name, room, site_id, date_time, hero_name, hero_position, player_count, big_blind, hand_rank, hand_type, result, ev, went_to_showdown, raw_content, buy_in, prize_pool, multiplier, position, flop, turn, river, total_pot)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """)
             
             stmt.setString(1, hand.handId)
             stmt.setString(2, hand.gameId)
             stmt.setString(3, hand.tableName)
             stmt.setString(4, hand.room)
-            stmt.setString(5, hand.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-            stmt.setString(6, hand.heroName)
-            stmt.setInt(7, hand.heroPosition)
-            stmt.setInt(8, hand.playerCount)
-            stmt.setDouble(9, hand.bigBlind)
-            stmt.setInt(10, hand.handRank)
-            stmt.setString(11, hand.handType)
-            stmt.setDouble(12, hand.result)
-            stmt.setDouble(13, hand.ev)
-            stmt.setInt(14, if (hand.wentToShowdown) 1 else 0)
-            stmt.setString(15, hand.rawContent)
-            stmt.setDouble(16, hand.buyIn)
-            stmt.setDouble(17, hand.prizePool)
-            stmt.setInt(18, hand.multiplier)
-            stmt.setInt(19, hand.position)
+            stmt.setInt(5, hand.siteId)
+            stmt.setString(6, hand.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            stmt.setString(7, hand.heroName)
+            stmt.setInt(8, hand.heroPosition)
+            stmt.setInt(9, hand.playerCount)
+            stmt.setDouble(10, hand.bigBlind)
+            stmt.setInt(11, hand.handRank)
+            stmt.setString(12, hand.handType)
+            stmt.setDouble(13, hand.result)
+            stmt.setDouble(14, hand.ev)
+            stmt.setInt(15, if (hand.wentToShowdown) 1 else 0)
+            stmt.setString(16, hand.rawContent)
+            stmt.setDouble(17, hand.buyIn)
+            stmt.setDouble(18, hand.prizePool)
+            stmt.setInt(19, hand.multiplier)
+            stmt.setInt(20, hand.position)
+            stmt.setString(21, hand.flop)
+            stmt.setString(22, hand.turn)
+            stmt.setString(23, hand.river)
+            stmt.setDouble(24, hand.totalPot)
             
             stmt.executeUpdate()
             stmt.close()
@@ -513,25 +353,112 @@ return lastId
         val conn = existingConn ?: getConnection()
         try {
             val stmt = conn.prepareStatement("""
-                INSERT INTO player_hands (hand_id, player_id, player_name, position, stack_size, is_hero, hole_cards, winnings, net_result, net_won_adjusted, place, went_to_showdown)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO player_hands (hand_id, player_id, player_name, position, position_type, stack_size, is_hero, hole_cards, preflop_action, flop_action, turn_action, river_action, winnings, net_result, net_won_adjusted, place, went_to_showdown,
+                    flg_vpip, flg_pfr, flg_3bet, flg_4bet, flg_squeeze, flg_limp,
+                    flg_cbet_flop, flg_donk_flop, flg_float_flop, flg_check_raise_flop, flg_saw_flop,
+                    flg_cbet_turn, flg_donk_turn, flg_float_turn, flg_check_raise_turn, flg_saw_turn,
+                    flg_cbet_river, flg_donk_river, flg_check_raise_river, flg_saw_river,
+                    flg_allin, flg_face_allin, allin_action, flg_is_aggressor, aggressor_position,
+                    bounty_won, equity_percent, expected_won, icm_equity_percent, showed_cards, won_at_showdown, folded_before_showdown,
+                    effective_stack_preflop, effective_stack_flop, effective_stack_turn, effective_stack_river, spr_flop, hand_group, is_suited, is_pair)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?)
             """)
-            stmt.setLong(1, ph.handId)
-            stmt.setLong(2, ph.playerId)
-            stmt.setString(3, ph.playerName)
-            stmt.setString(4, ph.position)
-            stmt.setDouble(5, ph.stackSize)
-            stmt.setInt(6, if (ph.isHero) 1 else 0)
-            stmt.setString(7, ph.holeCards ?: "")
-            stmt.setDouble(8, ph.winnings)
-            stmt.setDouble(9, ph.netResult)
-            stmt.setDouble(10, ph.netWonAdjusted)
-            stmt.setInt(11, ph.place)
-            stmt.setInt(12, if (ph.wentToShowdown) 1 else 0)
+            var i = 1
+            stmt.setLong(i++, ph.handId)
+            stmt.setLong(i++, ph.playerId)
+            stmt.setString(i++, ph.playerName)
+            stmt.setString(i++, ph.position)
+            stmt.setString(i++, ph.positionType)
+            stmt.setDouble(i++, ph.stackSize)
+            stmt.setInt(i++, if (ph.isHero) 1 else 0)
+            stmt.setString(i++, ph.holeCards ?: "")
+            stmt.setString(i++, ph.preflopAction ?: "")
+            stmt.setString(i++, ph.flopAction ?: "")
+            stmt.setString(i++, ph.turnAction ?: "")
+            stmt.setString(i++, ph.riverAction ?: "")
+            stmt.setDouble(i++, ph.winnings)
+            stmt.setDouble(i++, ph.netResult)
+            stmt.setDouble(i++, ph.netWonAdjusted)
+            stmt.setInt(i++, ph.place)
+            stmt.setInt(i++, if (ph.wentToShowdown) 1 else 0)
+            stmt.setInt(i++, if (ph.flgVpip) 1 else 0)
+            stmt.setInt(i++, if (ph.flgPfr) 1 else 0)
+            stmt.setInt(i++, if (ph.flg3bet) 1 else 0)
+            stmt.setInt(i++, if (ph.flg4bet) 1 else 0)
+            stmt.setInt(i++, if (ph.flgSqueeze) 1 else 0)
+            stmt.setInt(i++, if (ph.flgLimp) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCbetFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgDonkFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgFloatFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCheckRaiseFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgSawFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCbetTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgDonkTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgFloatTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCheckRaiseTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgSawTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCbetRiver) 1 else 0)
+            stmt.setInt(i++, if (ph.flgDonkRiver) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCheckRaiseRiver) 1 else 0)
+            stmt.setInt(i++, if (ph.flgSawRiver) 1 else 0)
+            stmt.setInt(i++, if (ph.flgAllin) 1 else 0)
+            stmt.setInt(i++, if (ph.flgFaceAllin) 1 else 0)
+            stmt.setString(i++, ph.allinAction ?: "")
+            stmt.setInt(i++, if (ph.flgIsAggressor) 1 else 0)
+            stmt.setString(i++, ph.aggressorPosition ?: "")
+            stmt.setDouble(i++, ph.bountyWon)
+            stmt.setDouble(i++, ph.equityPercent)
+            stmt.setDouble(i++, ph.expectedWon)
+            stmt.setDouble(i++, ph.icmEquityPercent)
+            stmt.setInt(i++, if (ph.showedCards) 1 else 0)
+            stmt.setInt(i++, if (ph.wonAtShowdown) 1 else 0)
+            stmt.setInt(i++, if (ph.foldedBeforeShowdown) 1 else 0)
+            stmt.setDouble(i++, ph.effectiveStackPreflop ?: 0.0)
+            stmt.setDouble(i++, ph.effectiveStackFlop ?: 0.0)
+            stmt.setDouble(i++, ph.effectiveStackTurn ?: 0.0)
+            stmt.setDouble(i++, ph.effectiveStackRiver ?: 0.0)
+            stmt.setDouble(i++, ph.sprFlop ?: 0.0)
+            stmt.setString(i++, ph.handGroup ?: "")
+            stmt.setInt(i++, if (ph.isSuited) 1 else 0)
+            stmt.setInt(i++, if (ph.isPair) 1 else 0)
             stmt.executeUpdate()
             stmt.close()
         } finally {
             if (existingConn == null) conn.close()
+        }
+    }
+    
+    fun saveHandHistory(handId: Long, history: String, existingConn: Connection? = null) {
+        val conn = existingConn ?: getConnection()
+        try {
+            val stmt = conn.prepareStatement("""
+                INSERT OR REPLACE INTO hand_histories (hand_id, history)
+                VALUES (?, ?)
+            """)
+            stmt.setLong(1, handId)
+            stmt.setString(2, history)
+            stmt.executeUpdate()
+        } finally {
+            if (existingConn == null) conn.close()
+        }
+    }
+    
+    fun getHandHistory(handId: Long): String? {
+        val conn = getConnection()
+        try {
+            val stmt = conn.prepareStatement("SELECT history FROM hand_histories WHERE hand_id = ?")
+            stmt.setLong(1, handId)
+            val rs = stmt.executeQuery()
+            return if (rs.next()) rs.getString(1) else null
+        } finally {
+            conn.close()
         }
     }
     
@@ -1372,6 +1299,82 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             action.contains("check") -> "Check"
             action.contains("fold") -> "Fold"
             else -> "None"
+        }
+    }
+    
+    fun getLookupTablesRepository(): LookupTablesRepository {
+        return LookupTablesRepository(connectionString)
+    }
+    
+    fun getTagsRepository(): TagsRepository {
+        return TagsRepository(connectionString)
+    }
+    
+    fun getNotesRepository(): NotesRepository {
+        return NotesRepository(connectionString)
+    }
+    
+    fun getStatsCacheRepository(): StatsCacheRepository {
+        return StatsCacheRepository(connectionString)
+    }
+    
+    // Database management methods
+    fun getDatabaseInfo(): DatabaseInfo {
+        val conn = getConnection()
+        try {
+            val stmt = conn.prepareStatement("SELECT COUNT(*) FROM hands")
+            val rs = stmt.executeQuery()
+            val handsCount = if (rs.next()) rs.getInt(1) else 0
+            rs.close()
+            stmt.close()
+            
+            return DatabaseInfo(
+                id = "default",
+                name = "Default Database",
+                fileName = "poker_tracker.db",
+                filePath = connectionString.removePrefix("jdbc:sqlite:"),
+                createdAt = java.time.LocalDateTime.now().toString(),
+                lastUsedAt = java.time.LocalDateTime.now().toString(),
+                isActive = true,
+                handsCount = handsCount
+            )
+        } finally {
+            conn.close()
+        }
+    }
+    
+    fun exportData(): Result<String> {
+        return try {
+            val hands = getHands(limit = 10000)
+            val jsonBuilder = StringBuilder()
+            jsonBuilder.append("[")
+            hands.forEachIndexed { index, hand ->
+                if (index > 0) jsonBuilder.append(",")
+                jsonBuilder.append("{")
+                jsonBuilder.append("\"hand_id\":\"${hand.handId}\",")
+                jsonBuilder.append("\"game_id\":\"${hand.gameId}\",")
+                jsonBuilder.append("\"room\":\"${hand.room}\",")
+                jsonBuilder.append("\"date_time\":\"${hand.dateTime}\",")
+                jsonBuilder.append("\"hero_name\":\"${hand.heroName}\",")
+                jsonBuilder.append("\"player_count\":${hand.playerCount},")
+                jsonBuilder.append("\"big_blind\":${hand.bigBlind},")
+                jsonBuilder.append("\"buy_in\":${hand.buyIn},")
+                jsonBuilder.append("\"prize_pool\":${hand.prizePool},")
+                jsonBuilder.append("\"multiplier\":${hand.multiplier},")
+                jsonBuilder.append("\"result\":${hand.result},")
+                jsonBuilder.append("\"ev\":${hand.ev}")
+                jsonBuilder.append("}")
+            }
+            jsonBuilder.append("]")
+            
+            val userHome = System.getProperty("user.home")
+            val exportFile = File(userHome, "spintracker/export_${java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))}.json")
+            exportFile.parentFile.mkdirs()
+            exportFile.writeText(jsonBuilder.toString())
+            
+            Result.success("Data exported to ${exportFile.absolutePath}")
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

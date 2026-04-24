@@ -8,6 +8,7 @@ data class Hand(
     val gameId: String = "",
     val tableName: String = "",
     val room: String = "",
+    val siteId: Int = 1,
     val dateTime: LocalDateTime = LocalDateTime.now(),
     val heroName: String = "",
     val heroPosition: Int = 0,
@@ -23,13 +24,18 @@ data class Hand(
     val buyIn: Double = 0.0,
     val prizePool: Double = 0.0,
     val multiplier: Int = 1,
-    val position: Int = 0
+    val position: Int = 0,
+    val flop: String? = null,
+    val turn: String? = null,
+    val river: String? = null,
+    val totalPot: Double = 0.0
 )
 
 data class Player(
     val id: Long = 0,
     val name: String = "",
     val room: String = "",
+    val siteId: Int = 1,
     val isReg: Boolean = false,
     val isRegForced: Boolean = false,
     val totalHands: Int = 0,
@@ -40,6 +46,7 @@ data class Player(
 data class Tournament(
     val id: Long = 0,
     val gameId: String = "",
+    val siteId: Int = 1,
     val tournamentName: String = "",
     val buyIn: Double = 0.0,
     val fee: Double = 0.0,
@@ -51,7 +58,16 @@ data class Tournament(
     val dateTime: LocalDateTime = LocalDateTime.now(),
     val place: Int? = null,
     val prize: Double? = null,
-    val rake: Double = 0.0
+    val rake: Double = 0.0,
+    val rebuyCount: Int = 0,
+    val addonCount: Int = 0,
+    val bountyAmount: Double = 0.0,
+    val isKnockout: Boolean = false,
+    val icmFactor: Double = 1.0,
+    val baseCurrency: String = "EUR",
+    val conversionRate: Double = 1.0,
+    val winnerId: Long? = null,
+    val winnerName: String? = null
 )
 
 data class PlayerHand(
@@ -60,6 +76,7 @@ data class PlayerHand(
     val playerId: Long = 0,
     val playerName: String = "",
     val position: String = "",
+    val positionType: String = "UNK",
     val stackSize: Double = 0.0,
     val isHero: Boolean = false,
     val holeCards: String? = null,
@@ -74,7 +91,48 @@ data class PlayerHand(
     val netResult: Double = 0.0,
     val netWonAdjusted: Double = 0.0,
     val place: Int = 0,
-    val wentToShowdown: Boolean = false
+    val wentToShowdown: Boolean = false,
+    val flgVpip: Boolean = false,
+    val flgPfr: Boolean = false,
+    val flg3bet: Boolean = false,
+    val flg4bet: Boolean = false,
+    val flgSqueeze: Boolean = false,
+    val flgLimp: Boolean = false,
+    val flgLimpBehind: Boolean = false,
+    val flgCbetFlop: Boolean = false,
+    val flgDonkFlop: Boolean = false,
+    val flgFloatFlop: Boolean = false,
+    val flgCheckRaiseFlop: Boolean = false,
+    val flgSawFlop: Boolean = false,
+    val flgCbetTurn: Boolean = false,
+    val flgDonkTurn: Boolean = false,
+    val flgFloatTurn: Boolean = false,
+    val flgCheckRaiseTurn: Boolean = false,
+    val flgSawTurn: Boolean = false,
+    val flgCbetRiver: Boolean = false,
+    val flgDonkRiver: Boolean = false,
+    val flgCheckRaiseRiver: Boolean = false,
+    val flgSawRiver: Boolean = false,
+    val flgAllin: Boolean = false,
+    val flgFaceAllin: Boolean = false,
+    val allinAction: String? = null,
+    val flgIsAggressor: Boolean = false,
+    val aggressorPosition: String? = null,
+    val bountyWon: Double = 0.0,
+    val equityPercent: Double = 0.0,
+    val expectedWon: Double = 0.0,
+    val icmEquityPercent: Double = 0.0,
+    val showedCards: Boolean = false,
+    val wonAtShowdown: Boolean = false,
+    val foldedBeforeShowdown: Boolean = false,
+    val effectiveStackPreflop: Double? = null,
+    val effectiveStackFlop: Double? = null,
+    val effectiveStackTurn: Double? = null,
+    val effectiveStackRiver: Double? = null,
+    val sprFlop: Double? = null,
+    val handGroup: String? = null,
+    val isSuited: Boolean = false,
+    val isPair: Boolean = false
 )
 
 data class DashboardStats(
