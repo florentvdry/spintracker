@@ -120,7 +120,7 @@ fun SettingsScreen(
             onExport = {
                 scope.launch {
                     exportLoading = true
-                    val result = appState.exportDataLocal()
+                    val result = appState.exportData()
                     exportLoading = false
                 }
             },
