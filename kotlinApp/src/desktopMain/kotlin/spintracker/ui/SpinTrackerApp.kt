@@ -31,8 +31,6 @@ import spintracker.ui.screens.SettingsScreen
 import spintracker.ui.screens.AnalyticsScreen
 import spintracker.ui.screens.BankrollScreen
 import spintracker.ui.screens.ReplayerWindow
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.rememberWindowState
 
 val appState = AppState()
 
