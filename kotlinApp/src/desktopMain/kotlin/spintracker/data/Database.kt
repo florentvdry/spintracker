@@ -49,8 +49,7 @@ class Database(dbPath: String? = null) {
                 Migration010_PT4Parity(),
                 Migration011_PT4ParityHighPriority(),
                 Migration012_PT4ParityMediumPriority(),
-                Migration013_PT4ParityLowPriority(),
-                Migration014_HUD()
+                Migration013_PT4ParityLowPriority()
             )
             
             val runner = MigrationRunner(connectionString)

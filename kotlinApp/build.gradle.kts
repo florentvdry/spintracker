@@ -65,13 +65,6 @@ tasks.register<JavaExec>("testMigration") {
     mainClass.set("spintracker.tests.DatabaseMigrationTestKt")
 }
 
-tasks.register<JavaExec>("testMigration014") {
-    group = "verification"
-    description = "Run migration 014 test"
-    classpath = sourceSets.get("main").runtimeClasspath
-    mainClass.set("spintracker.tests.Migration014TestKt")
-}
-
 tasks.register<JavaExec>("testPlayerTyping") {
     group = "verification"
     description = "Run player typing test"
