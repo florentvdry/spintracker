@@ -45,7 +45,11 @@ class Database(dbPath: String? = null) {
                 Migration006_HandHistories(),
                 Migration007_StatsCache(),
                 Migration008_TournamentExtensions(),
-                Migration009_AdvancedStats()
+                Migration009_AdvancedStats(),
+                Migration010_PT4Parity(),
+                Migration011_PT4ParityHighPriority(),
+                Migration012_PT4ParityMediumPriority(),
+                Migration013_PT4ParityLowPriority()
             )
             
             val runner = MigrationRunner(connectionString)

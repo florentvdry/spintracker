@@ -34,7 +34,8 @@
     "electron-log": "^5.4.3",
     "electron-store": "^8.1.0",
     "electron-updater": "^6.7.3",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
@@ -75,5 +76,9 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/florentvdry/spintracker/issues"
+  },
+  "homepage": "https://github.com/florentvdry/spintracker#readme"
 }
