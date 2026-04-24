@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
 import spintracker.ui.*
+import spintracker.services.EquityService
 
 @Composable
 fun ReplayerWindow(handId: String, heroName: String, onClose: () -> Unit) {
@@ -55,6 +56,9 @@ fun ReplayerContent(handId: String, heroName: String, onClose: () -> Unit) {
         } ?: emptyList()
     }
     
+    val equityService = remember { EquityService() }
+    var currentEquity by remember { mutableStateOf<EquityService.EquityResult?>(null) }
+    
     var players by remember { mutableStateOf(rawPlayers.map { it.copy() }) }
     var pot by remember { mutableDoubleStateOf(0.0) }
     var board by remember { mutableStateOf(listOf<String>()) }
@@ -67,12 +71,31 @@ fun ReplayerContent(handId: String, heroName: String, onClose: () -> Unit) {
         onDispose { timer?.cancel() }
     }
     
+    LaunchedEffect(board, rawPlayers) {
+        val hero = rawPlayers.find { it.isHero }
+        if (hero == null || hero.holeCards.isEmpty()) {
+            currentEquity = null
+        } else {
+            val villains = rawPlayers.filter { !it.isHero && it.holeCards.isNotEmpty() }
+            if (villains.isNotEmpty()) {
+                val boardStr = board.joinToString("")
+                val villainCards = villains.map { it.holeCards }
+                currentEquity = equityService.calculateMultiwayEquity(
+                    heroCards = hero.holeCards,
+                    villainCardsList = villainCards,
+                    board = boardStr
+                )
+            }
+        }
+    }
+    
     fun resetState() {
         players = rawPlayers.map { it.copy(currentStack = it.stackSize, isFolded = false, bet = 0.0) }
         pot = 0.0
         board = emptyList()
         currentIndex = 0
         currentActionText = "Ready"
+        currentEquity = null
     }
     
     Surface(modifier = Modifier.fillMaxSize(), color = Dark500) {
@@ -96,6 +119,13 @@ fun ReplayerContent(handId: String, heroName: String, onClose: () -> Unit) {
             
             Box(modifier = Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
                 PokerTable(players = players, board = board, pot = pot)
+                currentEquity?.let { equity ->
+                    Box(
+                        modifier = Modifier.align(Alignment.TopEnd).offset(x = (-20).dp, y = 20.dp)
+                    ) {
+                        EquityOverlay(equity = equity)
+                    }
+                }
             }
             
             Row(
@@ -237,6 +267,41 @@ fun PlayerSeat(player: ReplayerPlayer) {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun EquityOverlay(equity: EquityService.EquityResult) {
+    val equityPercent = (equity.win * 100).toInt()
+    val equityColor = when {
+        equityPercent >= 70 -> Color(0xFF22c55e)
+        equityPercent >= 50 -> Color(0xFFeab308)
+        equityPercent >= 30 -> Color(0xFFf97316)
+        else -> Color(0xFFef4444)
+    }
+    
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Dark400),
+        shape = RoundedCornerShape(12.dp),
+        border = androidx.compose.foundation.BorderStroke(2.dp, equityColor)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("EQUITY", color = Color.White.copy(alpha = 0.5f), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                "$equityPercent%",
+                color = equityColor,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
+            )
+            if (equity.tie > 0.01) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text("Tie: ${(equity.tie * 100).toInt()}%", color = Color.White.copy(alpha = 0.4f), fontSize = 10.sp)
             }
         }
     }
