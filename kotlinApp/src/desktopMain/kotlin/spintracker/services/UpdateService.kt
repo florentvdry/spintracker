@@ -11,9 +11,20 @@ import java.net.http.HttpResponse
 import java.net.URI
 
 class UpdateService(
-    private val repoOwner: String = "your-username",
-    private val repoName: String = "spintracker"
+    private val repoOwner: String,
+    private val repoName: String
 ) {
+    companion object {
+        private const val HTTP_OK = 200
+        
+        fun create(): UpdateService {
+            return UpdateService(
+                repoOwner = "your-username",
+                repoName = "spintracker"
+            )
+        }
+    }
+
     private val httpClient = HttpClient.newBuilder()
         .followRedirects(HttpClient.Redirect.NORMAL)
         .build()
@@ -31,32 +42,36 @@ class UpdateService(
             
             val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
             
-            if (response.statusCode() != 200) {
+            if (response.statusCode() != HTTP_OK) {
                 println("GitHub API error: ${response.statusCode()}")
                 return@withContext null
             }
             
-            val json = org.json.JSONObject(response.body())
-            val assetsJson = json.getJSONArray("assets")
-            
-            val assets = (0 until assetsJson.length()).map { i ->
-                val asset = assetsJson.getJSONObject(i)
-                GitHubAsset(
-                    name = asset.getString("name"),
-                    browserDownloadUrl = asset.getString("browser_download_url"),
-                    size = asset.getLong("size")
+            try {
+                val json = org.json.JSONObject(response.body())
+                val assetsJson = json.getJSONArray("assets")
+                
+                val assets = (0 until assetsJson.length()).map { i ->
+                    val asset = assetsJson.getJSONObject(i)
+                    GitHubAsset(
+                        name = asset.getString("name"),
+                        browserDownloadUrl = asset.getString("browser_download_url"),
+                        size = asset.getLong("size")
+                    )
+                }
+                
+                val release = GitHubRelease(
+                    tagName = json.getString("tag_name"),
+                    name = json.getString("name"),
+                    body = json.getString("body"),
+                    publishedAt = json.getString("published_at")
                 )
+                
+                parseReleaseToUpdateInfo(release)
+            } catch (e: org.json.JSONException) {
+                println("Error parsing GitHub API response: ${e.message}")
+                return@withContext null
             }
-            
-            val release = GitHubRelease(
-                tagName = json.getString("tag_name"),
-                name = json.getString("name"),
-                body = json.getString("body"),
-                publishedAt = json.getString("published_at"),
-                assets = assets
-            )
-            
-            parseReleaseToUpdateInfo(release)
         } catch (e: Exception) {
             println("Error fetching latest release: ${e.message}")
             null
