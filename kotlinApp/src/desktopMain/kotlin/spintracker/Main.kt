@@ -13,11 +13,37 @@ import androidx.compose.ui.window.*
 import spintracker.ui.SpinTrackerApp
 import spintracker.ui.SplashScreen
 import spintracker.ui.theme.SpinTrackerTheme
+import spintracker.services.UpdateService
+import spintracker.services.UpdateChecker
+import spintracker.services.CheckResult
+import spintracker.models.UpdateInfo
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 fun main() = application {
     var isLoading by remember { mutableStateOf(true) }
-
+    var updateCheckResult by remember { mutableStateOf<CheckResult?>(null) }
+    var updateInfo by remember { mutableStateOf<UpdateInfo?>(null) }
+    val scope = rememberCoroutineScope()
+    
+    val currentVersion = "1.0.0"
+    val updateService = remember { UpdateService.create() }
+    val updateChecker = remember { UpdateChecker(updateService, currentVersion) }
+    
+    LaunchedEffect(Unit) {
+        scope.launch {
+            val result = updateChecker.checkForUpdates()
+            updateCheckResult = result
+            
+            if (result is CheckResult.Available) {
+                updateInfo = result.updateInfo
+            }
+        }
+        
+        delay(2500)
+        isLoading = false
+    }
+    
     if (isLoading) {
         key("splash_window") {
             Window(
@@ -36,11 +62,6 @@ fun main() = application {
                     color = Color.Transparent
                 ) {
                     SplashScreen()
-                    
-                    LaunchedEffect(Unit) {
-                        delay(2500)
-                        isLoading = false
-                    }
                 }
             }
         }
@@ -56,7 +77,10 @@ fun main() = application {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        SpinTrackerApp(window)
+                        SpinTrackerApp(
+                            window = window,
+                            pendingUpdate = updateInfo
+                        )
                     }
                 }
             }
