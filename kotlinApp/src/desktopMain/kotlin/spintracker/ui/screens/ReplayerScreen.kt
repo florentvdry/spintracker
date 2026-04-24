@@ -19,6 +19,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
 import spintracker.ui.*
 import spintracker.services.EquityService
+import spintracker.ui.screens.replayer.components.*
+import spintracker.ui.screens.replayer.models.ReplayerPlayer
 
 @Composable
 fun ReplayerWindow(handId: String, heroName: String, onClose: () -> Unit) {
@@ -106,10 +108,10 @@ fun ReplayerContent(handId: String, heroName: String, onClose: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Hand #$handId", color = Primary400, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    androidx.compose.material3.Text("Hand #$handId", color = Primary400, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.width(16.dp))
                     handData?.let {
-                        Text("${it["room"] ?: ""} - ${it["buyIn"] ?: 0}€", color = Color.White.copy(alpha = 0.6f), fontSize = 14.sp)
+                        androidx.compose.material3.Text("${it["room"] ?: ""} - ${it["buyIn"] ?: 0}€", color = Color.White.copy(alpha = 0.6f), fontSize = 14.sp)
                     }
                 }
                 IconButton(onClick = onClose) {
@@ -134,7 +136,7 @@ fun ReplayerContent(handId: String, heroName: String, onClose: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
-                    Text("$currentIndex", color = Color.White.copy(alpha = 0.5f), fontSize = 12.sp)
+                    androidx.compose.material3.Text("$currentIndex", color = Color.White.copy(alpha = 0.5f), fontSize = 12.sp)
                     Spacer(modifier = Modifier.width(8.dp))
                     Slider(
                         value = currentIndex.toFloat(),
@@ -179,141 +181,9 @@ fun ReplayerContent(handId: String, heroName: String, onClose: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Card(colors = CardDefaults.cardColors(containerColor = DarkSurface), shape = RoundedCornerShape(8.dp)) {
-                    Text(currentActionText, color = Primary400, fontSize = 14.sp, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+                    androidx.compose.material3.Text(currentActionText, color = Primary400, fontSize = 14.sp, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
                 }
             }
         }
     }
 }
-
-@Composable
-fun PokerTable(players: List<ReplayerPlayer>, board: List<String>, pot: Double) {
-    Box(modifier = Modifier.aspectRatio(2f).padding(32.dp)) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(100.dp))
-                .background(Color(0xFF07251a))
-                .border(8.dp, Color(0xFF16191d), RoundedCornerShape(100.dp))
-        ) {
-            Row(modifier = Modifier.align(Alignment.Center), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                repeat(5) {
-                    PlayingCard(card = if (it < board.size) board[it] else null)
-                }
-            }
-            
-            if (pot > 0) {
-                Card(
-                    modifier = Modifier.align(Alignment.Center).offset(y = 60.dp),
-                    colors = CardDefaults.cardColors(containerColor = Dark400),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Text("POT", color = Color.White.copy(alpha = 0.5f), fontSize = 12.sp)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("%.0f".format(pot), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-            
-            players.forEachIndexed { idx, player ->
-                val (align, offsetX, offsetY) = when (idx) {
-                    0 -> Triple(Alignment.BottomCenter, 0.dp, (-30).dp)
-                    1 -> Triple(Alignment.CenterEnd, 30.dp, 0.dp)
-                    2 -> Triple(Alignment.TopCenter, 0.dp, 30.dp)
-                    else -> Triple(Alignment.Center, 0.dp, 0.dp)
-                }
-                Box(modifier = Modifier.align(align).offset(x = offsetX, y = offsetY)) {
-                    PlayerSeat(player = player)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun PlayingCard(card: String?) {
-    val isRed = card?.let { it.contains("♥") || it.contains("♦") } ?: false
-    Card(
-        modifier = Modifier.size(50.dp, 70.dp),
-        colors = CardDefaults.cardColors(containerColor = if (card != null) Color.White else Dark400),
-        shape = RoundedCornerShape(4.dp),
-        border = if (card != null) androidx.compose.foundation.BorderStroke(2.dp, if (isRed) Color(0xFFef4444) else Color(0xFF374151)) else null
-    ) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            if (card != null) {
-                Text(card, color = if (isRed) Color(0xFFdc2626) else Color(0xFF1f2937), fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            }
-        }
-    }
-}
-
-@Composable
-fun PlayerSeat(player: ReplayerPlayer) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Card(
-            colors = CardDefaults.cardColors(containerColor = if (player.isHero) Color(0xFF1e3a5f) else Dark400),
-            shape = RoundedCornerShape(8.dp),
-            border = if (player.isHero) androidx.compose.foundation.BorderStroke(2.dp, Primary400) else null
-        ) {
-            Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(player.name, color = if (player.isHero) Primary400 else Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                Text("%.0f".format(player.currentStack), color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                if (player.holeCards.isNotEmpty()) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                        player.holeCards.chunked(2).forEach { c ->
-                            val isRed = c.contains("♥") || c.contains("♦")
-                            Text(c, color = if (isRed) Color(0xFFef4444) else Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun EquityOverlay(equity: EquityService.EquityResult) {
-    val equityPercent = (equity.win * 100).toInt()
-    val equityColor = when {
-        equityPercent >= 70 -> Color(0xFF22c55e)
-        equityPercent >= 50 -> Color(0xFFeab308)
-        equityPercent >= 30 -> Color(0xFFf97316)
-        else -> Color(0xFFef4444)
-    }
-    
-    Card(
-        colors = CardDefaults.cardColors(containerColor = Dark400),
-        shape = RoundedCornerShape(12.dp),
-        border = androidx.compose.foundation.BorderStroke(2.dp, equityColor)
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("EQUITY", color = Color.White.copy(alpha = 0.5f), fontSize = 10.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                "$equityPercent%",
-                color = equityColor,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            )
-            if (equity.tie > 0.01) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text("Tie: ${(equity.tie * 100).toInt()}%", color = Color.White.copy(alpha = 0.4f), fontSize = 10.sp)
-            }
-        }
-    }
-}
-
-data class ReplayerPlayer(
-    val name: String,
-    val position: String,
-    val stackSize: Double,
-    val holeCards: String,
-    val isHero: Boolean,
-    var currentStack: Double = stackSize,
-    var isFolded: Boolean = false,
-    var bet: Double = 0.0
-)
