@@ -2,16 +2,18 @@ package spintracker.services
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import spintracker.models.UpdateInfo
 
 class UpdateChecker(
     private val updateService: UpdateService,
     private val currentVersion: String
 ) {
-    private var cachedResult: CheckResult? = null
+    @Volatile private var cachedResult: CheckResult? = null
     
     suspend fun checkForUpdates(force: Boolean = false): CheckResult = withContext(Dispatchers.Default) {
-        if (!force && cachedResult != null) {
-            return@withContext cachedResult!!
+        val cached = cachedResult
+        if (!force && cached != null) {
+            return@withContext cached
         }
         
         try {
@@ -19,7 +21,7 @@ class UpdateChecker(
             
             if (updateInfo == null) {
                 cachedResult = CheckResult.Error("Failed to fetch update information")
-                return@withContext cachedResult!!
+                return@withContext cachedResult
             }
             
             val comparison = updateService.compareVersions(currentVersion, updateInfo.version)
@@ -30,10 +32,10 @@ class UpdateChecker(
                 CheckResult.UpToDate
             }
         } catch (e: Exception) {
-            cachedResult = CheckResult.Error(e.message ?: "Unknown error")
+            cachedResult = CheckResult.Error(e.message ?: "Unknown error: ${e.javaClass.simpleName}")
         }
         
-        return@withContext cachedResult!!
+        return@withContext cachedResult
     }
     
     fun clearCache() {
