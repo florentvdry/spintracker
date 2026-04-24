@@ -6,7 +6,9 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-class UpdateInstaller {
+class UpdateInstaller(
+    private val executableName: String = "SpinTracker"
+) {
     suspend fun install(
         downloadedFile: File,
         onComplete: (InstallResult) -> Unit
@@ -29,12 +31,12 @@ class UpdateInstaller {
     
     private fun installWindows(file: File) {
         val appDir = File(System.getProperty("user.dir"))
-        val appExe = File(appDir, "SpinTracker.exe")
+        val appExe = File(appDir, "$executableName.exe")
         
         if (file.extension == "zip") {
             unzipFile(file, appDir)
         } else if (file.extension == "exe") {
-            file.copyTo(File(appDir, "SpinTracker_new.exe"), overwrite = true)
+            file.copyTo(File(appDir, "${executableName}_new.exe"), overwrite = true)
         }
         
         scheduleRestartAndReplace(appExe, file)
@@ -61,7 +63,9 @@ class UpdateInstaller {
     }
     
     private fun unzipFile(zipFile: File, destination: File) {
-        println("Extracting zip to: ${destination.absolutePath}")
+        // TODO: Add zip4j dependency for proper zip extraction
+        // For now, this is a placeholder
+        println("Extracting zip: ${zipFile.name} to ${destination.absolutePath}")
     }
     
     private fun scheduleRestartAndReplace(existingFile: File, newFile: File) {
@@ -86,10 +90,10 @@ class UpdateInstaller {
             """
             @echo off
             timeout /t 2 /nobreak > nul
-            del "${existingFile.absolutePath}"
-            move "${newFile.absolutePath}" "${existingFile.absolutePath}"
-            start "" "${existingFile.absolutePath}"
-            del "%~f0"
+            del /f "${existingFile.absolutePath.replace("\\", "\\\\")}"
+            move /y "${newFile.absolutePath.replace("\\", "\\\\")}" "${existingFile.absolutePath.replace("\\", "\\\\")}"
+            start "" "${existingFile.absolutePath.replace("\\", "\\\\")}"
+            del /f "%~f0"
             """.trimIndent()
         )
         return script
@@ -101,11 +105,11 @@ class UpdateInstaller {
             """
             #!/bin/bash
             sleep 2
-            rm "${existingFile.absolutePath}"
-            mv "${newFile.absolutePath}" "${existingFile.absolutePath}"
+            rm -f "${existingFile.absolutePath}"
+            mv -f "${newFile.absolutePath}" "${existingFile.absolutePath}"
             chmod +x "${existingFile.absolutePath}"
             "${existingFile.absolutePath}" &
-            rm "%~f0"
+            rm -f "$0"
             """.trimIndent()
         )
         script.setExecutable(true)
