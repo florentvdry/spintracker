@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material3.ExperimentalMaterial3Api
 import kotlinx.coroutines.launch
 import spintracker.data.AppState
 import spintracker.data.Database
@@ -102,14 +101,6 @@ fun SettingsScreen(
         GeneralSection(
             language = language,
             onLanguageChange = { language = it }
-        )
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        HUDConfigSection(
-            appState = appState,
-            refreshKey = refreshKey,
-            onSettingsSaved = onRefresh
         )
         
         Spacer(modifier = Modifier.height(24.dp))
@@ -240,141 +231,6 @@ fun GeneralSection(language: String, onLanguageChange: (String) -> Unit) {
                         Text("Français", fontSize = 13.sp)
                     }
                 }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HUDConfigSection(
-    appState: AppState,
-    refreshKey: Int,
-    onSettingsSaved: () -> Unit
-) {
-    var hudSettings by remember { mutableStateOf<Database.HUDSettings?>(null) }
-    var showHUD by remember { mutableStateOf(false) }
-    var opacity by remember { mutableStateOf(0.8f) }
-    var position by remember { mutableStateOf("TOP_LEFT") }
-    var fontSize by remember { mutableStateOf(12) }
-    var saved by remember { mutableStateOf(false) }
-    
-    LaunchedEffect(refreshKey) {
-        val settings = appState.database.getHUDSettings()
-        opacity = settings?.opacity?.toFloat() ?: 0.8f
-        fontSize = settings?.fontSize ?: 12
-        position = settings?.position ?: "TOP_LEFT"
-        showHUD = settings?.showHUD ?: false
-    }
-    
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = DarkSurface),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(
-                    "HUD Configuration",
-                    color = Color.White.copy(alpha = 0.4f),
-                    style = MaterialTheme.typography.labelSmall,
-                    letterSpacing = 1.sp
-                )
-                if (saved) {
-                    Text(
-                        "Saved!",
-                        color = Color(0xFF22c55e),
-                        fontSize = 12.sp
-                    )
-                    LaunchedEffect(Unit) {
-                        kotlinx.coroutines.delay(2000)
-                        saved = false
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Enable HUD", color = Color.White, fontWeight = FontWeight.Medium)
-                Switch(
-                    checked = showHUD,
-                    onCheckedChange = { showHUD = it }
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text("Opacity: ${(opacity * 100).toInt()}%", color = Color.White.copy(alpha = 0.7f), fontSize = 14.sp)
-            Spacer(modifier = Modifier.height(8.dp))
-            Slider(
-                value = opacity,
-                onValueChange = { opacity = it },
-                valueRange = 0.1f..1.0f,
-                colors = SliderDefaults.colors(
-                    thumbColor = Primary400,
-                    activeTrackColor = Primary400,
-                    inactiveTrackColor = Dark400
-                )
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text("Position", color = Color.White.copy(alpha = 0.7f), fontSize = 14.sp)
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("TOP_LEFT", "TOP_RIGHT", "BOTTOM_LEFT", "BOTTOM_RIGHT").forEach { pos ->
-                    FilterChip(
-                        selected = position == pos,
-                        onClick = { position = pos },
-                        label = { Text(pos.replace("_", " ")) },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Primary400,
-                            selectedLabelColor = Color.White
-                        )
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Text("Font Size: ${fontSize}px", color = Color.White.copy(alpha = 0.7f), fontSize = 14.sp)
-            Spacer(modifier = Modifier.height(8.dp))
-            Slider(
-                value = fontSize.toFloat(),
-                onValueChange = { fontSize = it.toInt() },
-                valueRange = 8f..24f,
-                steps = 16,
-                colors = SliderDefaults.colors(
-                    thumbColor = Primary400,
-                    activeTrackColor = Primary400,
-                    inactiveTrackColor = Dark400
-                )
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            Button(
-                onClick = {
-                    appState.database.saveHUDSettings(Database.HUDSettings(
-                        id = 1,
-                        showHUD = showHUD,
-                        opacity = opacity.toDouble(),
-                        position = position,
-                        fontSize = fontSize,
-                        showStats = "vpip,pfr,3bet"
-                    ))
-                    saved = true
-                    onSettingsSaved()
-                },
-                modifier = Modifier.fillMaxWidth().height(44.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Primary400),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text("Save HUD Settings", fontWeight = FontWeight.Medium)
             }
         }
     }
