@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.sp
 import spintracker.data.AppState
 import spintracker.services.ImportService
 import spintracker.ui.components.Header
+import spintracker.ui.components.HUDOverlay
+import spintracker.ui.components.HUDState
 import spintracker.ui.components.NavScreen
 import spintracker.ui.components.Sidebar
 import spintracker.ui.screens.ChartsScreen
@@ -49,6 +51,7 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
     var importProgress by remember { mutableStateOf<ImportService.ImportProgress?>(null) }
     var isImporting by remember { mutableStateOf(false) }
     var deleteSuccess by remember { mutableStateOf<String?>(null) }
+    var showHUD by remember { mutableStateOf(false) }
     
     if (showReplayer && replayerHandId != null) {
         ReplayerWindow(
@@ -254,6 +257,12 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
                         }
                     }
                 }
+                
+                // HUD Overlay
+                HUDOverlay(
+                    state = HUDState(visible = showHUD, position = spintracker.ui.components.HUDPosition.TOP_RIGHT),
+                    onClose = { showHUD = false }
+                )
             }
         }
     }
