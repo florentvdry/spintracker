@@ -2,14 +2,12 @@ package spintracker.data
 
 import spintracker.models.*
 import spintracker.services.ImportService
-import spintracker.services.ApiClient
 import spintracker.services.DatabaseInfo
 import java.io.File
 
 class AppState {
     val database = Database()
     val importService = ImportService(database)
-    val apiClient = ApiClient()
     
     var heroName: String = "Hero"
     
@@ -60,32 +58,12 @@ class AppState {
         return database.getStatsCacheRepository().getStats(playerId)
     }
     
-    suspend fun checkServerStatus(): Boolean {
-        return apiClient.checkServerStatus()
+    fun getAppVersion(): String {
+        return "1.0.0"
     }
     
-    suspend fun getAppVersion(): String {
-        return "1.0.0-local"
-    }
-    
-    suspend fun getDatabases(): List<DatabaseInfo> {
-        return apiClient.getDatabases()
-    }
-    
-    suspend fun createDatabase(name: String): Result<DatabaseInfo> {
-        return apiClient.createDatabase(name)
-    }
-    
-    suspend fun setActiveDatabase(id: String): Result<Unit> {
-        return apiClient.setActiveDatabase(id)
-    }
-    
-    suspend fun deleteDatabase(id: String): Result<Unit> {
-        return apiClient.deleteDatabase(id)
-    }
-    
-    suspend fun renameDatabase(id: String, name: String): Result<Unit> {
-        return apiClient.renameDatabase(id, name)
+    fun exportData(): Result<String> {
+        return exportDataLocal()
     }
     
     suspend fun deleteAllHands(): Result<Unit> {
@@ -99,10 +77,6 @@ class AppState {
     
     fun deleteAllDataLocal() {
         database.deleteAllData()
-    }
-    
-    suspend fun exportData(): Result<String> {
-        return apiClient.exportData()
     }
     
     suspend fun openLogsFolder(): Result<Unit> {

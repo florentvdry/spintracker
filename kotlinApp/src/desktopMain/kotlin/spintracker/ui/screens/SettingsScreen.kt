@@ -52,7 +52,7 @@ fun SettingsScreen(
     val scope = rememberCoroutineScope()
 
     suspend fun loadVersion() {
-        appVersion = appState.apiClient.getAppVersion()
+        appVersion = appState.getAppVersion()
     }
 
     suspend fun loadDatabase() {
