@@ -34,8 +34,7 @@ class Migration013_PT4ParityLowPriority : Migration {
         
         val settingsData = listOf(
             "INSERT OR IGNORE INTO config (key, value, category, is_system) VALUES ('database.version', '13', 'system', 1)",
-            "INSERT OR IGNORE INTO config (key, value, category, is_system) VALUES ('import.skip_duplicates', 'true', 'import', 1)",
-            "INSERT OR IGNORE INTO config (key, value, category, is_system) VALUES ('hud.refresh_ms', '1000', 'hud', 1)"
+            "INSERT OR IGNORE INTO config (key, value, category, is_system) VALUES ('import.skip_duplicates', 'true', 'import', 1)"
         )
         
         for (sql in settingsData) {
