@@ -55,6 +55,8 @@ class Database(dbPath: String? = null) {
             val runner = MigrationRunner(connectionString)
             runner.runPending(migrations)
             
+            runPendingBackfills()
+            
             println("Database initialized at: $connectionString")
         } catch (e: SQLException) {
             println("Database initialization error: ${e.message}")
@@ -1688,18 +1690,18 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                 donkFlop = if (donkFlopCount > 0) donkFlopCount * 100.0 / totalHands else 0.0,
                 donkTurn = if (donkTurnCount > 0) donkTurnCount * 100.0 / totalHands else 0.0,
                 floatFlop = if (floatFlopCount > 0) floatFlopCount * 100.0 / totalHands else 0.0,
-                checkRaiseFlop = if (checkRaiseFlopCount > 0) checkRaiseFlopCount * 100.0 / totalHands else 0.0,
-                checkRaiseTurn = if (checkRaiseTurnCount > 0) checkRaiseTurnCount * 100.0 / totalHands else 0.0,
-                checkRaiseRiver = if (checkRaiseRiverCount > 0) checkRaiseRiverCount * 100.0 / totalHands else 0.0,
-                xcFlop = if (xcFlopCount > 0) xcFlopCount * 100.0 / totalHands else 0.0,
-                xfFlop = if (xfFlopCount > 0) xfFlopCount * 100.0 / totalHands else 0.0,
-                xcTurn = if (xcTurnCount > 0) xcTurnCount * 100.0 / totalHands else 0.0,
-                xfTurn = if (xfTurnCount > 0) xfTurnCount * 100.0 / totalHands else 0.0,
-                xcRiver = if (xcRiverCount > 0) xcRiverCount * 100.0 / totalHands else 0.0,
-                xfRiver = if (xfRiverCount > 0) xfRiverCount * 100.0 / totalHands else 0.0,
-                raiseFlop = if (raiseFlopCount > 0) raiseFlopCount * 100.0 / totalHands else 0.0,
-                raiseTurn = if (raiseTurnCount > 0) raiseTurnCount * 100.0 / totalHands else 0.0,
-                raiseRiver = if (raiseRiverCount > 0) raiseRiverCount * 100.0 / totalHands else 0.0,
+                checkRaiseFlop = if (totalHands > 0) checkRaiseFlopCount * 100.0 / totalHands else 0.0,
+                checkRaiseTurn = if (totalHands > 0) checkRaiseTurnCount * 100.0 / totalHands else 0.0,
+                checkRaiseRiver = if (totalHands > 0) checkRaiseRiverCount * 100.0 / totalHands else 0.0,
+                xcFlop = if (totalHands > 0) xcFlopCount * 100.0 / totalHands else 0.0,
+                xfFlop = if (totalHands > 0) xfFlopCount * 100.0 / totalHands else 0.0,
+                xcTurn = if (totalHands > 0) xcTurnCount * 100.0 / totalHands else 0.0,
+                xfTurn = if (totalHands > 0) xfTurnCount * 100.0 / totalHands else 0.0,
+                xcRiver = if (totalHands > 0) xcRiverCount * 100.0 / totalHands else 0.0,
+                xfRiver = if (totalHands > 0) xfRiverCount * 100.0 / totalHands else 0.0,
+                raiseFlop = if (totalHands > 0) raiseFlopCount * 100.0 / totalHands else 0.0,
+                raiseTurn = if (totalHands > 0) raiseTurnCount * 100.0 / totalHands else 0.0,
+                raiseRiver = if (totalHands > 0) raiseRiverCount * 100.0 / totalHands else 0.0,
                 totalHands = totalHands
             )
         } finally {
@@ -1980,6 +1982,23 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             Result.success("Data exported to ${exportFile.absolutePath}")
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+    
+    private fun runPendingBackfills() {
+        val backfills = listOf(
+            Backfill5betStats(this)
+        )
+        
+        for (backfill in backfills) {
+            if (!backfill.isCompleted()) {
+                println("Running backfill: ${backfill.description}")
+                try {
+                    backfill.runBackfill()
+                } catch (e: Exception) {
+                    println("Backfill failed: ${e.message}")
+                }
+            }
         }
     }
 }
