@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -34,57 +35,58 @@ import java.io.File
 @Composable
 fun UpdateDialog(
     updateInfo: UpdateInfo,
-    currentVersion: String,
     onDismiss: () -> Unit,
     onInstallComplete: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var dialogState by remember { mutableStateOf<UpdateDialogState>(UpdateDialogState.Review) }
     var downloadProgress by remember { mutableFloatStateOf(0f) }
-    var statusMessage by remember { mutableStateOf<String?>(null) }
+    var startDownload by remember { mutableStateOf(false) }
     
     val downloader = remember { UpdateDownloader() }
     val installer = remember { UpdateInstaller() }
     
-    fun startDownloadAndInstall() {
-        scope.launch {
-            dialogState = UpdateDialogState.Downloading
-            
-            val tempFile = File.createTempFile("spintracker_update_", ".tmp")
-            tempFile.deleteOnExit()
-            
-            val downloadResult = downloader.download(
-                url = updateInfo.downloadUrl,
-                destination = tempFile
-            ) { progress ->
-                downloadProgress = progress.progress
+    LaunchedEffect(startDownload) {
+        if (!startDownload) return@LaunchedEffect
+        
+        dialogState = UpdateDialogState.Downloading
+        
+        val tempFile = withContext(Dispatchers.IO) {
+            File.createTempFile("spintracker_update_", ".tmp").also {
+                it.deleteOnExit()
             }
-            
-            if (downloadResult.isFailure) {
-                dialogState = UpdateDialogState.Error(downloadResult.exceptionOrNull()?.message ?: "Download failed")
-                return@launch
-            }
-            
-            val downloadedFile = downloadResult.getOrNull() ?: return@launch
-            dialogState = UpdateDialogState.Installing
-            
-            val installResult = withContext(Dispatchers.IO) {
-                CompletableDeferred<InstallResult>().also { deferred ->
-                    installer.install(downloadedFile) { result ->
-                        deferred.complete(result)
-                    }
-                }.await()
-            }
-            
-            when (installResult) {
-                is InstallResult.Success -> {
-                    statusMessage = "Update installed. Restarting..."
-                    kotlinx.coroutines.delay(1000)
-                    onInstallComplete()
+        }
+        
+        val downloadResult = downloader.download(
+            url = updateInfo.downloadUrl,
+            destination = tempFile
+        ) { progress ->
+            downloadProgress = progress.progress
+        }
+        
+        if (downloadResult.isFailure) {
+            dialogState = UpdateDialogState.Error(downloadResult.exceptionOrNull()?.message ?: "Download failed")
+            return@LaunchedEffect
+        }
+        
+        val downloadedFile = downloadResult.getOrNull() ?: return@LaunchedEffect
+        dialogState = UpdateDialogState.Installing
+        
+        val installResult = withContext(Dispatchers.IO) {
+            CompletableDeferred<InstallResult>().also { deferred ->
+                installer.install(downloadedFile) { result ->
+                    deferred.complete(result)
                 }
-                is InstallResult.Failure -> {
-                    dialogState = UpdateDialogState.Error(installResult.message)
-                }
+            }.await()
+        }
+        
+        when (installResult) {
+            is InstallResult.Success -> {
+                kotlinx.coroutines.delay(1000)
+                onInstallComplete()
+            }
+            is InstallResult.Failure -> {
+                dialogState = UpdateDialogState.Error(installResult.message)
             }
         }
     }
@@ -171,7 +173,7 @@ fun UpdateDialog(
                             }
                             Spacer(modifier = Modifier.width(12.dp))
                             Button(
-                                onClick = { startDownloadAndInstall() },
+                                onClick = { startDownload = true },
                                 colors = ButtonDefaults.buttonColors(containerColor = Primary400),
                                 shape = RoundedCornerShape(8.dp)
                             ) {
@@ -270,6 +272,14 @@ fun UpdateDialog(
                                 shape = RoundedCornerShape(8.dp)
                             ) {
                                 Text("Close")
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Button(
+                                onClick = { dialogState = UpdateDialogState.Review },
+                                colors = ButtonDefaults.buttonColors(containerColor = Primary400),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text("Retry")
                             }
                         }
                     }
