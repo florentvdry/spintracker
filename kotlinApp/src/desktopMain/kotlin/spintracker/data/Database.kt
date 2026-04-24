@@ -1742,61 +1742,6 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
         }
     }
 
-    data class HUDSettings(
-        val id: Int,
-        val showHUD: Boolean,
-        val opacity: Double,
-        val position: String,
-        val fontSize: Int,
-        val showStats: String
-    )
-
-    fun getHUDSettings(): HUDSettings? {
-        val conn = getConnection()
-        try {
-            val stmt = conn.prepareStatement("SELECT id, show_hud, opacity, position, font_size, show_stats FROM hud_settings WHERE id = 1")
-            val rs = stmt.executeQuery()
-            if (rs.next()) {
-                val settings = HUDSettings(
-                    id = rs.getInt("id"),
-                    showHUD = rs.getInt("show_hud") == 1,
-                    opacity = rs.getDouble("opacity"),
-                    position = rs.getString("position"),
-                    fontSize = rs.getInt("font_size"),
-                    showStats = rs.getString("show_stats")
-                )
-                rs.close()
-                stmt.close()
-                return settings
-            }
-            rs.close()
-            stmt.close()
-            return null
-        } finally {
-            conn.close()
-        }
-    }
-
-    fun saveHUDSettings(settings: HUDSettings) {
-        val conn = getConnection()
-        try {
-            val stmt = conn.prepareStatement("""
-                INSERT OR REPLACE INTO hud_settings (id, show_hud, opacity, position, font_size, show_stats)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """)
-            stmt.setInt(1, settings.id)
-            stmt.setInt(2, if (settings.showHUD) 1 else 0)
-            stmt.setDouble(3, settings.opacity)
-            stmt.setString(4, settings.position)
-            stmt.setInt(5, settings.fontSize)
-            stmt.setString(6, settings.showStats)
-            stmt.executeUpdate()
-            stmt.close()
-        } finally {
-            conn.close()
-        }
-    }
-
     data class TournamentType(
         val id: Int,
         val typeName: String,
