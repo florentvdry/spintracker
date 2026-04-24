@@ -93,6 +93,13 @@ tasks.register<JavaExec>("testReplayerEquity") {
     mainClass.set("spintracker.tests.ReplayerEquityTestKt")
 }
 
+tasks.register<JavaExec>("testGTOComparison") {
+    group = "verification"
+    description = "Run GTO comparison test"
+    classpath = sourceSets.get("main").runtimeClasspath
+    mainClass.set("spintracker.tests.GTOComparisonTestKt")
+}
+
 compose.desktop {
     application {
         mainClass = "spintracker.MainKt"
