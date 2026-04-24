@@ -68,7 +68,7 @@ val migrations = listOf(
 
 If the stat **cannot** be calculated from existing columns (needs raw hand history parsing), create a backfill service.
 
-Create `BackfillNewStat.kt` in `src/desktopMain/kotlin/spintracker/data/migrations/`:
+Create `BackfillNewStat.kt` in `src/desktopMain/kotlin/spintracker/data/migrations/Backfills/`:
 
 ```kotlin
 package spintracker.data.migrations
@@ -243,7 +243,8 @@ fun testNewStatBackfill() {
 ## Examples in Codebase
 
 - **Migration example:** `Migration009_AdvancedStats.kt` - adds effective stack columns
-- **Backfill example:** `Backfill5betStats.kt` - backfills 5bet stats from hand histories
+- **Normal backfill:** `Backfills/Backfill5betStats.kt` - fills NULL values for new stat
+- **Fix backfill:** `Backfills/BackfillFix5betStats.kt` - recalculates ALL values for buggy stat
 - **Base class:** `StatsBackfillService.kt` - reusable backfill infrastructure
 
 ---

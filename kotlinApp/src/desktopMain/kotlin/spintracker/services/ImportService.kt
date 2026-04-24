@@ -57,6 +57,26 @@ class ImportService(private val database: Database) {
         
         val isAggressor = preflop.contains("raise", ignoreCase = true) || preflop.contains("bet", ignoreCase = true)
         
+        val flopHasCheck = flop.contains("check", ignoreCase = true)
+        val flopHasBet = flop.contains("bet", ignoreCase = true) || flop.contains("cbet", ignoreCase = true) || flop.contains("donk", ignoreCase = true)
+        val flopHasRaise = flop.contains("raise", ignoreCase = true)
+        val flopHasCall = flop.contains("call", ignoreCase = true)
+        val flopHasFold = flop.contains("fold", ignoreCase = true)
+        
+        val turnHasCheck = turn.contains("check", ignoreCase = true)
+        val turnHasBet = turn.contains("bet", ignoreCase = true) || turn.contains("cbet", ignoreCase = true) || turn.contains("donk", ignoreCase = true)
+        val turnHasRaise = turn.contains("raise", ignoreCase = true)
+        val turnHasCall = turn.contains("call", ignoreCase = true)
+        val turnHasFold = turn.contains("fold", ignoreCase = true)
+        
+        val riverHasCheck = river.contains("check", ignoreCase = true)
+        val riverHasBet = river.contains("bet", ignoreCase = true) || river.contains("cbet", ignoreCase = true) || river.contains("donk", ignoreCase = true)
+        val riverHasRaise = river.contains("raise", ignoreCase = true)
+        val riverHasCall = river.contains("call", ignoreCase = true)
+        val riverHasFold = river.contains("fold", ignoreCase = true)
+        
+        val isStealAttempt = playerHand.position in listOf("BTN", "CO", "MP") && !preflop.contains("call", ignoreCase = true) && (preflop.contains("raise", ignoreCase = true) || preflop.contains("bet", ignoreCase = true))
+        
         return playerHand.copy(
             flgVpip = preflop.contains("call", ignoreCase = true) || 
                       preflop.contains("raise", ignoreCase = true) ||
@@ -66,17 +86,44 @@ class ImportService(private val database: Database) {
                       preflop.contains("3bet", ignoreCase = true),
             flg4bet = preflop.contains("4-bet", ignoreCase = true) ||
                       preflop.contains("4bet", ignoreCase = true),
+            flgSqueeze = preflop.contains("squeeze", ignoreCase = true),
             flgLimp = preflop.contains("limp", ignoreCase = true),
             flgCbetFlop = flop.contains("cbet", ignoreCase = true) ||
-                          (flop.contains("bet", ignoreCase = true) && isAggressor),
+                          (flopHasBet && isAggressor),
             flgDonkFlop = flop.contains("donk", ignoreCase = true) ||
-                          (flop.contains("bet", ignoreCase = true) && !isAggressor),
-            flgSawFlop = !flop.contains("fold", ignoreCase = true),
+                          (flopHasBet && !isAggressor),
+            flgFloatFlop = flopHasCall && !isAggressor && flopHasBet,
+            flgCheckRaiseFlop = flopHasCheck && flopHasRaise,
+            flgSawFlop = !flopHasFold,
             flgCbetTurn = turn.contains("cbet", ignoreCase = true) ||
-                          (turn.contains("bet", ignoreCase = true) && isAggressor),
-            flgSawTurn = !turn.contains("fold", ignoreCase = true),
-            flgCbetRiver = river.contains("cbet", ignoreCase = true),
-            flgSawRiver = !river.contains("fold", ignoreCase = true),
+                          (turnHasBet && isAggressor),
+            flgDonkTurn = turn.contains("donk", ignoreCase = true) ||
+                          (turnHasBet && !isAggressor),
+            flgFloatTurn = turnHasCall && !isAggressor && turnHasBet,
+            flgCheckRaiseTurn = turnHasCheck && turnHasRaise,
+            flgSawTurn = !turnHasFold,
+            flgCbetRiver = river.contains("cbet", ignoreCase = true) ||
+                           (riverHasBet && isAggressor),
+            flgDonkRiver = river.contains("donk", ignoreCase = true) ||
+                           (riverHasBet && !isAggressor),
+            flgCheckRaiseRiver = riverHasCheck && riverHasRaise,
+            flgSawRiver = !riverHasFold,
+            flgXcFlop = flopHasCheck && flopHasCall,
+            flgXfFlop = flopHasCheck && flopHasFold,
+            flgXcTurn = turnHasCheck && turnHasCall,
+            flgXfTurn = turnHasCheck && turnHasFold,
+            flgXcRiver = riverHasCheck && riverHasCall,
+            flgXfRiver = riverHasCheck && riverHasFold,
+            flgRaiseFlop = flopHasRaise,
+            flgRaiseTurn = turnHasRaise,
+            flgRaiseRiver = riverHasRaise,
+            flgStealAtt = isStealAttempt,
+            flgBlindDefOpp = playerHand.position in listOf("SB", "BB") && (flopHasCall || flopHasRaise || turnHasCall || turnHasRaise || riverHasCall || riverHasRaise),
+            flgSbStealFold = playerHand.position == "SB" && preflop.contains("fold", ignoreCase = true) && isStealAttempt,
+            flgBbStealFold = playerHand.position == "BB" && preflop.contains("fold", ignoreCase = true) && isStealAttempt,
+            flgFHasPosition = playerHand.position in listOf("BTN", "CO") && flop.isNotEmpty(),
+            flgTHasPosition = playerHand.position in listOf("BTN", "CO") && turn.isNotEmpty(),
+            flgRHasPosition = playerHand.position in listOf("BTN", "CO") && river.isNotEmpty(),
             flgIsAggressor = isAggressor,
             handGroup = classifyHandGroup(playerHand.holeCards),
             isSuited = playerHand.holeCards?.let { hc ->

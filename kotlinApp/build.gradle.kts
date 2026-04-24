@@ -21,6 +21,9 @@ dependencies {
     // SQLite
     implementation("org.xerial:sqlite-jdbc:3.44.0.0")
     
+    // PostgreSQL
+    implementation("org.postgresql:postgresql:42.6.0")
+    
     // JSON
     implementation("org.json:json:20231013")
     
@@ -91,6 +94,20 @@ tasks.register<JavaExec>("testGTOComparison") {
     description = "Run GTO comparison test"
     classpath = sourceSets.get("main").runtimeClasspath
     mainClass.set("spintracker.tests.GTOComparisonTestKt")
+}
+
+tasks.register<JavaExec>("exportPT4Schema") {
+    group = "verification"
+    description = "Export PT4 database schema"
+    classpath = sourceSets.get("main").runtimeClasspath
+    mainClass.set("spintracker.utils.PT4SchemaExportKt")
+}
+
+tasks.register<JavaExec>("checkDatabase") {
+    group = "verification"
+    description = "Check database for unpopulated data"
+    classpath = sourceSets.get("main").runtimeClasspath
+    mainClass.set("CheckDatabaseKt")
 }
 
 compose.desktop {

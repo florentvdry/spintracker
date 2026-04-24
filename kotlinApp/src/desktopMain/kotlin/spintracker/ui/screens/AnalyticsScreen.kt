@@ -37,8 +37,8 @@ fun AnalyticsScreen(
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Position", "Steal Wars", "Showdown", "Frequencies")
     
-    val dateFrom = if (dateRange == "all") null else "2024-01-01"
-    val dateTo = if (dateRange == "all") null else LocalDateTime.now().toString()
+    val dateFrom = if (dateRange == "all") null else null
+    val dateTo = if (dateRange == "all") null else null
     
     Column(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {

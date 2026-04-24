@@ -1,4 +1,4 @@
-package spintracker.data.migrations
+package spintracker.data.migrations.Backfills
 
 import spintracker.data.Database
 import spintracker.parsers.PokerStarsParser
