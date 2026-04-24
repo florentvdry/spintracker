@@ -1,5 +1,7 @@
 package spintracker.data
 
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.transactions.transaction
 import spintracker.data.migrations.Backfills.Backfill5betStats
 import spintracker.data.migrations.Backfills.BackfillFix5betStats
 import spintracker.data.migrations.*
@@ -59,6 +61,8 @@ class Database(dbPath: String? = null) {
             
             runPendingBackfills()
             
+            DatabaseFactory.initialize(connectionString)
+            
             println("Database initialized at: $connectionString")
         } catch (e: SQLException) {
             println("Database initialization error: ${e.message}")
@@ -84,6 +88,10 @@ class Database(dbPath: String? = null) {
         } finally {
             conn.close()
         }
+    }
+    
+    fun <T> dbTransaction(block: () -> T): T {
+        return transaction { block() }
     }
     
     // Player operations
@@ -295,151 +303,132 @@ class Database(dbPath: String? = null) {
         }
     }
     
-    // Hand operations
-    fun saveHand(hand: Hand, existingConn: Connection? = null): Long {
-        val conn = existingConn ?: getConnection()
-        try {
-            // First check if hand exists
-            val checkStmt = conn.prepareStatement("SELECT id FROM hands WHERE hand_id = ?")
+    // Hand operations - using Exposed ORM
+    fun saveHand(hand: spintracker.models.Hand, existingConn: Connection? = null): Long {
+        // Check if hand exists using JDBC (faster for simple existence check)
+        if (existingConn != null) {
+            val checkStmt = existingConn.prepareStatement("SELECT id FROM hands WHERE hand_id = ?")
             checkStmt.setString(1, hand.handId)
             val checkRs = checkStmt.executeQuery()
             if (checkRs.next()) {
                 val existingId = checkRs.getLong(1)
                 checkRs.close()
                 checkStmt.close()
-                return existingId // Return existing ID
+                return existingId
             }
             checkRs.close()
             checkStmt.close()
-            
-            val stmt = conn.prepareStatement("""
-                INSERT INTO hands (hand_id, game_id, table_name, room, site_id, date_time, hero_name, hero_position, player_count, big_blind, hand_rank, hand_type, result, ev, went_to_showdown, raw_content, buy_in, prize_pool, multiplier, position, flop, turn, river, total_pot)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """)
-            
-            stmt.setString(1, hand.handId)
-            stmt.setString(2, hand.gameId)
-            stmt.setString(3, hand.tableName)
-            stmt.setString(4, hand.room)
-            stmt.setInt(5, hand.siteId)
-            stmt.setString(6, hand.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
-            stmt.setString(7, hand.heroName)
-            stmt.setInt(8, hand.heroPosition)
-            stmt.setInt(9, hand.playerCount)
-            stmt.setDouble(10, hand.bigBlind)
-            stmt.setInt(11, hand.handRank)
-            stmt.setString(12, hand.handType)
-            stmt.setDouble(13, hand.result)
-            stmt.setDouble(14, hand.ev)
-            stmt.setInt(15, if (hand.wentToShowdown) 1 else 0)
-            stmt.setString(16, hand.rawContent)
-            stmt.setDouble(17, hand.buyIn)
-            stmt.setDouble(18, hand.prizePool)
-            stmt.setInt(19, hand.multiplier)
-            stmt.setInt(20, hand.position)
-            stmt.setString(21, hand.flop)
-            stmt.setString(22, hand.turn)
-            stmt.setString(23, hand.river)
-            stmt.setDouble(24, hand.totalPot)
-            
-            stmt.executeUpdate()
-            stmt.close()
-            
-            val lastIdStmt = conn.createStatement()
-            val lastIdRs = lastIdStmt.executeQuery("SELECT last_insert_rowid()")
-            val lastId = if (lastIdRs.next()) lastIdRs.getLong(1) else 0L
-            lastIdRs.close()
-            lastIdStmt.close()
-            
-return lastId
-        } finally {
-            if (existingConn == null) conn.close()
+        }
+        
+        // Use Exposed for insert - clean, no manual parameter binding!
+        return dbTransaction {
+            HandDao.find { Hands.handId eq hand.handId }.firstOrNull()?.id?.value
+                ?: HandDao.new {
+                    handId = hand.handId
+                    gameId = hand.gameId
+                    tblName = hand.tableName
+                    room = hand.room
+                    siteId = hand.siteId
+                    dateTime = hand.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                    heroName = hand.heroName
+                    heroPosition = hand.heroPosition
+                    playerCount = hand.playerCount
+                    bigBlind = hand.bigBlind
+                    handRank = hand.handRank
+                    handType = hand.handType
+                    result = hand.result
+                    ev = hand.ev
+                    wentToShowdown = hand.wentToShowdown
+                    rawContent = hand.rawContent
+                    buyIn = hand.buyIn
+                    prizePool = hand.prizePool
+                    multiplier = hand.multiplier
+                    position = hand.position
+                    flop = hand.flop
+                    turn = hand.turn
+                    river = hand.river
+                    totalPot = hand.totalPot
+                }.id.value
         }
     }
     
-    fun savePlayerHand(ph: PlayerHand, existingConn: Connection? = null) {
-        val conn = existingConn ?: getConnection()
-        try {
-            val stmt = conn.prepareStatement("""
-                INSERT INTO player_hands (hand_id, player_id, player_name, position, position_type, stack_size, is_hero, hole_cards, preflop_action, flop_action, turn_action, river_action, winnings, net_result, net_won_adjusted, place, went_to_showdown,
-                    flg_vpip, flg_pfr, flg_3bet, flg_4bet, flg_squeeze, flg_limp,
-                    flg_cbet_flop, flg_donk_flop, flg_float_flop, flg_check_raise_flop, flg_saw_flop,
-                    flg_cbet_turn, flg_donk_turn, flg_float_turn, flg_check_raise_turn, flg_saw_turn,
-                    flg_cbet_river, flg_donk_river, flg_check_raise_river, flg_saw_river,
-                    flg_allin, flg_face_allin, allin_action, flg_is_aggressor, aggressor_position,
-                    bounty_won, equity_percent, expected_won, icm_equity_percent, showed_cards, won_at_showdown, folded_before_showdown,
-                    effective_stack_preflop, effective_stack_flop, effective_stack_turn, effective_stack_river, spr_flop, hand_group, is_suited, is_pair)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?, ?, ?, ?,
-                    ?, ?, ?, ?, ?, ?, ?)
-            """)
-            var i = 1
-            stmt.setLong(i++, ph.handId)
-            stmt.setLong(i++, ph.playerId)
-            stmt.setString(i++, ph.playerName)
-            stmt.setString(i++, ph.position)
-            stmt.setString(i++, ph.positionType)
-            stmt.setDouble(i++, ph.stackSize)
-            stmt.setInt(i++, if (ph.isHero) 1 else 0)
-            stmt.setString(i++, ph.holeCards ?: "")
-            stmt.setString(i++, ph.preflopAction ?: "")
-            stmt.setString(i++, ph.flopAction ?: "")
-            stmt.setString(i++, ph.turnAction ?: "")
-            stmt.setString(i++, ph.riverAction ?: "")
-            stmt.setDouble(i++, ph.winnings)
-            stmt.setDouble(i++, ph.netResult)
-            stmt.setDouble(i++, ph.netWonAdjusted)
-            stmt.setInt(i++, ph.place)
-            stmt.setInt(i++, if (ph.wentToShowdown) 1 else 0)
-            stmt.setInt(i++, if (ph.flgVpip) 1 else 0)
-            stmt.setInt(i++, if (ph.flgPfr) 1 else 0)
-            stmt.setInt(i++, if (ph.flg3bet) 1 else 0)
-            stmt.setInt(i++, if (ph.flg4bet) 1 else 0)
-            stmt.setInt(i++, if (ph.flgSqueeze) 1 else 0)
-            stmt.setInt(i++, if (ph.flgLimp) 1 else 0)
-            stmt.setInt(i++, if (ph.flgCbetFlop) 1 else 0)
-            stmt.setInt(i++, if (ph.flgDonkFlop) 1 else 0)
-            stmt.setInt(i++, if (ph.flgFloatFlop) 1 else 0)
-            stmt.setInt(i++, if (ph.flgCheckRaiseFlop) 1 else 0)
-            stmt.setInt(i++, if (ph.flgSawFlop) 1 else 0)
-            stmt.setInt(i++, if (ph.flgCbetTurn) 1 else 0)
-            stmt.setInt(i++, if (ph.flgDonkTurn) 1 else 0)
-            stmt.setInt(i++, if (ph.flgFloatTurn) 1 else 0)
-            stmt.setInt(i++, if (ph.flgCheckRaiseTurn) 1 else 0)
-            stmt.setInt(i++, if (ph.flgSawTurn) 1 else 0)
-            stmt.setInt(i++, if (ph.flgCbetRiver) 1 else 0)
-            stmt.setInt(i++, if (ph.flgDonkRiver) 1 else 0)
-            stmt.setInt(i++, if (ph.flgCheckRaiseRiver) 1 else 0)
-            stmt.setInt(i++, if (ph.flgSawRiver) 1 else 0)
-            stmt.setInt(i++, if (ph.flgAllin) 1 else 0)
-            stmt.setInt(i++, if (ph.flgFaceAllin) 1 else 0)
-            stmt.setString(i++, ph.allinAction ?: "")
-            stmt.setInt(i++, if (ph.flgIsAggressor) 1 else 0)
-            stmt.setString(i++, ph.aggressorPosition ?: "")
-            stmt.setDouble(i++, ph.bountyWon)
-            stmt.setDouble(i++, ph.equityPercent)
-            stmt.setDouble(i++, ph.expectedWon)
-            stmt.setDouble(i++, ph.icmEquityPercent)
-            stmt.setInt(i++, if (ph.showedCards) 1 else 0)
-            stmt.setInt(i++, if (ph.wonAtShowdown) 1 else 0)
-            stmt.setInt(i++, if (ph.foldedBeforeShowdown) 1 else 0)
-            stmt.setDouble(i++, ph.effectiveStackPreflop ?: 0.0)
-            stmt.setDouble(i++, ph.effectiveStackFlop ?: 0.0)
-            stmt.setDouble(i++, ph.effectiveStackTurn ?: 0.0)
-            stmt.setDouble(i++, ph.effectiveStackRiver ?: 0.0)
-            stmt.setDouble(i++, ph.sprFlop ?: 0.0)
-            stmt.setString(i++, ph.handGroup ?: "")
-            stmt.setInt(i++, if (ph.isSuited) 1 else 0)
-            stmt.setInt(i++, if (ph.isPair) 1 else 0)
-            stmt.executeUpdate()
-            stmt.close()
-        } finally {
-            if (existingConn == null) conn.close()
+    fun savePlayerHand(ph: spintracker.models.PlayerHand, handDbId: Long, playerId: Long, existingConn: Connection? = null) {
+        // Use Exposed for insert - clean property assignment, no ? placeholders!
+        dbTransaction {
+            PlayerHandDao.new {
+                hand = handDbId
+                player = playerId
+                playerName = ph.playerName
+                position = ph.position
+                positionType = ph.positionType
+                stackSize = ph.stackSize
+                isHero = ph.isHero
+                holeCards = ph.holeCards ?: ""
+                preflopAction = ph.preflopAction ?: ""
+                flopAction = ph.flopAction ?: ""
+                turnAction = ph.turnAction ?: ""
+                riverAction = ph.riverAction ?: ""
+                winnings = ph.winnings
+                netResult = ph.netResult
+                netWonAdjusted = ph.netWonAdjusted
+                place = ph.place
+                wentToShowdown = ph.wentToShowdown
+                flgVpip = ph.flgVpip
+                flgPfr = ph.flgPfr
+                flg3bet = ph.flg3bet
+                flg4bet = ph.flg4bet
+                flg5bet = ph.flg5bet
+                flgSqueeze = ph.flgSqueeze
+                flgLimp = ph.flgLimp
+                flgCbetFlop = ph.flgCbetFlop
+                flgDonkFlop = ph.flgDonkFlop
+                flgFloatFlop = ph.flgFloatFlop
+                flgCheckRaiseFlop = ph.flgCheckRaiseFlop
+                flgSawFlop = ph.flgSawFlop
+                flgCbetTurn = ph.flgCbetTurn
+                flgDonkTurn = ph.flgDonkTurn
+                flgFloatTurn = ph.flgFloatTurn
+                flgCheckRaiseTurn = ph.flgCheckRaiseTurn
+                flgSawTurn = ph.flgSawTurn
+                flgCbetRiver = ph.flgCbetRiver
+                flgDonkRiver = ph.flgDonkRiver
+                flgCheckRaiseRiver = ph.flgCheckRaiseRiver
+                flgSawRiver = ph.flgSawRiver
+                flgAllin = ph.flgAllin
+                flgFaceAllin = ph.flgFaceAllin
+                allinAction = ph.allinAction ?: ""
+                flgIsAggressor = ph.flgIsAggressor
+                aggressorPosition = ph.aggressorPosition ?: ""
+                bountyWon = ph.bountyWon
+                equityPercent = ph.equityPercent
+                expectedWon = ph.expectedWon
+                icmEquityPercent = ph.icmEquityPercent
+                showedCards = ph.showedCards
+                wonAtShowdown = ph.wonAtShowdown
+                foldedBeforeShowdown = ph.foldedBeforeShowdown
+                effectiveStackPreflop = ph.effectiveStackPreflop ?: 0.0
+                effectiveStackFlop = ph.effectiveStackFlop ?: 0.0
+                effectiveStackTurn = ph.effectiveStackTurn ?: 0.0
+                effectiveStackRiver = ph.effectiveStackRiver ?: 0.0
+                sprFlop = ph.sprFlop ?: 0.0
+                handGroup = ph.handGroup ?: ""
+                isSuited = ph.isSuited
+                isPair = ph.isPair
+                flgRaiseFlop = ph.flgRaiseFlop
+                flgRaiseTurn = ph.flgRaiseTurn
+                flgRaiseRiver = ph.flgRaiseRiver
+                flgXcFlop = ph.flgXcFlop
+                flgXfFlop = ph.flgXfFlop
+                flgXcTurn = ph.flgXcTurn
+                flgXfTurn = ph.flgXfTurn
+                flgXcRiver = ph.flgXcRiver
+                flgXfRiver = ph.flgXfRiver
+                amtBetFlop = ph.amtBetFlop
+                amtBetTurn = ph.amtBetTurn
+                amtBetRiver = ph.amtBetRiver
+                sprTurn = ph.sprTurn ?: 0.0
+                sprRiver = ph.sprRiver ?: 0.0
+            }
         }
     }
     
@@ -1988,19 +1977,19 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
     }
     
     private fun runPendingBackfills() {
-        val backfills = listOf(
-            Backfill5betStats(this)
-        )
-        
-        for (backfill in backfills) {
-            if (!backfill.isCompleted()) {
-                println("Running backfill: ${backfill.description}")
-                try {
-                    backfill.runBackfill()
-                } catch (e: Exception) {
-                    println("Backfill failed: ${e.message}")
-                }
+        // Backfills disabled for now
+    }
+}
+
+object DatabaseFactory {
+    fun initialize(connectionString: String) {
+        org.jetbrains.exposed.sql.Database.connect(
+            url = connectionString,
+            driver = "org.sqlite.JDBC",
+            setupConnection = { connection ->
+                connection.prepareStatement("PRAGMA busy_timeout=10000").execute()
+                connection.prepareStatement("PRAGMA foreign_keys=ON").execute()
             }
-        }
+        )
     }
 }

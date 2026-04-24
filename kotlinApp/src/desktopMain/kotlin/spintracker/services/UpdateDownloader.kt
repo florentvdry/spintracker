@@ -8,7 +8,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.net.URI
-import java.nio.ByteBuffer
+
 
 class UpdateDownloader {
     private val httpClient = HttpClient.newBuilder()
@@ -34,7 +34,7 @@ class UpdateDownloader {
             }
             
             val contentLength = response.headers().firstValue("content-length")
-                .mapOrNull { it.toLong() } ?: -1L
+                .flatMap { it.toLongOrNull() } ?: -1L
             
             val inputStream = response.body()
             val outputStream = FileOutputStream(destination)
@@ -43,18 +43,19 @@ class UpdateDownloader {
             var downloadedBytes = 0L
             var bytesRead: Int
             
-            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                outputStream.write(buffer, 0, bytesRead)
-                downloadedBytes += bytesRead
-                
-                if (contentLength > 0) {
-                    val progress = downloadedBytes.toFloat() / contentLength.toFloat()
-                    onProgress(DownloadProgress(progress, downloadedBytes, contentLength))
+            inputStream.use { input ->
+                outputStream.use { output ->
+                    while (input.read(buffer).also { bytesRead = it } != -1) {
+                        output.write(buffer, 0, bytesRead)
+                        downloadedBytes += bytesRead
+                        
+                        if (contentLength > 0) {
+                            val progress = downloadedBytes.toFloat() / contentLength.toFloat()
+                            onProgress(DownloadProgress(progress, downloadedBytes, contentLength))
+                        }
+                    }
                 }
             }
-            
-            outputStream.close()
-            inputStream.close()
             
             Result.success(destination)
         } catch (e: Exception) {

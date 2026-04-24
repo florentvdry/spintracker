@@ -260,7 +260,7 @@ class ImportService(private val database: Database) {
                             wentToShowdown = parsedPlayer.wentToShowdown
                         )
                         val playerHandWithFlags = calculateActionFlags(playerHand)
-                        database.savePlayerHand(playerHandWithFlags, conn)
+                        database.savePlayerHand(playerHandWithFlags, dbHandId, player.id, conn)
                     }
                     
                     onProgress(ImportProgress.Importing(index + 1, total, totalHandsImported, totalHandsSkipped))
