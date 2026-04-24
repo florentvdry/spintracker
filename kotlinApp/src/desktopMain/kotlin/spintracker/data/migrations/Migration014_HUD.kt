@@ -22,10 +22,5 @@ class Migration014_HUD : Migration {
             INSERT OR IGNORE INTO hud_settings (id, show_hud, opacity, position, font_size, show_stats)
             VALUES (1, 1, 0.9, 'top_right', 14, 'vpip,pfr,hands')
         """)
-        
-        connection.createStatement().execute("""
-            INSERT OR IGNORE INTO config (key, value, category, is_system)
-            VALUES ('database.version', '14', 'system', 1)
-        """)
     }
 }
