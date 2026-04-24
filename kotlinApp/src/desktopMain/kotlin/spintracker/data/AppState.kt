@@ -134,6 +134,10 @@ class AppState {
         return database.getGraphData(hero ?: heroName)
     }
     
+    fun getBankrollData(hero: String? = null): List<spintracker.models.BankrollDataPoint> {
+        return database.getBankrollData(hero ?: heroName)
+    }
+    
     fun getRecentSessions(hero: String? = null, limit: Int = 10): List<spintracker.models.Session> {
         return database.getRecentSessions(hero ?: heroName, limit)
     }

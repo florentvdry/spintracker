@@ -232,6 +232,15 @@ data class GraphPoint(
     val nonShowdown: Double
 )
 
+data class BankrollDataPoint(
+    val x: Int,
+    val bankroll: Double,
+    val peak: Double,
+    val drawdown: Double,
+    val isPeak: Boolean,
+    val isTrough: Boolean
+)
+
 data class Session(
     val startTime: String,
     val endTime: String,

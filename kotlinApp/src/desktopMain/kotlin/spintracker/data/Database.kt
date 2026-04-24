@@ -882,6 +882,60 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
         return points
     }
 
+    fun getBankrollData(heroName: String? = null): List<BankrollDataPoint> {
+        val conn = getConnection()
+        val points = mutableListOf<BankrollDataPoint>()
+        try {
+            val sql = """
+                SELECT ph.net_result
+                FROM player_hands ph
+                JOIN hands h ON ph.hand_id = h.id
+                WHERE ph.player_name = ?
+                ORDER BY h.date_time ASC
+            """
+            val stmt = conn.prepareStatement(sql)
+            stmt.setString(1, heroName ?: "")
+            
+            val rs = stmt.executeQuery()
+            var cumulativeBankroll = 0.0
+            var peak = 0.0
+            var count = 0
+            
+            points.add(BankrollDataPoint(0, 0.0, 0.0, 0.0, false, false))
+            
+            while (rs.next()) {
+                val result = rs.getDouble(1)
+                count++
+                cumulativeBankroll += result
+                peak = maxOf(peak, cumulativeBankroll)
+                val drawdown = cumulativeBankroll - peak
+                
+                points.add(BankrollDataPoint(count, cumulativeBankroll, peak, drawdown, false, false))
+            }
+            
+            rs.close()
+            stmt.close()
+            
+            val mutablePoints = points.toMutableList()
+            for (i in 1 until points.size - 1) {
+                val prev = points[i - 1]
+                val curr = points[i]
+                val next = points[i + 1]
+                
+                if (curr.bankroll > prev.bankroll && curr.bankroll > next.bankroll) {
+                    mutablePoints[i] = curr.copy(isPeak = true)
+                }
+                if (curr.bankroll < prev.bankroll && curr.bankroll < next.bankroll) {
+                    mutablePoints[i] = curr.copy(isTrough = true)
+                }
+            }
+            
+            return mutablePoints
+        } finally {
+            conn.close()
+        }
+    }
+
     fun getRecentSessions(heroName: String? = null, limit: Int = 10): List<Session> {
         val conn = getConnection()
         val sessions = mutableListOf<Session>()
