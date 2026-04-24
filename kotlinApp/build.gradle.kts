@@ -103,6 +103,13 @@ tasks.register<JavaExec>("testGTOComparison") {
     mainClass.set("spintracker.tests.GTOComparisonTestKt")
 }
 
+tasks.register<JavaExec>("testUpdateService") {
+    group = "verification"
+    description = "Run update service test"
+    classpath = sourceSets.get("main").runtimeClasspath
+    mainClass.set("spintracker.tests.UpdateServiceTestKt")
+}
+
 tasks.register<JavaExec>("exportPT4Schema") {
     group = "verification"
     description = "Export PT4 database schema"
