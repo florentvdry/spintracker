@@ -25,6 +25,7 @@ enum class NavScreen(val title: String, val icon: ImageVector, val route: String
     LeakBuster("Leaks", Icons.Default.Warning, "/leaks"),
     RangeResearch("Ranges", Icons.Default.Grid3x3, "/ranges"),
     Charts("Charts", Icons.Default.BarChart, "/charts"),
+    Bankroll("Bankroll", Icons.Default.ShowChart, "/bankroll"),
     Players("Players", Icons.Default.People, "/players"),
     Settings("Settings", Icons.Default.Settings, "/settings"),
     Session("Session", Icons.Default.Timer, "/session")
