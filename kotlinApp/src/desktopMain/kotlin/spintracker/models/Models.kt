@@ -281,3 +281,15 @@ data class AnalysisFilters(
     val dateTo: String? = null,
     val opponentType: String? = null
 )
+
+enum class BoardTexture { DRY, MIXED, WET }
+
+data class BoardAnalysis(
+    val texture: BoardTexture,
+    val isMonotone: Boolean,
+    val isPaired: Boolean,
+    val isRainbow: Boolean,
+    val hasStraightDraw: Boolean,
+    val profitByTexture: Double = 0.0,
+    val handsPlayed: Int = 0
+)

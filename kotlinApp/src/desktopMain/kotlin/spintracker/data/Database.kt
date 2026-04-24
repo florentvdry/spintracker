@@ -1321,6 +1321,53 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
     fun getStatsCacheRepository(): StatsCacheRepository {
         return StatsCacheRepository(connectionString)
     }
+
+    fun getHandsByPlayer(playerId: Long): List<Hand> {
+        val conn = getConnection()
+        val hands = mutableListOf<Hand>()
+        try {
+            val sql = """
+                SELECT h.id, h.hand_id, h.game_id, h.table_name, h.room, h.date_time, h.hero_name, h.hero_position,
+                       h.big_blind, h.hand_rank, h.hand_type, h.result, h.ev, h.went_to_showdown,
+                       h.flop, h.turn, h.river, h.total_pot, ph.net_result
+                FROM hands h
+                JOIN player_hands ph ON h.id = ph.hand_id
+                WHERE ph.player_id = ?
+                ORDER BY h.date_time DESC
+            """
+            val stmt = conn.prepareStatement(sql)
+            stmt.setLong(1, playerId)
+            val rs = stmt.executeQuery()
+            val formatter = java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
+            while (rs.next()) {
+                hands.add(Hand(
+                    id = rs.getLong(1),
+                    handId = rs.getString(2),
+                    gameId = rs.getString(3),
+                    tableName = rs.getString(4),
+                    room = rs.getString(5),
+                    dateTime = LocalDateTime.parse(rs.getString(6), formatter),
+                    heroName = rs.getString(7),
+                    heroPosition = rs.getInt(8),
+                    bigBlind = rs.getDouble(9),
+                    handRank = rs.getInt(10),
+                    handType = rs.getString(11),
+                    result = rs.getDouble(12),
+                    ev = rs.getDouble(13),
+                    wentToShowdown = rs.getInt(14) == 1,
+                    flop = rs.getString(15),
+                    turn = rs.getString(16),
+                    river = rs.getString(17),
+                    totalPot = rs.getDouble(18)
+                ))
+            }
+            rs.close()
+            stmt.close()
+        } finally {
+            conn.close()
+        }
+        return hands
+    }
     
     // Database management methods
     fun getDatabaseInfo(): DatabaseInfo {
