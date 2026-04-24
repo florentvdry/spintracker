@@ -26,7 +26,8 @@ enum class NavScreen(val title: String, val icon: ImageVector, val route: String
     RangeResearch("Ranges", Icons.Default.Grid3x3, "/ranges"),
     Charts("Charts", Icons.Default.BarChart, "/charts"),
     Players("Players", Icons.Default.People, "/players"),
-    Settings("Settings", Icons.Default.Settings, "/settings")
+    Settings("Settings", Icons.Default.Settings, "/settings"),
+    Session("Session", Icons.Default.Timer, "/session")
 }
 
 @Composable
