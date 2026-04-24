@@ -28,7 +28,6 @@ import spintracker.ui.screens.TournamentsScreen
 import spintracker.ui.screens.PlayersScreen
 import spintracker.ui.screens.RangeResearchScreen
 import spintracker.ui.screens.SettingsScreen
-import spintracker.ui.screens.SessionScreen
 import spintracker.ui.screens.LeakBusterScreen
 import spintracker.ui.screens.BankrollScreen
 import spintracker.ui.screens.ReplayerWindow
@@ -135,7 +134,6 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
                         onHeroNameChange = { name -> heroName = name; appState.heroName = name },
                         onDataDeleted = { deleteSuccess = "All data deleted successfully"; refreshKey++ }
                     )
-                    NavScreen.Session -> SessionScreen(refreshKey, heroName)
                 }
                 
                 // Import Progress Overlay

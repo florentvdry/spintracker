@@ -72,13 +72,14 @@ fun BankrollScreen(heroName: String, dateRange: String, buyIn: String) {
             val currentBankroll = bankrollData.lastOrNull()?.bankroll ?: 0.0
             val peakBankroll = bankrollData.maxByOrNull { it.bankroll }?.bankroll ?: 0.0
             val maxDrawdown = bankrollData.minByOrNull { it.drawdown }?.drawdown ?: 0.0
+            val totalHands = bankrollData.size - 1
             
             Card(modifier = Modifier.weight(1f), colors = CardDefaults.cardColors(containerColor = DarkSurface)) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.TrendingUp, null, tint = Primary400, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Current Bankroll", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                        Text("Total Profit/Loss", style = MaterialTheme.typography.titleMedium, color = Color.White)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Text("%.2f €".format(currentBankroll), style = MaterialTheme.typography.headlineMedium, color = if (currentBankroll >= 0) SuccessGreen else ErrorRed)
@@ -90,7 +91,7 @@ fun BankrollScreen(heroName: String, dateRange: String, buyIn: String) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.ArrowUpward, null, tint = WarningYellow, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Peak Bankroll", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                        Text("Peak Profit", style = MaterialTheme.typography.titleMedium, color = Color.White)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Text("%.2f €".format(peakBankroll), style = MaterialTheme.typography.headlineMedium, color = SuccessGreen)
