@@ -29,7 +29,7 @@ import spintracker.ui.screens.PlayersScreen
 import spintracker.ui.screens.RangeResearchScreen
 import spintracker.ui.screens.SettingsScreen
 import spintracker.ui.screens.SessionScreen
-import spintracker.ui.screens.LeakBusterScreen
+import spintracker.ui.screens.BankrollScreen
 import spintracker.ui.screens.ReplayerWindow
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
@@ -125,6 +125,7 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
                         showReplayer = true
                     }
                     NavScreen.Charts -> ChartsScreen(heroName, dateRange, buyIn, appState.database)
+                    NavScreen.Bankroll -> BankrollScreen(heroName, dateRange, buyIn)
                     NavScreen.Players -> PlayersScreen(refreshKey, heroName, dateRange, buyIn)
                     NavScreen.Settings -> SettingsScreen(
                         appState = appState,
