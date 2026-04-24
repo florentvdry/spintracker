@@ -1,6 +1,7 @@
 package spintracker.services
 
 import java.sql.DriverManager
+import spintracker.data.Database
 
 data class Leak(
     val type: String,
@@ -13,9 +14,9 @@ object LeakDetectionService {
 
     private const val MIN_SAMPLE_SIZE = 100
 
-    fun detectLeaks(playerId: Long, heroName: String, connectionString: String): List<Leak> {
+    fun detectLeaks(playerId: Long, heroName: String, database: Database): List<Leak> {
         val leaks = mutableListOf<Leak>()
-        val conn = DriverManager.getConnection(connectionString)
+        val conn = database.getConnection()
 
         try {
             val overallStats = getOverallStats(playerId, conn)

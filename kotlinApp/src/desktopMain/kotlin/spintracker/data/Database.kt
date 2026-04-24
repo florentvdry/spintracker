@@ -1055,6 +1055,41 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
         return PlayerStats()
     }
 
+    fun getPlayerStatsByName(name: String): PlayerStatsStats? {
+        val conn = getConnection()
+        try {
+            val stmt = conn.prepareStatement("""
+                SELECT p.id as player_id,
+                       COUNT(ph.id) as total_hands,
+                       SUM(CASE WHEN ph.preflop_action LIKE '%calls%' OR ph.preflop_action LIKE '%raises%' OR ph.preflop_action LIKE '%bets%' THEN 1 ELSE 0 END) as vpip_hands,
+                       SUM(CASE WHEN ph.preflop_action LIKE '%raises%' OR ph.preflop_action LIKE '%bets%' THEN 1 ELSE 0 END) as pfr_hands,
+                       SUM(ph.net_result) as total_profit
+                FROM players p
+                LEFT JOIN player_hands ph ON p.id = ph.player_id
+                WHERE p.name = ?
+                GROUP BY p.id
+            """)
+            stmt.setString(1, name)
+            val rs = stmt.executeQuery()
+            
+            if (rs.next()) {
+                val total = rs.getInt("total_hands")
+                if (total == 0) return null
+                
+                return PlayerStatsStats(
+                    playerId = rs.getLong("player_id"),
+                    vpip = (rs.getDouble("vpip_hands") / total) * 100.0,
+                    pfr = (rs.getDouble("pfr_hands") / total) * 100.0,
+                    totalHands = total,
+                    profit = rs.getDouble("total_profit")
+                )
+            }
+        } finally {
+            conn.close()
+        }
+        return null
+    }
+
     fun deleteAllData() {
         val conn = getConnection()
         try {

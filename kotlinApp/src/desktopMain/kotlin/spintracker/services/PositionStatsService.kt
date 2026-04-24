@@ -9,7 +9,7 @@ data class PositionStats(
     val call4bet: Double = 0.0,
     val call5bet: Double = 0.0,
     val wtsd: Double = 0.0,
-    val w$sd: Double = 0.0,
+    val wonAtShowdown: Double = 0.0,
     val totalHands: Int = 0
 )
 
@@ -28,7 +28,7 @@ class PositionStatsService(private val connectionString: String) {
                     SUM(CASE WHEN preflop_action LIKE '%4-bet%' OR preflop_action LIKE '%calls%' THEN 1 ELSE 0 END) as call_4bet,
                     SUM(CASE WHEN preflop_action LIKE '%5-bet%' OR preflop_action LIKE '%calls%' THEN 1 ELSE 0 END) as call_5bet,
                     SUM(CASE WHEN went_to_showdown = 1 THEN 1 ELSE 0 END) as wtsd,
-                    SUM(CASE WHEN went_to_showdown = 1 AND won_at_showdown = 1 THEN 1 ELSE 0 END) as w$sd
+                    SUM(CASE WHEN went_to_showdown = 1 AND won_at_showdown = 1 THEN 1 ELSE 0 END) as won_at_showdown
                 FROM player_hands
                 WHERE player_id = ? AND position = ?
             """)
@@ -41,7 +41,7 @@ class PositionStatsService(private val connectionString: String) {
                 val steal3bet = if (total > 0) rs.getDouble(2) / total * 100.0 else 0.0
                 val foldToCbet = if (rs.getInt(3) > 0) rs.getInt(5).toDouble() / rs.getInt(3) * 100.0 else 0.0
                 val wtsd = if (total > 0) rs.getDouble(8) / total * 100.0 else 0.0
-                val w$sd = if (rs.getInt(8) > 0) rs.getDouble(9) / rs.getInt(8) * 100.0 else 0.0
+                val won_at_showdown = if (rs.getInt(8) > 0) rs.getDouble(9) / rs.getInt(8) * 100.0 else 0.0
 
                 PositionStats(
                     position = position,
@@ -50,7 +50,7 @@ class PositionStatsService(private val connectionString: String) {
                     call4bet = if (total > 0) rs.getDouble(6) / total * 100.0 else 0.0,
                     call5bet = if (total > 0) rs.getDouble(7) / total * 100.0 else 0.0,
                     wtsd = wtsd,
-                    w$sd = w$sd,
+                    wonAtShowdown = won_at_showdown,
                     totalHands = total
                 )
             } else {

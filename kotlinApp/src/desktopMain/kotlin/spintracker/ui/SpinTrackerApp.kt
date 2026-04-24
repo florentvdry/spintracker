@@ -28,6 +28,7 @@ import spintracker.ui.screens.TournamentsScreen
 import spintracker.ui.screens.PlayersScreen
 import spintracker.ui.screens.RangeResearchScreen
 import spintracker.ui.screens.SettingsScreen
+import spintracker.ui.screens.LeakBusterScreen
 import spintracker.ui.screens.ReplayerWindow
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
@@ -117,6 +118,7 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
                         replayerHandId = handId
                         showReplayer = true
                     }
+                    NavScreen.LeakBuster -> LeakBusterScreen(heroName)
                     NavScreen.RangeResearch -> RangeResearchScreen(heroName, dateRange, buyIn) { handId ->
                         replayerHandId = handId
                         showReplayer = true

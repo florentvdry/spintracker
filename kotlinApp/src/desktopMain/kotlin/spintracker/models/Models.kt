@@ -250,6 +250,14 @@ data class PlayerStats(
     val profit: Double = 0.0
 )
 
+data class PlayerStatsStats(
+    val playerId: Long = 0,
+    val vpip: Double = 0.0,
+    val pfr: Double = 0.0,
+    val totalHands: Int = 0,
+    val profit: Double = 0.0
+)
+
 data class RangeHandSummary(
     val id: String,
     val date: LocalDateTime,
