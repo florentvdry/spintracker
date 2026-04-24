@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.compose") version "1.5.10"
 }
 
+version = "1.0.0"
+
 kotlin {
     jvmToolchain(17)
     sourceSets {
@@ -23,6 +25,11 @@ dependencies {
     
     // PostgreSQL
     implementation("org.postgresql:postgresql:42.6.0")
+    
+    // Exposed ORM
+    implementation("org.jetbrains.exposed:exposed-core:0.45.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.45.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.45.0")
     
     // JSON
     implementation("org.json:json:20231013")
@@ -107,7 +114,7 @@ tasks.register<JavaExec>("checkDatabase") {
     group = "verification"
     description = "Check database for unpopulated data"
     classpath = sourceSets.get("main").runtimeClasspath
-    mainClass.set("CheckDatabaseKt")
+    mainClass.set("spintracker.tests.DatabaseCheckKt")
 }
 
 compose.desktop {
