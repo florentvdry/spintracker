@@ -16,10 +16,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import spintracker.data.AppState
+import spintracker.models.UpdateInfo
 import spintracker.services.ImportService
 import spintracker.ui.components.Header
 import spintracker.ui.components.NavScreen
 import spintracker.ui.components.Sidebar
+import spintracker.ui.components.UpdateDialog
 import spintracker.ui.screens.ChartsScreen
 import spintracker.ui.screens.DashboardScreen
 import spintracker.ui.screens.TournamentsScreen
@@ -33,7 +35,10 @@ import spintracker.ui.screens.ReplayerWindow
 val appState = AppState()
 
 @Composable
-fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
+fun SpinTrackerApp(
+    window: androidx.compose.ui.awt.ComposeWindow,
+    pendingUpdate: UpdateInfo? = null
+) {
     var selectedScreen by remember { mutableStateOf(NavScreen.Dashboard) }
     var refreshKey by remember { mutableIntStateOf(0) }
     var heroName by remember { mutableStateOf(appState.heroName) }
@@ -50,11 +55,31 @@ fun SpinTrackerApp(window: androidx.compose.ui.awt.ComposeWindow) {
     var isImporting by remember { mutableStateOf(false) }
     var deleteSuccess by remember { mutableStateOf<String?>(null) }
     
+    var showUpdateDialog by remember { mutableStateOf(pendingUpdate != null) }
+    var updateToInstall by remember { mutableStateOf(pendingUpdate) }
+
+    LaunchedEffect(pendingUpdate) {
+        if (pendingUpdate != null) {
+            showUpdateDialog = true
+            updateToInstall = pendingUpdate
+        }
+    }
+    
     if (showReplayer && replayerHandId != null) {
         ReplayerWindow(
             handId = replayerHandId!!,
             heroName = heroName,
             onClose = { showReplayer = false; replayerHandId = null }
+        )
+    }
+    
+    if (showUpdateDialog && updateToInstall != null) {
+        UpdateDialog(
+            updateInfo = updateToInstall!!,
+            onDismiss = { showUpdateDialog = false },
+            onInstallComplete = {
+                window.dispose()
+            }
         )
     }
     
