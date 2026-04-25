@@ -1,9 +1,6 @@
 package spintracker.data
 
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.transactions.transaction
-import spintracker.data.migrations.Backfills.Backfill5betStats
-import spintracker.data.migrations.Backfills.BackfillFix5betStats
 import spintracker.data.migrations.*
 import spintracker.models.*
 import spintracker.services.DatabaseInfo

@@ -20,22 +20,25 @@ class UpdateChecker(
             val updateInfo = updateService.getLatestRelease()
             
             if (updateInfo == null) {
-                cachedResult = CheckResult.Error("Failed to fetch update information")
-                return@withContext cachedResult
+                val error = CheckResult.Error("Failed to fetch update information")
+                cachedResult = error
+                return@withContext error
             }
             
             val comparison = updateService.compareVersions(currentVersion, updateInfo.version)
             
-            cachedResult = if (comparison > 0) {
+            val result = if (comparison > 0) {
                 CheckResult.Available(updateInfo)
             } else {
                 CheckResult.UpToDate
             }
+            cachedResult = result
+            return@withContext result
         } catch (e: Exception) {
-            cachedResult = CheckResult.Error(e.message ?: "Unknown error: ${e.javaClass.simpleName}")
+            val error = CheckResult.Error(e.message ?: "Unknown error: ${e.javaClass.simpleName}")
+            cachedResult = error
+            return@withContext error
         }
-        
-        return@withContext cachedResult
     }
     
     fun clearCache() {

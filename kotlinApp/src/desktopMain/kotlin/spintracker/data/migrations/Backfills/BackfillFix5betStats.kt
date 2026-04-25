@@ -15,7 +15,7 @@ class BackfillFix5betStats(database: Database) : StatsBackfillService(database) 
         val parser = PokerStarsParser()
         
         while (true) {
-            val hands = getAllHandHistories()
+            val hands = getHandsNeedingBackfill("flg_5bet")
             if (hands.isEmpty()) break
             
             database.useTransaction { conn ->
@@ -23,7 +23,8 @@ class BackfillFix5betStats(database: Database) : StatsBackfillService(database) 
                     val parsedHand = parser.parseHand(history)
                     if (parsedHand != null) {
                         for (player in parsedHand.players) {
-                            val has5bet = calculate5betFixed(player)
+                            val has5bet = player.preflopAction?.contains("5-bet") == true ||
+                                         player.preflopAction?.contains("5bet") == true
                             
                             conn.prepareStatement("""
                                 UPDATE player_hands 
@@ -46,12 +47,5 @@ class BackfillFix5betStats(database: Database) : StatsBackfillService(database) 
         
         markCompleted()
         println("5bet fix complete! Total: $processed hands")
-    }
-    
-    private fun calculate5betFixed(player: ParsedPlayer): Boolean {
-        val action = player.preflopAction ?: return false
-        return action.contains("5-bet", ignoreCase = true) ||
-               action.contains("5bet", ignoreCase = true) ||
-               action.contains("5 bet", ignoreCase = true)
     }
 }

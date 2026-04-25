@@ -31,6 +31,7 @@ import spintracker.data.Database
 import spintracker.services.DatabaseInfo
 import spintracker.ui.*
 import spintracker.ui.components.SettingRow
+import spintracker.ui.components.UpdateDialog
 import spintracker.services.UpdateService
 import spintracker.services.UpdateChecker
 import spintracker.services.CheckResult

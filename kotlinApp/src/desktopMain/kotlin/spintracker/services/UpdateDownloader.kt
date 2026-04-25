@@ -33,8 +33,8 @@ class UpdateDownloader {
                 return@withContext Result.failure(Exception("Download failed: HTTP ${response.statusCode()}"))
             }
             
-            val contentLength = response.headers().firstValue("content-length")
-                .flatMap { it.toLongOrNull() } ?: -1L
+            val contentLength = response.headers().firstValue("content-length").orElse(null)
+                ?.toLongOrNull() ?: -1L
             
             val inputStream = response.body()
             val outputStream = FileOutputStream(destination)
@@ -50,7 +50,7 @@ class UpdateDownloader {
                         downloadedBytes += bytesRead
                         
                         if (contentLength > 0) {
-                            val progress = downloadedBytes.toFloat() / contentLength.toFloat()
+                            val progress = (downloadedBytes.toDouble() / contentLength.toDouble()).toFloat()
                             onProgress(DownloadProgress(progress, downloadedBytes, contentLength))
                         }
                     }

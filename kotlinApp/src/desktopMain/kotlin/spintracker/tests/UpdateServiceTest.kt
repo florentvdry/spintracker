@@ -2,8 +2,9 @@ package spintracker.tests
 
 import spintracker.services.UpdateService
 import spintracker.models.GitHubAsset
+import kotlinx.coroutines.runBlocking
 
-fun main() {
+fun main() = runBlocking {
     val service = UpdateService.create()
     
     // Test version extraction from tag

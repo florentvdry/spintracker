@@ -64,7 +64,8 @@ class UpdateService(
                     tagName = json.getString("tag_name"),
                     name = json.getString("name"),
                     body = json.getString("body"),
-                    publishedAt = json.getString("published_at")
+                    publishedAt = json.getString("published_at"),
+                    assets = assets
                 )
                 
                 parseReleaseToUpdateInfo(release)
