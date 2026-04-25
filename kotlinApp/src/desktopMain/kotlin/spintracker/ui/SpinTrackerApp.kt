@@ -57,6 +57,11 @@ fun SpinTrackerApp(
     
     var showUpdateDialog by remember { mutableStateOf(pendingUpdate != null) }
     var updateToInstall by remember { mutableStateOf(pendingUpdate) }
+    var appVersion by remember { mutableStateOf("1.0.0") }
+    
+    LaunchedEffect(Unit) {
+        appVersion = appState.getAppVersion()
+    }
     
     if (showReplayer && replayerHandId != null) {
         ReplayerWindow(
@@ -69,6 +74,7 @@ fun SpinTrackerApp(
     if (showUpdateDialog && updateToInstall != null) {
         UpdateDialog(
             updateInfo = updateToInstall!!,
+            currentVersion = appVersion,
             onDismiss = { showUpdateDialog = false },
             onInstallComplete = {
                 window.dispose()

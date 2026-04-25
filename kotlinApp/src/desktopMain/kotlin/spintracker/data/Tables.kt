@@ -3,18 +3,16 @@ package spintracker.data
 import org.jetbrains.exposed.dao.id.*
 import org.jetbrains.exposed.sql.*
 
-object Players : Table("players") {
-    val id = long("id").autoIncrement()
+object Players : IdTable<Long>("players") {
+    override val id: Column<EntityID<Long>> = long("id").autoIncrement().entityId()
     val name = varchar("name", 255)
     val room = varchar("room", 50).nullable()
     val isReg = bool("is_reg")
     val notes = text("notes")
-    
-    override val primaryKey = PrimaryKey(id)
 }
 
-object Hands : Table("hands") {
-    val id = long("id").autoIncrement()
+object Hands : IdTable<Long>("hands") {
+    override val id: Column<EntityID<Long>> = long("id").autoIncrement().entityId()
     val handId = varchar("hand_id", 50).uniqueIndex()
     val gameId = varchar("game_id", 50)
     val tblName = varchar("table_name", 100)
@@ -39,12 +37,10 @@ object Hands : Table("hands") {
     val turn = text("turn").nullable()
     val river = text("river").nullable()
     val totalPot = double("total_pot")
-    
-    override val primaryKey = PrimaryKey(id)
 }
 
-object PlayerHands : Table("player_hands") {
-    val id = long("id").autoIncrement()
+object PlayerHands : IdTable<Long>("player_hands") {
+    override val id: Column<EntityID<Long>> = long("id").autoIncrement().entityId()
     val handId = long("hand_id").references(Hands.id, onDelete = ReferenceOption.CASCADE)
     val playerId = long("player_id").references(Players.id, onDelete = ReferenceOption.CASCADE)
     val playerName = varchar("player_name", 255)
@@ -62,8 +58,6 @@ object PlayerHands : Table("player_hands") {
     val netWonAdjusted = double("net_won_adjusted")
     val place = integer("place")
     val wentToShowdown = bool("went_to_showdown")
-
-    // Flags
     val flgVpip = bool("flg_vpip")
     val flgPfr = bool("flg_pfr")
     val flg3bet = bool("flg_3bet")
@@ -119,14 +113,10 @@ object PlayerHands : Table("player_hands") {
     val amtBetRiver = double("amt_bet_river")
     val sprTurn = double("spr_turn")
     val sprRiver = double("spr_river")
-    
-    override val primaryKey = PrimaryKey(id)
 }
 
-object HandHistories : Table("hand_histories") {
-    val id = long("id").autoIncrement()
+object HandHistories : IdTable<Long>("hand_histories") {
+    override val id: Column<EntityID<Long>> = long("id").autoIncrement().entityId()
     val handId = long("hand_id").references(Hands.id, onDelete = ReferenceOption.CASCADE)
     val history = text("history")
-    
-    override val primaryKey = PrimaryKey(id)
 }

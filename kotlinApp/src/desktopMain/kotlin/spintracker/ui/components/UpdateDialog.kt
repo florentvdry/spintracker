@@ -35,6 +35,7 @@ import java.io.File
 @Composable
 fun UpdateDialog(
     updateInfo: UpdateInfo,
+    currentVersion: String,
     onDismiss: () -> Unit,
     onInstallComplete: () -> Unit
 ) {

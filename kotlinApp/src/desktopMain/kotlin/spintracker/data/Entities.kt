@@ -1,10 +1,11 @@
 package spintracker.data
 
 import org.jetbrains.exposed.dao.*
-import org.jetbrains.exposed.dao.id.*
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IdTable
 
-class PlayerDao(id: EntityID<Long>) : Entity(id) {
-    companion object : EntityClass<Long, PlayerDao>(Players)
+class PlayerDao(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<PlayerDao>(Players)
 
     var name by Players.name
     var room by Players.room
@@ -12,8 +13,8 @@ class PlayerDao(id: EntityID<Long>) : Entity(id) {
     var notes by Players.notes
 }
 
-class HandDao(id: EntityID<Long>) : Entity(id) {
-    companion object : EntityClass<Long, HandDao>(Hands)
+class HandDao(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<HandDao>(Hands)
 
     var handId by Hands.handId
     var gameId by Hands.gameId
@@ -41,11 +42,11 @@ class HandDao(id: EntityID<Long>) : Entity(id) {
     var totalPot by Hands.totalPot
 }
 
-class PlayerHandDao(id: EntityID<Long>) : Entity(id) {
-    companion object : EntityClass<Long, PlayerHandDao>(PlayerHands)
+class PlayerHandDao(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<PlayerHandDao>(PlayerHands)
 
-    var hand by PlayerHands.handId
-    var player by PlayerHands.playerId
+    var handId by PlayerHands.handId
+    var playerId by PlayerHands.playerId
     var playerName by PlayerHands.playerName
     var position by PlayerHands.position
     var positionType by PlayerHands.positionType
@@ -61,7 +62,6 @@ class PlayerHandDao(id: EntityID<Long>) : Entity(id) {
     var netWonAdjusted by PlayerHands.netWonAdjusted
     var place by PlayerHands.place
     var wentToShowdown by PlayerHands.wentToShowdown
-
     var flgVpip by PlayerHands.flgVpip
     var flgPfr by PlayerHands.flgPfr
     var flg3bet by PlayerHands.flg3bet
@@ -119,9 +119,9 @@ class PlayerHandDao(id: EntityID<Long>) : Entity(id) {
     var sprRiver by PlayerHands.sprRiver
 }
 
-class HandHistoryDao(id: EntityID<Long>) : Entity(id) {
-    companion object : EntityClass<Long, HandHistoryDao>(HandHistories)
+class HandHistoryDao(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<HandHistoryDao>(HandHistories)
 
-    var hand by HandHistories.handId
+    var handId by HandHistories.handId
     var history by HandHistories.history
 }

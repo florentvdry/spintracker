@@ -107,6 +107,7 @@ data class PlayerHand(
     val flgPfr: Boolean = false,
     val flg3bet: Boolean = false,
     val flg4bet: Boolean = false,
+    val flg5bet: Boolean = false,
     val flgSqueeze: Boolean = false,
     val flgLimp: Boolean = false,
     val flgLimpBehind: Boolean = false,

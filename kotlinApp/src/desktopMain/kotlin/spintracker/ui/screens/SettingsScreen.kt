@@ -60,7 +60,7 @@ fun SettingsScreen(
     
     val scope = rememberCoroutineScope()
     val updateService = remember { UpdateService.create() }
-    val updateChecker = remember { UpdateChecker(updateService, "1.0.0") }
+    val updateChecker = remember { UpdateChecker(updateService, appVersion) }
     
     fun checkForUpdates() {
         checkingForUpdates = true
@@ -81,11 +81,12 @@ fun SettingsScreen(
                             .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
                     }
                     is CheckResult.Error -> {
-                        // Error - could show snackbar
+                        println("Update check error: ${result.message}")
                     }
                 }
             } catch (e: Exception) {
                 checkingForUpdates = false
+                println("Failed to check for updates: ${e.message}")
             }
         }
     }
@@ -226,6 +227,7 @@ fun SettingsScreen(
     if (showUpdateDialog && updateToInstall != null) {
         UpdateDialog(
             updateInfo = updateToInstall!!,
+            currentVersion = appVersion,
             onDismiss = { showUpdateDialog = false },
             onInstallComplete = {
                 showUpdateDialog = false

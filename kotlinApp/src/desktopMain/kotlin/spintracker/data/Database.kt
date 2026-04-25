@@ -344,20 +344,20 @@ class Database(dbPath: String? = null) {
                     prizePool = hand.prizePool
                     multiplier = hand.multiplier
                     position = hand.position
-                    flop = hand.flop
-                    turn = hand.turn
-                    river = hand.river
+                    flop = hand.flop ?: ""
+                    turn = hand.turn ?: ""
+                    river = hand.river ?: ""
                     totalPot = hand.totalPot
                 }.id.value
         }
     }
     
-    fun savePlayerHand(ph: spintracker.models.PlayerHand, handDbId: Long, playerId: Long, existingConn: Connection? = null) {
+    fun savePlayerHand(ph: spintracker.models.PlayerHand, handDbId: Long, pid: Long, existingConn: Connection? = null) {
         // Use Exposed for insert - clean property assignment, no ? placeholders!
         dbTransaction {
             PlayerHandDao.new {
-                hand = handDbId
-                player = playerId
+                handId = handDbId
+                playerId = pid
                 playerName = ph.playerName
                 position = ph.position
                 positionType = ph.positionType
