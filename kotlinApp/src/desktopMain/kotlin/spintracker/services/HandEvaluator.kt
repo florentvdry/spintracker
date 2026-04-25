@@ -112,32 +112,55 @@ data class Card(val rank: Char, val suit: Char) {
         private val validRanks = setOf('2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A')
         private val validSuits = setOf('h', 'd', 'c', 's')
         
+        // Pre-computed lookup table for all 52 standard cards
+        private val cardCache: Map<String, Card> = buildMap {
+            val ranks = "23456789TJQKA"
+            val suits = "hsdc"
+            for (r in ranks) {
+                for (s in suits) {
+                    put("$r$s", Card(r, s))
+                    put("${r}${s.uppercase()}", Card(r, s))  // Handle uppercase suit
+                }
+            }
+        }
+        
         fun parse(s: String): List<Card> {
             val cards = mutableListOf<Card>()
             if (s.isBlank()) return cards
             
             var cleaned = s.replace("[", "").replace("]", "").replace("|", " ")
             
-            if (!cleaned.contains(" ") && cleaned.length >= 4) {
+            // Fast path: check if it's a standard 2-card or 5-card string
+            if (!cleaned.contains(" ")) {
+                // Try to parse as contiguous string (e.g., "AhKs", "Td9h7c")
                 var i = 0
+                var allCached = true
                 while (i + 1 < cleaned.length) {
                     val rank = cleaned[i].uppercaseChar()
                     val suit = cleaned[i + 1].lowercaseChar()
-                    if (rank in validRanks && suit in validSuits) {
-                        cards.add(Card(rank, suit))
+                    if (rank !in validRanks || suit !in validSuits) {
+                        allCached = false
+                        break
                     }
+                    val key = "$rank$suit"
+                    cards.add(cardCache[key] ?: Card(rank, suit))
                     i += 2
                 }
-                return cards
+                if (allCached && cards.isNotEmpty()) {
+                    return cards
+                }
+                // If we got partial results, clear and fall through to slow path
+                cards.clear()
             }
             
+            // Slow path: space-separated cards
             val parts = cleaned.split(" ").filter { it.length >= 2 }
             for (part in parts) {
                 if (part.length >= 2) {
                     val rank = part[0].uppercaseChar()
                     val suit = part[1].lowercaseChar()
                     if (rank in validRanks && suit in validSuits) {
-                        cards.add(Card(rank, suit))
+                        cards.add(cardCache["${rank}${suit}"] ?: Card(rank, suit))
                     }
                 }
             }

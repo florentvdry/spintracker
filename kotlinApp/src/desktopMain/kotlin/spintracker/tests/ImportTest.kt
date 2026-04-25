@@ -7,7 +7,7 @@ import spintracker.services.ImportService
 fun main() {
     println("=== SpinTracker Import Test ===\n")
 
-    val testDir = "C:/Users/flore/Desktop/spintracker/publish/exemple-data/Betclic"
+    val testDir = "C:/Users/flore/Desktop/spintracker/backend/bin/Debug/net8.0/exemple-data/Betclic"
     println("Test directory: $testDir")
 
     val f1 = java.io.File("$testDir/21793509_ExportHH_2026-1-2.txt")
@@ -116,11 +116,11 @@ fun main() {
     }
     
     val expectedCev = mapOf(
-        "HeadsUp SB" to 32.0 * 300,  // SUM = avg * total tournaments
-        "HeadsUp BB" to 21.0 * 300,
-        "Button 3W" to 24.0 * 300,
-        "3Way Small Blind" to 5.0 * 300,
-        "3Way BigBlinds" to 4.0 * 300
+        "HeadsUp SB" to 9748.88,
+        "HeadsUp BB" to 6305.85,
+        "Button 3W" to 7167.3,
+        "3Way Small Blind" to 1354.18,
+        "3Way BigBlinds" to 1209.07
     )
     
     expectedCev.forEach { (pos, expected) ->

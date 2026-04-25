@@ -1,5 +1,6 @@
 package spintracker.services
 
+import spintracker.data.Database
 import spintracker.models.*
 import spintracker.parsers.ParsedHand
 import spintracker.parsers.ParsedPlayer
@@ -27,13 +28,11 @@ class AnalyticsService(private val equityService: EquityService) {
         val isShowdown = hero.wentToShowdown
         
         val heroAllIn = hero.isAllIn
-        var villainAllIn = false
-        var hasVillainCards = false
         var anyAllIn = heroAllIn
+        var hasVillainCards = false
         
         for (p in hand.players) {
             if (!p.isHero) {
-                if (p.isAllIn) villainAllIn = true
                 if (p.cards != null) hasVillainCards = true
             }
             if (p.isAllIn) anyAllIn = true
@@ -127,7 +126,7 @@ class AnalyticsService(private val equityService: EquityService) {
 
                 if (success) {
                     evChips = Math.round((totalEv - contestedInvestment) * 100.0) / 100.0
-                    cevContribution = Math.round((evChips!! - (hero.winnings - hero.investment)) * 100.0) / 100.0
+                    cevContribution = Math.round((evChips - (hero.winnings - hero.investment)) * 100.0) / 100.0
                 } else {
                     evChips = null
                     cevContribution = 0.0
@@ -170,14 +169,14 @@ class AnalyticsService(private val equityService: EquityService) {
         val allInStreet = hand.allInStreet ?: return false
         
         val streetsToCheck = when (allInStreet.uppercase()) {
-            "PREFLOP", "HOLE_CARDS" -> listOf(hand.flopAction, hand.turnAction, hand.riverAction)
-            "FLOP" -> listOf(hand.turnAction, hand.riverAction)
-            "TURN" -> listOf(hand.riverAction)
+            "PREFLOP", "HOLE_CARDS" -> listOfNotNull(hand.flopAction, hand.turnAction, hand.riverAction)
+            "FLOP" -> listOfNotNull(hand.turnAction, hand.riverAction)
+            "TURN" -> listOfNotNull(hand.riverAction)
             else -> emptyList()
         }
         
         for (actionText in streetsToCheck) {
-            if (actionText != null && hasPlayerAction(actionText)) {
+            if (hasPlayerAction(actionText)) {
                 return true
             }
         }
@@ -203,5 +202,26 @@ class AnalyticsService(private val equityService: EquityService) {
             "RIVER" -> listOfNotNull(hand.flop, hand.turn, hand.river).joinToString(" ")
             else -> ""
         }
+    }
+    
+    /**
+     * Normalize hole cards to hand type string (e.g., "AhKh" → "AKs", "QhQd" → "QQ")
+     */
+    internal fun normalizeHandType(cards: String): String {
+        val clean = cards.replace("[^a-zA-Z0-9]", "").uppercase()
+        if (clean.length < 4) return cards
+        
+        val rank1 = clean[0]
+        val suit1 = clean[1]
+        val rank2 = clean[2]
+        val suit2 = clean[3]
+        
+        if (rank1 == rank2) return "$rank1$rank2"  // Pair
+        
+        val highRank = maxOf(rank1, rank2)
+        val lowRank = minOf(rank1, rank2)
+        val suited = if (suit1 == suit2) "s" else "o"
+        
+        return "${highRank}${lowRank}${suited}"
     }
 }

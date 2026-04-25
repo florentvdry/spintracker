@@ -49,7 +49,8 @@ class Database(dbPath: String? = null) {
                 Migration010_PT4Parity(),
                 Migration011_PT4ParityHighPriority(),
                 Migration012_PT4ParityMediumPriority(),
-                Migration013_PT4ParityLowPriority()
+                Migration013_PT4ParityLowPriority(),
+                Migration014_PreflopEquityLookup()
             )
 
             val runner = MigrationRunner(connectionString)
@@ -480,6 +481,68 @@ class Database(dbPath: String? = null) {
         return ids
     }
 
+    fun getPreflopEquity(heroHand: String, villain1Hand: String, villain2Hand: String?): PreflopEquityResult? {
+        val conn = getConnection()
+        try {
+            val sql = if (villain2Hand == null) {
+                "SELECT hero_equity, tie_equity FROM preflop_equity_lookup WHERE hero_hand = ? AND villain1_hand = ? AND villain2_hand IS NULL"
+            } else {
+                "SELECT hero_equity, tie_equity FROM preflop_equity_lookup WHERE hero_hand = ? AND villain1_hand = ? AND villain2_hand = ?"
+            }
+            
+            val stmt = conn.prepareStatement(sql)
+            stmt.setString(1, heroHand)
+            stmt.setString(2, villain1Hand)
+            if (villain2Hand != null) {
+                stmt.setString(3, villain2Hand)
+            }
+            
+            val rs = stmt.executeQuery()
+            return if (rs.next()) {
+                PreflopEquityResult(
+                    equity = rs.getDouble(1),
+                    tie = rs.getDouble(2)
+                )
+            } else {
+                null
+            }
+        } finally {
+            conn.close()
+        }
+    }
+
+    fun getAllPlayersForRoom(room: String): List<Player> {
+        val conn = getConnection()
+        val players = mutableListOf<Player>()
+        try {
+            val rs = conn.prepareStatement(
+                "SELECT id, name, room, is_reg, notes FROM players WHERE room = ?"
+            ).apply { 
+                setString(1, room) 
+            }.executeQuery()
+            
+            while (rs.next()) {
+                players.add(Player(
+                    id = rs.getLong(1),
+                    name = rs.getString(2),
+                    room = rs.getString(3),
+                    isReg = rs.getInt(4) == 1,
+                    notes = rs.getString(5) ?: ""
+                ))
+            }
+            return players
+        } finally {
+            conn.close()
+        }
+    }
+
+    fun getLastInsertId(conn: Connection): Long {
+        val rs = conn.createStatement().executeQuery("SELECT last_insert_rowid()")
+        return if (rs.next()) rs.getLong(1) else 0L
+    }
+
+    data class PreflopEquityResult(val equity: Double, val tie: Double)
+
     fun getHands(heroName: String? = null, limit: Int = 100): List<Hand> {
         val conn = getConnection()
         val hands = mutableListOf<Hand>()
@@ -558,52 +621,18 @@ class Database(dbPath: String? = null) {
             rs.close()
             stmt.close()
 
-            val profitStmt = conn.prepareStatement("""
-                SELECT h.buy_in, h.prize_pool, SUM(ph.net_result) as chip_profit,
-                       MAX(h.player_count) as max_players, MAX(h.multiplier) as multiplier,
-                       MAX(ph.place) as position
+            // Total profit is total chips won (sum of all net_result)
+            val totalProfitStmt = conn.prepareStatement("""
+                SELECT SUM(ph.net_result)
                 FROM hands h
                 JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = ?
                 WHERE h.player_count <= 3
-                GROUP BY h.game_id
             """)
-            profitStmt.setString(1, targetHero)
-            val profitRs = profitStmt.executeQuery()
-
-            var totalProfitEuro = 0.0
-            while (profitRs.next()) {
-                val b = profitRs.getDouble(1)
-                val p = profitRs.getDouble(2)
-                val cp = profitRs.getDouble(3)
-                val pc = profitRs.getInt(4)
-                val m = profitRs.getInt(5)
-                val pos = profitRs.getInt(6)
-
-                if (p > 0 || m > 0) {
-                    val hasSharing = (b > 0 && (p / b) >= 19.5) || m >= 20
-                    val totalPrize = if (p > (m * b * 0.5)) p else (b * m)
-                    var finishPos = pos
-                    if (finishPos == 0) {
-                        finishPos = if (cp > 0) 1 else (if (pc == 2) 2 else 3)
-                    }
-
-                    var winAmount = 0.0
-                    if (finishPos == 1) {
-                        winAmount = if (hasSharing) (totalPrize * 0.75) else totalPrize
-                    } else if (hasSharing) {
-                        winAmount = when (finishPos) {
-                            2 -> totalPrize * 0.15
-                            3 -> totalPrize * 0.10
-                            else -> 0.0
-                        }
-                    }
-                    totalProfitEuro += (winAmount - b)
-                } else {
-                    totalProfitEuro += cp
-                }
-            }
-            profitRs.close()
-            profitStmt.close()
+            totalProfitStmt.setString(1, targetHero)
+            val totalProfitRs = totalProfitStmt.executeQuery()
+            val totalProfit = if (totalProfitRs.next()) totalProfitRs.getDouble(1) else 0.0
+            totalProfitRs.close()
+            totalProfitStmt.close()
 
             val showdownStmt = conn.prepareStatement("""
                 SELECT SUM(ph.net_result)
@@ -672,7 +701,7 @@ class Database(dbPath: String? = null) {
             posStmt.close()
 
             return DashboardStats(
-                totalProfit = totalProfitEuro,
+                totalProfit = totalProfit,
                 totalHands = totalHands,
                 totalEv = totalEv,
                 totalTournaments = totalTournaments,
