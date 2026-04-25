@@ -3,9 +3,12 @@ package spintracker.data
 import spintracker.models.*
 import spintracker.services.ImportService
 import spintracker.services.DatabaseInfo
+import spintracker.services.SettingsStorage
 import java.io.File
 
 class AppState {
+    private val settingsStorage = SettingsStorage()
+    
     val database = Database()
     val importService = ImportService(database)
     
@@ -60,6 +63,14 @@ class AppState {
     
     fun getAppVersion(): String {
         return "1.0.0"
+    }
+    
+    fun isAutoUpdateEnabled(): Boolean {
+        return settingsStorage.getBoolean("autoUpdateEnabled", true)
+    }
+    
+    fun setAutoUpdateEnabled(enabled: Boolean) {
+        settingsStorage.setBoolean("autoUpdateEnabled", enabled)
     }
     
     fun exportData(): Result<String> {
