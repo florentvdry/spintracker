@@ -270,7 +270,9 @@ fun GeneralSection(
                     onCheckedChange = { onAutoUpdateChange(it) },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = Primary400,
-                        checkedTrackColor = Primary400.copy(alpha = 0.5f)
+                        checkedTrackColor = Primary400.copy(alpha = 0.5f),
+                        uncheckedThumbColor = Color.White,
+                        uncheckedTrackColor = Dark200
                     )
                 )
             }
