@@ -31,6 +31,10 @@ import spintracker.data.Database
 import spintracker.services.DatabaseInfo
 import spintracker.ui.*
 import spintracker.ui.components.SettingRow
+import spintracker.services.UpdateService
+import spintracker.services.UpdateChecker
+import spintracker.services.CheckResult
+import spintracker.models.UpdateInfo
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -49,8 +53,42 @@ fun SettingsScreen(
     var exportLoading by remember { mutableStateOf(false) }
     var language by remember { mutableStateOf("en") }
     var autoUpdateEnabled by remember { mutableStateOf(appState.isAutoUpdateEnabled()) }
+    var checkingForUpdates by remember { mutableStateOf(false) }
+    var lastUpdateCheck by remember { mutableStateOf<String?>(null) }
+    var updateToInstall by remember { mutableStateOf<UpdateInfo?>(null) }
+    var showUpdateDialog by remember { mutableStateOf(false) }
     
     val scope = rememberCoroutineScope()
+    val updateService = remember { UpdateService.create() }
+    val updateChecker = remember { UpdateChecker(updateService, "1.0.0") }
+    
+    fun checkForUpdates() {
+        checkingForUpdates = true
+        scope.launch {
+            try {
+                val result = updateChecker.checkForUpdates(force = true)
+                checkingForUpdates = false
+                
+                when (result) {
+                    is CheckResult.Available -> {
+                        updateToInstall = result.updateInfo
+                        showUpdateDialog = true
+                        lastUpdateCheck = java.time.LocalDateTime.now()
+                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    }
+                    is CheckResult.UpToDate -> {
+                        lastUpdateCheck = java.time.LocalDateTime.now()
+                            .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                    }
+                    is CheckResult.Error -> {
+                        // Error - could show snackbar
+                    }
+                }
+            } catch (e: Exception) {
+                checkingForUpdates = false
+            }
+        }
+    }
 
     suspend fun loadVersion() {
         appVersion = appState.getAppVersion()
@@ -140,7 +178,12 @@ fun SettingsScreen(
         
         Spacer(modifier = Modifier.height(24.dp))
         
-        AboutSection(appVersion = appVersion)
+        AboutSection(
+            appVersion = appVersion,
+            onCheckForUpdates = { checkForUpdates() },
+            checkingForUpdates = checkingForUpdates,
+            lastChecked = lastUpdateCheck
+        )
     }
     
     if (showDeleteConfirm) {
@@ -177,6 +220,17 @@ fun SettingsScreen(
             containerColor = Dark400,
             titleContentColor = Color.White,
             textContentColor = Color.White.copy(alpha = 0.7f)
+        )
+    }
+    
+    if (showUpdateDialog && updateToInstall != null) {
+        UpdateDialog(
+            updateInfo = updateToInstall!!,
+            onDismiss = { showUpdateDialog = false },
+            onInstallComplete = {
+                showUpdateDialog = false
+                // App will restart
+            }
         )
     }
 }
@@ -445,7 +499,12 @@ fun MaintenanceSection(onOpenLogs: () -> Unit) {
 }
 
 @Composable
-fun AboutSection(appVersion: String) {
+fun AboutSection(
+    appVersion: String,
+    onCheckForUpdates: () -> Unit = {},
+    checkingForUpdates: Boolean = false,
+    lastChecked: String? = null
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = DarkSurface),
@@ -478,6 +537,51 @@ fun AboutSection(appVersion: String) {
                 fontSize = 13.sp,
                 modifier = Modifier.padding(top = 12.dp)
             )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            Divider(color = Color.White.copy(alpha = 0.1f))
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        "Check for Updates",
+                        color = Color.White,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp
+                    )
+                    lastChecked?.let {
+                        Text(
+                            "Last checked: $it",
+                            color = Color.White.copy(alpha = 0.5f),
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+                Button(
+                    onClick = onCheckForUpdates,
+                    enabled = !checkingForUpdates,
+                    colors = ButtonDefaults.buttonColors(containerColor = Primary400),
+                    shape = RoundedCornerShape(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
+                ) {
+                    if (checkingForUpdates) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Icon(Icons.Default.Update, null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Check", fontWeight = FontWeight.Medium)
+                    }
+                }
+            }
         }
     }
 }
