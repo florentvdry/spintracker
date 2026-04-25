@@ -1,6 +1,5 @@
 package spintracker.data
 
-import org.jetbrains.exposed.sql.transactions.transaction
 import spintracker.data.migrations.*
 import spintracker.models.*
 import spintracker.services.DatabaseInfo
@@ -11,7 +10,7 @@ import java.time.format.DateTimeFormatter
 
 class Database(dbPath: String? = null) {
     private val connectionString: String
-    
+
     init {
         connectionString = when {
             dbPath != null && dbPath.startsWith("jdbc:") -> dbPath
@@ -26,17 +25,17 @@ class Database(dbPath: String? = null) {
         }
         initialize()
     }
-    
+
     private fun initialize() {
         var conn: Connection? = null
         try {
             DriverManager.setLoginTimeout(10)
             conn = DriverManager.getConnection(connectionString)
-            
+
             conn.createStatement().execute("PRAGMA busy_timeout=10000")
             conn.createStatement().execute("PRAGMA foreign_keys=ON")
             conn.close()
-            
+
             val migrations = listOf(
                 Migration001_InitialSchema(),
                 Migration002_LookupTables(),
@@ -52,14 +51,10 @@ class Database(dbPath: String? = null) {
                 Migration012_PT4ParityMediumPriority(),
                 Migration013_PT4ParityLowPriority()
             )
-            
+
             val runner = MigrationRunner(connectionString)
             runner.runPending(migrations)
-            
-            runPendingBackfills()
-            
-            DatabaseFactory.initialize(connectionString)
-            
+
             println("Database initialized at: $connectionString")
         } catch (e: SQLException) {
             println("Database initialization error: ${e.message}")
@@ -67,7 +62,7 @@ class Database(dbPath: String? = null) {
             throw e
         }
     }
-    
+
     fun getConnection(): Connection {
         return DriverManager.getConnection(connectionString)
     }
@@ -86,11 +81,7 @@ class Database(dbPath: String? = null) {
             conn.close()
         }
     }
-    
-    fun <T> dbTransaction(block: () -> T): T {
-        return transaction { block() }
-    }
-    
+
     // Player operations
     fun getOrCreatePlayer(name: String, room: String = "", existingConn: Connection? = null): Player {
         val conn = existingConn ?: getConnection()
@@ -99,7 +90,7 @@ class Database(dbPath: String? = null) {
             stmt.setString(1, name)
             stmt.setString(2, room)
             val rs = stmt.executeQuery()
-            
+
             if (rs.next()) {
                 val p = Player(
                     id = rs.getLong(1),
@@ -119,7 +110,7 @@ class Database(dbPath: String? = null) {
                 insertStmt.setString(2, room)
                 insertStmt.executeUpdate()
                 insertStmt.close()
-                
+
                 val lastIdStmt = conn.createStatement()
                 val lastIdRs = lastIdStmt.executeQuery("SELECT last_insert_rowid()")
                 val lastId = if (lastIdRs.next()) lastIdRs.getLong(1) else 0L
@@ -138,7 +129,7 @@ class Database(dbPath: String? = null) {
             if (existingConn == null) conn.close()
         }
     }
-    
+
     fun getAllPlayers(): List<Player> {
         val conn = getConnection()
         val players = mutableListOf<Player>()
@@ -212,7 +203,7 @@ class Database(dbPath: String? = null) {
         }
         return players
     }
-    
+
     fun updatePlayerRegStatus(playerId: Long, isReg: Boolean) {
         val conn = getConnection()
         try {
@@ -224,7 +215,7 @@ class Database(dbPath: String? = null) {
             conn.close()
         }
     }
-    
+
     fun getHandsAgainstPlayer(opponentName: String, heroName: String, limit: Int = 20, page: Int = 1): List<Map<String, Any?>> {
         val conn = getConnection()
         val hands = mutableListOf<Map<String, Any?>>()
@@ -251,7 +242,7 @@ class Database(dbPath: String? = null) {
             stmt.setString(2, heroName)
             stmt.setInt(3, limit)
             stmt.setInt(4, offset)
-            
+
             val rs = stmt.executeQuery()
             while (rs.next()) {
                 hands.add(mapOf(
@@ -279,7 +270,7 @@ class Database(dbPath: String? = null) {
         }
         return hands
     }
-    
+
     fun getCountHandsAgainstPlayer(opponentName: String, heroName: String): Int {
         val conn = getConnection()
         try {
@@ -299,136 +290,155 @@ class Database(dbPath: String? = null) {
             conn.close()
         }
     }
-    
-    // Hand operations - using Exposed ORM
-    fun saveHand(hand: spintracker.models.Hand, existingConn: Connection? = null): Long {
-        // Check if hand exists using JDBC (faster for simple existence check)
-        if (existingConn != null) {
-            val checkStmt = existingConn.prepareStatement("SELECT id FROM hands WHERE hand_id = ?")
+
+    // Hand operations
+    fun saveHand(hand: Hand, existingConn: Connection? = null): Long {
+        val conn = existingConn ?: getConnection()
+        try {
+            // First check if hand exists
+            val checkStmt = conn.prepareStatement("SELECT id FROM hands WHERE hand_id = ?")
             checkStmt.setString(1, hand.handId)
             val checkRs = checkStmt.executeQuery()
             if (checkRs.next()) {
                 val existingId = checkRs.getLong(1)
                 checkRs.close()
                 checkStmt.close()
-                return existingId
+                return existingId // Return existing ID
             }
             checkRs.close()
             checkStmt.close()
-        }
-        
-        // Use Exposed for insert - clean, no manual parameter binding!
-        return dbTransaction {
-            HandDao.find { Hands.handId eq hand.handId }.firstOrNull()?.id?.value
-                ?: HandDao.new {
-                    handId = hand.handId
-                    gameId = hand.gameId
-                    tblName = hand.tableName
-                    room = hand.room
-                    siteId = hand.siteId
-                    dateTime = hand.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                    heroName = hand.heroName
-                    heroPosition = hand.heroPosition
-                    playerCount = hand.playerCount
-                    bigBlind = hand.bigBlind
-                    handRank = hand.handRank
-                    handType = hand.handType
-                    result = hand.result
-                    ev = hand.ev
-                    wentToShowdown = hand.wentToShowdown
-                    rawContent = hand.rawContent
-                    buyIn = hand.buyIn
-                    prizePool = hand.prizePool
-                    multiplier = hand.multiplier
-                    position = hand.position
-                    flop = hand.flop ?: ""
-                    turn = hand.turn ?: ""
-                    river = hand.river ?: ""
-                    totalPot = hand.totalPot
-                }.id.value
-        }
-    }
-    
-    fun savePlayerHand(ph: spintracker.models.PlayerHand, handDbId: Long, pid: Long, existingConn: Connection? = null) {
-        // Use Exposed for insert - clean property assignment, no ? placeholders!
-        dbTransaction {
-            PlayerHandDao.new {
-                handId = handDbId
-                playerId = pid
-                playerName = ph.playerName
-                position = ph.position
-                positionType = ph.positionType
-                stackSize = ph.stackSize
-                isHero = ph.isHero
-                holeCards = ph.holeCards ?: ""
-                preflopAction = ph.preflopAction ?: ""
-                flopAction = ph.flopAction ?: ""
-                turnAction = ph.turnAction ?: ""
-                riverAction = ph.riverAction ?: ""
-                winnings = ph.winnings
-                netResult = ph.netResult
-                netWonAdjusted = ph.netWonAdjusted
-                place = ph.place
-                wentToShowdown = ph.wentToShowdown
-                flgVpip = ph.flgVpip
-                flgPfr = ph.flgPfr
-                flg3bet = ph.flg3bet
-                flg4bet = ph.flg4bet
-                flg5bet = ph.flg5bet
-                flgSqueeze = ph.flgSqueeze
-                flgLimp = ph.flgLimp
-                flgCbetFlop = ph.flgCbetFlop
-                flgDonkFlop = ph.flgDonkFlop
-                flgFloatFlop = ph.flgFloatFlop
-                flgCheckRaiseFlop = ph.flgCheckRaiseFlop
-                flgSawFlop = ph.flgSawFlop
-                flgCbetTurn = ph.flgCbetTurn
-                flgDonkTurn = ph.flgDonkTurn
-                flgFloatTurn = ph.flgFloatTurn
-                flgCheckRaiseTurn = ph.flgCheckRaiseTurn
-                flgSawTurn = ph.flgSawTurn
-                flgCbetRiver = ph.flgCbetRiver
-                flgDonkRiver = ph.flgDonkRiver
-                flgCheckRaiseRiver = ph.flgCheckRaiseRiver
-                flgSawRiver = ph.flgSawRiver
-                flgAllin = ph.flgAllin
-                flgFaceAllin = ph.flgFaceAllin
-                allinAction = ph.allinAction ?: ""
-                flgIsAggressor = ph.flgIsAggressor
-                aggressorPosition = ph.aggressorPosition ?: ""
-                bountyWon = ph.bountyWon
-                equityPercent = ph.equityPercent
-                expectedWon = ph.expectedWon
-                icmEquityPercent = ph.icmEquityPercent
-                showedCards = ph.showedCards
-                wonAtShowdown = ph.wonAtShowdown
-                foldedBeforeShowdown = ph.foldedBeforeShowdown
-                effectiveStackPreflop = ph.effectiveStackPreflop ?: 0.0
-                effectiveStackFlop = ph.effectiveStackFlop ?: 0.0
-                effectiveStackTurn = ph.effectiveStackTurn ?: 0.0
-                effectiveStackRiver = ph.effectiveStackRiver ?: 0.0
-                sprFlop = ph.sprFlop ?: 0.0
-                handGroup = ph.handGroup ?: ""
-                isSuited = ph.isSuited
-                isPair = ph.isPair
-                flgRaiseFlop = ph.flgRaiseFlop
-                flgRaiseTurn = ph.flgRaiseTurn
-                flgRaiseRiver = ph.flgRaiseRiver
-                flgXcFlop = ph.flgXcFlop
-                flgXfFlop = ph.flgXfFlop
-                flgXcTurn = ph.flgXcTurn
-                flgXfTurn = ph.flgXfTurn
-                flgXcRiver = ph.flgXcRiver
-                flgXfRiver = ph.flgXfRiver
-                amtBetFlop = ph.amtBetFlop
-                amtBetTurn = ph.amtBetTurn
-                amtBetRiver = ph.amtBetRiver
-                sprTurn = ph.sprTurn ?: 0.0
-                sprRiver = ph.sprRiver ?: 0.0
-            }
+
+            val stmt = conn.prepareStatement("""
+                INSERT INTO hands (hand_id, game_id, table_name, room, site_id, date_time, hero_name, hero_position, player_count, big_blind, hand_rank, hand_type, result, ev, went_to_showdown, raw_content, buy_in, prize_pool, multiplier, position, flop, turn, river, total_pot)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """)
+
+            stmt.setString(1, hand.handId)
+            stmt.setString(2, hand.gameId)
+            stmt.setString(3, hand.tableName)
+            stmt.setString(4, hand.room)
+            stmt.setInt(5, hand.siteId)
+            stmt.setString(6, hand.dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            stmt.setString(7, hand.heroName)
+            stmt.setInt(8, hand.heroPosition)
+            stmt.setInt(9, hand.playerCount)
+            stmt.setDouble(10, hand.bigBlind)
+            stmt.setInt(11, hand.handRank)
+            stmt.setString(12, hand.handType)
+            stmt.setDouble(13, hand.result)
+            stmt.setDouble(14, hand.ev)
+            stmt.setInt(15, if (hand.wentToShowdown) 1 else 0)
+            stmt.setString(16, hand.rawContent)
+            stmt.setDouble(17, hand.buyIn)
+            stmt.setDouble(18, hand.prizePool)
+            stmt.setInt(19, hand.multiplier)
+            stmt.setInt(20, hand.position)
+            stmt.setString(21, hand.flop)
+            stmt.setString(22, hand.turn)
+            stmt.setString(23, hand.river)
+            stmt.setDouble(24, hand.totalPot)
+
+            stmt.executeUpdate()
+            stmt.close()
+
+            val lastIdStmt = conn.createStatement()
+            val lastIdRs = lastIdStmt.executeQuery("SELECT last_insert_rowid()")
+            val lastId = if (lastIdRs.next()) lastIdRs.getLong(1) else 0L
+            lastIdRs.close()
+            lastIdStmt.close()
+
+            return lastId
+        } finally {
+            if (existingConn == null) conn.close()
         }
     }
-    
+
+    fun savePlayerHand(ph: PlayerHand, existingConn: Connection? = null) {
+        val conn = existingConn ?: getConnection()
+        try {
+            val stmt = conn.prepareStatement("""
+                INSERT INTO player_hands (hand_id, player_id, player_name, position, position_type, stack_size, is_hero, hole_cards, preflop_action, flop_action, turn_action, river_action, winnings, net_result, net_won_adjusted, place, went_to_showdown,
+                    flg_vpip, flg_pfr, flg_3bet, flg_4bet, flg_squeeze, flg_limp,
+                    flg_cbet_flop, flg_donk_flop, flg_float_flop, flg_check_raise_flop, flg_saw_flop,
+                    flg_cbet_turn, flg_donk_turn, flg_float_turn, flg_check_raise_turn, flg_saw_turn,
+                    flg_cbet_river, flg_donk_river, flg_check_raise_river, flg_saw_river,
+                    flg_allin, flg_face_allin, allin_action, flg_is_aggressor, aggressor_position,
+                    bounty_won, equity_percent, expected_won, icm_equity_percent, showed_cards, won_at_showdown, folded_before_showdown,
+                    effective_stack_preflop, effective_stack_flop, effective_stack_turn, effective_stack_river, spr_flop, hand_group, is_suited, is_pair)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?, ?)
+            """)
+            var i = 1
+            stmt.setLong(i++, ph.handId)
+            stmt.setLong(i++, ph.playerId)
+            stmt.setString(i++, ph.playerName)
+            stmt.setString(i++, ph.position)
+            stmt.setString(i++, ph.positionType)
+            stmt.setDouble(i++, ph.stackSize)
+            stmt.setInt(i++, if (ph.isHero) 1 else 0)
+            stmt.setString(i++, ph.holeCards ?: "")
+            stmt.setString(i++, ph.preflopAction ?: "")
+            stmt.setString(i++, ph.flopAction ?: "")
+            stmt.setString(i++, ph.turnAction ?: "")
+            stmt.setString(i++, ph.riverAction ?: "")
+            stmt.setDouble(i++, ph.winnings)
+            stmt.setDouble(i++, ph.netResult)
+            stmt.setDouble(i++, ph.netWonAdjusted)
+            stmt.setInt(i++, ph.place)
+            stmt.setInt(i++, if (ph.wentToShowdown) 1 else 0)
+            stmt.setInt(i++, if (ph.flgVpip) 1 else 0)
+            stmt.setInt(i++, if (ph.flgPfr) 1 else 0)
+            stmt.setInt(i++, if (ph.flg3bet) 1 else 0)
+            stmt.setInt(i++, if (ph.flg4bet) 1 else 0)
+            stmt.setInt(i++, if (ph.flgSqueeze) 1 else 0)
+            stmt.setInt(i++, if (ph.flgLimp) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCbetFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgDonkFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgFloatFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCheckRaiseFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgSawFlop) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCbetTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgDonkTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgFloatTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCheckRaiseTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgSawTurn) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCbetRiver) 1 else 0)
+            stmt.setInt(i++, if (ph.flgDonkRiver) 1 else 0)
+            stmt.setInt(i++, if (ph.flgCheckRaiseRiver) 1 else 0)
+            stmt.setInt(i++, if (ph.flgSawRiver) 1 else 0)
+            stmt.setInt(i++, if (ph.flgAllin) 1 else 0)
+            stmt.setInt(i++, if (ph.flgFaceAllin) 1 else 0)
+            stmt.setString(i++, ph.allinAction ?: "")
+            stmt.setInt(i++, if (ph.flgIsAggressor) 1 else 0)
+            stmt.setString(i++, ph.aggressorPosition ?: "")
+            stmt.setDouble(i++, ph.bountyWon)
+            stmt.setDouble(i++, ph.equityPercent)
+            stmt.setDouble(i++, ph.expectedWon)
+            stmt.setDouble(i++, ph.icmEquityPercent)
+            stmt.setInt(i++, if (ph.showedCards) 1 else 0)
+            stmt.setInt(i++, if (ph.wonAtShowdown) 1 else 0)
+            stmt.setInt(i++, if (ph.foldedBeforeShowdown) 1 else 0)
+            stmt.setDouble(i++, ph.effectiveStackPreflop ?: 0.0)
+            stmt.setDouble(i++, ph.effectiveStackFlop ?: 0.0)
+            stmt.setDouble(i++, ph.effectiveStackTurn ?: 0.0)
+            stmt.setDouble(i++, ph.effectiveStackRiver ?: 0.0)
+            stmt.setDouble(i++, ph.sprFlop ?: 0.0)
+            stmt.setString(i++, ph.handGroup ?: "")
+            stmt.setInt(i++, if (ph.isSuited) 1 else 0)
+            stmt.setInt(i++, if (ph.isPair) 1 else 0)
+            stmt.executeUpdate()
+            stmt.close()
+        } finally {
+            if (existingConn == null) conn.close()
+        }
+    }
+
     fun saveHandHistory(handId: Long, history: String, existingConn: Connection? = null) {
         val conn = existingConn ?: getConnection()
         try {
@@ -443,7 +453,7 @@ class Database(dbPath: String? = null) {
             if (existingConn == null) conn.close()
         }
     }
-    
+
     fun getHandHistory(handId: Long): String? {
         val conn = getConnection()
         try {
@@ -455,7 +465,7 @@ class Database(dbPath: String? = null) {
             conn.close()
         }
     }
-    
+
     fun getExistingHandIds(): Set<String> {
         val conn = getConnection()
         val ids = mutableSetOf<String>()
@@ -469,7 +479,7 @@ class Database(dbPath: String? = null) {
         }
         return ids
     }
-    
+
     fun getHands(heroName: String? = null, limit: Int = 100): List<Hand> {
         val conn = getConnection()
         val hands = mutableListOf<Hand>()
@@ -483,7 +493,7 @@ class Database(dbPath: String? = null) {
                 append("ORDER BY date_time DESC ")
                 append("LIMIT ?")
             }
-            
+
             val stmt = if (heroName != null) {
                 conn.prepareStatement(sql).apply {
                     setString(1, heroName)
@@ -494,7 +504,7 @@ class Database(dbPath: String? = null) {
                     setInt(1, limit)
                 }
             }
-            
+
             val rs = stmt.executeQuery()
             val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
             while (rs.next()) {
@@ -520,13 +530,13 @@ class Database(dbPath: String? = null) {
         }
         return hands
     }
-    
+
     // Dashboard stats
     fun getDashboardStats(heroName: String? = null): DashboardStats {
         val conn = getConnection()
         try {
             val targetHero = heroName ?: "jmenfouu"
-            
+
             val stmt = conn.prepareStatement("""
                 SELECT SUM(COALESCE(ph.net_won_adjusted, ph.net_result)), SUM(ph.net_result), COUNT(*),
                        COUNT(DISTINCT h.game_id)
@@ -535,19 +545,19 @@ class Database(dbPath: String? = null) {
                 WHERE h.player_count <= 3
             """)
             stmt.setString(1, targetHero)
-            
+
             val rs = stmt.executeQuery()
             if (!rs.next()) return DashboardStats()
-            
+
             val totalEv = rs.getDouble(1)
             val totalEvChips = rs.getDouble(2)
             val totalHands = rs.getInt(3)
             val totalTournaments = rs.getInt(4)
             val avgChipsEv = if (totalTournaments > 0) totalEv / totalTournaments else 0.0
-            
+
             rs.close()
             stmt.close()
-            
+
             val profitStmt = conn.prepareStatement("""
                 SELECT h.buy_in, h.prize_pool, SUM(ph.net_result) as chip_profit,
                        MAX(h.player_count) as max_players, MAX(h.multiplier) as multiplier,
@@ -559,7 +569,7 @@ class Database(dbPath: String? = null) {
             """)
             profitStmt.setString(1, targetHero)
             val profitRs = profitStmt.executeQuery()
-            
+
             var totalProfitEuro = 0.0
             while (profitRs.next()) {
                 val b = profitRs.getDouble(1)
@@ -568,7 +578,7 @@ class Database(dbPath: String? = null) {
                 val pc = profitRs.getInt(4)
                 val m = profitRs.getInt(5)
                 val pos = profitRs.getInt(6)
-                
+
                 if (p > 0 || m > 0) {
                     val hasSharing = (b > 0 && (p / b) >= 19.5) || m >= 20
                     val totalPrize = if (p > (m * b * 0.5)) p else (b * m)
@@ -576,7 +586,7 @@ class Database(dbPath: String? = null) {
                     if (finishPos == 0) {
                         finishPos = if (cp > 0) 1 else (if (pc == 2) 2 else 3)
                     }
-                    
+
                     var winAmount = 0.0
                     if (finishPos == 1) {
                         winAmount = if (hasSharing) (totalPrize * 0.75) else totalPrize
@@ -594,7 +604,7 @@ class Database(dbPath: String? = null) {
             }
             profitRs.close()
             profitStmt.close()
-            
+
             val showdownStmt = conn.prepareStatement("""
                 SELECT SUM(ph.net_result)
                 FROM hands h
@@ -606,7 +616,7 @@ class Database(dbPath: String? = null) {
             val chipsWonWithShowdown = if (showdownRs.next()) showdownRs.getDouble(1) else 0.0
             showdownRs.close()
             showdownStmt.close()
-            
+
             val noShowdownStmt = conn.prepareStatement("""
                 SELECT SUM(ph.net_result)
                 FROM hands h
@@ -618,7 +628,7 @@ class Database(dbPath: String? = null) {
             val chipsWonWithoutShowdown = if (noShowdownRs.next()) noShowdownRs.getDouble(1) else 0.0
             noShowdownRs.close()
             noShowdownStmt.close()
-            
+
             val wonStmt = conn.prepareStatement("""
                 SELECT COUNT(DISTINCT h.game_id)
                 FROM hands h
@@ -630,7 +640,7 @@ class Database(dbPath: String? = null) {
             val tournamentsWon = if (wonRs.next()) wonRs.getInt(1) else 0
             wonRs.close()
             wonStmt.close()
-            
+
             val cevByPosition = mutableMapOf<String, Double>()
             val posStmt = conn.prepareStatement("""
                 SELECT ph.position, h.player_count,
@@ -641,13 +651,13 @@ class Database(dbPath: String? = null) {
                 GROUP BY ph.position, h.player_count
             """)
             posStmt.setString(1, targetHero)
-            
+
             val posRs = posStmt.executeQuery()
             while (posRs.next()) {
                 val pos = posRs.getString(1)
                 val pc = posRs.getInt(2)
                 val evSum = posRs.getDouble(3)
-                
+
                 val posName = when {
                     pc == 2 && pos == "SB" -> "HeadsUp SB"
                     pc == 2 && pos == "BB" -> "HeadsUp BB"
@@ -660,7 +670,7 @@ class Database(dbPath: String? = null) {
             }
             posRs.close()
             posStmt.close()
-            
+
             return DashboardStats(
                 totalProfit = totalProfitEuro,
                 totalHands = totalHands,
@@ -677,7 +687,7 @@ class Database(dbPath: String? = null) {
         }
         return DashboardStats()
     }
-    
+
     // Delete all hands
     fun deleteAllHands() {
         val conn = getConnection()
@@ -691,7 +701,7 @@ class Database(dbPath: String? = null) {
             conn.close()
         }
     }
-    
+
     // Get buy-ins
     fun getBuyIns(): List<Double> {
         val conn = getConnection()
@@ -706,7 +716,7 @@ class Database(dbPath: String? = null) {
         }
         return buyIns
     }
-    
+
     // Get tournaments
     fun getTournaments(heroName: String? = null, limit: Int = 50): List<Map<String, Any?>> {
         val conn = getConnection()
@@ -728,7 +738,7 @@ class Database(dbPath: String? = null) {
             val stmt = conn.prepareStatement(sql)
             stmt.setString(1, heroName ?: "")
             stmt.setInt(2, limit)
-            
+
             val rs = stmt.executeQuery()
             while (rs.next()) {
                 val gameId = rs.getString(1)
@@ -741,7 +751,7 @@ class Database(dbPath: String? = null) {
                 val avgCev = rs.getDouble(8)
                 val maxPlace = rs.getInt(9)
                 val sumNetResult = rs.getDouble(10)
-                
+
                 var netProfit = 0.0
                 if (prizePool > 0 || multiplier > 0) {
                     val hasSharing = (buyIn > 0 && (prizePool / buyIn) >= 19.5) || multiplier >= 20
@@ -750,7 +760,7 @@ class Database(dbPath: String? = null) {
                     if (finishPos == 0) {
                         finishPos = if (sumNetResult > 0) 1 else 3
                     }
-                    
+
                     if (finishPos == 1) {
                         netProfit = (if (hasSharing) (totalPrize * 0.75) else totalPrize) - buyIn
                     } else if (hasSharing) {
@@ -765,7 +775,7 @@ class Database(dbPath: String? = null) {
                 } else {
                     netProfit = sumNetResult
                 }
-                
+
                 tournaments.add(mapOf(
                     "gameId" to gameId,
                     "room" to room,
@@ -783,7 +793,7 @@ class Database(dbPath: String? = null) {
         }
         return tournaments
     }
-    
+
     fun getHandsByGameId(gameId: String, heroName: String): List<Map<String, Any?>> {
         val conn = getConnection()
         val hands = mutableListOf<Map<String, Any?>>()
@@ -799,7 +809,7 @@ class Database(dbPath: String? = null) {
             val stmt = conn.prepareStatement(sql)
             stmt.setString(1, heroName)
             stmt.setString(2, gameId)
-            
+
             val rs = stmt.executeQuery()
             while (rs.next()) {
                 hands.add(mapOf(
@@ -822,7 +832,7 @@ class Database(dbPath: String? = null) {
     }
 
 
-fun getGraphData(heroName: String? = null): List<GraphPoint> {
+    fun getGraphData(heroName: String? = null): List<GraphPoint> {
         val conn = getConnection()
         val points = mutableListOf<GraphPoint>()
         try {
@@ -837,24 +847,24 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             }
             val stmt = conn.prepareStatement(sql)
             stmt.setString(1, heroName ?: "")
-            
+
             val rs = stmt.executeQuery()
             var cumulativeEv = 0.0
             var cumulativeProfit = 0.0
             var cumulativeShowdown = 0.0
             var cumulativeNonShowdown = 0.0
             var count = 0
-            
+
             // Add initial point
             points.add(GraphPoint(0, 0.0, 0.0, 0.0, 0.0))
-            
+
             while (rs.next()) {
                 val ev = rs.getDouble(2)  // Use the EV from hands table (calculated from equity)
                 val result = rs.getDouble(1)
                 val wts = rs.getInt(3) == 1
-                
+
                 count++
-                
+
                 cumulativeEv += ev
                 cumulativeProfit += result
                 if (wts) {
@@ -862,7 +872,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                 } else {
                     cumulativeNonShowdown += result
                 }
-                
+
                 // Add every single hand
                 points.add(GraphPoint(count, cumulativeEv, cumulativeProfit, cumulativeShowdown, cumulativeNonShowdown))
             }
@@ -893,21 +903,21 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             """
             val stmt = conn.prepareStatement(sql)
             stmt.setString(1, heroName ?: "")
-            
+
             val rs = stmt.executeQuery()
             var cumulativeBankroll = 0.0
             var peak = 0.0
             var count = 0
-            
+
             points.add(BankrollDataPoint(0, 0.0, 0.0, 0.0, false, false))
-            
+
             while (rs.next()) {
                 val buyIn = rs.getDouble(2)
                 val prizePool = rs.getDouble(3)
                 val multiplier = rs.getInt(4)
                 val finalPlace = rs.getInt(5)
                 val totalPrize = rs.getDouble(7)
-                
+
                 val euroProfit = when {
                     prizePool > 0 || multiplier > 0 -> {
                         when {
@@ -928,24 +938,24 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                     }
                     else -> rs.getDouble(6)
                 }
-                
+
                 count++
                 cumulativeBankroll += euroProfit
                 peak = maxOf(peak, cumulativeBankroll)
                 val drawdown = cumulativeBankroll - peak
-                
+
                 points.add(BankrollDataPoint(count, cumulativeBankroll, peak, drawdown, false, false))
             }
-            
+
             rs.close()
             stmt.close()
-            
+
             val mutablePoints = points.toMutableList()
             for (i in 1 until points.size - 1) {
                 val prev = points[i - 1]
                 val curr = points[i]
                 val next = points[i + 1]
-                
+
                 if (curr.bankroll > prev.bankroll && curr.bankroll > next.bankroll) {
                     mutablePoints[i] = curr.copy(isPeak = true)
                 }
@@ -953,7 +963,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                     mutablePoints[i] = curr.copy(isTrough = true)
                 }
             }
-            
+
             return mutablePoints
         } finally {
             conn.close()
@@ -974,10 +984,10 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             """
             val stmt = conn.prepareStatement(sql)
             stmt.setString(1, heroName ?: "")
-            
+
             val rs = stmt.executeQuery()
             val rawHands = mutableListOf<HandData>()
-            
+
             while (rs.next()) {
                 rawHands.add(
                     HandData(
@@ -996,10 +1006,10 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             }
             rs.close()
             stmt.close()
-            
+
             val currentSession = mutableListOf<HandData>()
             var lastTime: java.time.LocalDateTime? = null
-            
+
             for (hand in rawHands) {
                 val handTime = hand.localDateTime
                 if (lastTime != null && java.time.Duration.between(lastTime, handTime).toHours() > 2) {
@@ -1019,7 +1029,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
         }
         return sessions.takeLast(limit).reversed()
     }
-    
+
     data class HandData(
         val dateTime: String,
         val room: String,
@@ -1044,34 +1054,34 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             }
         }
     }
-    
+
     private fun createSessionInfo(hands: List<HandData>): Session {
         val startTime = hands.minBy { it.localDateTime }.localDateTime
         val endTime = hands.maxBy { it.localDateTime }.localDateTime
         val room = hands.first().room
         val uniqueTournaments = hands.groupBy { it.gameId }.size
         val totalHands = hands.size
-        
+
         var totalProfitEuro = 0.0
         val games = hands.groupBy { it.gameId }
-        
+
         for ((_, gameHands) in games) {
             val first = gameHands.first()
             val multiplier = gameHands.maxOf { it.multiplier }
             val position = gameHands.maxOf { it.place }
             val lastPlayerCount = gameHands.maxOf { it.playerCount }
             val chipProfit = gameHands.sumOf { it.netResult }
-            
+
             var profit = 0.0
             if (first.prizePool > 0 || multiplier > 0) {
                 val hasSharing = (first.buyIn > 0 && (first.prizePool / first.buyIn) >= 19.5) || multiplier >= 20
                 val totalPrize = if (first.prizePool > (multiplier * first.buyIn * 0.5)) first.prizePool else (first.buyIn * multiplier)
-                
+
                 var finishPos = position
                 if (finishPos == 0) {
                     finishPos = if (chipProfit > 0) 1 else (if (lastPlayerCount == 2) 2 else 3)
                 }
-                
+
                 var winAmount = 0.0
                 if (finishPos == 1) {
                     winAmount = if (hasSharing) (totalPrize * 0.75) else totalPrize
@@ -1088,7 +1098,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             }
             totalProfitEuro += profit
         }
-        
+
         return Session(
             startTime = startTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
             endTime = endTime.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
@@ -1114,11 +1124,11 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             """)
             stmt.setLong(1, playerId)
             val rs = stmt.executeQuery()
-            
+
             if (rs.next()) {
                 val total = rs.getInt("total_hands")
                 if (total == 0) return PlayerStats()
-                
+
                 return PlayerStats(
                     vpip = (rs.getDouble("vpip_hands") / total) * 100.0,
                     pfr = (rs.getDouble("pfr_hands") / total) * 100.0,
@@ -1152,7 +1162,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             conn.close()
         }
     }
-    
+
     fun getHandReplayData(handId: String, heroName: String): Map<String, Any?>? {
         val conn = getConnection()
         try {
@@ -1169,7 +1179,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             stmt.setString(1, handId)
             stmt.setString(2, heroName)
             val rs = stmt.executeQuery()
-            
+
             if (rs.next()) {
                 val data = mutableMapOf<String, Any?>()
                 data["handId"] = rs.getLong(1)
@@ -1191,10 +1201,10 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                 data["turn"] = rs.getString(18)
                 data["river"] = rs.getString(19)
                 data["wentToShowdown"] = rs.getInt(20) == 1
-                
+
                 rs.close()
                 stmt.close()
-                
+
                 // Get all players
                 val playersSql = """
                     SELECT ph.player_name, ph.position, ph.stack_size, ph.hole_cards, ph.is_hero
@@ -1217,7 +1227,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                 playersRs.close()
                 playersStmt.close()
                 data["players"] = players
-                
+
                 return data
             }
             rs.close()
@@ -1380,14 +1390,14 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                 GROUP BY ph.position
                 ORDER BY hands DESC
             """
-            
+
             val stmt = conn.prepareStatement(sql)
             var i = 1
             stmt.setString(i++, heroName)
             stmt.setString(i++, heroName)
             if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
             if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
-            
+
             val rs = stmt.executeQuery()
             while (rs.next()) {
                 stats.add(PositionStats(
@@ -1441,20 +1451,20 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                 if (!dateFrom.isNullOrBlank()) append(" AND h.date_time >= ?")
                 if (!dateTo.isNullOrBlank()) append(" AND h.date_time <= ?")
             }
-            
+
             val stmt = conn.prepareStatement(sql)
             var i = 1
             stmt.setString(i++, heroName)
             if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
             if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
-            
+
             val rs = stmt.executeQuery()
             var stealAttempts = 0
             var stealSuccesses = 0
             var blindDefenses = 0
             var sbStealFolds = 0
             var bbStealFolds = 0
-            
+
             if (rs.next()) {
                 stealAttempts = rs.getInt("steal_attempts")
                 stealSuccesses = rs.getInt("steal_successes")
@@ -1464,7 +1474,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             }
             rs.close()
             stmt.close()
-            
+
             return StealStats(
                 stealAttempts = stealAttempts,
                 stealSuccesses = stealSuccesses,
@@ -1508,20 +1518,20 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                 if (!dateFrom.isNullOrBlank()) append(" AND h.date_time >= ?")
                 if (!dateTo.isNullOrBlank()) append(" AND h.date_time <= ?")
             }
-            
+
             val stmt = conn.prepareStatement(sql)
             var i = 1
             stmt.setString(i++, heroName)
             if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
             if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
-            
+
             val rs = stmt.executeQuery()
             var totalHands = 0
             var showdownHands = 0
             var wonAtShowdown = 0
             var lostAtShowdown = 0
             var foldedBeforeShowdown = 0
-            
+
             if (rs.next()) {
                 totalHands = rs.getInt("total_hands")
                 showdownHands = rs.getInt("showdown_hands")
@@ -1531,7 +1541,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             }
             rs.close()
             stmt.close()
-            
+
             return ShowdownStats(
                 totalHands = totalHands,
                 showdownHands = showdownHands,
@@ -1607,13 +1617,13 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                 if (!dateFrom.isNullOrBlank()) append(" AND h.date_time >= ?")
                 if (!dateTo.isNullOrBlank()) append(" AND h.date_time <= ?")
             }
-            
+
             val stmt = conn.prepareStatement(sql)
             var i = 1
             stmt.setString(i++, heroName)
             if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
             if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
-            
+
             val rs = stmt.executeQuery()
             var totalHands = 0
             var vpipCount = 0
@@ -1638,7 +1648,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             var raiseFlopCount = 0
             var raiseTurnCount = 0
             var raiseRiverCount = 0
-            
+
             if (rs.next()) {
                 totalHands = rs.getInt("total_hands")
                 vpipCount = rs.getInt("vpip_count")
@@ -1666,7 +1676,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             }
             rs.close()
             stmt.close()
-            
+
             return FrequencyStats(
                 vpip = if (totalHands > 0) vpipCount * 100.0 / totalHands else 0.0,
                 pfr = if (totalHands > 0) pfrCount * 100.0 / totalHands else 0.0,
@@ -1769,14 +1779,14 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             } + """
                 GROUP BY ph.player_id, ph.player_name
             """
-            
+
             val stmt = conn.prepareStatement(sql)
             var i = 1
             stmt.setString(i++, opponentName)
             stmt.setString(i++, heroName)
             if (!dateFrom.isNullOrBlank()) stmt.setString(i++, dateFrom)
             if (!dateTo.isNullOrBlank()) stmt.setString(i++, dateTo)
-            
+
             val rs = stmt.executeQuery()
             if (rs.next()) {
                 val hands = rs.getInt("hands")
@@ -1849,19 +1859,19 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             else -> "None"
         }
     }
-    
+
     fun getLookupTablesRepository(): LookupTablesRepository {
         return LookupTablesRepository(connectionString)
     }
-    
+
     fun getTagsRepository(): TagsRepository {
         return TagsRepository(connectionString)
     }
-    
+
     fun getNotesRepository(): NotesRepository {
         return NotesRepository(connectionString)
     }
-    
+
     fun getStatsCacheRepository(): StatsCacheRepository {
         return StatsCacheRepository(connectionString)
     }
@@ -1912,7 +1922,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
         }
         return hands
     }
-    
+
     // Database management methods
     fun getDatabaseInfo(): DatabaseInfo {
         val conn = getConnection()
@@ -1922,7 +1932,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             val handsCount = if (rs.next()) rs.getInt(1) else 0
             rs.close()
             stmt.close()
-            
+
             return DatabaseInfo(
                 id = "default",
                 name = "Default Database",
@@ -1937,7 +1947,7 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
             conn.close()
         }
     }
-    
+
     fun exportData(): Result<String> {
         return try {
             val hands = getHands(limit = 10000)
@@ -1961,32 +1971,15 @@ fun getGraphData(heroName: String? = null): List<GraphPoint> {
                 jsonBuilder.append("}")
             }
             jsonBuilder.append("]")
-            
+
             val userHome = System.getProperty("user.home")
             val exportFile = File(userHome, "spintracker/export_${java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))}.json")
             exportFile.parentFile.mkdirs()
             exportFile.writeText(jsonBuilder.toString())
-            
+
             Result.success("Data exported to ${exportFile.absolutePath}")
         } catch (e: Exception) {
             Result.failure(e)
         }
-    }
-    
-    private fun runPendingBackfills() {
-        // Backfills disabled for now
-    }
-}
-
-object DatabaseFactory {
-    fun initialize(connectionString: String) {
-        org.jetbrains.exposed.sql.Database.connect(
-            url = connectionString,
-            driver = "org.sqlite.JDBC",
-            setupConnection = { connection ->
-                connection.prepareStatement("PRAGMA busy_timeout=10000").execute()
-                connection.prepareStatement("PRAGMA foreign_keys=ON").execute()
-            }
-        )
     }
 }
