@@ -31,13 +31,15 @@ fun main() = application {
     val updateChecker = remember { UpdateChecker(updateService, currentVersion) }
     
     LaunchedEffect(Unit) {
-        scope.launch {
+        try {
             val result = updateChecker.checkForUpdates()
             updateCheckResult = result
             
             if (result is CheckResult.Available) {
                 updateInfo = result.updateInfo
             }
+        } catch (e: Exception) {
+            println("Update check failed: ${e.message}")
         }
         
         delay(2500)
