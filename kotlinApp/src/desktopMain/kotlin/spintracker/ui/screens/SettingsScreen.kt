@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Language
@@ -47,6 +48,7 @@ fun SettingsScreen(
     var loadingDatabase by remember { mutableStateOf(true) }
     var exportLoading by remember { mutableStateOf(false) }
     var language by remember { mutableStateOf("en") }
+    var autoUpdateEnabled by remember { mutableStateOf(appState.isAutoUpdateEnabled()) }
     
     val scope = rememberCoroutineScope()
 
@@ -100,7 +102,12 @@ fun SettingsScreen(
         
         GeneralSection(
             language = language,
-            onLanguageChange = { language = it }
+            onLanguageChange = { language = it },
+            autoUpdateEnabled = autoUpdateEnabled,
+            onAutoUpdateChange = { enabled ->
+                autoUpdateEnabled = enabled
+                appState.setAutoUpdateEnabled(enabled)
+            }
         )
         
         Spacer(modifier = Modifier.height(24.dp))
@@ -175,7 +182,12 @@ fun SettingsScreen(
 }
 
 @Composable
-fun GeneralSection(language: String, onLanguageChange: (String) -> Unit) {
+fun GeneralSection(
+    language: String,
+    onLanguageChange: (String) -> Unit,
+    autoUpdateEnabled: Boolean = true,
+    onAutoUpdateChange: (Boolean) -> Unit = {}
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = DarkSurface),
@@ -231,6 +243,36 @@ fun GeneralSection(language: String, onLanguageChange: (String) -> Unit) {
                         Text("Français", fontSize = 13.sp)
                     }
                 }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "Auto-Update",
+                        color = Color.White,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        "Automatically check for updates",
+                        color = Color.White.copy(alpha = 0.5f),
+                        fontSize = 12.sp
+                    )
+                }
+                Switch(
+                    checked = autoUpdateEnabled,
+                    onCheckedChange = { onAutoUpdateChange(it) },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Primary400,
+                        checkedTrackColor = Primary400.copy(alpha = 0.5f)
+                    )
+                )
             }
         }
     }
