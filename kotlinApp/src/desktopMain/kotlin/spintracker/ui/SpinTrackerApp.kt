@@ -57,13 +57,6 @@ fun SpinTrackerApp(
     
     var showUpdateDialog by remember { mutableStateOf(pendingUpdate != null) }
     var updateToInstall by remember { mutableStateOf(pendingUpdate) }
-
-    LaunchedEffect(pendingUpdate) {
-        if (pendingUpdate != null) {
-            showUpdateDialog = true
-            updateToInstall = pendingUpdate
-        }
-    }
     
     if (showReplayer && replayerHandId != null) {
         ReplayerWindow(
