@@ -5,12 +5,14 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "concurrently \"npm run react:dev\" \"wait-on http://localhost:3000 && electron . --dev\"",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run react:dev\"",
+    "dev:electron": "concurrently \"npm run react:dev\" \"wait-on http://localhost:3000 && electron . --dev\"",
     "build": "npm run react:build && npm run backend:build && electron-builder --win",
     "publish": "npm run react:build && npm run backend:build && electron-builder --win --publish always",
-    "react:dev": "cd frontend-vue && npm run dev",
+    "react:dev": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$conns = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if ($conns) { $procIds = $conns | Select-Object -ExpandProperty OwningProcess -Unique; foreach ($procId in $procIds) { try { Stop-Process -Id $procId -Force -ErrorAction Stop } catch {} } Start-Sleep -Milliseconds 300 }; Set-Location frontend-vue; npm run dev\"",
     "react:build": "cd frontend-vue && npm run build",
     "react:install": "cd frontend-vue && npm install",
+    "backend:dev": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$conns = Get-NetTCPConnection -LocalPort 5050 -State Listen -ErrorAction SilentlyContinue; if ($conns) { $procIds = $conns | Select-Object -ExpandProperty OwningProcess -Unique; foreach ($procId in $procIds) { try { Stop-Process -Id $procId -Force -ErrorAction Stop } catch {} } Start-Sleep -Milliseconds 300 }; Set-Location backend; dotnet watch run -- 5050\"",
     "backend:build": "cd backend && dotnet publish SpinTrackerBackend.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=true",
     "postinstall": "npm run react:install",
     "setup": "npm install && npm run react:install && npm run backend:build"

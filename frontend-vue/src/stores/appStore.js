@@ -93,18 +93,8 @@ export const useAppStore = defineStore('app', () => {
     const buyInParam = buyIn === 'all' ? null : Number(buyIn)
 
     if (!heroName) {
-      const result = await ipcService.getDashboardStats(null, dateFrom, dateTo, buyInParam)
-      if (result.success && result.data) {
-        dashboardStats.value = {
-          ...result.data,
-          total_profit: Number(result.data.total_profit) || 0,
-          total_hands: Number(result.data.total_hands) || 0,
-          total_ev: Number(result.data.total_ev) || 0
-        }
-      } else {
-        dashboardStats.value = null
-      }
-      return result
+      dashboardStats.value = null
+      return { success: true, data: null }
     }
 
     try {
@@ -138,11 +128,8 @@ export const useAppStore = defineStore('app', () => {
       const buyInParam = buyIn === 'all' ? null : Number(buyIn)
 
       if (!heroName) {
-        const result = await ipcService.getSessionHistory(limit, null, null, null, buyInParam)
-        if (result.success) {
-          sessions.value = result.data || []
-        }
-        return result
+        sessions.value = []
+        return { success: true, data: [] }
       }
 
       const result = await ipcService.getSessionHistory(limit, heroName, null, null, buyInParam)

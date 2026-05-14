@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Threading.Channels;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using SpinTrackerBackend.Interfaces;
 using SpinTrackerBackend;
 using SpinTrackerBackend.Engines;
@@ -44,6 +46,34 @@ public class ImporterService : IImporterService
     
     private static readonly ConcurrentDictionary<string, EquityResult> EquityCache = new();
     private const int MaxEquityCacheSize = 50000; 
+
+    private sealed class WinamaxSummaryInfo
+    {
+        public int Position { get; set; }
+        public double PrizePool { get; set; }
+        public double BuyIn { get; set; }
+    }
+
+    private static readonly Regex WinamaxSummaryTournamentIdRegex =
+        new(@"Tournament summary\s*:\s*.*\((?<id>\d+)\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly Regex WinamaxSummaryPrizePoolRegex =
+        new(@"Prizepool\s*:\s*(?<value>\d+(?:[.,]\d+)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly Regex WinamaxSummaryBuyInRegex =
+        new(@"Buy-In\s*:\s*(?<buy>\d+(?:[.,]\d+)?)\D+\+\s*(?<fee>\d+(?:[.,]\d+)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly Regex WinamaxSummaryPositionRegex =
+        new(@"You finished in\s*(?<pos>\d+)(?:st|nd|rd|th)\s*place", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsHandBoundary(string line, string separator)
+    {
+        if (string.IsNullOrWhiteSpace(line) || string.IsNullOrWhiteSpace(separator)) return false;
+        var trimmed = line.Trim();
+        return trimmed.Equals(separator, StringComparison.Ordinal) ||
+               trimmed.StartsWith(separator, StringComparison.Ordinal);
+    }
 
     public ImporterService(Database db, IAnalyticsCalculator analyticsCalc, ILogger<ImporterService> logger, SpinTrackerBackend.Data.Repositories.PlayerRepository? playerRepo = null)
     {
@@ -109,7 +139,7 @@ public class ImporterService : IImporterService
             {
                 if (cancellationToken.IsCancellationRequested) break;
 
-                if (line.Trim() == separator)
+                if (IsHandBoundary(line, separator))
                 {
                     count++;
                 }
@@ -154,6 +184,19 @@ public class ImporterService : IImporterService
         string separator = parser.HandSeparator; 
         _logger.LogInformation($"[IMPORT] Parser detected in {detectStart.ElapsedMilliseconds}ms, separator: {separator}");
 
+        Dictionary<string, WinamaxSummaryInfo>? winamaxSummaries = null;
+        if (parser is WinamaxParser)
+        {
+            var cleaned = await _db.CleanupCorruptedWinamaxHandsAsync();
+            if (cleaned > 0)
+            {
+                _logger.LogInformation($"[IMPORT] Cleaned {cleaned} stale/corrupted Winamax rows before import.");
+            }
+
+            winamaxSummaries = TryLoadWinamaxSummaries(filePath);
+            _logger.LogInformation($"[IMPORT] Winamax summaries loaded: {winamaxSummaries.Count}");
+        }
+
         // Pipeline channels - increased buffer size for better throughput
         var handTextChannel = Channel.CreateBounded<string>(new BoundedChannelOptions(5000) { FullMode = BoundedChannelFullMode.Wait });
         var processedChannel = Channel.CreateBounded<(ParsedHand, HandAnalytics)>(new BoundedChannelOptions(5000) { FullMode = BoundedChannelFullMode.Wait });
@@ -179,7 +222,7 @@ public class ImporterService : IImporterService
 
                     processedBytes += Encoding.UTF8.GetByteCount(line) + 2;
 
-                    if (line.Trim() == separator)
+                    if (IsHandBoundary(line, separator))
                     {
                         if (handBuffer.Length > 0)
                         {
@@ -188,6 +231,8 @@ public class ImporterService : IImporterService
                             totalHandsFound++;
                             handBuffer.Clear();
                         }
+                        // Keep boundary line as part of the next hand block (required by Winamax parser header parsing).
+                        handBuffer.AppendLine(line);
                     }
                     else
                     {
@@ -231,6 +276,17 @@ public class ImporterService : IImporterService
                         var hand = localParser.ParseHand(handText);
                         parseSw.Stop();
                         if (hand == null) continue;
+
+                        if (winamaxSummaries != null && !string.IsNullOrWhiteSpace(hand.GameId) && winamaxSummaries.TryGetValue(hand.GameId, out var summary))
+                        {
+                            if (summary.Position > 0) hand.Position = summary.Position;
+                            if (summary.PrizePool > 0) hand.PrizePool = summary.PrizePool;
+                            if (summary.BuyIn > 0) hand.BuyIn = summary.BuyIn;
+                            if (hand.BuyIn > 0 && hand.PrizePool > 0)
+                            {
+                                hand.Multiplier = Math.Max(1, (int)Math.Round(hand.PrizePool / hand.BuyIn, MidpointRounding.AwayFromZero));
+                            }
+                        }
 
                         handsParsed++;
 
@@ -352,5 +408,89 @@ public class ImporterService : IImporterService
         });
         
         _logger.LogInformation($"Imported {importedHands} hands in {stopwatch.ElapsedMilliseconds}ms using {workerCount} workers. Equity cache: {equityStats.hits} hits, {equityStats.misses} misses, {equityStats.size} entries");
+    }
+
+    private Dictionary<string, WinamaxSummaryInfo> TryLoadWinamaxSummaries(string importedFilePath)
+    {
+        var map = new Dictionary<string, WinamaxSummaryInfo>(StringComparer.Ordinal);
+
+        try
+        {
+            var directory = Path.GetDirectoryName(importedFilePath);
+            if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+            {
+                return map;
+            }
+
+            var summaryFiles = Directory.GetFiles(directory, "*_summary.txt", SearchOption.TopDirectoryOnly);
+            foreach (var summaryFile in summaryFiles)
+            {
+                try
+                {
+                    var text = File.ReadAllText(summaryFile);
+                    var info = ParseWinamaxSummary(text);
+                    if (info != null)
+                    {
+                        map[info.Value.GameId] = info.Value.Info;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug($"Failed to parse Winamax summary file {summaryFile}: {ex.Message}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning($"Unable to load Winamax summaries from {importedFilePath}: {ex.Message}");
+        }
+
+        return map;
+    }
+
+    private (string GameId, WinamaxSummaryInfo Info)? ParseWinamaxSummary(string text)
+    {
+        var idMatch = WinamaxSummaryTournamentIdRegex.Match(text);
+        if (!idMatch.Success) return null;
+
+        var gameId = idMatch.Groups["id"].Value.Trim();
+        if (string.IsNullOrWhiteSpace(gameId)) return null;
+
+        double prizePool = 0;
+        var prizeMatch = WinamaxSummaryPrizePoolRegex.Match(text);
+        if (prizeMatch.Success) prizePool = ParseWinamaxNumber(prizeMatch.Groups["value"].Value);
+
+        double buyIn = 0;
+        var buyInMatch = WinamaxSummaryBuyInRegex.Match(text);
+        if (buyInMatch.Success)
+        {
+            var buy = ParseWinamaxNumber(buyInMatch.Groups["buy"].Value);
+            var fee = ParseWinamaxNumber(buyInMatch.Groups["fee"].Value);
+            buyIn = buy > 0 ? buy : 0;
+            if (buyIn <= 0 && fee > 0)
+            {
+                buyIn = fee;
+            }
+        }
+
+        int position = 0;
+        var positionMatch = WinamaxSummaryPositionRegex.Match(text);
+        if (positionMatch.Success && int.TryParse(positionMatch.Groups["pos"].Value, out var parsedPos))
+        {
+            position = parsedPos;
+        }
+
+        return (gameId, new WinamaxSummaryInfo
+        {
+            Position = position,
+            PrizePool = prizePool,
+            BuyIn = buyIn
+        });
+    }
+
+    private static double ParseWinamaxNumber(string raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw)) return 0;
+        return double.TryParse(raw.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var value) ? value : 0;
     }
 }

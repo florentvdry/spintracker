@@ -19,8 +19,7 @@ public static class ParserFactory
     private static readonly List<IHandParser> _parsers = new()
     {
         new BetclicParser(),
-        new PokerStarsParser(),
-        new IPokerParser()
+        new WinamaxParser(),
     };
 
     public static IHandParser? GetParser(string content)

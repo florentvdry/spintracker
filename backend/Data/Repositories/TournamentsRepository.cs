@@ -71,7 +71,8 @@ public class TournamentsRepository
                 AVG(ph.ev_chips) as avg_cev,
                 MAX(h.player_count) as max_players,
                 MAX(h.multiplier) as multiplier,
-                MAX(h.position) as position
+                MAX(h.position) as position,
+                MAX(COALESCE(h.rake_per_player, 0)) as rake_per_player
             FROM hands h
             {joinHero}
             {whereClause}
@@ -99,12 +100,14 @@ public class TournamentsRepository
                 };
 
                 int lastPlayerCount = reader.IsDBNull(8) ? 3 : reader.GetInt32(8);
+                var rakePerPlayer = reader.IsDBNull(11) ? 0 : reader.GetDouble(11);
+                var totalBuyInCost = t.BuyIn + rakePerPlayer;
 
                 // Tournament Profit Logic (Prize Sharing handling)
                 if (t.PrizePool > 0 || t.Multiplier > 0)
                 {
-                    bool hasSharing = (t.BuyIn > 0 && (t.PrizePool / t.BuyIn) >= 19.5) || t.Multiplier >= 20;
-                    double totalPrize = (t.PrizePool > (t.Multiplier * t.BuyIn * 0.5)) ? t.PrizePool : (t.BuyIn * t.Multiplier);
+                    bool hasSharing = (totalBuyInCost > 0 && (t.PrizePool / totalBuyInCost) >= 19.5) || t.Multiplier >= 20;
+                    double totalPrize = (t.PrizePool > (t.Multiplier * totalBuyInCost * 0.5)) ? t.PrizePool : (totalBuyInCost * t.Multiplier);
                     
                     // Determine finish position: use explicit position if available, otherwise fallback to ChipProfit
                     int finishPos = t.Position;
@@ -124,7 +127,7 @@ public class TournamentsRepository
                         else if (finishPos == 3) winAmount = totalPrize * 0.10;
                     }
 
-                    t.NetProfit = winAmount - t.BuyIn;
+                    t.NetProfit = winAmount - totalBuyInCost;
                 }
                 else
                 {

@@ -1,0 +1,209 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707549813028159489-1-1776262837 - Holdem no limit (10/20) - 2026/04/15 14:20:37 UTC
+Table: 'Expresso(1096061853)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Benkocoki (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: IssBen (500)
+*** ANTE/BLINDS ***
+IssBen posts small blind 10
+Benkocoki posts big blind 20
+Dealt to Nelfrot-YT [3h 4d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+IssBen calls 10
+Benkocoki raises 40 to 60
+IssBen calls 40
+*** FLOP *** [7h 7c 5c]
+IssBen checks
+Benkocoki checks
+*** TURN *** [7h 7c 5c][As]
+IssBen checks
+Benkocoki bets 440 and is all-in
+IssBen folds
+Benkocoki collected 560 from pot
+*** SUMMARY ***
+Total pot 560 | No rake
+Board: [7h 7c 5c As]
+Seat 1: Benkocoki (big blind) won 560
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707549813028159489-2-1776262891 - Holdem no limit (10/20) - 2026/04/15 14:21:31 UTC
+Table: 'Expresso(1096061853)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Benkocoki (560)
+Seat 2: Nelfrot-YT (500)
+Seat 3: IssBen (440)
+*** ANTE/BLINDS ***
+Benkocoki posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Tc 2s]
+*** PRE-FLOP *** 
+IssBen raises 20 to 40
+Benkocoki folds
+Nelfrot-YT folds
+IssBen collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 3: IssBen (button) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707549813028159489-3-1776262900 - Holdem no limit (10/20) - 2026/04/15 14:21:40 UTC
+Table: 'Expresso(1096061853)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Benkocoki (550)
+Seat 2: Nelfrot-YT (480)
+Seat 3: IssBen (470)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+IssBen posts big blind 20
+Dealt to Nelfrot-YT [6d Qs]
+*** PRE-FLOP *** 
+Benkocoki folds
+Nelfrot-YT calls 10
+IssBen checks
+*** FLOP *** [Kh Jd 6h]
+Nelfrot-YT bets 20
+IssBen raises 46 to 66
+Nelfrot-YT folds
+IssBen collected 126 from pot
+*** SUMMARY ***
+Total pot 126 | No rake
+Board: [Kh Jd 6h]
+Seat 3: IssBen (big blind) won 126
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707549813028159489-4-1776262916 - Holdem no limit (10/20) - 2026/04/15 14:21:56 UTC
+Table: 'Expresso(1096061853)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Benkocoki (550)
+Seat 2: Nelfrot-YT (440)
+Seat 3: IssBen (510)
+*** ANTE/BLINDS ***
+IssBen posts small blind 10
+Benkocoki posts big blind 20
+Dealt to Nelfrot-YT [Qd 7h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+IssBen raises 30 to 50
+Benkocoki folds
+IssBen collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 3: IssBen (small blind) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707549813028159489-5-1776262932 - Holdem no limit (15/30) - 2026/04/15 14:22:12 UTC
+Table: 'Expresso(1096061853)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Benkocoki (530)
+Seat 2: Nelfrot-YT (440)
+Seat 3: IssBen (530)
+*** ANTE/BLINDS ***
+Benkocoki posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [3h As]
+*** PRE-FLOP *** 
+IssBen folds
+Benkocoki raises 500 to 530 and is all-in
+Nelfrot-YT folds
+Benkocoki collected 560 from pot
+*** SUMMARY ***
+Total pot 560 | No rake
+Seat 1: Benkocoki (small blind) won 560
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707549813028159489-6-1776262950 - Holdem no limit (15/30) - 2026/04/15 14:22:30 UTC
+Table: 'Expresso(1096061853)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Benkocoki (560)
+Seat 2: Nelfrot-YT (410)
+Seat 3: IssBen (530)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+IssBen posts big blind 30
+Dealt to Nelfrot-YT [6h 9s]
+*** PRE-FLOP *** 
+Benkocoki raises 30 to 60
+Nelfrot-YT folds
+IssBen folds
+Benkocoki collected 105 from pot
+*** SUMMARY ***
+Total pot 105 | No rake
+Seat 1: Benkocoki (button) won 105
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707549813028159489-7-1776262960 - Holdem no limit (15/30) - 2026/04/15 14:22:40 UTC
+Table: 'Expresso(1096061853)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Benkocoki (605)
+Seat 2: Nelfrot-YT (395)
+Seat 3: IssBen (500)
+*** ANTE/BLINDS ***
+IssBen posts small blind 15
+Benkocoki posts big blind 30
+Dealt to Nelfrot-YT [Js Ac]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 365 to 395 and is all-in
+IssBen raises 105 to 500 and is all-in
+Benkocoki folds
+*** FLOP *** [Qs Ts Ad]
+*** TURN *** [Qs Ts Ad][3d]
+*** RIVER *** [Qs Ts Ad 3d][Jh]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Js Ac] (Two pairs : Aces and Jacks)
+IssBen shows [4c 4h] (One pair : 4)
+IssBen collected 105 from side pot 1
+Nelfrot-YT collected 820 from main pot
+*** SUMMARY ***
+Total pot 925 | No rake
+Board: [Qs Ts Ad 3d Jh]
+Seat 2: Nelfrot-YT (button) showed [Js Ac] and won 820 with Two pairs : Aces and Jacks
+Seat 3: IssBen (small blind) showed [4c 4h] and won 105 with One pair : 4
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707549813028159489-8-1776262975 - Holdem no limit (15/30) - 2026/04/15 14:22:55 UTC
+Table: 'Expresso(1096061853)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Benkocoki (575)
+Seat 2: Nelfrot-YT (820)
+Seat 3: IssBen (105)
+*** ANTE/BLINDS ***
+Benkocoki posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [5s 5d]
+*** PRE-FLOP *** 
+IssBen folds
+Benkocoki raises 60 to 90
+Nelfrot-YT raises 730 to 820 and is all-in
+Benkocoki calls 485 and is all-in
+*** FLOP *** [2c 5h 5c]
+*** TURN *** [2c 5h 5c][Ts]
+*** RIVER *** [2c 5h 5c Ts][Ah]
+*** SHOW DOWN ***
+Benkocoki shows [4c 4s] (Two pairs : 5 and 4)
+Nelfrot-YT shows [5s 5d] (Quads of 5)
+Nelfrot-YT collected 1395 from pot
+*** SUMMARY ***
+Total pot 1395 | No rake
+Board: [2c 5h 5c Ts Ah]
+Seat 1: Benkocoki (small blind) showed [4c 4s] and lost with Two pairs : 5 and 4
+Seat 2: Nelfrot-YT (big blind) showed [5s 5d] and won 1395 with Quads of 5
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707549813028159489-9-1776263000 - Holdem no limit (15/30) - 2026/04/15 14:23:20 UTC
+Table: 'Expresso(1096061853)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (1395)
+Seat 3: IssBen (105)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+IssBen posts big blind 30
+Dealt to Nelfrot-YT [8d Qd]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1365 to 1395 and is all-in
+IssBen calls 75 and is all-in
+*** FLOP *** [7s 3c 3s]
+*** TURN *** [7s 3c 3s][8h]
+*** RIVER *** [7s 3c 3s 8h][4d]
+*** SHOW DOWN ***
+IssBen shows [5s Ad] (One pair : 3)
+Nelfrot-YT shows [8d Qd] (Two pairs : 8 and 3)
+Nelfrot-YT collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [7s 3c 3s 8h 4d]
+Seat 2: Nelfrot-YT (small blind) (button) showed [8d Qd] and won 1500 with Two pairs : 8 and 3
+Seat 3: IssBen (big blind) showed [5s Ad] and lost with One pair : 3
+
+

@@ -311,4 +311,32 @@ public class Database
             return new { success = false, message = $"Failed to delete data: {ex.Message}" };
         }
     }
+
+    public async Task<int> CleanupCorruptedWinamaxHandsAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+        using var tx = connection.BeginTransaction();
+
+        // Old imports could create Winamax rows without stable hand_id/date_time.
+        // Remove them to let re-import rebuild consistent tournament stats.
+        using var cmd = connection.CreateCommand();
+        cmd.Transaction = tx;
+        cmd.CommandText = @"
+            DELETE FROM player_hands
+            WHERE hand_id IN (
+                SELECT id FROM hands
+                WHERE room = 'Winamax'
+                  AND (hand_id IS NULL OR hand_id = '' OR date_time IS NULL OR date_time = '')
+            );
+
+            DELETE FROM hands
+            WHERE room = 'Winamax'
+              AND (hand_id IS NULL OR hand_id = '' OR date_time IS NULL OR date_time = '');
+        ";
+
+        var deleted = await cmd.ExecuteNonQueryAsync();
+        await tx.CommitAsync();
+        return deleted;
+    }
 }

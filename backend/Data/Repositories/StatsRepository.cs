@@ -109,7 +109,8 @@ public class StatsRepository
                     SUM({profitCol}) as chip_profit,
                     MAX(h.player_count) as max_players,
                     MAX(h.multiplier) as multiplier,
-                    MAX(h.position) as position
+                    MAX(h.position) as position,
+                    MAX(COALESCE(h.rake_per_player, 0)) as rake_per_player
                 FROM hands h
                 {joinClause}
                 {whereClause}
@@ -129,11 +130,13 @@ public class StatsRepository
                 int pc = reader.IsDBNull(3) ? 3 : reader.GetInt32(3);
                 int m = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
                 int pos = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
+                double r = reader.IsDBNull(6) ? 0 : reader.GetDouble(6);
+                double totalCost = b + r;
 
                 bool isITM = false;
                 if (p > 0 || m > 0)
                 {
-                    bool hasSharing = (b > 0 && (p / b) >= 19.5) || m >= 20;
+                    bool hasSharing = (totalCost > 0 && (p / totalCost) >= 19.5) || m >= 20;
                     int finishPos = pos != 0 ? pos : (cp > 0 ? 1 : (pc == 2 ? 2 : 3));
 
                     if (finishPos == 1 || (hasSharing && (finishPos == 2 || finishPos == 3)))
@@ -215,7 +218,8 @@ public class StatsRepository
                     SUM({profitCol}) as chip_profit,
                     MAX(h.player_count) as max_players,
                     MAX(h.multiplier) as multiplier,
-                    MAX(h.position) as position
+                    MAX(h.position) as position,
+                    MAX(COALESCE(h.rake_per_player, 0)) as rake_per_player
                 FROM hands h
                 {joinClause}
                 {whereClause}
@@ -235,18 +239,20 @@ public class StatsRepository
                 int pc = reader.IsDBNull(3) ? 3 : reader.GetInt32(3);
                 int m = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
                 int pos = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
+                double r = reader.IsDBNull(6) ? 0 : reader.GetDouble(6);
+                double totalCost = b + r;
 
                 if (p > 0 || m > 0)
                 {
-                    bool hasSharing = (b > 0 && (p / b) >= 19.5) || m >= 20;
-                    double totalPrize = (p > (m * b * 0.5)) ? p : (b * m);
+                    bool hasSharing = (totalCost > 0 && (p / totalCost) >= 19.5) || m >= 20;
+                    double totalPrize = (p > (m * totalCost * 0.5)) ? p : (totalCost * m);
                     int finishPos = pos != 0 ? pos : (cp > 0 ? 1 : (pc == 2 ? 2 : 3));
 
                     double winAmount = 0;
                     if (finishPos == 1) winAmount = hasSharing ? (totalPrize * 0.75) : totalPrize;
                     else if (hasSharing) winAmount = (finishPos == 2) ? (totalPrize * 0.15) : (totalPrize * 0.10);
 
-                    totalProfitEuro += (winAmount - b);
+                    totalProfitEuro += (winAmount - totalCost);
                 }
                 else
                 {
@@ -345,13 +351,13 @@ public class StatsRepository
 
         // Fetch necessary columns to group sessions and calculate profit
         cmd.CommandText = $@"
-            SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, {profitCol}, h.player_count, h.multiplier, h.position
+            SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, {profitCol}, h.player_count, h.multiplier, h.position, COALESCE(h.rake_per_player, 0)
             FROM hands h 
             {joinClause}
             {whereClause}
             ORDER BY h.date_time ASC";
         
-        var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos)>();
+        var rawHands = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos, double rake)>();
         using (var reader = await cmd.ExecuteReaderAsync())
         {
             while(await reader.ReadAsync())
@@ -370,14 +376,15 @@ public class StatsRepository
                     reader.IsDBNull(5) ? 0.0 : reader.GetDouble(5),
                     reader.IsDBNull(6) ? 3 : reader.GetInt32(6),
                     reader.IsDBNull(7) ? 0 : reader.GetInt32(7),
-                    reader.IsDBNull(8) ? 0 : reader.GetInt32(8)
+                    reader.IsDBNull(8) ? 0 : reader.GetInt32(8),
+                    reader.IsDBNull(9) ? 0.0 : reader.GetDouble(9)
                  ));
             }
         }
 
         // Group by sessions (hands within 2 hours are same session)
         var sessions = new List<SessionInfo>();
-        var currentSession = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos)>();
+        var currentSession = new List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos, double rake)>();
         DateTime? lastTime = null;
 
         foreach (var hand in rawHands.OrderBy(h => h.t))
@@ -402,7 +409,7 @@ public class StatsRepository
         return limit.HasValue ? sessions.Take(limit.Value).ToList() : sessions;
     }
 
-    private SessionInfo CreateSessionInfo(List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos)> hands)
+    private SessionInfo CreateSessionInfo(List<(DateTime t, string r, string g, double b, double p, double h_p, int pc, int m, int pos, double rake)> hands)
     {
         var startTime = hands.Min(h => h.t);
         var endTime = hands.Max(h => h.t);
@@ -425,8 +432,9 @@ public class StatsRepository
             double profit = 0;
             if (first.p > 0 || multiplier > 0)
             {
-                bool hasSharing = (first.b > 0 && (first.p / first.b) >= 19.5) || multiplier >= 20;
-                double totalPrize = (first.p > (multiplier * first.b * 0.5)) ? first.p : (first.b * multiplier);
+                var totalCost = first.b + first.rake;
+                bool hasSharing = (totalCost > 0 && (first.p / totalCost) >= 19.5) || multiplier >= 20;
+                double totalPrize = (first.p > (multiplier * totalCost * 0.5)) ? first.p : (totalCost * multiplier);
                 
                 int finishPos = position;
                 if (finishPos == 0)
@@ -445,7 +453,7 @@ public class StatsRepository
                     else if (finishPos == 3) winAmount = totalPrize * 0.10;
                 }
 
-                profit = winAmount - first.b;
+                profit = winAmount - totalCost;
             }
             else
             {
@@ -549,7 +557,8 @@ public class StatsRepository
                 h.player_count,
                 {profitCol} as hand_profit,
                 h.multiplier,
-                h.position
+                h.position,
+                COALESCE(h.rake_per_player, 0) as rake_per_player
             FROM hands h
             {joinClause}
             {whereClause}
@@ -576,7 +585,8 @@ public class StatsRepository
                 player_count = reader.IsDBNull(8) ? 0 : reader.GetInt32(8),
                 hand_profit = reader.GetDouble(9),
                 multiplier = reader.IsDBNull(10) ? 0 : reader.GetInt32(10),
-                position = reader.IsDBNull(11) ? 0 : reader.GetInt32(11)
+                position = reader.IsDBNull(11) ? 0 : reader.GetInt32(11),
+                rake_per_player = reader.IsDBNull(12) ? 0.0 : reader.GetDouble(12)
             });
         }
 
@@ -608,8 +618,9 @@ public class StatsRepository
             double profit = 0;
             if (first.prize_pool > 0 || multiplier > 0)
             {
-                bool hasSharing = (first.buy_in > 0 && (first.prize_pool / first.buy_in) >= 19.5) || multiplier >= 20;
-                double totalPrize = (first.prize_pool > (multiplier * first.buy_in * 0.5)) ? first.prize_pool : (first.buy_in * multiplier);
+                var totalCost = first.buy_in + first.rake_per_player;
+                bool hasSharing = (totalCost > 0 && (first.prize_pool / totalCost) >= 19.5) || multiplier >= 20;
+                double totalPrize = (first.prize_pool > (multiplier * totalCost * 0.5)) ? first.prize_pool : (totalCost * multiplier);
                 
                 int finishPos = position;
                 if (finishPos == 0)
@@ -628,7 +639,7 @@ public class StatsRepository
                     else if (finishPos == 3) winAmount = totalPrize * 0.10;
                 }
 
-                profit = winAmount - first.buy_in;
+                profit = winAmount - totalCost;
             }
             else
             {
@@ -681,6 +692,7 @@ public class StatsRepository
         public double hand_profit { get; set; }
         public int multiplier { get; set; }
         public int position { get; set; }
+        public double rake_per_player { get; set; }
     }
 
     public async Task<List<double>> GetUniqueBuyInsAsync()
@@ -714,7 +726,8 @@ public class StatsRepository
                 SUM({profitCol}) as chip_profit,
                 MAX(h.player_count) as max_players,
                 MAX(h.multiplier) as multiplier,
-                MAX(h.position) as position
+                MAX(h.position) as position,
+                MAX(COALESCE(h.rake_per_player, 0)) as rake_per_player
             FROM hands h
             {joinClause}
             WHERE h.player_count <= 3
@@ -732,18 +745,20 @@ public class StatsRepository
                 int pc = reader.IsDBNull(3) ? 3 : reader.GetInt32(3);
                 int m = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
                 int pos = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
+                double r = reader.IsDBNull(6) ? 0 : reader.GetDouble(6);
+                double totalCost = b + r;
 
                 if (p > 0 || m > 0)
                 {
-                    bool hasSharing = (b > 0 && (p / b) >= 19.5) || m >= 20;
-                    double totalPrize = (p > (m * b * 0.5)) ? p : (b * m);
+                    bool hasSharing = (totalCost > 0 && (p / totalCost) >= 19.5) || m >= 20;
+                    double totalPrize = (p > (m * totalCost * 0.5)) ? p : (totalCost * m);
                     int finishPos = pos != 0 ? pos : (cp > 0 ? 1 : (pc == 2 ? 2 : 3));
 
                     double winAmount = 0;
                     if (finishPos == 1) winAmount = hasSharing ? (totalPrize * 0.75) : totalPrize;
                     else if (hasSharing) winAmount = (finishPos == 2) ? (totalPrize * 0.15) : (totalPrize * 0.10);
 
-                    totalProfit += (winAmount - b);
+                    totalProfit += (winAmount - totalCost);
                 }
                 else
                 {

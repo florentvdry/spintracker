@@ -1,0 +1,382 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707507292851929089-1-1776261453 - Holdem no limit (10/20) - 2026/04/15 13:57:33 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Liliwina (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: I8WINA (500)
+*** ANTE/BLINDS ***
+I8WINA posts small blind 10
+Liliwina posts big blind 20
+Dealt to Nelfrot-YT [7h 6d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+I8WINA calls 10
+Liliwina checks
+*** FLOP *** [5d 5h 8h]
+I8WINA checks
+Liliwina bets 40
+I8WINA calls 40
+*** TURN *** [5d 5h 8h][9s]
+I8WINA checks
+Liliwina bets 78
+I8WINA raises 78 to 156
+Liliwina calls 78
+*** RIVER *** [5d 5h 8h 9s][2c]
+I8WINA bets 284 and is all-in
+Liliwina folds
+I8WINA collected 716 from pot
+*** SUMMARY ***
+Total pot 716 | No rake
+Board: [5d 5h 8h 9s 2c]
+Seat 3: I8WINA (small blind) won 716
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707507292851929089-2-1776261487 - Holdem no limit (10/20) - 2026/04/15 13:58:07 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Liliwina (284)
+Seat 2: Nelfrot-YT (500)
+Seat 3: I8WINA (716)
+*** ANTE/BLINDS ***
+Liliwina posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Jc Qh]
+*** PRE-FLOP *** 
+I8WINA raises 40 to 60
+Liliwina raises 224 to 284 and is all-in
+Nelfrot-YT folds
+I8WINA calls 224
+*** FLOP *** [8h 3h 4d]
+*** TURN *** [8h 3h 4d][Qd]
+*** RIVER *** [8h 3h 4d Qd][5d]
+*** SHOW DOWN ***
+Liliwina shows [Kh Th] (High card : King)
+I8WINA shows [Jd Jh] (One pair : Jacks)
+I8WINA collected 588 from pot
+*** SUMMARY ***
+Total pot 588 | No rake
+Board: [8h 3h 4d Qd 5d]
+Seat 1: Liliwina (small blind) showed [Kh Th] and lost with High card : King
+Seat 3: I8WINA (button) showed [Jd Jh] and won 588 with One pair : Jacks
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707507292851929089-3-1776261503 - Holdem no limit (10/20) - 2026/04/15 13:58:23 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (480)
+Seat 3: I8WINA (1020)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+I8WINA posts big blind 20
+Dealt to Nelfrot-YT [5h Ts]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 10
+I8WINA checks
+*** FLOP *** [8h 3d 4s]
+I8WINA checks
+Nelfrot-YT bets 20
+I8WINA folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [8h 3d 4s]
+Seat 2: Nelfrot-YT (small blind) (button) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707507292851929089-4-1776261525 - Holdem no limit (10/20) - 2026/04/15 13:58:45 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (500)
+Seat 3: I8WINA (1000)
+*** ANTE/BLINDS ***
+I8WINA posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Kh 7d]
+*** PRE-FLOP *** 
+I8WINA raises 20 to 40
+Nelfrot-YT calls 20
+*** FLOP *** [3s 7s 9d]
+Nelfrot-YT checks
+I8WINA checks
+*** TURN *** [3s 7s 9d][4s]
+Nelfrot-YT bets 44
+I8WINA folds
+Nelfrot-YT collected 124 from pot
+*** SUMMARY ***
+Total pot 124 | No rake
+Board: [3s 7s 9d 4s]
+Seat 2: Nelfrot-YT (big blind) won 124
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707507292851929089-5-1776261551 - Holdem no limit (15/30) - 2026/04/15 13:59:11 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (540)
+Seat 3: I8WINA (960)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+I8WINA posts big blind 30
+Dealt to Nelfrot-YT [7d Jh]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 15
+I8WINA checks
+*** FLOP *** [3s 8h 3c]
+I8WINA checks
+Nelfrot-YT bets 30
+I8WINA folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [3s 8h 3c]
+Seat 2: Nelfrot-YT (small blind) (button) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707507292851929089-6-1776261598 - Holdem no limit (15/30) - 2026/04/15 13:59:58 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (570)
+Seat 3: I8WINA (930)
+*** ANTE/BLINDS ***
+I8WINA posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Ts 9c]
+*** PRE-FLOP *** 
+I8WINA calls 15
+Nelfrot-YT checks
+*** FLOP *** [Qh 4h 5h]
+Nelfrot-YT checks
+I8WINA checks
+*** TURN *** [Qh 4h 5h][3d]
+Nelfrot-YT checks
+I8WINA checks
+*** RIVER *** [Qh 4h 5h 3d][9d]
+Nelfrot-YT checks
+I8WINA checks
+*** SHOW DOWN ***
+I8WINA shows [3s Jd] (One pair : 3)
+Nelfrot-YT shows [Ts 9c] (One pair : 9)
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [Qh 4h 5h 3d 9d]
+Seat 2: Nelfrot-YT (big blind) showed [Ts 9c] and won 60 with One pair : 9
+Seat 3: I8WINA (small blind) (button) showed [3s Jd] and lost with One pair : 3
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707507292851929089-7-1776261627 - Holdem no limit (15/30) - 2026/04/15 14:00:27 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (600)
+Seat 3: I8WINA (900)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+I8WINA posts big blind 30
+Dealt to Nelfrot-YT [Kc 9c]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 15
+I8WINA checks
+*** FLOP *** [Ah 9h 3s]
+I8WINA checks
+Nelfrot-YT bets 30
+I8WINA folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [Ah 9h 3s]
+Seat 2: Nelfrot-YT (small blind) (button) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707507292851929089-8-1776261659 - Holdem no limit (20/40) - 2026/04/15 14:00:59 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (630)
+Seat 3: I8WINA (870)
+*** ANTE/BLINDS ***
+I8WINA posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [9h 6c]
+*** PRE-FLOP *** 
+I8WINA folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Seat 2: Nelfrot-YT (big blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707507292851929089-9-1776261664 - Holdem no limit (20/40) - 2026/04/15 14:01:04 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (650)
+Seat 3: I8WINA (850)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+I8WINA posts big blind 40
+Dealt to Nelfrot-YT [4d 9h]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+I8WINA checks
+*** FLOP *** [6c 4h Kc]
+I8WINA checks
+Nelfrot-YT bets 40
+I8WINA calls 40
+*** TURN *** [6c 4h Kc][Ah]
+I8WINA checks
+Nelfrot-YT checks
+*** RIVER *** [6c 4h Kc Ah][8d]
+I8WINA bets 80
+Nelfrot-YT folds
+I8WINA collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Board: [6c 4h Kc Ah 8d]
+Seat 3: I8WINA (big blind) won 240
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707507292851929089-10-1776261692 - Holdem no limit (20/40) - 2026/04/15 14:01:32 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (570)
+Seat 3: I8WINA (930)
+*** ANTE/BLINDS ***
+I8WINA posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Js 6d]
+*** PRE-FLOP *** 
+I8WINA calls 20
+Nelfrot-YT checks
+*** FLOP *** [Th 8c 4d]
+Nelfrot-YT checks
+I8WINA checks
+*** TURN *** [Th 8c 4d][5s]
+Nelfrot-YT checks
+I8WINA checks
+*** RIVER *** [Th 8c 4d 5s][8h]
+Nelfrot-YT bets 40
+I8WINA calls 40
+*** SHOW DOWN ***
+Nelfrot-YT shows [Js 6d] (One pair : 8)
+I8WINA shows [Jc 5h] (Two pairs : 8 and 5)
+I8WINA collected 160 from pot
+*** SUMMARY ***
+Total pot 160 | No rake
+Board: [Th 8c 4d 5s 8h]
+Seat 2: Nelfrot-YT (big blind) showed [Js 6d] and lost with One pair : 8
+Seat 3: I8WINA (small blind) (button) showed [Jc 5h] and won 160 with Two pairs : 8 and 5
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707507292851929089-11-1776261708 - Holdem no limit (20/40) - 2026/04/15 14:01:48 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (490)
+Seat 3: I8WINA (1010)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+I8WINA posts big blind 40
+Dealt to Nelfrot-YT [5c 6d]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+I8WINA checks
+*** FLOP *** [Kh 7c Jd]
+I8WINA checks
+Nelfrot-YT bets 40
+I8WINA folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [Kh 7c Jd]
+Seat 2: Nelfrot-YT (small blind) (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507292851929089-12-1776261721 - Holdem no limit (30/60) - 2026/04/15 14:02:01 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (530)
+Seat 3: I8WINA (970)
+*** ANTE/BLINDS ***
+I8WINA posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Kh Kc]
+*** PRE-FLOP *** 
+I8WINA folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 2: Nelfrot-YT (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507292851929089-13-1776261725 - Holdem no limit (30/60) - 2026/04/15 14:02:05 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (560)
+Seat 3: I8WINA (940)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+I8WINA posts big blind 60
+Dealt to Nelfrot-YT [3c 5h]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+I8WINA checks
+*** FLOP *** [5c Ah Jh]
+I8WINA checks
+Nelfrot-YT bets 60
+I8WINA calls 60
+*** TURN *** [5c Ah Jh][4c]
+I8WINA checks
+Nelfrot-YT checks
+*** RIVER *** [5c Ah Jh 4c][2c]
+I8WINA checks
+Nelfrot-YT checks
+*** SHOW DOWN ***
+I8WINA shows [7s Kh] (High card : Ace)
+Nelfrot-YT shows [3c 5h] (Straight 5 high)
+Nelfrot-YT collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Board: [5c Ah Jh 4c 2c]
+Seat 2: Nelfrot-YT (small blind) (button) showed [3c 5h] and won 240 with Straight 5 high
+Seat 3: I8WINA (big blind) showed [7s Kh] and lost with High card : Ace
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507292851929089-14-1776261743 - Holdem no limit (30/60) - 2026/04/15 14:02:23 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #3 is the button
+Seat 2: Nelfrot-YT (680)
+Seat 3: I8WINA (820)
+*** ANTE/BLINDS ***
+I8WINA posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [4h 2s]
+*** PRE-FLOP *** 
+I8WINA calls 30
+Nelfrot-YT checks
+*** FLOP *** [3d 7s 9c]
+Nelfrot-YT checks
+I8WINA checks
+*** TURN *** [3d 7s 9c][8d]
+Nelfrot-YT bets 60
+I8WINA calls 60
+*** RIVER *** [3d 7s 9c 8d][4s]
+Nelfrot-YT bets 72
+I8WINA calls 72
+*** SHOW DOWN ***
+Nelfrot-YT shows [4h 2s] (One pair : 4)
+I8WINA shows [Qd 8c] (One pair : 8)
+I8WINA collected 384 from pot
+*** SUMMARY ***
+Total pot 384 | No rake
+Board: [3d 7s 9c 8d 4s]
+Seat 2: Nelfrot-YT (big blind) showed [4h 2s] and lost with One pair : 4
+Seat 3: I8WINA (small blind) (button) showed [Qd 8c] and won 384 with One pair : 8
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707507292851929089-15-1776261771 - Holdem no limit (30/60) - 2026/04/15 14:02:51 UTC
+Table: 'Expresso(1096051953)#0' 3-max (real money) Seat #2 is the button
+Seat 2: Nelfrot-YT (488)
+Seat 3: I8WINA (1012)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+I8WINA posts big blind 60
+Dealt to Nelfrot-YT [7h Qh]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 428 to 488 and is all-in
+I8WINA calls 428
+*** FLOP *** [Th Kh 5h]
+*** TURN *** [Th Kh 5h][9h]
+*** RIVER *** [Th Kh 5h 9h][3c]
+*** SHOW DOWN ***
+Nelfrot-YT shows [7h Qh] (Flush King high)
+I8WINA shows [Ah 2h] (Flush Ace high)
+I8WINA collected 976 from pot
+*** SUMMARY ***
+Total pot 976 | No rake
+Board: [Th Kh 5h 9h 3c]
+Seat 2: Nelfrot-YT (small blind) (button) showed [7h Qh] and lost with Flush King high
+Seat 3: I8WINA (big blind) showed [Ah 2h] and won 976 with Flush Ace high
+
+

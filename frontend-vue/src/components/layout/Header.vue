@@ -291,7 +291,6 @@ const dateFilters = computed(() => [
   { id: 'custom', label: t('common.custom') }
 ])
 
-const LAST_AUTO_DETECTED_HERO_KEY = 'SpinTracker_lastAutoDetectedHero'
 
 const loadPlayers = async () => {
   try {
@@ -320,33 +319,6 @@ watch(() => [filterStore.heroName, filterStore.customDateFrom, filterStore.custo
   customFrom.value = filterStore.customDateFrom || ''
   customTo.value = filterStore.customDateTo || ''
 })
-
-watch(() => [filterStore.heroName, appStore.dashboardStats, () => players.value.length], () => {
-  if (!filterStore.heroName && players.value.length > 0) {
-    const best = players.value.reduce((prev, current) => 
-      (prev.total_hands > current.total_hands) ? prev : current
-    )
-    
-    if (best && best.total_hands > 0) {
-      const lastAutoDetected = localStorage.getItem(LAST_AUTO_DETECTED_HERO_KEY)
-      const shouldShowNotification = lastAutoDetected !== best.name
-      
-      filterStore.setHeroName(best.name)
-      localStorage.setItem(LAST_AUTO_DETECTED_HERO_KEY, best.name)
-      
-      if (shouldShowNotification) {
-        notificationStore.addNotification({
-          type: 'info',
-          title: t('header.hero_detected'),
-          message: t('header.hero_selected_auto', { name: best.name }),
-          duration: 5000
-        })
-      }
-      
-      appStore.refreshAll()
-    }
-  }
-}, { immediate: true })
 
 const handleBuyInChange = (buyIn) => {
   filterStore.setBuyIn(buyIn)
