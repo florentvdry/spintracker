@@ -90,14 +90,18 @@ const actionColorClass = computed(() => {
     </div>
 
     <transition-group name="card-deal" appear :css="true" tag="div" class="cards-row" :class="{ invisible: player.isFolded }">
-      <Card 
-        v-for="(card, index) in cardsToShow" 
-        :key="`${player.name}-${card}-${index}`" 
-        :card="card" 
-        size="seat"
-        :style="{ animationDelay: `${index * 150}ms` }"
-      />
-      <template v-if="!showCards && !player.isFolded">
+      <template v-if="showCards && cardsToShow.length > 0">
+        <!-- Show face-up cards at showdown or for hero -->
+        <Card 
+          v-for="(card, index) in cardsToShow" 
+          :key="`${player.name}-${card}-${index}`" 
+          :card="card" 
+          size="seat"
+          :style="{ animationDelay: `${index * 150}ms` }"
+        />
+      </template>
+      <template v-else-if="!player.isFolded">
+        <!-- Show face-down cards -->
         <Card :key="`${player.name}-hidden-1`" :hidden="true" size="seat" />
         <Card :key="`${player.name}-hidden-2`" :hidden="true" size="seat" />
       </template>
