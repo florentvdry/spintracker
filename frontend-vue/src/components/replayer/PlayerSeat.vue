@@ -89,19 +89,21 @@ const actionColorClass = computed(() => {
       {{ currentActionText }}
     </div>
 
-    <transition-group name="card-deal" appear :css="true" class="cards-row" :class="{ invisible: player.isFolded }">
-      <Card 
-        v-for="(card, index) in cardsToShow" 
-        :key="`${player.name}-${card}-${index}`" 
-        :card="card" 
-        size="seat"
-        :style="{ animationDelay: `${index * 150}ms` }"
-      />
-      <template v-if="!showCards && !player.isFolded">
-        <Card :key="`${player.name}-hidden-1`" :hidden="true" size="seat" />
-        <Card :key="`${player.name}-hidden-2`" :hidden="true" size="seat" />
-      </template>
-    </transition-group>
+    <div class="cards-row" :class="{ invisible: player.isFolded }">
+      <transition-group name="card-deal" appear :css="true">
+        <Card 
+          v-for="(card, index) in cardsToShow" 
+          :key="`${player.name}-${card}-${index}`" 
+          :card="card" 
+          size="seat"
+          :style="{ animationDelay: `${index * 150}ms` }"
+        />
+        <template v-if="!showCards && !player.isFolded">
+          <Card :key="`${player.name}-hidden-1`" :hidden="true" size="seat" />
+          <Card :key="`${player.name}-hidden-2`" :hidden="true" size="seat" />
+        </template>
+      </transition-group>
+    </div>
 
     <div class="seat-panel">
       <div class="seat-topline">
@@ -161,19 +163,26 @@ const actionColorClass = computed(() => {
   margin-bottom: -2px;
 }
 
-.cards-row > :deep(*) + :deep(*) {
+.cards-row > :deep(*) {
   margin-left: clamp(-12px, -1.3cqw, -5px);
+}
+
+.cards-row > :deep(*:first-child) {
+  margin-left: 0;
 }
 
 .seat-panel {
   width: 100%;
-  min-height: clamp(58px, 7.5cqw, 76px);
+  min-height: clamp(52px, 6.5cqw, 76px);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(9, 13, 24, 0.98));
   box-shadow: 0 18px 35px rgba(0, 0, 0, 0.38);
-  padding: clamp(7px, 1.1cqw, 12px);
+  padding: clamp(6px, 1cqw, 12px);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .seat-topline {
@@ -212,19 +221,21 @@ const actionColorClass = computed(() => {
 .player-name {
   width: 100%;
   color: #f8fafc;
-  font-size: clamp(12px, 1.55cqw, 15px);
+  font-size: clamp(11px, 1.4cqw, 15px);
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
 }
 
 .stack-line {
-  margin-top: 4px;
+  margin-top: 2px;
   display: flex;
   align-items: baseline;
-  gap: 5px;
+  justify-content: center;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -232,10 +243,11 @@ const actionColorClass = computed(() => {
   min-width: 0;
   color: #e5e7eb;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: clamp(13px, 1.7cqw, 17px);
+  font-size: clamp(12px, 1.5cqw, 17px);
   font-weight: 900;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
 }
 
 .stack-unit {
@@ -383,6 +395,18 @@ const actionColorClass = computed(() => {
 
   .action-bubble {
     max-width: 180px;
+  }
+  
+  .player-name {
+    font-size: clamp(10px, 2.8vw, 13px);
+  }
+  
+  .stack-value {
+    font-size: clamp(11px, 2.5vw, 15px);
+  }
+  
+  .cards-row > :deep(*) {
+    margin-left: clamp(-8px, -2vw, -4px);
   }
 }
 
