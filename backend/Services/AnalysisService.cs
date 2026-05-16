@@ -1035,14 +1035,16 @@ namespace SpinTrackerBackend.Services
                 {
                     type = "PostSB";
                     var match = Regex.Match(content, @"(\d+\.?\d*)");
-                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                    if (match.Success && !string.IsNullOrEmpty(match.Groups[1].Value))
+                        amount = double.Parse(match.Groups[1].Value);
                 }
                 // Check for Post BB
                 else if (content.Contains("posts bb") || content.Contains("posts big blind"))
                 {
                     type = "PostBB";
                     var match = Regex.Match(content, @"(\d+\.?\d*)");
-                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                    if (match.Success && !string.IsNullOrEmpty(match.Groups[1].Value))
+                        amount = double.Parse(match.Groups[1].Value);
                 }
                 // Check for Fold (EN + FR)
                 else if (content.Contains("folds") || content.Contains("fold") || content.Contains("se couche")) type = "Fold";
@@ -1053,21 +1055,24 @@ namespace SpinTrackerBackend.Services
                 {
                     type = "Call";
                     var match = Regex.Match(content, @"(\d+\.?\d*)");
-                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                    if (match.Success && !string.IsNullOrEmpty(match.Groups[1].Value))
+                        amount = double.Parse(match.Groups[1].Value);
                 }
                 // Check for Raise (EN + FR)
                 else if (content.Contains("raises") || content.Contains("raise") || content.Contains("relance") || content.Contains("mise"))
                 {
                     type = "Raise";
                     var match = Regex.Match(content, @"to\s+(\d+\.?\d*)|(\d+\.?\d*)");
-                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                    if (match.Success && !string.IsNullOrEmpty(match.Groups[1].Value))
+                        amount = double.Parse(match.Groups[1].Value);
                 }
                 // Check for Bet (EN + FR)
                 else if (content.Contains("bets") || content.Contains("bet") || content.Contains("mise"))
                 {
                     type = "Bet";
                     var match = Regex.Match(content, @"(\d+\.?\d*)");
-                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                    if (match.Success && !string.IsNullOrEmpty(match.Groups[1].Value))
+                        amount = double.Parse(match.Groups[1].Value);
                 }
 
                 // Check for All-In (override)
@@ -1075,7 +1080,8 @@ namespace SpinTrackerBackend.Services
                 {
                     type = "AllIn";
                     var match = Regex.Match(content, @"(\d+\.?\d*)");
-                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                    if (match.Success && !string.IsNullOrEmpty(match.Groups[1].Value))
+                        amount = double.Parse(match.Groups[1].Value);
                 }
                 
                 // Skip unknown actions - don't add them to the list
