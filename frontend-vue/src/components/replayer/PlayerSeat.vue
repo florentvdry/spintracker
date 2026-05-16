@@ -34,6 +34,11 @@ const cards = computed(() => {
 
 const showCards = computed(() => props.player.isHero || props.player.showCards)
 
+const cardsToShow = computed(() => {
+  if (props.player.isFolded) return []
+  return cards.value
+})
+
 const currentActionText = computed(() => {
   const action = store.currentAction
   if (!action || action.playerName !== props.player.name || !store.isRealAction(action)) return null
@@ -84,15 +89,19 @@ const actionColorClass = computed(() => {
       {{ currentActionText }}
     </div>
 
-    <div class="cards-row" :class="{ invisible: player.isFolded }">
-      <template v-if="showCards">
-        <Card v-for="(card, index) in cards" :key="`${player.name}-${card}-${index}`" :card="card" size="seat" />
+    <transition-group name="card-deal" appear :css="true" class="cards-row" :class="{ invisible: player.isFolded }">
+      <Card 
+        v-for="(card, index) in cardsToShow" 
+        :key="`${player.name}-${card}-${index}`" 
+        :card="card" 
+        size="seat"
+        :style="{ animationDelay: `${index * 150}ms` }"
+      />
+      <template v-if="!showCards && !player.isFolded">
+        <Card :key="`${player.name}-hidden-1`" :hidden="true" size="seat" />
+        <Card :key="`${player.name}-hidden-2`" :hidden="true" size="seat" />
       </template>
-      <template v-else>
-        <Card :hidden="true" size="seat" />
-        <Card :hidden="true" size="seat" />
-      </template>
-    </div>
+    </transition-group>
 
     <div class="seat-panel">
       <div class="seat-topline">
@@ -374,6 +383,42 @@ const actionColorClass = computed(() => {
 
   .action-bubble {
     max-width: 180px;
+  }
+}
+
+.card-deal-enter-active,
+.card-deal-appear-active {
+  animation: cardFlip 400ms ease-out forwards;
+  opacity: 0;
+}
+
+.card-deal-leave-active {
+  transition: opacity 200ms ease;
+}
+
+.card-deal-enter-from,
+.card-deal-appear-from {
+  opacity: 0;
+  transform: translateY(-20px) rotateY(90deg);
+}
+
+.card-deal-enter-to,
+.card-deal-appear-to {
+  opacity: 1;
+  transform: translateY(0) rotateY(0);
+}
+
+@keyframes cardFlip {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) rotateY(90deg);
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateY(0);
   }
 }
 </style>
