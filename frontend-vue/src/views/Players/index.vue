@@ -88,6 +88,7 @@
             <tr v-for="player in paginatedPlayers" :key="player.id" class="hover:bg-dark-300/30 transition-colors">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center gap-3">
+                  <RoomLogo :room="player.room" />
                   <div class="w-8 h-8 rounded-full bg-dark-400 flex items-center justify-center text-xs font-bold text-gray-400">
                     {{ player.name.charAt(0).toUpperCase() }}
                   </div>
@@ -186,7 +187,7 @@
         <div class="flex items-center justify-between p-5 border-b border-white/10 bg-dark-300/30 rounded-t-2xl">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20">
-              <Users class="w-5 h-5 text-primary-400" />
+              <RoomLogo :room="selectedPlayer.room" />
             </div>
             <div>
               <h2 class="text-lg font-bold text-white">
@@ -381,6 +382,7 @@ import { ipcService } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import PlayingCard from '@/components/common/PlayingCard.vue'
+import RoomLogo from '@/components/common/RoomLogo.vue'
 import { parseCards } from '@/utils/formatters'
 
 const { t } = useI18n()
