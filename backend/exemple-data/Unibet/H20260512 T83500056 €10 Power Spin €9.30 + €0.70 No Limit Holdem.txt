@@ -1,0 +1,501 @@
+Unibet Hand #1526900308, Tournament #83500056, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:39:42 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 3: KarmaGuele5 (500)
+Seat 5: DavidApagnan (500)
+*** Blinds and button ***
+DavidApagnan has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+KarmaGuele5 posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ac Kh]
+Dealt in KarmaGuele5
+Dealt to DavidApagnan [As Qh]
+*** Preflop ***
+DavidApagnan raises 60 to 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 490 to 500, and is all-in
+KarmaGuele5 folds
+DavidApagnan calls 440, and is all-in
+*** Showdown ***
+*** Flop *** [4h 8h 4c]
+*** Turn *** [4h 8h 4c] [4s]
+*** River *** [4h 8h 4c] [4s] [8s]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ac Kh], Full House, tied
+DavidApagnan shows [As Qh], Full House, tied
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 510 from main pot
+DavidApagnan wins 510 from main pot
+*** Summary ***
+Total pot 1020
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 500 and won 510, net result: 10
+Seat 3: KarmaGuele5: bet 20 and won 0, net result: -20
+Seat 5: DavidApagnan: bet 500 and won 510, net result: 10
+
+
+
+Unibet Hand #1526900778, Tournament #83500056, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:40:05 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (510)
+Seat 3: KarmaGuele5 (480)
+Seat 5: DavidApagnan (510)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+KarmaGuele5 posts small blind 10
+DavidApagnan posts big blind 20
+*** Hole cards ***
+Dealt in KarmaGuele5
+Dealt in DavidApagnan
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qs Td]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 40 to 40
+DavidApagnan is reconnected
+KarmaGuele5 folds
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 70
+*** Summary ***
+Total pot 70
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 70, net result: 30
+Seat 3: KarmaGuele5: bet 10 and won 0, net result: -10
+Seat 5: DavidApagnan: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526900983, Tournament #83500056, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:40:14 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (540)
+Seat 3: KarmaGuele5 (470)
+Seat 5: DavidApagnan (490)
+*** Blinds and button ***
+KarmaGuele5 has the button
+DavidApagnan posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in DavidApagnan
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5h Jh]
+Dealt in KarmaGuele5
+*** Preflop ***
+KarmaGuele5 raises 40 to 40
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+KarmaGuele5 wins 70
+*** Summary ***
+Total pot 70
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+Seat 3: KarmaGuele5: bet 40 and won 70, net result: 30
+Seat 5: DavidApagnan: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1526901208, Tournament #83500056, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:40:24 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (520)
+Seat 3: KarmaGuele5 (500)
+Seat 5: DavidApagnan (480)
+*** Blinds and button ***
+DavidApagnan has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+KarmaGuele5 posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8d 3c]
+Dealt in KarmaGuele5
+Dealt in DavidApagnan
+*** Preflop ***
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+KarmaGuele5 wins 30
+*** Summary ***
+Total pot 30
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 3: KarmaGuele5: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1526901498, Tournament #83500056, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:40:37 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (510)
+Seat 3: KarmaGuele5 (510)
+Seat 5: DavidApagnan (480)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+KarmaGuele5 posts small blind 10
+DavidApagnan posts big blind 20
+*** Hole cards ***
+Dealt to KarmaGuele5 [7d Ad]
+Dealt in DavidApagnan
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9h 9c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 40 to 40
+KarmaGuele5 raises 500 to 510, and is all-in
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 470, and is all-in
+*** Showdown ***
+*** Flop *** [3c Js Qs]
+*** Turn *** [3c Js Qs] [Tc]
+*** River *** [3c Js Qs] [Tc] [Jh]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [9h 9c], Two pairs, Jacks up
+KarmaGuele5 shows [7d Ad], A Pair of Jacks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 1040
+KarmaGuele5 finished the tournament in 3rd place
+*** Summary ***
+Total pot 1040
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 510 and won 1040, net result: 530
+Seat 3: KarmaGuele5: bet 510 and won 0, net result: -510
+Seat 5: DavidApagnan: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526901890, Tournament #83500056, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:40:56 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1040)
+Seat 5: DavidApagnan (460)
+*** Blinds and button ***
+DavidApagnan has the button
+DavidApagnan posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks Ah]
+Dealt in DavidApagnan
+*** Preflop ***
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+Seat 5: DavidApagnan: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1526902043, Tournament #83500056, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:41:04 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1055)
+Seat 5: DavidApagnan (445)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+DavidApagnan posts big blind 30
+*** Hole cards ***
+Dealt in DavidApagnan
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4h Kd]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+DavidApagnan raises 58 to 88
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 58
+*** Flop *** [3h 7d 5c]
+DavidApagnan bets 129
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to DavidApagnan: 129
+DavidApagnan wins 176
+*** Summary ***
+Total pot 176
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 88 and won 0, net result: -88
+Seat 5: DavidApagnan: bet 217 and won 305, net result: 88
+
+
+
+Unibet Hand #1526902342, Tournament #83500056, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:41:19 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (967)
+Seat 5: DavidApagnan (533)
+*** Blinds and button ***
+DavidApagnan has the button
+DavidApagnan posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2s 6d]
+Dealt in DavidApagnan
+*** Preflop ***
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+Seat 5: DavidApagnan: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1526902494, Tournament #83500056, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:41:26 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (982)
+Seat 5: DavidApagnan (518)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+DavidApagnan posts big blind 30
+*** Hole cards ***
+Dealt in DavidApagnan
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kc 3c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+DavidApagnan checks
+*** Flop *** [Ad 7h Qd]
+DavidApagnan checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 30
+DavidApagnan folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 90, net result: 30
+Seat 5: DavidApagnan: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1526902844, Tournament #83500056, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:41:42 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1012)
+Seat 5: DavidApagnan (488)
+*** Blinds and button ***
+DavidApagnan has the button
+DavidApagnan posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8d 8c]
+Dealt in DavidApagnan
+*** Preflop ***
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+Seat 5: DavidApagnan: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526903007, Tournament #83500056, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:41:50 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1032)
+Seat 5: DavidApagnan (468)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+DavidApagnan posts big blind 40
+*** Hole cards ***
+Dealt in DavidApagnan
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5c 9d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+DavidApagnan checks
+*** Flop *** [Jc 2s Jh]
+DavidApagnan checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 40
+DavidApagnan folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 80
+*** Summary ***
+Total pot 80
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 120, net result: 40
+Seat 5: DavidApagnan: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1526903240, Tournament #83500056, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:42:01 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1072)
+Seat 5: DavidApagnan (428)
+*** Blinds and button ***
+DavidApagnan has the button
+DavidApagnan posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3s Ts]
+Dealt in DavidApagnan
+*** Preflop ***
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+Seat 5: DavidApagnan: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526903383, Tournament #83500056, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:42:09 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1092)
+Seat 5: DavidApagnan (408)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+DavidApagnan posts big blind 40
+*** Hole cards ***
+Dealt in DavidApagnan
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8h 2d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+DavidApagnan checks
+*** Flop *** [6h Kh 4d]
+DavidApagnan checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 40
+DavidApagnan folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 80
+*** Summary ***
+Total pot 80
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 120, net result: 40
+Seat 5: DavidApagnan: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1526903683, Tournament #83500056, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:42:23 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1132)
+Seat 5: DavidApagnan (368)
+*** Blinds and button ***
+DavidApagnan has the button
+DavidApagnan posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2s 6c]
+Dealt in DavidApagnan
+*** Preflop ***
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+Seat 5: DavidApagnan: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526903845, Tournament #83500056, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:42:30 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1152)
+Seat 5: DavidApagnan (348)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+DavidApagnan posts big blind 40
+*** Hole cards ***
+Dealt in DavidApagnan
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Jh 2d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+DavidApagnan raises 308 to 348, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+DavidApagnan wins 388
+*** Summary ***
+Total pot 388
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 5: DavidApagnan: bet 348 and won 388, net result: 40
+
+
+
+Unibet Hand #1526904125, Tournament #83500056, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 15:42:44 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1112)
+Seat 5: DavidApagnan (388)
+*** Blinds and button ***
+DavidApagnan has the button
+DavidApagnan posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2s 6c]
+Dealt in DavidApagnan
+*** Preflop ***
+DavidApagnan raises 363 to 388, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+DavidApagnan wins 438
+*** Summary ***
+Total pot 438
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 50 and won 0, net result: -50
+Seat 5: DavidApagnan: bet 388 and won 438, net result: 50
+
+
+
+Unibet Hand #1526904268, Tournament #83500056, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 15:42:52 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1062)
+Seat 5: DavidApagnan (438)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+DavidApagnan posts big blind 50
+*** Hole cards ***
+Dealt in DavidApagnan
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7c 6h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 25
+DavidApagnan checks
+*** Flop *** [Kh 3h 4h]
+DavidApagnan checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 50
+DavidApagnan folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 50
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 100
+*** Summary ***
+Total pot 100
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 100 and won 150, net result: 50
+Seat 5: DavidApagnan: bet 50 and won 0, net result: -50
+
+
+
+Unibet Hand #1526904540, Tournament #83500056, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 15:43:03 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1112)
+Seat 5: DavidApagnan (388)
+*** Blinds and button ***
+DavidApagnan has the button
+DavidApagnan posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2d Ah]
+Dealt in DavidApagnan
+*** Preflop ***
+DavidApagnan folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 75
+*** Summary ***
+Total pot 75
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 50 and won 75, net result: 25
+Seat 5: DavidApagnan: bet 25 and won 0, net result: -25
+
+
+
+Unibet Hand #1526904694, Tournament #83500056, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 15:43:11 2026/05/12
+Table "83999139" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1137)
+Seat 5: DavidApagnan (363)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+DavidApagnan posts big blind 50
+*** Hole cards ***
+Dealt to DavidApagnan [6s Kh]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ac Tc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 1112 to 1137, and is all-in
+DavidApagnan calls 313, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 774
+*** Showdown ***
+*** Flop *** [9s 2c 4c]
+*** Turn *** [9s 2c 4c] [Ad]
+*** River *** [9s 2c 4c] [Ad] [2h]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ac Tc], Two pairs, Aces up
+DavidApagnan shows [6s Kh], A Pair of Deuces
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 726
+DavidApagnan finished the tournament in 2nd place
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 1st place, and won €20
+*** Summary ***
+Total pot 726
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 1137 and won 1500, net result: 363
+Seat 5: DavidApagnan: bet 363 and won 0, net result: -363
+
+
+

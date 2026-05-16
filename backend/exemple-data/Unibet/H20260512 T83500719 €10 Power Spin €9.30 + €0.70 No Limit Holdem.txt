@@ -1,0 +1,527 @@
+Unibet Hand #1526909519, Tournament #83500719, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:46:53 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (500)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: caroline3 (500)
+*** Blinds and button ***
+caroline3 has the button
+7102377 posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Td 3c]
+Dealt in caroline3
+*** Preflop ***
+caroline3 folds
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 30
+*** Summary ***
+Total pot 30
+Seat 1: 7102377: bet 10 and won 0, net result: -10
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1526909888, Tournament #83500719, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:47:11 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (490)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (510)
+Seat 5: caroline3 (500)
+*** Blinds and button ***
+7102377 has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+caroline3 posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4h 5c]
+Dealt in caroline3
+Dealt in 7102377
+*** Preflop ***
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 30 to 40
+caroline3 calls 20
+*** Flop *** [9s 3s Qs]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 32
+caroline3 folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 32
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 80
+*** Summary ***
+Total pot 80
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 72 and won 112, net result: 40
+Seat 5: caroline3: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1526910658, Tournament #83500719, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:47:46 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (490)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (550)
+Seat 5: caroline3 (460)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+caroline3 posts small blind 10
+7102377 posts big blind 20
+*** Hole cards ***
+Dealt in caroline3
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8s 7c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+caroline3 calls 10
+7102377 raises 40 to 60
+caroline3 folds
+7102377 wins 80
+*** Summary ***
+Total pot 80
+Seat 1: 7102377: bet 60 and won 80, net result: 20
+Seat 5: caroline3: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526911455, Tournament #83500719, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:48:23 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (510)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (550)
+Seat 5: caroline3 (440)
+*** Blinds and button ***
+caroline3 has the button
+7102377 posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9h 2s]
+Dealt in caroline3
+*** Preflop ***
+caroline3 folds
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: 7102377: bet 15 and won 0, net result: -15
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+
+
+
+Unibet Hand #1526911952, Tournament #83500719, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:48:46 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (495)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (565)
+Seat 5: caroline3 (440)
+*** Blinds and button ***
+7102377 has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+caroline3 posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qs 7c]
+Dealt in caroline3
+Dealt in 7102377
+*** Preflop ***
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 45 to 60
+caroline3 calls 30
+*** Flop *** [2h Qd 6c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 48
+caroline3 calls 48
+*** Turn *** [2h Qd 6c] [Js]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 162
+caroline3 folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 162
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 216
+*** Summary ***
+Total pot 216
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 270 and won 378, net result: 108
+Seat 5: caroline3: bet 108 and won 0, net result: -108
+
+
+
+Unibet Hand #1526912510, Tournament #83500719, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:49:13 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (495)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (673)
+Seat 5: caroline3 (332)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+caroline3 posts small blind 20
+7102377 posts big blind 40
+*** Hole cards ***
+Dealt in caroline3
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ad 9c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 673 to 673, and is all-in
+caroline3 folds
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 733
+*** Summary ***
+Total pot 733
+Seat 1: 7102377: bet 40 and won 0, net result: -40
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 673 and won 733, net result: 60
+Seat 5: caroline3: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526912903, Tournament #83500719, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:49:32 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (455)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (733)
+Seat 5: caroline3 (312)
+*** Blinds and button ***
+caroline3 has the button
+7102377 posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6c Jc]
+Dealt in caroline3
+*** Preflop ***
+caroline3 folds
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: 7102377: bet 20 and won 0, net result: -20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1526913330, Tournament #83500719, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:49:52 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (435)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (753)
+Seat 5: caroline3 (312)
+*** Blinds and button ***
+7102377 has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+caroline3 posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kc Jh]
+Dealt to caroline3 [9d Qh]
+Dealt in 7102377
+*** Preflop ***
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 733 to 753, and is all-in
+caroline3 calls 272, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 441
+*** Showdown ***
+*** Flop *** [Ad 6d 6h]
+*** Turn *** [Ad 6d 6h] [2d]
+*** River *** [Ad 6d 6h] [2d] [6s]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Kc Jh], Three of a kind, Sixes with a King kicker
+caroline3 shows [9d Qh], Three of a kind, Sixes with a Queen kicker
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 624
+caroline3 finished the tournament in 3rd place
+*** Summary ***
+Total pot 624
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 753 and won 1065, net result: 312
+Seat 5: caroline3: bet 312 and won 0, net result: -312
+
+
+
+Unibet Hand #1526913943, Tournament #83500719, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 15:50:20 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (435)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1065)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+7102377 posts big blind 50
+*** Hole cards ***
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4d 5s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 75
+*** Summary ***
+Total pot 75
+Seat 1: 7102377: bet 50 and won 75, net result: 25
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 25 and won 0, net result: -25
+
+
+
+Unibet Hand #1526914102, Tournament #83500719, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 15:50:27 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (460)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1040)
+*** Blinds and button ***
+7102377 has the button
+7102377 posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4h 2h]
+Dealt in 7102377
+*** Preflop ***
+7102377 raises 435 to 460, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 510
+*** Summary ***
+Total pot 510
+Seat 1: 7102377: bet 460 and won 510, net result: 50
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 50 and won 0, net result: -50
+
+
+
+Unibet Hand #1526914251, Tournament #83500719, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 15:50:36 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (510)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (990)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+7102377 posts big blind 50
+*** Hole cards ***
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8h Th]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 25
+7102377 checks
+*** Flop *** [5d Kd 3h]
+7102377 checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 50
+7102377 folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 50
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 100
+*** Summary ***
+Total pot 100
+Seat 1: 7102377: bet 50 and won 0, net result: -50
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 100 and won 150, net result: 50
+
+
+
+Unibet Hand #1526914718, Tournament #83500719, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 15:50:57 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (460)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1040)
+*** Blinds and button ***
+7102377 has the button
+7102377 posts small blind 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4d 5s]
+Dealt in 7102377
+*** Preflop ***
+7102377 raises 430 to 460, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 520
+*** Summary ***
+Total pot 520
+Seat 1: 7102377: bet 460 and won 520, net result: 60
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1526914973, Tournament #83500719, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 15:51:08 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (520)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (980)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 30
+7102377 posts big blind 60
+*** Hole cards ***
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4c 6h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 90
+*** Summary ***
+Total pot 90
+Seat 1: 7102377: bet 60 and won 90, net result: 30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1526915134, Tournament #83500719, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 15:51:16 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (550)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (950)
+*** Blinds and button ***
+7102377 has the button
+7102377 posts small blind 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7c 8d]
+Dealt in 7102377
+*** Preflop ***
+7102377 raises 520 to 550, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 610
+*** Summary ***
+Total pot 610
+Seat 1: 7102377: bet 550 and won 610, net result: 60
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1526915411, Tournament #83500719, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 15:51:28 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (610)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (890)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 30
+7102377 posts big blind 60
+*** Hole cards ***
+Dealt to 7102377 [Th Ks]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8c Kd]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 860 to 890, and is all-in
+7102377 calls 550, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 280
+*** Showdown ***
+*** Flop *** [As Ts Ah]
+*** Turn *** [As Ts Ah] [3d]
+*** River *** [As Ts Ah] [3d] [9s]
+7102377 shows [Th Ks], Two pairs, Aces up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [8c Kd], A Pair of Aces
+7102377 wins 1220
+*** Summary ***
+Total pot 1220
+Seat 1: 7102377: bet 610 and won 1220, net result: 610
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 890 and won 280, net result: -610
+
+
+
+Unibet Hand #1526915778, Tournament #83500719, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 15:51:45 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (1220)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (280)
+*** Blinds and button ***
+7102377 has the button
+7102377 posts small blind 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5d 2d]
+Dealt in 7102377
+*** Preflop ***
+7102377 raises 1190 to 1220, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 1280
+*** Summary ***
+Total pot 1280
+Seat 1: 7102377: bet 1220 and won 1280, net result: 60
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1526915998, Tournament #83500719, €9.30 + €0.70 - 40.00/80.00 - No Limit Hold'Em - Total prize €20 - UTC 15:51:55 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (1280)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (220)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 40
+7102377 posts big blind 80
+*** Hole cards ***
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js Ac]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 180 to 220, and is all-in
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 300
+*** Summary ***
+Total pot 300
+Seat 1: 7102377: bet 80 and won 0, net result: -80
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 220 and won 300, net result: 80
+
+
+
+Unibet Hand #1526916167, Tournament #83500719, €9.30 + €0.70 - 40.00/80.00 - No Limit Hold'Em - Total prize €20 - UTC 15:52:03 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (1200)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (300)
+*** Blinds and button ***
+7102377 has the button
+7102377 posts small blind 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 80
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7h 5s]
+Dealt in 7102377
+*** Preflop ***
+7102377 raises 1160 to 1200, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 1280
+*** Summary ***
+Total pot 1280
+Seat 1: 7102377: bet 1200 and won 1280, net result: 80
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 0, net result: -80
+
+
+
+Unibet Hand #1526916368, Tournament #83500719, €9.30 + €0.70 - 40.00/80.00 - No Limit Hold'Em - Total prize €20 - UTC 15:52:12 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (1280)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (220)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 40
+7102377 posts big blind 80
+*** Hole cards ***
+Dealt to 7102377 [9c Ad]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5h 8s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 180 to 220, and is all-in
+7102377 calls 140
+*** Showdown ***
+*** Flop *** [4c 2s 3h]
+*** Turn *** [4c 2s 3h] [6d]
+*** River *** [4c 2s 3h] [6d] [7s]
+7102377 shows [9c Ad], High card
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [5h 8s], A Straight
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 440
+*** Summary ***
+Total pot 440
+Seat 1: 7102377: bet 220 and won 0, net result: -220
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 220 and won 440, net result: 220
+
+
+
+Unibet Hand #1526916768, Tournament #83500719, €9.30 + €0.70 - 40.00/80.00 - No Limit Hold'Em - Total prize €20 - UTC 15:52:29 2026/05/12
+Table "83999791" 3-max
+*** Seated players ***
+Seat 1: 7102377 (1060)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (440)
+*** Blinds and button ***
+7102377 has the button
+7102377 posts small blind 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 80
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5c Ad]
+Dealt to 7102377 [Kc 3d]
+*** Preflop ***
+7102377 raises 1020 to 1060, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 360, and is all-in
+Uncalled bet returned to 7102377: 620
+*** Showdown ***
+*** Flop *** [5h 8s Ks]
+*** Turn *** [5h 8s Ks] [6s]
+*** River *** [5h 8s Ks] [6s] [2c]
+7102377 shows [Kc 3d], A Pair of Kings
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [5c Ad], A Pair of Fives
+7102377 wins 880
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 2nd place
+7102377 finished the tournament in 1st place, and won €20
+*** Summary ***
+Total pot 880
+Seat 1: 7102377: bet 1060 and won 1500, net result: 440
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 440 and won 0, net result: -440
+
+
+

@@ -1,0 +1,289 @@
+Unibet Hand #1526903487, Tournament #83500290, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:42:14 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (500)
+Seat 3: 7102377 (500)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Champ1on-Rose posts small blind 10
+7102377 posts big blind 20
+*** Hole cards ***
+Dealt in Champ1on-Rose
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5h Ad]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 40 to 40
+Champ1on-Rose calls 30
+7102377 folds
+*** Flop *** [8h 6d 4d]
+Champ1on-Rose bets 45
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 45
+*** Turn *** [8h 6d 4d] [Tc]
+Champ1on-Rose bets 111
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to Champ1on-Rose: 111
+Champ1on-Rose wins 190
+*** Summary ***
+Total pot 190
+Seat 1: Champ1on-Rose: bet 196 and won 301, net result: 105
+Seat 3: 7102377: bet 20 and won 0, net result: -20
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 85 and won 0, net result: -85
+
+
+
+Unibet Hand #1526904176, Tournament #83500290, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:42:47 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (605)
+Seat 3: 7102377 (480)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (415)
+*** Blinds and button ***
+Champ1on-Rose has the button
+7102377 posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Td 3h]
+Dealt in Champ1on-Rose
+*** Preflop ***
+Champ1on-Rose folds
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 30
+*** Summary ***
+Total pot 30
+Seat 3: 7102377: bet 10 and won 0, net result: -10
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1526904332, Tournament #83500290, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:42:55 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (605)
+Seat 3: 7102377 (470)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (425)
+*** Blinds and button ***
+7102377 has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Champ1on-Rose posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kh 6s]
+Dealt in Champ1on-Rose
+Dealt in 7102377
+*** Preflop ***
+7102377 raises 40 to 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Champ1on-Rose raises 80 to 100
+7102377 folds
+Champ1on-Rose wins 150
+*** Summary ***
+Total pot 150
+Seat 1: Champ1on-Rose: bet 100 and won 150, net result: 50
+Seat 3: 7102377: bet 40 and won 0, net result: -40
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1526904858, Tournament #83500290, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:43:18 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (655)
+Seat 3: 7102377 (430)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (415)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Champ1on-Rose posts small blind 10
+7102377 posts big blind 20
+*** Hole cards ***
+Dealt in Champ1on-Rose
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4s 7d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Champ1on-Rose folds
+7102377 wins 30
+*** Summary ***
+Total pot 30
+Seat 1: Champ1on-Rose: bet 10 and won 0, net result: -10
+Seat 3: 7102377: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1526905032, Tournament #83500290, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:43:27 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (645)
+Seat 3: 7102377 (440)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (415)
+*** Blinds and button ***
+Champ1on-Rose has the button
+7102377 posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9s 3s]
+Dealt in Champ1on-Rose
+*** Preflop ***
+Champ1on-Rose folds
+7102377 raises 50 to 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 80
+*** Summary ***
+Total pot 80
+Seat 3: 7102377: bet 60 and won 80, net result: 20
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526905354, Tournament #83500290, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:43:41 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (645)
+Seat 3: 7102377 (460)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (395)
+*** Blinds and button ***
+7102377 has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Champ1on-Rose posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4c 9c]
+Dealt in Champ1on-Rose
+Dealt in 7102377
+*** Preflop ***
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 10
+Champ1on-Rose checks
+*** Flop *** [Ks 8s Kc]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 20
+Champ1on-Rose calls 20
+*** Turn *** [Ks 8s Kc] [7s]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 60
+Champ1on-Rose raises 386 to 386
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to Champ1on-Rose: 326
+Champ1on-Rose wins 200
+*** Summary ***
+Total pot 200
+Seat 1: Champ1on-Rose: bet 426 and won 526, net result: 100
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 100 and won 0, net result: -100
+
+
+
+Unibet Hand #1526905748, Tournament #83500290, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:44:00 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (745)
+Seat 3: 7102377 (460)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (295)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Champ1on-Rose posts small blind 10
+7102377 posts big blind 20
+*** Hole cards ***
+Dealt in Champ1on-Rose
+Dealt in 7102377
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4c Ah]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 295 to 295, and is all-in
+Champ1on-Rose folds
+7102377 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 325
+*** Summary ***
+Total pot 325
+Seat 1: Champ1on-Rose: bet 10 and won 0, net result: -10
+Seat 3: 7102377: bet 20 and won 0, net result: -20
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 295 and won 325, net result: 30
+
+
+
+Unibet Hand #1526906019, Tournament #83500290, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:44:13 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (735)
+Seat 3: 7102377 (440)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (325)
+*** Blinds and button ***
+Champ1on-Rose has the button
+7102377 posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt to 7102377 [Ad 3d]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kh 4c]
+Dealt to Champ1on-Rose [Kc Ks]
+*** Preflop ***
+Champ1on-Rose calls 20
+7102377 raises 430 to 440, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Champ1on-Rose calls 420
+*** Showdown ***
+*** Flop *** [3h Kd Qs]
+*** Turn *** [3h Kd Qs] [2s]
+*** River *** [3h Kd Qs] [2s] [2h]
+Champ1on-Rose shows [Kc Ks], Full House
+7102377 shows [Ad 3d], Two pairs, Threes up
+Champ1on-Rose wins 900
+7102377 finished the tournament in 3rd place
+*** Summary ***
+Total pot 900
+Seat 1: Champ1on-Rose: bet 440 and won 900, net result: 460
+Seat 3: 7102377: bet 440 and won 0, net result: -440
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526906622, Tournament #83500290, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:44:39 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (1195)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (305)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+Champ1on-Rose posts big blind 30
+*** Hole cards ***
+Dealt in Champ1on-Rose
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kh 6c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 290 to 305, and is all-in
+Champ1on-Rose folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 335
+*** Summary ***
+Total pot 335
+Seat 1: Champ1on-Rose: bet 30 and won 0, net result: -30
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 305 and won 335, net result: 30
+
+
+
+Unibet Hand #1526906784, Tournament #83500290, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:44:47 2026/05/12
+Table "83999371" 3-max
+*** Seated players ***
+Seat 1: Champ1on-Rose (1165)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (335)
+*** Blinds and button ***
+Champ1on-Rose has the button
+Champ1on-Rose posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ah 2d]
+Dealt to Champ1on-Rose [Th Ks]
+*** Preflop ***
+Champ1on-Rose raises 45 to 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 305 to 335, and is all-in
+Champ1on-Rose calls 275
+*** Showdown ***
+*** Flop *** [8c 8h Td]
+*** Turn *** [8c 8h Td] [4d]
+*** River *** [8c 8h Td] [4d] [4c]
+Champ1on-Rose shows [Th Ks], Two pairs, Tens up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ah 2d], Two pairs, Eights up
+Champ1on-Rose wins 670
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 2nd place
+Champ1on-Rose finished the tournament in 1st place, and won €30
+*** Summary ***
+Total pot 670
+Seat 1: Champ1on-Rose: bet 335 and won 670, net result: 335
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 335 and won 0, net result: -335
+
+
+

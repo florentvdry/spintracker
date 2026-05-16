@@ -1,0 +1,266 @@
+Unibet Hand #1526917491, Tournament #83501269, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:53:04 2026/05/12
+Table "84000341" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 3: 7102377 (500)
+Seat 5: Imp3ratrice_ (500)
+*** Blinds and button ***
+Imp3ratrice_ has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+7102377 posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6h 4d]
+Dealt in 7102377
+Dealt in Imp3ratrice_
+*** Preflop ***
+Imp3ratrice_ folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 30
+*** Summary ***
+Total pot 30
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 3: 7102377: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1526917654, Tournament #83501269, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:53:12 2026/05/12
+Table "84000341" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (490)
+Seat 3: 7102377 (510)
+Seat 5: Imp3ratrice_ (500)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+7102377 posts small blind 10
+Imp3ratrice_ posts big blind 20
+*** Hole cards ***
+Dealt in 7102377
+Dealt in Imp3ratrice_
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js 4d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 folds
+Imp3ratrice_ wins 30
+*** Summary ***
+Total pot 30
+Seat 3: 7102377: bet 10 and won 0, net result: -10
+Seat 5: Imp3ratrice_: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1526917828, Tournament #83501269, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:53:20 2026/05/12
+Table "84000341" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (490)
+Seat 3: 7102377 (500)
+Seat 5: Imp3ratrice_ (510)
+*** Blinds and button ***
+7102377 has the button
+Imp3ratrice_ posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt to Imp3ratrice_ [Ts 7d]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5d Ks]
+Dealt in 7102377
+*** Preflop ***
+7102377 folds
+Imp3ratrice_ calls 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [7c 8s Jc]
+Imp3ratrice_ checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 30
+Imp3ratrice_ calls 30
+*** Turn *** [7c 8s Jc] [As]
+Imp3ratrice_ checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** River *** [7c 8s Jc] [As] [8d]
+Imp3ratrice_ checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Showdown ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [5d Ks], A Pair of Eights
+Imp3ratrice_ shows [Ts 7d], Two pairs, Eights up
+Imp3ratrice_ wins 100
+*** Summary ***
+Total pot 100
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 50 and won 0, net result: -50
+Seat 5: Imp3ratrice_: bet 50 and won 100, net result: 50
+
+
+
+Unibet Hand #1526918899, Tournament #83501269, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:54:09 2026/05/12
+Table "84000341" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (440)
+Seat 3: 7102377 (500)
+Seat 5: Imp3ratrice_ (560)
+*** Blinds and button ***
+Imp3ratrice_ has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+7102377 posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9c 4c]
+Dealt in 7102377
+Dealt in Imp3ratrice_
+*** Preflop ***
+Imp3ratrice_ folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+7102377 raises 470 to 500, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 530
+*** Summary ***
+Total pot 530
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 0, net result: -30
+Seat 3: 7102377: bet 500 and won 530, net result: 30
+
+
+
+Unibet Hand #1526919275, Tournament #83501269, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:54:27 2026/05/12
+Table "84000341" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (410)
+Seat 3: 7102377 (530)
+Seat 5: Imp3ratrice_ (560)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+7102377 posts small blind 15
+Imp3ratrice_ posts big blind 30
+*** Hole cards ***
+Dealt in 7102377
+Dealt in Imp3ratrice_
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4s 9h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 calls 15
+Imp3ratrice_ checks
+*** Flop *** [Kd 4d Td]
+7102377 checks
+Imp3ratrice_ checks
+*** Turn *** [Kd 4d Td] [Kh]
+7102377 checks
+Imp3ratrice_ bets 45
+7102377 folds
+Uncalled bet returned to Imp3ratrice_: 45
+Imp3ratrice_ wins 60
+*** Summary ***
+Total pot 60
+Seat 3: 7102377: bet 30 and won 0, net result: -30
+Seat 5: Imp3ratrice_: bet 75 and won 105, net result: 30
+
+
+
+Unibet Hand #1526920068, Tournament #83501269, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:55:02 2026/05/12
+Table "84000341" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (410)
+Seat 3: 7102377 (500)
+Seat 5: Imp3ratrice_ (590)
+*** Blinds and button ***
+7102377 has the button
+Imp3ratrice_ posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt in Imp3ratrice_
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3d Qd]
+Dealt in 7102377
+*** Preflop ***
+7102377 folds
+Imp3ratrice_ raises 575 to 590, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Imp3ratrice_ wins 620
+*** Summary ***
+Total pot 620
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 0, net result: -30
+Seat 5: Imp3ratrice_: bet 590 and won 620, net result: 30
+
+
+
+Unibet Hand #1526920364, Tournament #83501269, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:55:15 2026/05/12
+Table "84000341" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (380)
+Seat 3: 7102377 (500)
+Seat 5: Imp3ratrice_ (620)
+*** Blinds and button ***
+Imp3ratrice_ has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+7102377 posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2c 4d]
+Dealt in 7102377
+Dealt in Imp3ratrice_
+*** Preflop ***
+Imp3ratrice_ folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+Seat 3: 7102377: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1526920656, Tournament #83501269, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:55:29 2026/05/12
+Table "84000341" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (360)
+Seat 3: 7102377 (520)
+Seat 5: Imp3ratrice_ (620)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+7102377 posts small blind 20
+Imp3ratrice_ posts big blind 40
+*** Hole cards ***
+Dealt to 7102377 [Jd 9d]
+Dealt to Imp3ratrice_ [Ac 5c]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Tc 7s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+7102377 raises 500 to 520, and is all-in
+Imp3ratrice_ calls 480
+*** Showdown ***
+*** Flop *** [8c Kh 2s]
+*** Turn *** [8c Kh 2s] [7c]
+*** River *** [8c Kh 2s] [7c] [3d]
+7102377 shows [Jd 9d], High card, King
+Imp3ratrice_ shows [Ac 5c], High card, Ace
+Imp3ratrice_ wins 1040
+7102377 finished the tournament in 3rd place
+*** Summary ***
+Total pot 1040
+Seat 3: 7102377: bet 520 and won 0, net result: -520
+Seat 5: Imp3ratrice_: bet 520 and won 1040, net result: 520
+
+
+
+Unibet Hand #1526921071, Tournament #83501269, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:55:48 2026/05/12
+Table "84000341" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (360)
+Seat 5: Imp3ratrice_ (1140)
+*** Blinds and button ***
+Imp3ratrice_ has the button
+Imp3ratrice_ posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5h Ah]
+Dealt to Imp3ratrice_ [9s Jh]
+*** Preflop ***
+Imp3ratrice_ raises 1120 to 1140, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 320, and is all-in
+Uncalled bet returned to Imp3ratrice_: 780
+*** Showdown ***
+*** Flop *** [Ac Js Jd]
+*** Turn *** [Ac Js Jd] [Ks]
+*** River *** [Ac Js Jd] [Ks] [3c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [5h Ah], Two pairs, Aces up
+Imp3ratrice_ shows [9s Jh], Three of a kind, Jacks
+Imp3ratrice_ wins 720
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 2nd place
+Imp3ratrice_ finished the tournament in 1st place, and won €20
+*** Summary ***
+Total pot 720
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 360 and won 0, net result: -360
+Seat 5: Imp3ratrice_: bet 1140 and won 1500, net result: 360
+
+
+

@@ -1,0 +1,480 @@
+Unibet Hand #1528396840, Tournament #83603324, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:15:40 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 3: Spartek (500)
+Seat 5: Gener4l-Motive (500)
+*** Blinds and button ***
+Gener4l-Motive has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Spartek posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ac 7c]
+Dealt in Spartek
+Dealt to Gener4l-Motive [9h Kh]
+*** Preflop ***
+Gener4l-Motive calls 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 490 to 500, and is all-in
+Spartek folds
+Gener4l-Motive calls 480, and is all-in
+*** Showdown ***
+*** Flop *** [Qd 5c 3d]
+*** Turn *** [Qd 5c 3d] [Qs]
+*** River *** [Qd 5c 3d] [Qs] [Tc]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ac 7c], A Pair of Queens with an Ace kicker
+Gener4l-Motive shows [9h Kh], A Pair of Queens with a King kicker
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 1020
+Gener4l-Motive finished the tournament in 3rd place
+*** Summary ***
+Total pot 1020
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 500 and won 1020, net result: 520
+Seat 3: Spartek: bet 20 and won 0, net result: -20
+Seat 5: Gener4l-Motive: bet 500 and won 0, net result: -500
+
+
+
+Unibet Hand #1528397654, Tournament #83603324, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:16:16 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1020)
+Seat 3: Spartek (480)
+*** Blinds and button ***
+Spartek has the button
+Spartek posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Td 7h]
+Dealt in Spartek
+*** Preflop ***
+Spartek folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 30
+*** Summary ***
+Total pot 30
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 30, net result: 10
+Seat 3: Spartek: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1528397828, Tournament #83603324, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:16:23 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1030)
+Seat 3: Spartek (470)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Spartek posts big blind 20
+*** Hole cards ***
+Dealt in Spartek
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3c Td]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Spartek wins 30
+*** Summary ***
+Total pot 30
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 3: Spartek: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1528398026, Tournament #83603324, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:16:32 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1020)
+Seat 3: Spartek (480)
+*** Blinds and button ***
+Spartek has the button
+Spartek posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5c 6h]
+Dealt to Spartek [2h 8c]
+*** Preflop ***
+Spartek calls 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [Kh 6d 9c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+Spartek bets 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+*** Turn *** [Kh 6d 9c] [3h]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+Spartek checks
+*** River *** [Kh 6d 9c] [3h] [2s]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+Spartek checks
+*** Showdown ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [5c 6h], A Pair of Sixes
+Spartek shows [2h 8c], A Pair of Deuces
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 80
+*** Summary ***
+Total pot 80
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 80, net result: 40
+Seat 3: Spartek: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528398666, Tournament #83603324, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:17:00 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1060)
+Seat 3: Spartek (440)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+Spartek posts big blind 30
+*** Hole cards ***
+Dealt to Spartek [Jd Kh]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Jh Ad]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 1045 to 1060, and is all-in
+Spartek calls 410, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 620
+*** Showdown ***
+*** Flop *** [4c Td Qd]
+*** Turn *** [4c Td Qd] [9c]
+*** River *** [4c Td Qd] [9c] [2d]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Jh Ad], High card
+Spartek shows [Jd Kh], A Straight
+Spartek wins 880
+*** Summary ***
+Total pot 880
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 1060 and won 620, net result: -440
+Seat 3: Spartek: bet 440 and won 880, net result: 440
+
+
+
+Unibet Hand #1528399070, Tournament #83603324, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:17:18 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (620)
+Seat 3: Spartek (880)
+*** Blinds and button ***
+Spartek has the button
+Spartek posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8h Kc]
+Dealt in Spartek
+*** Preflop ***
+Spartek calls 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 590 to 620, and is all-in
+Spartek folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 650
+*** Summary ***
+Total pot 650
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 620 and won 650, net result: 30
+Seat 3: Spartek: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1528399286, Tournament #83603324, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:17:27 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (650)
+Seat 3: Spartek (850)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+Spartek posts big blind 30
+*** Hole cards ***
+Dealt in Spartek
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks 6s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 45 to 60
+Spartek calls 30
+*** Flop *** [Qc Jh 4s]
+Spartek checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 48
+Spartek calls 48
+*** Turn *** [Qc Jh 4s] [Jd]
+Spartek bets 71
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to Spartek: 71
+Spartek wins 216
+*** Summary ***
+Total pot 216
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 108 and won 0, net result: -108
+Seat 3: Spartek: bet 179 and won 287, net result: 108
+
+
+
+Unibet Hand #1528399859, Tournament #83603324, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:17:52 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (542)
+Seat 3: Spartek (958)
+*** Blinds and button ***
+Spartek has the button
+Spartek posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4h 2c]
+Dealt in Spartek
+*** Preflop ***
+Spartek raises 938 to 958, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Spartek wins 998
+*** Summary ***
+Total pot 998
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 3: Spartek: bet 958 and won 998, net result: 40
+
+
+
+Unibet Hand #1528400106, Tournament #83603324, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:18:04 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (502)
+Seat 3: Spartek (998)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+Spartek posts big blind 40
+*** Hole cards ***
+Dealt in Spartek
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3c Qc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+Spartek raises 958 to 998, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Spartek wins 1038
+*** Summary ***
+Total pot 1038
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 3: Spartek: bet 998 and won 1038, net result: 40
+
+
+
+Unibet Hand #1528400366, Tournament #83603324, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:18:17 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (462)
+Seat 3: Spartek (1038)
+*** Blinds and button ***
+Spartek has the button
+Spartek posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qs 5s]
+Dealt in Spartek
+*** Preflop ***
+Spartek folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+Seat 3: Spartek: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528400540, Tournament #83603324, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:18:24 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (482)
+Seat 3: Spartek (1018)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+Spartek posts big blind 40
+*** Hole cards ***
+Dealt in Spartek
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3d 9h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Spartek wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+Seat 3: Spartek: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1528400701, Tournament #83603324, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:18:31 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (462)
+Seat 3: Spartek (1038)
+*** Blinds and button ***
+Spartek has the button
+Spartek posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4d Js]
+Dealt in Spartek
+*** Preflop ***
+Spartek folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+Seat 3: Spartek: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528400875, Tournament #83603324, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:18:39 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (482)
+Seat 3: Spartek (1018)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+Spartek posts big blind 40
+*** Hole cards ***
+Dealt in Spartek
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9d 5c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 60 to 80
+Spartek raises 978 to 1018, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Spartek wins 1098
+*** Summary ***
+Total pot 1098
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 0, net result: -80
+Seat 3: Spartek: bet 1018 and won 1098, net result: 80
+
+
+
+Unibet Hand #1528401073, Tournament #83603324, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:18:49 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (402)
+Seat 3: Spartek (1098)
+*** Blinds and button ***
+Spartek has the button
+Spartek posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Tc Ad]
+Dealt in Spartek
+*** Preflop ***
+Spartek calls 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 352 to 402, and is all-in
+Spartek folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 452
+*** Summary ***
+Total pot 452
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 402 and won 452, net result: 50
+Seat 3: Spartek: bet 50 and won 0, net result: -50
+
+
+
+Unibet Hand #1528401361, Tournament #83603324, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:19:01 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (452)
+Seat 3: Spartek (1048)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+Spartek posts big blind 50
+*** Hole cards ***
+Dealt to Spartek [5s 4s]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qh Qc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 25
+Spartek checks
+*** Flop *** [Jh 5d Js]
+Spartek checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 50
+Spartek raises 150 to 150
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 352 to 402, and is all-in
+Spartek calls 252
+*** Showdown ***
+*** Turn *** [Jh 5d Js] [8d]
+*** River *** [Jh 5d Js] [8d] [Jd]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Qh Qc], Full House, Jacks full of Queens
+Spartek shows [5s 4s], Full House, Jacks full of Fives
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 904
+*** Summary ***
+Total pot 904
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 452 and won 904, net result: 452
+Seat 3: Spartek: bet 452 and won 0, net result: -452
+
+
+
+Unibet Hand #1528401830, Tournament #83603324, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:19:23 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (904)
+Seat 3: Spartek (596)
+*** Blinds and button ***
+Spartek has the button
+Spartek posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6c Ks]
+Dealt to Spartek [Qc 9c]
+*** Preflop ***
+Spartek calls 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 854 to 904, and is all-in
+Spartek calls 546, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 308
+*** Showdown ***
+*** Flop *** [Qs Tc 3c]
+*** Turn *** [Qs Tc 3c] [8s]
+*** River *** [Qs Tc 3c] [8s] [Ts]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [6c Ks], A Pair of Tens
+Spartek shows [Qc 9c], Two pairs, Queens up
+Spartek wins 1192
+*** Summary ***
+Total pot 1192
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 904 and won 308, net result: -596
+Seat 3: Spartek: bet 596 and won 1192, net result: 596
+
+
+
+Unibet Hand #1528402213, Tournament #83603324, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:19:40 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (308)
+Seat 3: Spartek (1192)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+Spartek posts big blind 50
+*** Hole cards ***
+Dealt in Spartek
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3s Qc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Spartek wins 75
+*** Summary ***
+Total pot 75
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 25 and won 0, net result: -25
+Seat 3: Spartek: bet 50 and won 75, net result: 25
+
+
+
+Unibet Hand #1528402391, Tournament #83603324, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 16:19:47 2026/05/13
+Table "84102245" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (283)
+Seat 3: Spartek (1217)
+*** Blinds and button ***
+Spartek has the button
+Spartek posts small blind 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3d Qh]
+Dealt to Spartek [Kd 6s]
+*** Preflop ***
+Spartek raises 1187 to 1217, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 223, and is all-in
+Uncalled bet returned to Spartek: 934
+*** Showdown ***
+*** Flop *** [Ks Kh Ah]
+*** Turn *** [Ks Kh Ah] [As]
+*** River *** [Ks Kh Ah] [As] [4c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [3d Qh], Two pairs, Aces up
+Spartek shows [Kd 6s], Full House
+Spartek wins 566
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 2nd place
+Spartek finished the tournament in 1st place, and won €20
+*** Summary ***
+Total pot 566
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 283 and won 0, net result: -283
+Seat 3: Spartek: bet 1217 and won 1500, net result: 283
+
+
+

@@ -1,0 +1,276 @@
+Unibet Hand #1528390104, Tournament #83602879, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:10:45 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (500)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: SoldeOut (500)
+*** Blinds and button ***
+SoldeOut has the button
+Croc0dileLoyal posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in Croc0dileLoyal
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6d 5h]
+Dealt in SoldeOut
+*** Preflop ***
+SoldeOut folds
+Croc0dileLoyal folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 30
+*** Summary ***
+Total pot 30
+Seat 1: Croc0dileLoyal: bet 10 and won 0, net result: -10
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1528390277, Tournament #83602879, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:10:52 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (490)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (510)
+Seat 5: SoldeOut (500)
+*** Blinds and button ***
+Croc0dileLoyal has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+SoldeOut posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ad 2c]
+Dealt in SoldeOut
+Dealt in Croc0dileLoyal
+*** Preflop ***
+Croc0dileLoyal raises 40 to 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+SoldeOut folds
+Croc0dileLoyal wins 70
+*** Summary ***
+Total pot 70
+Seat 1: Croc0dileLoyal: bet 40 and won 70, net result: 30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 5: SoldeOut: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528390922, Tournament #83602879, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:11:22 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (520)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: SoldeOut (480)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+SoldeOut posts small blind 10
+Croc0dileLoyal posts big blind 20
+*** Hole cards ***
+Dealt in SoldeOut
+Dealt in Croc0dileLoyal
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8c 9s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+SoldeOut raises 30 to 40
+Croc0dileLoyal folds
+SoldeOut wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Croc0dileLoyal: bet 20 and won 0, net result: -20
+Seat 5: SoldeOut: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1528391484, Tournament #83602879, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:11:48 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (500)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: SoldeOut (500)
+*** Blinds and button ***
+SoldeOut has the button
+Croc0dileLoyal posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt in Croc0dileLoyal
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qc 4c]
+Dealt in SoldeOut
+*** Preflop ***
+SoldeOut raises 60 to 60
+Croc0dileLoyal folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 30
+*** Flop *** [9d Th 5s]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+SoldeOut checks
+*** Turn *** [9d Th 5s] [9c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+SoldeOut bets 67
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to SoldeOut: 67
+SoldeOut wins 135
+*** Summary ***
+Total pot 135
+Seat 1: Croc0dileLoyal: bet 15 and won 0, net result: -15
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 0, net result: -60
+Seat 5: SoldeOut: bet 127 and won 202, net result: 75
+
+
+
+Unibet Hand #1528392528, Tournament #83602879, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:12:34 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (485)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (440)
+Seat 5: SoldeOut (575)
+*** Blinds and button ***
+Croc0dileLoyal has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+SoldeOut posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js 4d]
+Dealt in SoldeOut
+Dealt in Croc0dileLoyal
+*** Preflop ***
+Croc0dileLoyal raises 60 to 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+SoldeOut folds
+Croc0dileLoyal wins 105
+*** Summary ***
+Total pot 105
+Seat 1: Croc0dileLoyal: bet 60 and won 105, net result: 45
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 15 and won 0, net result: -15
+Seat 5: SoldeOut: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1528392934, Tournament #83602879, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:12:52 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (530)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (425)
+Seat 5: SoldeOut (545)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+SoldeOut posts small blind 20
+Croc0dileLoyal posts big blind 40
+*** Hole cards ***
+Dealt in SoldeOut
+Dealt in Croc0dileLoyal
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js 9h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+SoldeOut folds
+Croc0dileLoyal wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Croc0dileLoyal: bet 40 and won 60, net result: 20
+Seat 5: SoldeOut: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528393260, Tournament #83602879, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:13:06 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (550)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (425)
+Seat 5: SoldeOut (525)
+*** Blinds and button ***
+SoldeOut has the button
+Croc0dileLoyal posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt in Croc0dileLoyal
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2c Qc]
+Dealt in SoldeOut
+*** Preflop ***
+SoldeOut folds
+Croc0dileLoyal raises 530 to 550, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Croc0dileLoyal wins 590
+*** Summary ***
+Total pot 590
+Seat 1: Croc0dileLoyal: bet 550 and won 590, net result: 40
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528393567, Tournament #83602879, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:13:20 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (590)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (385)
+Seat 5: SoldeOut (525)
+*** Blinds and button ***
+Croc0dileLoyal has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+SoldeOut posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks 3s]
+Dealt in SoldeOut
+Dealt in Croc0dileLoyal
+*** Preflop ***
+Croc0dileLoyal folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 365 to 385, and is all-in
+SoldeOut folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 425
+*** Summary ***
+Total pot 425
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 385 and won 425, net result: 40
+Seat 5: SoldeOut: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528394084, Tournament #83602879, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:13:42 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (590)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (425)
+Seat 5: SoldeOut (485)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+SoldeOut posts small blind 20
+Croc0dileLoyal posts big blind 40
+*** Hole cards ***
+Dealt in SoldeOut
+Dealt in Croc0dileLoyal
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3h Jd]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+SoldeOut folds
+Croc0dileLoyal wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Croc0dileLoyal: bet 40 and won 60, net result: 20
+Seat 5: SoldeOut: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528394357, Tournament #83602879, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:13:55 2026/05/13
+Table "84101795" 3-max
+*** Seated players ***
+Seat 1: Croc0dileLoyal (610)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (425)
+Seat 5: SoldeOut (465)
+*** Blinds and button ***
+SoldeOut has the button
+Croc0dileLoyal posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to Croc0dileLoyal [5h Th]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks 7s]
+Dealt in SoldeOut
+*** Preflop ***
+SoldeOut folds
+Croc0dileLoyal raises 585 to 610, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 375, and is all-in
+Uncalled bet returned to Croc0dileLoyal: 185
+*** Showdown ***
+*** Flop *** [Js 2s 9h]
+*** Turn *** [Js 2s 9h] [Ac]
+*** River *** [Js 2s 9h] [Ac] [5d]
+Croc0dileLoyal shows [5h Th], A Pair of Fives
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ks 7s], High card
+Croc0dileLoyal wins 850
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 3rd place
+*** Summary ***
+Total pot 850
+Seat 1: Croc0dileLoyal: bet 610 and won 1035, net result: 425
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 425 and won 0, net result: -425
+
+
+

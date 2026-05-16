@@ -1,0 +1,501 @@
+Unibet Hand #1528387409, Tournament #83602691, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:08:46 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (500)
+Seat 3: BlaireauGent1l (500)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+ziigounette posts small blind 10
+BlaireauGent1l posts big blind 20
+*** Hole cards ***
+Dealt in ziigounette
+Dealt in BlaireauGent1l
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ad 6s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 40 to 40
+ziigounette folds
+BlaireauGent1l calls 20
+*** Flop *** [5d Jc 6h]
+BlaireauGent1l bets 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+*** Turn *** [5d Jc 6h] [Ks]
+BlaireauGent1l bets 32
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 32
+*** River *** [5d Jc 6h] [Ks] [4d]
+BlaireauGent1l bets 97
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to BlaireauGent1l: 97
+BlaireauGent1l wins 194
+*** Summary ***
+Total pot 194
+Seat 1: ziigounette: bet 10 and won 0, net result: -10
+Seat 3: BlaireauGent1l: bet 189 and won 291, net result: 102
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 92 and won 0, net result: -92
+
+
+
+Unibet Hand #1528388229, Tournament #83602691, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:09:22 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (490)
+Seat 3: BlaireauGent1l (602)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (408)
+*** Blinds and button ***
+ziigounette has the button
+BlaireauGent1l posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt to BlaireauGent1l [Th 3h]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3c 9c]
+Dealt in ziigounette
+*** Preflop ***
+ziigounette folds
+BlaireauGent1l calls 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [5h Kd Ad]
+BlaireauGent1l checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Turn *** [5h Kd Ad] [9s]
+BlaireauGent1l bets 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+*** River *** [5h Kd Ad] [9s] [Qh]
+BlaireauGent1l bets 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 40
+*** Showdown ***
+BlaireauGent1l shows [Th 3h], High card
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [3c 9c], A Pair of Nines
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 160
+*** Summary ***
+Total pot 160
+Seat 3: BlaireauGent1l: bet 80 and won 0, net result: -80
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 160, net result: 80
+
+
+
+Unibet Hand #1528388825, Tournament #83602691, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:09:47 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (490)
+Seat 3: BlaireauGent1l (522)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (488)
+*** Blinds and button ***
+BlaireauGent1l has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+ziigounette posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qd 5d]
+Dealt in ziigounette
+Dealt in BlaireauGent1l
+*** Preflop ***
+BlaireauGent1l calls 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+ziigounette checks
+*** Flop *** [Qs Qc Ad]
+ziigounette checks
+BlaireauGent1l checks
+*** Turn *** [Qs Qc Ad] [9s]
+ziigounette checks
+BlaireauGent1l bets 20
+ziigounette folds
+Uncalled bet returned to BlaireauGent1l: 20
+BlaireauGent1l wins 50
+*** Summary ***
+Total pot 50
+Seat 1: ziigounette: bet 20 and won 0, net result: -20
+Seat 3: BlaireauGent1l: bet 40 and won 70, net result: 30
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1528389611, Tournament #83602691, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:10:24 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (470)
+Seat 3: BlaireauGent1l (552)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (478)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+ziigounette posts small blind 10
+BlaireauGent1l posts big blind 20
+*** Hole cards ***
+Dealt in ziigounette
+Dealt in BlaireauGent1l
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Tc 5h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+ziigounette folds
+BlaireauGent1l wins 30
+*** Summary ***
+Total pot 30
+Seat 1: ziigounette: bet 10 and won 0, net result: -10
+Seat 3: BlaireauGent1l: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1528389913, Tournament #83602691, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:10:36 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (460)
+Seat 3: BlaireauGent1l (562)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (478)
+*** Blinds and button ***
+ziigounette has the button
+BlaireauGent1l posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in BlaireauGent1l
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4h 2c]
+Dealt in ziigounette
+*** Preflop ***
+ziigounette folds
+BlaireauGent1l calls 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [7h 3s Ac]
+BlaireauGent1l checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 30
+BlaireauGent1l folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 40
+*** Summary ***
+Total pot 40
+Seat 3: BlaireauGent1l: bet 20 and won 0, net result: -20
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 50 and won 70, net result: 20
+
+
+
+Unibet Hand #1528390423, Tournament #83602691, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 16:11:00 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (460)
+Seat 3: BlaireauGent1l (542)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (498)
+*** Blinds and button ***
+BlaireauGent1l has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+ziigounette posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9c As]
+Dealt in ziigounette
+Dealt in BlaireauGent1l
+*** Preflop ***
+BlaireauGent1l folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 483 to 498, and is all-in
+ziigounette folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 528
+*** Summary ***
+Total pot 528
+Seat 1: ziigounette: bet 30 and won 0, net result: -30
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 498 and won 528, net result: 30
+
+
+
+Unibet Hand #1528390651, Tournament #83602691, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 16:11:09 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (430)
+Seat 3: BlaireauGent1l (542)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (528)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+ziigounette posts small blind 15
+BlaireauGent1l posts big blind 30
+*** Hole cards ***
+Dealt to ziigounette [Kc 3d]
+Dealt to BlaireauGent1l [Ts 9c]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6s 4s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+ziigounette calls 15
+BlaireauGent1l checks
+*** Flop *** [Kd 8h 2h]
+ziigounette checks
+BlaireauGent1l checks
+*** Turn *** [Kd 8h 2h] [As]
+ziigounette checks
+BlaireauGent1l bets 30
+ziigounette calls 30
+*** River *** [Kd 8h 2h] [As] [8s]
+ziigounette checks
+BlaireauGent1l checks
+*** Showdown ***
+ziigounette shows [Kc 3d], Two pairs, Kings up
+BlaireauGent1l shows [Ts 9c], A Pair of Eights
+ziigounette wins 120
+*** Summary ***
+Total pot 120
+Seat 1: ziigounette: bet 60 and won 120, net result: 60
+Seat 3: BlaireauGent1l: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1528391504, Tournament #83602691, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 16:11:48 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (490)
+Seat 3: BlaireauGent1l (482)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (528)
+*** Blinds and button ***
+ziigounette has the button
+BlaireauGent1l posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt in BlaireauGent1l
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4s 6s]
+Dealt to ziigounette [Qc 9d]
+*** Preflop ***
+ziigounette raises 60 to 60
+BlaireauGent1l folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 30
+*** Flop *** [Kd 8c 6c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+ziigounette bets 45
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 45
+*** Turn *** [Kd 8c 6c] [Kh]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+ziigounette checks
+*** River *** [Kd 8c 6c] [Kh] [Ah]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+ziigounette checks
+*** Showdown ***
+ziigounette shows [Qc 9d], A Pair of Kings
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [4s 6s], Two pairs, Kings up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 225
+*** Summary ***
+Total pot 225
+Seat 1: ziigounette: bet 105 and won 0, net result: -105
+Seat 3: BlaireauGent1l: bet 15 and won 0, net result: -15
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 105 and won 225, net result: 120
+
+
+
+Unibet Hand #1528392529, Tournament #83602691, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 16:12:33 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (385)
+Seat 3: BlaireauGent1l (467)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (648)
+*** Blinds and button ***
+BlaireauGent1l has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+ziigounette posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Jc 8c]
+Dealt in ziigounette
+Dealt in BlaireauGent1l
+*** Preflop ***
+BlaireauGent1l calls 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+ziigounette checks
+*** Flop *** [Qd 7d 9c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+ziigounette checks
+BlaireauGent1l checks
+*** Turn *** [Qd 7d 9c] [Ks]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+ziigounette checks
+BlaireauGent1l bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 30
+ziigounette folds
+*** River *** [Qd 7d 9c] [Ks] [4c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+BlaireauGent1l bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to BlaireauGent1l: 30
+BlaireauGent1l wins 150
+*** Summary ***
+Total pot 150
+Seat 1: ziigounette: bet 30 and won 0, net result: -30
+Seat 3: BlaireauGent1l: bet 90 and won 180, net result: 90
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1528394525, Tournament #83602691, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 16:14:01 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (355)
+Seat 3: BlaireauGent1l (557)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (588)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+ziigounette posts small blind 20
+BlaireauGent1l posts big blind 40
+*** Hole cards ***
+Dealt in ziigounette
+Dealt in BlaireauGent1l
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2d 4d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+ziigounette folds
+BlaireauGent1l wins 60
+*** Summary ***
+Total pot 60
+Seat 1: ziigounette: bet 20 and won 0, net result: -20
+Seat 3: BlaireauGent1l: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1528394695, Tournament #83602691, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 16:14:10 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (335)
+Seat 3: BlaireauGent1l (577)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (588)
+*** Blinds and button ***
+ziigounette has the button
+BlaireauGent1l posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt in BlaireauGent1l
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Th Kd]
+Dealt to ziigounette [Qh 8h]
+*** Preflop ***
+ziigounette raises 335 to 335, and is all-in
+BlaireauGent1l folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 295
+*** Showdown ***
+*** Flop *** [Js 6c 7s]
+*** Turn *** [Js 6c 7s] [6s]
+*** River *** [Js 6c 7s] [6s] [8d]
+ziigounette shows [Qh 8h], Two pairs, Eights up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Th Kd], A Pair of Sixes
+ziigounette wins 690
+*** Summary ***
+Total pot 690
+Seat 1: ziigounette: bet 335 and won 690, net result: 355
+Seat 3: BlaireauGent1l: bet 20 and won 0, net result: -20
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 335 and won 0, net result: -335
+
+
+
+Unibet Hand #1528395327, Tournament #83602691, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 16:14:35 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (690)
+Seat 3: BlaireauGent1l (557)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (253)
+*** Blinds and button ***
+BlaireauGent1l has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+ziigounette posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6s 3s]
+Dealt in ziigounette
+Dealt in BlaireauGent1l
+*** Preflop ***
+BlaireauGent1l folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+ziigounette raises 650 to 690, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+ziigounette wins 730
+*** Summary ***
+Total pot 730
+Seat 1: ziigounette: bet 690 and won 730, net result: 40
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528395741, Tournament #83602691, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €30 - UTC 16:14:52 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (730)
+Seat 3: BlaireauGent1l (557)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (213)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+ziigounette posts small blind 25
+BlaireauGent1l posts big blind 50
+*** Hole cards ***
+Dealt in ziigounette
+Dealt in BlaireauGent1l
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4h Js]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+ziigounette calls 25
+BlaireauGent1l checks
+*** Flop *** [Ad 6d 9c]
+ziigounette bets 50
+BlaireauGent1l raises 100 to 100
+ziigounette folds
+Uncalled bet returned to BlaireauGent1l: 50
+BlaireauGent1l wins 200
+*** Summary ***
+Total pot 200
+Seat 1: ziigounette: bet 100 and won 0, net result: -100
+Seat 3: BlaireauGent1l: bet 150 and won 250, net result: 100
+
+
+
+Unibet Hand #1528396805, Tournament #83602691, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €30 - UTC 16:15:38 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (630)
+Seat 3: BlaireauGent1l (657)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (213)
+*** Blinds and button ***
+ziigounette has the button
+BlaireauGent1l posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to BlaireauGent1l [Qh Ac]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4c 8s]
+Dealt in ziigounette
+*** Preflop ***
+ziigounette folds
+BlaireauGent1l calls 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [8d 4d Qc]
+BlaireauGent1l bets 50
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 150 to 150
+BlaireauGent1l raises 200 to 250
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 13, and is all-in
+Uncalled bet returned to BlaireauGent1l: 87
+*** Showdown ***
+*** Turn *** [8d 4d Qc] [Jc]
+*** River *** [8d 4d Qc] [Jc] [5d]
+BlaireauGent1l shows [Qh Ac], A Pair of Queens
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [4c 8s], Two pairs, Eights up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 426
+*** Summary ***
+Total pot 426
+Seat 3: BlaireauGent1l: bet 300 and won 87, net result: -213
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 213 and won 426, net result: 213
+
+
+
+Unibet Hand #1528397476, Tournament #83602691, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €30 - UTC 16:16:07 2026/05/13
+Table "84101608" 3-max
+*** Seated players ***
+Seat 1: ziigounette (630)
+Seat 3: BlaireauGent1l (444)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (426)
+*** Blinds and button ***
+BlaireauGent1l has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+ziigounette posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8s 8d]
+Dealt in ziigounette
+Dealt to BlaireauGent1l [Ad 2c]
+*** Preflop ***
+BlaireauGent1l calls 50
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 401 to 426, and is all-in
+ziigounette folds
+BlaireauGent1l calls 376
+*** Showdown ***
+*** Flop *** [Ts Kh 7s]
+*** Turn *** [Ts Kh 7s] [Qd]
+*** River *** [Ts Kh 7s] [Qd] [Js]
+BlaireauGent1l shows [Ad 2c], A Straight
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [8s 8d], A Pair of Eights
+BlaireauGent1l wins 902
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 3rd place
+*** Summary ***
+Total pot 902
+Seat 1: ziigounette: bet 50 and won 0, net result: -50
+Seat 3: BlaireauGent1l: bet 426 and won 902, net result: 476
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 426 and won 0, net result: -426
+
+
+
