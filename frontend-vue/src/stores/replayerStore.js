@@ -89,6 +89,7 @@ export const useReplayerStore = defineStore('replayer', {
         currentStack: p.initialStack,
         bet: 0,
         isFolded: false,
+        isAllIn: false,
         isActive: false,
         showCards: false
       }))
@@ -139,6 +140,7 @@ export const useReplayerStore = defineStore('replayer', {
         currentStack: p.initialStack,
         bet: 0,
         isFolded: false,
+        isAllIn: false,
         isActive: false,
         showCards: false
       }))
@@ -161,12 +163,21 @@ export const useReplayerStore = defineStore('replayer', {
         case 'Bet':
         case 'Raise':
         case 'Call':
-        case 'AllIn':
           if (player) {
             const diff = action.amount - player.bet
             player.currentStack -= diff
             player.bet = action.amount
-            this.pot = action.potAfter
+            if (action.potAfter) this.pot = action.potAfter
+          }
+          break;
+
+        case 'AllIn':
+          if (player) {
+            const allInAmount = player.currentStack
+            player.currentStack = 0
+            player.bet += allInAmount
+            player.isAllIn = true
+            if (action.potAfter) this.pot = action.potAfter
           }
           break;
 
