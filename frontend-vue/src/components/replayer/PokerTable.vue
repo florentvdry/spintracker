@@ -113,12 +113,16 @@ const winnerSeat = computed(() => {
         :seat="entry.seat"
       />
 
-      <transition name="pot-fly" appear>
+      <transition name="pot-fly" appear mode="out-in">
         <div
           v-if="store.currentAction?.type === 'CollectPot'"
-          :key="store.currentAction.order"
+          :key="store.currentAction.playerName || 'pot'"
           class="winner-chip"
-          :style="{ left: winnerSeat.x, top: winnerSeat.y, transform: winnerSeat.transform }"
+          :style="{ 
+            left: winnerSeat.x, 
+            top: winnerSeat.y, 
+            transform: winnerSeat.transform 
+          }"
         >
           +{{ formatValue(store.currentAction.amount) }}
         </div>
@@ -288,14 +292,42 @@ const winnerSeat = computed(() => {
   font-weight: 950;
 }
 
-.pot-fly-enter-active,
-.pot-fly-leave-active {
-  transition: opacity 240ms ease, transform 240ms ease;
+.pot-fly-enter-active {
+  animation: chipFlyIn 600ms ease-out forwards;
 }
 
-.pot-fly-enter-from,
+.pot-fly-leave-active {
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+.pot-fly-enter-from {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+.pot-fly-enter-to {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
 .pot-fly-leave-to {
   opacity: 0;
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+@keyframes chipFlyIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3) rotate(-15deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
 }
 
 @media (max-width: 760px) {
