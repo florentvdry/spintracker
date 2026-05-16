@@ -20,7 +20,25 @@ public class StatsRepository
         _logger = logger;
     }
 
-    // Placeholder: extract GetDashboardStatsAsync, GetSessionHistoryAsync, etc.
+    private async Task<string?> ResolveHeroNameAsync(string? heroName = null)
+    {
+        if (!string.IsNullOrEmpty(heroName)) return heroName;
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+            SELECT player_name FROM (
+                SELECT ph.player_name, COUNT(*) as cnt
+                FROM player_hands ph
+                JOIN hands h ON h.id = ph.hand_id
+                WHERE ph.cards IS NOT NULL AND ph.cards != ''
+                GROUP BY ph.player_name
+                ORDER BY cnt DESC
+                LIMIT 1
+            )";
+        var result = await cmd.ExecuteScalarAsync();
+        return result as string;
+    }
 
     public async Task<object> GetDashboardStatsAsync(string? heroName = null, string? dateFrom = null, string? dateTo = null, double? buyIn = null)
     {
@@ -30,6 +48,10 @@ public class StatsRepository
         var profitCol = "ph.net_profit";
         var joinClause = "";
         
+        if (string.IsNullOrEmpty(heroName))
+        {
+            heroName = await ResolveHeroNameAsync();
+        }
         if (!string.IsNullOrEmpty(heroName))
         {
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
@@ -317,13 +339,15 @@ public class StatsRepository
 
         var cmd = connection.CreateCommand();
         
+        var resolvedHero = await ResolveHeroNameAsync(heroName);
+        
         var joinClause = "";
         var profitCol = "ph.net_profit";
         
-        if (!string.IsNullOrEmpty(heroName))
+        if (!string.IsNullOrEmpty(resolvedHero))
         {
             joinClause = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
-            cmd.Parameters.AddWithValue("@heroName", heroName);
+            cmd.Parameters.AddWithValue("@heroName", resolvedHero);
         }
         else
         {
@@ -480,10 +504,11 @@ public class StatsRepository
         var evCol = "COALESCE(ph.net_won_adjusted, ph.net_profit)";
         var showdownCondition = "ph.went_to_showdown = 1";
 
-        if (!string.IsNullOrEmpty(options.HeroName))
+        var chartHeroName = await ResolveHeroNameAsync(options.HeroName);
+        if (!string.IsNullOrEmpty(chartHeroName))
         {
             joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
-            parameters.Add(new SqliteParameter("@heroName", options.HeroName));
+            parameters.Add(new SqliteParameter("@heroName", chartHeroName));
         }
         else
         {
@@ -684,8 +709,9 @@ public class StatsRepository
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
+        var multiHeroName = await ResolveHeroNameAsync(filters.HeroName);
         var joinHero = "";
-        if (!string.IsNullOrEmpty(filters.HeroName))
+        if (!string.IsNullOrEmpty(multiHeroName))
         {
             joinHero = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
         }
@@ -726,7 +752,7 @@ public class StatsRepository
             GROUP BY multiplier
             ORDER BY multiplier ASC";
 
-        if (!string.IsNullOrEmpty(filters.HeroName)) cmd.Parameters.AddWithValue("@heroName", filters.HeroName);
+        if (!string.IsNullOrEmpty(multiHeroName)) cmd.Parameters.AddWithValue("@heroName", multiHeroName);
         if (!string.IsNullOrEmpty(filters.DateFrom)) cmd.Parameters.AddWithValue("@dateFrom", filters.DateFrom + (filters.DateFrom.Contains(" ") ? "" : " 00:00:00"));
         if (!string.IsNullOrEmpty(filters.DateTo)) cmd.Parameters.AddWithValue("@dateTo", filters.DateTo + (filters.DateTo.Contains(" ") ? "" : " 23:59:59"));
 
@@ -2384,10 +2410,15 @@ public class StatsRepository
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
 
-        var joinClause = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)";
+        var rawHeroName = await ResolveHeroNameAsync();
+        var rawJoinClause = !string.IsNullOrEmpty(rawHeroName)
+            ? "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @rawHero"
+            : "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)";
         var profitCol = "ph.net_profit";
 
         using var cmd = connection.CreateCommand();
+        if (!string.IsNullOrEmpty(rawHeroName))
+            cmd.Parameters.AddWithValue("@rawHero", rawHeroName);
         cmd.CommandText = $@"
             SELECT 
                 h.buy_in, 
@@ -2398,7 +2429,7 @@ public class StatsRepository
                 MAX(h.position) as position,
                 MAX(COALESCE(h.rake_per_player, 0)) as rake_per_player
             FROM hands h
-            {joinClause}
+            {rawJoinClause}
             WHERE h.player_count <= 3
             GROUP BY h.game_id";
 
@@ -2442,10 +2473,12 @@ public class StatsRepository
         int totalHands = Convert.ToInt32(await countHandsCmd.ExecuteScalarAsync());
 
         using var sampleCmd = connection.CreateCommand();
+        if (!string.IsNullOrEmpty(rawHeroName))
+            sampleCmd.Parameters.AddWithValue("@rawHero", rawHeroName);
         sampleCmd.CommandText = $@"
             SELECT h.id, h.date_time, ph.net_profit, h.buy_in, h.prize_pool, h.total_pot, h.result 
             FROM hands h
-            JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)
+            {rawJoinClause}
             WHERE h.player_count <= 3
             ORDER BY h.date_time DESC 
             LIMIT {sampleLimit}";

@@ -20,6 +20,7 @@ public static class ParserFactory
     {
         new BetclicParser(),
         new WinamaxParser(),
+        new UnibetParser(),
     };
 
     public static IHandParser? GetParser(string content)

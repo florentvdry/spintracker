@@ -41,6 +41,9 @@ public class ImporterService : IImporterService
     private static readonly System.Text.RegularExpressions.Regex AllInRegex = 
         new(@"(\d+)\s+and\s+is\s+all-in", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
     
+    private static readonly System.Text.RegularExpressions.Regex DealtToNameRegex = 
+        new(@"Dealt to\s+(.+?)\s+\[", System.Text.RegularExpressions.RegexOptions.Compiled);
+    
     private static readonly ConcurrentDictionary<string, bool> HandIdCache = new();
     private const int MaxCacheSize = 10000;
     
@@ -185,6 +188,7 @@ public class ImporterService : IImporterService
         _logger.LogInformation($"[IMPORT] Parser detected in {detectStart.ElapsedMilliseconds}ms, separator: {separator}");
 
         Dictionary<string, WinamaxSummaryInfo>? winamaxSummaries = null;
+        Dictionary<string, WinamaxSummaryInfo>? unibetSummaries = null;
         if (parser is WinamaxParser)
         {
             var cleaned = await _db.CleanupCorruptedWinamaxHandsAsync();
@@ -195,6 +199,11 @@ public class ImporterService : IImporterService
 
             winamaxSummaries = TryLoadWinamaxSummaries(filePath);
             _logger.LogInformation($"[IMPORT] Winamax summaries loaded: {winamaxSummaries.Count}");
+        }
+        else if (parser is UnibetParser)
+        {
+            unibetSummaries = TryLoadUnibetSummaries(filePath);
+            _logger.LogInformation($"[IMPORT] Unibet summaries loaded: {unibetSummaries.Count}");
         }
 
         // Pipeline channels - increased buffer size for better throughput
@@ -254,6 +263,15 @@ public class ImporterService : IImporterService
         }, cancellationToken);
 
         // 2. Worker Tasks (Parallel Parsing + Analytics)
+        // Pre-scan file to detect hero name (the player with most "Dealt to" occurrences)
+        string? detectedHeroName = null;
+        if (parser is UnibetParser)
+        {
+            detectedHeroName = await DetectHeroNameFromFileAsync(filePath);
+            if (!string.IsNullOrEmpty(detectedHeroName))
+                _logger.LogInformation($"[IMPORT] Detected hero: {detectedHeroName}");
+        }
+        
         // Use more workers for I/O-bound parsing work
         int workerCount = Math.Max(4, Environment.ProcessorCount * 2);
         _logger.LogInformation($"[IMPORT] Starting {workerCount} worker tasks");
@@ -287,11 +305,31 @@ public class ImporterService : IImporterService
                                 hand.Multiplier = Math.Max(1, (int)Math.Round(hand.PrizePool / hand.BuyIn, MidpointRounding.AwayFromZero));
                             }
                         }
+                        else if (unibetSummaries != null && !string.IsNullOrWhiteSpace(hand.GameId) && unibetSummaries.TryGetValue(hand.GameId, out var uSummary))
+                        {
+                            if (uSummary.Position > 0) hand.Position = uSummary.Position;
+                            if (uSummary.PrizePool > 0) hand.PrizePool = uSummary.PrizePool;
+                            if (uSummary.BuyIn > 0) hand.BuyIn = uSummary.BuyIn;
+                            if (hand.BuyIn > 0 && hand.PrizePool > 0)
+                            {
+                                hand.Multiplier = Math.Max(1, (int)Math.Round(hand.PrizePool / hand.BuyIn, MidpointRounding.AwayFromZero));
+                            }
+                        }
 
                         handsParsed++;
 
                         HandAnalytics analytics;
                         var hero = hand.Players.FirstOrDefault(p => p.IsHero);
+                        if (hero == null && !string.IsNullOrEmpty(detectedHeroName))
+                        {
+                            hero = hand.Players.FirstOrDefault(p => p.Name == detectedHeroName);
+                        }
+                        hero ??= hand.Players.FirstOrDefault(p => !string.IsNullOrEmpty(p.Cards));
+                        if (hero != null && !hero.IsHero)
+                        {
+                            foreach (var p in hand.Players) p.IsHero = false;
+                            hero.IsHero = true;
+                        }
                         bool needsAnalytics = hand.WentToShowdown && 
                                               hand.PlayerCount <= 3 && 
                                               hero != null && 
@@ -492,5 +530,117 @@ public class ImporterService : IImporterService
     {
         if (string.IsNullOrWhiteSpace(raw)) return 0;
         return double.TryParse(raw.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out var value) ? value : 0;
+    }
+
+    private async Task<string?> DetectHeroNameFromFileAsync(string filePath)
+    {
+        try
+        {
+            var dealtCounts = new Dictionary<string, int>(StringComparer.Ordinal);
+            using var reader = new StreamReader(filePath);
+            string? line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                var match = DealtToNameRegex.Match(line);
+                if (match.Success)
+                {
+                    var name = match.Groups[1].Value.Trim();
+                    dealtCounts[name] = dealtCounts.TryGetValue(name, out var c) ? c + 1 : 1;
+                }
+            }
+            if (dealtCounts.Count == 0) return null;
+            return dealtCounts.OrderByDescending(kvp => kvp.Value).First().Key;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning($"Failed to detect hero name from file: {ex.Message}");
+            return null;
+        }
+    }
+
+    private static readonly Regex UnibetSummaryTournamentIdRegex =
+        new(@"Unibet Tournament #(?<id>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly Regex UnibetSummaryPrizePoolRegex =
+        new(@"Total Prize Pool: €(?<value>\d+(?:[.,]\d+)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly Regex UnibetSummaryBuyInRegex =
+        new(@"Buy-In: €(?<buy>\d+(?:[.,]\d+)?)\s*\+\s*€(?<fee>\d+(?:[.,]\d+)?)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static readonly Regex UnibetSummaryPositionRegex =
+        new(@"You finished in (?<pos>\d+)(?:st|nd|rd|th) place", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private Dictionary<string, WinamaxSummaryInfo> TryLoadUnibetSummaries(string importedFilePath)
+    {
+        var map = new Dictionary<string, WinamaxSummaryInfo>(StringComparer.Ordinal);
+
+        try
+        {
+            var directory = Path.GetDirectoryName(importedFilePath);
+            if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+            {
+                return map;
+            }
+
+            var summaryFiles = Directory.GetFiles(directory, "TS*.txt", SearchOption.TopDirectoryOnly);
+            foreach (var summaryFile in summaryFiles)
+            {
+                try
+                {
+                    var text = File.ReadAllText(summaryFile);
+                    var info = ParseUnibetSummary(text);
+                    if (info != null)
+                    {
+                        map[info.Value.GameId] = info.Value.Info;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug($"Failed to parse Unibet summary file {summaryFile}: {ex.Message}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning($"Unable to load Unibet summaries from {importedFilePath}: {ex.Message}");
+        }
+
+        return map;
+    }
+
+    private (string GameId, WinamaxSummaryInfo Info)? ParseUnibetSummary(string text)
+    {
+        var idMatch = UnibetSummaryTournamentIdRegex.Match(text);
+        if (!idMatch.Success) return null;
+
+        var gameId = idMatch.Groups["id"].Value.Trim();
+        if (string.IsNullOrWhiteSpace(gameId)) return null;
+
+        double prizePool = 0;
+        var prizeMatch = UnibetSummaryPrizePoolRegex.Match(text);
+        if (prizeMatch.Success) prizePool = double.Parse(prizeMatch.Groups["value"].Value, CultureInfo.InvariantCulture);
+
+        double buyIn = 0;
+        var buyInMatch = UnibetSummaryBuyInRegex.Match(text);
+        if (buyInMatch.Success)
+        {
+            var buy = double.Parse(buyInMatch.Groups["buy"].Value, CultureInfo.InvariantCulture);
+            var fee = double.Parse(buyInMatch.Groups["fee"].Value, CultureInfo.InvariantCulture);
+            buyIn = buy > 0 ? buy : 0;
+        }
+
+        int position = 0;
+        var positionMatch = UnibetSummaryPositionRegex.Match(text);
+        if (positionMatch.Success && int.TryParse(positionMatch.Groups["pos"].Value, out var parsedPos))
+        {
+            position = parsedPos;
+        }
+
+        return (gameId, new WinamaxSummaryInfo
+        {
+            Position = position,
+            PrizePool = prizePool,
+            BuyIn = buyIn
+        });
     }
 }
