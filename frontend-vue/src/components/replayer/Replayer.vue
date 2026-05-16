@@ -58,6 +58,20 @@ const currentActionLabel = computed(() => {
   return 'Pret a rejouer la main'
 })
 
+const actionTypeColor = (type) => {
+  const colors = {
+    'Fold': 'text-red-400',
+    'Check': 'text-gray-400',
+    'Call': 'text-blue-400',
+    'Bet': 'text-blue-400',
+    'Raise': 'text-green-400',
+    'AllIn': 'text-orange-400',
+    'PostSB': 'text-purple-400',
+    'PostBB': 'text-purple-400'
+  }
+  return colors[type] || 'text-gray-400'
+}
+
 const togglePlay = () => {
   if (store.isPlaying) store.stop()
   else store.play()
@@ -160,7 +174,9 @@ onUnmounted(() => {
             @click="store.jumpTo(index + 1)"
           >
             <span class="action-street">{{ action.street || '-' }}</span>
-            <span class="action-description">{{ action.description }}</span>
+            <span class="action-description" :class="actionTypeColor(action.type)">
+              {{ action.description }}
+            </span>
             <span class="action-order">#{{ action.order }}</span>
           </button>
         </div>
@@ -523,6 +539,13 @@ onUnmounted(() => {
   font-size: 12px;
   font-weight: 800;
 }
+
+.action-description.text-red-400 { color: #f87171; }
+.action-description.text-gray-400 { color: #9ca3af; }
+.action-description.text-blue-400 { color: #60a5fa; }
+.action-description.text-green-400 { color: #4ade80; }
+.action-description.text-orange-400 { color: #fb923c; }
+.action-description.text-purple-400 { color: #c084fc; }
 
 .control-panel {
   display: grid;
