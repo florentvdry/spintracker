@@ -23,11 +23,12 @@ export const useReplayerStore = defineStore('replayer', {
     board: [],
     street: 'Preflop',
     actionLog: [],
-    viewMode: 'chips' // 'chips' or 'bb'
+    viewMode: 'chips', // 'chips' or 'bb'
+    showFoldedPlayers: true
   }),
 
   persist: {
-    paths: ['viewMode']
+    paths: ['viewMode', 'showFoldedPlayers']
   },
 
   getters: {
