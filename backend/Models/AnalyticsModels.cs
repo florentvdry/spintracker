@@ -1,5 +1,15 @@
 namespace SpinTrackerBackend;
 
+public class MultiplierStats
+{
+    public int Multiplier { get; set; }
+    public int TotalCount { get; set; }
+    public double PercentageOfTotal { get; set; }
+    public int WinCount { get; set; }
+    public int LossCount { get; set; }
+    public double WinPercentage { get; set; }
+}
+
 public class VoluntaryFoldException : Exception { }
 
 public class HandAnalytics

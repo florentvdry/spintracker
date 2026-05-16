@@ -2,178 +2,291 @@
 import { computed } from 'vue'
 import { useReplayerStore } from '@/stores/replayerStore'
 import Card from './Card.vue'
-import Chips from './Chips.vue'
 
 const props = defineProps({
-  player: Object,
-  position: String // seat-0, seat-1, etc.
+  player: { type: Object, required: true },
+  seat: { type: Object, required: true }
 })
 
 const store = useReplayerStore()
 
 const bbValue = computed(() => {
   if (!store.handData?.blinds) return 0
-  const parts = store.handData.blinds.split('/')
-  return parts.length === 2 ? parseFloat(parts[1]) : 0
+  const parts = String(store.handData.blinds).split('/')
+  return parts.length === 2 ? Number(parts[1]) || 0 : 0
 })
 
-const formatValue = (val) => {
+const unitLabel = computed(() => (store.viewMode === 'bb' ? 'bb' : 'chips'))
+
+const formatValue = (value) => {
+  const val = Number(value || 0)
   if (store.viewMode === 'bb' && bbValue.value > 0) {
     const bb = val / bbValue.value
-    return bb < 0.1 ? bb.toFixed(2) : bb.toFixed(1)
+    return bb < 10 ? bb.toFixed(1) : Math.round(bb).toString()
   }
-  return val.toFixed(1)
+  return Math.round(val).toLocaleString()
 }
-
-const unitLabel = computed(() => store.viewMode === 'bb' ? 'bb' : 'chips')
 
 const cards = computed(() => {
   if (!props.player.cards) return []
-  return props.player.cards.match(/.{1,2}/g) || []
+  return String(props.player.cards).match(/.{1,2}/g) || []
 })
 
-const showCards = computed(() => {
-  return props.player.isHero || props.player.showCards
+const showCards = computed(() => props.player.isHero || props.player.showCards)
+
+const currentActionText = computed(() => {
+  const action = store.currentAction
+  if (!action || action.playerName !== props.player.name || !store.isRealAction(action)) return null
+  return action.description
 })
 
-const betPositionClass = computed(() => {
-  // Logic to move chips towards the inner part of the table
-  const pos = props.position
-  if (pos === 'seat-0' || pos === 'seat-6-0') return 'bottom-[115%] left-1/2 -translate-x-1/2' // Bottom player -> chips above
-  if (pos === 'seat-6-3') return 'top-[115%] left-1/2 -translate-x-1/2' // Top player -> chips below
-  
-  if (pos.includes('seat-1') || pos.includes('seat-6-1') || pos.includes('seat-6-2')) {
-    return 'left-[105%] top-1/2 -translate-y-1/2' // Left side -> chips to the right
-  }
-  if (pos.includes('seat-2') || pos.includes('seat-6-4') || pos.includes('seat-6-5')) {
-    return 'right-[105%] top-1/2 -translate-y-1/2' // Right side -> chips to the left
-  }
-  
-  return 'top-[105%] left-1/2 -translate-x-1/2'
-})
-
-const betDx = computed(() => {
-  const pos = props.position
-  if (pos.includes('seat-1') || pos.includes('seat-6-1') || pos.includes('seat-6-2')) return '-40px'
-  if (pos.includes('seat-2') || pos.includes('seat-6-4') || pos.includes('seat-6-5')) return '40px'
-  return '0px'
-})
-
-const betDy = computed(() => {
-  const pos = props.position
-  if (pos === 'seat-0' || pos === 'seat-6-0') return '40px'
-  if (pos === 'seat-6-3') return '-40px'
-  return '0px'
+const positionLabel = computed(() => {
+  const pos = props.player.position || ''
+  if (pos.includes('BTN')) return 'BTN'
+  if (pos.includes('SB')) return 'SB'
+  if (pos.includes('BB')) return 'BB'
+  return pos || '-'
 })
 </script>
 
 <template>
-  <div 
-    class="absolute flex flex-col items-center transition-all duration-500"
+  <div
+    class="player-seat"
     :class="[
-      position,
-      player.isFolded ? 'opacity-30 scale-90 grayscale-[0.5]' : 'opacity-100',
-      player.isActive ? 'z-30' : 'z-20'
+      player.isFolded ? 'is-folded' : '',
+      player.isActive ? 'is-active' : ''
     ]"
+    :style="{ left: seat.x, top: seat.y, transform: seat.transform }"
   >
-    <!-- Card Hand (H2N style: overlapping cards) -->
-    <div v-if="!player.isFolded" class="flex -space-x-[min(2cqw,12px)] mb-[min(0.5cqw,4px)] drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]">
+    <div v-if="currentActionText" class="action-bubble" :class="seat.actionClass">
+      {{ currentActionText }}
+    </div>
+
+    <div class="cards-row" :class="{ invisible: player.isFolded }">
       <template v-if="showCards">
-        <Card v-for="(card, i) in cards" :key="card" :card="card" size="adaptive-sm" class="transition-transform hover:-translate-y-1" :style="{ zIndex: i }" />
+        <Card v-for="(card, index) in cards" :key="`${player.name}-${card}-${index}`" :card="card" size="seat" />
       </template>
-      <template v-else-if="!player.isFolded">
-        <Card :hidden="true" size="adaptive-sm" />
-        <Card :hidden="true" size="adaptive-sm" />
+      <template v-else>
+        <Card :hidden="true" size="seat" />
+        <Card :hidden="true" size="seat" />
       </template>
     </div>
 
-    <!-- Player Info Box (H2N style: clean, dark, compact) -->
-    <div 
-      class="relative group"
-    >
-      <!-- Action Bubble -->
-      <div 
-        v-if="store.currentAction?.playerName === player.name && store.isRealAction(store.currentAction)"
-        class="absolute -top-[135%] left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-300 pointer-events-none"
-      >
-        <div class="bg-blue-600/95 text-white text-[min(2.5cqw,0.85rem)] font-bold px-[min(2.5cqw,14px)] py-[min(0.8cqw,6px)] rounded-full whitespace-nowrap shadow-[0_8px_20px_rgba(37,99,235,0.6)] border border-blue-400/40 tracking-wide">
-          {{ store.currentAction.description }}
-        </div>
+    <div class="seat-panel">
+      <div class="seat-topline">
+        <span class="position-chip">{{ positionLabel }}</span>
+        <span v-if="player.position?.includes('BTN')" class="dealer-button">D</span>
       </div>
 
-      <!-- Active Glow -->
-      <div v-if="player.isActive" class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg blur opacity-40 animate-pulse"></div>
-      
-      <div 
-        class="relative bg-[#111827] border-[min(0.3cqw,2px)] rounded-lg px-[min(1.5cqw,16px)] py-[min(0.8cqw,10px)] min-w-[min(16cqw,140px)] shadow-2xl transition-all"
-        :class="player.isActive ? 'border-blue-500/50 bg-[#1e293b]' : 'border-white/5'"
-      >
-        <div class="flex flex-col items-center">
-          <div class="text-[min(2.4cqw,0.85rem)] font-black truncate text-gray-100 uppercase tracking-tight w-full text-center">{{ player.name }}</div>
-          
-          <div class="flex items-center gap-1.5 mt-0.5">
-            <div class="text-[min(3.2cqw,1.1rem)] font-mono font-black text-white leading-none">
-              {{ formatValue(player.currentStack) }}
-            </div>
-            <div class="text-[min(1.8cqw,0.65rem)] text-gray-500 font-bold uppercase">{{ unitLabel }}</div>
-          </div>
-        </div>
-        
-        <!-- Dealer Button -->
-        <div 
-          v-if="player.position.includes('BTN')"
-          class="absolute -top-[min(1.5cqw,10px)] -right-[min(1.5cqw,10px)] w-[min(5cqw,34px)] h-[min(5cqw,34px)] bg-white rounded-full flex items-center justify-center shadow-[0_4px_10px_rgba(0,0,0,0.5)] ring-2 ring-black"
-        >
-          <span class="text-black font-black text-[min(2.5cqw,14px)]">D</span>
-        </div>
-      </div>
+      <div class="player-name" :title="player.name">{{ player.name }}</div>
 
-      <!-- Bet Amount (Floating Bubble) - Relative to Player Info Box -->
-      <div 
-        v-if="player.bet > 0"
-        class="absolute z-50 pointer-events-none"
-        :class="betPositionClass"
-      >
-        <transition name="bet" appear>
-          <div :key="player.bet" class="flex flex-col items-center gap-1.5" :style="{'--bet-dx': betDx, '--bet-dy': betDy}">
-            <Chips :amount="player.bet" :bb-value="bbValue" size="sm" />
-            <div class="bg-black/90 backdrop-blur-md border border-white/20 text-white px-[min(2.5cqw,16px)] py-[min(0.6cqw,6px)] rounded-full text-[min(3cqw,1rem)] font-mono font-black shadow-[0_10px_30px_rgba(0,0,0,0.8)] whitespace-nowrap">
-              <span class="text-yellow-400 mr-1.5">●</span> {{ formatValue(player.bet) }}
-            </div>
-          </div>
-        </transition>
+      <div class="stack-line">
+        <span class="stack-value">{{ formatValue(player.currentStack) }}</span>
+        <span class="stack-unit">{{ unitLabel }}</span>
       </div>
+    </div>
+
+    <div v-if="player.bet > 0" class="bet-pill" :class="seat.betClass">
+      <span class="bet-dot"></span>
+      <span>{{ formatValue(player.bet) }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Position utility classes - Fine tuned for oval table */
-.seat-0 { bottom: -5%; left: 50%; transform: translateX(-50%); } 
-.seat-1 { top: 15%; left: 0%; transform: translateX(-20%); } 
-.seat-2 { top: 15%; right: 0%; transform: translateX(20%); } 
+.player-seat {
+  --seat-width: clamp(112px, 17cqw, 176px);
+  position: absolute;
+  width: var(--seat-width);
+  display: grid;
+  justify-items: center;
+  gap: clamp(3px, 0.8cqw, 8px);
+  z-index: 10;
+  transition: opacity 180ms ease, filter 180ms ease;
+}
 
-/* 6-max positions */
-.seat-6-0 { bottom: -5%; left: 50%; transform: translateX(-50%); }
-.seat-6-1 { bottom: 25%; left: -2%; }
-.seat-6-2 { top: 25%; left: -2%; }
-.seat-6-3 { top: -8%; left: 50%; transform: translateX(-50%); }
-.seat-6-4 { top: 25%; right: -2%; }
-.seat-6-5 { bottom: 25%; right: -2%; }
+.player-seat.is-folded {
+  opacity: 0.42;
+  filter: grayscale(0.7);
+}
 
-/* Bet Chip CSS Animation */
-.bet-enter-active {
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+.player-seat.is-active .seat-panel {
+  border-color: rgba(96, 165, 250, 0.85);
+  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.25), 0 16px 40px rgba(37, 99, 235, 0.2);
 }
-.bet-leave-active {
-  transition: all 0.2s ease-in;
+
+.cards-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: -2px;
 }
-.bet-enter-from {
-  opacity: 0;
-  transform: translate(var(--bet-dx), var(--bet-dy)) scale(0.3);
+
+.cards-row > :deep(*) + :deep(*) {
+  margin-left: clamp(-12px, -1.3cqw, -5px);
 }
-.bet-leave-to {
-  opacity: 0;
-  transform: scale(0.5);
+
+.seat-panel {
+  width: 100%;
+  min-height: clamp(58px, 7.5cqw, 76px);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(9, 13, 24, 0.98));
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.38);
+  padding: clamp(7px, 1.1cqw, 12px);
+  overflow: hidden;
+}
+
+.seat-topline {
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.position-chip,
+.dealer-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  min-width: 24px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.position-chip {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(96, 165, 250, 0.18);
+}
+
+.dealer-button {
+  color: #111827;
+  background: #f8fafc;
+}
+
+.player-name {
+  width: 100%;
+  color: #f8fafc;
+  font-size: clamp(12px, 1.55cqw, 15px);
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stack-line {
+  margin-top: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  min-width: 0;
+}
+
+.stack-value {
+  min-width: 0;
+  color: #e5e7eb;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: clamp(13px, 1.7cqw, 17px);
+  font-weight: 900;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stack-unit {
+  flex: none;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.action-bubble {
+  position: absolute;
+  z-index: 20;
+  max-width: min(240px, 52vw);
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(125, 211, 252, 0.35);
+  background: rgba(37, 99, 235, 0.96);
+  color: white;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.28);
+  font-size: clamp(11px, 1.4cqw, 13px);
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  pointer-events: none;
+}
+
+.action-top {
+  bottom: calc(100% + 8px);
+}
+
+.action-bottom {
+  top: calc(100% + 8px);
+}
+
+.bet-pill {
+  position: absolute;
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 118px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(250, 204, 21, 0.28);
+  background: rgba(2, 6, 23, 0.9);
+  color: #f8fafc;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.32);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: clamp(11px, 1.35cqw, 13px);
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bet-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #facc15;
+  flex: none;
+}
+
+.bet-top {
+  bottom: calc(100% - 2px);
+}
+
+.bet-bottom {
+  top: calc(100% - 2px);
+}
+
+.bet-left {
+  right: calc(100% - 12px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.bet-right {
+  left: calc(100% - 12px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 680px) {
+  .player-seat {
+    --seat-width: clamp(96px, 26cqw, 132px);
+  }
+
+  .action-bubble {
+    max-width: 180px;
+  }
 }
 </style>

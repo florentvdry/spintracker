@@ -130,4 +130,45 @@ public class PlayerRepository
         }
         return false;
     }
+
+    public async Task<List<object>> GetOpponentsForHeroAsync(string heroName, int? limit = null)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = $@"
+            SELECT 
+                p.id,
+                v.player_name as name,
+                COUNT(DISTINCT v.hand_id) as hands_vs_hero,
+                COALESCE(p.total_profit, 0) as total_profit,
+                COALESCE(p.is_reg, 0) as is_reg,
+                COALESCE(p.is_reg_forced, 0) as is_reg_forced
+            FROM player_hands v
+            JOIN player_hands hhero ON hhero.hand_id = v.hand_id AND hhero.player_name = @heroName
+            LEFT JOIN players p ON p.name = v.player_name
+            WHERE v.player_name != @heroName
+            GROUP BY v.player_name, p.id, p.total_profit, p.is_reg, p.is_reg_forced
+            ORDER BY hands_vs_hero DESC
+            {(limit.HasValue ? $"LIMIT {limit.Value}" : "")}";
+        cmd.Parameters.AddWithValue("@heroName", heroName);
+
+        var players = new List<object>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            players.Add(new
+            {
+                id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                name = reader.GetString(1),
+                total_hands = reader.GetInt32(2),
+                total_profit = reader.GetDouble(3),
+                is_reg = reader.GetInt32(4) == 1,
+                is_reg_forced = reader.GetInt32(5) == 1
+            });
+        }
+
+        return players;
+    }
 }

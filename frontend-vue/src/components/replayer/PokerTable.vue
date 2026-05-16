@@ -3,192 +3,313 @@ import { computed } from 'vue'
 import { useReplayerStore } from '@/stores/replayerStore'
 import PlayerSeat from './PlayerSeat.vue'
 import Card from './Card.vue'
-import Chips from './Chips.vue'
 import logoUrl from '@/assets/logo.png'
 
 const store = useReplayerStore()
 
-// Seat mapping: find Hero and put them at the bottom (seat-0)
 const heroIndex = computed(() => {
-  if (!store.players) return 0
-  const idx = store.players.findIndex(p => p.isHero)
-  return idx === -1 ? 0 : idx
+  const index = store.players.findIndex((player) => player.isHero)
+  return index === -1 ? 0 : index
 })
 
 const bbValue = computed(() => {
   if (!store.handData?.blinds) return 0
-  const parts = store.handData.blinds.split('/')
-  return parts.length === 2 ? parseFloat(parts[1]) : 0
+  const parts = String(store.handData.blinds).split('/')
+  return parts.length === 2 ? Number(parts[1]) || 0 : 0
 })
 
-const formatValue = (val) => {
+const unitLabel = computed(() => (store.viewMode === 'bb' ? 'bb' : 'chips'))
+
+const formatValue = (value) => {
+  const val = Number(value || 0)
   if (store.viewMode === 'bb' && bbValue.value > 0) {
     const bb = val / bbValue.value
-    return bb < 0.1 ? bb.toFixed(2) : bb.toFixed(1)
+    return bb < 10 ? bb.toFixed(1) : Math.round(bb).toString()
   }
-  return val.toFixed(1)
+  return Math.round(val).toLocaleString()
 }
 
-const unitLabel = computed(() => store.viewMode === 'bb' ? 'bb' : 'chips')
+const seatLayouts = {
+  2: [
+    { x: '50%', y: '82%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-top' },
+    { x: '50%', y: '18%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-bottom' }
+  ],
+  3: [
+    { x: '50%', y: '84%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-top' },
+    { x: '18%', y: '26%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-right' },
+    { x: '82%', y: '26%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-left' }
+  ],
+  6: [
+    { x: '50%', y: '84%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-top' },
+    { x: '16%', y: '66%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-right' },
+    { x: '16%', y: '28%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-right' },
+    { x: '50%', y: '16%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-bottom' },
+    { x: '84%', y: '28%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-left' },
+    { x: '84%', y: '66%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-left' }
+  ]
+}
 
-const getSeatPosition = (index) => {
+const seatEntries = computed(() => {
   const count = store.players.length
-  // Rotate seats so hero is at bottom (seat 0)
-  const relativeIndex = (index - heroIndex.value + count) % count
-  
-  if (count <= 3) {
-    return `seat-${relativeIndex}`
-  } else {
-    return `seat-6-${relativeIndex}`
-  }
-}
+  const layout = count <= 2 ? seatLayouts[2] : count <= 3 ? seatLayouts[3] : seatLayouts[6]
 
-const getWinnerPositionClass = (playerName) => {
-  if (!playerName) return 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-  const idx = store.players.findIndex(p => p.name === playerName)
-  if (idx === -1) return 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-  
-  const pos = getSeatPosition(idx)
-  if (pos === 'seat-0' || pos === 'seat-6-0') return 'top-[90%] left-[50%] -translate-x-1/2 -translate-y-1/2'
-  if (pos === 'seat-6-3') return 'top-[0%] left-[50%] -translate-x-1/2 -translate-y-1/2'
-  if (pos === 'seat-1') return 'top-[20%] left-[5%] -translate-x-1/2 -translate-y-1/2'
-  if (pos === 'seat-2') return 'top-[20%] left-[95%] -translate-x-1/2 -translate-y-1/2'
-  if (pos === 'seat-6-1') return 'top-[75%] left-[5%] -translate-x-1/2 -translate-y-1/2'
-  if (pos === 'seat-6-2') return 'top-[25%] left-[5%] -translate-x-1/2 -translate-y-1/2'
-  if (pos === 'seat-6-4') return 'top-[25%] left-[95%] -translate-x-1/2 -translate-y-1/2'
-  if (pos === 'seat-6-5') return 'top-[75%] left-[95%] -translate-x-1/2 -translate-y-1/2'
-  
-  return 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-}
+  return store.players.map((player, index) => {
+    const relativeIndex = (index - heroIndex.value + count) % count
+    return {
+      player,
+      seat: layout[relativeIndex] || layout[0]
+    }
+  })
+})
+
+const missingBoardCards = computed(() => Math.max(0, 5 - store.board.length))
+
+const winnerSeat = computed(() => {
+  const winnerName = store.currentAction?.playerName
+  if (!winnerName) return { x: '50%', y: '50%', transform: 'translate(-50%, -50%)' }
+  return seatEntries.value.find((entry) => entry.player.name === winnerName)?.seat || { x: '50%', y: '50%', transform: 'translate(-50%, -50%)' }
+})
 </script>
 
 <template>
-  <div class="replayer-container w-full h-full flex items-center justify-center p-[4%]">
-    <div class="poker-table-wrapper relative w-full max-w-[1200px] aspect-[21/9]">
-      
-      <!-- Ambient Lighting Glow -->
-      <div class="absolute inset-0 bg-blue-500/10 blur-[100px] rounded-full opacity-50"></div>
+  <div class="table-wrap">
+    <div class="table-stage">
+      <div class="ambient-glow"></div>
 
-      <!-- Table Structure -->
-      <div class="absolute inset-0 flex items-center justify-center">
-        <!-- The Rail (Leather-like texture) -->
-        <div class="poker-table w-full h-full bg-[#0a0a0a] rounded-[500px] border-[min(1.8vw,16px)] border-[#16191d] shadow-[0_40px_100px_-10px_rgba(0,0,0,0.8)] relative overflow-hidden ring-1 ring-white/5">
-          
-          <!-- Inner felt with deep texture -->
-          <div class="absolute inset-[min(0.4vw,6px)] bg-[#07251a] rounded-[500px] border-[min(0.5vw,4px)] border-black/40 overflow-hidden shadow-[inset_0_20px_60px_rgba(0,0,0,0.6)]">
-            
-            <!-- Felt Gradient -->
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_#1b4332_0%,_#07251a_70%)] opacity-80"></div>
-            
-            <!-- Felt Noise Texture Overlay -->
-            <div class="absolute inset-0 opacity-[0.15] mix-blend-overlay pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]"></div>
-            
-            <!-- Table Branding (Logo) -->
-            <div class="absolute inset-0 flex items-center justify-center opacity-[0.12] pointer-events-none select-none">
-              <div class="flex flex-col items-center">
-                <img :src="logoUrl" class="w-[min(20vw,240px)] h-auto mb-2" alt="SpinTracker" />
-              </div>
+      <div class="table-shell">
+        <div class="table-rail">
+          <div class="table-felt">
+            <div class="felt-gradient"></div>
+            <div class="betting-line"></div>
+
+            <div class="table-brand">
+              <img :src="logoUrl" class="brand-logo" alt="SpinTracker" />
             </div>
 
-            <!-- Betting Line (H2N style: thin, elegant) -->
-            <div class="absolute inset-[18%] border border-white/5 rounded-[500px]"></div>
-          </div>
-          
-          <!-- Board Cards (Centered on felt) -->
-          <div class="absolute inset-0 flex items-center justify-center gap-[min(0.6vw,10px)] z-10 drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)]">
-            <Card v-for="(card, i) in store.board" :key="i + card" :card="card" size="adaptive" class="transition-all" />
-            <!-- Placeholders for missing cards - only shown if board has at least one card -->
-            <template v-if="store.board.length > 0">
-              <div v-for="i in (5 - store.board.length)" :key="'empty-' + i" class="adaptive-card-placeholder border border-white/5 bg-black/40 rounded-[min(0.5cqw,8px)] backdrop-blur-sm"></div>
-            </template>
-          </div>
-
-          <!-- Pot Display (Floating Capsule) -->
-          <div v-if="store.pot > 0" class="absolute top-[32%] left-1/2 -translate-x-1/2 z-20 flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-700">
-            <Chips :amount="store.pot" :bb-value="bbValue" size="lg" />
-            <div class="bg-black/40 backdrop-blur-xl px-[min(2.5vw,20px)] py-[min(1vw,8px)] rounded-full border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center gap-3">
-              <span class="text-blue-400 text-[min(1.8vw,0.7rem)] font-black uppercase tracking-[0.2em] opacity-80">Pot</span>
-              <span class="text-white font-mono font-black text-[min(4vw,1.6rem)] leading-none drop-shadow-lg">
-                {{ formatValue(store.pot) }}
-              </span>
-              <span class="text-gray-500 text-[min(1.5vw,0.6rem)] font-bold uppercase tracking-widest">{{ unitLabel }}</span>
+            <div class="board-zone">
+              <Card v-for="(card, index) in store.board" :key="`${card}-${index}`" :card="card" size="board" />
+              <template v-if="store.board.length > 0">
+                <div v-for="index in missingBoardCards" :key="`placeholder-${index}`" class="board-placeholder"></div>
+              </template>
             </div>
-          </div>
 
-          <!-- Winner Chips Animation -->
-          <div v-if="store.currentAction?.type === 'CollectPot'" class="absolute inset-0 pointer-events-none z-30">
-            <transition name="pot-fly" appear>
-              <div 
-                :key="store.currentAction.order"
-                class="absolute flex flex-col items-center justify-center drop-shadow-2xl"
-                :class="getWinnerPositionClass(store.currentAction.playerName)"
-              >
-                <div class="bg-green-500/20 text-green-400 font-black px-4 py-1 rounded-full border border-green-500/50 mb-2 shadow-[0_0_20px_rgba(34,197,94,0.4)]">
-                  +{{ formatValue(store.currentAction.amount) }}
-                </div>
-                <Chips :amount="store.currentAction.amount" :bb-value="bbValue" size="lg" />
-              </div>
-            </transition>
+            <div v-if="store.pot > 0" class="pot-panel">
+              <span class="pot-label">Pot</span>
+              <span class="pot-value">{{ formatValue(store.pot) }}</span>
+              <span class="pot-unit">{{ unitLabel }}</span>
+            </div>
+
+            <div v-if="store.currentAction?.street" class="street-pill">
+              {{ store.currentAction.street }}
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Players -->
-      <PlayerSeat 
-        v-for="(player, index) in store.players" 
-        :key="player.name" 
-        :player="player"
-        :position="getSeatPosition(index)"
+      <PlayerSeat
+        v-for="entry in seatEntries"
+        :key="entry.player.name"
+        :player="entry.player"
+        :seat="entry.seat"
       />
+
+      <transition name="pot-fly" appear>
+        <div
+          v-if="store.currentAction?.type === 'CollectPot'"
+          :key="store.currentAction.order"
+          class="winner-chip"
+          :style="{ left: winnerSeat.x, top: winnerSeat.y, transform: winnerSeat.transform }"
+        >
+          +{{ formatValue(store.currentAction.amount) }}
+        </div>
+      </transition>
     </div>
   </div>
 </template>
 
 <style scoped>
-.replayer-container {
-  container-type: size;
+.table-wrap {
+  width: min(100%, 1280px);
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(10px, 2vw, 24px);
 }
 
-.adaptive-card-placeholder {
-  width: min(9cqw, 64px);
-  height: min(12.5cqw, 88px);
+.table-stage {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  max-width: 1180px;
+  aspect-ratio: 16 / 9;
+  min-height: 430px;
 }
 
-.poker-table-wrapper {
-  max-height: 100%;
-  margin: auto;
+.ambient-glow {
+  position: absolute;
+  inset: 10%;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.16);
+  filter: blur(80px);
 }
 
-/* Aspect ratio maintainer for the oval */
-@media (max-aspect-ratio: 21/9) {
-  .poker-table-wrapper {
-    width: 100%;
-    height: auto;
-  }
+.table-shell {
+  position: absolute;
+  inset: 15% 9% 19%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-@media (min-aspect-ratio: 21/9) {
-  .poker-table-wrapper {
-    height: 100%;
-    width: auto;
-  }
+.table-rail {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: clamp(10px, 1.8cqw, 18px) solid #141820;
+  border-radius: 999px;
+  background: #080b10;
+  box-shadow: 0 34px 80px rgba(0, 0, 0, 0.56), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
-/* Winner Pot Fly Animation */
-.pot-fly-enter-active {
-  transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+.table-felt {
+  position: absolute;
+  inset: clamp(4px, 0.7cqw, 8px);
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.55);
+  background: #08261d;
+  box-shadow: inset 0 22px 55px rgba(0, 0, 0, 0.5);
 }
+
+.felt-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 42%, rgba(43, 100, 74, 0.95) 0%, rgba(9, 55, 41, 0.92) 48%, rgba(3, 24, 19, 0.95) 100%);
+}
+
+.betting-line {
+  position: absolute;
+  inset: 18%;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 999px;
+}
+
+.table-brand {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.brand-logo {
+  width: clamp(120px, 20cqw, 240px);
+}
+
+.board-zone {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(5px, 0.8cqw, 10px);
+  filter: drop-shadow(0 15px 28px rgba(0, 0, 0, 0.48));
+}
+
+.board-placeholder {
+  width: clamp(36px, 6.4cqw, 66px);
+  height: clamp(50px, 8.8cqw, 92px);
+  border-radius: clamp(5px, 0.8cqw, 9px);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(2, 6, 23, 0.22);
+}
+
+.pot-panel {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: 27%;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(2, 6, 23, 0.68);
+  padding: 7px 13px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.pot-label,
+.pot-unit,
+.street-pill {
+  color: #94a3b8;
+  font-size: clamp(9px, 1.15cqw, 11px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.pot-value {
+  color: #f8fafc;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: clamp(17px, 2.4cqw, 28px);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.street-pill {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 19%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 5px 10px;
+}
+
+.winner-chip {
+  position: absolute;
+  z-index: 30;
+  border-radius: 999px;
+  border: 1px solid rgba(74, 222, 128, 0.48);
+  background: rgba(22, 163, 74, 0.95);
+  color: white;
+  padding: 8px 12px;
+  box-shadow: 0 18px 36px rgba(22, 163, 74, 0.28);
+  font-size: clamp(12px, 1.6cqw, 15px);
+  font-weight: 950;
+}
+
+.pot-fly-enter-active,
 .pot-fly-leave-active {
-  transition: all 0.3s ease-in;
+  transition: opacity 240ms ease, transform 240ms ease;
 }
-.pot-fly-enter-from {
-  top: 32% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) scale(1.5) !important;
-  opacity: 0;
-}
+
+.pot-fly-enter-from,
 .pot-fly-leave-to {
   opacity: 0;
-  transform: scale(0.5);
+}
+
+@media (max-width: 760px) {
+  .table-stage {
+    aspect-ratio: 10 / 13;
+    min-height: 600px;
+  }
+
+  .table-shell {
+    inset: 24% 7% 25%;
+  }
+
+  .pot-panel {
+    top: 31%;
+  }
 }
 </style>

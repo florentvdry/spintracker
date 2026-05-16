@@ -32,6 +32,16 @@ const routes = [
     component: () => import('@/views/Players/index.vue')
   },
   {
+    path: '/stats',
+    name: 'Stats',
+    component: () => import('@/views/Stats/index.vue')
+  },
+  {
+    path: '/multipliers',
+    name: 'Multipliers',
+    component: () => import('@/views/Multipliers/index.vue')
+  },
+  {
     path: '/settings',
     name: 'Settings',
     component: () => import('@/views/Settings/index.vue')

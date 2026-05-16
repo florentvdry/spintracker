@@ -668,8 +668,22 @@ ipcMain.handle('get-winrate-chart-data', async (event, options = {}) => {
   return callBackendAPI('/db/winrate-chart', options);
 });
 
+ipcMain.handle('get-multiplier-stats', async (event, options = {}) => {
+  return callBackendAPI('/db/multiplier-stats', options);
+});
+
 ipcMain.handle('get-buy-ins', async (event) => {
   return callBackendAPI('/db/buyins', {}, 'GET');
+});
+
+ipcMain.handle('get-detailed-stats', async (event, heroName, dateFrom, dateTo, buyIn, statsScope, opponentName) => {
+  let query = heroName ? `?heroName=${encodeURIComponent(heroName)}` : '';
+  if (dateFrom) query += (query ? '&' : '?') + `dateFrom=${encodeURIComponent(dateFrom)}`;
+  if (dateTo) query += (query ? '&' : '?') + `dateTo=${encodeURIComponent(dateTo)}`;
+  if (buyIn) query += (query ? '&' : '?') + `buyIn=${encodeURIComponent(buyIn)}`;
+  if (statsScope) query += (query ? '&' : '?') + `statsScope=${encodeURIComponent(statsScope)}`;
+  if (opponentName) query += (query ? '&' : '?') + `opponentName=${encodeURIComponent(opponentName)}`;
+  return callBackendAPI(`/db/detailed-stats${query}`, {}, 'GET');
 });
 
 ipcMain.handle('get-range-heatmap', async (event, filters) => {
@@ -690,6 +704,11 @@ ipcMain.handle('get-range-breakdown', async (event, filters) => {
 
 ipcMain.handle('get-players', async (event, options = {}) => {
   return callBackendAPI('/db/players', options);
+});
+
+ipcMain.handle('get-opponents', async (event, heroName, limit = 2000) => {
+  const query = `?heroName=${encodeURIComponent(heroName || '')}&limit=${encodeURIComponent(limit)}`;
+  return callBackendAPI(`/db/opponents${query}`, {}, 'GET');
 });
 
 ipcMain.handle('update-player-reg-status', async (event, playerId, isReg) => {

@@ -49,4 +49,35 @@ public class StatsController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
+
+    [HttpGet("db/multiplier-stats")]
+    [HttpPost("db/multiplier-stats")]
+    public async Task<IActionResult> GetMultiplierStats([FromBody] StatsFilters? postOptions)
+    {
+        try
+        {
+            StatsFilters options;
+            if (Request.Method == "POST" && postOptions != null)
+            {
+                options = postOptions;
+            }
+            else
+            {
+                options = new StatsFilters
+                {
+                    HeroName = Request.Query["heroName"],
+                    DateFrom = Request.Query["dateFrom"],
+                    DateTo = Request.Query["dateTo"]
+                };
+            }
+
+            var data = await _statsRepo.GetMultiplierStatsAsync(options);
+            return Ok(new { success = true, data });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Multiplier stats error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
 }

@@ -60,6 +60,26 @@ public class PlayerController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
+
+    [HttpGet("db/opponents")]
+    public async Task<IActionResult> GetOpponents([FromQuery] string? heroName, [FromQuery] int? limit)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(heroName))
+            {
+                return Ok(new { success = true, data = Array.Empty<object>() });
+            }
+
+            var playersData = await _playerRepo.GetOpponentsForHeroAsync(heroName, limit);
+            return Ok(new { success = true, data = playersData });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Opponents overview error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
 }
 
 public class UpdateRegStatusRequest

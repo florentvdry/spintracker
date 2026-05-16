@@ -214,6 +214,33 @@ public class DatabaseController : ControllerBase
         }
     }
 
+    [HttpGet("db/detailed-stats")]
+    public async Task<IActionResult> GetDetailedStats(
+        [FromQuery] string? heroName,
+        [FromQuery] string? dateFrom,
+        [FromQuery] string? dateTo,
+        [FromQuery] double? buyIn,
+        [FromQuery] string? statsScope,
+        [FromQuery] string? opponentName)
+    {
+        try
+        {
+            var scope = (statsScope ?? "population").Trim().ToLowerInvariant();
+            if (scope == "player" && string.IsNullOrWhiteSpace(opponentName))
+            {
+                return Ok(new { success = true, data = (object?)null });
+            }
+
+            var stats = await _statsRepo.GetDetailedStatsAsync(heroName, dateFrom, dateTo, buyIn, statsScope, opponentName);
+            return Ok(new { success = true, data = stats });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Detailed stats error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
     [HttpGet("debug/dashboard-raw")]
     public async Task<IActionResult> GetDashboardRaw()
     {

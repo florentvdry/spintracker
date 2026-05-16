@@ -31,13 +31,8 @@ public static class ServiceCollectionExtensions
             return candidate;
         }
 
-        if (!Directory.Exists(directory))
-        {
-            logger.LogWarning("Active database path does not exist ({Candidate}). Falling back to {FallbackDbPath}", candidate, fallbackDbPath);
-            return fallbackDbPath;
-        }
-
-        return candidate;
+        logger.LogWarning("Active database path does not exist ({Candidate}). Falling back to {FallbackDbPath}", candidate, fallbackDbPath);
+        return fallbackDbPath;
     }
 
     public static IServiceCollection AddSpinTrackerServices(this IServiceCollection services, string? providedDbPath)
@@ -47,11 +42,14 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<DatabaseRegistry>(sp =>
             new DatabaseRegistry(sp.GetRequiredService<ILogger<DatabaseRegistry>>(), fallbackDbPath));
 
-        using var tmpProvider = services.BuildServiceProvider();
-        var registry = tmpProvider.GetRequiredService<DatabaseRegistry>();
-        var logger = tmpProvider.GetRequiredService<ILoggerFactory>().CreateLogger("SpinTrackerStartup");
-        var activeDb = registry.GetActive();
-        var actualDbPath = ResolveActualDbPath(fallbackDbPath, activeDb, logger);
+        var actualDbPath = fallbackDbPath;
+        if (string.IsNullOrWhiteSpace(providedDbPath))
+        {
+            using var tmpProvider = services.BuildServiceProvider();
+            var registry = tmpProvider.GetRequiredService<DatabaseRegistry>();
+            var logger = tmpProvider.GetRequiredService<ILoggerFactory>().CreateLogger("SpinTrackerStartup");
+            actualDbPath = ResolveActualDbPath(fallbackDbPath, registry.GetActive(), logger);
+        }
 
         var actualDbDirectory = Path.GetDirectoryName(actualDbPath);
         if (!string.IsNullOrWhiteSpace(actualDbDirectory) && !Directory.Exists(actualDbDirectory))

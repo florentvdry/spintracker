@@ -71,12 +71,20 @@ class IPCService {
     return this.invoke('get-winrate-chart-data', options)
   }
 
+  async getMultiplierStats(options = {}) {
+    return this.invoke('get-multiplier-stats', options)
+  }
+
   async getSessionHistory(limit = 50, heroName, dateFrom, dateTo, buyIn) {
     return this.invoke('get-session-history', limit, heroName, dateFrom, dateTo, buyIn)
   }
 
   async getBuyIns() {
     return this.invoke('get-buy-ins')
+  }
+
+  async getDetailedStats(heroName, dateFrom, dateTo, buyIn, statsScope = 'population', opponentName = null) {
+    return this.invoke('get-detailed-stats', heroName, dateFrom, dateTo, buyIn, statsScope, opponentName)
   }
 
   async getHands(options = {}) {
@@ -101,6 +109,10 @@ class IPCService {
 
   async getPlayers(options = {}) {
     return this.invoke('get-players', options)
+  }
+
+  async getOpponents(heroName, limit = 2000) {
+    return this.invoke('get-opponents', heroName, limit)
   }
 
   async updatePlayerRegStatus(playerId, isReg) {

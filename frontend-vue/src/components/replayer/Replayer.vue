@@ -1,250 +1,235 @@
-<script>
-import { onMounted, onUnmounted, ref, computed } from 'vue'
+<script setup>
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import {
+  ChevronLeft,
+  ChevronRight,
+  FastForward,
+  List,
+  Pause,
+  Play,
+  Rewind,
+  SkipBack,
+  SkipForward,
+  X
+} from 'lucide-vue-next'
 import { useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable.vue'
-import { 
-  Play, Pause, SkipBack, SkipForward, 
-  FastForward, Rewind, Info, List, Settings2,
-  ChevronLeft, ChevronRight
-} from 'lucide-vue-next'
 
-export default {
-  components: {
-    PokerTable,
-    Play, Pause, SkipBack, SkipForward, 
-    FastForward, Rewind, Info, List, Settings2,
-    ChevronLeft, ChevronRight
-  },
-  setup() {
-    const store = useReplayerStore()
-    const showLogs = ref(false)
+const store = useReplayerStore()
+const showLogs = ref(typeof window !== 'undefined' && window.innerWidth >= 1180)
 
-    const bbValue = computed(() => {
-      if (!store.handData?.blinds) return 0
-      const parts = store.handData.blinds.split('/')
-      return parts.length === 2 ? parseFloat(parts[1]) : 0
-    })
+const bbValue = computed(() => {
+  if (!store.handData?.blinds) return 0
+  const parts = String(store.handData.blinds).split('/')
+  return parts.length === 2 ? Number(parts[1]) || 0 : 0
+})
 
-    const formatValue = (val) => {
-      if (store.viewMode === 'bb' && bbValue.value > 0) {
-        return (val / bbValue.value).toFixed(2) + ' bb'
-      }
-      return val.toFixed(1) + ' chips'
-    }
+const formatValue = (value) => {
+  const val = Number(value || 0)
+  if (store.viewMode === 'bb' && bbValue.value > 0) {
+    return `${(val / bbValue.value).toFixed(2)} bb`
+  }
+  return `${Math.round(val).toLocaleString()} chips`
+}
 
-    onUnmounted(() => {
-      store.stop()
-    })
+const speeds = [
+  { label: '0.5x', value: 2000 },
+  { label: '1x', value: 1000 },
+  { label: '2x', value: 500 },
+  { label: '4x', value: 250 }
+]
 
-    const speeds = [
-      { label: '0.5x', value: 2000 },
-      { label: '1x', value: 1000 },
-      { label: '2x', value: 500 },
-      { label: '4x', value: 250 }
-    ]
+const realActions = computed(() => {
+  return store.handData?.actions
+    ?.map((action, index) => ({ action, index }))
+    .filter((entry) => store.isRealAction(entry.action)) || []
+})
 
-    const togglePlay = () => {
-      if (store.isPlaying) store.stop()
-      else store.play()
-    }
+const currentRealActionIndex = computed(() => {
+  if (!store.handData || store.currentIndex === 0) return -1
+  for (let index = store.currentIndex - 1; index >= 0; index -= 1) {
+    if (store.isRealAction(store.handData.actions[index])) return index
+  }
+  return -1
+})
 
-    const handleKeyDown = (e) => {
-      if (e.key === ' ') {
-        e.preventDefault()
-        togglePlay()
-      } else if (e.key === 'ArrowRight') {
-        store.nextStep()
-      } else if (e.key === 'ArrowLeft') {
-        store.prevStep()
-      }
-    }
+const currentActionLabel = computed(() => {
+  if (store.currentAction?.description) return store.currentAction.description
+  return 'Pret a rejouer la main'
+})
 
-    const currentRealActionIndex = computed(() => {
-      if (!store.handData || store.currentIndex === 0) return -1
-      for (let i = store.currentIndex - 1; i >= 0; i--) {
-        if (store.isRealAction(store.handData.actions[i])) return i
-      }
-      return -1
-    })
+const togglePlay = () => {
+  if (store.isPlaying) store.stop()
+  else store.play()
+}
 
-    onMounted(() => window.addEventListener('keydown', handleKeyDown))
-    onUnmounted(() => window.removeEventListener('keydown', handleKeyDown))
-
-    return {
-      store,
-      showLogs,
-      bbValue,
-      formatValue,
-      speeds,
-      togglePlay,
-      currentRealActionIndex
-    }
+const handleKeyDown = (event) => {
+  if (event.key === ' ') {
+    event.preventDefault()
+    togglePlay()
+  } else if (event.key === 'ArrowRight') {
+    store.nextStep()
+  } else if (event.key === 'ArrowLeft') {
+    store.prevStep()
   }
 }
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown)
+  store.stop()
+})
 </script>
 
 <template>
-  <div class="flex flex-col h-screen bg-[#0f172a] text-gray-200 overflow-hidden select-none relative">
-    <!-- Queue Navigation -->
-    <div v-if="store.handQueue.length > 1" class="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4 bg-black/40 backdrop-blur-md border border-white/10 p-2 rounded-xl shadow-2xl">
-      <button @click="store.prevHand()" :disabled="store.queueIndex === 0" class="p-2 rounded-lg hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed">
-        <ChevronLeft :size="18" />
-      </button>
-      <div class="text-xs font-bold whitespace-nowrap">
-        Main {{ store.queueIndex + 1 }} / {{ store.handQueue.length }}
-      </div>
-      <button @click="store.nextHand()" :disabled="store.queueIndex >= store.handQueue.length - 1" class="p-2 rounded-lg hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed">
-        <ChevronRight :size="18" />
-      </button>
-    </div>
-
-    <!-- Floating Hand Info -->
-    <div v-if="store.handData" class="absolute top-4 left-4 z-30 pointer-events-none">
-      <div class="bg-black/40 backdrop-blur-md border border-white/10 p-3 rounded-xl shadow-2xl">
-        <div class="flex items-center gap-3">
-          <span class="text-lg font-black text-white tracking-tighter uppercase">{{ store.handData.room }}</span>
-          <div class="h-4 w-px bg-white/20"></div>
-          <span class="text-blue-400 font-mono font-bold">{{ store.handData.buyIn }}€</span>
+  <div class="replayer-page">
+    <header class="replayer-header">
+      <div v-if="store.handData" class="hand-card">
+        <div class="hand-title">
+          <span>{{ store.handData.room }}</span>
+          <span class="hand-buyin">{{ store.handData.buyIn }} EUR</span>
         </div>
-        <div class="text-[10px] text-gray-400 mt-1 uppercase tracking-widest font-medium opacity-60">
-          {{ store.handData.date }}
+        <div class="hand-meta">
+          <span>{{ store.handData.date }}</span>
+          <span v-if="store.handData.blinds">Blinds {{ store.handData.blinds }}</span>
         </div>
       </div>
-    </div>
 
-    <!-- Right Top Buttons -->
-    <div class="absolute top-4 right-4 z-30 flex gap-2">
-      <button 
+      <div v-else class="hand-card">
+        <div class="hand-title">Replayer</div>
+        <div class="hand-meta">Aucune main chargee</div>
+      </div>
+
+      <div v-if="store.handQueue.length > 1" class="queue-card">
+        <button class="icon-button" :disabled="store.queueIndex === 0" @click="store.prevHand()">
+          <ChevronLeft :size="18" />
+        </button>
+        <span>Main {{ store.queueIndex + 1 }} / {{ store.handQueue.length }}</span>
+        <button class="icon-button" :disabled="store.queueIndex >= store.handQueue.length - 1" @click="store.nextHand()">
+          <ChevronRight :size="18" />
+        </button>
+      </div>
+
+      <button
+        class="log-toggle"
+        :class="{ active: showLogs }"
         @click="showLogs = !showLogs"
-        class="p-3 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all shadow-2xl"
-        :class="showLogs ? 'text-blue-400 border-blue-500/50' : 'text-gray-400'"
       >
-        <List :size="20" />
+        <List :size="18" />
+        <span>Actions</span>
       </button>
-    </div>
+    </header>
 
-    <main class="flex-1 flex overflow-hidden relative">
-      <!-- Main Replayer Area -->
-      <div class="flex-1 flex flex-col items-center justify-center relative">
-        <div v-if="store.loading" class="absolute inset-0 flex items-center justify-center bg-black/20 z-10">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+    <main class="replayer-main" :class="{ 'with-log': showLogs }">
+      <section class="table-panel">
+        <div v-if="store.loading" class="loading-cover">
+          <div class="spinner"></div>
         </div>
 
         <PokerTable v-if="store.handData" />
-      </div>
 
-        <!-- Action Log Sidebar (Overlays if screen is small) -->      <aside 
-        v-if="showLogs"
-        class="absolute right-0 top-0 bottom-0 w-80 bg-gray-900/90 backdrop-blur-xl border-l border-white/10 flex flex-col z-40 animate-in slide-in-from-right duration-300"
-      >
-        <div class="p-4 border-b border-white/10 font-black text-xs uppercase tracking-widest bg-black/20 flex justify-between items-center">
-          <span>Action Log</span>
-          <button @click="showLogs = false" class="text-gray-500 hover:text-white">✕</button>
+        <div v-else-if="!store.loading" class="empty-state">
+          <h2>Selectionne une main pour lancer le replayer</h2>
+          <p>Le nouveau layout garde les pseudos, stacks et actions visibles sur desktop, tablette et mobile.</p>
         </div>
-        <div class="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-hide">
-          <div 
-            v-for="(action, i) in store.handData?.actions" 
-            :key="i"
-            v-show="store.isRealAction(action)"
-            @click="store.jumpTo(i + 1)"
-            class="p-3 rounded-xl text-xs cursor-pointer transition-all duration-200"
-            :class="[
-              i < currentRealActionIndex ? 'bg-blue-500/5 text-blue-300' : 'text-gray-600 hover:bg-white/5',
-              i === currentRealActionIndex ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/20 scale-[1.02]' : ''
-            ]"
-          >
-            <div class="flex justify-between items-center mb-1">
-              <span class="font-black uppercase text-[9px] opacity-40">{{ action.street }}</span>
-              <span class="opacity-30">#{{ action.order }}</span>
-            </div>
-            <div class="leading-relaxed">{{ action.description }}</div>
+      </section>
+
+      <aside v-if="showLogs" class="action-panel">
+        <div class="panel-header">
+          <div>
+            <span class="eyebrow">Timeline</span>
+            <h2>Actions</h2>
           </div>
+          <button class="icon-button" @click="showLogs = false">
+            <X :size="17" />
+          </button>
+        </div>
+
+        <div class="action-list">
+          <button
+            v-for="{ action, index } in realActions"
+            :key="`${index}-${action.description}`"
+            class="action-row"
+            :class="{
+              played: index < currentRealActionIndex,
+              current: index === currentRealActionIndex
+            }"
+            @click="store.jumpTo(index + 1)"
+          >
+            <span class="action-street">{{ action.street || '-' }}</span>
+            <span class="action-description">{{ action.description }}</span>
+            <span class="action-order">#{{ action.order }}</span>
+          </button>
         </div>
       </aside>
     </main>
 
-    <!-- Controls Bar -->
-    <footer class="bg-black/40 backdrop-blur-xl border-t border-white/5 p-6 z-30">
-      <div class="max-w-6xl mx-auto flex flex-col gap-6">
-        <!-- Progress Slider -->
-        <div class="relative group">
-          <div class="absolute inset-0 bg-blue-500/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
-          <input 
-            type="range" 
-            min="0" 
-            :max="store.totalActions" 
-            v-model.number="store.currentIndex"
-            @input="store.jumpTo(store.currentIndex)"
-            class="relative w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-blue-500 transition-all hover:h-2"
-          />
+    <footer class="control-panel">
+      <div class="current-action">
+        <span class="current-label">Action actuelle</span>
+        <strong>{{ currentActionLabel }}</strong>
+      </div>
+
+      <div class="progress-row">
+        <span>{{ store.currentIndex }}</span>
+        <input
+          v-model.number="store.currentIndex"
+          type="range"
+          min="0"
+          :max="store.totalActions"
+          class="progress-slider"
+          @input="store.jumpTo(store.currentIndex)"
+        />
+        <span>{{ store.totalActions }}</span>
+      </div>
+
+      <div class="controls-row">
+        <div class="playback-group">
+          <button class="control-button" @click="store.resetTable()">
+            <Rewind :size="20" />
+          </button>
+          <button class="control-button" @click="store.prevStep()">
+            <SkipBack :size="20" />
+          </button>
+          <button class="play-button" @click="togglePlay">
+            <Pause v-if="store.isPlaying" :size="26" />
+            <Play v-else :size="26" class="ml-0.5" />
+          </button>
+          <button class="control-button" @click="store.nextStep()">
+            <SkipForward :size="20" />
+          </button>
+          <button class="control-button" @click="store.jumpTo(store.totalActions)">
+            <FastForward :size="20" />
+          </button>
         </div>
 
-        <div class="flex items-center justify-between">
-          <!-- Playback Controls -->
-          <div class="flex items-center gap-2">
-            <button @click="store.resetTable()" class="p-3 rounded-xl hover:bg-white/5 text-gray-500 hover:text-white transition-colors">
-              <Rewind :size="22" />
-            </button>
-            <button @click="store.prevStep()" class="p-3 rounded-xl hover:bg-white/5 text-gray-500 hover:text-white transition-colors">
-              <SkipBack :size="22" />
-            </button>
-            
-            <button 
-              @click="togglePlay"
-              class="w-14 h-14 rounded-2xl flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white transition-all active:scale-95 shadow-2xl shadow-blue-600/20 hover:shadow-blue-500/40"
-            >
-              <Pause v-if="store.isPlaying" :size="28" />
-              <Play v-else :size="28" class="ml-1" />
-            </button>
+        <div class="toggle-group" aria-label="Mode d'affichage">
+          <button
+            :class="{ active: store.viewMode === 'chips' }"
+            @click="store.viewMode = 'chips'"
+          >
+            Chips
+          </button>
+          <button
+            :class="{ active: store.viewMode === 'bb' }"
+            @click="store.viewMode = 'bb'"
+          >
+            BB
+          </button>
+        </div>
 
-            <button @click="store.nextStep()" class="p-3 rounded-xl hover:bg-white/5 text-gray-500 hover:text-white transition-colors">
-              <SkipForward :size="22" />
-            </button>
-            <button @click="store.jumpTo(store.totalActions)" class="p-3 rounded-xl hover:bg-white/5 text-gray-500 hover:text-white transition-colors">
-              <FastForward :size="22" />
-            </button>
-          </div>
-
-          <!-- Current Action Info (Bottom Bar) -->
-          <div class="hidden lg:flex flex-col items-center">
-            <div v-if="store.currentAction" :key="store.currentAction.order" class="bg-blue-500/10 border border-blue-500/20 px-6 py-2 rounded-full text-sm font-bold text-blue-400 animate-in fade-in slide-in-from-top-2 duration-300">
-              {{ store.currentAction.description }}
-            </div>
-            <div v-else class="text-sm font-bold text-gray-600 tracking-widest uppercase opacity-50">Prêt</div>
-          </div>
-
-          <!-- Speed & View Mode Toggle -->
-          <div class="flex items-center gap-4">
-            <!-- View Mode Toggle -->
-            <div class="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5">
-              <button 
-                @click="store.viewMode = 'chips'"
-                class="px-3 py-1.5 text-[10px] font-black uppercase tracking-tighter rounded-lg transition-all"
-                :class="store.viewMode === 'chips' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'"
-              >
-                Chips
-              </button>
-              <button 
-                @click="store.viewMode = 'bb'"
-                class="px-3 py-1.5 text-[10px] font-black uppercase tracking-tighter rounded-lg transition-all"
-                :class="store.viewMode === 'bb' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'"
-              >
-                BB
-              </button>
-            </div>
-
-            <div class="flex items-center gap-1 bg-black/40 p-1.5 rounded-2xl border border-white/5 shadow-inner">
-              <button 
-                v-for="s in speeds" 
-                :key="s.value"
-                @click="store.setSpeed(s.value)"
-                class="px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all"
-                :class="store.playbackSpeed === s.value ? 'bg-white/10 text-white shadow-lg border border-white/10' : 'text-gray-500 hover:text-gray-300'"
-              >
-                {{ s.label }}
-              </button>
-            </div>
-          </div>
+        <div class="toggle-group" aria-label="Vitesse">
+          <button
+            v-for="speed in speeds"
+            :key="speed.value"
+            :class="{ active: store.playbackSpeed === speed.value }"
+            @click="store.setSpeed(speed.value)"
+          >
+            {{ speed.label }}
+          </button>
         </div>
       </div>
     </footer>
@@ -252,14 +237,438 @@ export default {
 </template>
 
 <style scoped>
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
+.replayer-page {
+  height: 100vh;
+  min-height: 620px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.18), transparent 32%),
+    radial-gradient(circle at 86% 14%, rgba(20, 184, 166, 0.14), transparent 28%),
+    #07111f;
+  color: #e5e7eb;
+  user-select: none;
+}
+
+.replayer-header,
+.control-panel {
+  position: relative;
+  z-index: 40;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(2, 6, 23, 0.76);
+  backdrop-filter: blur(18px);
+}
+
+.replayer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom-width: 1px;
+  padding: 12px clamp(14px, 2.4vw, 28px);
+}
+
+.hand-card,
+.queue-card,
+.log-toggle,
+.current-action {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.72);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+}
+
+.hand-card {
+  min-width: 0;
+  padding: 10px 13px;
+}
+
+.hand-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-size: 15px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.hand-buyin {
+  color: #60a5fa;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.hand-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.queue-card,
+.log-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.log-toggle {
+  padding: 10px 12px;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+
+.log-toggle.active,
+.toggle-group button.active {
+  border-color: rgba(96, 165, 250, 0.48);
+  background: rgba(37, 99, 235, 0.95);
+  color: white;
+}
+
+.icon-button,
+.control-button,
+.play-button,
+.log-toggle,
+.toggle-group button,
+.action-row {
+  transition: transform 140ms ease, background 140ms ease, opacity 140ms ease;
+}
+
+.icon-button,
+.control-button {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #cbd5e1;
+}
+
+.icon-button {
+  width: 34px;
+  height: 34px;
+}
+
+.control-button {
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.icon-button:hover,
+.control-button:hover,
+.log-toggle:hover,
+.toggle-group button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.32;
+}
+
+.replayer-main {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  padding: clamp(8px, 1.6vw, 18px);
+}
+
+.replayer-main.with-log {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+}
+
+.table-panel,
+.action-panel {
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 22px;
+  background: rgba(2, 6, 23, 0.34);
+}
+
+.table-panel {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.loading-cover,
+.empty-state {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: rgba(2, 6, 23, 0.42);
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 3px solid rgba(96, 165, 250, 0.22);
+  border-bottom-color: #60a5fa;
+  animation: spin 850ms linear infinite;
+}
+
+.empty-state {
+  padding: 24px;
+  text-align: center;
+}
+
+.empty-state h2 {
+  color: white;
+  font-size: clamp(20px, 3vw, 32px);
+  font-weight: 950;
+}
+
+.empty-state p {
+  max-width: 520px;
+  margin-top: 8px;
+  color: #94a3b8;
+}
+
+.action-panel {
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(18px);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.eyebrow,
+.current-label,
+.action-street,
+.action-order {
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.panel-header h2 {
+  color: white;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.action-list {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.action-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  padding: 11px;
+  color: #94a3b8;
+  text-align: left;
+}
+
+.action-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.action-row.played {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.action-row.current {
+  color: white;
+  background: rgba(37, 99, 235, 0.96);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.2);
+}
+
+.action-description {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.control-panel {
+  display: grid;
+  gap: 12px;
+  border-top-width: 1px;
+  padding: 12px clamp(14px, 2.4vw, 28px) 14px;
+}
+
+.current-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 13px;
+}
+
+.current-action strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #dbeafe;
+  font-size: 13px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progress-row,
+.controls-row,
+.playback-group,
+.toggle-group {
+  display: flex;
+  align-items: center;
+}
+
+.progress-row {
+  gap: 10px;
+  color: #64748b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.progress-slider {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
   appearance: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.11);
+  accent-color: #3b82f6;
+}
+
+.progress-slider::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
+  appearance: none;
+  border-radius: 999px;
+  background: #60a5fa;
+  box-shadow: 0 0 0 5px rgba(96, 165, 250, 0.12);
+}
+
+.controls-row {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.playback-group,
+.toggle-group {
+  gap: 7px;
+}
+
+.play-button {
+  display: inline-grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border-radius: 18px;
+  background: #2563eb;
+  color: white;
+  box-shadow: 0 18px 34px rgba(37, 99, 235, 0.24);
+}
+
+.play-button:hover {
   background: #3b82f6;
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+  transform: translateY(-1px);
+}
+
+.toggle-group {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.46);
+  padding: 4px;
+}
+
+.toggle-group button {
+  min-height: 34px;
+  border-radius: 10px;
+  padding: 0 11px;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1100px) {
+  .replayer-main.with-log {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(220px, 34vh);
+  }
+
+  .action-panel {
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 760px) {
+  .replayer-page {
+    min-height: 760px;
+  }
+
+  .replayer-header,
+  .controls-row,
+  .current-action {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .replayer-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .queue-card {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+
+  .log-toggle {
+    justify-content: center;
+  }
+
+  .playback-group,
+  .toggle-group {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .current-action strong {
+    white-space: normal;
+  }
 }
 </style>
