@@ -1011,33 +1011,42 @@ namespace SpinTrackerBackend.Services
                 string type = "Unknown";
                 double amount = 0;
 
-                if (content.Contains("folds")) type = "Fold";
-                else if (content.Contains("checks")) type = "Check";
-                else if (content.Contains("calls"))
+                // Check for Fold (EN + FR)
+                if (content.Contains("folds") || content.Contains("fold") || content.Contains("se couche")) type = "Fold";
+                // Check for Check (EN + FR)
+                else if (content.Contains("checks") || content.Contains("check") || content.Contains("parole")) type = "Check";
+                // Check for Call (EN + FR)
+                else if (content.Contains("calls") || content.Contains("call") || content.Contains("paye") || content.Contains("suit"))
                 {
                     type = "Call";
                     var match = Regex.Match(content, @"(\d+\.?\d*)");
                     if (match.Success) amount = double.Parse(match.Groups[1].Value);
                 }
-                else if (content.Contains("raises"))
+                // Check for Raise (EN + FR)
+                else if (content.Contains("raises") || content.Contains("raise") || content.Contains("relance") || content.Contains("mise"))
                 {
                     type = "Raise";
-                    var match = Regex.Match(content, @"to\s+(\d+\.?\d*)");
+                    var match = Regex.Match(content, @"to\s+(\d+\.?\d*)|(\d+\.?\d*)");
                     if (match.Success) amount = double.Parse(match.Groups[1].Value);
                 }
-                else if (content.Contains("bets"))
+                // Check for Bet (EN + FR)
+                else if (content.Contains("bets") || content.Contains("bet") || content.Contains("mise"))
                 {
                     type = "Bet";
                     var match = Regex.Match(content, @"(\d+\.?\d*)");
                     if (match.Success) amount = double.Parse(match.Groups[1].Value);
                 }
 
-                if (content.Contains("all-in"))
+                // Check for All-In (override)
+                if (content.Contains("all-in") || content.Contains("all in") || content.Contains("tapis"))
                 {
                     type = "AllIn";
                     var match = Regex.Match(content, @"(\d+\.?\d*)");
                     if (match.Success) amount = double.Parse(match.Groups[1].Value);
                 }
+                
+                // Skip unknown actions - don't add them to the list
+                if (type == "Unknown") continue;
                 
                 double addedToPot = 0;
                 if (type is "Call" or "Bet" or "Raise" or "AllIn")
