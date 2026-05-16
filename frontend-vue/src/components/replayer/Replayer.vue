@@ -231,6 +231,16 @@ onUnmounted(() => {
             {{ speed.label }}
           </button>
         </div>
+
+        <div class="toggle-group" aria-label="Options">
+          <button
+            :class="{ active: store.showFoldedPlayers }"
+            @click="store.showFoldedPlayers = !store.showFoldedPlayers"
+          >
+            <span class="toggle-icon">👥</span>
+            Folded
+          </button>
+        </div>
       </div>
     </footer>
   </div>
@@ -616,6 +626,16 @@ onUnmounted(() => {
   font-weight: 950;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.toggle-group button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggle-icon {
+  font-size: 12px;
 }
 
 @keyframes spin {
