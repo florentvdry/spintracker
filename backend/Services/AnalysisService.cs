@@ -1002,11 +1002,30 @@ namespace SpinTrackerBackend.Services
                 var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
                 if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
 
+                // Parse player name and content - support both formats:
+                // Format 1: "playerName: action" (Betclic)
+                // Format 2: "playerName action" (Winamax, no colon)
+                string playerName = "";
+                string content = "";
+                
                 var colonIndex = processingLine.IndexOf(':');
-                if (colonIndex == -1) continue;
-
-                var playerName = processingLine.Substring(0, colonIndex).Trim();
-                var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+                if (colonIndex != -1)
+                {
+                    // Format 1: has colon
+                    playerName = processingLine.Substring(0, colonIndex).Trim();
+                    content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+                }
+                else
+                {
+                    // Format 2: no colon - find first space
+                    var spaceIndex = processingLine.IndexOf(' ');
+                    if (spaceIndex == -1) continue;
+                    
+                    playerName = processingLine.Substring(0, spaceIndex).Trim();
+                    content = processingLine.Substring(spaceIndex + 1).Trim().ToLower();
+                }
+                
+                if (string.IsNullOrEmpty(playerName)) continue;
 
                 string type = "Unknown";
                 double amount = 0;
