@@ -1011,8 +1011,22 @@ namespace SpinTrackerBackend.Services
                 string type = "Unknown";
                 double amount = 0;
 
+                // Check for Post SB
+                if (content.Contains("posts sb") || content.Contains("posts small blind"))
+                {
+                    type = "PostSB";
+                    var match = Regex.Match(content, @"(\d+\.?\d*)");
+                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                }
+                // Check for Post BB
+                else if (content.Contains("posts bb") || content.Contains("posts big blind"))
+                {
+                    type = "PostBB";
+                    var match = Regex.Match(content, @"(\d+\.?\d*)");
+                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                }
                 // Check for Fold (EN + FR)
-                if (content.Contains("folds") || content.Contains("fold") || content.Contains("se couche")) type = "Fold";
+                else if (content.Contains("folds") || content.Contains("fold") || content.Contains("se couche")) type = "Fold";
                 // Check for Check (EN + FR)
                 else if (content.Contains("checks") || content.Contains("check") || content.Contains("parole")) type = "Check";
                 // Check for Call (EN + FR)
