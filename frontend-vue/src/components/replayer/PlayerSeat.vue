@@ -54,10 +54,15 @@ const positionLabel = computed(() => {
     class="player-seat"
     :class="[
       player.isFolded ? 'is-folded' : '',
-      player.isActive ? 'is-active' : ''
+      player.isAllIn ? 'is-allin' : '',
+      player.isActive ? 'is-active' : '',
+      !store.showFoldedPlayers && player.isFolded ? 'hidden-folded' : ''
     ]"
     :style="{ left: seat.x, top: seat.y, transform: seat.transform }"
   >
+    <div v-if="player.isFolded" class="fold-badge">FOLD</div>
+    <div v-if="player.isAllIn" class="allin-badge">ALL-IN</div>
+
     <div v-if="currentActionText" class="action-bubble" :class="seat.actionClass">
       {{ currentActionText }}
     </div>
@@ -106,8 +111,17 @@ const positionLabel = computed(() => {
 }
 
 .player-seat.is-folded {
-  opacity: 0.42;
-  filter: grayscale(0.7);
+  opacity: 0.35;
+  filter: grayscale(0.8);
+}
+
+.player-seat.is-allin .seat-panel {
+  border-color: rgba(245, 158, 11, 0.85);
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.25), 0 16px 40px rgba(245, 158, 11, 0.15);
+}
+
+.player-seat.hidden-folded {
+  display: none;
 }
 
 .player-seat.is-active .seat-panel {
@@ -278,6 +292,30 @@ const positionLabel = computed(() => {
   left: calc(100% - 12px);
   top: 50%;
   transform: translateY(-50%);
+}
+
+.fold-badge,
+.allin-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  z-index: 15;
+}
+
+.fold-badge {
+  background: #dc2626;
+  color: white;
+}
+
+.allin-badge {
+  background: #f59e0b;
+  color: #111827;
 }
 
 @media (max-width: 680px) {
