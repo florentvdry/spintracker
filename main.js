@@ -330,6 +330,7 @@ function createReplayerWindow() {
 
   replayerWindow.webContents.on('did-finish-load', () => {
     // Send the hand data to the replayer window
+    console.log('[Main] Sending replayer data:', lastReplayerData ? Object.keys(lastReplayerData) : 'null');
     replayerWindow.webContents.send('load-replayer-data', lastReplayerData);
   });
 
@@ -812,6 +813,7 @@ ipcMain.handle('python-analyze-range', async (event, params) => {
 
 ipcMain.handle('open-replayer', async (event, data) => {
   // data can be either handData (old) or { handIds, startIndex, heroName } (new)
+  console.log('[Main] open-replayer called with data:', data ? Object.keys(data) : 'null');
   lastReplayerData = data;
   createReplayerWindow();
 });
