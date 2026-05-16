@@ -302,11 +302,31 @@ export const useReplayerStore = defineStore('replayer', {
     },
 
     async openReplayerWindowForQueue(handIds, startIndex, heroName) {
-      ipcService.invoke('open-replayer', {
-        handIds,
-        startIndex,
-        heroName
-      })
+      // Load the first hand data to send with the queue
+      const firstHandId = handIds[startIndex] || handIds[0]
+      if (!firstHandId) return
+      
+      try {
+        const response = await ipcService.getHandReplay(firstHandId, heroName)
+        if (response.success) {
+          // Send both queue info AND the loaded hand data
+          ipcService.invoke('open-replayer', {
+            handIds,
+            startIndex,
+            heroName,
+            // Include the actual hand data (response.data is the hand)
+            ...response.data
+          })
+        }
+      } catch (err) {
+        console.error('Failed to load first hand for queue:', err)
+        // Fallback: open with just queue info
+        ipcService.invoke('open-replayer', {
+          handIds,
+          startIndex,
+          heroName
+        })
+      }
     },
 
     async openSingleHandReplayer(handId, heroName = null) {

@@ -21,8 +21,20 @@ if (ipcRenderer) {
   ipcRenderer.on('load-replayer-data', (event, data) => {
     console.log('[Replayer Window] Received IPC data:', data)
     if (data && data.handIds) {
-      store.loadHandQueue(data)
-    } else if (data && (data.id || data.handId || data.HandId || data.handId)) {
+      store.handQueue = data.handIds
+      store.queueIndex = data.startIndex || 0
+      store.heroName = data.heroName
+      // If hand data is included, load it
+      if (data.id || data.handId || data.HandId) {
+        store.setHand(data)
+      } else {
+        // No hand data, load the first hand in queue
+        const firstId = data.handIds[data.startIndex || 0]
+        if (firstId) {
+          store.loadHand(firstId, data.heroName)
+        }
+      }
+    } else if (data && (data.id || data.handId || data.HandId)) {
       store.setHand(data)
     }
   })
@@ -36,6 +48,14 @@ if (ipcRenderer) {
         console.log('[Replayer Window] Fallback data:', data)
         if (data && (data.id || data.handId || data.HandId)) {
           store.setHand(data)
+        } else if (data && data.handIds) {
+          store.handQueue = data.handIds
+          store.queueIndex = data.startIndex || 0
+          store.heroName = data.heroName
+          const firstId = data.handIds[data.startIndex || 0]
+          if (firstId) {
+            store.loadHand(firstId, data.heroName)
+          }
         }
       } catch (e) {
         console.error('[Replayer Window] Fallback failed:', e)
