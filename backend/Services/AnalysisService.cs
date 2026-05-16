@@ -866,7 +866,10 @@ namespace SpinTrackerBackend.Services
             double currentPot = 0;
             var actions = new List<ReplayAction>();
 
-            // 1. Post Blinds
+            // 1. Deal Cards (hole cards) FIRST
+            actions.Add(new ReplayAction { Order = order++, Street = "Preflop", Type = "DealCards", Description = "Dealing hole cards" });
+
+            // 2. Post Blinds
             var bbAmount = ParseBigBlind(hand.Blinds);
             var sbAmount = bbAmount / 2.0;
 
@@ -891,9 +894,6 @@ namespace SpinTrackerBackend.Services
                     currentPot += bbAmount;
                 }
             }
-
-            // 2. Deal Hero Cards
-            actions.Add(new ReplayAction { Order = order++, Street = "Preflop", Type = "DealCards", Description = "Dealing hole cards" });
 
             // 3. Preflop Actions
             currentPot = ParseActionText(hand.Preflop_Action, "Preflop", order, currentPot, actions, bbAmount);
@@ -955,21 +955,31 @@ namespace SpinTrackerBackend.Services
                         Type = "CollectPot",
                         PlayerName = w.Name,
                         Amount = w.ChipsWon,
+                        PotBefore = currentPot,
+                        PotAfter = 0,
                         Description = $"{w.Name} wins {w.ChipsWon}"
                     });
                 }
             }
-            else
+            else if (hand.Total_Pot > 0)
             {
-                // Fallback if no specific winners found
-                actions.Add(new ReplayAction
+                var lastActionLine = hand.River_Action?.Split('\n').LastOrDefault(l => !string.IsNullOrEmpty(l));
+                if (!string.IsNullOrEmpty(lastActionLine))
                 {
-                    Order = order++,
-                    Street = "Showdown",
-                    Type = "CollectPot",
-                    Amount = hand.Total_Pot,
-                    Description = "Pot collection"
-                });
+                    var colonIndex = lastActionLine.IndexOf(':');
+                    var winnerName = colonIndex > 0 ? lastActionLine.Substring(0, colonIndex).Trim() : "Unknown";
+                    actions.Add(new ReplayAction
+                    {
+                        Order = order++,
+                        Street = "Showdown",
+                        Type = "CollectPot",
+                        PlayerName = winnerName,
+                        Amount = hand.Total_Pot,
+                        PotBefore = currentPot,
+                        PotAfter = 0,
+                        Description = $"{winnerName} wins {hand.Total_Pot}"
+                    });
+                }
             }
 
             replay.Actions = actions;
@@ -1022,13 +1032,18 @@ namespace SpinTrackerBackend.Services
                     if (match.Success) amount = double.Parse(match.Groups[1].Value);
                 }
 
-                if (content.Contains("all-in")) type = "AllIn";
+                if (content.Contains("all-in"))
+                {
+                    type = "AllIn";
+                    var match = Regex.Match(content, @"(\d+\.?\d*)");
+                    if (match.Success) amount = double.Parse(match.Groups[1].Value);
+                }
                 
                 double addedToPot = 0;
-                if (type == "Call" || type == "Bet") addedToPot = amount;
-                else if (type == "Raise")
+                if (type is "Call" or "Bet" or "Raise" or "AllIn")
                 {
                     addedToPot = amount;
+                    currentPot += addedToPot;
                 }
 
                 actions.Add(new ReplayAction
@@ -1038,8 +1053,8 @@ namespace SpinTrackerBackend.Services
                     Type = type,
                     PlayerName = playerName,
                     Amount = amount,
-                    PotBefore = currentPot,
-                    PotAfter = currentPot + (type == "Fold" || type == "Check" ? 0 : addedToPot), // Simplified
+                    PotBefore = currentPot - addedToPot,
+                    PotAfter = currentPot,
                     Description = processingLine
                 });
             }
