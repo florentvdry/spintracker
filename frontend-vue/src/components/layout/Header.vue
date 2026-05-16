@@ -130,9 +130,12 @@
               :class="filterStore.heroName === p.name ? 'bg-primary-500/10 text-primary-400' : 'text-gray-300'"
               @click="handleHeroSelect(p.name)"
             >
-              <div class="flex flex-col">
-                <span class="font-medium">{{ p.name }}</span>
-                <span class="text-xs text-gray-500">{{ p.total_hands }} {{ $t('common.hands') }}</span>
+              <div class="flex items-center gap-2">
+                <RoomLogo :room="p.room" />
+                <div class="flex flex-col">
+                  <span class="font-medium">{{ p.name }}</span>
+                  <span class="text-xs text-gray-500">{{ p.total_hands }} {{ $t('common.hands') }}</span>
+                </div>
               </div>
               <div v-if="filterStore.heroName === p.name" class="w-2 h-2 rounded-full bg-primary-500"></div>
             </div>
@@ -257,6 +260,7 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { useProgressStore } from '@/stores/progressStore'
 import { ipcService } from '@/services/ipcService'
 import { formatDate } from '@/utils/formatters'
+import RoomLogo from '@/components/common/RoomLogo.vue'
 
 const { t } = useI18n()
 const appStore = useAppStore()

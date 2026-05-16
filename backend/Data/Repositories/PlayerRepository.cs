@@ -40,7 +40,7 @@ public class PlayerRepository
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = $@"
-            SELECT id, name, total_hands, total_profit, is_reg, is_reg_forced FROM players
+            SELECT id, name, room, total_hands, total_profit, is_reg, is_reg_forced FROM players
             {whereClause}
             ORDER BY total_hands DESC
             {limitClause}";
@@ -58,10 +58,11 @@ public class PlayerRepository
             {
                 id = reader.GetInt32(0),
                 name = reader.GetString(1),
-                total_hands = reader.GetInt32(2),
-                total_profit = reader.GetDouble(3),
-                is_reg = reader.GetInt32(4) == 1,
-                is_reg_forced = reader.GetInt32(5) == 1
+                room = reader.IsDBNull(2) ? null : reader.GetString(2),
+                total_hands = reader.GetInt32(3),
+                total_profit = reader.GetDouble(4),
+                is_reg = reader.GetInt32(5) == 1,
+                is_reg_forced = reader.GetInt32(6) == 1
             });
         }
 
@@ -75,9 +76,11 @@ public class PlayerRepository
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = @"
-            INSERT OR REPLACE INTO players (name, total_hands, total_profit, total_ev_profit, is_reg, is_reg_forced, updated_at)
+            INSERT OR REPLACE INTO players (id, name, room, total_hands, total_profit, total_ev_profit, is_reg, is_reg_forced, updated_at)
             SELECT 
+                COALESCE((SELECT p.id FROM players p WHERE p.name = ph.player_name), NULL),
                 ph.player_name,
+                (SELECT h.room FROM hands h WHERE h.id = ph.hand_id LIMIT 1) as room,
                 COUNT(*) as total_hands,
                 SUM(ph.net_profit) as total_profit,
                 SUM(ph.net_won_adjusted) as total_ev_profit,
@@ -141,6 +144,7 @@ public class PlayerRepository
             SELECT 
                 p.id,
                 v.player_name as name,
+                (SELECT h.room FROM hands h WHERE h.id = v.hand_id LIMIT 1) as room,
                 COUNT(DISTINCT v.hand_id) as hands_vs_hero,
                 COALESCE(p.total_profit, 0) as total_profit,
                 COALESCE(p.is_reg, 0) as is_reg,
@@ -162,10 +166,11 @@ public class PlayerRepository
             {
                 id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
                 name = reader.GetString(1),
-                total_hands = reader.GetInt32(2),
-                total_profit = reader.GetDouble(3),
-                is_reg = reader.GetInt32(4) == 1,
-                is_reg_forced = reader.GetInt32(5) == 1
+                room = reader.IsDBNull(2) ? null : reader.GetString(2),
+                total_hands = reader.GetInt32(3),
+                total_profit = reader.GetDouble(4),
+                is_reg = reader.GetInt32(5) == 1,
+                is_reg_forced = reader.GetInt32(6) == 1
             });
         }
 

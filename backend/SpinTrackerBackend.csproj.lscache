@@ -92,6 +92,7 @@ Migrations/
  20260313_AddPlayerRegColumns.cs
  20260315_AddHandPosition.cs
  20260404_AddStructuredActions.cs
+ 20260516_AddPlayerRoomColumn.cs
 Models/
  AnalysisModels.cs
  AnalyticsModels.cs
@@ -106,6 +107,7 @@ obj/Debug/net8.0/
 Parsers/
  BaseParser.cs
  BetclicParser.cs
+ UnibetParser.cs
  WinamaxParser.cs
 Program.cs
 Services/

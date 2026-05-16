@@ -47,7 +47,8 @@ public class BetclicParser : IHandParser
 
     public bool DetectFormat(string content)
     {
-        return content.Contains("Site: Betclic") || content.Contains(SectionHeader);
+        // Check for Betclic variants (Betclic, Betclic.fr, etc.)
+        return content.Contains("Site: Betclic");
     }
 
     public ParseResult ParseFile(string fileContent)
@@ -96,7 +97,7 @@ public class BetclicParser : IHandParser
                            .Where(l => !string.IsNullOrEmpty(l))
                            .ToList();
 
-            var hand = new ParsedHand { Room = "Betclic.fr" };
+            var hand = new ParsedHand { Room = "Betclic" };
             
             // Context variables used across sections
             string currentSection = "HEADER";
