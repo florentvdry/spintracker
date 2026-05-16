@@ -89,21 +89,19 @@ const actionColorClass = computed(() => {
       {{ currentActionText }}
     </div>
 
-    <div class="cards-row" :class="{ invisible: player.isFolded }">
-      <transition-group name="card-deal" appear :css="true">
-        <Card 
-          v-for="(card, index) in cardsToShow" 
-          :key="`${player.name}-${card}-${index}`" 
-          :card="card" 
-          size="seat"
-          :style="{ animationDelay: `${index * 150}ms` }"
-        />
-        <template v-if="!showCards && !player.isFolded">
-          <Card :key="`${player.name}-hidden-1`" :hidden="true" size="seat" />
-          <Card :key="`${player.name}-hidden-2`" :hidden="true" size="seat" />
-        </template>
-      </transition-group>
-    </div>
+    <transition-group name="card-deal" appear :css="true" tag="div" class="cards-row" :class="{ invisible: player.isFolded }">
+      <Card 
+        v-for="(card, index) in cardsToShow" 
+        :key="`${player.name}-${card}-${index}`" 
+        :card="card" 
+        size="seat"
+        :style="{ animationDelay: `${index * 150}ms` }"
+      />
+      <template v-if="!showCards && !player.isFolded">
+        <Card :key="`${player.name}-hidden-1`" :hidden="true" size="seat" />
+        <Card :key="`${player.name}-hidden-2`" :hidden="true" size="seat" />
+      </template>
+    </transition-group>
 
     <div class="seat-panel">
       <div class="seat-topline">
@@ -163,11 +161,11 @@ const actionColorClass = computed(() => {
   margin-bottom: -2px;
 }
 
-.cards-row > :deep(*) {
+.cards-row > * {
   margin-left: clamp(-12px, -1.3cqw, -5px);
 }
 
-.cards-row > :deep(*:first-child) {
+.cards-row > *:first-child {
   margin-left: 0;
 }
 
