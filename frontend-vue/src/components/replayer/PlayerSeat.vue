@@ -47,6 +47,23 @@ const positionLabel = computed(() => {
   if (pos.includes('BB')) return 'BB'
   return pos || '-'
 })
+
+const actionColorClass = computed(() => {
+  const action = store.currentAction
+  if (!action || action.playerName !== props.player.name) return ''
+
+  const typeColors = {
+    Fold: 'action-fold',
+    Check: 'action-check',
+    Call: 'action-call',
+    Bet: 'action-bet',
+    Raise: 'action-raise',
+    AllIn: 'action-allin',
+    PostSB: 'action-blind',
+    PostBB: 'action-blind'
+  }
+  return typeColors[action.type] || ''
+})
 </script>
 
 <template>
@@ -63,7 +80,7 @@ const positionLabel = computed(() => {
     <div v-if="player.isFolded" class="fold-badge">FOLD</div>
     <div v-if="player.isAllIn" class="allin-badge">ALL-IN</div>
 
-    <div v-if="currentActionText" class="action-bubble" :class="seat.actionClass">
+    <div v-if="currentActionText" class="action-bubble" :class="[seat.actionClass, actionColorClass]">
       {{ currentActionText }}
     </div>
 
@@ -235,6 +252,38 @@ const positionLabel = computed(() => {
   line-height: 1.15;
   text-align: center;
   pointer-events: none;
+}
+
+.action-bubble.action-fold {
+  background: rgba(220, 38, 38, 0.96);
+  border-color: rgba(220, 38, 38, 0.35);
+}
+
+.action-bubble.action-check {
+  background: rgba(107, 114, 128, 0.96);
+  border-color: rgba(107, 114, 128, 0.35);
+}
+
+.action-bubble.action-call,
+.action-bubble.action-bet {
+  background: rgba(59, 130, 246, 0.96);
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.action-bubble.action-raise {
+  background: rgba(34, 197, 94, 0.96);
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+.action-bubble.action-allin {
+  background: rgba(245, 158, 11, 0.96);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #111827;
+}
+
+.action-bubble.action-blind {
+  background: rgba(139, 92, 246, 0.96);
+  border-color: rgba(139, 92, 246, 0.35);
 }
 
 .action-top {
