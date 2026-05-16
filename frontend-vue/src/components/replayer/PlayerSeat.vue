@@ -130,12 +130,12 @@ const actionColorClass = computed(() => {
 
 <style scoped>
 .player-seat {
-  --seat-width: clamp(112px, 17cqw, 176px);
+  --seat-width: clamp(100px, 15cqw, 160px);
   position: absolute;
   width: var(--seat-width);
   display: grid;
   justify-items: center;
-  gap: clamp(3px, 0.8cqw, 8px);
+  gap: clamp(2px, 0.6cqw, 6px);
   z-index: 10;
   transition: opacity 180ms ease, filter 180ms ease;
 }
@@ -162,11 +162,11 @@ const actionColorClass = computed(() => {
 .cards-row {
   display: flex;
   justify-content: center;
-  margin-bottom: -2px;
+  margin-bottom: 0;
 }
 
 .cards-row > * {
-  margin-left: clamp(-12px, -1.3cqw, -5px);
+  margin-left: clamp(-10px, -1.2cqw, -4px);
 }
 
 .cards-row > *:first-child {
@@ -175,12 +175,12 @@ const actionColorClass = computed(() => {
 
 .seat-panel {
   width: 100%;
-  min-height: clamp(52px, 6.5cqw, 76px);
+  min-height: clamp(48px, 6cqw, 68px);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(9, 13, 24, 0.98));
   box-shadow: 0 18px 35px rgba(0, 0, 0, 0.38);
-  padding: clamp(6px, 1cqw, 12px);
+  padding: clamp(5px, 0.9cqw, 10px);
   overflow: hidden;
   display: flex;
   flex-direction: column;

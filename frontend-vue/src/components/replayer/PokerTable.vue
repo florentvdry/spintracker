@@ -31,21 +31,21 @@ const formatValue = (value) => {
 
 const seatLayouts = {
   2: [
-    { x: '50%', y: '82%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-top' },
-    { x: '50%', y: '18%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-bottom' }
+    { x: '50%', y: '78%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-top' },
+    { x: '50%', y: '22%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-bottom' }
   ],
   3: [
-    { x: '50%', y: '84%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-top' },
-    { x: '18%', y: '26%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-right' },
-    { x: '82%', y: '26%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-left' }
+    { x: '50%', y: '78%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-top' },
+    { x: '20%', y: '28%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-right' },
+    { x: '80%', y: '28%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-left' }
   ],
   6: [
-    { x: '50%', y: '84%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-top' },
-    { x: '16%', y: '66%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-right' },
-    { x: '16%', y: '28%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-right' },
-    { x: '50%', y: '16%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-bottom' },
-    { x: '84%', y: '28%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-left' },
-    { x: '84%', y: '66%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-left' }
+    { x: '50%', y: '78%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-top' },
+    { x: '18%', y: '62%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-right' },
+    { x: '18%', y: '32%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-right' },
+    { x: '50%', y: '20%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-bottom' },
+    { x: '82%', y: '32%', transform: 'translate(-50%, -50%)', actionClass: 'action-bottom', betClass: 'bet-left' },
+    { x: '82%', y: '62%', transform: 'translate(-50%, -50%)', actionClass: 'action-top', betClass: 'bet-left' }
   ]
 }
 
