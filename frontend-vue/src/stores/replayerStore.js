@@ -34,12 +34,17 @@ export const useReplayerStore = defineStore('replayer', {
   getters: {
     currentAction: (state) => {
       if (!state.handData || state.currentIndex === 0) return null
-      return state.handData.actions[state.currentIndex - 1]
+      const actions = state.handData.actions || state.handData.Actions || []
+      return actions[state.currentIndex - 1]
     },
-    totalActions: (state) => state.handData?.actions?.length || 0,
+    totalActions: (state) => {
+      const actions = state.handData?.actions || state.handData?.Actions || []
+      return actions.length || 0
+    },
     progress: (state) => {
       if (!state.handData) return 0
-      return (state.currentIndex / state.handData.actions.length) * 100
+      const actions = state.handData.actions || state.handData.Actions || []
+      return (state.currentIndex / actions.length) * 100
     }
   },
 
@@ -70,7 +75,12 @@ export const useReplayerStore = defineStore('replayer', {
       this.stop()
       this.error = null
       this.loading = false
-      this.handData = handData
+      // Normalize property names from PascalCase (C#) to camelCase (JS)
+      this.handData = {
+        ...handData,
+        players: handData.players || handData.Players || [],
+        actions: handData.actions || handData.Actions || []
+      }
       this.handId = handData.id || handData.handId || handData.HandId
       this.resetTable()
     },
@@ -85,9 +95,10 @@ export const useReplayerStore = defineStore('replayer', {
       this.actionLog = []
       
       // Initialize players with initial stacks
-      this.players = this.handData.players.map(p => ({
+      const players = this.handData.players || this.handData.Players || []
+      this.players = players.map(p => ({
         ...p,
-        currentStack: p.initialStack,
+        currentStack: p.initialStack || p.InitialStack || 0,
         bet: 0,
         isFolded: false,
         isAllIn: false,
@@ -96,8 +107,9 @@ export const useReplayerStore = defineStore('replayer', {
       }))
 
       // Auto-apply setup actions (Blinds, DealCards Preflop)
-      while (this.currentIndex < this.handData.actions.length) {
-        const action = this.handData.actions[this.currentIndex]
+      const actions = this.handData.actions || this.handData.Actions || []
+      while (this.currentIndex < actions.length) {
+        const action = actions[this.currentIndex]
         if (this.isRealAction(action)) break
         
         this.applyAction(action)
