@@ -87,7 +87,7 @@ const winnerSeat = computed(() => {
             </div>
 
             <div class="board-zone">
-              <Card v-for="(card, index) in store.board" :key="`${card}-${index}`" :card="card" size="board" />
+              <Card v-for="(card, index) in store.board" :key="`${card}-${index}-${store.board.length}`" :card="card" size="board" />
               <template v-if="store.board.length > 0">
                 <div v-for="index in missingBoardCards" :key="`placeholder-${index}`" class="board-placeholder"></div>
               </template>

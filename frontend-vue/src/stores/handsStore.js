@@ -24,6 +24,10 @@ export const useHandsStore = defineStore('hands', () => {
   const selectedTournament = ref(null)
   const tournamentHands = ref([])
 
+  const viewMode = ref('tournaments') // 'tournaments' | 'hands'
+  const handsList = ref([]) // Pour stocker les mains en mode 'hands'
+  const totalHandsCount = ref(0) // Total mains pour la pagination
+
   const loadTournaments = async () => {
     isLoading.value = true
 
@@ -61,6 +65,49 @@ export const useHandsStore = defineStore('hands', () => {
     }
   }
 
+  const loadHandsList = async () => {
+    isLoading.value = true
+    const filterStore = useFilterStore()
+    const heroName = filterStore.heroName
+    const { getDateRangeParams } = filterStore
+    const { dateFrom, dateTo } = getDateRangeParams()
+
+    try {
+      const result = await ipcService.getHands({
+        page: currentPage.value,
+        limit: pageSize.value,
+        heroName: heroName,
+        dateFrom,
+        dateTo,
+        result: filters.value.result,
+        sortBy: filters.value.sortBy,
+      })
+
+      if (result && result.success && result.data) {
+        handsList.value = result.data.hands || []
+        totalHandsCount.value = result.data.total || 0
+      }
+      isLoading.value = false
+      return result
+    } catch (error) {
+      console.error('Failed to load hands list:', error)
+      isLoading.value = false
+      return { success: false, error }
+    }
+  }
+
+  const setViewMode = (mode) => {
+    viewMode.value = mode
+    currentPage.value = 1
+    if (mode === 'tournaments') loadTournaments()
+    else loadHandsList()
+  }
+
+  const loadData = () => {
+    if (viewMode.value === 'tournaments') loadTournaments()
+    else loadHandsList()
+  }
+
   const loadTournamentHands = async (gameId) => {
     isLoadingHands.value = true
     try {
@@ -87,7 +134,7 @@ export const useHandsStore = defineStore('hands', () => {
   const setSortBy = (sortBy) => {
     filters.value.sortBy = sortBy
     currentPage.value = 1
-    loadTournaments()
+    loadData()
   }
 
   const setFilters = (updates) => {
@@ -156,6 +203,12 @@ export const useHandsStore = defineStore('hands', () => {
     setFilters,
     selectHand,
     selectTournament,
-    clearSelection
+    clearSelection,
+    viewMode,
+    handsList,
+    totalHandsCount,
+    loadHandsList,
+    setViewMode,
+    loadData
   }
 })

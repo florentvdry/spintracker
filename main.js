@@ -330,8 +330,14 @@ function createReplayerWindow() {
 
   replayerWindow.webContents.on('did-finish-load', () => {
     // Send the hand data to the replayer window
-    console.log('[Main] Sending replayer data:', lastReplayerData ? Object.keys(lastReplayerData) : 'null');
-    replayerWindow.webContents.send('load-replayer-data', lastReplayerData);
+    console.log('[Main] did-finish-load triggered, lastReplayerData:', lastReplayerData ? 'exists' : 'null');
+    if (lastReplayerData) {
+      console.log('[Main] Sending data with keys:', Object.keys(lastReplayerData));
+      console.log('[Main] Sending handId:', lastReplayerData.handId);
+      replayerWindow.webContents.send('load-replayer-data', lastReplayerData);
+    } else {
+      console.log('[Main] ERROR: lastReplayerData is null!');
+    }
   });
 
   replayerWindow.on('closed', () => {
@@ -345,7 +351,7 @@ app.whenReady().then(() => {
   startBackend();
 
   ipcMain.handle('replayer-get-data', () => {
-    console.log('[Main] replayer-get-data invoked, returning stored data');
+    console.log('[Main] replayer-get-data invoked, returning stored data:', lastReplayerData ? 'Data found' : 'No data');
     return lastReplayerData;
   });
 
@@ -773,6 +779,7 @@ ipcMain.handle('open-logs-folder', async () => {
 });
 
 ipcMain.on('frontend-log', (event, { level, message, args }) => {
+  console.log('[Main] Received frontend log:', level, message);
   const formattedArgs = args && args.length > 0 ? JSON.stringify(args) : '';
   const fullMessage = `[Frontend] ${message} ${formattedArgs}`;
   
@@ -815,6 +822,7 @@ ipcMain.handle('open-replayer', async (event, data) => {
   // data can be either handData (old) or { handIds, startIndex, heroName } (new)
   console.log('[Main] open-replayer called with data:', data ? Object.keys(data) : 'null');
   lastReplayerData = data;
+  console.log('[Main] lastReplayerData set, creating replayer window');
   createReplayerWindow();
 });
 

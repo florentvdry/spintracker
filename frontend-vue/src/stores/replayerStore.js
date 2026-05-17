@@ -33,18 +33,26 @@ export const useReplayerStore = defineStore('replayer', {
 
   getters: {
     currentAction: (state) => {
-      if (!state.handData || state.currentIndex === 0) return null
+      if (!state.handData) return null
       const actions = state.handData.actions || state.handData.Actions || []
-      return actions[state.currentIndex - 1]
+      if (state.currentIndex >= actions.length) return null
+      return actions[state.currentIndex]
     },
     totalActions: (state) => {
-      const actions = state.handData?.actions || state.handData?.Actions || []
-      return actions.length || 0
+      if (!state.handData) return 0
+      return state.handData.actions.filter(a => {
+        const setupTypes = ['PostSB', 'PostBB', 'DealCards']
+        return !setupTypes.includes(a.type)
+      }).length
     },
     progress: (state) => {
       if (!state.handData) return 0
-      const actions = state.handData.actions || state.handData.Actions || []
-      return (state.currentIndex / actions.length) * 100
+      const realActions = state.handData.actions.filter(a => {
+        const setupTypes = ['PostSB', 'PostBB', 'DealCards']
+        return !setupTypes.includes(a.type)
+      })
+      const currentIndex = realActions.findIndex((a, i) => i >= state.currentIndex - 1)
+      return currentIndex >= 0 ? ((currentIndex + 1) / realActions.length) * 100 : 0
     }
   },
 
@@ -72,21 +80,34 @@ export const useReplayerStore = defineStore('replayer', {
     },
 
     setHand(handData) {
+      console.log('ReplayerStore: setHand started');
+      console.log('ReplayerStore: handData keys:', Object.keys(handData));
+      
       this.stop()
       this.error = null
       this.loading = false
-      // Normalize property names from PascalCase (C#) to camelCase (JS)
-      this.handData = {
+      
+      // Normalize property names
+      const normalizedData = {
         ...handData,
         players: handData.players || handData.Players || [],
         actions: handData.actions || handData.Actions || []
       }
+      
+      this.handData = normalizedData
       this.handId = handData.id || handData.handId || handData.HandId
+      
+      console.log('ReplayerStore: setHand finished. handId:', this.handId, 'handData set:', !!this.handData);
+      
       this.resetTable()
     },
 
     resetTable() {
-      if (!this.handData) return
+      if (!this.handData) {
+          console.log('ReplayerStore: resetTable, handData is null/undefined')
+          return
+      }
+      console.log('ReplayerStore: resetTable started')
       
       this.currentIndex = 0
       this.pot = 0
@@ -94,7 +115,7 @@ export const useReplayerStore = defineStore('replayer', {
       this.street = 'Preflop'
       this.actionLog = []
       
-      // Initialize players with initial stacks
+      console.log('ReplayerStore: resetTable, mapping players')
       const players = this.handData.players || this.handData.Players || []
       this.players = players.map(p => ({
         ...p,
@@ -106,37 +127,83 @@ export const useReplayerStore = defineStore('replayer', {
         showCards: false
       }))
 
-      // Auto-apply setup actions (Blinds, DealCards Preflop)
+      console.log('ReplayerStore: resetTable, actions processed')
       const actions = this.handData.actions || this.handData.Actions || []
-      while (this.currentIndex < actions.length) {
-        const action = actions[this.currentIndex]
-        if (this.isRealAction(action)) break
-        
+      const firstRealIndex = this.getFirstRealActionIndex()
+      
+      console.log('ReplayerStore: resetTable, firstRealIndex:', firstRealIndex)
+      
+      let i = 0
+      while (i < firstRealIndex) {
+        const action = actions[i]
+        console.log('ReplayerStore: resetTable, applying setup action', i, action.type, 'cards:', action.cards, 'action:', JSON.stringify(action))
         this.applyAction(action)
         this.currentIndex++
+        i++
       }
+      console.log('ReplayerStore: resetTable finished, board state:', this.board)
     },
 
     isRealAction(action) {
-      const realTypes = ['Bet', 'Call', 'Raise', 'Fold', 'Check', 'AllIn']
-      return realTypes.includes(action.type)
+      const setupTypes = ['PostSB', 'PostBB']
+      return !setupTypes.includes(action.type)
+    },
+
+    findNextRealActionIndex(fromIndex) {
+      for (let i = fromIndex; i < this.handData.actions.length; i++) {
+        if (this.isRealAction(this.handData.actions[i])) return i
+      }
+      return this.handData.actions.length
+    },
+
+    findPrevRealActionIndex(fromIndex) {
+      for (let i = fromIndex - 1; i >= 0; i--) {
+        if (this.isRealAction(this.handData.actions[i])) return i
+      }
+      return 0
+    },
+
+    getFirstRealActionIndex() {
+      return this.findNextRealActionIndex(0)
+    },
+
+    getTotalRealActions() {
+      if (!this.handData) return 0
+      return this.handData.actions.filter(a => this.isRealAction(a)).length
     },
 
     nextStep() {
-      if (!this.handData || this.currentIndex >= this.handData.actions.length) {
+      if (!this.handData) return
+      
+      if (this.currentIndex >= this.handData.actions.length) {
         this.stop()
         return
       }
 
-      const action = this.handData.actions[this.currentIndex]
+      const nextRealIndex = this.findNextRealActionIndex(this.currentIndex)
+      if (nextRealIndex >= this.handData.actions.length) {
+        this.stop()
+        return
+      }
+
+      const action = this.handData.actions[nextRealIndex]
       this.applyAction(action)
-      this.currentIndex++
+      this.currentIndex = nextRealIndex + 1
     },
 
     prevStep() {
-      if (this.currentIndex <= 0) return
+      if (!this.handData) return
+      
+      const firstRealIndex = this.getFirstRealActionIndex()
+      if (this.currentIndex <= firstRealIndex + 1) {
+        this.resetTable()
+        return
+      }
       
       this.currentIndex--
+      while (this.currentIndex > firstRealIndex + 1 && !this.isRealAction(this.handData.actions[this.currentIndex - 1])) {
+        this.currentIndex--
+      }
       this.rebuildStateToCurrentIndex()
     },
 
@@ -206,12 +273,22 @@ export const useReplayerStore = defineStore('replayer', {
           break;
 
         case 'DealCards':
+          // Si on passe à une nouvelle street, reset les bets
           if (action.street !== 'Preflop') {
             this.players.forEach(p => p.bet = 0)
           }
+          // Mise à jour du board
           if (action.cards) {
             const newCards = action.cards.match(/.{1,2}/g) || []
             this.board = [...this.board, ...newCards]
+          } else if (action.description && action.description.includes(':')) {
+            // Tentative de parsing fallback si cards est null mais présent dans la description
+            const parts = action.description.split(':')
+            if (parts.length > 1) {
+                const cardStr = parts[1].trim().replace(/\s+/g, '')
+                const newCards = cardStr.match(/.{1,2}/g) || []
+                this.board = [...this.board, ...newCards]
+            }
           }
           break;
 
@@ -272,6 +349,20 @@ export const useReplayerStore = defineStore('replayer', {
     jumpTo(index) {
       this.currentIndex = index
       this.rebuildStateToCurrentIndex()
+    },
+
+    jumpToRealAction(realActionIndex) {
+      let count = 0
+      for (let i = 0; i < this.handData.actions.length; i++) {
+        if (this.isRealAction(this.handData.actions[i])) {
+          if (count === realActionIndex) {
+            this.currentIndex = i
+            this.rebuildStateToCurrentIndex()
+            return
+          }
+          count++
+        }
+      }
     },
 
     async loadHandQueue(data) {
@@ -345,4 +436,4 @@ export const useReplayerStore = defineStore('replayer', {
       }
     }
   }
-      })
+})

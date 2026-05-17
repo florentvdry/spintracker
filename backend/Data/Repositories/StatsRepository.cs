@@ -2350,6 +2350,7 @@ public class StatsRepository
             public string Room { get; set; } = "";
             public double BuyIn { get; set; }
             public double NetProfit { get; set; }
+            public string Blinds { get; set; } = "";
 
             public static StatHandSample From(DetailedHandRow h) => new()
             {
@@ -2368,7 +2369,8 @@ public class StatsRepository
                 DateTime = h.DateTime,
                 Room = h.Room,
                 BuyIn = h.BuyIn,
-                NetProfit = h.NetProfit
+                NetProfit = h.NetProfit,
+                Blinds = h.Blinds
             };
         }
     }

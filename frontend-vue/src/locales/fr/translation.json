@@ -1,7 +1,7 @@
 {
     "navigation":  {
                        "dashboard":  "Tableau de bord",
-                       "history":  "Historique des tournois",
+                       "history":  "Historique",
                        "ranges":  "Analyseur de ranges",
                        "charts":  "Graphiques",
                        "players":  "Joueurs",
@@ -125,9 +125,12 @@
                                   }
                   },
     "hand_history":  {
-                         "title":  "Historique des tournois",
+                         "title":  "Historique",
                          "subtitle":  "Parcourez vos tournois et mains",
+                         "by_tournaments": "Par tournois",
+                         "by_hands": "Par mains",
                          "total_tournaments":  "{count} tournois trouvés",
+                         "total_hands": "{count} mains trouvées",
                          "no_hands":  "Aucun historique",
                          "import_prompt":  "Importez vos mains pour commencer",
                          "hand_details":  "Détails de la main",

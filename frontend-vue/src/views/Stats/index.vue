@@ -194,13 +194,13 @@
                     <span v-for="card in splitCards(hand.cards)" :key="card" :class="['card-tile', cardTone(card)]">{{ cardRank(card) }}</span>
                   </div>
                 </td>
-                <td class="action-cell">{{ compactActions(hand.preflop) }}</td>
+                <td class="action-cell">{{ compactActions(hand.preflop, parseBlinds(hand.blinds)?.bb || 1) }}</td>
                 <td><div class="card-row board"><span v-for="card in splitCards(hand.flopCards)" :key="card" :class="['card-tile', cardTone(card)]">{{ cardRank(card) }}</span></div></td>
-                <td class="action-cell">{{ compactActions(hand.flop) }}</td>
+                <td class="action-cell">{{ compactActions(hand.flop, parseBlinds(hand.blinds)?.bb || 1) }}</td>
                 <td><div class="card-row board"><span v-for="card in splitCards(hand.turnCard)" :key="card" :class="['card-tile', cardTone(card)]">{{ cardRank(card) }}</span></div></td>
-                <td class="action-cell">{{ compactActions(hand.turn) }}</td>
+                <td class="action-cell">{{ compactActions(hand.turn, parseBlinds(hand.blinds)?.bb || 1) }}</td>
                 <td><div class="card-row board"><span v-for="card in splitCards(hand.riverCard)" :key="card" :class="['card-tile', cardTone(card)]">{{ cardRank(card) }}</span></div></td>
-                <td class="action-cell">{{ compactActions(hand.river) }}</td>
+                <td class="action-cell">{{ compactActions(hand.river, parseBlinds(hand.blinds)?.bb || 1) }}</td>
                 <td>{{ formatStake(hand) }}</td>
                 <td :class="['profit-cell', Number(hand.netProfit || 0) >= 0 ? 'win' : 'loss']">{{ formatChips(hand.netProfit) }}</td>
                 <td>{{ formatHandDate(hand.dateTime) }}</td>
@@ -519,19 +519,78 @@ const cardTone = (card = '') => {
   return 'spade'
 }
 
-const compactActions = (actions = '') => {
+const parseBlinds = (blindsStr = '') => {
+  if (!blindsStr) return null
+  const match = String(blindsStr).match(/(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)/)
+  if (match) {
+    return {
+      sb: parseFloat(match[1]),
+      bb: parseFloat(match[2])
+    }
+  }
+  return null
+}
+
+const compactActions = (actions = '', bb = 1) => {
   const lines = String(actions || '')
     .split('\n')
     .map((line) => line.trim())
     .filter(Boolean)
     .filter((line) => !/\bposts\b/i.test(line))
-    .map((line) =>
-      line
-        .replace(/\s+and is all-in/gi, ' AI')
-        .replace(/\s+collected\s+/gi, ' wins ')
-        .replace(/\s+to\s+/gi, '>')
-    )
-  return lines.length ? lines.join('  |  ') : '--'
+    .map((line) => {
+      let cleaned = line
+        .replace(/^\d{2}:\d{2}:\d{2}\s*-\s*/i, '') // Remove timestamp prefix like "22:53:09 - "
+        .replace(/\s+and is all-in/gi, '')
+        .replace(/\s+collected\s+.*$/gi, '')
+        .replace(/\s+returned\s+.*$/gi, '')
+        .replace(/\s+uncalled bet.*$/gi, '')
+      
+      // Match formats: "PlayerName: action" or "PlayerName action"
+      const match = cleaned.match(/^(?<name>[^:\n]+?)\s*:?\s+(?<action>checks|bets|calls|raises|folds|all-in|tapis)\b(.*)$/i)
+      if (!match) return null
+      
+      const actionText = match.groups.action.toLowerCase()
+      const tail = (match[3] || '').toLowerCase()
+      
+      let compact = ''
+      
+      if (actionText === 'folds' || actionText === 'fold') {
+        compact = 'F'
+      } else if (actionText === 'checks' || actionText === 'check') {
+        compact = 'X'
+      } else if (actionText === 'calls' || actionText === 'call') {
+        const amountMatch = tail.match(/(\d+(?:\.\d+)?)/)
+        if (amountMatch) {
+          const amount = parseFloat(amountMatch[1])
+          compact = bb > 0 ? `C${(amount / bb).toFixed(1).replace(/\.0$/, '')}` : `C${amount}`
+        } else {
+          compact = 'C'
+        }
+      } else if (actionText === 'bets' || actionText === 'bet') {
+        const amountMatch = tail.match(/(\d+(?:\.\d+)?)/)
+        if (amountMatch) {
+          const amount = parseFloat(amountMatch[1])
+          compact = bb > 0 ? `B${(amount / bb).toFixed(1).replace(/\.0$/, '')}` : `B${amount}`
+        } else {
+          compact = 'B'
+        }
+      } else if (actionText === 'raises' || actionText === 'raise') {
+        const amountMatch = tail.match(/(\d+(?:\.\d+)?)/)
+        if (amountMatch) {
+          const amount = parseFloat(amountMatch[1])
+          compact = bb > 0 ? `R${(amount / bb).toFixed(1).replace(/\.0$/, '')}` : `R${amount}`
+        } else {
+          compact = 'R'
+        }
+      } else if (actionText === 'all-in' || actionText === 'tapis') {
+        compact = 'AI'
+      }
+      
+      return compact || null
+    })
+    .filter(Boolean)
+  
+  return lines.length ? lines.join(' ') : '--'
 }
 
 const formatStake = (hand) => hand?.buyIn ? `BI ${Number(hand.buyIn).toFixed(2)}` : hand?.room || '--'
@@ -2482,9 +2541,12 @@ h1 {
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.26);
 }
 
-.card-tile.heart,
-.card-tile.diamond {
+.card-tile.heart {
   background: #ef1f2d;
+}
+
+.card-tile.diamond {
+  background: #2563eb;
 }
 
 .card-tile.club {
@@ -2492,7 +2554,7 @@ h1 {
 }
 
 .card-tile.spade {
-  background: #2563eb;
+  background: #6b7280;
 }
 
 .action-cell {

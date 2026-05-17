@@ -3,11 +3,28 @@
     <div>
       <h1 class="text-2xl font-bold text-white">{{ $t('hand_history.title') }}</h1>
       <p class="text-gray-400 mt-1">
-        {{ $t('hand_history.total_tournaments', { count: totalTournaments.toLocaleString() }) }}
+        {{ viewMode === 'tournaments' ? $t('hand_history.total_tournaments', { count: totalTournaments.toLocaleString() }) : $t('hand_history.total_hands', { count: totalHandsCount.toLocaleString() }) }}
       </p>
     </div>
 
     <Card flat class="flex flex-wrap items-center gap-4">
+      <div class="flex bg-dark-200 rounded-lg p-1">
+        <button 
+            class="px-4 py-2 rounded-md"
+            :class="viewMode === 'tournaments' ? 'bg-blue-600 text-white' : 'text-gray-400'"
+            @click="setViewMode('tournaments')"
+        >
+            {{ $t('hand_history.by_tournaments') }}
+        </button>
+        <button 
+            class="px-4 py-2 rounded-md"
+            :class="viewMode === 'hands' ? 'bg-blue-600 text-white' : 'text-gray-400'"
+            @click="setViewMode('hands')"
+        >
+            {{ $t('hand_history.by_hands') }}
+        </button>
+      </div>
+
       <select 
         class="select w-36"
         :value="filters.result || ''"
@@ -25,7 +42,7 @@
           <div v-if="isLoading" class="flex items-center justify-center py-20">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           </div>
-          <template v-else-if="tournaments.length > 0">
+          <template v-else-if="viewMode === 'tournaments' && tournaments.length > 0">
             <TournamentsTable 
               :tournaments="tournaments" 
               :selected-tournament="selectedTournament"
@@ -39,6 +56,38 @@
               @replay-hand="handleReplayHand"
             />
             
+            <div class="flex items-center justify-between p-4 border-t border-dark-100/30">
+              <p class="text-sm text-gray-400">
+                {{ $t('hand_history.page_info', { current: currentPage, total: totalPages || 1 }) }}
+              </p>
+              <div class="flex items-center gap-2">
+                <button
+                  @click="setPage(currentPage - 1)"
+                  :disabled="currentPage === 1"
+                  class="p-2 rounded-lg bg-dark-200 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft class="w-4 h-4" />
+                </button>
+                <button
+                  @click="setPage(currentPage + 1)"
+                  :disabled="currentPage >= totalPages"
+                  class="p-2 rounded-lg bg-dark-200 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight class="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </template>
+          <template v-else-if="viewMode === 'hands' && handsList.length > 0">
+            <HandsTable
+              :hands="handsList"
+              :selected-hand="selectedHand"
+              :sort-by="filters.sortBy"
+              @select-hand="selectHand"
+              @replay-hand="handleReplayHand"
+              @sort="setSortBy"
+            />
+            <!-- Pagination pour mains -->
             <div class="flex items-center justify-between p-4 border-t border-dark-100/30">
               <p class="text-sm text-gray-400">
                 {{ $t('hand_history.page_info', { current: currentPage, total: totalPages || 1 }) }}
@@ -92,6 +141,7 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import Card from '@/components/ui/Card.vue'
 import TournamentsTable from './components/TournamentsTable.vue'
+import HandsTable from './components/HandsTable.vue'
 import HandDetails from './components/HandDetails.vue'
 
 const handsStore = useHandsStore()
@@ -103,8 +153,15 @@ const dateRange = computed(() => filterStore.dateRange)
 const buyIn = computed(() => filterStore.buyIn)
 const selectedSession = computed(() => filterStore.selectedSession)
 
+// Mode vue
+const viewMode = computed(() => handsStore.viewMode)
+const setViewMode = (mode) => handsStore.setViewMode(mode)
+
 const tournaments = computed(() => handsStore.tournaments)
 const totalTournaments = computed(() => handsStore.totalTournaments)
+const handsList = computed(() => handsStore.handsList)
+const totalHandsCount = computed(() => handsStore.totalHandsCount)
+
 const isLoading = computed(() => handsStore.isLoading)
 const isLoadingHands = computed(() => handsStore.isLoadingHands)
 const tournamentHands = computed(() => handsStore.tournamentHands)
@@ -115,14 +172,16 @@ const selectedHand = computed(() => handsStore.selectedHand)
 const isLoadingHand = computed(() => handsStore.isLoadingHand)
 const selectedTournament = computed(() => handsStore.selectedTournament)
 
-const totalPages = computed(() => Math.ceil(totalTournaments.value / pageSize.value))
+const totalPages = computed(() => viewMode.value === 'tournaments' ? Math.ceil(totalTournaments.value / pageSize.value) : Math.ceil(totalHandsCount.value / pageSize.value))
 
-const loadTournaments = () => handsStore.loadTournaments()
-const setPage = (page) => handsStore.setPage(page)
+const loadData = () => handsStore.loadData()
+const setPage = (page) => {
+    handsStore.currentPage = page
+    loadData()
+}
 const setSortBy = (sortBy) => handsStore.setSortBy(sortBy)
 const selectHand = (handId) => handsStore.selectHand(handId)
 const selectTournament = (tournament) => handsStore.selectTournament(tournament)
-const loadTournamentHands = (gameId) => handsStore.loadTournamentHands(gameId)
 
 const handleResultFilter = (e) => {
   handsStore.setFilters({ result: e.target.value || null })
@@ -141,10 +200,10 @@ const handleReplayHand = async (handId) => {
 }
 
 onMounted(() => {
-  loadTournaments()
+  loadData()
 })
 
 watch([heroName, dateRange, buyIn, selectedSession, () => filters.value.result, () => filters.value.sortBy], () => {
-  loadTournaments()
+  loadData()
 })
 </script>

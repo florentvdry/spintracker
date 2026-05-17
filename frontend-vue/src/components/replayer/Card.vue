@@ -15,18 +15,18 @@ const rank = computed(() => {
 
 const suit = computed(() => props.card?.slice(-1).toLowerCase() || '')
 
-const config = computed(() => {
+const cardStyle = computed(() => {
   switch (suit.value) {
     case 'h':
-      return { color: 'text-[#ef4444]', symbol: 'H', bg: 'from-white to-red-50' }
+      return 'heart'
     case 'd':
-      return { color: 'text-[#2563eb]', symbol: 'D', bg: 'from-white to-blue-50' }
+      return 'diamond'
     case 's':
-      return { color: 'text-[#111827]', symbol: 'S', bg: 'from-white to-slate-100' }
+      return 'spade'
     case 'c':
-      return { color: 'text-[#16a34a]', symbol: 'C', bg: 'from-white to-emerald-50' }
+      return 'club'
     default:
-      return { color: 'text-gray-400', symbol: '?', bg: 'from-white to-gray-50' }
+      return 'spade'
   }
 })
 
@@ -62,11 +62,33 @@ const sizeClasses = computed(() => {
 
   <div
     v-else
-    class="relative flex select-none flex-col items-center justify-center border border-gray-200 bg-gradient-to-b font-black tracking-tighter shadow-[0_8px_18px_rgba(0,0,0,0.38)] ring-1 ring-black/5"
-    :class="[sizeClasses, config.color, config.bg]"
+    class="card-tile relative flex select-none items-center justify-center font-black shadow-[0_8px_18px_rgba(0,0,0,0.38)]"
+    :class="[sizeClasses, cardStyle]"
   >
     <span class="leading-none">{{ rank }}</span>
-    <span class="mt-[-0.1em] text-[0.72em] font-black leading-none opacity-80">{{ config.symbol }}</span>
-    <span class="absolute left-1 top-0.5 text-[0.38em] opacity-30">{{ config.symbol }}</span>
   </div>
 </template>
+
+<style scoped>
+.card-tile {
+  border-radius: 5px;
+  color: #fff;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.26);
+}
+
+.card-tile.heart {
+  background: #ef1f2d;
+}
+
+.card-tile.diamond {
+  background: #2563eb;
+}
+
+.card-tile.club {
+  background: #10b85f;
+}
+
+.card-tile.spade {
+  background: #6b7280;
+}
+</style>

@@ -32,7 +32,11 @@ const cards = computed(() => {
   return String(props.player.cards).match(/.{1,2}/g) || []
 })
 
-const showCards = computed(() => props.player.isHero || props.player.showCards)
+const showCards = computed(() => {
+  const show = props.player.isHero || props.player.showCards
+  console.log(`PlayerSeat: ${props.player.name}, isHero: ${props.player.isHero}, showCards: ${props.player.showCards}, finalShow: ${show}, cards: ${props.player.cards}`)
+  return show
+})
 
 const cardsToShow = computed(() => {
   if (props.player.isFolded) return []
@@ -42,6 +46,12 @@ const cardsToShow = computed(() => {
 const currentActionText = computed(() => {
   const action = store.currentAction
   if (!action || action.playerName !== props.player.name || !store.isRealAction(action)) return null
+  
+  if (store.viewMode === 'bb' && bbValue.value > 0 && action.amount > 0 && ['Bet', 'Raise', 'Call', 'AllIn'].includes(action.type)) {
+     const formatted = formatValue(action.amount)
+     // Replace the number with the formatted value in the description
+     return action.description.replace(/\d+/, formatted)
+  }
   return action.description
 })
 

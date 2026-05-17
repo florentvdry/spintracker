@@ -267,12 +267,27 @@ public class HandRepository
             var selectFields = "h.*, ph.ev_chips, ph.equity_preflop, ph.equity_flop, ph.equity_turn, ph.equity_river";
             selectFields += ", ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name";
 
+            var orderBy = "h.date_time DESC";
+            if (!string.IsNullOrEmpty(options.SortBy))
+            {
+                orderBy = options.SortBy switch
+                {
+                    "date_asc" => "h.date_time ASC",
+                    "date_desc" => "h.date_time DESC",
+                    "cev_asc" => "ev_chips ASC",
+                    "cev_desc" => "ev_chips DESC",
+                    "profit_asc" => "net_profit ASC",
+                    "profit_desc" => "net_profit DESC",
+                    _ => "h.date_time DESC"
+                };
+            }
+
             cmd.CommandText = $@"
                 SELECT {selectFields}
                 FROM hands h
                 {joinClause}
                 {whereClause}
-                ORDER BY h.date_time DESC
+                ORDER BY {orderBy}
                 LIMIT @limit OFFSET @offset";
 
             foreach (var param in parameters)

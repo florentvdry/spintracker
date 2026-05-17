@@ -120,8 +120,8 @@
                           {{ formatHandTime(hand.date_time) }}
                         </td>
                         <td class="px-4 py-2">
-                          <div class="flex gap-0.5">
-                            <PlayingCard v-for="(c, i) in parseCards(hand.hero_cards || hand.dyn_hero_cards)" :key="i" :card="c" size="xs" />
+                          <div class="card-row">
+                            <span v-for="(c, i) in parseCards(hand.hero_cards || hand.dyn_hero_cards)" :key="i" :class="['card-tile', cardTone(c)]">{{ cardRank(c) }}</span>
                           </div>
                         </td>
                         <td class="px-4 py-2">
@@ -165,8 +165,20 @@
 
 <script setup>
 import { ChevronDown, ChevronRight, ArrowUpDown, Play } from 'lucide-vue-next'
-import PlayingCard from '@/components/common/PlayingCard.vue'
 import { formatDate, parseCards } from '@/utils/formatters'
+
+const cardRank = (card = '') => {
+  const clean = String(card).trim()
+  return clean.length > 1 ? clean.slice(0, -1).toUpperCase() : clean.toUpperCase()
+}
+
+const cardTone = (card = '') => {
+  const suit = String(card).trim().slice(-1).toLowerCase()
+  if (suit === 'h') return 'heart'
+  if (suit === 'd') return 'diamond'
+  if (suit === 'c') return 'club'
+  return 'spade'
+}
 
 const props = defineProps({
   tournaments: Array,
@@ -237,3 +249,39 @@ const handleSort = (field) => {
   props.onSort(newSort)
 }
 </script>
+
+<style scoped>
+.card-row {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.card-tile {
+  width: 24px;
+  height: 28px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 950;
+  font-size: 11px;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.26);
+}
+
+.card-tile.heart {
+  background: #ef1f2d;
+}
+
+.card-tile.diamond {
+  background: #2563eb;
+}
+
+.card-tile.club {
+  background: #10b85f;
+}
+
+.card-tile.spade {
+  background: #6b7280;
+}
+</style>

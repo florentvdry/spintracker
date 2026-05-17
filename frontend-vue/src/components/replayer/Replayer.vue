@@ -46,9 +46,13 @@ const realActions = computed(() => {
 })
 
 const currentRealActionIndex = computed(() => {
-  if (!store.handData || store.currentIndex === 0) return -1
-  for (let index = store.currentIndex - 1; index >= 0; index -= 1) {
-    if (store.isRealAction(store.handData.actions[index])) return index
+  if (!store.handData) return -1
+  let count = 0
+  for (let i = 0; i < store.handData.actions.length; i++) {
+    if (store.isRealAction(store.handData.actions[i])) {
+      if (i === store.currentIndex) return count
+      count++
+    }
   }
   return -1
 })
@@ -65,9 +69,7 @@ const actionTypeColor = (type) => {
     'Call': 'text-blue-400',
     'Bet': 'text-blue-400',
     'Raise': 'text-green-400',
-    'AllIn': 'text-orange-400',
-    'PostSB': 'text-purple-400',
-    'PostBB': 'text-purple-400'
+    'AllIn': 'text-orange-400'
   }
   return colors[type] || 'text-gray-400'
 }
@@ -100,6 +102,7 @@ onUnmounted(() => {
 
 <template>
   <div class="replayer-page">
+    {{ console.log('[Replayer.vue] Render, handData exists?', !!store.handData) }}
     <header class="replayer-header">
       <div v-if="store.handData" class="hand-card">
         <div class="hand-title">
@@ -171,7 +174,7 @@ onUnmounted(() => {
               played: index < currentRealActionIndex,
               current: index === currentRealActionIndex
             }"
-            @click="store.jumpTo(index + 1)"
+            @click="store.jumpToRealAction(index)"
           >
             <span class="action-street">{{ action.street || '-' }}</span>
             <span class="action-description" :class="actionTypeColor(action.type)">
