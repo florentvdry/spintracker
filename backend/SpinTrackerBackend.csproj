@@ -8,9 +8,11 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
-  <!-- Exclude test sources placed under Tests/ from the main project compile items -->
+  <!-- Exclude test and tool sources from the main project compile items -->
   <ItemGroup>
     <Compile Remove="Tests\**\*.cs" />
+    <Compile Remove="Tools\obj\**\*.cs" />
+    <Compile Remove="Tools\bin\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -118,7 +118,6 @@ Services/
 Startup.cs
 Tools/
  ComparisonTool.cs
- DebugDatabaseTool.cs
  PokerEvaluatorBenchmark.cs
 
 [metadataReferences]

@@ -6,12 +6,6 @@ using SpinTrackerBackend.Tools;
 // Initialize SQLite
 SQLitePCL.Batteries_V2.Init();
 
-if (args.Length > 0 && args[0] == "--debug-db")
-{
-    DebugDatabaseTool.Run();
-    return;
-}
-
 if (args.Length > 0 && args[0] == "--compare")
 {
     await ComparisonTool.Run();
