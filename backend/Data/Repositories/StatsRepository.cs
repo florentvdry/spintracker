@@ -984,7 +984,7 @@ public class StatsRepository
         private int _vsMissedCbetOpp, _vsMissedCbetNum, _vsMissedCbetBetIpOpp, _vsMissedCbetBetIpNum, _vsMissedCbetCheckFoldIpOpp, _vsMissedCbetCheckFoldIpNum;
         private int _vsMissedCbetBetOopTurnOpp, _vsMissedCbetBetOopTurnNum, _vsMissedCbetCheckFoldOopOpp, _vsMissedCbetCheckFoldOopNum;
 
-        private static readonly Regex ActionRegex = new(@"^(?<name>[^:\n]+?)\s*:?\s+(?<act>posts|calls|bets|raises|folds|checks)\b(?<tail>.*)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex ActionRegex = new(@"^(?:[0-9]{1,2}:[0-9]{2}(?::[0-9]{2})?\s*-\s*)?(?<name>[^:\n]+?)\s*:?\s+(?<act>posts|calls|bets|raises|folds|checks)\b(?<tail>.*)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly Regex NumberRegex = new(@"(?<![\w.])(?<n>\d+(?:[.,]\d+)?)", RegexOptions.Compiled);
         private static readonly Regex RaiseToRegex = new(@"\bto\s+(?<n>\d+(?:[.,]\d+)?)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 

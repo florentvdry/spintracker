@@ -27,6 +27,54 @@ namespace SpinTrackerBackend.Services
             _logger = logger;
         }
 
+        private bool IsLineByPlayer(string line, string playerName, out string cleanAction)
+        {
+            cleanAction = "";
+            if (string.IsNullOrWhiteSpace(line)) return false;
+
+            var processingLine = line.Trim();
+
+            // Strip timestamp (Betclic format: "22:53:05 - ")
+            var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
+            if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
+
+            // Format 1: "PlayerName: action"
+            if (processingLine.StartsWith(playerName + ":", StringComparison.OrdinalIgnoreCase))
+            {
+                cleanAction = processingLine.Substring(playerName.Length + 1).Trim();
+                return true;
+            }
+
+            // Format 2: "PlayerName action" (Winamax/Unibet sometimes)
+            if (processingLine.StartsWith(playerName + " ", StringComparison.OrdinalIgnoreCase))
+            {
+                // Verify it's not just a name prefix by checking if the next word is a known action
+                var potentialAction = processingLine.Substring(playerName.Length).Trim();
+                var firstWord = potentialAction.Split(' ')[0].ToLower();
+                var knownActions = new[] { "posts", "calls", "bets", "raises", "folds", "checks" };
+                if (knownActions.Contains(firstWord))
+                {
+                    cleanAction = potentialAction;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private string GetCleanAction(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line)) return line;
+            var processingLine = line.Trim();
+            var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
+            if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
+            
+            var colonIdx = processingLine.IndexOf(':');
+            if (colonIdx >= 0) return processingLine.Substring(colonIdx + 1).Trim();
+            
+            return processingLine;
+        }
+
         public async Task<AnalysisHandsResult> GetAnalysisHandsAsync(AnalysisHandsRequest request)
         {
             // Removed HeroName check to allow Field analysis
@@ -635,9 +683,9 @@ namespace SpinTrackerBackend.Services
             var lines = targetText.Split('\n');
             foreach (var line in lines)
             {
-                if (line.StartsWith(currentHeroName + ":", StringComparison.OrdinalIgnoreCase))
+                if (IsLineByPlayer(line, currentHeroName, out var act))
                 {
-                    var act = line.Substring(currentHeroName.Length + 1).ToLower();
+                    act = act.ToLower();
                     switch (action.ToLower())
                     {
                         case "bet": return act.Contains("bets");
@@ -712,8 +760,8 @@ namespace SpinTrackerBackend.Services
 
                     foreach (var line in lines)
                     {
-                        var lowerLine = line.ToLower();
-                        bool isHero = line.StartsWith(currentHeroName + ":", StringComparison.OrdinalIgnoreCase);
+                        bool isHero = IsLineByPlayer(line, currentHeroName, out var cleanAction);
+                        var lowerLine = cleanAction.ToLower();
 
                         // Check for open raise from others
                         if (!isHero && !heroActed)
@@ -809,9 +857,9 @@ namespace SpinTrackerBackend.Services
             var lines = actionText.Split('\n');
             foreach (var line in lines)
             {
-                if (line.StartsWith(heroName + ":", StringComparison.OrdinalIgnoreCase))
+                if (IsLineByPlayer(line, heroName, out var act))
                 {
-                    var act = line.ToLower();
+                    act = act.ToLower();
                     if (act.Contains("bets")) bets++;
                     else if (act.Contains("raises")) raises++;
                     else if (act.Contains("calls")) calls++;
@@ -1264,27 +1312,9 @@ namespace SpinTrackerBackend.Services
             var lines = actionText.Split('\n');
             foreach (var line in lines)
             {
-                var processingLine = line.Trim();
-                var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
-                if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
-
-                var parts = processingLine.Split(':');
-                bool isHero = false;
-                string act = "";
-
-                if (parts.Length > 1 && parts[0].Trim().Equals(heroName, StringComparison.OrdinalIgnoreCase))
+                if (IsLineByPlayer(line, heroName, out var act))
                 {
-                    isHero = true;
-                    act = parts[1].Trim().ToLower();
-                }
-                else if (processingLine.StartsWith(heroName + ":", StringComparison.OrdinalIgnoreCase))
-                {
-                    isHero = true;
-                    act = processingLine.Substring(heroName.Length + 1).Trim().ToLower();
-                }
-
-                if (isHero)
-                {
+                    act = act.ToLower();
                     if (act.Contains("all-in")) return "AllIn";
 
                     if (act.Contains("raises"))
