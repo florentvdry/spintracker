@@ -3,13 +3,12 @@ name: Build and Deploy
 on:
   workflow_dispatch:
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   release:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,7 +28,8 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Install root dependencies
-        run: npm ci
+        run: |
+          npm ci
 
       - name: Install frontend dependencies
         run: |
@@ -42,7 +42,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Bump version
-        run: npm version patch -m "chore: bump version to %s [skip ci]"
+        run: |
+          npm version patch -m "chore: bump version to %s [skip ci]"
 
       - name: Push changes
         run: |
@@ -50,12 +51,15 @@ jobs:
           git push --tags
 
       - name: Build Vue frontend
-        run: npm run react:build
+        run: |
+          npm run react:build
 
       - name: Build .NET backend
-        run: npm run backend:build
+        run: |
+          npm run backend:build
 
       - name: Build and Publish Electron App
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npx electron-builder --win --publish always
+        run: |
+          npx electron-builder --win --publish always
