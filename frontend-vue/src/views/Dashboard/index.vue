@@ -41,23 +41,73 @@
           <div>
             <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-1">3-Way</p>
             <div class="space-y-1">
-              <div class="flex justify-between items-center text-xs">
+              <div class="flex justify-between items-center text-xs p-0.5 rounded transition-colors">
                 <span class="text-gray-400">BTN</span>
                 <span :class="['font-mono font-medium', formatCev(stats.cev_by_position?.['3W_BTN']).isPositive ? 'text-green-500' : 'text-red-500']">
                   {{ formatCev(stats.cev_by_position?.['3W_BTN']).formatted }}
                 </span>
               </div>
-              <div class="flex justify-between items-center text-xs">
+              
+              <!-- SB Row with Tooltip -->
+              <div 
+                class="group relative flex justify-between items-center text-xs p-0.5 rounded hover:bg-white/5 cursor-help transition-colors"
+                @mouseenter="hoveredPos = 'SB'"
+                @mouseleave="hoveredPos = null"
+              >
                 <span class="text-gray-400">SB</span>
                 <span :class="['font-mono font-medium', formatCev(stats.cev_by_position?.['3W_SB']).isPositive ? 'text-green-500' : 'text-red-500']">
                   {{ formatCev(stats.cev_by_position?.['3W_SB']).formatted }}
                 </span>
+                
+                <!-- Tooltip SB -->
+                <div v-if="hoveredPos === 'SB'" class="absolute left-full ml-2 z-50 w-32 p-2 bg-[#1a1f2e] border border-gray-700 rounded shadow-xl animate-in fade-in slide-in-from-left-1 duration-200">
+                  <p class="text-[10px] text-gray-500 uppercase mb-1.5 border-b border-gray-700 pb-1">Detail SB</p>
+                  <div class="space-y-1">
+                    <div class="flex justify-between items-center">
+                      <span class="text-[10px] text-gray-400">vs BTN</span>
+                      <span :class="['text-[10px] font-mono', formatCev(stats.cev_by_position?.['3W_SB_vs_BTN']).isPositive ? 'text-green-400' : 'text-red-400']">
+                        {{ formatCev(stats.cev_by_position?.['3W_SB_vs_BTN']).formatted }}
+                      </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-[10px] text-gray-400">vs BB</span>
+                      <span :class="['text-[10px] font-mono', formatCev(stats.cev_by_position?.['3W_SB_vs_BB']).isPositive ? 'text-green-400' : 'text-red-400']">
+                        {{ formatCev(stats.cev_by_position?.['3W_SB_vs_BB']).formatted }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="flex justify-between items-center text-xs">
+
+              <!-- BB Row with Tooltip -->
+              <div 
+                class="group relative flex justify-between items-center text-xs p-0.5 rounded hover:bg-white/5 cursor-help transition-colors"
+                @mouseenter="hoveredPos = 'BB'"
+                @mouseleave="hoveredPos = null"
+              >
                 <span class="text-gray-400">BB</span>
                 <span :class="['font-mono font-medium', formatCev(stats.cev_by_position?.['3W_BB']).isPositive ? 'text-green-500' : 'text-red-500']">
                   {{ formatCev(stats.cev_by_position?.['3W_BB']).formatted }}
                 </span>
+
+                <!-- Tooltip BB -->
+                <div v-if="hoveredPos === 'BB'" class="absolute left-full ml-2 z-50 w-32 p-2 bg-[#1a1f2e] border border-gray-700 rounded shadow-xl animate-in fade-in slide-in-from-left-1 duration-200">
+                  <p class="text-[10px] text-gray-500 uppercase mb-1.5 border-b border-gray-700 pb-1">Detail BB</p>
+                  <div class="space-y-1">
+                    <div class="flex justify-between items-center">
+                      <span class="text-[10px] text-gray-400">vs BTN</span>
+                      <span :class="['text-[10px] font-mono', formatCev(stats.cev_by_position?.['3W_BB_vs_BTN']).isPositive ? 'text-green-400' : 'text-red-400']">
+                        {{ formatCev(stats.cev_by_position?.['3W_BB_vs_BTN']).formatted }}
+                      </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-[10px] text-gray-400">vs SB</span>
+                      <span :class="['text-[10px] font-mono', formatCev(stats.cev_by_position?.['3W_BB_vs_SB']).isPositive ? 'text-green-400' : 'text-red-400']">
+                        {{ formatCev(stats.cev_by_position?.['3W_BB_vs_SB']).formatted }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -114,7 +164,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { DollarSign, Hash, Trophy, Target, TrendingUp, Zap } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/appStore'
@@ -128,6 +178,7 @@ const { t } = useI18n()
 const appStore = useAppStore()
 const filterStore = useFilterStore()
 
+const hoveredPos = ref(null)
 const heroName = computed(() => filterStore.heroName)
 const dateRange = computed(() => filterStore.dateRange)
 const stats = computed(() => appStore.dashboardStats || {})

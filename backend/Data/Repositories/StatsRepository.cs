@@ -220,6 +220,51 @@ public class StatsRepository
                     tournamentsByPosition[key] = tourCount;
                 }
             }
+
+            // 1.2.1 Detailed 3-Way Sub-situations (SB vs BTN, BB vs SB, etc.)
+            using (var cmdSub = connection.CreateCommand())
+            {
+                // We join with other players to see if they entered the pot
+                // ph = Hero
+                // ph_btn = Player at BTN
+                // ph_sb = Player at SB (for BB Hero cases)
+                cmdSub.CommandText = $@"
+                    SELECT 
+                        ph.position as hero_pos,
+                        CASE 
+                            WHEN ph.position = 'SB' AND COALESCE(ph_btn.investment, 0) > COALESCE(h.ante, 0) THEN 'vs_BTN'
+                            WHEN ph.position = 'SB' AND COALESCE(ph_btn.investment, 0) <= COALESCE(h.ante, 0) THEN 'vs_BB'
+                            WHEN ph.position = 'BB' AND COALESCE(ph_btn.investment, 0) > COALESCE(h.ante, 0) THEN 'vs_BTN'
+                            WHEN ph.position = 'BB' AND COALESCE(ph_btn.investment, 0) <= COALESCE(h.ante, 0) AND COALESCE(ph_sb.investment, 0) > (COALESCE(h.ante, 0) + (SELECT CAST(REPLACE(SUBSTR(h.blinds, 1, INSTR(h.blinds, '/') - 1), ',', '.') AS REAL))) THEN 'vs_SB'
+                            ELSE 'Other'
+                        END as situation,
+                        COALESCE(SUM(ph.net_won_adjusted), 0) as sub_ev
+                    FROM hands h
+                    {joinClause}
+                    LEFT JOIN player_hands ph_btn ON h.id = ph_btn.hand_id AND ph_btn.position = 'BTN'
+                    LEFT JOIN player_hands ph_sb ON h.id = ph_sb.hand_id AND ph_sb.position = 'SB'
+                    {whereClause} AND h.player_count = 3 AND ph.position IN ('SB', 'BB')
+                    GROUP BY hero_pos, situation";
+
+                if (!string.IsNullOrEmpty(heroName)) cmdSub.Parameters.AddWithValue("@heroName", heroName);
+                if (!string.IsNullOrEmpty(dateFrom)) cmdSub.Parameters.AddWithValue("@dateFrom", dateFrom);
+                if (!string.IsNullOrEmpty(dateTo)) cmdSub.Parameters.AddWithValue("@dateTo", dateTo);
+                if (buyIn.HasValue) cmdSub.Parameters.AddWithValue("@buyIn", buyIn.Value);
+
+                using var reader = await cmdSub.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    var hPos = reader.GetString(0);
+                    var situation = reader.GetString(1);
+                    var ev = reader.GetDouble(2);
+
+                    if (situation != "Other")
+                    {
+                        var key = $"3W_{hPos}_{situation}";
+                        cevByPosition[key] = ev;
+                    }
+                }
+            }
         }
         catch (Exception ex)
         {

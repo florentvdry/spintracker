@@ -117,7 +117,10 @@ const formatHandProfit = (profit) => {
 }
 
 const formatHandTime = (dateTime) => {
-  return new Date(dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const date = new Date(dateTime)
+  const dateStr = date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })
+  const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  return `${dateStr} ${timeStr}`
 }
 
 const handleSort = (field) => {
