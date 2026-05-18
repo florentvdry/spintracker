@@ -504,11 +504,7 @@ public class ImporterService : IImporterService
         {
             var buy = ParseWinamaxNumber(buyInMatch.Groups["buy"].Value);
             var fee = ParseWinamaxNumber(buyInMatch.Groups["fee"].Value);
-            buyIn = buy > 0 ? buy : 0;
-            if (buyIn <= 0 && fee > 0)
-            {
-                buyIn = fee;
-            }
+            buyIn = buy + fee;
         }
 
         int position = 0;

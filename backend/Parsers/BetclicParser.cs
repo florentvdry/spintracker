@@ -169,6 +169,13 @@ public class BetclicParser : IHandParser
 
             // Post-Processing Calculations
             BuildActionStrings(hand, actions); // Build action strings before calculations
+            
+            // Recalculate Multiplier if missing (stays 1) but we have PrizePool and BuyIn
+            if (hand.Multiplier <= 1 && hand.BuyIn > 0 && hand.PrizePool > 0)
+            {
+                hand.Multiplier = (int)Math.Round(hand.PrizePool / hand.BuyIn, MidpointRounding.AwayFromZero);
+            }
+
             BuildStructuredActions(hand, actions, heroName);
             CalculateInvestmentsAndProfits(hand, players, actions, heroName, totalPotWon);
             NormalizeHandData(hand, players, heroName);
@@ -246,7 +253,26 @@ public class BetclicParser : IHandParser
         else if (line.Contains("Buy In:"))
         {
             var match = BuyInRegex.Match(line);
-            if (match.Success) hand.BuyIn = double.Parse(match.Value, CultureInfo.InvariantCulture);
+            if (match.Success)
+            {
+                // Format: "Buy In: 0.93€ + 0.07€" or "Buy In: 1.00€"
+                var parts = line.Split(':');
+                if (parts.Length > 1)
+                {
+                    var amounts = Regex.Matches(parts[1], @"[\d.]+");
+                    double totalBuyIn = 0;
+                    foreach (Match m in amounts)
+                    {
+                        if (double.TryParse(m.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var val))
+                            totalBuyIn += val;
+                    }
+                    hand.BuyIn = totalBuyIn;
+                }
+                else
+                {
+                    hand.BuyIn = double.Parse(match.Value, CultureInfo.InvariantCulture);
+                }
+            }
         }
         else if (line.Contains("Date & Time:"))
         {

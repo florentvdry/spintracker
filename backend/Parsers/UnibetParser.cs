@@ -131,14 +131,14 @@ public class UnibetParser : IHandParser
                     
                     if (hand.BuyIn > 0)
                     {
+                        var totalBuyIn = hand.BuyIn + (hand.RakePerPlayer ?? 0);
                         var prizeMatch = Regex.Match(line, @"Total prize €(?<prize>\d+(?:\.\d+)?)");
                         if (prizeMatch.Success)
                         {
                             hand.PrizePool = double.Parse(prizeMatch.Groups["prize"].Value, CultureInfo.InvariantCulture);
-                            hand.Multiplier = (int)Math.Round(hand.PrizePool / hand.BuyIn);
+                            hand.Multiplier = (int)Math.Round(hand.PrizePool / totalBuyIn);
                         }
-                    }
-                }
+                    }                }
                 var tm = TableRegex.Match(line);
                 if (tm.Success)
                 {
