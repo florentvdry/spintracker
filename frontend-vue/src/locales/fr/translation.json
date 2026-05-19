@@ -75,8 +75,9 @@
                    "showdown_short":  "SD",
                    "cev":  "CEV",
                    "fold":  "Fold",
-                   "auto":  "Auto"
-               },
+                    "auto": "Auto",
+                    "checking": "Vérification..."
+                },
     "header":  {
                    "search_placeholder":  "Rechercher une main, joueur...",
                    "select_hero":  "Sélectionner...",

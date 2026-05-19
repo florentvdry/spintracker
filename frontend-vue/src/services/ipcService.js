@@ -199,8 +199,15 @@ class IPCService {
     return this.invoke('quit-and-install')
   }
 
+  async checkForUpdates() {
+    return this.invoke('check-for-updates')
+  }
+
   onUpdateStatus(callback) {
-    return this.on('update-status', callback)
+    return this.on('update-status', (data) => {
+      console.log('[IPC ←] update-status', data)
+      callback(data)
+    })
   }
 
   async getDatabases() {

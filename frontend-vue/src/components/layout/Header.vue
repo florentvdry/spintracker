@@ -163,6 +163,19 @@
         <RefreshCw class="w-5 h-5" :class="{ 'animate-spin': isRefreshing }" />
       </button>
 
+      <!-- Update Indicator -->
+      <button 
+        v-if="updateStore.isAvailable || updateStore.isDownloaded"
+        @click="updateStore.downloadUpdate()"
+        class="flex items-center gap-1.5 px-3 py-1.5 bg-primary-500/10 hover:bg-primary-500/20 text-primary-400 rounded-lg text-xs font-medium transition-colors border border-primary-500/20"
+      >
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+        </span>
+        {{ $t('header.update_required') }}
+      </button>
+
       <!-- Notifications -->
       <div class="relative">
         <button 
@@ -256,6 +269,7 @@ import { useI18n } from 'vue-i18n'
 import { Upload, RefreshCw, Search, ChevronDown, Bell, Check, X, Trash2, Calendar, Filter } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
+import { useUpdateStore } from '@/stores/updateStore'
 import { useNotificationStore } from '@/stores/notificationStore'
 import { useProgressStore } from '@/stores/progressStore'
 import { ipcService } from '@/services/ipcService'
@@ -265,6 +279,7 @@ import RoomLogo from '@/components/common/RoomLogo.vue'
 const { t } = useI18n()
 const appStore = useAppStore()
 const filterStore = useFilterStore()
+const updateStore = useUpdateStore()
 const notificationStore = useNotificationStore()
 const progressStore = useProgressStore()
 

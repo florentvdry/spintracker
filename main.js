@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
+process.env.DEBUG = 'electron-updater';
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 const path = require('path');
@@ -31,6 +32,11 @@ console.log(`LogPath: ${log.transports.file.getFile().path}`);
 // Configure Updater
 autoUpdater.logger = log;
 autoUpdater.autoDownload = false; // Ask user before downloading
+autoUpdater.forceDevUpdateConfig = true; // Force update check in dev mode
+if (process.argv.includes('--dev')) {
+  // Workaround for dev-app-update.yml path resolution issue on some Windows environments
+  autoUpdater.updateConfigPath = path.join(__dirname, 'dev-app-update.yml');
+}
 
 let mainWindow;
 let splashWindow;
@@ -281,13 +287,10 @@ function createWindow() {
 
   mainWindow.webContents.on('did-finish-load', async () => {
     // Window loaded
-    // Check for updates on startup (production only)
-    if (!process.argv.includes('--dev')) {
-      // Small delay to ensure UI is ready to show notifications/modals
-      setTimeout(() => {
-        autoUpdater.checkForUpdates();
-      }, 3000);
-    }
+    // Check for updates on startup
+    setTimeout(() => {
+      autoUpdater.checkForUpdates();
+    }, 3000);
   });
 
   mainWindow.on('closed', () => {
@@ -830,14 +833,24 @@ ipcMain.handle('stats-builder-evaluate', async (event, stat) => {
   return callBackendAPI('/stats/builder/evaluate', stat);
 });
 
+// ============ Git Changelog Helper ============
+
+function getGitChangelog() {
+  return new Promise((resolve) => {
+    const child = spawn('git', ['log', '--oneline', '--no-decorate', '-10'], { cwd: __dirname });
+    let output = '';
+    child.stdout.on('data', (data) => { output += data.toString(); });
+    child.on('close', (code) => {
+      resolve(code === 0 && output.trim() ? output.trim() : '');
+    });
+    child.on('error', () => resolve(''));
+  });
+}
+
 // ============ IPC Handlers - Updater ============
 
 ipcMain.handle('check-for-updates', () => {
-  if (process.env.NODE_ENV === 'development') {
-    // In dev, we can't really check for updates
-    return;
-  }
-  autoUpdater.checkForUpdates();
+  return autoUpdater.checkForUpdates();
 });
 
 ipcMain.handle('download-update', () => {
@@ -850,18 +863,26 @@ ipcMain.handle('quit-and-install', () => {
 
 // AutoUpdater Events
 autoUpdater.on('checking-for-update', () => {
+  console.log('[Updater] Checking for update...');
   if (mainWindow) mainWindow.webContents.send('update-status', { status: 'checking' });
 });
 
-autoUpdater.on('update-available', (info) => {
+autoUpdater.on('update-available', async (info) => {
+  console.log('[Updater] Update available:', info.version);
+  let notes = info.releaseNotes;
+  if ((!notes || notes === 'No content.') && process.argv.includes('--dev')) {
+    const gitlog = await getGitChangelog();
+    if (gitlog) notes = gitlog;
+  }
   if (mainWindow) mainWindow.webContents.send('update-status', { 
     status: 'available', 
     version: info.version, 
-    releaseNotes: info.releaseNotes 
+    releaseNotes: notes 
   });
 });
 
 autoUpdater.on('update-not-available', (info) => {
+  console.log('[Updater] No update available.');
   if (mainWindow) mainWindow.webContents.send('update-status', { status: 'not-available' });
 });
 
@@ -871,6 +892,7 @@ autoUpdater.on('error', (err) => {
 });
 
 autoUpdater.on('download-progress', (progressObj) => {
+  console.log('[Updater] Download progress:', progressObj.percent);
   if (mainWindow) mainWindow.webContents.send('update-status', { 
     status: 'downloading', 
     progress: progressObj 
@@ -878,6 +900,7 @@ autoUpdater.on('download-progress', (progressObj) => {
 });
 
 autoUpdater.on('update-downloaded', (info) => {
+  console.log('[Updater] Update downloaded:', info.version);
   if (mainWindow) mainWindow.webContents.send('update-status', { status: 'downloaded', version: info.version });
 });
 

@@ -75,8 +75,9 @@
                    "showdown_short":  "SD",
                    "cev":  "CEV",
                    "fold":  "Fold",
-                   "auto":  "Auto"
-               },
+                    "auto": "Auto",
+                    "checking": "Checking..."
+                },
     "header":  {
                    "search_placeholder":  "Search hand, player...",
                    "select_hero":  "Select...",

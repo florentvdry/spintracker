@@ -188,9 +188,22 @@
     </Card>
 
     <Card :title="$t('settings.about.title')">
-      <div class="space-y-2 text-sm text-gray-400">
-        <p><span class="text-white">SpinTracker</span> v{{ appVersion }}</p>
-        <p>{{ $t('settings.about.description') }}</p>
+      <div class="space-y-4">
+        <div class="text-sm text-gray-400">
+          <p><span class="text-white">SpinTracker</span> v{{ appVersion }}</p>
+          <p>{{ $t('settings.about.description') }}</p>
+        </div>
+        
+        <button 
+          @click="checkUpdates"
+          class="btn-secondary flex items-center gap-2 text-sm"
+        >
+          <Loader v-if="updateStore.isChecking" class="w-4 h-4 animate-spin" />
+          <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          {{ updateStore.isChecking ? $t('common.checking') : 'Vérifier les mises à jour' }}
+        </button>
       </div>
     </Card>
   </div>
@@ -205,6 +218,7 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { usePlayersStore } from '@/stores/playersStore'
+import { useUpdateStore } from '@/stores/updateStore'
 import Card from '@/components/ui/Card.vue'
 import SettingRow from './components/SettingRow.vue'
 
@@ -213,6 +227,8 @@ const notificationStore = useNotificationStore()
 const appStore = useAppStore()
 const filterStore = useFilterStore()
 const playersStore = usePlayersStore()
+const updateStore = useUpdateStore()
+
 
 const serverStatus = ref('checking')
 const exportLoading = ref(false)
@@ -466,6 +482,10 @@ const startEditing = (db) => {
 const cancelEditing = () => {
   editingDbId.value = null
   editingDbName.value = ''
+}
+
+const checkUpdates = () => {
+  ipcService.checkForUpdates()
 }
 
 const handleExport = async () => {
