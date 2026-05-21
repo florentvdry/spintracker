@@ -1,16 +1,46 @@
 <template>
   <div class="h-full flex flex-col p-6 space-y-6 overflow-hidden bg-dark-400">
+    <!-- Header with Tabs -->
     <div class="flex items-center justify-between bg-dark-300 p-4 rounded-xl border border-white/5 shadow-lg">
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20 shadow-inner">
-          <Users class="w-6 h-6 text-primary-400" />
+      <div class="flex items-center gap-8">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20 shadow-inner">
+            <Users class="w-6 h-6 text-primary-400" />
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-white tracking-tight">{{ $t('players.title') }}</h1>
+            <p class="text-xs text-gray-500">{{ $t('players.subtitle') }}</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-xl font-bold text-white tracking-tight">{{ $t('players.title') }}</h1>
-          <p class="text-xs text-gray-500">{{ $t('players.subtitle') }}</p>
+
+        <!-- Tab Selector -->
+        <div class="flex items-center bg-dark-400 p-1 rounded-xl border border-white/5">
+          <button 
+            @click="activeTab = 'list'"
+            :class="[
+              'px-4 py-2 rounded-lg text-sm font-bold transition-all',
+              activeTab === 'list' 
+                ? 'bg-primary-500 text-white shadow-lg' 
+                : 'text-gray-500 hover:text-gray-300'
+            ]"
+          >
+            {{ $t('players.tabs.list') || 'Player List' }}
+          </button>
+          <button 
+            @click="activeTab = 'aliases'"
+            :class="[
+              'px-4 py-2 rounded-lg text-sm font-bold transition-all',
+              activeTab === 'aliases' 
+                ? 'bg-primary-500 text-white shadow-lg' 
+                : 'text-gray-500 hover:text-gray-300'
+            ]"
+          >
+            {{ $t('players.tabs.aliases') || 'Alias Management' }}
+          </button>
         </div>
       </div>
-      <div class="flex items-center gap-3">
+
+      <div v-if="activeTab === 'list'" class="flex items-center gap-3">
         <div class="flex gap-1 mr-2">
           <button
             v-for="f in ['all', 'reg', 'fish']"
@@ -47,143 +77,148 @@
       </div>
     </div>
 
-    <div class="flex-1 bg-dark-200 rounded-2xl shadow-2xl border border-white/5 flex flex-col min-h-0 overflow-hidden">
-      <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-dark-300/30">
-        <div class="flex items-center gap-2">
-          <Filter class="w-4 h-4 text-primary-400" />
-          <h2 class="text-sm font-bold text-gray-200 uppercase tracking-widest">
-            {{ $t('players.list') }} ({{ filteredPlayers.length }})
-          </h2>
+    <!-- Content -->
+    <template v-if="activeTab === 'list'">
+      <div class="flex-1 bg-dark-200 rounded-2xl shadow-2xl border border-white/5 flex flex-col min-h-0 overflow-hidden">
+        <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-dark-300/30">
+          <div class="flex items-center gap-2">
+            <Filter class="w-4 h-4 text-primary-400" />
+            <h2 class="text-sm font-bold text-gray-200 uppercase tracking-widest">
+              {{ $t('players.list') }} ({{ filteredPlayers.length }})
+            </h2>
+          </div>
         </div>
-      </div>
 
-      <div class="flex-1 overflow-auto custom-scrollbar">
-        <div v-if="loading" class="flex items-center justify-center h-full">
-          <Loader2 class="w-8 h-8 text-primary-500 animate-spin" />
-        </div>
-        <table v-else class="w-full">
-          <thead class="bg-dark-300/50 sticky top-0">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
-                {{ $t('players.player') }}
-              </th>
-              <th class="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">
-                {{ $t('players.hands') }}
-              </th>
-              <th class="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">
-                {{ $t('players.profit') }}
-              </th>
-              <th class="px-6 py-3 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">
-                {{ $t('players.type') }}
-              </th>
-              <th class="px-6 py-3 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">
-                {{ $t('players.auto_detected') }}
-              </th>
-              <th class="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">
-                {{ $t('players.actions') }}
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-white/5">
-            <tr v-for="player in paginatedPlayers" :key="player.id" class="hover:bg-dark-300/30 transition-colors">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center gap-3">
-                  <RoomLogo :room="player.room" />
-                  <div class="w-8 h-8 rounded-full bg-dark-400 flex items-center justify-center text-xs font-bold text-gray-400">
-                    {{ player.name.charAt(0).toUpperCase() }}
+        <div class="flex-1 overflow-auto custom-scrollbar">
+          <div v-if="loading" class="flex items-center justify-center h-full">
+            <Loader2 class="w-8 h-8 text-primary-500 animate-spin" />
+          </div>
+          <table v-else class="w-full">
+            <thead class="bg-dark-300/50 sticky top-0 z-10">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  {{ $t('players.player') }}
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  {{ $t('players.hands') }}
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  {{ $t('players.profit') }}
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  {{ $t('players.type') }}
+                </th>
+                <th class="px-6 py-3 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  {{ $t('players.auto_detected') }}
+                </th>
+                <th class="px-6 py-3 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  {{ $t('players.actions') }}
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5">
+              <tr v-for="player in paginatedPlayers" :key="player.id" class="hover:bg-dark-300/30 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center gap-3">
+                    <RoomLogo :room="player.room" />
+                    <div class="w-8 h-8 rounded-full bg-dark-400 flex items-center justify-center text-xs font-bold text-gray-400">
+                      {{ player.name ? player.name.charAt(0).toUpperCase() : '?' }}
+                    </div>
+                    <span class="text-sm font-medium text-white">{{ player.name }}</span>
                   </div>
-                  <span class="text-sm font-medium text-white">{{ player.name }}</span>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right">
-                <span class="text-sm text-gray-300">{{ (player.total_hands || 0).toLocaleString() }}</span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right">
-                <span :class="['text-sm font-bold', (player.total_profit || 0) >= 0 ? 'text-green-400' : 'text-red-400']">
-                  {{ (player.total_profit || 0) >= 0 ? '+' : '' }}{{ (player.total_profit || 0).toFixed(0) }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-center">
-                <button
-                  @click="handleToggleReg(player)"
-                  :disabled="updatingId === player.id"
-                  :class="[
-                    'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all',
-                    player.is_reg 
-                      ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30' 
-                      : 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
-                  ]"
-                  :title="player.is_reg ? $t('players.mark_fish') : $t('players.mark_reg')"
-                >
-                  <Loader2 v-if="updatingId === player.id" class="w-3 h-3 animate-spin" />
-                  <Crown v-else-if="player.is_reg" class="w-3 h-3" />
-                  <Fish v-else class="w-3 h-3" />
-                  {{ player.is_reg ? $t('players.is_reg') : $t('players.is_fish') }}
-                </button>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-center">
-                <span v-if="player.is_reg_forced" class="text-xs text-gray-500">{{ $t('players.manual') }}</span>
-                <span v-else-if="player.total_hands >= 500" class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-green-500/20 text-green-400">
-                  <Crown class="w-3 h-3" />
-                  {{ $t('common.auto') }}
-                </span>
-                <span v-else class="text-xs text-gray-500">-</span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right">
-                <div class="flex items-center justify-end gap-3">
-                  <button
-                    @click="handleViewHands(player)"
-                    class="text-xs text-primary-400 hover:text-primary-300 font-medium flex items-center gap-1"
-                    :title="$t('players.view_hands')"
-                  >
-                    <Eye class="w-3 h-3" />
-                    {{ $t('players.view_hands') }}
-                  </button>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <span class="text-sm text-gray-300">{{ (player.total_hands || 0).toLocaleString() }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <span :class="['text-sm font-bold', (player.total_profit || 0) >= 0 ? 'text-green-400' : 'text-red-400']">
+                    {{ (player.total_profit || 0) >= 0 ? '+' : '' }}{{ (player.total_profit || 0).toFixed(0) }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
                   <button
                     @click="handleToggleReg(player)"
                     :disabled="updatingId === player.id"
                     :class="[
-                      'text-xs font-medium transition-colors',
+                      'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all',
                       player.is_reg 
-                        ? 'text-yellow-400 hover:text-yellow-300' 
-                        : 'text-blue-400 hover:text-blue-300'
+                        ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30' 
+                        : 'bg-blue-500/20 text-blue-400 border border-blue-500/30 hover:bg-blue-500/30'
                     ]"
                     :title="player.is_reg ? $t('players.mark_fish') : $t('players.mark_reg')"
                   >
-                    {{ player.is_reg ? $t('players.set_fish') : $t('players.set_reg') }}
+                    <Loader2 v-if="updatingId === player.id" class="w-3 h-3 animate-spin" />
+                    <Crown v-else-if="player.is_reg" class="w-3 h-3" />
+                    <Fish v-else class="w-3 h-3" />
+                    {{ player.is_reg ? $t('players.is_reg') : $t('players.is_fish') }}
                   </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <span v-if="player.is_reg_forced" class="text-xs text-gray-500">{{ $t('players.manual') }}</span>
+                  <span v-else-if="player.total_hands >= 500" class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-green-500/20 text-green-400">
+                    <Crown class="w-3 h-3" />
+                    {{ $t('common.auto') }}
+                  </span>
+                  <span v-else class="text-xs text-gray-500">-</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <div class="flex items-center justify-end gap-3">
+                    <button
+                      @click="handleViewHands(player)"
+                      class="text-xs text-primary-400 hover:text-primary-300 font-medium flex items-center gap-1"
+                      :title="$t('players.view_hands')"
+                    >
+                      <Eye class="w-3 h-3" />
+                      {{ $t('players.view_hands') }}
+                    </button>
+                    <button
+                      @click="handleToggleReg(player)"
+                      :disabled="updatingId === player.id"
+                      :class="[
+                        'text-xs font-medium transition-colors',
+                        player.is_reg 
+                          ? 'text-yellow-400 hover:text-yellow-300' 
+                          : 'text-blue-400 hover:text-blue-300'
+                      ]"
+                      :title="player.is_reg ? $t('players.mark_fish') : $t('players.mark_reg')"
+                    >
+                      {{ player.is_reg ? $t('players.set_fish') : $t('players.set_reg') }}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <div v-if="totalPages > 1" class="px-6 py-4 border-t border-white/5 flex items-center justify-between bg-dark-300/30">
-        <span class="text-xs text-gray-500">
-          {{ $t('players.page') }} {{ page }} / {{ totalPages }}
-        </span>
-        <div class="flex gap-2">
-          <button
-            @click="page = Math.max(1, page - 1)"
-            :disabled="page === 1"
-            class="p-2 rounded-lg bg-dark-400 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <ChevronLeft class="w-4 h-4" />
-          </button>
-          <button
-            @click="page = Math.min(totalPages, page + 1)"
-            :disabled="page === totalPages"
-            class="p-2 rounded-lg bg-dark-400 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <ChevronRight class="w-4 h-4" />
-          </button>
+        <div v-if="totalPages > 1" class="px-6 py-4 border-t border-white/5 flex items-center justify-between bg-dark-300/30">
+          <span class="text-xs text-gray-500">
+            {{ $t('players.page') }} {{ page }} / {{ totalPages }}
+          </span>
+          <div class="flex gap-2">
+            <button
+              @click="page = Math.max(1, page - 1)"
+              :disabled="page === 1"
+              class="p-2 rounded-lg bg-dark-400 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft class="w-4 h-4" />
+            </button>
+            <button
+              @click="page = Math.min(totalPages, page + 1)"
+              :disabled="page === totalPages"
+              class="p-2 rounded-lg bg-dark-400 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronRight class="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
+
+    <AliasManagement v-else-if="activeTab === 'aliases'" />
 
     <div v-if="selectedPlayer" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="closeModal">
-      <div class="bg-dark-200 rounded-2xl shadow-2xl border border-white/10 w-full max-w-5xl max-h-[85vh] flex flex-col">
+      <div class="bg-dark-200 rounded-2xl shadow-2xl border border-white/10 w-full max-w-5xl max-h-[85vh] flex flex-col overflow-hidden">
         <div class="flex items-center justify-between p-5 border-b border-white/10 bg-dark-300/30 rounded-t-2xl">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20">
@@ -208,7 +243,7 @@
           </button>
         </div>
 
-        <div class="flex-1 overflow-auto custom-scrollbar">
+        <div class="flex-1 overflow-auto custom-scrollbar p-2">
           <div v-if="handsLoading && !playerHands" class="flex items-center justify-center h-64">
             <Loader2 class="w-8 h-8 text-primary-500 animate-spin" />
           </div>
@@ -384,11 +419,13 @@ import { useReplayerStore } from '@/stores/replayerStore'
 import PlayingCard from '@/components/common/PlayingCard.vue'
 import RoomLogo from '@/components/common/RoomLogo.vue'
 import { parseCards } from '@/utils/formatters'
+import AliasManagement from './AliasManagement.vue'
 
 const { t } = useI18n()
 const filterStore = useFilterStore()
 const replayerStore = useReplayerStore()
 
+const activeTab = ref('list')
 const heroName = computed(() => filterStore.heroName)
 
 const players = ref([])
@@ -551,3 +588,31 @@ onMounted(() => {
   loadPlayers()
 })
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.table-container {
+  @apply overflow-hidden rounded-xl border border-white/5;
+}
+
+.table th {
+  @apply px-4 py-3 text-[10px] font-bold text-gray-500 uppercase tracking-wider text-left;
+}
+
+.table td {
+  @apply px-4 py-3 align-middle;
+}
+</style>

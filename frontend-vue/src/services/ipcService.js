@@ -233,6 +233,31 @@ class IPCService {
   async renameDatabase(id, name) {
     return this.invoke('rename-database', id, name)
   }
+
+  async syncPlayers() {
+    return this.invoke('sync-players')
+  }
+
+  // Alias System
+  async getAliases() {
+    return this.invoke('get-aliases')
+  }
+
+  async createAlias(request) {
+    return this.invoke('create-alias', request)
+  }
+
+  async deleteAlias(aliasId) {
+    return this.invoke('delete-alias', aliasId)
+  }
+
+  async linkPlayerToAlias(playerId, request) {
+    return this.invoke('link-player-to-alias', playerId, request)
+  }
+
+  async unlinkPlayerFromAlias(playerId) {
+    return this.invoke('unlink-player-from-alias', playerId)
+  }
 }
 
 export const ipcService = new IPCService()

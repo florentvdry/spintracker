@@ -161,12 +161,14 @@ namespace SpinTrackerBackend.Services
         private List<AnalysisHandData> FilterHands(List<AnalysisHandData> hands, AnalysisFilters filters)
         {
             var result = new List<AnalysisHandData>();
-            var heroName = filters.HeroName;
 
             int loggedSkips = 0;
             foreach (var hand in hands)
             {
-                // ... (existing checks)
+                // When using an alias, hand.HeroName contains the actual pseudo found in that hand.
+                // We MUST use it for all text parsing logic instead of filters.HeroName (which might be the alias name).
+                var effectiveHeroName = hand.HeroName ?? filters.HeroName;
+
                 // Filter by Stack BB
                 if (filters.MinStackBB.HasValue || filters.MaxStackBB.HasValue)
                 {
@@ -182,7 +184,7 @@ namespace SpinTrackerBackend.Services
                 // Filter by Opponent Type (reg/fish)
                 if (!string.IsNullOrEmpty(filters.OpponentType) && filters.OpponentType != "all")
                 {
-                    var opponentIsReg = CheckOpponentIsReg(hand, heroName);
+                    var opponentIsReg = CheckOpponentIsReg(hand, effectiveHeroName);
                     if (filters.OpponentType == "reg" && !opponentIsReg) continue;
                     if (filters.OpponentType == "fish" && opponentIsReg) continue;
                 }
@@ -196,7 +198,7 @@ namespace SpinTrackerBackend.Services
                 // Filter by Action (Global)
                 if (!string.IsNullOrEmpty(filters.Action))
                 {
-                    if (!MatchesAction(hand, filters.Situation, filters.Action, heroName)) continue;
+                    if (!MatchesAction(hand, filters.Situation, filters.Action, effectiveHeroName)) continue;
                 }
 
                 // NEW: Ordered Sequence Filter
@@ -656,8 +658,8 @@ namespace SpinTrackerBackend.Services
 
         private bool MatchesAction(AnalysisHandData hand, string? situation, string action, string? heroName)
         {
-            // If global heroName is null (Field Analysis), check the hero of the hand
-            var currentHeroName = heroName ?? hand.HeroName;
+            // Use hand-specific HeroName (actual pseudo) if available
+            var currentHeroName = hand.HeroName ?? heroName;
             
             if (string.IsNullOrEmpty(currentHeroName)) return false;
 
@@ -732,7 +734,8 @@ namespace SpinTrackerBackend.Services
 
             foreach (var hand in sortedHands)
             {
-                var currentHeroName = heroName ?? hand.HeroName;
+                // Use hand-specific HeroName (actual pseudo) if available
+                var currentHeroName = hand.HeroName ?? heroName;
                 if (string.IsNullOrEmpty(currentHeroName)) continue;
 
                 // Graph Data
@@ -1224,9 +1227,10 @@ namespace SpinTrackerBackend.Services
 
             foreach (var hand in filteredHands)
             {
-                var heroName = !string.IsNullOrEmpty(filters.HeroName) ? filters.HeroName : hand.HeroName;
+                // Use hand.HeroName (the actual pseudo) if available, fallback to filter's HeroName (the alias)
+                var effectiveHeroName = hand.HeroName ?? filters.HeroName;
 
-                if (string.IsNullOrEmpty(heroName))
+                if (string.IsNullOrEmpty(effectiveHeroName))
                 {
                     skippedNoHeroName++;
                     continue;
@@ -1247,7 +1251,7 @@ namespace SpinTrackerBackend.Services
                     continue;
                 }
 
-                var actionType = DetermineActionType(hand, filters.Situation, filters.SituationId, heroName);
+                var actionType = DetermineActionType(hand, filters.Situation, filters.SituationId, effectiveHeroName);
                 if (actionType == "None") continue;
 
                 if (!rangeData.ContainsKey(cards))

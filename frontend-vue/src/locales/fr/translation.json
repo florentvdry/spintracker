@@ -41,6 +41,7 @@
                    "tournaments":  "Tournois",
                    "sessions":  "Sessions",
                    "player":  "Joueur",
+                   "players": "Joueurs",
                    "hero":  "Héro",
                    "villain":  "Vilain",
                    "search_player": "Rechercher un joueur...",
@@ -171,7 +172,29 @@
                     "no_hands":  "Aucune main trouvée",
                     "load_more":  "Charger plus",
                     "blinds":  "Blinds",
-                    "see_more":  "Voir plus"
+                    "see_more":  "Voir plus",
+                    "tabs": {
+                        "list": "Liste des joueurs",
+                        "aliases": "Gestion des Alias"
+                    },
+                    "aliases": {
+                        "title": "Liste des Alias",
+                        "create": "Nouvel Alias",
+                        "empty": "Aucun alias créé",
+                        "empty_description": "Créez un alias pour regrouper plusieurs pseudos de joueurs.",
+                        "no_players": "Aucun joueur lié",
+                        "link_players": "Lier des Joueurs",
+                        "search_players": "Rechercher des joueurs à lier...",
+                        "search_hint": "Tapez au moins 2 caractères pour rechercher",
+                        "link": "Lier",
+                        "unlink": "Délier",
+                        "change_alias": "Changer",
+                        "sync": "Synchroniser la liste",
+                        "sync_hint": "Recalcule la liste des joueurs à partir de l'historique des mains",
+                        "create_modal_title": "Créer un nouvel alias",
+                        "name_label": "Nom de l'alias",
+                        "name_placeholder": "ex: Mon Pseudo Global"
+                    }
                 },
     "analysis":  {
                      "title":  "Analyse",

@@ -80,6 +80,91 @@ public class PlayerController : ControllerBase
             return Problem(detail: e.Message, statusCode: 500);
         }
     }
+
+    [HttpPost("db/players/sync")]
+    public async Task<IActionResult> SyncPlayers()
+    {
+        try
+        {
+            await _playerRepo.UpdatePlayerStatsAsync();
+            return Ok(new { success = true });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"Sync players error: {e.Message}");
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpGet("db/aliases")]
+    public async Task<IActionResult> GetAliases()
+    {
+        try
+        {
+            var data = await _playerRepo.GetAliasesAsync();
+            return Ok(new { success = true, data });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpPost("db/aliases")]
+    public async Task<IActionResult> CreateAlias([FromBody] CreateAliasRequest request)
+    {
+        try
+        {
+            var id = await _playerRepo.CreateAliasAsync(request.Name);
+            return Ok(new { success = true, id });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpDelete("db/aliases/{id}")]
+    public async Task<IActionResult> DeleteAlias(int id)
+    {
+        try
+        {
+            await _playerRepo.DeleteAliasAsync(id);
+            return Ok(new { success = true });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpPost("db/players/{playerId}/link")]
+    public async Task<IActionResult> LinkPlayer(int playerId, [FromBody] LinkPlayerRequest request)
+    {
+        try
+        {
+            await _playerRepo.LinkPlayerToAliasAsync(playerId, request.AliasId);
+            return Ok(new { success = true });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
+
+    [HttpPost("db/players/{playerId}/unlink")]
+    public async Task<IActionResult> UnlinkPlayer(int playerId)
+    {
+        try
+        {
+            await _playerRepo.UnlinkPlayerFromAliasAsync(playerId);
+            return Ok(new { success = true });
+        }
+        catch (Exception e)
+        {
+            return Problem(detail: e.Message, statusCode: 500);
+        }
+    }
 }
 
 public class UpdateRegStatusRequest

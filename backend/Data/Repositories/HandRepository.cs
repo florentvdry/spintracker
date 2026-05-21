@@ -175,7 +175,7 @@ public class HandRepository
             if (!string.IsNullOrEmpty(options.HeroName))
             {
                 joinClause += " JOIN player_hands ph ON h.id = ph.hand_id";
-                whereClauses.Add("ph.player_name = @heroName");
+                whereClauses.Add($"ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}");
                 parameters.Add(new SqliteParameter("@heroName", options.HeroName));
             }
             else
@@ -437,13 +437,24 @@ public class HandRepository
         // 1. Get Hand Basic Info
         using (var cmd = connection.CreateCommand())
         {
-            cmd.CommandText = @"
+            var joinHero = "";
+            if (!string.IsNullOrEmpty(heroName))
+            {
+                joinHero = $"AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
+                cmd.Parameters.AddWithValue("@heroName", heroName);
+            }
+            else
+            {
+                joinHero = "AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)";
+            }
+
+            cmd.CommandText = $@"
                 SELECT h.*, ph.ev_chips, ph.equity_preflop, ph.equity_flop, ph.equity_turn, ph.equity_river,
                        ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, 
                        ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown, ph.player_name as dyn_hero_name,
                        ph.stack as dyn_hero_stack
                 FROM hands h
-                LEFT JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)
+                LEFT JOIN player_hands ph ON h.id = ph.hand_id {joinHero}
                 WHERE h.id = @handId AND h.player_count <= 3";
             cmd.Parameters.AddWithValue("@handId", handId);
 
@@ -471,8 +482,21 @@ public class HandRepository
             {
                 while (await reader.ReadAsync())
                 {
+                    var pName = reader.GetString(0);
+                    // Determine if this player is hero
+                    bool isHero = false;
+                    if (!string.IsNullOrEmpty(heroName))
+                    {
+                        // Check if pName matches heroName or belongs to heroName alias
+                        using var checkHeroCmd = connection.CreateCommand();
+                        checkHeroCmd.CommandText = $"SELECT 1 WHERE @pName IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
+                        checkHeroCmd.Parameters.AddWithValue("@pName", pName);
+                        checkHeroCmd.Parameters.AddWithValue("@heroName", heroName);
+                        isHero = await checkHeroCmd.ExecuteScalarAsync() != null;
+                    }
+
                     players.Add(new {
-                        Name = reader.GetString(0),
+                        Name = pName,
                         Position = reader.IsDBNull(1) ? "" : reader.GetString(1),
                         Stack = reader.GetDouble(2),
                         Cards = reader.IsDBNull(3) ? null : reader.GetString(3),
@@ -486,7 +510,7 @@ public class HandRepository
                         EquityFlop = reader.IsDBNull(11) ? null : (double?)reader.GetDouble(11),
                         EquityTurn = reader.IsDBNull(12) ? null : (double?)reader.GetDouble(12),
                         EquityRiver = reader.IsDBNull(13) ? null : (double?)reader.GetDouble(13),
-                        IsHero = heroName != null && reader.GetString(0).ToLower() == heroName.ToLower()
+                        IsHero = isHero
                     });
                 }
             }
@@ -513,7 +537,7 @@ public class HandRepository
         
         if (!string.IsNullOrEmpty(heroName))
         {
-            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            joinClause += $" JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
         }
         else
         {
@@ -555,7 +579,7 @@ public class HandRepository
         
         if (!string.IsNullOrEmpty(heroName))
         {
-            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            joinClause += $" JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
         }
         else
         {
@@ -624,7 +648,7 @@ public class HandRepository
             // If hero name provided, filter by hero
             if (!string.IsNullOrEmpty(heroName))
             {
-                whereClauses.Add("h.id IN (SELECT hand_id FROM player_hands WHERE player_name = @heroName)");
+                whereClauses.Add($"h.id IN (SELECT hand_id FROM player_hands WHERE player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")})");
                 parameters.Add(new SqliteParameter("@heroName", heroName));
             }
 

@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
 using SpinTrackerBackend;
+using SpinTrackerBackend.Data;
 
 namespace SpinTrackerBackend.Data.Repositories;
 
@@ -83,7 +84,7 @@ public class AnalyticsRepository
         if (!string.IsNullOrEmpty(heroName))
         {
             // When a specific hero is requested, join to player_hands to get hero-specific columns
-            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
+            joinClause = $"JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
             selectFields = "hands.*, ph.player_name as dyn_hero_name, ph.net_profit as dyn_hero_profit, ph.cards as dyn_hero_cards, ph.position as dyn_hero_position, ph.is_all_in as dyn_hero_all_in, ph.went_to_showdown as dyn_went_to_showdown";
             cmd.Parameters.AddWithValue("@heroName", heroName);
             cmd.CommandText = $"SELECT {selectFields} FROM hands {joinClause} WHERE hands.player_count <= 3 ORDER BY date_time";
@@ -260,7 +261,7 @@ public class AnalyticsRepository
         
         if (!string.IsNullOrEmpty(filters.HeroName))
         {
-            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
+            joinClause = $"JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
             cmd.Parameters.AddWithValue("@heroName", filters.HeroName);
         }
         else
@@ -380,7 +381,7 @@ public class AnalyticsRepository
             if (!string.IsNullOrEmpty(filters.HeroName))
             {
                 joinClause += " JOIN player_hands ph ON h.id = ph.hand_id";
-                whereClauses.Add("ph.player_name = @heroName");
+                whereClauses.Add($"ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}");
                 parameters.Add(new SqliteParameter("@heroName", filters.HeroName));
             }
             else
@@ -571,7 +572,8 @@ public class AnalyticsRepository
         
         if (!string.IsNullOrEmpty(filters.HeroName))
         {
-            joinClause = "JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name = @heroName";
+            joinClause = $"JOIN player_hands ph ON hands.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
+            parameters.Add(new SqliteParameter("@heroName", filters.HeroName));
         }
         else
         {

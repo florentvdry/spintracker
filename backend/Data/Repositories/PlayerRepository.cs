@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
+using SpinTrackerBackend.Data;
 
 namespace SpinTrackerBackend.Data.Repositories;
 
@@ -76,9 +77,8 @@ public class PlayerRepository
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = @"
-            INSERT OR REPLACE INTO players (id, name, room, total_hands, total_profit, total_ev_profit, is_reg, is_reg_forced, updated_at)
+            INSERT INTO players (name, room, total_hands, total_profit, total_ev_profit, is_reg, is_reg_forced, updated_at)
             SELECT 
-                COALESCE((SELECT p.id FROM players p WHERE p.name = ph.player_name), NULL),
                 ph.player_name,
                 (SELECT h.room FROM hands h WHERE h.id = ph.hand_id LIMIT 1) as room,
                 COUNT(*) as total_hands,
@@ -94,8 +94,118 @@ public class PlayerRepository
             FROM player_hands ph
             JOIN hands h ON ph.hand_id = h.id
             WHERE h.player_count <= 3
-            GROUP BY ph.player_name";
+            GROUP BY ph.player_name
+            ON CONFLICT(name) DO UPDATE SET
+                room = excluded.room,
+                total_hands = excluded.total_hands,
+                total_profit = excluded.total_profit,
+                total_ev_profit = excluded.total_ev_profit,
+                is_reg = excluded.is_reg,
+                is_reg_forced = excluded.is_reg_forced,
+                updated_at = excluded.updated_at";
         
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task<List<AliasInfo>> GetAliasesAsync()
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+            SELECT a.id, a.name, p.id, p.name, p.room
+            FROM aliases a
+            LEFT JOIN players p ON p.alias_id = a.id
+            ORDER BY a.name, p.name";
+
+        var aliases = new Dictionary<int, AliasInfo>();
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            var aliasId = reader.GetInt32(0);
+            if (!aliases.TryGetValue(aliasId, out var alias))
+            {
+                alias = new AliasInfo { Id = aliasId, Name = reader.GetString(1) };
+                aliases[aliasId] = alias;
+            }
+
+            if (!reader.IsDBNull(2))
+            {
+                alias.Players.Add(new PlayerSummary
+                {
+                    Id = reader.GetInt32(2),
+                    Name = reader.GetString(3),
+                    Room = reader.IsDBNull(4) ? null : reader.GetString(4)
+                });
+            }
+        }
+
+        return aliases.Values.ToList();
+    }
+
+    public async Task<int> CreateAliasAsync(string name)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "INSERT INTO aliases (name) VALUES (@name); SELECT last_insert_rowid();";
+        cmd.Parameters.AddWithValue("@name", name);
+
+        var id = await cmd.ExecuteScalarAsync();
+        return Convert.ToInt32(id);
+    }
+
+    public async Task DeleteAliasAsync(int aliasId)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var transaction = connection.BeginTransaction();
+        try
+        {
+            using var unlinkCmd = connection.CreateCommand();
+            unlinkCmd.Transaction = transaction;
+            unlinkCmd.CommandText = "UPDATE players SET alias_id = NULL WHERE alias_id = @id";
+            unlinkCmd.Parameters.AddWithValue("@id", aliasId);
+            await unlinkCmd.ExecuteNonQueryAsync();
+
+            using var deleteCmd = connection.CreateCommand();
+            deleteCmd.Transaction = transaction;
+            deleteCmd.CommandText = "DELETE FROM aliases WHERE id = @id";
+            deleteCmd.Parameters.AddWithValue("@id", aliasId);
+            await deleteCmd.ExecuteNonQueryAsync();
+
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task LinkPlayerToAliasAsync(int playerId, int aliasId)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "UPDATE players SET alias_id = @aliasId WHERE id = @playerId";
+        cmd.Parameters.AddWithValue("@aliasId", aliasId);
+        cmd.Parameters.AddWithValue("@playerId", playerId);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task UnlinkPlayerFromAliasAsync(int playerId)
+    {
+        using var connection = new SqliteConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = "UPDATE players SET alias_id = NULL WHERE id = @playerId";
+        cmd.Parameters.AddWithValue("@playerId", playerId);
         await cmd.ExecuteNonQueryAsync();
     }
 
@@ -150,9 +260,9 @@ public class PlayerRepository
                 COALESCE(p.is_reg, 0) as is_reg,
                 COALESCE(p.is_reg_forced, 0) as is_reg_forced
             FROM player_hands v
-            JOIN player_hands hhero ON hhero.hand_id = v.hand_id AND hhero.player_name = @heroName
+            JOIN player_hands hhero ON hhero.hand_id = v.hand_id AND hhero.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}
             LEFT JOIN players p ON p.name = v.player_name
-            WHERE v.player_name != @heroName
+            WHERE v.player_name NOT IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}
             GROUP BY v.player_name, p.id, p.total_profit, p.is_reg, p.is_reg_forced
             ORDER BY hands_vs_hero DESC
             {(limit.HasValue ? $"LIMIT {limit.Value}" : "")}";

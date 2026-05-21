@@ -54,7 +54,7 @@ public class StatsRepository
         }
         if (!string.IsNullOrEmpty(heroName))
         {
-            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            joinClause += $" JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
         }
         else
         {
@@ -391,7 +391,7 @@ public class StatsRepository
         
         if (!string.IsNullOrEmpty(resolvedHero))
         {
-            joinClause = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            joinClause = $"JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
             cmd.Parameters.AddWithValue("@heroName", resolvedHero);
         }
         else
@@ -552,7 +552,7 @@ public class StatsRepository
         var chartHeroName = await ResolveHeroNameAsync(options.HeroName);
         if (!string.IsNullOrEmpty(chartHeroName))
         {
-            joinClause += " JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            joinClause += $" JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
             parameters.Add(new SqliteParameter("@heroName", chartHeroName));
         }
         else
@@ -758,7 +758,7 @@ public class StatsRepository
         var joinHero = "";
         if (!string.IsNullOrEmpty(multiHeroName))
         {
-            joinHero = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            joinHero = $"JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
         }
         else
         {
@@ -849,7 +849,7 @@ public class StatsRepository
 
         if (scope == "player" && !string.IsNullOrWhiteSpace(opponentName))
         {
-            where.Add("ph.player_name = @opponentName");
+            where.Add($"ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@opponentName")}");
         }
         else if (scope == "reg")
         {
@@ -2459,7 +2459,7 @@ public class StatsRepository
 
         var rawHeroName = await ResolveHeroNameAsync();
         var rawJoinClause = !string.IsNullOrEmpty(rawHeroName)
-            ? "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @rawHero"
+            ? $"JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@rawHero")}"
             : "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)";
         var profitCol = "ph.net_profit";
 

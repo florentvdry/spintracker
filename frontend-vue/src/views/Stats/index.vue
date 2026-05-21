@@ -36,7 +36,12 @@
         <input v-model="opponentSearch" type="text" placeholder="Rechercher un joueur..." />
         <select v-model="selectedOpponent">
           <option :value="null">Selectionner un joueur</option>
-          <option v-for="p in opponentOptions" :key="p.name" :value="p.name">{{ p.name }}</option>
+          <optgroup v-if="aliasOptions.length > 0" label="Alias">
+            <option v-for="a in aliasOptions" :key="'alias-' + a.id" :value="a.name">{{ a.name }} (Alias)</option>
+          </optgroup>
+          <optgroup label="Joueurs">
+            <option v-for="p in opponentOptions" :key="p.name" :value="p.name">{{ p.name }}</option>
+          </optgroup>
         </select>
       </label>
 
@@ -217,7 +222,7 @@
 </template>
 
 <script setup>
-import { computed, defineComponent, h, ref, watch } from 'vue'
+import { computed, defineComponent, h, ref, watch, onMounted } from 'vue'
 import { Sigma } from 'lucide-vue-next'
 import { ipcService } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
@@ -239,6 +244,12 @@ const opponentSearch = ref('')
 const activeHudPopup = ref('General')
 const selectedStat = ref(null)
 const hudDetail = ref(null)
+
+const aliasOptions = computed(() =>
+  (filterStore.aliases || [])
+    .filter((a) => a?.name)
+    .filter((a) => a.name.toLowerCase().includes(opponentSearch.value.toLowerCase()))
+)
 
 const heroName = computed(() => filterStore.heroName)
 const buyIn = computed(() => filterStore.buyIn)
@@ -1381,6 +1392,7 @@ const loadStats = async () => {
 const loadOpponents = async () => {
   const res = await ipcService.getPlayers({ limit: 5000 })
   opponents.value = res?.success ? (Array.isArray(res.data) ? res.data : []) : []
+  await filterStore.fetchAliases()
 }
 
 watch([heroName, buyIn, dateRange, customFrom, customTo, statsScope, selectedOpponent, () => appStore.lastUpdate], loadStats, { immediate: true })
@@ -1580,6 +1592,9 @@ const StatsTable = defineComponent({
         ])
       ])
   }
+})
+onMounted(() => {
+  filterStore.fetchAliases()
 })
 </script>
 

@@ -123,6 +123,31 @@
             </div>
           </div>
           <div class="overflow-y-auto flex-1">
+            <!-- Aliases Section -->
+            <div v-if="filteredAliases.length > 0" class="px-2 py-1 bg-dark-400/50 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              {{ $t('common.aliases') || 'Aliases' }}
+            </div>
+            <div 
+              v-for="a in filteredAliases" 
+              :key="'alias-' + a.id" 
+              class="px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 flex items-center justify-between"
+              :class="filterStore.heroName === a.name ? 'bg-primary-500/10 text-primary-400' : 'text-gray-300'"
+              @click="handleHeroSelect(a.name)"
+            >
+              <div class="flex items-center gap-2">
+                <Users class="w-4 h-4 text-primary-400" />
+                <div class="flex flex-col">
+                  <span class="font-medium">{{ a.name }}</span>
+                  <span class="text-xs text-gray-500">{{ a.players.length }} {{ $t('common.players') || 'Players' }}</span>
+                </div>
+              </div>
+              <div v-if="filterStore.heroName === a.name" class="w-2 h-2 rounded-full bg-primary-500"></div>
+            </div>
+
+            <!-- Players Section -->
+            <div v-if="filteredPlayers.length > 0" class="px-2 py-1 bg-dark-400/50 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+              {{ $t('common.players') || 'Players' }}
+            </div>
             <div 
               v-for="p in filteredPlayers" 
               :key="p.id" 
@@ -266,7 +291,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Upload, RefreshCw, Search, ChevronDown, Bell, Check, X, Trash2, Calendar, Filter } from 'lucide-vue-next'
+import { Upload, RefreshCw, Search, ChevronDown, Bell, Check, X, Trash2, Calendar, Filter, Users } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { useUpdateStore } from '@/stores/updateStore'
@@ -302,6 +327,12 @@ const filteredPlayers = computed(() =>
   )
 )
 
+const filteredAliases = computed(() => 
+  filterStore.aliases.filter(a => 
+    a.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
+)
+
 const dateFilters = computed(() => [
   { id: 'today', label: t('dashboard.filters.today') },
   { id: 'week', label: t('dashboard.filters.week') },
@@ -317,6 +348,7 @@ const loadPlayers = async () => {
     if (res.success) {
       players.value = res.data
     }
+    await filterStore.fetchAliases()
   } catch (e) {
     // Silent error
   }

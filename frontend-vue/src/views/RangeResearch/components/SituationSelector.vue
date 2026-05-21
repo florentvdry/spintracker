@@ -60,6 +60,33 @@
                 </div>
                 <span>{{ $t('range_analysis.filters.population') }}</span>
               </div>
+
+              <!-- Aliases Section -->
+              <div v-if="filteredAliases.length > 0" class="px-3 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-2">
+                {{ $t('common.aliases') || 'Aliases' }}
+              </div>
+              <div 
+                v-for="a in filteredAliases" 
+                :key="'alias-' + a.id" 
+                :class="[
+                  'px-4 py-2.5 text-sm cursor-pointer rounded-lg mx-1 my-0.5 transition-colors flex items-center gap-3',
+                  filters.HeroName === a.name ? 'bg-primary-500/20 text-primary-400 font-bold' : 'text-gray-300 hover:bg-white/5'
+                ]"
+                @click="handleSelectPlayer(a.name)"
+              >
+                <div class="w-8 h-8 rounded-full bg-primary-500/10 flex items-center justify-center text-primary-400 border border-primary-500/20">
+                  <Users class="w-4 h-4" />
+                </div>
+                <div class="flex flex-col">
+                  <span>{{ a.name }}</span>
+                  <span class="text-[10px] text-gray-500 font-normal">{{ a.players.length }} {{ $t('common.players') }}</span>
+                </div>
+              </div>
+
+              <!-- Players Section -->
+              <div v-if="filteredPlayers.length > 0" class="px-3 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-2">
+                {{ $t('common.players') }}
+              </div>
               <div 
                 v-for="p in filteredPlayers" 
                 :key="p.name" 
@@ -74,7 +101,7 @@
                 </div>
                 <div class="flex flex-col">
                   <span>{{ p.name }}</span>
-                  <span class="text-[10px] text-gray-500 font-normal">{{ p.total_hands.toLocaleString() }} {{ $t('common.hands') }}</span>
+                  <span class="text-[10px] text-gray-500 font-normal">{{ (p.total_hands || 0).toLocaleString() }} {{ $t('common.hands') }}</span>
                 </div>
               </div>
             </div>
@@ -195,8 +222,9 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { User, RotateCcw, Layers, Search, ChevronDown, Info } from 'lucide-vue-next'
+import { User, RotateCcw, Layers, Search, ChevronDown, Info, Users } from 'lucide-vue-next'
 import { usePlayersStore } from '@/stores/playersStore'
+import { useFilterStore } from '@/stores/filterStore'
 
 const props = defineProps({
   filters: {
@@ -211,6 +239,7 @@ const props = defineProps({
 
 const { t } = useI18n()
 const playersStore = usePlayersStore()
+const filterStore = useFilterStore()
 
 const isDropdownOpen = ref(false)
 const searchTerm = ref('')
@@ -248,6 +277,12 @@ const SITUATIONS = computed(() => {
       ]
     }
   }
+})
+
+const filteredAliases = computed(() => {
+  return filterStore.aliases.filter(a => 
+    a.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
 })
 
 const filteredPlayers = computed(() => {

@@ -32,6 +32,24 @@ public record RangeHeatmapFilters
 { 
     public string? HeroName { get; set; }
 }
+
+public class AliasInfo
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public List<PlayerSummary> Players { get; set; } = new();
+}
+
+public class PlayerSummary
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string? Room { get; set; }
+}
+
+public record CreateAliasRequest(string Name);
+public record LinkPlayerRequest(int AliasId);
+
 public record PlayersQueryOptions
 {
     public int? Limit { get; set; }

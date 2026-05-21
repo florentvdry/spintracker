@@ -41,6 +41,7 @@
                    "tournaments":  "Tournaments",
                    "sessions":  "Sessions",
                    "player":  "Player",
+                   "players": "Players",
                    "hero":  "Hero",
                    "villain":  "Villain",
                    "search_player": "Search player...",
@@ -168,7 +169,27 @@
                     "no_hands":  "No hands found",
                     "load_more":  "Load more",
                     "blinds":  "Blinds",
-                    "see_more":  "See more"
+                    "see_more":  "See more",
+                    "tabs": {
+                        "list": "Player List",
+                        "aliases": "Alias Management"
+                    },
+                    "aliases": {
+                        "title": "Alias List",
+                        "create": "New Alias",
+                        "empty": "No aliases created",
+                        "empty_description": "Create an alias to group multiple player screen names together.",
+                        "no_players": "No players linked",
+                        "link_players": "Link Players",
+                        "search_players": "Search players to link...",
+                        "search_hint": "Type at least 2 characters to search",
+                        "link": "Link",
+                        "unlink": "Unlink",
+                        "change_alias": "Change",
+                        "create_modal_title": "Create new alias",
+                        "name_label": "Alias Name",
+                        "name_placeholder": "e.g. My Global Hero"
+                    }
                 },
     "analysis":  {
                      "title":  "Analysis",

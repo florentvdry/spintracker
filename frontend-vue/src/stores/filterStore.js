@@ -4,6 +4,7 @@ import { ipcService } from '@/services/ipcService'
 
 export const useFilterStore = defineStore('filter', () => {
   const heroName = ref(null)
+  const aliases = ref([])
   const dateRange = ref('month')
   const customDateFrom = ref(null)
   const customDateTo = ref(null)
@@ -104,8 +105,16 @@ export const useFilterStore = defineStore('filter', () => {
     return { dateFrom, dateTo }
   }
 
+  const fetchAliases = async () => {
+    const res = await ipcService.getAliases()
+    if (res?.success) {
+      aliases.value = res.data
+    }
+  }
+
   return {
     heroName,
+    aliases,
     dateRange,
     customDateFrom,
     customDateTo,
@@ -122,7 +131,8 @@ export const useFilterStore = defineStore('filter', () => {
     setBuyIn,
     setFilters,
     resetFilters,
-    getDateRangeParams
+    getDateRangeParams,
+    fetchAliases
   }
 }, {
   persist: {

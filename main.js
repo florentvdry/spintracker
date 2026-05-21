@@ -1012,3 +1012,28 @@ ipcMain.handle('rename-database', async (event, id, name) => {
   return callBackendAPI(`/api/databases/${id}`, { name }, 'PUT');
 });
 
+// Alias System
+ipcMain.handle('sync-players', async () => {
+  return callBackendAPI('/db/players/sync', {}, 'POST');
+});
+
+ipcMain.handle('get-aliases', async () => {
+  return callBackendAPI('/db/aliases', {}, 'GET');
+});
+
+ipcMain.handle('create-alias', async (event, request) => {
+  return callBackendAPI('/db/aliases', request, 'POST');
+});
+
+ipcMain.handle('delete-alias', async (event, id) => {
+  return callBackendAPI(`/db/aliases/${id}`, {}, 'DELETE');
+});
+
+ipcMain.handle('link-player-to-alias', async (event, playerId, request) => {
+  return callBackendAPI(`/db/players/${playerId}/link`, request, 'POST');
+});
+
+ipcMain.handle('unlink-player-from-alias', async (event, playerId) => {
+  return callBackendAPI(`/db/players/${playerId}/unlink`, {}, 'POST');
+});
+

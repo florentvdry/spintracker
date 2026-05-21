@@ -69,4 +69,9 @@ public static class DatabaseUtils
             return null;
         }
     }
+
+    public static string GetHeroResolutionSql(string paramName = "@heroName")
+    {
+        return $"(SELECT name FROM players WHERE name = {paramName} UNION SELECT p.name FROM players p JOIN aliases a ON p.alias_id = a.id WHERE a.name = {paramName})";
+    }
 }

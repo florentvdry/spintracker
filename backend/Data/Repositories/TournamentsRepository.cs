@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using SpinTrackerBackend;
+using SpinTrackerBackend.Data;
 using System.Collections.Generic;
 
 namespace SpinTrackerBackend.Data.Repositories;
@@ -27,7 +28,7 @@ public class TournamentsRepository
 
         if (!string.IsNullOrEmpty(options.HeroName))
         {
-            whereClauses.Add("EXISTS (SELECT 1 FROM player_hands ph WHERE ph.hand_id = h.id AND ph.player_name = @heroName)");
+            whereClauses.Add($"EXISTS (SELECT 1 FROM player_hands ph WHERE ph.hand_id = h.id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")})");
             parameters.Add(new SqliteParameter("@heroName", options.HeroName));
         }
 
@@ -51,7 +52,7 @@ public class TournamentsRepository
 
         if (!string.IsNullOrEmpty(options.HeroName))
         {
-            joinHero = "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = @heroName";
+            joinHero = $"JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {DatabaseUtils.GetHeroResolutionSql("@heroName")}";
         }
         else
         {
