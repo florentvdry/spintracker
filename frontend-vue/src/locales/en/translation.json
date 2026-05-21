@@ -123,12 +123,14 @@
                                       "today":  "Today",
                                       "week":  "This week",
                                       "month":  "This month",
-                                      "all":  "All"
+                                      "all":  "All",
+                                      "session": "Session"
                                   }
                   },
     "hand_history":  {
                          "title":  "Tournament History",
                          "subtitle":  "Browse your tournaments and hands",
+                         "sessions": "Sessions",
                          "total_tournaments":  "{count} tournaments found",
                          "no_hands":  "No history",
                          "import_prompt":  "Import your hands to get started",

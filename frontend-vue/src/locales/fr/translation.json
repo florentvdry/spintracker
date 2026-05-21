@@ -120,17 +120,19 @@
                       "select_hero_sessions":  "Sélectionnez un joueur pour voir ses sessions",
                       "sessions_placeholder":  "Vos sessions apparaîtront ici",
                       "filters":  {
-                                      "today":  "Aujourd\u0027hui",
+                                      "today":  "Aujourd'hui",
                                       "week":  "Cette semaine",
                                       "month":  "Ce mois",
-                                      "all":  "Tout"
+                                      "all":  "Tout",
+                                      "session": "Session"
                                   }
-                  },
-    "hand_history":  {
+                      },
+                      "hand_history":  {
                          "title":  "Historique",
                          "subtitle":  "Parcourez vos tournois et mains",
                          "by_tournaments": "Par tournois",
                          "by_hands": "Par mains",
+                         "sessions": "Sessions",
                          "total_tournaments":  "{count} tournois trouvés",
                          "total_hands": "{count} mains trouvées",
                          "no_hands":  "Aucun historique",

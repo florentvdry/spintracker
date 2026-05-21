@@ -137,7 +137,7 @@ export const useFilterStore = defineStore('filter', () => {
 }, {
   persist: {
     key: 'poker-filters-storage',
-    pick: ['heroName', 'dateRange', 'customDateFrom', 'customDateTo', 'buyIn'],
+    pick: ['heroName', 'dateRange', 'customDateFrom', 'customDateTo', 'buyIn', 'selectedSession'],
     onRehydrateStorage: () => {
       return (state) => {
         state.setHasHydrated(true)

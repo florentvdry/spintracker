@@ -49,7 +49,9 @@
           <span class="text-sm text-gray-200 flex-1 truncate">
             {{ filterStore.dateRange === 'custom' 
                 ? (customFrom || '...') + '-' + (customTo || '...')
-                : $t('dashboard.filters.' + filterStore.dateRange) || $t('dashboard.filters.all')
+                : filterStore.dateRange === 'session' && filterStore.selectedSession
+                  ? formatDate(filterStore.selectedSession.session_date, { format: 'date-only' })
+                  : $t('dashboard.filters.' + filterStore.dateRange) || $t('dashboard.filters.all')
             }}
           </span>
           <ChevronDown class="w-4 h-4 text-gray-400" />

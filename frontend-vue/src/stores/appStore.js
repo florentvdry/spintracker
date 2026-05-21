@@ -57,7 +57,7 @@ export const useAppStore = defineStore('app', () => {
       isLoading.value = true
       await Promise.all([
         loadDashboardStats(),
-        loadSessions(5),
+        loadSessions(50),
       ])
       lastUpdate.value = Date.now()
       isLoading.value = false
@@ -159,7 +159,7 @@ export const useAppStore = defineStore('app', () => {
     try {
       await Promise.all([
         loadDashboardStats(),
-        loadSessions(5),
+        loadSessions(50),
         loadBuyIns(),
       ])
       lastUpdate.value = Date.now()

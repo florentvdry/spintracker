@@ -7,7 +7,7 @@
       </p>
     </div>
 
-    <Card flat class="flex flex-wrap items-center gap-4">
+    <Card flat class="relative z-20 flex flex-wrap items-center gap-4">
       <div class="flex bg-dark-200 rounded-lg p-1">
         <button 
             class="px-4 py-2 rounded-md"
@@ -24,6 +24,8 @@
             {{ $t('hand_history.by_hands') }}
         </button>
       </div>
+
+      <SessionSelector />
 
       <select 
         class="select w-36"
@@ -140,6 +142,7 @@ import { useHandsStore } from '@/stores/handsStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import Card from '@/components/ui/Card.vue'
+import SessionSelector from '@/components/common/SessionSelector.vue'
 import TournamentsTable from './components/TournamentsTable.vue'
 import HandsTable from './components/HandsTable.vue'
 import HandDetails from './components/HandDetails.vue'
