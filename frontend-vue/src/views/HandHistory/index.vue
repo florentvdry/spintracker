@@ -25,9 +25,7 @@
         </button>
       </div>
 
-      <SessionSelector />
-
-      <select 
+      <select
         class="select w-36"
         :value="filters.result || ''"
         @change="handleResultFilter"
@@ -142,7 +140,6 @@ import { useHandsStore } from '@/stores/handsStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import Card from '@/components/ui/Card.vue'
-import SessionSelector from '@/components/common/SessionSelector.vue'
 import TournamentsTable from './components/TournamentsTable.vue'
 import HandsTable from './components/HandsTable.vue'
 import HandDetails from './components/HandDetails.vue'

@@ -95,8 +95,15 @@ export const useFilterStore = defineStore('filter', () => {
       const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
       dateFrom = formatDate(firstOfMonth)
     } else if (dateRange.value === 'custom') {
-      dateFrom = customDateFrom.value ? `${customDateFrom.value} 00:00:00` : null
-      dateTo = customDateTo.value ? `${customDateTo.value} 23:59:59` : null
+      const toDateTime = (val) => {
+        if (!val) return null
+        // "2026-05-25" → "2026-05-25 00:00:00"
+        if (!val.includes('T')) return `${val} 00:00:00`
+        // "2026-05-25T14:30" → "2026-05-25 14:30:00"
+        return val.replace('T', ' ') + ':00'
+      }
+      dateFrom = toDateTime(customDateFrom.value)
+      dateTo = toDateTime(customDateTo.value)
     } else if (dateRange.value === 'session' && selectedSession.value) {
       dateFrom = selectedSession.value.session_date
       dateTo = selectedSession.value.session_end

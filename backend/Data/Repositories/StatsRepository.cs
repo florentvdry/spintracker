@@ -119,16 +119,17 @@ public class StatsRepository
             }
         }
 
-        // 1.1 Calculate Tournaments Won (ITM) based on financial result
+        // 1.1 Calculate Tournaments Won (ITM) and total profit in a single query
+        // Both use the same GROUP BY h.game_id, so we run it once
         int tournamentsWon = 0;
+        double totalProfitEuro = 0;
         try
         {
-            using var cmdItm = connection.CreateCommand();
-            // Fetch necessary data to determine financial outcome per tournament
-            cmdItm.CommandText = $@"
-                SELECT 
-                    h.buy_in, 
-                    h.prize_pool, 
+            using var cmdGame = connection.CreateCommand();
+            cmdGame.CommandText = $@"
+                SELECT
+                    h.buy_in,
+                    h.prize_pool,
                     SUM({profitCol}) as chip_profit,
                     MAX(h.player_count) as max_players,
                     MAX(h.multiplier) as multiplier,
@@ -138,13 +139,13 @@ public class StatsRepository
                 {joinClause}
                 {whereClause}
                 GROUP BY h.game_id";
-            
-            if (!string.IsNullOrEmpty(heroName)) cmdItm.Parameters.AddWithValue("@heroName", heroName);
-            if (!string.IsNullOrEmpty(dateFrom)) cmdItm.Parameters.AddWithValue("@dateFrom", dateFrom);
-            if (!string.IsNullOrEmpty(dateTo)) cmdItm.Parameters.AddWithValue("@dateTo", dateTo);
-            if (buyIn.HasValue) cmdItm.Parameters.AddWithValue("@buyIn", buyIn.Value);
 
-            using var reader = await cmdItm.ExecuteReaderAsync();
+            if (!string.IsNullOrEmpty(heroName)) cmdGame.Parameters.AddWithValue("@heroName", heroName);
+            if (!string.IsNullOrEmpty(dateFrom)) cmdGame.Parameters.AddWithValue("@dateFrom", dateFrom);
+            if (!string.IsNullOrEmpty(dateTo)) cmdGame.Parameters.AddWithValue("@dateTo", dateTo);
+            if (buyIn.HasValue) cmdGame.Parameters.AddWithValue("@buyIn", buyIn.Value);
+
+            using var reader = await cmdGame.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
                 double b = reader.IsDBNull(0) ? 0 : reader.GetDouble(0);
@@ -156,6 +157,7 @@ public class StatsRepository
                 double r = reader.IsDBNull(6) ? 0 : reader.GetDouble(6);
                 double totalCost = b + r;
 
+                // Track ITM
                 bool isITM = false;
                 if (p > 0 || m > 0)
                 {
@@ -173,11 +175,30 @@ public class StatsRepository
                 }
 
                 if (isITM) tournamentsWon++;
+
+                // Calculate profit for this game
+                double profit = cp;
+                if (p > 0 || m > 0)
+                {
+                    bool hasSharing = (totalCost > 0 && (p / totalCost) >= 19.5) || m >= 20;
+                    double totalPrize = (p > (m * totalCost * 0.5)) ? p : (totalCost * m);
+                    int finishPos = pos != 0 ? pos : (cp > 0 ? 1 : (pc == 2 ? 2 : 3));
+
+                    double winAmount = 0;
+                    if (finishPos == 1) winAmount = hasSharing ? (totalPrize * 0.75) : totalPrize;
+                    else if (hasSharing) winAmount = (finishPos == 2) ? (totalPrize * 0.15) : (totalPrize * 0.10);
+
+                    profit = winAmount - totalCost;
+                }
+                totalProfitEuro += profit;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error calculating ITM: {ex.Message}");
+            _logger.LogError($"Error calculating tournament stats: {ex.Message}");
+            // Fallback: recalculate profit from sessions
+            var sessionsFallback = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo, buyIn);
+            totalProfitEuro = sessionsFallback.Sum(s => s.Profit);
         }
 
         // 1.2 Position-based EV calculation
@@ -222,27 +243,29 @@ public class StatsRepository
             }
 
             // 1.2.1 Detailed 3-Way Sub-situations (SB vs BTN, BB vs SB, etc.)
+            // Uses a pivot subquery to get BTN/SB investments in a single scan instead of two LEFT JOINs
             using (var cmdSub = connection.CreateCommand())
             {
-                // We join with other players to see if they entered the pot
-                // ph = Hero
-                // ph_btn = Player at BTN
-                // ph_sb = Player at SB (for BB Hero cases)
                 cmdSub.CommandText = $@"
-                    SELECT 
+                    SELECT
                         ph.position as hero_pos,
-                        CASE 
-                            WHEN ph.position = 'SB' AND COALESCE(ph_btn.investment, 0) > COALESCE(h.ante, 0) THEN 'vs_BTN'
-                            WHEN ph.position = 'SB' AND COALESCE(ph_btn.investment, 0) <= COALESCE(h.ante, 0) THEN 'vs_BB'
-                            WHEN ph.position = 'BB' AND COALESCE(ph_btn.investment, 0) > COALESCE(h.ante, 0) THEN 'vs_BTN'
-                            WHEN ph.position = 'BB' AND COALESCE(ph_btn.investment, 0) <= COALESCE(h.ante, 0) AND COALESCE(ph_sb.investment, 0) > (COALESCE(h.ante, 0) + (SELECT CAST(REPLACE(SUBSTR(h.blinds, 1, INSTR(h.blinds, '/') - 1), ',', '.') AS REAL))) THEN 'vs_SB'
+                        CASE
+                            WHEN ph.position = 'SB' AND COALESCE(pp.btn_investment, 0) > COALESCE(h.ante, 0) THEN 'vs_BTN'
+                            WHEN ph.position = 'SB' AND COALESCE(pp.btn_investment, 0) <= COALESCE(h.ante, 0) THEN 'vs_BB'
+                            WHEN ph.position = 'BB' AND COALESCE(pp.btn_investment, 0) > COALESCE(h.ante, 0) THEN 'vs_BTN'
+                            WHEN ph.position = 'BB' AND COALESCE(pp.btn_investment, 0) <= COALESCE(h.ante, 0) AND COALESCE(pp.sb_investment, 0) > (COALESCE(h.ante, 0) + CAST(REPLACE(SUBSTR(h.blinds, 1, INSTR(h.blinds, '/') - 1), ',', '.') AS REAL)) THEN 'vs_SB'
                             ELSE 'Other'
                         END as situation,
                         COALESCE(SUM(ph.net_won_adjusted), 0) as sub_ev
                     FROM hands h
                     {joinClause}
-                    LEFT JOIN player_hands ph_btn ON h.id = ph_btn.hand_id AND ph_btn.position = 'BTN'
-                    LEFT JOIN player_hands ph_sb ON h.id = ph_sb.hand_id AND ph_sb.position = 'SB'
+                    JOIN (
+                        SELECT hand_id,
+                               MAX(CASE WHEN position = 'BTN' THEN COALESCE(investment, 0) END) as btn_investment,
+                               MAX(CASE WHEN position = 'SB' THEN COALESCE(investment, 0) END) as sb_investment
+                        FROM player_hands
+                        GROUP BY hand_id
+                    ) pp ON pp.hand_id = h.id
                     {whereClause} AND h.player_count = 3 AND ph.position IN ('SB', 'BB')
                     GROUP BY hero_pos, situation";
 
@@ -271,68 +294,7 @@ public class StatsRepository
             _logger.LogError($"Error calculating position stats: {ex.Message}");
         }
 
-        // 2. Calculate Euro Profit and Sessions using the session logic
-        var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo, buyIn); 
-        
-        // Accurate total profit calculation by tournament to match TournamentsRepository
-        double totalProfitEuro = 0;
-        try
-        {
-            using var cmdProfit = connection.CreateCommand();
-            cmdProfit.CommandText = $@"
-                SELECT 
-                    h.buy_in, 
-                    h.prize_pool, 
-                    SUM({profitCol}) as chip_profit,
-                    MAX(h.player_count) as max_players,
-                    MAX(h.multiplier) as multiplier,
-                    MAX(h.position) as position,
-                    MAX(COALESCE(h.rake_per_player, 0)) as rake_per_player
-                FROM hands h
-                {joinClause}
-                {whereClause}
-                GROUP BY h.game_id";
-            
-            if (!string.IsNullOrEmpty(heroName)) cmdProfit.Parameters.AddWithValue("@heroName", heroName);
-            if (!string.IsNullOrEmpty(dateFrom)) cmdProfit.Parameters.AddWithValue("@dateFrom", dateFrom);
-            if (!string.IsNullOrEmpty(dateTo)) cmdProfit.Parameters.AddWithValue("@dateTo", dateTo);
-            if (buyIn.HasValue) cmdProfit.Parameters.AddWithValue("@buyIn", buyIn.Value);
-
-            using var reader = await cmdProfit.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                double b = reader.IsDBNull(0) ? 0 : reader.GetDouble(0);
-                double p = reader.IsDBNull(1) ? 0 : reader.GetDouble(1);
-                double cp = reader.IsDBNull(2) ? 0 : reader.GetDouble(2);
-                int pc = reader.IsDBNull(3) ? 3 : reader.GetInt32(3);
-                int m = reader.IsDBNull(4) ? 0 : reader.GetInt32(4);
-                int pos = reader.IsDBNull(5) ? 0 : reader.GetInt32(5);
-                double r = reader.IsDBNull(6) ? 0 : reader.GetDouble(6);
-                double totalCost = b + r;
-
-                if (p > 0 || m > 0)
-                {
-                    bool hasSharing = (totalCost > 0 && (p / totalCost) >= 19.5) || m >= 20;
-                    double totalPrize = (p > (m * totalCost * 0.5)) ? p : (totalCost * m);
-                    int finishPos = pos != 0 ? pos : (cp > 0 ? 1 : (pc == 2 ? 2 : 3));
-
-                    double winAmount = 0;
-                    if (finishPos == 1) winAmount = hasSharing ? (totalPrize * 0.75) : totalPrize;
-                    else if (hasSharing) winAmount = (finishPos == 2) ? (totalPrize * 0.15) : (totalPrize * 0.10);
-
-                    totalProfitEuro += (winAmount - totalCost);
-                }
-                else
-                {
-                    totalProfitEuro += cp;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Error calculating accurate total profit: {ex.Message}");
-            totalProfitEuro = sessions.Sum(s => s.Profit); // Fallback
-        }
+        var sessions = await GetSessionsInternalAsync(null, heroName, dateFrom, dateTo, buyIn);
 
         int totalTournaments = sessions.Sum(s => s.Tournaments);
         double avgChipsEv = totalTournaments > 0 ? Math.Round(totalEv / totalTournaments, 2) : 0;

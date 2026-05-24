@@ -329,7 +329,7 @@ const handleReset = () => {
   selectedPosition.value = ''
   props.onChange({
     ...props.filters,
-    HeroName: '',
+    HeroName: undefined,
     MinStackBB: null,
     MaxStackBB: null,
     Positions: [],

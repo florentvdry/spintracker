@@ -277,7 +277,7 @@ const combinedFilters = computed(() => {
   const { dateFrom, dateTo } = filterStore.getDateRangeParams()
   return {
     ...localFilters.value,
-    HeroName: heroName.value,
+    HeroName: localFilters.value.HeroName !== undefined ? localFilters.value.HeroName : heroName.value,
     DateFrom: dateFrom,
     DateTo: dateTo,
     OpponentType: opponentType.value
@@ -394,9 +394,16 @@ const loadConfig = () => {
 
 onMounted(() => {
   playersStore.loadPlayers({ limit: 1000 })
+  if (heroName.value) {
+    loadRangeData()
+  }
 })
 
+let rangeFilterTimeout = null
 watch(combinedFilters, () => {
-  loadRangeData()
+  if (rangeFilterTimeout) clearTimeout(rangeFilterTimeout)
+  rangeFilterTimeout = setTimeout(() => {
+    loadRangeData()
+  }, 300)
 }, { deep: true })
 </script>

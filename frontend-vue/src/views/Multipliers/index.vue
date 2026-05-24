@@ -176,13 +176,11 @@ const fetchStats = async () => {
   }
 }
 
-onMounted(() => {
-  fetchStats()
-})
-
-watch([() => filterStore.heroName, () => filterStore.dateRange, () => filterStore.customDateFrom, () => filterStore.customDateTo, () => appStore.lastUpdate], () => {
-  fetchStats()
-})
+let multipliersTimeout = null
+watch([() => filterStore.heroName, () => filterStore.dateRange, () => filterStore.selectedSession, () => filterStore.customDateFrom, () => filterStore.customDateTo], () => {
+  if (multipliersTimeout) clearTimeout(multipliersTimeout)
+  multipliersTimeout = setTimeout(fetchStats, 300)
+}, { immediate: true })
 </script>
 
 <style scoped>

@@ -460,7 +460,7 @@ const handleResize = () => {
   }
 }
 
-watch([heroName, buyIn, chartPosition], () => {
+watch([heroName, buyIn, chartPosition, () => filterStore.dateRange, () => filterStore.selectedSession], () => {
   loadChartData()
   loadStats()
 })

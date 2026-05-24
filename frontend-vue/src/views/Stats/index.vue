@@ -256,6 +256,7 @@ const buyIn = computed(() => filterStore.buyIn)
 const dateRange = computed(() => filterStore.dateRange)
 const customFrom = computed(() => filterStore.customDateFrom)
 const customTo = computed(() => filterStore.customDateTo)
+const selectedSession = computed(() => filterStore.selectedSession)
 
 const definitions = {
   VPIP: 'Voluntarily Put Money In Pot: mains ou le joueur investit volontairement preflop.',
@@ -1395,7 +1396,11 @@ const loadOpponents = async () => {
   await filterStore.fetchAliases()
 }
 
-watch([heroName, buyIn, dateRange, customFrom, customTo, statsScope, selectedOpponent, () => appStore.lastUpdate], loadStats, { immediate: true })
+let statsTimeout = null
+watch([heroName, buyIn, dateRange, customFrom, customTo, selectedSession, statsScope, selectedOpponent], () => {
+  if (statsTimeout) clearTimeout(statsTimeout)
+  statsTimeout = setTimeout(loadStats, 300)
+}, { immediate: true })
 watch(heroName, loadOpponents, { immediate: true })
 watch(statsScope, (scope) => {
   if (scope !== 'player') selectedOpponent.value = null

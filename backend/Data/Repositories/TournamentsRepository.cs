@@ -35,13 +35,15 @@ public class TournamentsRepository
         if (!string.IsNullOrEmpty(options.DateFrom))
         {
             whereClauses.Add("h.date_time >= @dateFrom");
-            parameters.Add(new SqliteParameter("@dateFrom", options.DateFrom + " 00:00:00"));
+            var dFrom = options.DateFrom.Contains(" ") ? options.DateFrom : options.DateFrom + " 00:00:00";
+            parameters.Add(new SqliteParameter("@dateFrom", dFrom));
         }
 
         if (!string.IsNullOrEmpty(options.DateTo))
         {
             whereClauses.Add("h.date_time <= @dateTo");
-            parameters.Add(new SqliteParameter("@dateTo", options.DateTo + " 23:59:59"));
+            var dTo = options.DateTo.Contains(" ") ? options.DateTo : options.DateTo + " 23:59:59";
+            parameters.Add(new SqliteParameter("@dateTo", dTo));
         }
 
         var whereClause = whereClauses.Count > 0 ? "WHERE " + string.Join(" AND ", whereClauses) : "";
