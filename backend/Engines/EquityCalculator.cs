@@ -440,9 +440,9 @@ public class EquityCalculator : IEquityCalculator
         {
             '2' => 0, '3' => 1, '4' => 2, '5' => 3, '6' => 4, '7' => 5, '8' => 6, '9' => 7,
             'T' => 8, 'J' => 9, 'Q' => 10, 'K' => 11, 'A' => 12,
-            _ => 0
+            _ => throw new ArgumentException($"Invalid card rank: '{c.Rank}'")
         };
-        int suit = c.Suit switch { 'h' => 0, 'd' => 1, 'c' => 2, 's' => 3, _ => 0 };
+        int suit = c.Suit switch { 'h' => 0, 'd' => 1, 'c' => 2, 's' => 3, _ => throw new ArgumentException($"Invalid card suit: '{c.Suit}'") };
         return rank * 4 + suit;
     }
 

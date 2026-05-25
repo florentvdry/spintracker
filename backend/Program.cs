@@ -31,7 +31,7 @@ app.Services.RunSpinTrackerMigrations(app.Logger);
 
 try
 {
-    _ = app.Services.GetRequiredService<Database>();
+    app.Services.GetRequiredService<Database>();
     app.Logger.LogInformation("Database initialized successfully");
 }
 catch (Exception ex)

@@ -19,18 +19,19 @@ public class ParserController : ControllerBase
     [HttpPost("import/file")]
     public async Task ImportFile([FromBody] ImportFileRequest data)
     {
-        Response.ContentType = "text/event-stream";
-        Response.Headers.Append("Cache-Control", "no-cache");
-        Response.Headers.Append("Connection", "keep-alive");
-
         try
         {
             if (data == null || string.IsNullOrEmpty(data.FilePath))
             {
+                Response.StatusCode = 400;
                 var errorPayload = JsonSerializer.Serialize(new { success = false, error = "No file path provided" });
-                await Response.WriteAsync($"data: {errorPayload}\n\n");
+                await Response.WriteAsync(errorPayload);
                 return;
             }
+
+            Response.ContentType = "text/event-stream";
+            Response.Headers.Append("Cache-Control", "no-cache");
+            Response.Headers.Append("Connection", "keep-alive");
 
             await _importer.ImportFileAsync(data.FilePath, async (progress) =>
             {

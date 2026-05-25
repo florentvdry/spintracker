@@ -40,14 +40,14 @@ export const useReplayerStore = defineStore('replayer', {
     },
     totalActions: (state) => {
       if (!state.handData) return 0
-      return state.handData.actions.filter(a => {
+      return (state.handData.actions || []).filter(a => {
         const setupTypes = ['PostSB', 'PostBB', 'DealCards']
         return !setupTypes.includes(a.type)
       }).length
     },
     progress: (state) => {
       if (!state.handData) return 0
-      const realActions = state.handData.actions.filter(a => {
+      const realActions = (state.handData.actions || []).filter(a => {
         const setupTypes = ['PostSB', 'PostBB', 'DealCards']
         return !setupTypes.includes(a.type)
       })
@@ -217,7 +217,7 @@ export const useReplayerStore = defineStore('replayer', {
       this.actionLog = []
       this.players = this.handData.players.map(p => ({
         ...p,
-        currentStack: p.initialStack,
+        currentStack: p.initialStack || p.InitialStack || 0,
         bet: 0,
         isFolded: false,
         isAllIn: false,

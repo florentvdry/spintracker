@@ -260,9 +260,6 @@ public class AnalyticsCalculator : IAnalyticsCalculator
             var totalPot = hand.TotalPot;
 
             var heroInvestment = hero.Investment > 0 ? hero.Investment : (ParseHeroInvestment(hand) ?? (totalPot / 2.0));
-            var perPlayer = ParseInvestmentsPerPlayer(hand);
-            var heroName = hero.Name;
-            var villainInvestment = perPlayer.Where(kv => !string.Equals(kv.Key, heroName, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Value).DefaultIfEmpty(0.0).Max();
             var ev = (equity.HeroEquity / 100.0) * totalPot - heroInvestment;
 
             return ev;
@@ -277,25 +274,29 @@ public class AnalyticsCalculator : IAnalyticsCalculator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private EquityResult GetCachedEquity(string heroCards, string villainCards, string board, string? deadCards = null)
     {
-        var cacheKey = deadCards != null 
+        var cacheKey = deadCards != null
             ? $"{heroCards}|{villainCards}|{board}|{deadCards}"
             : $"{heroCards}|{villainCards}|{board}|";
-        
+
         if (EquityCache.TryGetValue(cacheKey, out var cached))
         {
             System.Threading.Interlocked.Increment(ref _cacheHits);
             return cached;
         }
-        
+
         System.Threading.Interlocked.Increment(ref _cacheMisses);
-        
+
         var result = _equityCalc.Calculate(heroCards, villainCards, board, deadCards);
-        
-        if (EquityCache.Count < MaxEquityCacheSize)
+
+        if (EquityCache.Count >= MaxEquityCacheSize)
         {
-            EquityCache.TryAdd(cacheKey, result);
+            var keysToRemove = EquityCache.Keys.Take(MaxEquityCacheSize / 2).ToList();
+            foreach (var key in keysToRemove)
+                EquityCache.TryRemove(key, out _);
         }
-        
+
+        EquityCache.TryAdd(cacheKey, result);
+
         return result;
     }
     

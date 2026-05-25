@@ -33,9 +33,7 @@ const cards = computed(() => {
 })
 
 const showCards = computed(() => {
-  const show = props.player.isHero || props.player.showCards
-  console.log(`PlayerSeat: ${props.player.name}, isHero: ${props.player.isHero}, showCards: ${props.player.showCards}, finalShow: ${show}, cards: ${props.player.cards}`)
-  return show
+  return props.player.isHero || props.player.showCards
 })
 
 const cardsToShow = computed(() => {

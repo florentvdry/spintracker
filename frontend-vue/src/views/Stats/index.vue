@@ -222,7 +222,7 @@
 </template>
 
 <script setup>
-import { computed, defineComponent, h, ref, watch, onMounted } from 'vue'
+import { computed, defineComponent, h, ref, watch, onMounted, onUnmounted } from 'vue'
 import { Sigma } from 'lucide-vue-next'
 import { ipcService } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
@@ -1404,6 +1404,10 @@ watch([heroName, buyIn, dateRange, customFrom, customTo, selectedSession, statsS
 watch(heroName, loadOpponents, { immediate: true })
 watch(statsScope, (scope) => {
   if (scope !== 'player') selectedOpponent.value = null
+})
+
+onUnmounted(() => {
+  if (statsTimeout) clearTimeout(statsTimeout)
 })
 
 const PopupPanel = defineComponent({

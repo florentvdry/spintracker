@@ -161,7 +161,7 @@ public class StatsRepository
                 bool isITM = false;
                 if (p > 0 || m > 0)
                 {
-                    bool hasSharing = (totalCost > 0 && (p / totalCost) >= 19.5) || m >= 20;
+                    bool hasSharing = totalCost > 0 && (p / totalCost) >= 19.5 || m >= 20;
                     int finishPos = pos != 0 ? pos : (cp > 0 ? 1 : (pc == 2 ? 2 : 3));
 
                     if (finishPos == 1 || (hasSharing && (finishPos == 2 || finishPos == 3)))
@@ -562,24 +562,24 @@ public class StatsRepository
 
         using var cmd = connection.CreateCommand();
         cmd.CommandText = $@"
-            SELECT 
+            SELECT
                 h.date_time,
                 SUM({profitCol}) OVER (ORDER BY h.date_time, h.id) as cumulative_profit,
                 SUM(
                     COALESCE(
-                        CASE 
+                        CASE
                             WHEN {showdownCondition}
-                            THEN {profitCol} 
-                            ELSE 0 
+                            THEN {profitCol}
+                            ELSE 0
                         END, 0
                     )
                 ) OVER (ORDER BY h.date_time, h.id) as cumulative_showdown,
                 SUM(
                     COALESCE(
-                        CASE 
+                        CASE
                             WHEN NOT ({showdownCondition})
-                            THEN {profitCol} 
-                            ELSE 0 
+                            THEN {profitCol}
+                            ELSE 0
                         END, 0
                     )
                 ) OVER (ORDER BY h.date_time, h.id) as cumulative_no_showdown,

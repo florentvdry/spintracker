@@ -45,10 +45,10 @@ public static class ServiceCollectionExtensions
         var actualDbPath = fallbackDbPath;
         if (string.IsNullOrWhiteSpace(providedDbPath))
         {
-            using var tmpProvider = services.BuildServiceProvider();
-            var registry = tmpProvider.GetRequiredService<DatabaseRegistry>();
-            var logger = tmpProvider.GetRequiredService<ILoggerFactory>().CreateLogger("SpinTrackerStartup");
-            actualDbPath = ResolveActualDbPath(fallbackDbPath, registry.GetActive(), logger);
+            using var tmpLoggerFactory = new LoggerFactory();
+            var tmpLogger = tmpLoggerFactory.CreateLogger<DatabaseRegistry>();
+            var tmpRegistry = new DatabaseRegistry(tmpLogger, fallbackDbPath);
+            actualDbPath = ResolveActualDbPath(fallbackDbPath, tmpRegistry.GetActive(), tmpLogger);
         }
 
         var actualDbDirectory = Path.GetDirectoryName(actualDbPath);

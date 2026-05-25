@@ -224,7 +224,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Save, Upload, Layers, Info, Filter, BarChart3, ChevronRight, Play, Crown, Fish, Users } from 'lucide-vue-next'
 import { usePlayersStore } from '@/stores/playersStore'
@@ -406,4 +406,8 @@ watch(combinedFilters, () => {
     loadRangeData()
   }, 300)
 }, { deep: true })
+
+onUnmounted(() => {
+  if (rangeFilterTimeout) clearTimeout(rangeFilterTimeout)
+})
 </script>

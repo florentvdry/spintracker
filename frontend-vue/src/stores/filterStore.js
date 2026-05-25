@@ -53,7 +53,14 @@ export const useFilterStore = defineStore('filter', () => {
   }
 
   const setFilters = (updates) => {
-    Object.assign({ heroName, dateRange, customDateFrom, customDateTo, selectedSession, buyIn, position, result }, updates)
+    if (updates.heroName !== undefined) heroName.value = updates.heroName
+    if (updates.dateRange !== undefined) dateRange.value = updates.dateRange
+    if (updates.customDateFrom !== undefined) customDateFrom.value = updates.customDateFrom
+    if (updates.customDateTo !== undefined) customDateTo.value = updates.customDateTo
+    if (updates.selectedSession !== undefined) selectedSession.value = updates.selectedSession
+    if (updates.buyIn !== undefined) buyIn.value = updates.buyIn
+    if (updates.position !== undefined) position.value = updates.position
+    if (updates.result !== undefined) result.value = updates.result
   }
 
   const resetFilters = () => {
@@ -88,9 +95,9 @@ export const useFilterStore = defineStore('filter', () => {
       dateFrom = formatDate(startOfDay(now))
     } else if (dateRange.value === 'week') {
       const day = now.getDay()
-      const diff = now.getDate() - day + (day === 0 ? -6 : 1)
-      const monday = startOfDay(new Date(now.setDate(diff)))
-      dateFrom = formatDate(monday)
+      const monday = new Date(now)
+      monday.setDate(monday.getDate() - day + (day === 0 ? -6 : 1))
+      dateFrom = formatDate(startOfDay(monday))
     } else if (dateRange.value === 'month') {
       const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
       dateFrom = formatDate(firstOfMonth)

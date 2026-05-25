@@ -4,6 +4,7 @@ import { ref } from 'vue'
 export const useNotificationStore = defineStore('notification', () => {
   const notifications = ref([])
   const history = ref([])
+  const timeouts = new Map()
 
   const addNotification = (notification) => {
     const id = Date.now()
@@ -25,9 +26,11 @@ export const useNotificationStore = defineStore('notification', () => {
     ].slice(0, 50)
 
     if (newNotification.duration > 0) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         removeNotification(id)
+        timeouts.delete(id)
       }, newNotification.duration)
+      timeouts.set(id, timer)
     }
 
     return id
@@ -60,6 +63,8 @@ export const useNotificationStore = defineStore('notification', () => {
 
   const clearAll = () => {
     notifications.value = []
+    timeouts.forEach(t => clearTimeout(t))
+    timeouts.clear()
   }
 
   return {

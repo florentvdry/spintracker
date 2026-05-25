@@ -281,7 +281,6 @@ public class ImporterService : IImporterService
             var localParser = parser;
             int handsParsed = 0;
             int analyticsComputed = 0;
-            int cacheHits = 0;
             var parseSw = new Stopwatch();
             var analyticsSw = new Stopwatch();
             try
@@ -293,7 +292,7 @@ public class ImporterService : IImporterService
                         parseSw.Start();
                         var hand = localParser.ParseHand(handText);
                         parseSw.Stop();
-                        if (hand == null) continue;
+                        if (hand == null) { skippedHands++; continue; }
 
                         if (winamaxSummaries != null && !string.IsNullOrWhiteSpace(hand.GameId) && winamaxSummaries.TryGetValue(hand.GameId, out var summary))
                         {
@@ -365,7 +364,7 @@ public class ImporterService : IImporterService
             catch (OperationCanceledException) { }
             finally
             {
-                _logger.LogInformation($"[IMPORT] Worker {workerId} done: {handsParsed} parsed ({parseSw.ElapsedMilliseconds}ms), {analyticsComputed} analytics ({analyticsSw.ElapsedMilliseconds}ms), {cacheHits} cache hits");
+                _logger.LogInformation($"[IMPORT] Worker {workerId} done: {handsParsed} parsed ({parseSw.ElapsedMilliseconds}ms), {analyticsComputed} analytics ({analyticsSw.ElapsedMilliseconds}ms)");
             }
         }, cancellationToken)).ToArray();
 

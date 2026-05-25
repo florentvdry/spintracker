@@ -15,14 +15,14 @@ public class Database
     private readonly PlayerRepository _playerRepo;
 
     public Database(
-        ILogger<Database> logger, 
-        string? dbPath = null, 
-        StatsRepository? statsRepo = null, 
+        ILogger<Database> logger,
+        string? dbPath = null,
+        StatsRepository? statsRepo = null,
         PlayerRepository? playerRepo = null)
     {
         _logger = logger;
-        _statsRepo = statsRepo!;
-        _playerRepo = playerRepo!;
+        _statsRepo = statsRepo ?? throw new ArgumentNullException(nameof(statsRepo));
+        _playerRepo = playerRepo ?? throw new ArgumentNullException(nameof(playerRepo));
 
         if (string.IsNullOrEmpty(dbPath))
         {

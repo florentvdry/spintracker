@@ -59,19 +59,35 @@ public class EquityController : ControllerBase
 
             foreach (var hand in data.Hands)
             {
-                var result = _equityCalc.Calculate(
-                    hand.HeroCards ?? "",
-                    hand.VillainCards ?? "",
-                    hand.Board ?? ""
-                );
-
-                results.Add(new
+                try
                 {
-                    id = hand.Id,
-                    result.HeroEquity,
-                    result.VillainEquity,
-                    result.TieEquity
-                });
+                    var result = _equityCalc.Calculate(
+                        hand.HeroCards ?? "",
+                        hand.VillainCards ?? "",
+                        hand.Board ?? ""
+                    );
+
+                    results.Add(new
+                    {
+                        id = hand.Id,
+                        result.HeroEquity,
+                        result.VillainEquity,
+                        result.TieEquity,
+                        error = (string?)null
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning($"Equity calculation failed for hand {hand.Id}: {ex.Message}");
+                    results.Add(new
+                    {
+                        id = hand.Id,
+                        HeroEquity = (double?)null,
+                        VillainEquity = (double?)null,
+                        TieEquity = (double?)null,
+                        error = ex.Message
+                    });
+                }
             }
 
             return Ok(new

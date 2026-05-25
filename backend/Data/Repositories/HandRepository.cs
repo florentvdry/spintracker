@@ -41,13 +41,19 @@ public class HandRepository
                     prize_pool, multiplier, buy_in, date_time, table_id, blinds,
                     total_pot, rake, preflop_action,
                     flop, flop_action, turn, turn_action, river, river_action,
-                    showdown, result, all_in_street, went_to_showdown, player_count
+                    showdown, result, all_in_street, went_to_showdown, player_count,
+                    position, limit_type, game_variant, currency, button_seat, ante,
+                    tournament_id, tournament_name, tournament_level, buyin_currency,
+                    rake_per_player, structured_actions
                 ) VALUES (
                     @id, @game_id, @hand_id, @room, @game_mode, @game_type, @game_name,
                     @prize_pool, @multiplier, @buy_in, @date_time, @table_id, @blinds,
                     @total_pot, @rake, @preflop_action,
                     @flop, @flop_action, @turn, @turn_action, @river, @river_action,
-                    @showdown, @result, @all_in_street, @went_to_showdown, @player_count
+                    @showdown, @result, @all_in_street, @went_to_showdown, @player_count,
+                    @position, @limit_type, @game_variant, @currency, @button_seat, @ante,
+                    @tournament_id, @tournament_name, @tournament_level, @buyin_currency,
+                    @rake_per_player, @structured_actions
                 )";
             
             // Re-use command for player hands
@@ -98,6 +104,22 @@ public class HandRepository
                     cmd.Parameters.AddWithValue("@all_in_street", hand.AllInStreet ?? "");
                     cmd.Parameters.AddWithValue("@went_to_showdown", hand.WentToShowdown ? 1 : 0);
                     cmd.Parameters.AddWithValue("@player_count", hand.PlayerCount);
+
+                    var structuredActionsJson = hand.StructuredActions != null
+                        ? System.Text.Json.JsonSerializer.Serialize(hand.StructuredActions)
+                        : null;
+                    cmd.Parameters.AddWithValue("@position", hand.Position);
+                    cmd.Parameters.AddWithValue("@limit_type", hand.LimitType ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@game_variant", hand.GameVariant ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@currency", hand.Currency ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@button_seat", hand.ButtonSeat ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ante", hand.Ante ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@tournament_id", hand.TournamentId ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@tournament_name", hand.TournamentName ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@tournament_level", hand.TournamentLevel ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@buyin_currency", hand.BuyinCurrency ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@rake_per_player", hand.RakePerPlayer ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@structured_actions", structuredActionsJson ?? (object)DBNull.Value);
 
                     await cmd.ExecuteNonQueryAsync();
                     inserted++;
@@ -320,48 +342,51 @@ public class HandRepository
         }
     }
 
-    private async Task LoadPlayersForHand(ParsedHand hand)
+    private async Task LoadPlayersForHand(ParsedHand hand, string? heroName = null)
     {
         if (string.IsNullOrEmpty(hand.Id)) return;
-        
+
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
-        
+
         using var cmd = connection.CreateCommand();
         cmd.CommandText = @"
             SELECT player_name, position, stack, cards, investment, chips_won, net_profit, is_all_in, went_to_showdown, ev_chips
             FROM player_hands
             WHERE hand_id = @handId";
         cmd.Parameters.AddWithValue("@handId", hand.Id);
-        
+
         hand.Players.Clear();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
             var cards = reader.IsDBNull(3) ? "" : reader.GetString(3);
+            var playerName = reader.GetString(0);
             hand.Players.Add(new PlayerInfo
             {
-                Name = reader.GetString(0),
+                Name = playerName,
                 Position = reader.IsDBNull(1) ? "" : reader.GetString(1),
                 Stack = reader.IsDBNull(2) ? 0 : reader.GetDouble(2),
                 Cards = cards,
                 Investment = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
                 ChipsWon = reader.IsDBNull(5) ? 0 : reader.GetDouble(5),
                 NetProfit = reader.IsDBNull(6) ? 0 : reader.GetDouble(6),
-                IsHero = !string.IsNullOrEmpty(cards), // Heuristic: if they have cards, we treat as hero (might need refinement for showdown)
+                IsHero = !string.IsNullOrEmpty(heroName)
+                    ? string.Equals(playerName, heroName, StringComparison.OrdinalIgnoreCase)
+                    : !string.IsNullOrEmpty(cards),
                 IsAllIn = reader.IsDBNull(7) ? false : reader.GetInt32(7) == 1,
                 WentToShowdown = reader.IsDBNull(8) ? false : reader.GetInt32(8) == 1,
                 EvChips = reader.IsDBNull(9) ? null : (double?)reader.GetDouble(9)
             });
         }
-        
+
         // Set PlayerCount
         hand.PlayerCount = hand.Players.Count;
     }
 
     private int? TryGetOrdinal(SqliteDataReader reader, string columnName)
     {
-        try { return reader.GetOrdinal(columnName); } catch { return null; }
+        try { return reader.GetOrdinal(columnName); } catch (IndexOutOfRangeException) { return null; }
     }
 
     private object ReadHandFromReader(SqliteDataReader reader)

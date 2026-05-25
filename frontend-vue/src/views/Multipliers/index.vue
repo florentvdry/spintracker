@@ -116,7 +116,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, onMounted, computed, watch, onUnmounted } from 'vue'
 import { Hash, Loader2, TrendingUp, TrendingDown, Inbox } from 'lucide-vue-next'
 import { ipcService } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
@@ -181,6 +181,10 @@ watch([() => filterStore.heroName, () => filterStore.dateRange, () => filterStor
   if (multipliersTimeout) clearTimeout(multipliersTimeout)
   multipliersTimeout = setTimeout(fetchStats, 300)
 }, { immediate: true })
+
+onUnmounted(() => {
+  if (multipliersTimeout) clearTimeout(multipliersTimeout)
+})
 </script>
 
 <style scoped>

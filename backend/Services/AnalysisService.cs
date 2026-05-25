@@ -84,7 +84,7 @@ namespace SpinTrackerBackend.Services
             _logger.LogInformation($"GetAnalysisHandsAsync: Got {hands.Count} hands from DB");
 
             // 2. Apply in-memory filters (Situation, Action, Stack)
-            var filteredHands = FilterHands(hands, request);
+            var filteredHands = await FilterHands(hands, request);
             _logger.LogInformation($"GetAnalysisHandsAsync: After filter {filteredHands.Count} hands");
 
             // 3. Sort
@@ -127,7 +127,7 @@ namespace SpinTrackerBackend.Services
             var sortedFullHands = new List<object>();
             foreach (var id in ids)
             {
-                var match = fullHands.FirstOrDefault(h => (string)((dynamic)h).id == id);
+                var match = fullHands.FirstOrDefault(h => h is Dictionary<string, object> dict && dict.TryGetValue("id", out var idVal) && idVal?.ToString() == id);
                 if (match != null)
                 {
                     sortedFullHands.Add(match);
@@ -152,13 +152,13 @@ namespace SpinTrackerBackend.Services
             var hands = await _analyticsRepo.GetHandsForAnalysisAsync(filters);
 
             // 2. Apply in-memory filters (Situation, Action, Stack)
-            var filteredHands = FilterHands(hands, filters);
+            var filteredHands = await FilterHands(hands, filters);
 
             // 3. Calculate Stats
             return CalculateStats(filteredHands, filters.HeroName);
         }
 
-        private List<AnalysisHandData> FilterHands(List<AnalysisHandData> hands, AnalysisFilters filters)
+        private async Task<List<AnalysisHandData>> FilterHands(List<AnalysisHandData> hands, AnalysisFilters filters)
         {
             var result = new List<AnalysisHandData>();
 
@@ -184,7 +184,7 @@ namespace SpinTrackerBackend.Services
                 // Filter by Opponent Type (reg/fish)
                 if (!string.IsNullOrEmpty(filters.OpponentType) && filters.OpponentType != "all")
                 {
-                    var opponentIsReg = CheckOpponentIsReg(hand, effectiveHeroName);
+                    var opponentIsReg = await CheckOpponentIsReg(hand, effectiveHeroName);
                     if (filters.OpponentType == "reg" && !opponentIsReg) continue;
                     if (filters.OpponentType == "fish" && opponentIsReg) continue;
                 }
@@ -500,8 +500,7 @@ namespace SpinTrackerBackend.Services
         {
              if (string.IsNullOrEmpty(btnAction) && string.IsNullOrEmpty(sbAction) && string.IsNullOrEmpty(bbAction)) return true;
              if (string.IsNullOrEmpty(handAction)) return false;
-             
-             // ... rest of method
+
              // Parse PlayerPositionsMap: "Player1:BTN|Player2:SB"
              var posMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
              if (!string.IsNullOrEmpty(hand.PlayerPositionsMap))
@@ -633,7 +632,7 @@ namespace SpinTrackerBackend.Services
             }
         }
 
-        private bool CheckOpponentIsReg(AnalysisHandData hand, string? heroName)
+        private async Task<bool> CheckOpponentIsReg(AnalysisHandData hand, string? heroName)
         {
             if (string.IsNullOrEmpty(hand.PlayerPositionsMap)) return false;
 
@@ -649,7 +648,7 @@ namespace SpinTrackerBackend.Services
                 var playerName = parts[0].Trim();
                 if (string.Equals(playerName, currentHeroName, StringComparison.OrdinalIgnoreCase)) continue;
 
-                var isReg = _playerRepo.CheckPlayerIsRegAsync(playerName).Result;
+                var isReg = await _playerRepo.CheckPlayerIsRegAsync(playerName);
                 return isReg;
             }
 
@@ -1200,7 +1199,7 @@ namespace SpinTrackerBackend.Services
             _logger.LogInformation($"GetRangeAnalysisAsync: DB returned {hands.Count} hands");
 
             // 2. Filter in memory
-            var filteredHands = FilterHands(hands, filters);
+            var filteredHands = await FilterHands(hands, filters);
             _logger.LogInformation($"GetRangeAnalysisAsync: After filtering {filteredHands.Count} hands");
 
             // Determine Target Position. 

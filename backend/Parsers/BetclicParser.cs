@@ -170,10 +170,10 @@ public class BetclicParser : IHandParser
             // Post-Processing Calculations
             BuildActionStrings(hand, actions); // Build action strings before calculations
             
-            // Recalculate Multiplier if missing (stays 1) but we have PrizePool and BuyIn
-            if (hand.Multiplier <= 1 && hand.BuyIn > 0 && hand.PrizePool > 0)
+            // Recalculate Multiplier if not found in hand history but we have PrizePool and BuyIn
+            if (hand.Multiplier <= 0 && hand.BuyIn > 0 && hand.PrizePool > 0)
             {
-                hand.Multiplier = (int)Math.Round(hand.PrizePool / hand.BuyIn, MidpointRounding.AwayFromZero);
+                hand.Multiplier = Math.Max(1, (int)Math.Round(hand.PrizePool / hand.BuyIn, MidpointRounding.AwayFromZero));
             }
 
             BuildStructuredActions(hand, actions, heroName);

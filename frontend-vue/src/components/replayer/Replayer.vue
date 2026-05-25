@@ -102,7 +102,6 @@ onUnmounted(() => {
 
 <template>
   <div class="replayer-page">
-    {{ console.log('[Replayer.vue] Render, handData exists?', !!store.handData) }}
     <header class="replayer-header">
       <div v-if="store.handData" class="hand-card">
         <div class="hand-title">

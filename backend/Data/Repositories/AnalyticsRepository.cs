@@ -108,7 +108,7 @@ public class AnalyticsRepository
         {
             try
             {
-                await LoadPlayersForHand(hand);
+                await LoadPlayersForHand(hand, heroName);
             }
             catch (Exception ex)
             {
@@ -118,8 +118,6 @@ public class AnalyticsRepository
 
         return hands;
     }
-
-    // Note: ReadParsedHandFromReader and LoadPlayersForHand need to be moved to a shared utility or kept in Database
     private ParsedHand ReadParsedHandFromReader(SqliteDataReader reader)
     {
         return new ParsedHand
@@ -153,41 +151,44 @@ public class AnalyticsRepository
         };
     }
 
-    private async Task LoadPlayersForHand(ParsedHand hand)
+    private async Task LoadPlayersForHand(ParsedHand hand, string? heroName = null)
     {
         if (string.IsNullOrEmpty(hand.Id)) return;
-        
+
         using var connection = new SqliteConnection(_connectionString);
         await connection.OpenAsync();
-        
+
         using var cmd = connection.CreateCommand();
         cmd.CommandText = @"
             SELECT player_name, position, stack, cards, investment, chips_won, net_profit, is_all_in, went_to_showdown, ev_chips
             FROM player_hands
             WHERE hand_id = @handId";
         cmd.Parameters.AddWithValue("@handId", hand.Id);
-        
+
         hand.Players.Clear();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
             var cards = reader.IsDBNull(3) ? "" : reader.GetString(3);
+            var playerName = reader.GetString(0);
             hand.Players.Add(new PlayerInfo
             {
-                Name = reader.GetString(0),
+                Name = playerName,
                 Position = reader.IsDBNull(1) ? "" : reader.GetString(1),
                 Stack = reader.IsDBNull(2) ? 0 : reader.GetDouble(2),
                 Cards = cards,
                 Investment = reader.IsDBNull(4) ? 0 : reader.GetDouble(4),
                 ChipsWon = reader.IsDBNull(5) ? 0 : reader.GetDouble(5),
                 NetProfit = reader.IsDBNull(6) ? 0 : reader.GetDouble(6),
-                IsHero = !string.IsNullOrEmpty(cards), // Heuristic: if they have cards, we treat as hero (might need refinement for showdown)
+                IsHero = !string.IsNullOrEmpty(heroName)
+                    ? string.Equals(playerName, heroName, StringComparison.OrdinalIgnoreCase)
+                    : !string.IsNullOrEmpty(cards),
                 IsAllIn = reader.IsDBNull(7) ? false : reader.GetInt32(7) == 1,
                 WentToShowdown = reader.IsDBNull(8) ? false : reader.GetInt32(8) == 1,
                 EvChips = reader.IsDBNull(9) ? null : (double?)reader.GetDouble(9)
             });
         }
-        
+
         // Set PlayerCount
         hand.PlayerCount = hand.Players.Count;
     }
@@ -746,7 +747,11 @@ public class AnalyticsRepository
         await connection.OpenAsync();
 
         using var cmd = connection.CreateCommand();
-        cmd.CommandText = "DELETE FROM player_hands WHERE ev_chips IS NOT NULL";
+        cmd.CommandText = @"UPDATE player_hands SET
+            ev_chips = NULL, net_won_adjusted = NULL, showdown_winning = NULL,
+            non_showdown_winning = NULL, equity_preflop = NULL, equity_flop = NULL,
+            equity_turn = NULL, equity_river = NULL, cev_contribution = NULL
+            WHERE ev_chips IS NOT NULL";
         await cmd.ExecuteNonQueryAsync();
     }
 }
