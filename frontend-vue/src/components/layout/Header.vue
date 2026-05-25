@@ -84,16 +84,30 @@
                    @mouseleave="scheduleSessionClose()">
                 <div class="p-1 max-h-72 overflow-y-auto">
                   <div v-for="session in recentSessions" :key="session.session_date"
-                       class="px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 rounded flex items-center justify-between"
-                       :class="isSelectedSession(session) ? 'bg-primary-500/10 text-primary-400' : 'text-gray-300'"
+                       class="px-3 py-2 text-sm cursor-pointer hover:bg-dark-400 rounded transition-colors mb-1"
+                       :class="isSelectedSession(session) ? 'bg-primary-500/10 border border-primary-500/30' : ''"
                        @click="handleSessionSelect(session)">
-                    <div class="flex items-center gap-1.5">
-                      <span>{{ formatDate(session.session_date, { format: 'date-only' }) }}</span>
-                      <span class="text-xs text-gray-500">{{ formatTime(session.session_date) }}→{{ formatTime(session.session_end) }}</span>
+                    <div class="flex items-center justify-between mb-1">
+                      <div class="flex items-center gap-1.5">
+                        <span :class="isSelectedSession(session) ? 'text-primary-400 font-medium' : 'text-gray-200'">
+                          {{ formatDate(session.session_date, { format: 'date-only' }) }}
+                        </span>
+                        <span class="text-xs text-gray-500">{{ formatTime(session.session_date) }}→{{ formatTime(session.session_end) }}</span>
+                      </div>
+                      <span class="font-mono font-medium text-xs" :class="session.profit >= 0 ? 'text-green-400' : 'text-red-400'">
+                        {{ formatCurrency(session.profit) }}
+                      </span>
                     </div>
-                    <span class="font-mono font-medium text-xs" :class="session.profit >= 0 ? 'text-green-400' : 'text-red-400'">
-                      {{ formatCurrency(session.profit) }}
-                    </span>
+                    <div class="flex items-center gap-3 text-[10px] text-gray-500">
+                      <div class="flex items-center gap-1">
+                        <Trophy class="w-3 h-3" />
+                        <span>{{ session.tournaments }}</span>
+                      </div>
+                      <div class="flex items-center gap-1">
+                        <Hash class="w-3 h-3" />
+                        <span>{{ session.hands_played }}</span>
+                      </div>
+                    </div>
                   </div>
                   <div v-if="recentSessions.length === 0" class="text-center text-gray-500 text-xs italic py-4">
                     {{ $t('dashboard.no_sessions') }}
@@ -332,7 +346,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Upload, RefreshCw, Search, ChevronDown, ChevronRight, Bell, Check, X, Trash2, Filter, Users, Calendar } from 'lucide-vue-next'
+import { Upload, RefreshCw, Search, ChevronDown, ChevronRight, Bell, Check, X, Trash2, Filter, Users, Calendar, Trophy, Hash } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { useUpdateStore } from '@/stores/updateStore'
