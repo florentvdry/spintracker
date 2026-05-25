@@ -288,11 +288,26 @@ namespace SpinTrackerBackend.Services
                  var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
                  if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
 
+                 // Extract Player Name from line
+                 // Format (colon): "PlayerName: raises to 40"
+                 // Format (space): "PlayerName raises to 40" (Winamax/Unibet)
                  var colonIndex = processingLine.IndexOf(':');
-                 if (colonIndex == -1) continue;
+                 string playerName;
+                 string content;
 
-                 var playerName = processingLine.Substring(0, colonIndex).Trim();
-                 var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+                 if (colonIndex != -1)
+                 {
+                     playerName = processingLine.Substring(0, colonIndex).Trim();
+                     content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+                 }
+                 else
+                 {
+                     var spaceIndex = processingLine.IndexOf(' ');
+                     if (spaceIndex == -1) continue;
+
+                     playerName = processingLine.Substring(0, spaceIndex).Trim();
+                     content = processingLine.Substring(spaceIndex).Trim().ToLower();
+                 }
 
                  if (posMap.TryGetValue(playerName, out var pos))
                  {
@@ -429,11 +444,26 @@ namespace SpinTrackerBackend.Services
                 var splitParts = processingLine.Split(new[] { " - " }, 2, StringSplitOptions.None);
                 if (splitParts.Length > 1) processingLine = splitParts[1].Trim();
 
+                // Extract Player Name from line
+                // Format (colon): "PlayerName: raises to 40" (Betclic)
+                // Format (space): "PlayerName raises to 40" (Winamax/Unibet)
                 var colonIndex = processingLine.IndexOf(':');
-                if (colonIndex == -1) continue;
-                
-                var playerName = processingLine.Substring(0, colonIndex).Trim();
-                var content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+                string playerName;
+                string content;
+
+                if (colonIndex != -1)
+                {
+                    playerName = processingLine.Substring(0, colonIndex).Trim();
+                    content = processingLine.Substring(colonIndex + 1).Trim().ToLower();
+                }
+                else
+                {
+                    var spaceIndex = processingLine.IndexOf(' ');
+                    if (spaceIndex == -1) continue;
+
+                    playerName = processingLine.Substring(0, spaceIndex).Trim();
+                    content = processingLine.Substring(spaceIndex).Trim().ToLower();
+                }
                 
                 // Check if this is the hero's action by:
                 // 1. Matching player name to hero name, OR
@@ -458,8 +488,11 @@ namespace SpinTrackerBackend.Services
                 if (content.Contains("all-in"))
                 {
                     action = "all-in";
-                    // Try to extract amount from "raises to X and is all-in"
+                    // Try "raises to X and is all-in" (Betclic/Winamax incremental)
+                    // Then fallback "raises X and is all-in" (Winamax)
                     var amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"to\s+(\d+\.?\d*)");
+                    if (!amountMatch.Success)
+                        amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"raises\s+(\d+\.?\d*)");
                     if (amountMatch.Success && bb > 0)
                     {
                         amountBB = double.Parse(amountMatch.Groups[1].Value) / bb;
@@ -468,8 +501,11 @@ namespace SpinTrackerBackend.Services
                 else if (content.Contains("raises"))
                 {
                     action = "raise";
-                    // Extract amount from "raises to X"
+                    // Try "raises to X" (Betclic/Winamax incremental)
+                    // Then fallback "raises X" (Winamax direct)
                     var amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"to\s+(\d+\.?\d*)");
+                    if (!amountMatch.Success)
+                        amountMatch = System.Text.RegularExpressions.Regex.Match(content, @"raises\s+(\d+\.?\d*)");
                     if (amountMatch.Success && bb > 0)
                     {
                         amountBB = double.Parse(amountMatch.Groups[1].Value) / bb;
