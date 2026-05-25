@@ -164,7 +164,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { DollarSign, Hash, Trophy, Target, TrendingUp, Zap } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/appStore'
@@ -210,5 +210,9 @@ onMounted(() => {
   if (!appStore.dashboardStats && appStore.isInitialized) {
     appStore.refreshAll()
   }
+})
+
+watch([heroName, dateRange, () => filterStore.buyIn], () => {
+  appStore.refreshAll()
 })
 </script>
