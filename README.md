@@ -87,6 +87,7 @@ SpinTracker updates itself automatically when a new release is published. macOS 
 
 - [Node.js](https://nodejs.org/) (LTS)
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [Rust](https://rustup.rs/) (stable) with the MSVC build tools — see the [Tauri prerequisites](https://tauri.app/start/prerequisites/)
 - Windows (the dev scripts and installer currently target Windows)
 
 ### Setup and run
@@ -95,14 +96,14 @@ SpinTracker updates itself automatically when a new release is published. macOS 
 git clone https://github.com/florentvdry/spintracker.git
 cd spintracker
 npm run setup          # installs dependencies and builds the backend
-npm run dev:electron   # recommended: Vite + Electron + C# backend
+npm run dev            # Tauri desktop app: Vite + Rust shell + C# backend
 ```
 
 | Command | Description |
 |---|---|
-| `npm run dev:electron` | Full desktop dev mode (frontend on `:3000`, backend on `:5050`) |
-| `npm run dev` | Backend and frontend in a browser (some features need Electron IPC) |
-| `npm run react:dev` | Frontend only (Vite) |
+| `npm run dev` | Full desktop dev mode (frontend on `:3000`, backend on `:5050`) |
+| `npm run frontend:dev` | Frontend only in a browser (Vite; features that need the Rust shell are unavailable) |
+| `npm run frontend:build` | Type-check and build the frontend |
 | `npm run backend:dev` | Backend only, hot reload |
 | `npm run build` | Build the Windows installer |
 | `cd backend && dotnet test Tests/SpinTrackerBackend.Tests.csproj` | Run backend tests |
@@ -117,12 +118,12 @@ backend/        ASP.NET Core (.NET 8) API — parsing, import, stats, SQLite, Fl
   Parsers/      One parser per poker room
   Data/         Repositories (SQLite)
   Migrations/   Database migrations
-frontend-vue/   Vue 3 + Vite + Tailwind + Pinia UI
-main.js         Electron main process (launches the backend on port 5050)
+frontend/       React + TypeScript + Vite + Tailwind + Zustand UI
+src-tauri/      Tauri 2 shell in Rust (window, native dialogs, updater, launches the backend on port 5050)
 website/        Landing site (Next.js)
 ```
 
-**Tech stack:** Electron · Vue 3 · Vite · TailwindCSS · Pinia · C# / ASP.NET Core (.NET 8) · SQLite · FluentMigrator.
+**Tech stack:** Tauri 2 (Rust) · React · TypeScript · Vite · TailwindCSS · Zustand · C# / ASP.NET Core (.NET 8) · SQLite · FluentMigrator.
 
 More details in [backend/README.md](backend/README.md) and [AGENTS.md](AGENTS.md).
 

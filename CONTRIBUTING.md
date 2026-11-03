@@ -9,27 +9,27 @@ By participating you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 - 🐛 **Report a bug** — [open a bug report](https://github.com/florentvdry/spintracker/issues/new?template=bug_report.yml)
 - 💡 **Suggest a feature** — [open a feature request](https://github.com/florentvdry/spintracker/issues/new?template=feature_request.yml)
 - 🎰 **Request a poker room** — [open a room support request](https://github.com/florentvdry/spintracker/issues/new?template=room_support.yml)
-- 🌍 **Translate** — add a locale in `frontend-vue/src/locales/`
+- 🌍 **Translate** — add a locale in `frontend/src/locales/`
 - 🔧 **Fix or build something** — pick an issue labeled `good first issue` or `help wanted`
 
 Not sure where to start? Ask in [Discussions](https://github.com/florentvdry/spintracker/discussions).
 
 ## Development setup
 
-Prerequisites: Node.js 18+, the .NET 8 SDK, Windows.
+Prerequisites: Node.js 18+, the .NET 8 SDK, Rust (stable, MSVC toolchain), Windows.
 
 ```bash
 git clone https://github.com/<your-username>/spintracker.git
 cd spintracker
 npm run setup
-npm run dev:electron
+npm run dev
 ```
 
 Run the checks before opening a PR:
 
 ```bash
 cd backend && dotnet build && dotnet test Tests/SpinTrackerBackend.Tests.csproj
-cd .. && npm run react:build
+cd .. && npm run frontend:build && cargo check --manifest-path src-tauri/Cargo.toml
 ```
 
 ## Workflow
@@ -56,10 +56,10 @@ Do **not** start a commit message with `V<number>.<number>.<number>` — that tr
 
 The full conventions live in [AGENTS.md](AGENTS.md) and apply to humans and AI agents alike. Highlights:
 
-- **Everything in the repo is in English** (code, comments, docs, commits). UI strings go through `frontend-vue/src/locales/`, English being the reference locale.
+- **Everything in the repo is in English** (code, comments, docs, commits). UI strings go through `frontend/src/locales/`, English being the reference locale.
 - Backend layering: Controllers → Services → Engines/Repositories. No business logic in controllers.
 - Database changes go through a new FluentMigrator migration — never edit a published one.
-- Vue 3 Composition API with `<script setup>`; API calls only through `src/services/`.
+- React function components with TypeScript (strict); backend calls only through `src/services/`.
 
 ## Adding or fixing a parser
 

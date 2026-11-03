@@ -11,7 +11,7 @@
 - Documentation: README, `changelogs.txt`, `todo.txt`, this file.
 - Tests: names and descriptions.
 
-Exception: user-facing UI text lives in `frontend-vue/src/locales/` and may exist in several languages (see §6). English is the reference locale; every key must exist in it.
+Exception: user-facing UI text lives in `frontend/src/locales/` and may exist in several languages (see §6). English is the reference locale; every key must exist in it.
 
 Legacy French found in the codebase (comments, names, docs) must be translated to English when you touch that code. Do not leave mixed-language files. Do not do large translation sweeps mixed into functional changes: use a dedicated `refactor`/`docs` commit.
 
@@ -20,8 +20,8 @@ Legacy French found in the codebase (comments, names, docs) must be translated t
 | Area | Tech | Role |
 |---|---|---|
 | `backend/` | C# / .NET 8, ASP.NET Core, SQLite, FluentMigrator | API, parsing/import, stats |
-| `frontend-vue/` | Vue 3, Vite, Tailwind, Pinia (`stores/`) | UI |
-| `main.js` | Electron | Desktop main process, launches the backend (port `5050`) |
+| `frontend/` | React, TypeScript, Vite, Tailwind, Zustand (`stores/`) | UI |
+| `src-tauri/` | Tauri 2 (Rust) | Desktop shell: windows, native dialogs, updater, launches the backend (port `5050`) |
 | `website/` | — | Landing site |
 | `.github/workflows/deploy.yml` | GitHub Actions | Automated release |
 
@@ -41,13 +41,13 @@ Allowed dependency direction: Controllers → Services → Engines/Repositories.
 
 ```bash
 npm run setup           # full install + backend build
-npm run dev:electron    # desktop dev (recommended)
-npm run dev             # backend + frontend separately
+npm run dev             # desktop dev (Tauri + Vite + backend)
+npm run frontend:dev    # frontend alone in a browser (no Rust shell)
 npm run build           # Windows build (installer)
 cd backend && dotnet test Tests/SpinTrackerBackend.Tests.csproj
 ```
 
-**Before declaring a task done**: backend builds (`dotnet build`), tests pass, `npm run react:build` passes. If a check could not be run, say so explicitly.
+**Before declaring a task done**: backend builds (`dotnet build`), tests pass, `npm run frontend:build` passes and `cargo check` passes in `src-tauri/`. If a check could not be run, say so explicitly.
 
 ## 3. Commits (STRICT)
 
@@ -59,7 +59,7 @@ Format: **Conventional Commits**, in **English**, imperative mood, lowercase des
 
 Allowed types: `feat`, `fix`, `perf`, `refactor`, `test`, `docs`, `style`, `build`, `ci`, `chore`.
 
-Suggested scopes: `parser`, `import`, `stats`, `range`, `dashboard`, `session`, `replayer`, `db`, `migration`, `electron`, `ui`, `i18n`, `website`.
+Suggested scopes: `parser`, `import`, `stats`, `range`, `dashboard`, `session`, `replayer`, `db`, `migration`, `tauri`, `ui`, `i18n`, `website`.
 
 Valid examples:
 - `feat(session): add session filter to history`
@@ -112,19 +112,26 @@ V1.2.0 - new range analysis
 - No magic numbers: use named constants (buy-ins, prize pool multipliers…).
 - Money/EV: use `decimal` for amounts, not `float`.
 
-## 6. Vue / JS conventions (frontend)
+## 6. React / TypeScript conventions (frontend)
 
-- Vue 3 **Composition API** with `<script setup>`. No Options API in new code.
-- Components: `PascalCase.vue`. Composables: `useXxx.js`. Pinia stores: `xxxStore.js` / `useXxxStore`.
-- API calls only through `src/services/`; never `fetch`/`axios` inside a component.
+- React function components and hooks, TypeScript in `strict` mode. No `any` in new code except the shared `Json` alias for untyped backend payloads. A class component is acceptable only for error boundaries.
+- Components: `PascalCase.tsx`. Hooks: `useXxx.ts`. Zustand stores: `xxxStore.ts` exporting `useXxxStore`.
+- Backend calls only through `src/services/ipcService.ts` (Tauri commands); never `fetch`/`axios` or `invoke` inside a component.
 - Shared state in `stores/`; do not duplicate server state in components.
-- Styling: Tailwind classes; no inline CSS except dynamic values. No new CSS library.
-- **i18n**: all visible text goes through `locales/`. Add the key to **every** locale file, English first. No hardcoded strings in templates. Locale keys are English identifiers.
+- Styling: Tailwind classes; no inline CSS except dynamic values. No new CSS library. Feature-specific stylesheets (replayer, stats HUD) are scoped under a root class.
+- **i18n**: all visible text goes through `locales/` (`useTranslation`). Add the key to **every** locale file, English first. No hardcoded strings in JSX. Locale keys are English identifiers. Placeholders use i18next syntax (`{{name}}`).
+- Never render untrusted text as HTML (no `dangerouslySetInnerHTML`).
 - No leftover `console.log`, no dead commented-out code.
 - `const` by default, `let` when needed, never `var`. `===` only.
-- Typed/validated props, events declared with `defineEmits`.
-- Lists: stable unique `:key` (never the index for mutable lists).
-- Performance: no heavy computation in templates; use `computed`, and virtualization for long hand/tournament lists.
+- Effects: declare every dependency, clean up timers/listeners, and ignore stale async results.
+- Lists: stable unique `key` (never the index for mutable lists).
+- Performance: no heavy computation in render (use `useMemo`), and virtualization for long hand/tournament lists.
+
+### Rust shell (`src-tauri/`)
+
+- Native concerns only (windows, dialogs, files, updater, backend process). Business logic stays in the C# backend.
+- Expose a Tauri command only for what the UI needs; validate inputs coming from the webview (the generic `backend_request` command only accepts absolute backend paths).
+- Run `cargo check` (and `cargo clippy` when available) before delivering.
 
 ## 7. Parsers & import (sensitive area)
 
@@ -179,7 +186,7 @@ V1.2.0 - new range analysis
 
 ## 13. Pre-delivery checklist
 
-- [ ] Builds (`dotnet build`, `npm run react:build`)
+- [ ] Builds (`dotnet build`, `npm run frontend:build`, `cargo check` in `src-tauri/`)
 - [ ] Backend tests green; new test added for any bug/feature
 - [ ] No hardcoded strings (i18n), no leftover `console.log`/debug
 - [ ] Migration added if the schema changes

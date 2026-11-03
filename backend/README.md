@@ -40,7 +40,7 @@ Every parser fix must ship with a test using an **anonymized** sample from `exem
 
 ## API
 
-The API listens on `localhost` and is consumed by the Electron/Vue frontend. Main endpoints:
+The API listens on `localhost` and is consumed by the Tauri/React frontend through the Rust shell. Main endpoints:
 
 - `GET /health` — health check
 - `POST /parse/file`, `POST /parse/detect` — parse a hand history file / detect its room format
