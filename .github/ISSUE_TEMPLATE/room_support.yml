@@ -1,0 +1,42 @@
+name: 🎰 Poker room support request
+description: Ask for a new poker room (hand history format) to be supported.
+title: "feat(parser): support <room name>"
+labels: ["parser", "room-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Currently supported: Winamax, Betclic, Unibet.
+        A **fully anonymized** hand history sample is the most useful thing you can provide.
+  - type: input
+    id: room
+    attributes:
+      label: Poker room
+    validations:
+      required: true
+  - type: input
+    id: format
+    attributes:
+      label: Game format
+      description: e.g. Spin & Go 3-max, Heads-Up, other.
+    validations:
+      required: true
+  - type: textarea
+    id: location
+    attributes:
+      label: Where does the room save hand histories?
+      description: Folder path or setting that enables hand history export, if known.
+  - type: textarea
+    id: sample
+    attributes:
+      label: Anonymized hand history sample
+      description: Replace player names, IDs, emails and paths. Use a code block or attach a file.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: The sample contains no real player names or personal data.
+          required: true
+        - label: I'd be willing to test a build with support for this room.

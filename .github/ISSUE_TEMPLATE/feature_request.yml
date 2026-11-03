@@ -1,0 +1,47 @@
+name: 💡 Feature request
+description: Suggest an idea or improvement for SpinTracker.
+title: "feat: "
+labels: ["enhancement", "triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do, and what is missing today?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like it to work? Mockups and examples welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Import / parser
+        - Dashboard
+        - Statistics / leaks
+        - Replayer
+        - Range research
+        - Multipliers
+        - Players
+        - UI / i18n
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: contribute
+    attributes:
+      label: Would you like to implement it?
+      options:
+        - "No, I'm just suggesting"
+        - "Yes, I'd like to open a PR"
+        - "Maybe, with some guidance"

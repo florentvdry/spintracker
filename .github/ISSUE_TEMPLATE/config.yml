@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💡 Ideas & discussions
+    url: https://github.com/florentvdry/spintracker/discussions
+    about: Open-ended ideas and Q&A that are not actionable bugs or features.
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/florentvdry/spintracker/security/advisories/new
+    about: Please report security issues privately, never in a public issue.

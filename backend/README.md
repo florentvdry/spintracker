@@ -1,79 +1,54 @@
-# SpinTracker Backend - C# Edition
+# SpinTracker Backend
 
-Backend C# haute performance pour le SpinTracker avec calculs d'équité optimisés et parsing rapide.
+ASP.NET Core (.NET 8) API powering [SpinTracker](../README.md): hand history parsing and import, SQLite storage, statistics, equity calculation and leak analysis.
 
-## Fonctionnalités
+## Layout
 
-- **Serveur HTTP REST API** compatible avec l'API Python existante
-- **Calculateur d'équité optimisé** avec table de lookup preflop et simulation Monte Carlo
-- **Parser Betclic** pour fichiers de hand history
-- **Base de données SQLite** pour stockage des mains
-- **Calcul d'analytics** en parallèle (EV, equity, etc.)
-- **Moteur d'analyse** pour détection de leaks
+| Folder | Role |
+|---|---|
+| `Controllers/` | HTTP endpoints only, no business logic |
+| `Services/` | Application logic |
+| `Engines/` | Pure analytical computations (stats, equity, EV, leaks) |
+| `Parsers/` | One hand history parser per poker room (Winamax, Betclic, Unibet) |
+| `Data/Repositories/` | Data access |
+| `Migrations/` | FluentMigrator schema migrations |
+| `Extensions/`, `Configuration/` | DI, HTTP pipeline, runtime paths |
+| `Models/`, `Interfaces/` | DTOs, entities, contracts |
+| `Tests/` | xUnit tests, based on anonymized samples in `exemple-data/` |
 
-## Prérequis
+See [AGENTS.md](../AGENTS.md) for the layering rules and conventions.
 
-- .NET 8.0 SDK
+## Requirements
 
-## Installation
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+
+## Run
 
 ```bash
-# Le projet est auto-contenu, pas besoin d'installation de dépendances externes
+dotnet run          # default port 5050
+dotnet run 5050     # explicit port
+dotnet watch run -- 5050
 ```
 
-## Démarrage
+## Test
 
 ```bash
-# Compiler et lancer (port par défaut: 5050)
-dotnet run
-
-# Ou spécifier un port
-dotnet run 5050
+dotnet test Tests/SpinTrackerBackend.Tests.csproj
 ```
 
-## Endpoints API
+Every parser fix must ship with a test using an **anonymized** sample from `exemple-data/`.
 
-Tous les endpoints sont identiques à la version Python:
+## API
 
-- `GET /health` - Health check
-- `POST /parse/file` - Parser un fichier de hand history
-- `POST /parse/detect` - Détecter le format d'un fichier
-- `POST /db/insert-hands` - Insérer des mains dans la DB
-- `GET|POST /db/hands` - Récupérer les mains
-- `GET /db/hand/{id}` - Récupérer une main spécifique
-- `GET /db/dashboard-stats` - Statistiques du dashboard
-- `GET|POST /db/session-history` - Historique des sessions
-- `GET|POST /db/winrate-chart` - Données du graphique winrate
-- `GET|POST /db/range-heatmap` - Heatmap des ranges
-- `GET|POST /db/players` - Vue d'ensemble des joueurs
-- `POST /db/delete-all` - Supprimer toutes les mains
-- `POST /equity` - Calculer l'équité
-- `POST /equity/batch` - Calculer l'équité par batch
-- `POST /analyze/leaks` - Analyser les leaks
-- `POST /analyze/range` - Analyser une range
+The API listens on `localhost` and is consumed by the Electron/Vue frontend. Main endpoints:
 
-## Performance
+- `GET /health` — health check
+- `POST /parse/file`, `POST /parse/detect` — parse a hand history file / detect its room format
+- `POST /db/insert-hands` — import parsed hands
+- `GET|POST /db/hands`, `GET /db/hand/{id}` — hands
+- `GET /db/dashboard-stats` — dashboard statistics
+- `GET|POST /db/session-history`, `/db/winrate-chart`, `/db/range-heatmap`, `/db/players` — sessions, charts, ranges, players
+- `POST /equity` — equity calculation (preflop lookup table + Monte Carlo)
+- `POST /db/delete-all` — wipe local data
 
-Le backend C# offre des performances significativement améliorées:
-
-- **Parsing**: ~5-10x plus rapide que Python
-- **Calculs d'équité**: ~3-5x plus rapide grâce à la compilation native
-- **Calculs parallèles**: Utilisation optimale de tous les cœurs CPU
-- **Mémoire**: Empreinte mémoire réduite
-
-## Architecture
-
-```
-backend/
-├── Program.cs              # Point d'entrée et configuration des endpoints
-├── Database.cs             # Gestion SQLite
-├── EquityCalculator.cs     # Calculs d'équité optimisés
-├── AnalyticsCalculator.cs  # Calculs d'analytics
-├── AnalysisEngine.cs       # Détection de leaks
-├── Parsers.cs              # Parsers de hand history
-└── SpinTrackerBackend.csproj
-```
-
-## Compatibilité
-
-100% compatible avec le frontend existant - aucune modification requise.
+See `Controllers/` for the complete and authoritative list.

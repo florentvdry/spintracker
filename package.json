@@ -1,7 +1,7 @@
 {
   "name": "spintracker",
   "version": "1.1.7",
-  "description": "Professional Poker Tracker with React UI, C# Backend, Leak Detection and EV Analysis",
+  "description": "Free, open-source poker tracker for Spin & Go tournaments: hand history import, leak detection, EV analysis, replayer and range research. 100% local.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -19,13 +19,30 @@
   },
   "keywords": [
     "poker",
-    "tracker",
+    "poker-tracker",
     "spin-and-go",
+    "spin-and-gold",
+    "hand-history",
+    "poker-hud",
+    "poker-analysis",
+    "leak-finder",
+    "range-analyzer",
+    "hand-replayer",
+    "winamax",
+    "betclic",
+    "unibet",
     "electron",
-    "react",
-    "csharp"
+    "vue",
+    "csharp",
+    "dotnet",
+    "sqlite",
+    "open-source"
   ],
-  "author": "",
+  "homepage": "https://spintracker.com",
+  "bugs": {
+    "url": "https://github.com/florentvdry/spintracker/issues"
+  },
+  "author": "SpinTracker contributors",
   "license": "MIT",
   "repository": {
     "type": "git",

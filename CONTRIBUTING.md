@@ -1,0 +1,82 @@
+# Contributing to SpinTracker
+
+Thanks for your interest in SpinTracker! Every contribution helps: bug reports, parsers for new poker rooms, translations, UI polish, documentation.
+
+By participating you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Ways to contribute
+
+- 🐛 **Report a bug** — [open a bug report](https://github.com/florentvdry/spintracker/issues/new?template=bug_report.yml)
+- 💡 **Suggest a feature** — [open a feature request](https://github.com/florentvdry/spintracker/issues/new?template=feature_request.yml)
+- 🎰 **Request a poker room** — [open a room support request](https://github.com/florentvdry/spintracker/issues/new?template=room_support.yml)
+- 🌍 **Translate** — add a locale in `frontend-vue/src/locales/`
+- 🔧 **Fix or build something** — pick an issue labeled `good first issue` or `help wanted`
+
+Not sure where to start? Ask in [Discussions](https://github.com/florentvdry/spintracker/discussions).
+
+## Development setup
+
+Prerequisites: Node.js 18+, the .NET 8 SDK, Windows.
+
+```bash
+git clone https://github.com/<your-username>/spintracker.git
+cd spintracker
+npm run setup
+npm run dev:electron
+```
+
+Run the checks before opening a PR:
+
+```bash
+cd backend && dotnet build && dotnet test Tests/SpinTrackerBackend.Tests.csproj
+cd .. && npm run react:build
+```
+
+## Workflow
+
+1. Fork the repository and create a branch from `main`: `feat/<slug>`, `fix/<slug>`, `docs/<slug>`… (kebab-case, English).
+2. Keep your change small and focused — one concern per pull request.
+3. Add or update tests (every bug fix and parser fix needs one).
+4. Add an entry to `changelogs.txt` for any user-visible change.
+5. Open a pull request and fill in the template.
+
+### Commit messages
+
+[Conventional Commits](https://www.conventionalcommits.org/), in English, imperative, lowercase, no trailing period:
+
+```
+feat(session): add session filter to history
+fix(parser): correct Unibet range analysis
+```
+
+Types: `feat`, `fix`, `perf`, `refactor`, `test`, `docs`, `style`, `build`, `ci`, `chore`.
+Do **not** start a commit message with `V<number>.<number>.<number>` — that triggers a release.
+
+## Project rules
+
+The full conventions live in [AGENTS.md](AGENTS.md) and apply to humans and AI agents alike. Highlights:
+
+- **Everything in the repo is in English** (code, comments, docs, commits). UI strings go through `frontend-vue/src/locales/`, English being the reference locale.
+- Backend layering: Controllers → Services → Engines/Repositories. No business logic in controllers.
+- Database changes go through a new FluentMigrator migration — never edit a published one.
+- Vue 3 Composition API with `<script setup>`; API calls only through `src/services/`.
+
+## Adding or fixing a parser
+
+Each poker room has its own parser in `backend/Parsers/` (see `WinamaxParser.cs`, `BetclicParser.cs`, `UnibetParser.cs`).
+
+1. Get a few hand history samples from the room and **anonymize them completely** (player names, IDs, emails, file paths).
+2. Place them in `backend/exemple-data/`.
+3. Implement the parser, keeping room-specific behavior inside it.
+4. Add tests in `backend/Tests/` (see the existing `*ImportTests.cs`).
+5. Make sure re-importing the same file creates no duplicates.
+
+> This repository is public: **never commit real player data**.
+
+## Security
+
+Do not open public issues for vulnerabilities. See [SECURITY.md](SECURITY.md).
+
+## License
+
+By contributing, you agree that your contributions are licensed under the [MIT License](LICENSE).
