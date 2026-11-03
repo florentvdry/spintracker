@@ -5,11 +5,13 @@
     "download": "Download Now"
   },
   "Hero": {
-    "title": "The first French tracker",
-    "subtitle": "dedicated to Spins.",
+    "title": "The open source tracker",
+    "subtitle": "for Spins.",
     "description": "Analyze your game, identify your leaks, and improve your performance with SpinTracker.",
-    "compatible_rooms": "Compatible with: Betclic, and more soon.",
-    "download_free": "Download for Free"
+    "compatible_rooms": "Compatible with: Betclic, Winamax, Unibet, and more soon.",
+    "download_free": "Download for Free",
+    "badge": "Open source · Free · 100% local",
+    "explore": "Explore features"
   },
   "Features": {
     "title": "Built for Spin Players",
@@ -24,8 +26,8 @@
         "description": "Browse your entire hand history. Advanced filters by player, position, street and more."
       },
       "analysis": {
-        "title": "Deep Analysis",
-        "description": "Analyze your mistakes and leaks with detailed statistics by situation. Identify weaknesses in your game."
+        "title": "Detailed Statistics",
+        "description": "Read your game by spot, stack depth and player profile, with colors showing the gap to the baseline."
       },
       "replayer": {
         "title": "Interactive Replayer",
@@ -65,13 +67,13 @@
       }
     },
     "analysis": {
-      "title": "Deep Analysis",
-      "description": "Analyze your mistakes and leaks with detailed statistics by situation.",
-      "alt": "Analysis Tool Screenshot",
+      "title": "Detailed Statistics",
+      "description": "Read your game by spot, stack depth and player profile, with colors showing the gap to the baseline.",
+      "alt": "Detailed statistics screenshot",
       "list": {
-        "situations": "Situation analysis",
+        "situations": "Stats by situation (3-max, Heads-Up)",
         "leaks": "Leak identification",
-        "filters": "Advanced filters"
+        "filters": "Comparison with the population"
       }
     },
     "replayer": {
@@ -138,7 +140,7 @@
   },
   "CTA": {
     "title": "Ready to crush the competition?",
-    "description": "Join hundreds of professional players who trust SpinTracker to improve their game.",
+    "description": "Join the players who use SpinTracker to improve their game.",
     "button": "Download for free"
   },
   "Privacy": {

@@ -2,77 +2,105 @@
 
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { Button } from "./ui/Button";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Download } from "lucide-react";
 import Image from "next/image";
 import logoImg from "../assets/img/logo.png";
 import { cn } from "@/lib/utils";
+import { buttonStyles } from "./ui/Button";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function Navbar() {
-  const t = useTranslations('Navbar');
+  const t = useTranslations("Navbar");
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const links = [
+    { href: "/#features", label: t("features") },
+    { href: "/#screenshots", label: t("screenshots") },
+  ];
+
   return (
-    <nav
-      className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300",
-        scrolled ? "bg-black/80 backdrop-blur-md border-b border-white/10" : "bg-transparent"
-      )}
-    >
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <Image src={logoImg} alt="SpinTracker" width={60} height={60} className="object-contain" />
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-              SpinTracker
+    <header className="fixed top-0 inset-x-0 z-50 px-3 pt-3 md:pt-4">
+      <nav
+        className={cn(
+          "mx-auto max-w-5xl rounded-3xl md:rounded-full border transition-all duration-300",
+          scrolled || isOpen
+            ? "border-line-strong bg-ink/75 backdrop-blur-xl shadow-[0_10px_40px_-12px_rgba(0,0,0,0.8)]"
+            : "border-transparent bg-transparent"
+        )}
+      >
+        <div className="flex items-center justify-between h-14 pl-3 pr-2 md:pl-4">
+          <Link href="/" className="flex items-center gap-2.5" onClick={() => setIsOpen(false)}>
+            <Image src={logoImg} alt="" width={36} height={36} className="object-contain" />
+            <span className="font-display text-lg font-semibold tracking-tight">
+              Spin<span className="text-brand">Tracker</span>
             </span>
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="/download">
-              <Button variant="primary" size="sm" className="rounded-full px-6">
-                {t('download')}
-              </Button>
-            </Link>
-            <LanguageSwitcher />
+          <div className="hidden md:flex items-center gap-1">
+            {links.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="px-4 py-2 text-sm text-muted hover:text-white rounded-full hover:bg-white/5 transition-colors"
+              >
+                {l.label}
+              </Link>
+            ))}
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex items-center space-x-4 md:hidden">
+          <div className="hidden md:flex items-center gap-1">
+            <LanguageSwitcher />
+            <Link href="/download" className={buttonStyles({ size: "sm" })}>
+              <Download className="h-4 w-4" />
+              {t("download")}
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-1 md:hidden">
             <LanguageSwitcher />
             <button
-              className="p-2 text-gray-400 hover:text-white"
+              className="p-2 text-soft hover:text-white rounded-full hover:bg-white/5"
               onClick={() => setIsOpen(!isOpen)}
+              aria-label="Menu"
+              aria-expanded={isOpen}
             >
-              {isOpen ? <X /> : <Menu />}
+              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-black/95 backdrop-blur-xl border-b border-white/10 absolute w-full">
-          <div className="px-4 py-6 space-y-4">
-            <Link href="/download" onClick={() => setIsOpen(false)}>
-              <Button className="w-full mt-4">{t('download')}</Button>
+        {isOpen && (
+          <div className="md:hidden border-t border-line px-4 py-4 space-y-1">
+            {links.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setIsOpen(false)}
+                className="block px-3 py-3 rounded-xl text-soft hover:bg-white/5 hover:text-white"
+              >
+                {l.label}
+              </Link>
+            ))}
+            <Link
+              href="/download"
+              onClick={() => setIsOpen(false)}
+              className={buttonStyles({ className: "w-full mt-3" })}
+            >
+              <Download className="h-4 w-4" />
+              {t("download")}
             </Link>
           </div>
-        </div>
-      )}
-    </nav>
+        )}
+      </nav>
+    </header>
   );
 }

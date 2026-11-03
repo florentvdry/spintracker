@@ -1,7 +1,35 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-grotesk), var(--font-inter), ui-sans-serif, sans-serif;
+
+  --color-ink: #06080d;
+  --color-panel: #0d131d;
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-strong: rgba(255, 255, 255, 0.16);
+  --color-muted: #98a2b3;
+  --color-soft: #b4bdcb;
+  --color-brand: #2dd4a7;
+  --color-brand-soft: #5eead4;
+  --color-brand-blue: #3b82f6;
+}
+
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
   body {
-    @apply bg-black text-white;
+    @apply bg-ink text-white font-sans;
+  }
+  ::selection {
+    background: rgba(45, 212, 167, 0.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }

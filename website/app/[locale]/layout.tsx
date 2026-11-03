@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "../globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import {NextIntlClientProvider} from 'next-intl';
 import {getMessages} from 'next-intl/server';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const grotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-grotesk" });
 
 export const metadata: Metadata = {
   title: {
@@ -63,8 +64,8 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className="dark">
-      <body className={`${inter.className} bg-black text-white antialiased min-h-screen flex flex-col`}>
+    <html lang={locale} className={`dark ${inter.variable} ${grotesk.variable}`}>
+      <body className="bg-ink text-white font-sans antialiased min-h-screen flex flex-col">
         <NextIntlClientProvider messages={messages}>
           <Navbar />
           <main className="flex-grow">

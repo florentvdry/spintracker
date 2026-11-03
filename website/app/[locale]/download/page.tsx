@@ -1,76 +1,71 @@
 'use client';
 
-import { Button } from "@/components/ui/Button";
+import { buttonStyles } from "@/components/ui/Button";
 import { Download, Monitor, Apple } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useParams } from 'next/navigation';
 
 export default function DownloadPage() {
   const t = useTranslations('Download');
-  const locale = useParams().locale;
 
   return (
-    <div className="pt-32 pb-20 min-h-screen bg-black">
-      <div className="container mx-auto px-4 md:px-6 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400">
-          {t('title')}
-        </h1>
+    <div className="relative min-h-screen overflow-hidden pt-36 pb-20">
+      <div className="absolute -top-72 left-1/2 -translate-x-1/2 w-[960px] max-w-[160vw] h-[560px] rounded-full bg-[radial-gradient(closest-side,rgba(45,212,167,0.24),rgba(59,130,246,0.1)_55%,transparent)] pointer-events-none" />
+      <div className="container relative mx-auto max-w-4xl px-4 md:px-6 text-center">
+        <h1 className="font-display text-4xl md:text-6xl font-bold leading-[1.05] tracking-[-0.035em]">{t('title')}</h1>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto pt-5">
-          {/* Windows */}
-          <div className="p-8 rounded-2xl bg-gray-900 border border-white/10 hover:border-blue-500/50 transition-colors flex flex-col items-center">
-            <div className="h-16 w-16 bg-blue-600/10 rounded-full flex items-center justify-center mb-6">
-              <Monitor className="h-8 w-8 text-blue-500" />
+        <div className="mt-14 grid gap-5 md:grid-cols-2 text-left">
+          <div className="flex flex-col rounded-[28px] border border-brand/30 bg-gradient-to-b from-brand/10 to-panel to-60% p-9">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/15 text-brand">
+              <Monitor className="h-7 w-7" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">{t('windows.title')}</h2>
-            <p className="text-gray-400 mb-8">{t('windows.requirements')}</p>
-            <a 
-              href="https://github.com/florentvdry/spintracker/releases/latest" 
-              className="w-full"
+            <h2 className="mt-6 font-display text-3xl font-semibold tracking-[-0.02em]">{t('windows.title')}</h2>
+            <p className="mt-2 text-soft">{t('windows.requirements')}</p>
+            <a
+              href="https://github.com/florentvdry/spintracker/releases/latest"
               target="_blank"
               rel="noopener noreferrer"
+              className={buttonStyles({ size: "lg", className: "mt-8 w-full" })}
             >
-              <Button size="lg" className="w-full">
-                <Download className="mr-2 h-5 w-5" />
-                {t('windows.button')}
-              </Button>
+              <Download className="h-5 w-5" />
+              {t('windows.button')}
             </a>
-            <p className="mt-4 text-xs text-gray-500">{t('windows.info')}</p>
+            <p className="mt-4 text-center text-sm text-[#8a94a6]">{t('windows.info')}</p>
           </div>
 
-          {/* macOS */}
-          <div className="p-8 rounded-2xl bg-gray-900 border border-white/10 hover:border-gray-700 transition-colors flex flex-col items-center opacity-75">
-            <div className="h-16 w-16 bg-gray-800 rounded-full flex items-center justify-center mb-6">
-              <Apple className="h-8 w-8 text-gray-400" />
+          <div className="flex flex-col rounded-[28px] border border-dashed border-line-strong bg-[#0a0f17] p-9">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.06] text-muted">
+              <Apple className="h-7 w-7" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">{t('mac.title')}</h2>
-            <p className="text-gray-400 mb-8">{t('mac.status')}</p>
-            <Button size="lg" variant="secondary" disabled className="w-full">
-              <Download className="mr-2 h-5 w-5" />
+            <h2 className="mt-6 font-display text-3xl font-semibold tracking-[-0.02em]">{t('mac.title')}</h2>
+            <p className="mt-2 text-soft">{t('mac.status')}</p>
+            <div
+              aria-disabled="true"
+              className="mt-8 flex h-14 items-center justify-center rounded-full border border-line-strong text-lg font-medium text-[#8a94a6]"
+            >
               {t('mac.button')}
-            </Button>
+            </div>
           </div>
         </div>
 
-        <div className="mt-20 border-t border-white/10 pt-12 max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-white mb-6">{t('requirements.title')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-            <div>
-              <h4 className="font-semibold text-white mb-2">{t('requirements.min')}</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li>• {t('requirements.os_win')}</li>
-                <li>• {t('requirements.cpu_i3')}</li>
-                <li>• {t('requirements.ram_4gb')}</li>
-                <li>• {t('requirements.storage_2gb')}</li>
+        <div className="mt-20 border-t border-line pt-14 text-left">
+          <h3 className="text-center font-display text-3xl font-semibold tracking-[-0.02em]">{t('requirements.title')}</h3>
+          <div className="mt-9 grid gap-5 md:grid-cols-2">
+            <div className="rounded-[20px] border border-line bg-panel p-7">
+              <h4 className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">{t('requirements.min')}</h4>
+              <ul className="mt-5 space-y-3 text-[15px] text-[#d5dbe5]">
+                <li>{t('requirements.os_win')}</li>
+                <li>{t('requirements.cpu_i3')}</li>
+                <li>{t('requirements.ram_4gb')}</li>
+                <li>{t('requirements.storage_2gb')}</li>
               </ul>
             </div>
-            <div>
-              <h4 className="font-semibold text-white mb-2">{t('requirements.rec')}</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li>• {t('requirements.os_win11')}</li>
-                <li>• {t('requirements.cpu_i5')}</li>
-                <li>• {t('requirements.ram_8gb')}</li>
-                <li>• {t('requirements.storage_2gb')}</li>
+            <div className="rounded-[20px] border border-brand/25 bg-panel p-7">
+              <h4 className="text-xs font-semibold tracking-[0.14em] text-brand uppercase">{t('requirements.rec')}</h4>
+              <ul className="mt-5 space-y-3 text-[15px] text-[#d5dbe5]">
+                <li>{t('requirements.os_win11')}</li>
+                <li>{t('requirements.cpu_i5')}</li>
+                <li>{t('requirements.ram_8gb')}</li>
+                <li>{t('requirements.storage_2gb')}</li>
               </ul>
             </div>
           </div>

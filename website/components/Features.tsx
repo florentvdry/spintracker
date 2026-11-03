@@ -1,72 +1,58 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BarChart2, Users, Target, Database, History, Settings, PlayCircle } from "lucide-react";
+import { BarChart2, Users, Target, History, Settings, PlayCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 
 export function Features() {
-  const t = useTranslations('Features');
+  const t = useTranslations("Features");
+  const nav = useTranslations("Navbar");
 
   const features = [
-    {
-      icon: BarChart2,
-      title: t('items.dashboard.title'),
-      description: t('items.dashboard.description'),
-    },
-    {
-      icon: History,
-      title: t('items.handhistory.title'),
-      description: t('items.handhistory.description'),
-    },
-    {
-      icon: Target,
-      title: t('items.analysis.title'),
-      description: t('items.analysis.description'),
-    },
-    {
-      icon: PlayCircle,
-      title: t('items.replayer.title'),
-      description: t('items.replayer.description'),
-    },
-    {
-      icon: Users,
-      title: t('items.range.title'),
-      description: t('items.range.description'),
-    },
-    {
-      icon: Settings,
-      title: t('items.settings.title'),
-      description: t('items.settings.description'),
-    },
+    { icon: BarChart2, key: "dashboard", wide: true, tint: "brand" },
+    { icon: History, key: "handhistory", tint: "blue" },
+    { icon: Target, key: "analysis", tint: "brand" },
+    { icon: PlayCircle, key: "replayer", tint: "blue" },
+    { icon: Users, key: "range", tint: "brand" },
+    { icon: Settings, key: "settings", full: true, tint: "blue" },
   ];
 
   return (
-    <section id="features" className="py-20 md:py-32 bg-black relative">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-            {t('title')}
-          </h2>
-          <p className="text-gray-400 text-lg">
-            {t('subtitle')}
-          </p>
+    <section id="features" className="relative py-24 md:py-36">
+      <div className="container mx-auto px-4 md:px-6 max-w-[1200px]">
+        <div className="max-w-2xl">
+          <div className="text-xs font-semibold tracking-[0.14em] text-brand uppercase">{nav("features")}</div>
+          <h2 className="mt-3.5 font-display text-4xl md:text-5xl font-bold leading-[1.08] tracking-[-0.03em]">{t("title")}</h2>
+          <p className="mt-5 text-lg leading-relaxed text-soft">{t("subtitle")}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-4">
+          {features.map((f, i) => (
             <motion.div
-              key={index}
+              key={f.key}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="p-6 rounded-2xl bg-gray-900/50 border border-white/5 hover:border-blue-500/30 transition-colors group"
+              transition={{ delay: i * 0.06 }}
+              className={cn(
+                "group flex flex-col gap-3.5 rounded-3xl border border-line bg-panel p-8 transition-colors hover:border-brand/40",
+                f.wide && "md:col-span-2",
+                f.full && "md:col-span-3"
+              )}
             >
-              <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
-                <feature.icon className="h-6 w-6 text-blue-500" />
+              <div
+                className={cn(
+                  "flex h-12 w-12 items-center justify-center rounded-2xl",
+                  f.tint === "brand" ? "bg-brand/12 text-brand" : "bg-brand-blue/15 text-[#7db0fb]"
+                )}
+              >
+                <f.icon className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
-              <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+              <h3 className={cn("mt-2 font-display font-semibold tracking-[-0.02em]", f.wide || f.full ? "text-2xl" : "text-[22px]")}>
+                {t(`items.${f.key}.title`)}
+              </h3>
+              <p className="max-w-xl leading-relaxed text-[#a3adbc]">{t(`items.${f.key}.description`)}</p>
             </motion.div>
           ))}
         </div>
