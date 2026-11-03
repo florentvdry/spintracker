@@ -2,7 +2,7 @@
   <div class="flex-1 flex flex-col min-h-0">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full p-6 overflow-hidden">
       <!-- Left: Alias List -->
-      <div class="flex flex-col bg-dark-200 rounded-2xl border border-white/5 overflow-hidden shadow-2xl">
+      <div class="flex flex-col bg-dark-200 rounded-lg border border-white/5 overflow-hidden shadow-2xl">
         <div class="p-4 border-b border-white/5 bg-dark-300/30 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <Users class="w-4 h-4 text-primary-400" />
@@ -43,7 +43,7 @@
           <div 
             v-for="alias in filterStore.aliases" 
             :key="alias.id"
-            class="bg-dark-300 rounded-xl border border-white/5 p-4 space-y-3 hover:border-primary-500/30 transition-all group"
+            class="bg-dark-300 rounded-lg border border-white/5 p-4 space-y-3 hover:border-primary-500/30 transition-all group"
           >
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -54,7 +54,7 @@
               </div>
               <button 
                 @click="deleteAlias(alias)"
-                class="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-all"
+                class="p-1.5 rounded-lg text-gray-500 hover:text-profit-negative hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-all"
                 :title="$t('common.delete')"
               >
                 <Trash2 class="w-4 h-4" />
@@ -71,7 +71,7 @@
                 <span class="text-xs text-gray-300">{{ p.name }}</span>
                 <button 
                   @click="unlinkPlayer(p.id)"
-                  class="text-gray-600 hover:text-red-400"
+                  class="text-gray-600 hover:text-profit-negative"
                 >
                   <X class="w-3 h-3" />
                 </button>
@@ -85,7 +85,7 @@
       </div>
 
       <!-- Right: Link Players -->
-      <div class="flex flex-col bg-dark-200 rounded-2xl border border-white/5 overflow-hidden shadow-2xl">
+      <div class="flex flex-col bg-dark-200 rounded-lg border border-white/5 overflow-hidden shadow-2xl">
         <div class="p-4 border-b border-white/5 bg-dark-300/30">
           <div class="flex items-center gap-2 mb-3">
             <LinkIcon class="w-4 h-4 text-primary-400" />
@@ -111,7 +111,7 @@
           <div 
             v-for="p in filteredPlayers" 
             :key="p.id"
-            class="flex items-center justify-between p-3 rounded-xl hover:bg-dark-300/50 group transition-all"
+            class="flex items-center justify-between p-3 rounded-lg hover:bg-dark-300/50 group transition-all"
           >
             <div class="flex items-center gap-3">
               <RoomLogo :room="p.room" />
@@ -138,7 +138,7 @@
                 <div 
                   v-if="selectedPlayerToLink?.id === p.id" 
                   ref="dropdownMenu"
-                  class="fixed w-48 bg-dark-300 border border-white/10 rounded-xl shadow-2xl z-[999] p-1 flex flex-col animate-in fade-in duration-200"
+                  class="fixed w-48 bg-dark-300 border border-white/10 rounded-lg shadow-2xl z-[999] p-1 flex flex-col animate-in fade-in duration-200"
                   :style="dropdownStyle"
                 >
                   <div class="px-3 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider">Select Alias</div>
@@ -174,7 +174,7 @@
 
     <!-- Create Alias Modal -->
     <div v-if="showCreateModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4" @click.self="showCreateModal = false">
-      <div class="bg-dark-200 rounded-2xl shadow-2xl border border-white/10 w-full max-w-md p-6 animate-in zoom-in-95 duration-200">
+      <div class="bg-dark-200 rounded-lg shadow-2xl border border-white/10 w-full max-w-md p-6 animate-in zoom-in-95 duration-200">
         <h3 class="text-xl font-bold text-white mb-4">Create New Alias</h3>
         <div class="space-y-4">
           <div>
@@ -183,7 +183,7 @@
               type="text" 
               v-model="newAliasName"
               placeholder="e.g. My Global Hero"
-              class="w-full bg-dark-400 border border-dark-100 rounded-xl px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-primary-500"
+              class="w-full bg-dark-400 border border-dark-100 rounded-lg px-4 py-3 text-sm text-gray-200 focus:outline-none focus:border-primary-500"
               @keyup.enter="createAlias"
               autofocus
             />
@@ -191,14 +191,14 @@
           <div class="flex gap-3 pt-2">
             <button 
               @click="showCreateModal = false"
-              class="flex-1 px-4 py-2 bg-dark-300 hover:bg-dark-100 text-gray-300 rounded-xl text-sm font-medium transition-all"
+              class="flex-1 px-4 py-2 bg-dark-300 hover:bg-dark-100 text-gray-300 rounded-lg text-sm font-medium transition-all"
             >
               Cancel
             </button>
             <button 
               @click="createAlias"
               :disabled="!newAliasName.trim() || creating"
-              class="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-500 disabled:opacity-50 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-primary-500/20"
+              class="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all shadow-lg shadow-primary-500/20"
             >
               <Loader2 v-if="creating" class="w-4 h-4 animate-spin mx-auto" />
               <span v-else>Create Alias</span>

@@ -85,7 +85,7 @@ const sizeClasses = computed(() => {
 }
 
 .card-tile.club {
-  background: #10b85f;
+  background: #34c27a;
 }
 
 .card-tile.spade {

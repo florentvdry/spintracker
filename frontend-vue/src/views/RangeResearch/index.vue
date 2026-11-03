@@ -1,8 +1,8 @@
 <template>
   <div class="h-full flex flex-col p-6 space-y-6 overflow-hidden bg-dark-400">
-    <div class="flex items-center justify-between bg-dark-300 p-4 rounded-xl border border-white/5 shadow-lg">
+    <div class="flex items-center justify-between bg-dark-300 p-4 rounded-lg border border-white/5 shadow-lg">
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20 shadow-inner">
+        <div class="w-12 h-12 rounded-lg bg-primary-500/10 flex items-center justify-center border border-primary-500/20 shadow-inner">
           <Layers class="w-6 h-6 text-primary-400" />
         </div>
         <div>
@@ -53,7 +53,7 @@
       </div>
 
       <div class="flex-1 flex gap-6 min-h-0">
-        <div class="flex-1 bg-dark-200 rounded-2xl shadow-2xl border border-white/5 flex flex-col min-h-0 overflow-hidden relative">
+        <div class="flex-1 bg-dark-200 rounded-lg shadow-2xl border border-white/5 flex flex-col min-h-0 overflow-hidden relative">
           <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
             <BarChart3 class="w-32 h-32" />
           </div>
@@ -64,7 +64,7 @@
               <h2 class="text-sm font-bold text-gray-200 uppercase tracking-widest">{{ $t('range_analysis.matrix_title') }}</h2>
             </div>
             <div class="flex gap-4">
-              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#ef4444] shadow-sm shadow-red-500/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">2-3bb</span></div>
+              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#e5594f] shadow-sm shadow-red-500/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">2-3bb</span></div>
               <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#f97316] shadow-sm shadow-orange-500/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">4bb+</span></div>
               <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#ff9800] shadow-sm shadow-orange-500/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">{{ $t('actions.bet') }}</span></div>
               <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#4caf50] shadow-sm shadow-green-500/50"></span><span class="text-[10px] font-bold text-gray-400 uppercase">{{ $t('actions.call') }}</span></div>
@@ -90,7 +90,7 @@
         </div>
         
         <div class="w-[450px] flex flex-col gap-6 min-h-0">
-          <div class="bg-dark-200 rounded-2xl shadow-xl border border-white/5 p-6 relative overflow-hidden flex-shrink-0">
+          <div class="bg-dark-200 rounded-lg shadow-xl border border-white/5 p-6 relative overflow-hidden flex-shrink-0">
             <div v-if="selectedRangeHand" class="space-y-4">
               <div class="flex items-end justify-between border-b border-white/5 pb-4">
                 <div class="flex flex-col">
@@ -108,13 +108,13 @@
               </div>
               
               <div class="grid grid-cols-2 gap-3">
-                <div class="bg-dark-300/50 p-4 rounded-xl border border-white/5">
+                <div class="bg-dark-300/50 p-4 rounded-lg border border-white/5">
                   <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{{ $t('range_analysis.total_profit') }}</div>
-                  <div :class="['text-xl font-black', (selectedRangeStats?.TotalProfit || 0) >= 0 ? 'text-green-400' : 'text-red-400']">
+                  <div :class="['text-xl font-black', (selectedRangeStats?.TotalProfit || 0) >= 0 ? 'text-profit-positive' : 'text-profit-negative']">
                     {{ (selectedRangeStats?.TotalProfit || 0).toFixed(0) }} <span class="text-[10px] opacity-50">{{ $t('common.chips') }}</span>
                   </div>
                 </div>
-                <div class="bg-dark-300/50 p-4 rounded-xl border border-white/5">
+                <div class="bg-dark-300/50 p-4 rounded-lg border border-white/5">
                   <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{{ $t('range_analysis.ev_realized') }}</div>
                   <div :class="['text-xl font-black', (selectedRangeStats?.TotalEv || 0) >= 0 ? 'text-yellow-400' : 'text-orange-500']">
                     {{ (selectedRangeStats?.TotalEv || 0).toFixed(1) }}
@@ -128,7 +128,7 @@
             </div>
           </div>
 
-          <div class="flex-1 bg-dark-200 rounded-2xl shadow-xl border border-white/5 flex flex-col min-h-0 overflow-hidden">
+          <div class="flex-1 bg-dark-200 rounded-lg shadow-xl border border-white/5 flex flex-col min-h-0 overflow-hidden">
             <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-dark-300/30">
               <div class="flex items-center gap-2">
                 <BarChart3 class="w-4 h-4 text-primary-400" />
@@ -148,7 +148,7 @@
                       :key="action"
                       @click="toggleActionFilter(action)"
                       :class="[
-                        'flex flex-col p-3 rounded-xl border transition-all relative overflow-hidden group',
+                        'flex flex-col p-3 rounded-lg border transition-all relative overflow-hidden group',
                         selectedActionFilter === action ? 'ring-2 ring-white border-transparent' : 'border-transparent'
                       ]"
                       :style="{ backgroundColor: (ACTION_COLORS[action] || ACTION_COLORS.None) + '22' }"
@@ -176,7 +176,7 @@
                       v-for="(hand, idx) in filteredHands" 
                       :key="handId(hand, idx)" 
                       @click="handleReplayHand(hand)"
-                      class="flex items-center gap-3 p-3 bg-dark-400/50 rounded-xl border border-white/5 hover:border-white/10 hover:bg-dark-300 transition-all cursor-pointer group"
+                      class="flex items-center gap-3 p-3 bg-dark-400/50 rounded-lg border border-white/5 hover:border-white/10 hover:bg-dark-300 transition-all cursor-pointer group"
                     >
                       <div class="w-8 h-8 rounded-lg bg-dark-500 flex items-center justify-center text-[10px] font-bold text-gray-500 group-hover:text-primary-400 transition-colors">
                         {{ idx + 1 }}
@@ -194,7 +194,7 @@
                           </span>
                         </div>
                         <div class="flex items-center gap-2">
-                          <span :class="['text-xs font-bold', (hand.profit !== undefined ? hand.profit : hand.Profit || 0) >= 0 ? 'text-green-400' : 'text-red-400']">
+                          <span :class="['text-xs font-bold', (hand.profit !== undefined ? hand.profit : hand.Profit || 0) >= 0 ? 'text-profit-positive' : 'text-profit-negative']">
                             {{ ((hand.profit !== undefined ? hand.profit : hand.Profit || 0) >= 0 ? '+' : '') }}{{ (hand.profit !== undefined ? hand.profit : hand.Profit || 0).toFixed(0) }} <span class="text-[9px] opacity-60">{{ $t('common.chips') }}</span>
                           </span>
                           <div class="w-1 h-1 rounded-full bg-white/5"></div>
@@ -258,7 +258,7 @@ const opponentType = ref('all')
 const ACTION_COLORS = {
   AllIn: '#b71c1c',
   Raise: '#f44336',
-  Raise2_3BB: '#ef4444',
+  Raise2_3BB: '#e5594f',
   Raise4BB: '#f97316',
   Bet: '#ff9800',
   Call: '#4caf50',
@@ -344,8 +344,8 @@ const filteredHands = computed(() => {
 const handId = (hand, idx) => (hand.id || hand.Id || idx)
 
 const getActionClass = (action) => {
-  if (action === 'Raise' || action === 'AllIn') return 'text-red-400'
-  if (action === 'Call') return 'text-green-400'
+  if (action === 'Raise' || action === 'AllIn') return 'text-profit-negative'
+  if (action === 'Call') return 'text-profit-positive'
   return 'text-blue-400'
 }
 

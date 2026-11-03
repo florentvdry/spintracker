@@ -2,9 +2,9 @@
   <Teleport to="body">
     <Transition name="fade">
       <div v-if="showModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div class="bg-dark-400 rounded-2xl p-8 w-[450px] shadow-2xl border border-dark-100/50 animate-slide-up">
+        <div class="bg-dark-400 rounded-lg p-8 w-[450px] shadow-2xl border border-dark-100/50 animate-slide-up">
           <div class="flex items-center gap-4 mb-6">
-            <div class="p-3 bg-primary-500/10 rounded-xl">
+            <div class="p-3 bg-primary-500/10 rounded-lg">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
@@ -42,7 +42,7 @@
             <template v-if="isDownloaded">
               <button 
                 @click="quitAndInstall"
-                class="px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-colors flex items-center gap-2"
+                class="px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold transition-colors flex items-center gap-2"
               >
                 Redémarrer et installer
               </button>
@@ -50,7 +50,7 @@
             <template v-else-if="isDownloading">
               <button 
                 disabled
-                class="px-6 py-2.5 bg-dark-200 text-gray-400 rounded-xl font-semibold cursor-not-allowed"
+                class="px-6 py-2.5 bg-dark-200 text-gray-400 rounded-lg font-semibold cursor-not-allowed"
               >
                 Téléchargement...
               </button>
@@ -58,13 +58,13 @@
             <template v-else>
               <button 
                 @click="close"
-                class="px-6 py-2.5 bg-dark-200 hover:bg-dark-100 text-white rounded-xl font-semibold transition-colors"
+                class="px-6 py-2.5 bg-dark-200 hover:bg-dark-100 text-white rounded-lg font-semibold transition-colors"
               >
                 Plus tard
               </button>
               <button 
                 @click="downloadUpdate"
-                class="px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-colors"
+                class="px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold transition-colors"
               >
                 Télécharger maintenant
               </button>

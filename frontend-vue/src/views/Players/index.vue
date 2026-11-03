@@ -1,10 +1,10 @@
 <template>
   <div class="h-full flex flex-col p-6 space-y-6 overflow-hidden bg-dark-400">
     <!-- Header with Tabs -->
-    <div class="flex items-center justify-between bg-dark-300 p-4 rounded-xl border border-white/5 shadow-lg">
+    <div class="flex items-center justify-between bg-dark-300 p-4 rounded-lg border border-white/5 shadow-lg">
       <div class="flex items-center gap-8">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20 shadow-inner">
+          <div class="w-12 h-12 rounded-lg bg-primary-500/10 flex items-center justify-center border border-primary-500/20 shadow-inner">
             <Users class="w-6 h-6 text-primary-400" />
           </div>
           <div>
@@ -14,7 +14,7 @@
         </div>
 
         <!-- Tab Selector -->
-        <div class="flex items-center bg-dark-400 p-1 rounded-xl border border-white/5">
+        <div class="flex items-center bg-dark-400 p-1 rounded-lg border border-white/5">
           <button 
             @click="activeTab = 'list'"
             :class="[
@@ -79,7 +79,7 @@
 
     <!-- Content -->
     <template v-if="activeTab === 'list'">
-      <div class="flex-1 bg-dark-200 rounded-2xl shadow-2xl border border-white/5 flex flex-col min-h-0 overflow-hidden">
+      <div class="flex-1 bg-dark-200 rounded-lg shadow-2xl border border-white/5 flex flex-col min-h-0 overflow-hidden">
         <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-dark-300/30">
           <div class="flex items-center gap-2">
             <Filter class="w-4 h-4 text-primary-400" />
@@ -131,7 +131,7 @@
                   <span class="text-sm text-gray-300">{{ (player.total_hands || 0).toLocaleString() }}</span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <span :class="['text-sm font-bold', (player.total_profit || 0) >= 0 ? 'text-green-400' : 'text-red-400']">
+                  <span :class="['text-sm font-bold', (player.total_profit || 0) >= 0 ? 'text-profit-positive' : 'text-profit-negative']">
                     {{ (player.total_profit || 0) >= 0 ? '+' : '' }}{{ (player.total_profit || 0).toFixed(0) }}
                   </span>
                 </td>
@@ -155,7 +155,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-center">
                   <span v-if="player.is_reg_forced" class="text-xs text-gray-500">{{ $t('players.manual') }}</span>
-                  <span v-else-if="player.total_hands >= 500" class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-green-500/20 text-green-400">
+                  <span v-else-if="player.total_hands >= 500" class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-green-500/20 text-profit-positive">
                     <Crown class="w-3 h-3" />
                     {{ $t('common.auto') }}
                   </span>
@@ -218,10 +218,10 @@
     <AliasManagement v-else-if="activeTab === 'aliases'" />
 
     <div v-if="selectedPlayer" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="closeModal">
-      <div class="bg-dark-200 rounded-2xl shadow-2xl border border-white/10 w-full max-w-5xl max-h-[85vh] flex flex-col overflow-hidden">
+      <div class="bg-dark-200 rounded-lg shadow-2xl border border-white/10 w-full max-w-5xl max-h-[85vh] flex flex-col overflow-hidden">
         <div class="flex items-center justify-between p-5 border-b border-white/10 bg-dark-300/30 rounded-t-2xl">
           <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20">
+            <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center border border-primary-500/20">
               <RoomLogo :room="selectedPlayer.room" />
             </div>
             <div>
@@ -315,13 +315,13 @@
                     </td>
                     <td :class="[
                       'text-right font-mono text-sm',
-                      (hand.ev_chips || 0) > 0 ? 'text-emerald-400' : (hand.ev_chips || 0) < 0 ? 'text-rose-400' : 'text-gray-400'
+                      (hand.ev_chips || 0) > 0 ? 'text-profit-positive' : (hand.ev_chips || 0) < 0 ? 'text-profit-negative' : 'text-gray-400'
                     ]">
                       {{ (hand.ev_chips || 0) > 0 ? '+' : '' }}{{ (hand.ev_chips || 0).toFixed(1) }}
                     </td>
                     <td :class="[
                       'text-right font-semibold text-sm',
-                      (hand.dyn_hero_profit || hand.hero_profit || 0) > 0 ? 'text-emerald-400' : (hand.dyn_hero_profit || hand.hero_profit || 0) < 0 ? 'text-rose-400' : 'text-gray-400'
+                      (hand.dyn_hero_profit || hand.hero_profit || 0) > 0 ? 'text-profit-positive' : (hand.dyn_hero_profit || hand.hero_profit || 0) < 0 ? 'text-profit-negative' : 'text-gray-400'
                     ]">
                       {{ (hand.dyn_hero_profit || hand.hero_profit || 0) > 0 ? '+' : '' }}{{ (hand.dyn_hero_profit || hand.hero_profit || 0).toFixed(0) }}
                     </td>
@@ -353,7 +353,7 @@
                               <span class="text-xs text-gray-500">{{ $t('common.table') }}:</span>
                               <span class="text-xs text-gray-300">{{ hand.table_id || '-' }}</span>
                             </div>
-                            <span v-if="hand.dyn_hero_all_in || hand.hero_all_in" class="px-2 py-0.5 rounded text-xs font-bold bg-red-500/20 text-red-400">
+                            <span v-if="hand.dyn_hero_all_in || hand.hero_all_in" class="px-2 py-0.5 rounded text-xs font-bold bg-red-500/20 text-profit-negative">
                               {{ $t('common.all_in') }}
                             </span>
                             <span v-if="hand.went_to_showdown" class="px-2 py-0.5 rounded text-xs font-medium bg-dark-400 text-gray-400">
@@ -372,13 +372,13 @@
 
                           <div v-if="hand.went_to_showdown" class="flex items-center gap-2 text-xs">
                             <span class="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 font-medium">{{ $t('common.showdown_short') }}</span>
-                            <span :class="(hand.dyn_hero_profit || hand.hero_profit || 0) > 0 ? 'text-emerald-400' : 'text-rose-400'">
+                            <span :class="(hand.dyn_hero_profit || hand.hero_profit || 0) > 0 ? 'text-profit-positive' : 'text-profit-negative'">
                               {{ (hand.dyn_hero_profit || hand.hero_profit || 0) > 0 ? $t('common.won') : $t('common.lost') }}
                             </span>
                           </div>
                           <div v-else-if="(hand.dyn_hero_profit || hand.hero_profit || 0) > 0" class="flex items-center gap-2 text-xs">
-                            <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-medium">{{ $t('common.fold') }}</span>
-                            <span class="text-emerald-400">{{ $t('common.won') }}</span>
+                            <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-profit-positive font-medium">{{ $t('common.fold') }}</span>
+                            <span class="text-profit-positive">{{ $t('common.won') }}</span>
                           </div>
                         </div>
                       </div>
@@ -605,7 +605,7 @@ onMounted(() => {
 }
 
 .table-container {
-  @apply overflow-hidden rounded-xl border border-white/5;
+  @apply overflow-hidden rounded-lg border border-white/5;
 }
 
 .table th {

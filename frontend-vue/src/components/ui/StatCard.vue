@@ -1,20 +1,14 @@
 <template>
-  <div class="card p-4">
-    <div class="flex items-center gap-4">
-      <div v-if="icon" class="w-12 h-12 rounded-lg bg-primary-500/10 flex items-center justify-center">
-        <component :is="icon" class="w-6 h-6 text-primary-400" />
-      </div>
-      <div class="flex-1">
-        <p class="stat-label">{{ label }}</p>
-        <div class="flex items-baseline gap-2">
-          <p class="stat-value" :class="valueClass">{{ formattedValue }}</p>
-        </div>
-      </div>
-    </div>
-    <div v-if="subStats" class="mt-4 grid grid-cols-2 gap-2">
+  <div class="bg-dark-400 px-4 py-3 flex flex-col gap-0.5 min-w-0">
+    <p class="stat-label flex items-center gap-1.5">
+      <component :is="icon" v-if="icon" class="w-3.5 h-3.5 text-gray-500" />
+      {{ label }}
+    </p>
+    <p class="stat-value" :class="valueClass">{{ formattedValue }}</p>
+    <div v-if="subStats" class="mt-1 space-y-0.5">
       <div v-for="stat in subStats" :key="stat.label" class="flex justify-between text-xs">
-        <span class="text-gray-400">{{ stat.label }}</span>
-        <span class="text-gray-200 font-medium">{{ formatValue(stat.value, stat.format) }}</span>
+        <span class="text-gray-500">{{ stat.label }}</span>
+        <span class="text-gray-200 font-mono">{{ formatValue(stat.value, stat.format) }}</span>
       </div>
     </div>
   </div>

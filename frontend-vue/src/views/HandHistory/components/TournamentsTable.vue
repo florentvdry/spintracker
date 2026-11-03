@@ -70,13 +70,13 @@
             </td>
             <td :class="[
               'text-right font-mono text-sm',
-              getCev(tourn) > 0 ? 'text-emerald-400' : getCev(tourn) < 0 ? 'text-rose-400' : 'text-gray-400'
+              getCev(tourn) > 0 ? 'text-profit-positive' : getCev(tourn) < 0 ? 'text-profit-negative' : 'text-gray-400'
             ]">
               {{ formatCev(getCev(tourn)) }}
             </td>
             <td :class="[
               'text-right font-semibold',
-              getProfit(tourn) >= 0 ? 'text-emerald-400' : 'text-rose-400'
+              getProfit(tourn) >= 0 ? 'text-profit-positive' : 'text-profit-negative'
             ]">
               {{ formatProfit(getProfit(tourn)) }}
             </td>
@@ -131,13 +131,13 @@
                         </td>
                         <td :class="[
                           'px-4 py-2 text-right font-mono',
-                          getHandCev(hand) > 0 ? 'text-emerald-500/80' : getHandCev(hand) < 0 ? 'text-rose-500/80' : 'text-gray-500'
+                          getHandCev(hand) > 0 ? 'text-profit-positive/80' : getHandCev(hand) < 0 ? 'text-profit-negative/80' : 'text-gray-500'
                         ]">
                           {{ formatCev(getHandCev(hand)) }}
                         </td>
                         <td :class="[
                           'px-4 py-2 text-right font-semibold',
-                          getHandProfit(hand) > 0 ? 'text-emerald-500/80' : getHandProfit(hand) < 0 ? 'text-rose-500/80' : 'text-gray-500'
+                          getHandProfit(hand) > 0 ? 'text-profit-positive/80' : getHandProfit(hand) < 0 ? 'text-profit-negative/80' : 'text-gray-500'
                         ]">
                           {{ formatHandProfit(getHandProfit(hand)) }}
                         </td>
@@ -278,7 +278,7 @@ const handleSort = (field) => {
 }
 
 .card-tile.club {
-  background: #10b85f;
+  background: #34c27a;
 }
 
 .card-tile.spade {

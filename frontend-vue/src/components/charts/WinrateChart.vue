@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-      <div class="flex bg-[#1e2533] p-1 rounded-lg">
+      <div class="flex bg-[#14171d] p-1 rounded-lg">
         <button
           @click="chartMode = 'chips'"
           :class="[
@@ -90,11 +90,11 @@ const data = ref([])
 const isZoomed = ref(false)
 
 const lineColors = {
-  chipsWon: '#10b981',
+  chipsWon: '#34c27a',
   netExpected: '#eab308',
   wonWithShowdown: '#3b82f6',
-  wonWithoutShowdown: '#ef4444',
-  euroProfit: '#10b981'
+  wonWithoutShowdown: '#e5594f',
+  euroProfit: '#34c27a'
 }
 
 const lineLabels = computed(() => ({
@@ -312,7 +312,7 @@ const getOption = computed(() => {
         color: '#9ca3af',
         formatter: (value) => chartMode.value === 'euro' ? `${value}€` : value
       },
-      splitLine: { show: true, lineStyle: { color: '#2d3548' } }
+      splitLine: { show: true, lineStyle: { color: '#242936' } }
     },
     series: seriesList
   }

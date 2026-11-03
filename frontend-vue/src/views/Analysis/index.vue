@@ -1,7 +1,7 @@
 <template>
   <div class="h-full flex flex-col p-6 space-y-6 overflow-hidden">
     <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold gradient-text">
+      <h1 class="text-lg font-semibold gradient-text">
         {{ $t('analysis.title') }}
       </h1>
       <div class="flex gap-2">

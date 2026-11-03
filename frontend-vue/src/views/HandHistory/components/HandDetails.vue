@@ -130,7 +130,7 @@ const villainCards = computed(() => props.hand?.villain_cards || villain.value?.
 }
 
 .card-tile.club {
-  background: #10b85f;
+  background: #34c27a;
 }
 
 .card-tile.spade {
