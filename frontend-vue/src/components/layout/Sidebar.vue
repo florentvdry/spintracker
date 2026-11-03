@@ -21,18 +21,6 @@
         <span>{{ item.name }}</span>
       </RouterLink>
     </nav>
-
-    <div class="p-4 border-t border-dark-100/30">
-      <a 
-        href="https://discord.gg/x9ZSQA2mN2" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        class="flex items-center justify-center gap-3 px-4 py-4 bg-[#5865F2]/10 hover:bg-[#5865F2]/20 text-[#5865F2] hover:text-[#5865F2] rounded-xl transition-all border border-[#5865F2]/20 hover:border-[#5865F2]/40 w-full group shadow-lg shadow-[#5865F2]/5"
-      >
-        <MessageCircle class="w-6 h-6 group-hover:scale-110 transition-transform" />
-        <span class="text-base font-bold whitespace-nowrap">Rejoindre le discord</span>
-      </a>
-    </div>
   </aside>
 </template>
 
@@ -49,7 +37,6 @@ import {
   Sigma,
   Hash
 } from 'lucide-vue-next'
-import { MessageCircle } from 'lucide-vue-next'
 import logo from '@/assets/logo.png'
 
 const { t } = useI18n()

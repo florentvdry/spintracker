@@ -129,15 +129,3 @@ jobs:
             "dist/SpinTracker-Setup-$VERSION.exe" \
             "dist/SpinTracker-Setup-$VERSION.exe.blockmap" \
             dist/latest.yml
-
-      - name: Notification Discord
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        run: |
-          [ -z "$DISCORD_WEBHOOK" ] && { echo "DISCORD_WEBHOOK non defini, notification ignoree"; exit 0; }
-          body="$(head -c 3500 release-notes.md)"
-          jq -n --arg t "Nouvelle release : v$VERSION" \
-                --arg u "https://github.com/$GITHUB_REPOSITORY/releases/tag/v$VERSION" \
-                --arg d "$body" --arg r "Repo: $GITHUB_REPOSITORY" \
-            '{username:"SpinTracker Update",embeds:[{title:$t,url:$u,description:$d,color:3066993,footer:{text:$r}}]}' \
-            | curl -fsS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK"
