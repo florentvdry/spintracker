@@ -1,9 +1,9 @@
 <template>
   <div :class="['card', { 'card-flat': flat }, { 'p-0': padding === 'none' }]" :style="$attrs.style">
-    <div v-if="title || $slots.header" class="flex items-start justify-between mb-4">
+    <div v-if="title || $slots.header" class="flex items-start justify-between gap-3 mb-3">
       <div>
-        <h3 v-if="title" class="text-lg font-semibold text-white">{{ title }}</h3>
-        <p v-if="subtitle" class="text-sm text-gray-400 mt-1">{{ subtitle }}</p>
+        <h3 v-if="title" class="section-label">{{ title }}</h3>
+        <p v-if="subtitle" class="text-xs text-gray-500 mt-0.5">{{ subtitle }}</p>
       </div>
       <slot name="header"></slot>
     </div>

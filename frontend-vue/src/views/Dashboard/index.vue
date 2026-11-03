@@ -1,13 +1,6 @@
 <template>
-  <div class="space-y-6">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-white">{{ $t('dashboard.title') }}</h1>
-        <p class="text-gray-400 mt-1">{{ $t('dashboard.subtitle') }}</p>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div class="space-y-3">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-dark-200 border border-dark-200 rounded-lg overflow-hidden">
       <StatCard
         :label="$t('dashboard.total_profit') + rangeLabel"
         :value="stats.total_profit || 0"
@@ -15,156 +8,79 @@
         :icon="DollarSign"
       />
       <StatCard
-        :label="$t('dashboard.activity') + rangeLabel"
-        :value="null"
-        :icon="Hash"
-        :subStats="[
-          { label: $t('common.tournaments'), value: stats.total_tournaments || 0, format: 'number' },
-          { label: $t('common.hands'), value: stats.total_hands || 0, format: 'number' },
-          { label: $t('dashboard.chips_ev_avg'), value: stats.avg_chips_ev || 0, format: 'number' }
-        ]"
-      />
-      <StatCard
         :label="$t('dashboard.win_rate') + rangeLabel"
         :value="winRate"
         format="percent"
         :icon="Trophy"
       />
-      <Card class="flex flex-col justify-center">
-        <div class="flex items-start justify-between mb-2">
-          <p class="stat-label">{{ $t('dashboard.cev_per_positions') }}</p>
-          <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center shrink-0 -mt-1">
-            <Target class="w-5 h-5 text-primary-400" />
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-          <div>
-            <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-1">3-Way</p>
-            <div class="space-y-1">
-              <div class="flex justify-between items-center text-xs p-0.5 rounded transition-colors">
-                <span class="text-gray-400">BTN</span>
-                <span :class="['font-mono font-medium', formatCev(stats.cev_by_position?.['3W_BTN']).isPositive ? 'text-green-500' : 'text-red-500']">
-                  {{ formatCev(stats.cev_by_position?.['3W_BTN']).formatted }}
-                </span>
-              </div>
-              
-              <!-- SB Row with Tooltip -->
-              <div 
-                class="group relative flex justify-between items-center text-xs p-0.5 rounded hover:bg-white/5 cursor-help transition-colors"
-                @mouseenter="hoveredPos = 'SB'"
-                @mouseleave="hoveredPos = null"
-              >
-                <span class="text-gray-400">SB</span>
-                <span :class="['font-mono font-medium', formatCev(stats.cev_by_position?.['3W_SB']).isPositive ? 'text-green-500' : 'text-red-500']">
-                  {{ formatCev(stats.cev_by_position?.['3W_SB']).formatted }}
-                </span>
-                
-                <!-- Tooltip SB -->
-                <div v-if="hoveredPos === 'SB'" class="absolute left-full ml-2 z-50 w-32 p-2 bg-[#1a1f2e] border border-gray-700 rounded shadow-xl animate-in fade-in slide-in-from-left-1 duration-200">
-                  <p class="text-[10px] text-gray-500 uppercase mb-1.5 border-b border-gray-700 pb-1">Detail SB</p>
-                  <div class="space-y-1">
-                    <div class="flex justify-between items-center">
-                      <span class="text-[10px] text-gray-400">vs BTN</span>
-                      <span :class="['text-[10px] font-mono', formatCev(stats.cev_by_position?.['3W_SB_vs_BTN']).isPositive ? 'text-green-400' : 'text-red-400']">
-                        {{ formatCev(stats.cev_by_position?.['3W_SB_vs_BTN']).formatted }}
-                      </span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                      <span class="text-[10px] text-gray-400">vs BB</span>
-                      <span :class="['text-[10px] font-mono', formatCev(stats.cev_by_position?.['3W_SB_vs_BB']).isPositive ? 'text-green-400' : 'text-red-400']">
-                        {{ formatCev(stats.cev_by_position?.['3W_SB_vs_BB']).formatted }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- BB Row with Tooltip -->
-              <div 
-                class="group relative flex justify-between items-center text-xs p-0.5 rounded hover:bg-white/5 cursor-help transition-colors"
-                @mouseenter="hoveredPos = 'BB'"
-                @mouseleave="hoveredPos = null"
-              >
-                <span class="text-gray-400">BB</span>
-                <span :class="['font-mono font-medium', formatCev(stats.cev_by_position?.['3W_BB']).isPositive ? 'text-green-500' : 'text-red-500']">
-                  {{ formatCev(stats.cev_by_position?.['3W_BB']).formatted }}
-                </span>
-
-                <!-- Tooltip BB -->
-                <div v-if="hoveredPos === 'BB'" class="absolute left-full ml-2 z-50 w-32 p-2 bg-[#1a1f2e] border border-gray-700 rounded shadow-xl animate-in fade-in slide-in-from-left-1 duration-200">
-                  <p class="text-[10px] text-gray-500 uppercase mb-1.5 border-b border-gray-700 pb-1">Detail BB</p>
-                  <div class="space-y-1">
-                    <div class="flex justify-between items-center">
-                      <span class="text-[10px] text-gray-400">vs BTN</span>
-                      <span :class="['text-[10px] font-mono', formatCev(stats.cev_by_position?.['3W_BB_vs_BTN']).isPositive ? 'text-green-400' : 'text-red-400']">
-                        {{ formatCev(stats.cev_by_position?.['3W_BB_vs_BTN']).formatted }}
-                      </span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                      <span class="text-[10px] text-gray-400">vs SB</span>
-                      <span :class="['text-[10px] font-mono', formatCev(stats.cev_by_position?.['3W_BB_vs_SB']).isPositive ? 'text-green-400' : 'text-red-400']">
-                        {{ formatCev(stats.cev_by_position?.['3W_BB_vs_SB']).formatted }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <p class="text-[10px] uppercase tracking-wider text-gray-500 mb-1">Heads-Up</p>
-            <div class="space-y-1">
-              <div class="flex justify-between items-center text-xs">
-                <span class="text-gray-400">SB</span>
-                <span :class="['font-mono font-medium', formatCev((stats.cev_by_position?.['HU_BTN SB'] || 0) + (stats.cev_by_position?.['HU_SB'] || 0)).isPositive ? 'text-green-500' : 'text-red-500']">
-                  {{ formatCev((stats.cev_by_position?.['HU_BTN SB'] || 0) + (stats.cev_by_position?.['HU_SB'] || 0)).formatted }}
-                </span>
-              </div>
-              <div class="flex justify-between items-center text-xs">
-                <span class="text-gray-400">BB</span>
-                <span :class="['font-mono font-medium', formatCev(stats.cev_by_position?.['HU_BB']).isPositive ? 'text-green-500' : 'text-red-500']">
-                  {{ formatCev(stats.cev_by_position?.['HU_BB']).formatted }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Card>
+      <StatCard
+        :label="$t('common.tournaments')"
+        :value="stats.total_tournaments || 0"
+        format="number"
+        :icon="Hash"
+      />
+      <StatCard
+        :label="$t('dashboard.chips_ev_avg')"
+        :value="stats.avg_chips_ev || 0"
+        format="number"
+        :icon="Target"
+      />
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <Card 
-        :title="$t('dashboard.chip_evolution')" 
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-3">
+      <Card
+        :title="$t('dashboard.chip_evolution')"
         :subtitle="$t('dashboard.profit_ev')"
-        class="lg:col-span-2 h-full"
+        class="xl:col-span-2"
       >
         <WinrateChart v-if="heroName && stats.total_hands > 0" />
-        <div v-else class="flex flex-col items-center justify-center h-[500px] text-gray-400">
-          <TrendingUp class="w-12 h-12 mb-4 opacity-50" />
-          <p v-if="!heroName" class="text-lg font-medium mb-2">{{ $t('dashboard.no_hero') }}</p>
-          <p v-else class="text-lg font-medium mb-2">{{ $t('dashboard.no_data') }}</p>
-          <p class="text-sm">{{ !heroName ? $t('dashboard.select_hero_prompt') : $t('dashboard.no_data_chart') }}</p>
+        <div v-else class="flex flex-col items-center justify-center h-[420px] text-gray-500">
+          <TrendingUp class="w-8 h-8 mb-3 opacity-50" />
+          <p v-if="!heroName" class="font-medium mb-1">{{ $t('dashboard.no_hero') }}</p>
+          <p v-else class="font-medium mb-1">{{ $t('dashboard.no_data') }}</p>
+          <p class="text-xs">{{ !heroName ? $t('dashboard.select_hero_prompt') : $t('dashboard.no_data_chart') }}</p>
         </div>
       </Card>
 
-      <Card 
-        :title="$t('dashboard.recent_sessions')"
-        :subtitle="$t('dashboard.latest_games')"
-        class="h-full flex flex-col"
-      >
-        <SessionList v-if="heroName" :sessions="sessions" />
-        <div v-else class="flex flex-col items-center justify-center h-[500px] text-gray-400">
-          <Zap class="w-12 h-12 mb-4 opacity-50" />
-          <p class="text-lg font-medium mb-2">{{ $t('dashboard.no_sessions') }}</p>
-          <p class="text-sm">{{ $t('dashboard.select_hero_sessions') }}</p>
-        </div>
-      </Card>
+      <div class="flex flex-col gap-3 min-w-0">
+        <Card padding="none" class="!p-0 overflow-hidden">
+          <div class="px-4 pt-4">
+            <p class="section-label">{{ $t('dashboard.cev_per_positions') }}</p>
+          </div>
+          <table class="w-full mt-2 text-sm">
+            <tbody>
+              <template v-for="group in positionGroups" :key="group.title">
+                <tr class="bg-dark-300/50">
+                  <td colspan="2" class="px-4 py-1 text-[11px] uppercase tracking-wider text-gray-500">{{ group.title }}</td>
+                </tr>
+                <tr v-for="row in group.rows" :key="row.key" class="border-t border-dark-300">
+                  <td class="px-4 py-1.5" :class="row.sub ? 'pl-8 text-gray-500 text-xs' : 'text-gray-300'">{{ row.label }}</td>
+                  <td class="px-4 py-1.5 text-right font-mono" :class="row.cev.isPositive ? 'text-profit-positive' : 'text-profit-negative'">{{ row.cev.formatted }}</td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </Card>
+
+        <Card
+          :title="$t('dashboard.recent_sessions')"
+          :subtitle="$t('dashboard.latest_games')"
+          class="flex-1 flex flex-col min-h-[240px]"
+        >
+          <SessionList v-if="heroName" :sessions="sessions" />
+          <div v-else class="flex flex-col items-center justify-center flex-1 text-gray-500 py-8">
+            <Zap class="w-8 h-8 mb-3 opacity-50" />
+            <p class="font-medium mb-1">{{ $t('dashboard.no_sessions') }}</p>
+            <p class="text-xs">{{ $t('dashboard.select_hero_sessions') }}</p>
+          </div>
+        </Card>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { DollarSign, Hash, Trophy, Target, TrendingUp, Zap } from 'lucide-vue-next'
 import { useAppStore } from '@/stores/appStore'
@@ -178,7 +94,6 @@ const { t } = useI18n()
 const appStore = useAppStore()
 const filterStore = useFilterStore()
 
-const hoveredPos = ref(null)
 const heroName = computed(() => filterStore.heroName)
 const dateRange = computed(() => filterStore.dateRange)
 const stats = computed(() => appStore.dashboardStats || {})
@@ -197,6 +112,32 @@ const winRate = computed(() => {
     return ((stats.value.tournaments_won / stats.value.total_tournaments) * 100)
   }
   return 0
+})
+
+const positionGroups = computed(() => {
+  const c = (key) => formatCev(stats.value.cev_by_position?.[key])
+  const huSb = (stats.value.cev_by_position?.["HU_BTN SB"] || 0) + (stats.value.cev_by_position?.["HU_SB"] || 0)
+  return [
+    {
+      title: "3-Way",
+      rows: [
+        { key: "3W_BTN", label: "BTN", cev: c("3W_BTN") },
+        { key: "3W_SB", label: "SB", cev: c("3W_SB") },
+        { key: "3W_SB_vs_BTN", label: "vs BTN", cev: c("3W_SB_vs_BTN"), sub: true },
+        { key: "3W_SB_vs_BB", label: "vs BB", cev: c("3W_SB_vs_BB"), sub: true },
+        { key: "3W_BB", label: "BB", cev: c("3W_BB") },
+        { key: "3W_BB_vs_BTN", label: "vs BTN", cev: c("3W_BB_vs_BTN"), sub: true },
+        { key: "3W_BB_vs_SB", label: "vs SB", cev: c("3W_BB_vs_SB"), sub: true },
+      ],
+    },
+    {
+      title: "Heads-Up",
+      rows: [
+        { key: "HU_SB", label: "SB", cev: formatCev(huSb) },
+        { key: "HU_BB", label: "BB", cev: c("HU_BB") },
+      ],
+    },
+  ]
 })
 
 const formatCev = (value) => {

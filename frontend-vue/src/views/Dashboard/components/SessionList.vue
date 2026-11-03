@@ -19,7 +19,7 @@
           <Calendar class="w-3.5 h-3.5 text-gray-500" />
           <span>{{ formatDate(session.session_date) }}</span>
         </div>
-        <span :class="['text-sm font-bold flex items-center gap-1', session.profit > 0 ? 'text-green-400' : 'text-red-400']">
+        <span :class="['text-sm font-bold flex items-center gap-1', session.profit > 0 ? 'text-profit-positive' : 'text-profit-negative']">
           <TrendingUp v-if="session.profit > 0" class="w-3 h-3" />
           <TrendingDown v-else class="w-3 h-3" />
           {{ formatCurrency(session.profit) }}

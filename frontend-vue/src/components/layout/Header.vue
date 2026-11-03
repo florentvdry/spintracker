@@ -1,10 +1,10 @@
 <template>
-  <header class="h-16 bg-dark-400 border-b border-dark-100/30 flex items-center justify-end px-6">
-    <div class="flex items-center gap-3">
+  <header class="shrink-0 bg-dark-500 border-b border-dark-200 px-5 py-2">
+    <div class="flex flex-wrap items-center gap-2">
       <!-- Buy-in Selector -->
       <div class="relative">
         <div 
-          class="flex items-center gap-2 cursor-pointer bg-dark-300 border border-dark-200 rounded px-3 py-1.5 min-w-[120px] hover:border-primary-500 transition-colors"
+          class="flex items-center gap-2 cursor-pointer bg-dark-400 border border-dark-200 rounded-md px-2.5 py-1 min-w-[120px] hover:border-primary-500 transition-colors"
           @click="showBuyInPicker = !showBuyInPicker"
         >
           <Filter class="w-4 h-4 text-gray-400" />
@@ -42,7 +42,7 @@
       <!-- Date Filter -->
       <div class="relative">
         <div
-          class="flex items-center gap-2 cursor-pointer bg-dark-300 border border-dark-200 rounded px-3 py-1.5 min-w-[160px] hover:border-primary-500 transition-colors"
+          class="flex items-center gap-2 cursor-pointer bg-dark-400 border border-dark-200 rounded-md px-2.5 py-1 min-w-[160px] hover:border-primary-500 transition-colors"
           @click="showDatePicker = !showDatePicker"
         >
           <Calendar class="w-4 h-4 text-gray-400" />
@@ -94,7 +94,7 @@
                         </span>
                         <span class="text-xs text-gray-500">{{ formatTime(session.session_date) }}→{{ formatTime(session.session_end) }}</span>
                       </div>
-                      <span class="font-mono font-medium text-xs" :class="session.profit >= 0 ? 'text-green-400' : 'text-red-400'">
+                      <span class="font-mono font-medium text-xs" :class="session.profit >= 0 ? 'text-profit-positive' : 'text-profit-negative'">
                         {{ formatCurrency(session.profit) }}
                       </span>
                     </div>
@@ -155,7 +155,7 @@
       <!-- Hero Selector -->
       <div class="relative mr-2">
         <div 
-          class="flex items-center gap-2 cursor-pointer bg-dark-300 border border-dark-200 rounded px-3 py-1.5 min-w-[180px] hover:border-primary-500 transition-colors"
+          class="flex items-center gap-2 cursor-pointer bg-dark-400 border border-dark-200 rounded-md px-2.5 py-1 min-w-[180px] hover:border-primary-500 transition-colors"
           @click="isDropdownOpen = !isDropdownOpen"
         >
           <span class="text-xs text-gray-400">{{ $t('common.hero') }}:</span>
@@ -224,6 +224,8 @@
         <div v-if="isDropdownOpen" class="fixed inset-0 z-40" @click="isDropdownOpen = false"></div>
       </div>
       
+      <div class="flex-1"></div>
+
       <!-- Import button -->
       <button
         @click="handleImport"
@@ -320,7 +322,7 @@
               <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   @click.stop="notificationStore.removeHistoryItem(item.id)"
-                  class="p-1 hover:bg-dark-200 rounded text-gray-400 hover:text-red-400"
+                  class="p-1 hover:bg-dark-200 rounded text-gray-400 hover:text-profit-negative"
                   :title="$t('common.delete')"
                 >
                   <X class="w-3 h-3" />
