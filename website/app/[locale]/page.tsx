@@ -3,10 +3,12 @@ import { Features } from "@/components/Features";
 import { Screenshots } from "@/components/Screenshots";
 import { Link } from "@/i18n/navigation";
 import { buttonStyles } from "@/components/ui/Button";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
-export default async function Home() {
-  const t = await getTranslations("CTA");
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "CTA" });
   return (
     <div className="flex flex-col min-h-screen">
       <Hero />

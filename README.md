@@ -15,7 +15,7 @@ Import your hand histories, find your leaks, replay your hands and study ranges 
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
 
 [**Download**](https://github.com/florentvdry/spintracker/releases/latest) ·
-[**Website**](https://spintracker.com) ·
+[**Website**](https://florentvdry.github.io/spintracker/) ·
 [**Report a bug**](https://github.com/florentvdry/spintracker/issues/new/choose) ·
 [**Contribute**](CONTRIBUTING.md)
 

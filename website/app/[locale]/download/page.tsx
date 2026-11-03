@@ -1,11 +1,11 @@
-'use client';
-
 import { buttonStyles } from "@/components/ui/Button";
 import { Download, Monitor, Apple } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
-export default function DownloadPage() {
-  const t = useTranslations('Download');
+export default async function DownloadPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: 'Download' });
 
   return (
     <div className="relative min-h-screen overflow-hidden pt-36 pb-20">

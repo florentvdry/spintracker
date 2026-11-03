@@ -1,8 +1,10 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Shield, Database, Eye, Lock, UserCheck, Mail } from "lucide-react";
 
-export default async function PrivacyPage() {
-  const t = await getTranslations('Privacy');
+export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: 'Privacy' });
   return (
     <div className="min-h-screen bg-ink text-white">
       {/* Header Section */}

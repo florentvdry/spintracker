@@ -1,8 +1,10 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { FileText, CheckCircle, AlertTriangle, XCircle, Info, Mail } from "lucide-react";
 
-export default async function TermsPage() {
-  const t = await getTranslations('Terms');
+export default async function TermsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: 'Terms' });
   return (
     <div className="min-h-screen bg-ink text-white">
       {/* Header Section */}
