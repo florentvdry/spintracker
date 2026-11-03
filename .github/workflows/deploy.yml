@@ -1,68 +1,143 @@
-name: Build and Deploy
+name: Release
 
+# Un commit sur main dont le message commence par "V<major>.<minor>.<patch>"
+# (ex: "V1.2.0", "V1.2.0 - nouvelle analyse de range") construit l'installeur
+# Windows, cree le tag v<version> et publie la release avec ses notes.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version a publier (ex: 1.2.0) depuis le dernier commit de main"
+        required: true
 
 permissions:
   contents: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - id: v
+        env:
+          MSG: ${{ github.event.head_commit.message }}
+          INPUT: ${{ github.event.inputs.version }}
+        run: |
+          if [ -n "$INPUT" ]; then
+            version="${INPUT#v}"
+          else
+            first="$(printf '%s' "$MSG" | head -n1)"
+            version="$(printf '%s' "$first" | sed -nE 's/^[Vv]([0-9]+\.[0-9]+\.[0-9]+)([^0-9.].*)?$/\1/p')"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          [ -n "$version" ] && echo "Release v$version" || echo "Pas de commit de version, rien a publier."
+
   release:
+    needs: detect
+    if: needs.detect.outputs.version != ''
     runs-on: windows-latest
     defaults:
       run:
         shell: bash
+    env:
+      VERSION: ${{ needs.detect.outputs.version }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Verifier que le tag n'existe pas
+        run: |
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "::error::Le tag v$VERSION existe deja"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
-      - name: Install root dependencies
+      - name: Version de l'application
+        run: npm version "$VERSION" --no-git-tag-version --allow-same-version
+
+      - name: Dependances
         run: |
           npm ci
+          cd frontend-vue && npm ci
 
-      - name: Install frontend dependencies
+      - name: Build frontend
+        run: npm run react:build
+
+      - name: Build backend
+        run: npm run backend:build
+
+      - name: Installeur (sans publication)
+        run: npx electron-builder --win --publish never
+
+      - name: Notes de release
         run: |
-          cd frontend-vue
-          npm ci
+          prev="$(git describe --tags --abbrev=0 --match 'v*' HEAD 2>/dev/null || true)"
+          {
+            echo "## SpinTracker v$VERSION"
+            echo
+            if [ -n "$prev" ]; then
+              range="$prev..HEAD"
+              echo "### Changements depuis $prev"
+            else
+              range="HEAD"
+              echo "### Changements"
+            fi
+            echo
+            git log "$range" --no-merges --pretty='- %s (%h)' \
+              --invert-grep --grep='^[Vv][0-9]' --grep='\[skip ci\]' -n 100
+            echo
+            echo "### Fichiers modifies"
+            echo
+            echo '```'
+            if [ -n "$prev" ]; then
+              git diff --stat=100 "$prev" HEAD -- . ':(exclude)package-lock.json' ':(exclude)*/package-lock.json' | tail -n 40
+            else
+              git show --stat=100 --format= HEAD | tail -n 40
+            fi
+            echo '```'
+            if [ -n "$prev" ]; then
+              echo
+              echo "**Comparaison complete** : https://github.com/${GITHUB_REPOSITORY}/compare/$prev...v$VERSION"
+            fi
+          } > release-notes.md
+          cat release-notes.md
 
-      - name: Configure Git
+      - name: Creer la release
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          gh release create "v$VERSION" \
+            --target "$GITHUB_SHA" \
+            --title "SpinTracker v$VERSION" \
+            --notes-file release-notes.md \
+            "dist/SpinTracker-Setup-$VERSION.exe" \
+            "dist/SpinTracker-Setup-$VERSION.exe.blockmap" \
+            dist/latest.yml
 
-      - name: Bump version
-        run: |
-          npm version patch -m "chore: bump version to %s [skip ci]"
-
-      - name: Push changes
-        run: |
-          git push
-          git push --tags
-
-      - name: Build Vue frontend
-        run: |
-          npm run react:build
-
-      - name: Build .NET backend
-        run: |
-          npm run backend:build
-
-      - name: Build and Publish Electron App
+      - name: Notification Discord
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          npx electron-builder --win --publish always
+          [ -z "$DISCORD_WEBHOOK" ] && { echo "DISCORD_WEBHOOK non defini, notification ignoree"; exit 0; }
+          body="$(head -c 3500 release-notes.md)"
+          jq -n --arg t "Nouvelle release : v$VERSION" \
+                --arg u "https://github.com/$GITHUB_REPOSITORY/releases/tag/v$VERSION" \
+                --arg d "$body" --arg r "Repo: $GITHUB_REPOSITORY" \
+            '{username:"SpinTracker Update",embeds:[{title:$t,url:$u,description:$d,color:3066993,footer:{text:$r}}]}' \
+            | curl -fsS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK"
