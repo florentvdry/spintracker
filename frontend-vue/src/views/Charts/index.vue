@@ -2,14 +2,14 @@
   <div class="h-[calc(100vh-180px)] flex flex-col">
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
       <div>
-        <h1 class="text-2xl font-bold text-white">{{ $t('charts.title') }}</h1>
+        <h1 class="text-lg font-semibold text-gray-100">{{ $t('charts.title') }}</h1>
         <p class="text-gray-400 mt-1">{{ $t('charts.subtitle') }}</p>
       </div>
       
       <div class="flex flex-wrap items-center gap-4">
         <select
           v-model="chartPosition"
-          class="bg-[#1e2533] text-white px-4 py-2 rounded-lg border border-[#374151] focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+          class="bg-[#14171d] text-white px-4 py-2 rounded-lg border border-[#374151] focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
         >
           <option v-for="pos in positions" :key="pos.value" :value="pos.value">
             {{ $t(`charts.positions.${pos.value}`, pos.label) }}
@@ -55,7 +55,7 @@
       
       <div 
         v-if="finalStats"
-        class="absolute bg-[#1e2533]/95 backdrop-blur-sm border border-[#374151] rounded-lg p-3 shadow-xl select-none"
+        class="absolute bg-[#14171d]/95 backdrop-blur-sm border border-[#374151] rounded-lg p-3 shadow-xl select-none"
         :style="{ left: boxPosition.x + 'px', top: boxPosition.y + 'px', cursor: isDragging ? 'grabbing' : 'grab', minWidth: '200px' }"
         @mousedown="handleMouseDown"
       >
@@ -73,7 +73,7 @@
           </div>
           <div class="flex justify-between items-center">
             <span class="text-xs text-gray-400">CEV</span>
-            <span :class="['text-sm font-mono font-medium', finalStats.cev >= 0 ? 'text-green-400' : 'text-red-400']">
+            <span :class="['text-sm font-mono font-medium', finalStats.cev >= 0 ? 'text-profit-positive' : 'text-profit-negative']">
               {{ finalStats.cev >= 0 ? '+' : '' }}{{ finalStats.cev.toFixed(2) }}
             </span>
           </div>
@@ -138,10 +138,10 @@ const positions = [
 ]
 
 const lineColors = {
-  chipsWon: '#10b981',
+  chipsWon: '#34c27a',
   netExpected: '#eab308',
   wonWithShowdown: '#3b82f6',
-  wonWithoutShowdown: '#ef4444'
+  wonWithoutShowdown: '#e5594f'
 }
 
 const lineLabels = computed(() => ({
@@ -381,7 +381,7 @@ const getOption = computed(() => {
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { color: '#9ca3af' },
-      splitLine: { show: true, lineStyle: { color: '#2d3548' } }
+      splitLine: { show: true, lineStyle: { color: '#242936' } }
     },
     series: seriesList
   }

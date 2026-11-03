@@ -56,7 +56,7 @@ const CARDS = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
 const ACTION_COLORS = {
   AllIn: '#b71c1c',
   Raise: '#f44336',
-  Raise2_3BB: '#ef4444',
+  Raise2_3BB: '#e5594f',
   Raise4BB: '#f97316',
   Bet: '#ff9800',
   Call: '#4caf50',

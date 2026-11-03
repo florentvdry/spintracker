@@ -49,13 +49,13 @@
           </td>
           <td :class="[
             'px-4 py-2 text-right font-mono',
-            getHandCev(hand) > 0 ? 'text-emerald-500/80' : getHandCev(hand) < 0 ? 'text-rose-500/80' : 'text-gray-500'
+            getHandCev(hand) > 0 ? 'text-profit-positive/80' : getHandCev(hand) < 0 ? 'text-profit-negative/80' : 'text-gray-500'
           ]">
             {{ formatCev(getHandCev(hand)) }}
           </td>
           <td :class="[
             'px-4 py-2 text-right font-semibold',
-            getHandProfit(hand) > 0 ? 'text-emerald-500/80' : getHandProfit(hand) < 0 ? 'text-rose-500/80' : 'text-gray-500'
+            getHandProfit(hand) > 0 ? 'text-profit-positive/80' : getHandProfit(hand) < 0 ? 'text-profit-negative/80' : 'text-gray-500'
           ]">
             {{ formatHandProfit(getHandProfit(hand)) }}
           </td>
@@ -159,7 +159,7 @@ const handleSort = (field) => {
 }
 
 .card-tile.club {
-  background: #10b85f;
+  background: #34c27a;
 }
 
 .card-tile.spade {

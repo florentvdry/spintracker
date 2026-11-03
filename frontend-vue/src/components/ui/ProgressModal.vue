@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <div v-if="isVisible" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div class="bg-dark-300 rounded-xl p-6 w-96 shadow-2xl border border-dark-100/30">
+      <div class="bg-dark-300 rounded-lg p-6 w-96 shadow-2xl border border-dark-100/30">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-white">{{ title }}</h3>
         </div>

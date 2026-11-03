@@ -11,9 +11,9 @@ const props = defineProps({
 const chipTypes = [
   { value: 1000, color: '#f97316', secondary: '#ffffff', name: 'orange' }, // 1000+
   { value: 500,  color: '#a855f7', secondary: '#fbbf24', name: 'purple' }, // 500
-  { value: 100,  color: '#111827', secondary: '#ef4444', name: 'black' },  // 100
-  { value: 25,   color: '#22c55e', secondary: '#ffffff', name: 'green' },  // 25
-  { value: 5,    color: '#ef4444', secondary: '#ffffff', name: 'red' },    // 5
+  { value: 100,  color: '#111827', secondary: '#e5594f', name: 'black' },  // 100
+  { value: 25,   color: '#34c27a', secondary: '#ffffff', name: 'green' },  // 25
+  { value: 5,    color: '#e5594f', secondary: '#ffffff', name: 'red' },    // 5
   { value: 1,    color: '#3b82f6', secondary: '#ffffff', name: 'blue' }    // 1
 ]
 

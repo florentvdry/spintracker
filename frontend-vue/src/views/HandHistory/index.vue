@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <div>
-      <h1 class="text-2xl font-bold text-white">{{ $t('hand_history.title') }}</h1>
+      <h1 class="text-lg font-semibold text-gray-100">{{ $t('hand_history.title') }}</h1>
       <p class="text-gray-400 mt-1">
         {{ viewMode === 'tournaments' ? $t('hand_history.total_tournaments', { count: totalTournaments.toLocaleString() }) : $t('hand_history.total_hands', { count: totalHandsCount.toLocaleString() }) }}
       </p>

@@ -1,8 +1,8 @@
 <template>
   <div class="multipliers-page p-6 space-y-6">
-    <header class="flex items-center justify-between bg-dark-400 border border-dark-100/30 p-6 rounded-2xl shadow-xl shadow-black/20">
+    <header class="flex items-center justify-between bg-dark-400 border border-dark-100/30 p-6 rounded-lg shadow-xl shadow-black/20">
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-primary-500/10 border border-primary-500/20 text-primary-400">
+        <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-primary-500/10 border border-primary-500/20 text-primary-400">
           <Hash class="w-6 h-6" />
         </div>
         <div>
@@ -15,26 +15,26 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-4 bg-dark-500/50 p-2 rounded-xl border border-dark-100/20">
+      <div class="flex items-center gap-4 bg-dark-500/50 p-2 rounded-lg border border-dark-100/20">
         <div class="px-4 py-2 text-center border-r border-dark-100/20">
           <span class="block text-[10px] font-black text-dark-100 uppercase tracking-widest leading-none mb-1">Total Games</span>
           <span class="text-lg font-black text-white leading-none">{{ totalGames }}</span>
         </div>
         <div class="px-4 py-2 text-center">
           <span class="block text-[10px] font-black text-dark-100 uppercase tracking-widest leading-none mb-1">Global Win Rate</span>
-          <span :class="['text-lg font-black leading-none', globalWinRate >= 38 ? 'text-green-400' : 'text-yellow-400']">
+          <span :class="['text-lg font-black leading-none', globalWinRate >= 38 ? 'text-profit-positive' : 'text-yellow-400']">
             {{ globalWinRate.toFixed(2) }}%
           </span>
         </div>
       </div>
     </header>
 
-    <div v-if="loading" class="flex flex-col items-center justify-center py-20 bg-dark-400 rounded-2xl border border-dark-100/30">
+    <div v-if="loading" class="flex flex-col items-center justify-center py-20 bg-dark-400 rounded-lg border border-dark-100/30">
       <Loader2 class="w-10 h-10 text-primary-500 animate-spin mb-4" />
       <span class="text-dark-100 font-bold uppercase tracking-widest text-sm">{{ $t('common.loading') }}</span>
     </div>
 
-    <div v-else-if="stats.length === 0" class="flex flex-col items-center justify-center py-20 bg-dark-400 rounded-2xl border border-dark-100/30 text-center">
+    <div v-else-if="stats.length === 0" class="flex flex-col items-center justify-center py-20 bg-dark-400 rounded-lg border border-dark-100/30 text-center">
       <div class="w-16 h-16 bg-dark-100/10 rounded-full flex items-center justify-center mb-4">
         <Inbox class="w-8 h-8 text-dark-100/40" />
       </div>
@@ -42,7 +42,7 @@
       <p class="text-dark-100 text-sm mt-1 max-w-xs">{{ $t('dashboard.no_data_chart') }}</p>
     </div>
 
-    <div v-else class="bg-dark-400 rounded-2xl border border-dark-100/30 shadow-xl shadow-black/20 overflow-hidden">
+    <div v-else class="bg-dark-400 rounded-lg border border-dark-100/30 shadow-xl shadow-black/20 overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
@@ -88,13 +88,13 @@
                 </div>
               </td>
               <td class="px-6 py-5 text-center">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 text-green-400 font-bold text-sm border border-green-500/20">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 text-profit-positive font-bold text-sm border border-green-500/20">
                   <TrendingUp class="w-3.5 h-3.5" />
                   {{ s.winCount }}
                 </span>
               </td>
               <td class="px-6 py-5 text-center">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 text-red-400 font-bold text-sm border border-red-500/20">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 text-profit-negative font-bold text-sm border border-red-500/20">
                   <TrendingDown class="w-3.5 h-3.5" />
                   {{ s.lossCount }}
                 </span>
@@ -151,9 +151,9 @@ const getWinRateColor = (winRate, multiplier) => {
   // We'll use a simple logic: green if above theoretical win rate to break even
   // For 3-max: 1/3 = 33.33% is break even without rake.
   // With rake, around 36-38% is good.
-  if (winRate >= 38) return 'text-green-400'
+  if (winRate >= 38) return 'text-profit-positive'
   if (winRate >= 35) return 'text-yellow-400'
-  return 'text-red-400'
+  return 'text-profit-negative'
 }
 
 const fetchStats = async () => {
@@ -198,8 +198,6 @@ onUnmounted(() => {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #e5e7eb;
 }
 </style>

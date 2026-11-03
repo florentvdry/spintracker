@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6 max-w-4xl">
     <div>
-      <h1 class="text-2xl font-bold text-white">{{ $t('settings.title') }}</h1>
+      <h1 class="text-lg font-semibold text-gray-100">{{ $t('settings.title') }}</h1>
       <p class="text-gray-400 mt-1">{{ $t('settings.subtitle') }}</p>
     </div>
 
@@ -69,7 +69,7 @@
         </div>
         <div v-else v-for="db in databases" :key="db.id" class="flex items-center gap-3 py-3 border-b border-dark-100/30 last:border-b-0">
           <div class="w-10 h-10 rounded-lg bg-dark-200 flex items-center justify-center">
-            <Database :class="['w-5 h-5', db.isActive ? 'text-green-400' : 'text-gray-400']" />
+            <Database :class="['w-5 h-5', db.isActive ? 'text-profit-positive' : 'text-gray-400']" />
           </div>
           <div class="flex-1 min-w-0">
             <div v-if="editingDbId === db.id" class="flex items-center gap-2">
@@ -81,7 +81,7 @@
                 @keydown.escape="cancelEditing"
                 ref="editInput"
               />
-              <button @click="handleRenameDatabase(db)" class="p-1.5 text-green-400 hover:text-green-300">
+              <button @click="handleRenameDatabase(db)" class="p-1.5 text-profit-positive hover:text-green-300">
                 <Check class="w-4 h-4" />
               </button>
               <button @click="cancelEditing" class="p-1.5 text-gray-400 hover:text-gray-300">
@@ -115,7 +115,7 @@
             </button>
             <button
               @click="handleDeleteDatabase(db)"
-              class="p-2 text-red-400 hover:text-red-300 transition-colors"
+              class="p-2 text-profit-negative hover:text-red-300 transition-colors"
               :title="$t('common.delete')"
             >
               <Trash2 class="w-4 h-4" />

@@ -1615,7 +1615,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  background: #1e2433;
+  background: #14171d;
   color: #e5e7eb;
 }
 
@@ -1624,7 +1624,7 @@ onMounted(() => {
 .popup-panel,
 .state-card {
   border: 1px solid rgba(255, 255, 255, 0.05);
-  background: #252b3d;
+  background: #14171d;
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
 }
 
@@ -1653,7 +1653,7 @@ onMounted(() => {
   border-radius: 12px;
   border: 1px solid rgba(45, 212, 191, 0.2);
   background: rgba(45, 212, 191, 0.1);
-  color: #2dd4bf;
+  color: #6c9fff;
   box-shadow: inset 0 1px 8px rgba(255, 255, 255, 0.04);
 }
 
@@ -1686,7 +1686,7 @@ h1 {
 
 .scope-summary span,
 .scope-summary small {
-  color: #2dd4bf;
+  color: #6c9fff;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
@@ -1725,7 +1725,7 @@ h1 {
   width: 100%;
   border-radius: 8px;
   border: 1px solid rgba(75, 85, 99, 0.8);
-  background: #1e2433;
+  background: #14171d;
   color: white;
   padding: 10px 12px;
   font-size: 14px;
@@ -1781,7 +1781,7 @@ h1 {
   min-height: 0;
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  background: #252b3d;
+  background: #14171d;
   padding: 10px;
   display: grid;
   align-content: start;
@@ -1803,14 +1803,14 @@ h1 {
 }
 
 .hud-menu button.active {
-  color: #2dd4bf;
+  color: #6c9fff;
   border-color: rgba(45, 212, 191, 0.24);
   background: rgba(45, 212, 191, 0.1);
 }
 
 .hud-menu button:hover {
   color: white;
-  background: #2d3548;
+  background: #242936;
 }
 
 .general-popup {
@@ -1824,7 +1824,7 @@ h1 {
 }
 
 .spot-popup {
-  --spot-accent: #2dd4bf;
+  --spot-accent: #6c9fff;
   --spot-soft: rgba(45, 212, 191, 0.1);
   width: 100%;
   min-width: 0;
@@ -1835,22 +1835,22 @@ h1 {
 }
 
 .spot-popup.green {
-  --spot-accent: #2dd4bf;
+  --spot-accent: #6c9fff;
   --spot-soft: rgba(45, 212, 191, 0.1);
 }
 
 .spot-popup.cyan {
-  --spot-accent: #2dd4bf;
+  --spot-accent: #6c9fff;
   --spot-soft: rgba(45, 212, 191, 0.1);
 }
 
 .spot-popup.magenta {
-  --spot-accent: #2dd4bf;
+  --spot-accent: #6c9fff;
   --spot-soft: rgba(45, 212, 191, 0.1);
 }
 
 .spot-popup.purple {
-  --spot-accent: #2dd4bf;
+  --spot-accent: #6c9fff;
   --spot-soft: rgba(45, 212, 191, 0.1);
 }
 
@@ -1869,7 +1869,7 @@ h1 {
   min-height: 84px;
   border-radius: 14px;
   border: 1px solid rgba(45, 212, 191, 0.12);
-  background: #252b3d;
+  background: #14171d;
   padding: 16px;
   color: #d1d5db;
   font-size: 14px;
@@ -1885,7 +1885,7 @@ h1 {
 .spot-title {
   width: max-content;
   max-width: 100%;
-  color: #2dd4bf;
+  color: #6c9fff;
   border-radius: 999px;
   border: 1px solid rgba(45, 212, 191, 0.2);
   background: rgba(45, 212, 191, 0.08);
@@ -1927,7 +1927,7 @@ h1 {
   overflow: visible;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  background: #252b3d;
+  background: #14171d;
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.16);
 }
 
@@ -1967,14 +1967,14 @@ h1 {
 }
 
 :deep(.hud-matrix td:nth-child(2)) {
-  color: #2dd4bf;
+  color: #6c9fff;
 }
 
 :deep(.hud-postflop-box) {
   min-width: 0;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  background: #252b3d;
+  background: #14171d;
   overflow: hidden;
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.16);
 }
@@ -1986,7 +1986,7 @@ h1 {
   line-height: 1.1;
   padding: 12px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  background: #2d3548;
+  background: #242936;
 }
 
 :deep(.hud-box-section) {
@@ -2035,11 +2035,11 @@ h1 {
 }
 
 :deep(.hud-aggro) {
-  color: #ef4444 !important;
+  color: #e5594f !important;
 }
 
 :deep(.hud-passive) {
-  color: #22c55e !important;
+  color: #34c27a !important;
 }
 
 :deep(.hud-average) {
@@ -2060,11 +2060,11 @@ h1 {
 }
 
 .general-left {
-  background: #252b3d;
+  background: #14171d;
 }
 
 .general-right {
-  background: #252b3d;
+  background: #14171d;
 }
 
 .total-block {
@@ -2076,7 +2076,7 @@ h1 {
 }
 
 .total-title {
-  color: #2dd4bf;
+  color: #6c9fff;
   font-size: 11px;
   font-weight: 950;
   text-align: left;
@@ -2105,7 +2105,7 @@ h1 {
   margin-top: 10px;
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  background: #1e2433;
+  background: #14171d;
   padding: 10px;
   overflow: hidden;
 }
@@ -2153,7 +2153,7 @@ h1 {
 :deep(.hud-mini-row .bb),
 .hud-pos.bb,
 :deep(.hud-stat-line .bb) {
-  color: #2dd4bf;
+  color: #6c9fff;
 }
 
 .hud-columns {
@@ -2193,7 +2193,7 @@ h1 {
   align-items: center;
   color: #94a3b8;
   border-radius: 10px;
-  background: #1e2433;
+  background: #14171d;
   padding: 6px 8px;
   font-size: 13px;
   line-height: 1.25;
@@ -2212,7 +2212,7 @@ h1 {
 }
 
 .popup-panel {
-  border-radius: 22px;
+  border-radius: 10px;
   overflow: hidden;
 }
 
@@ -2447,7 +2447,7 @@ h1 {
   flex-direction: column;
   border-radius: 22px;
   border: 1px solid rgba(148, 163, 184, 0.22);
-  background: linear-gradient(180deg, #111827 0%, #0b1020 100%);
+  background: #14171d;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55);
   overflow: hidden;
 }
@@ -2574,7 +2574,7 @@ h1 {
 }
 
 .card-tile.club {
-  background: #10b85f;
+  background: #34c27a;
 }
 
 .card-tile.spade {
@@ -2594,7 +2594,7 @@ h1 {
 }
 
 .profit-cell.win {
-  color: #22c55e;
+  color: #34c27a;
 }
 
 .profit-cell.loss {

@@ -64,11 +64,11 @@ const currentActionLabel = computed(() => {
 
 const actionTypeColor = (type) => {
   const colors = {
-    'Fold': 'text-red-400',
+    'Fold': 'text-profit-negative',
     'Check': 'text-gray-400',
     'Call': 'text-blue-400',
     'Bet': 'text-blue-400',
-    'Raise': 'text-green-400',
+    'Raise': 'text-profit-positive',
     'AllIn': 'text-orange-400'
   }
   return colors[type] || 'text-gray-400'
@@ -271,10 +271,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(59, 130, 246, 0.18), transparent 32%),
-    radial-gradient(circle at 86% 14%, rgba(20, 184, 166, 0.14), transparent 28%),
-    #07111f;
+  background: #0e1014;
   color: #e5e7eb;
   user-select: none;
 }
@@ -542,10 +539,10 @@ onUnmounted(() => {
   font-weight: 800;
 }
 
-.action-description.text-red-400 { color: #f87171; }
+.action-description.text-profit-negative { color: #f87171; }
 .action-description.text-gray-400 { color: #9ca3af; }
 .action-description.text-blue-400 { color: #60a5fa; }
-.action-description.text-green-400 { color: #4ade80; }
+.action-description.text-profit-positive { color: #4ade80; }
 .action-description.text-orange-400 { color: #fb923c; }
 .action-description.text-purple-400 { color: #c084fc; }
 

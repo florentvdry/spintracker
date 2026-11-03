@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-dark-200 rounded-xl p-5 shadow-2xl flex flex-col gap-6 border border-white/5 relative overflow-hidden">
+  <div class="bg-dark-200 rounded-lg p-5 shadow-2xl flex flex-col gap-6 border border-white/5 relative overflow-hidden">
     <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary-500/5 blur-3xl rounded-full"></div>
     
     <div class="flex flex-wrap items-center gap-6 pb-5 border-b border-white/5">
@@ -33,7 +33,7 @@
           </div>
 
           <div v-if="isDropdownOpen" class="fixed inset-0 z-40" @click="isDropdownOpen = false"></div>
-          <div v-if="isDropdownOpen" class="absolute top-full left-0 mt-2 w-72 bg-dark-300 border border-white/10 rounded-xl shadow-2xl z-50 flex flex-col max-h-80 overflow-hidden">
+          <div v-if="isDropdownOpen" class="absolute top-full left-0 mt-2 w-72 bg-dark-300 border border-white/10 rounded-lg shadow-2xl z-50 flex flex-col max-h-80 overflow-hidden">
             <div class="p-3 border-b border-white/5 bg-dark-400/50">
               <div class="relative">
                 <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
@@ -154,7 +154,7 @@
             :key="pos"
             @click="handlePositionChange(pos)"
             :class="[
-              'flex items-center justify-between px-5 py-4 rounded-xl border transition-all duration-200 text-left',
+              'flex items-center justify-between px-5 py-4 rounded-lg border transition-all duration-200 text-left',
               selectedPosition === pos 
                 ? 'bg-primary-500/10 border-primary-500 text-primary-400 shadow-lg shadow-primary-500/5' 
                 : 'bg-dark-400/50 border-white/5 text-gray-400 hover:border-white/10 hover:bg-dark-400'
@@ -182,7 +182,7 @@
             :key="sit.id"
             @click="handleSituationSelect(sit)"
             :class="[
-              'flex flex-col gap-2 p-4 rounded-xl border transition-all duration-200 text-left relative overflow-hidden group',
+              'flex flex-col gap-2 p-4 rounded-lg border transition-all duration-200 text-left relative overflow-hidden group',
               currentSitId === sit.situationId 
                 ? 'bg-white/5 border-primary-500/50 text-white' 
                 : 'bg-dark-400/50 border-white/5 text-gray-400 hover:border-white/20 hover:bg-dark-400'
@@ -196,7 +196,7 @@
             </span>
             
             <div class="flex items-center gap-1.5 flex-wrap">
-              <span v-if="sit.sequence.length === 0" class="text-[9px] bg-green-500/10 text-green-500 px-2 py-0.5 rounded border border-green-500/20 font-bold uppercase">{{ $t('range_analysis.filters.first_to_act') }}</span>
+              <span v-if="sit.sequence.length === 0" class="text-[9px] bg-green-500/10 text-profit-positive px-2 py-0.5 rounded border border-green-500/20 font-bold uppercase">{{ $t('range_analysis.filters.first_to_act') }}</span>
               <template v-for="(step, i) in sit.sequence" :key="i">
                 <div class="flex items-center gap-1">
                   <div class="flex items-center gap-1 bg-dark-500 px-2 py-0.5 rounded border border-white/5">
@@ -367,8 +367,8 @@ const handlePlayerCountChange = (count) => {
 }
 
 const getActionColorClass = (action) => {
-  if (action === 'raise') return 'text-red-400'
-  if (action === 'call') return 'text-green-400'
+  if (action === 'raise') return 'text-profit-negative'
+  if (action === 'call') return 'text-profit-positive'
   return 'text-blue-400'
 }
 </script>

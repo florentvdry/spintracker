@@ -191,7 +191,7 @@ const winnerSeat = computed(() => {
 .felt-gradient {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 42%, rgba(43, 100, 74, 0.95) 0%, rgba(9, 55, 41, 0.92) 48%, rgba(3, 24, 19, 0.95) 100%);
+  background: #0f1d1b;
 }
 
 .betting-line {

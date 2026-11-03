@@ -1,0 +1,1 @@
+- Redesigned the interface: top navigation, compact filter bar, denser tables and a new flat dark theme.
