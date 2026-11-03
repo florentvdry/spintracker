@@ -25,7 +25,7 @@ export default function DownloadPage() {
             <h2 className="text-2xl font-bold text-white mb-2">{t('windows.title')}</h2>
             <p className="text-gray-400 mb-8">{t('windows.requirements')}</p>
             <a 
-              href="https://github.com/florentvdry/spintracker-releases/releases/download/v1.0.1/SpinTracker-Setup-1.0.1.exe" 
+              href="https://github.com/florentvdry/spintracker/releases/latest" 
               className="w-full"
               target="_blank"
               rel="noopener noreferrer"

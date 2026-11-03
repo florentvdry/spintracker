@@ -70,7 +70,7 @@
       "publish": {
         "provider": "github",
         "owner": "florentvdry",
-        "repo": "spintracker-releases"
+        "repo": "spintracker"
       }
     },
     "nsis": {

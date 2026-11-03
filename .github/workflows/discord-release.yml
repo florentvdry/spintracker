@@ -1,0 +1,29 @@
+name: Discord Release Notification
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{
+            "username": "SpinTracker Update",
+            "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+            "embeds": [{
+              "title": "🚀 New release : ${{ github.event.release.tag_name }}",
+              "url": "${{ github.event.release.html_url }}",
+              "description": "${{ github.event.release.body }}",
+              "color": 3066993,
+              "footer": {
+                "text": "Repo: ${{ github.repository }}"
+              }
+            }]
+          }' \
+          $DISCORD_WEBHOOK
