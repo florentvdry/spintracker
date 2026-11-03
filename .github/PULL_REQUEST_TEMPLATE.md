@@ -18,7 +18,7 @@
 
 - [ ] PR title follows Conventional Commits (`feat(scope): description`)
 - [ ] `dotnet build` and backend tests pass
-- [ ] `npm run react:build` passes
+- [ ] `npm run frontend:build` and `cargo check` (in `src-tauri/`) pass
 - [ ] New or fixed behavior is covered by a test (required for parser fixes)
 - [ ] UI strings added to **every** locale file (English first)
 - [ ] `changelogs.txt` updated for user-visible changes
