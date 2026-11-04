@@ -1,6 +1,7 @@
 //! Application logic built on the parsers, the engines and the repositories.
 
 pub mod analysis;
+pub mod hud;
 pub mod importer;
 pub mod live_import;
 pub mod summaries;

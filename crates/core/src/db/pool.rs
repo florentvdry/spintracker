@@ -1,6 +1,7 @@
 //! SQLite connection pool that can be swapped at runtime (switching database needs no restart).
 
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 
 use arc_swap::ArcSwapOption;
@@ -23,6 +24,8 @@ struct Active {
 #[derive(Default)]
 pub struct Database {
     active: ArcSwapOption<Active>,
+    /// Changes whenever the stored hands, players or aliases do; caches built on the data compare it.
+    data_version: AtomicU64,
 }
 
 impl Database {
@@ -58,7 +61,17 @@ impl Database {
         });
         let pool = Pool::builder().max_size(8).build(manager)?;
         self.active.store(Some(Arc::new(Active { path, pool })));
+        self.bump_data_version();
         Ok(())
+    }
+
+    pub fn data_version(&self) -> u64 {
+        self.data_version.load(Ordering::Acquire)
+    }
+
+    /// To be called after every write that changes what the statistics are computed from.
+    pub fn bump_data_version(&self) {
+        self.data_version.fetch_add(1, Ordering::AcqRel);
     }
 
     pub fn path(&self) -> Option<PathBuf> {
@@ -87,7 +100,7 @@ mod tests {
         let mode: String = conn.query_row("PRAGMA journal_mode", [], |r| r.get(0)).unwrap();
         assert_eq!(mode, "wal");
         let n: i64 = conn.query_row("SELECT COUNT(*) FROM VersionInfo", [], |r| r.get(0)).unwrap();
-        assert_eq!(n, 12);
+        assert_eq!(n, 13);
     }
 
     #[test]

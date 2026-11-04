@@ -39,7 +39,7 @@ pub struct DetailedQuery {
 }
 
 /// A hand shown as an example of a figure.
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub(super) struct Sample {
     pub(super) id: String,
@@ -61,12 +61,20 @@ pub(super) struct Sample {
     pub(super) blinds: String,
 }
 
-pub(super) struct Row {
+pub(crate) struct Row {
     pub(super) sample: Sample,
     pub(super) player_count: i32,
     pub(super) stack: i64,
     pub(super) flags: Flags,
     pub(super) street_counts: StreetCounts,
+}
+
+impl Row {
+    /// A row carrying only what the preflop counters read (the HUD needs no example hands).
+    pub(crate) fn lean(player_count: i32, position: &str, flags: Flags) -> Row {
+        let sample = Sample { position: position.trim().to_uppercase(), ..Sample::default() };
+        Row { sample, player_count, stack: 0, flags, street_counts: StreetCounts(0) }
+    }
 }
 
 /// Table segment of a row: seat plus table size.
@@ -192,7 +200,7 @@ fn position_order(position: &str) -> usize {
 }
 
 /// Everything counted over one set of rows.
-struct Accumulator {
+pub(crate) struct Accumulator {
     players: HashSet<String>,
     all: Tally,
     seats: Vec<Tally>,
@@ -201,7 +209,7 @@ struct Accumulator {
 }
 
 impl Accumulator {
-    fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Accumulator {
             players: HashSet::new(),
             all: Tally::new(),
@@ -214,10 +222,21 @@ impl Accumulator {
     fn consume(&mut self, row: &Row) {
         self.players.insert(row.sample.player_name.to_lowercase());
         let mut shared: Option<Rc<Sample>> = None;
-        self.all.add(&row.flags, &mut shared, row);
+        self.count_preflop(row, &mut shared);
+        self.consume_push_fold(row, &mut shared);
+        self.postflop.consume(row, &mut shared);
+    }
+
+    /// Counts the preflop figures only (the HUD shows nothing else).
+    pub(crate) fn consume_preflop(&mut self, row: &Row) {
+        self.count_preflop(row, &mut None);
+    }
+
+    fn count_preflop(&mut self, row: &Row, shared: &mut Option<Rc<Sample>>) {
+        self.all.add(&row.flags, shared, row);
 
         if let Some(seat) = Seat::of(&row.sample.position, row.player_count) {
-            self.seats[seat.index()].add(&row.flags, &mut shared, row);
+            self.seats[seat.index()].add(&row.flags, shared, row);
         }
         // Statistics tied to one seat are counted on that seat's rows only.
         for (i, def) in STATS.iter().enumerate() {
@@ -230,11 +249,9 @@ impl Accumulator {
                 Segment::ThreeWayBb => Seat::Bb3w,
             };
             if Seat::of(&row.sample.position, row.player_count) == Some(seat) {
-                self.seats[seat.index()].count(i, def, &row.flags, &mut shared, row);
+                self.seats[seat.index()].count(i, def, &row.flags, shared, row);
             }
         }
-        self.consume_push_fold(row, &mut shared);
-        self.postflop.consume(row, &mut shared);
     }
 
     fn consume_push_fold(&mut self, row: &Row, shared: &mut Option<Rc<Sample>>) {
@@ -268,7 +285,7 @@ impl Accumulator {
 }
 
 /// Percentage rounded to one decimal; 0 without opportunities.
-fn pct(num: u64, den: u64) -> f64 {
+pub(crate) fn pct(num: u64, den: u64) -> f64 {
     if den == 0 {
         0.0
     } else {
@@ -285,6 +302,54 @@ fn empty_sample(num: u64, den: u64) -> Value {
 }
 
 impl Accumulator {
+    /// Hands counted so far (rows of the 2- and 3-handed hands consumed).
+    pub(crate) fn hand_count(&self) -> u64 {
+        self.all.hands
+    }
+
+    /// `(numerator, denominator)` of one registered stat in one table column, using the same
+    /// tallies as the detailed-stats response so both always agree. `None` for an unknown
+    /// stat or column, and for the postflop stats (not counted here).
+    pub(crate) fn counts(&self, section: Section, label: &str, column: Option<&str>) -> Option<(u64, u64)> {
+        let (i, def) = STATS.iter().enumerate().find(|(_, d)| d.section == section && d.label == label)?;
+        let seat = |s: Seat| &self.seats[s.index()];
+        let tally = match (section, def.segment) {
+            (_, Some(segment)) => seat(match segment {
+                Segment::HuSb => Seat::SbHu,
+                Segment::HuBb => Seat::BbHu,
+                Segment::ThreeWayBtn => Seat::Btn,
+                Segment::ThreeWaySb => Seat::Sb3w,
+                Segment::ThreeWayBb => Seat::Bb3w,
+            })
+            .clone(),
+            (Section::Preflop, None) => match column.unwrap_or("tot") {
+                "tot" => self.all.clone(),
+                "hu" => Tally::merge(&[seat(Seat::SbHu), seat(Seat::BbHu)]),
+                "three_way" => Tally::merge(&[seat(Seat::Btn), seat(Seat::Sb3w), seat(Seat::Bb3w)]),
+                "btn" => seat(Seat::Btn).clone(),
+                "sb_hu" => seat(Seat::SbHu).clone(),
+                "sb_3w" => seat(Seat::Sb3w).clone(),
+                "bb_hu" => seat(Seat::BbHu).clone(),
+                "bb_3w" => seat(Seat::Bb3w).clone(),
+                _ => return None,
+            },
+            (Section::Steal, None) => match column.unwrap_or("tot") {
+                "tot" => Tally::merge(&[seat(Seat::Btn), seat(Seat::SbHu), seat(Seat::Sb3w)]),
+                "btn" => seat(Seat::Btn).clone(),
+                "sb" => Tally::merge(&[seat(Seat::SbHu), seat(Seat::Sb3w)]),
+                _ => return None,
+            },
+            (Section::VsSteal, None) => match column.unwrap_or("tot") {
+                "tot" => Tally::merge(&[seat(Seat::SbHu), seat(Seat::Sb3w), seat(Seat::BbHu), seat(Seat::Bb3w)]),
+                "sb" => Tally::merge(&[seat(Seat::SbHu), seat(Seat::Sb3w)]),
+                "bb" => Tally::merge(&[seat(Seat::BbHu), seat(Seat::Bb3w)]),
+                _ => return None,
+            },
+            _ => return None,
+        };
+        Some((tally.num[i], tally.den[i]))
+    }
+
     /// Rows of one section, in registry order.
     fn defs(section: Section) -> impl Iterator<Item = (usize, &'static StatDef)> {
         STATS.iter().enumerate().filter(move |(_, d)| d.section == section)

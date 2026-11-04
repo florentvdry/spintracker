@@ -249,6 +249,9 @@ impl Importer {
             // Leaving the loop early drops `rx`; the producers then stop on `abort`.
         });
 
+        if imported > 0 || write_error.is_some() {
+            self.db.bump_data_version();
+        }
         PipelineRun { imported, skipped: skipped.load(Ordering::Relaxed), touched_players, write_error }
     }
 
@@ -267,6 +270,7 @@ impl Importer {
         let mut conn = self.db.conn()?;
         let written = hands::insert_batch(&mut conn, &items)?;
         players::update_player_stats(&conn)?;
+        self.db.bump_data_version();
         Ok((written, received))
     }
 

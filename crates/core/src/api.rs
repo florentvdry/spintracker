@@ -18,11 +18,13 @@ use crate::engines::equity::calculate as calculate_equity;
 use crate::models::ParsedHand;
 use crate::parsers::{get_parser, get_parser_by_room};
 use crate::repos::detailed_stats::{detailed_stats, DetailedQuery};
+use crate::repos::hud_stats;
 use crate::repos::hands_query::{self, HandsAgainstQuery, HandsQuery};
 use crate::repos::player_queries::{self, PlayersQuery};
 use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
+use crate::services::hud::{HudNoteRequest, HudPlayersRequest, HudService};
 use crate::services::Importer;
 use crate::stats::store;
 use crate::{Error, Result};
@@ -66,6 +68,7 @@ pub struct Backend {
     db: Arc<Database>,
     registry: DatabaseRegistry,
     importer: Importer,
+    hud: HudService,
 }
 
 impl Backend {
@@ -77,7 +80,8 @@ impl Backend {
         let db = Arc::new(Database::open(&active.file_path)?);
         let analytics = Arc::new(AnalyticsCalculator::default());
         let importer = Importer::new(db.clone(), analytics.clone());
-        Ok(Self { db, registry, importer })
+        let hud = HudService::new(db.clone());
+        Ok(Self { db, registry, importer, hud })
     }
 
     pub fn importer(&self) -> &Importer {
@@ -95,7 +99,9 @@ impl Backend {
     /// Computes the stat flags the active database lacks (existing databases, or after the flags
     /// changed). `progress(done, total)` is called after each batch.
     pub fn backfill_flags(&self, progress: impl FnMut(u64, u64)) -> Result<u64> {
-        store::backfill(&mut *self.db.conn()?, progress)
+        let done = store::backfill(&mut *self.db.conn()?, progress);
+        self.db.bump_data_version();
+        done
     }
 
     /// Handles a request. Errors become 500 responses, never panics.
@@ -174,6 +180,7 @@ impl Backend {
             }
             ("POST", ["db", "delete-all"]) => {
                 hands::delete_all(&mut *conn()?)?;
+                self.db.bump_data_version();
                 Response::ok(json!({ "success": true, "message": "All data cleared and schema refreshed" }))
             }
 
@@ -244,16 +251,39 @@ impl Backend {
             }
             ("DELETE", ["db", "aliases", id]) => {
                 player_queries::delete_alias(&mut *conn()?, id.parse().unwrap_or(-1))?;
+                self.db.bump_data_version();
                 Response::ok(json!({ "success": true }))
             }
             ("POST", ["db", "players", id, "link"]) => {
                 let alias: i64 = r.body_field("aliasId")?;
                 player_queries::link_player_to_alias(&*conn()?, id.parse().unwrap_or(-1), alias)?;
+                self.db.bump_data_version();
                 Response::ok(json!({ "success": true }))
             }
             ("POST", ["db", "players", id, "unlink"]) => {
                 player_queries::unlink_player_from_alias(&*conn()?, id.parse().unwrap_or(-1))?;
+                self.db.bump_data_version();
                 Response::ok(json!({ "success": true }))
+            }
+
+            // --- Table HUD
+            ("GET", ["hud", "catalog"]) => Response::data(hud_stats::catalog()),
+            ("POST", ["hud", "players"]) => {
+                let request: HudPlayersRequest = r.body_as()?;
+                match request.validate() {
+                    Ok(()) => Response::data(self.hud.players(&request)?),
+                    Err(message) => Response::message(400, &message),
+                }
+            }
+            ("PUT", ["hud", "notes"]) => {
+                let request: HudNoteRequest = r.body_as()?;
+                match request.validate() {
+                    Ok(()) => {
+                        self.hud.set_note(&request)?;
+                        Response::ok(json!({ "success": true }))
+                    }
+                    Err(message) => Response::message(400, &message),
+                }
             }
 
             // --- Analysis and equity
