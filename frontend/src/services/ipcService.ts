@@ -163,7 +163,18 @@ export const ipcService = {
   importHandHistory: () => command<ApiResult>('import_hand_history'),
   getAutoImport: () => command<ApiResult>('auto_import_get'),
   setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),
-  getHudCatalog: () => backend<{ stats: { section: string; label: string; id: string; fixedSeat: boolean }[] }>('GET', '/hud/catalog'),
+  getHudCatalog: () => backend<{ stats: { section: string; label: string; id: string; fixedSeat: boolean; name?: string; ready?: boolean }[] }>('GET', '/hud/catalog'),
+
+  // Custom stats (definitions are the JSON of views/CustomStats/customStatModel.ts)
+  getCustomStats: () => backend<Json[]>('GET', '/custom-stats'),
+  getCustomStatOptions: () => backend('GET', '/custom-stats/options'),
+  getCustomStatStatus: () => backend('GET', '/custom-stats/status'),
+  createCustomStat: (definition: Json) => backend('POST', '/custom-stats', definition),
+  updateCustomStat: (id: number, definition: Json) => backend('PUT', `/custom-stats/${id}`, definition),
+  deleteCustomStat: (id: number) => backend('DELETE', `/custom-stats/${id}`),
+  recomputeCustomStats: () => backend('POST', '/custom-stats/recompute', {}),
+  previewCustomStat: (definition: Json, heroName?: string | null) => backend('POST', '/custom-stats/preview', { definition, heroName: heroName ?? null }),
+
   getHudState: async (): Promise<Json | null> => {
     const state = await command<Json | null>('hud_get_state')
     return state && state.success === false ? null : state

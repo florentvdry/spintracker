@@ -23,6 +23,9 @@ import { previewFigures } from '../previewData'
 import Canvas from './Canvas'
 import Inspector from './Inspector'
 import Palette, { type CatalogStat } from './Palette'
+import StatBuilder from '../../CustomStats/StatBuilder'
+import { useCustomStatsStore } from '@/stores/customStatsStore'
+import type { CustomStat } from '../../CustomStats/customStatModel'
 import { NO_SELECTION, type EditingCell, type Selection } from './types'
 import { useDrag, type DragPayload, type DropTarget } from './useDrag'
 
@@ -63,6 +66,11 @@ export default function EditorTab() {
 
   const [catalog, setCatalog] = useState<CatalogStat[]>([])
   const [catalogLoading, setCatalogLoading] = useState(true)
+  const customStats = useCustomStatsStore((s) => s.stats)
+  const customComputing = useCustomStatsStore((s) => s.computing)
+  const loadCustomStats = useCustomStatsStore((s) => s.load)
+  const removeCustomStat = useCustomStatsStore((s) => s.remove)
+  const [builder, setBuilder] = useState<{ stat: CustomStat | null; template?: CustomStat['definition'] } | null>(null)
   const [selectionRaw, setSelection] = useState<Selection>(NO_SELECTION)
   const [editing, setEditing] = useState<EditingCell | null>(null)
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
@@ -79,7 +87,12 @@ export default function EditorTab() {
     return () => {
       cancelled = true
     }
-  }, [])
+    // The catalog lists the custom stats, so it is read again when they change.
+  }, [customStats])
+
+  useEffect(() => {
+    void loadCustomStats()
+  }, [loadCustomStats])
 
   // The one source of truth is the store; the editor only turns actions into its next value.
   const doc = useMemo<EditorDoc>(
@@ -391,7 +404,19 @@ export default function EditorTab() {
 
       <div className="grid items-start gap-3 lg:grid-cols-[220px_minmax(0,1fr)_300px]">
         <Card className="lg:sticky lg:top-2 lg:h-[calc(100vh-260px)]">
-          <Palette catalog={catalog} loading={catalogLoading} onStart={startDrag} onPick={onPick} />
+          <Palette
+            catalog={catalog}
+            loading={catalogLoading}
+            onStart={startDrag}
+            onPick={onPick}
+            computing={customComputing}
+            onCreateCustom={() => setBuilder({ stat: null })}
+            onEditCustom={(id) => setBuilder({ stat: customStats.find((s) => s.id === id) ?? null })}
+            onDuplicateCustom={(id) => setBuilder({ stat: null, template: customStats.find((s) => s.id === id)?.definition })}
+            onDeleteCustom={(id) => {
+              if (window.confirm(t('customStats.delete_confirm'))) void removeCustomStat(id)
+            }}
+          />
         </Card>
 
         <div className="min-w-0">
@@ -427,6 +452,8 @@ export default function EditorTab() {
           />
         </Card>
       </div>
+
+      {builder && <StatBuilder stat={builder.stat} template={builder.template} onClose={() => setBuilder(null)} />}
 
       {drag && (
         <div className="pointer-events-none fixed z-50 rounded border border-primary-500 bg-dark-200 px-2 py-1 text-xs text-white shadow-lg" style={{ left: drag.x + 12, top: drag.y + 12 }}>

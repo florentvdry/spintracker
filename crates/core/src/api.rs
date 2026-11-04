@@ -24,6 +24,8 @@ use crate::repos::player_queries::{self, PlayersQuery};
 use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
+use crate::services::custom_stats::CustomStatsService;
+use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::hud::{HudNoteRequest, HudPlayersRequest, HudService};
 use crate::services::Importer;
 use crate::stats::store;
@@ -69,6 +71,7 @@ pub struct Backend {
     registry: DatabaseRegistry,
     importer: Importer,
     hud: HudService,
+    custom_stats: CustomStatsService,
     /// Detailed statistics by query, valid for one data version: they read every hand.
     detailed_cache: Mutex<DetailedCache>,
 }
@@ -92,7 +95,8 @@ impl Backend {
         let analytics = Arc::new(AnalyticsCalculator::default());
         let importer = Importer::new(db.clone(), analytics.clone());
         let hud = HudService::new(db.clone());
-        Ok(Self { db, registry, importer, hud, detailed_cache: Mutex::default() })
+        let custom_stats = CustomStatsService::new(db.clone());
+        Ok(Self { db, registry, importer, hud, custom_stats, detailed_cache: Mutex::default() })
     }
 
     pub fn importer(&self) -> &Importer {
@@ -111,7 +115,14 @@ impl Backend {
     /// changed). `progress(done, total)` is called after each batch.
     pub fn backfill_flags(&self, progress: impl FnMut(u64, u64)) -> Result<u64> {
         let done = store::backfill(&mut *self.db.conn()?, progress);
+        // Custom stats read the flags: recomputed flags make their figures stale, and they are
+        // computed once the flags are up to date.
+        if matches!(done, Ok(processed) if processed > 0) {
+            custom_store::invalidate_all(&*self.db.conn()?)?;
+        }
+        let custom = self.custom_stats.recompute();
         self.db.bump_data_version();
+        custom?;
         done
     }
 
@@ -129,6 +140,10 @@ impl Backend {
                 Response::problem(&e)
             }
         }
+    }
+
+    fn custom_stats_body(&self, r: &Request) -> Value {
+        r.body.clone().unwrap_or(Value::Null)
     }
 
     fn route(&self, r: &Request, segments: &[&str]) -> Result<Option<Response>> {
@@ -282,7 +297,36 @@ impl Backend {
             }
 
             // --- Table HUD
-            ("GET", ["hud", "catalog"]) => Response::data(hud_stats::catalog()),
+            ("GET", ["hud", "catalog"]) => Response::data(hud_stats::catalog_with_custom(&*conn()?)?),
+
+            // --- Custom stats
+            ("GET", ["custom-stats"]) => Response::data(self.custom_stats.list()?),
+            ("POST", ["custom-stats"]) => match self.custom_stats.create(&r.body.clone().unwrap_or(Value::Null)) {
+                Ok(created) => Response::data(created),
+                Err(e) => save_failure(e)?,
+            },
+            ("POST", ["custom-stats", "preview"]) => {
+                let definition = r.body_field::<Value>("definition")?;
+                match self.custom_stats.preview(&definition, r.body_str("heroName").as_deref()) {
+                    Ok(figure) => Response::data(figure),
+                    Err(e) => save_failure(e)?,
+                }
+            }
+            ("POST", ["custom-stats", "recompute"]) => Response::data(json!({ "processed": self.custom_stats.recompute()? })),
+            ("GET", ["custom-stats", "status"]) => Response::data(self.custom_stats.status()?),
+            ("GET", ["custom-stats", "options"]) => Response::data(crate::stats::custom::model::options()),
+            ("PUT", ["custom-stats", id]) => match (id.parse::<i64>(), self.custom_stats_body(r)) {
+                (Ok(id), body) => match self.custom_stats.update(id, &body) {
+                    Ok(true) => Response::data(json!({ "id": id })),
+                    Ok(false) => Response::failure(404, "Custom stat not found"),
+                    Err(e) => save_failure(e)?,
+                },
+                _ => Response::failure(404, "Custom stat not found"),
+            },
+            ("DELETE", ["custom-stats", id]) => match id.parse::<i64>() {
+                Ok(id) if self.custom_stats.delete(id)? => Response::data(json!({ "id": id })),
+                _ => Response::failure(404, "Custom stat not found"),
+            },
             ("POST", ["hud", "players"]) => {
                 let request: HudPlayersRequest = r.body_as()?;
                 match request.validate() {
@@ -701,5 +745,13 @@ mod tests {
         assert_eq!(b.handle("DELETE", &format!("/api/databases/{}", old.id), None).status, 200);
         assert_eq!(b.handle("DELETE", &format!("/api/databases/{id}"), None).status, 400);
         assert_eq!(b.handle("POST", "/api/databases/unknown/set-active", Some(json!({}))).status, 400);
+    }
+}
+
+/// The response for a failed save: the user's mistake is a 400, a database failure bubbles up.
+fn save_failure(error: SaveError) -> Result<Response> {
+    match error {
+        SaveError::Invalid(message) => Ok(Response::message(400, &message)),
+        SaveError::Internal(e) => Err(e),
     }
 }

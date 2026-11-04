@@ -1,7 +1,7 @@
 import { memo, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
-import { ChevronDown, ChevronRight, Search } from 'lucide-react'
+import { ChevronDown, ChevronRight, Copy, Pencil, Plus, Search, Trash2 } from 'lucide-react'
 import { statCell, type CellContent } from '../hudGrid'
 import type { DragPayload } from './useDrag'
 
@@ -9,10 +9,13 @@ export interface CatalogStat {
   section: string
   label: string
   id: string
+  /** What to show instead of the label (custom stats are requested by id). */
+  name?: string
+  ready?: boolean
 }
 
 /** Sections in the order the backend registry lists them. */
-const SECTION_ORDER = ['preflop', 'huSb', 'huBb', 'threeWayPreflop', 'steal', 'vsSteal', 'postflop', 'shove', 'meta']
+const SECTION_ORDER = ['preflop', 'huSb', 'huBb', 'threeWayPreflop', 'steal', 'vsSteal', 'postflop', 'shove', 'meta', 'custom']
 
 interface Props {
   catalog: CatalogStat[]
@@ -20,11 +23,17 @@ interface Props {
   onStart: (payload: DragPayload, event: { clientX: number; clientY: number }, onClick?: () => void) => void
   /** A press on an item without dragging puts it in the selected cell. */
   onPick: (content: CellContent, stat?: { section: string; label: string }) => void
+  onCreateCustom: () => void
+  onEditCustom: (id: number) => void
+  onDuplicateCustom: (id: number) => void
+  onDeleteCustom: (id: number) => void
+  /** Figures of custom stats are being computed. */
+  computing: boolean
 }
 
 const itemClass = 'flex cursor-grab touch-none select-none items-center rounded border border-dark-100 bg-dark-300 px-2 py-1 text-xs text-gray-200 hover:border-primary-500 active:cursor-grabbing'
 
-function PaletteBase({ catalog, loading, onStart, onPick }: Props) {
+function PaletteBase({ catalog, loading, onStart, onPick, onCreateCustom, onEditCustom, onDuplicateCustom, onDeleteCustom, computing }: Props) {
   const { t } = useTranslation()
   const [query, setQuery] = useState('')
   const [closed, setClosed] = useState<Record<string, boolean>>({})
@@ -33,7 +42,7 @@ function PaletteBase({ catalog, loading, onStart, onPick }: Props) {
     const needle = query.trim().toLowerCase()
     const groups = new Map<string, CatalogStat[]>()
     for (const stat of catalog) {
-      if (needle && !stat.label.toLowerCase().includes(needle)) continue
+      if (needle && !(stat.name ?? stat.label).toLowerCase().includes(needle)) continue
       groups.set(stat.section, [...(groups.get(stat.section) ?? []), stat])
     }
     return [...groups.entries()].sort((a, b) => SECTION_ORDER.indexOf(a[0]) - SECTION_ORDER.indexOf(b[0]))
@@ -82,6 +91,10 @@ function PaletteBase({ catalog, loading, onStart, onPick }: Props) {
 
         {loading && <div className="spinner mx-auto my-4" />}
         {!loading && sections.length === 0 && <p className="text-xs text-gray-500">{t('liveHud.editor.no_stat')}</p>}
+        <button type="button" className="flex w-full items-center justify-center gap-1 rounded border border-dashed border-dark-100 px-2 py-1 text-xs text-gray-300 hover:border-primary-500" onClick={onCreateCustom}>
+          <Plus className="h-3 w-3" /> {t('customStats.new')}
+        </button>
+        {computing && <p className="text-[10px] text-gray-500">{t('customStats.computing')}</p>}
         {sections.map(([section, stats]) => {
           const isClosed = closed[section] && !query
           return (
@@ -99,16 +112,26 @@ function PaletteBase({ catalog, loading, onStart, onPick }: Props) {
                   {stats.map((stat) => {
                     const content = stat.section === 'meta' ? ({ kind: 'hands' } as CellContent) : statCell(stat.section, stat.label)
                     const ref = { section: stat.section, label: stat.label }
+                    const shown = stat.name ?? stat.label
+                    const customId = stat.section === 'custom' ? Number(stat.label) : null
                     return (
                       <div
                         key={stat.id}
                         className={itemClass}
                         title={stat.id}
                         onPointerDown={(e) => {
-                          if (e.button === 0) onStart({ kind: 'content', content, label: stat.label, stat: ref }, e, () => onPick(content, ref))
+                          if (e.button === 0) onStart({ kind: 'content', content, label: shown, stat: ref }, e, () => onPick(content, ref))
                         }}
                       >
-                        <span className="truncate">{stat.label}</span>
+                        <span className="min-w-0 flex-1 truncate">{shown}</span>
+                        {customId !== null && (
+                          <span className="ml-1 flex shrink-0 gap-1" onPointerDown={(e) => e.stopPropagation()}>
+                            {stat.ready === false && <span className="text-[10px] text-amber-300">{t('customStats.pending')}</span>}
+                            <button type="button" className="text-gray-500 hover:text-white" aria-label={t('customStats.duplicate')} onClick={() => onDuplicateCustom(customId)}><Copy className="h-3 w-3" /></button>
+                            <button type="button" className="text-gray-500 hover:text-white" aria-label={t('customStats.edit')} onClick={() => onEditCustom(customId)}><Pencil className="h-3 w-3" /></button>
+                            <button type="button" className="text-gray-500 hover:text-red-400" aria-label={t('customStats.delete')} onClick={() => onDeleteCustom(customId)}><Trash2 className="h-3 w-3" /></button>
+                          </span>
+                        )}
                       </div>
                     )
                   })}

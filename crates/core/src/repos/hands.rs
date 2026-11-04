@@ -4,6 +4,7 @@ use rusqlite::{params, Connection};
 use serde_json::Value;
 
 use crate::models::{HandAnalytics, ParsedHand, PlayerInfo};
+use crate::stats::custom::store as custom_stats;
 use crate::stats::store::{self, PlayerFacts};
 use crate::Result;
 
@@ -23,6 +24,7 @@ pub fn insert_batch(conn: &mut Connection, items: &[ImportedHand]) -> Result<usi
     }
     let tx = conn.transaction()?;
     let mut inserted = 0;
+    let custom = custom_stats::load_all(&tx)?;
     {
         let mut hand_stmt = tx.prepare_cached(
             "INSERT OR REPLACE INTO hands (
@@ -112,6 +114,19 @@ pub fn insert_batch(conn: &mut Connection, items: &[ImportedHand]) -> Result<usi
                 insert_player(&mut player_stmt, id, p, &item.analytics)?;
             }
             store::save_hand_flags(&tx, id, &item.flags)?;
+            if !custom.is_empty() {
+                let seats: Vec<_> = item
+                    .flags
+                    .iter()
+                    .map(|(name, facts)| {
+                        let seat = h.players.iter().find(|p| p.name == *name);
+                        (name.clone(), seat.map(|p| p.position.clone()).unwrap_or_default(), seat.map_or(0, |p| p.stack as i64), facts.flags)
+                    })
+                    .collect();
+                let streets = [h.preflop_action.as_str(), h.flop_action.as_str(), h.turn_action.as_str(), h.river_action.as_str()];
+                let hits = custom_stats::evaluate_hand(&custom, streets, h.blinds.as_deref().unwrap_or(""), h.player_count, &seats);
+                custom_stats::save_hits(&tx, id, &hits)?;
+            }
         }
     }
     tx.commit()?;
@@ -191,6 +206,7 @@ pub fn delete_all(conn: &mut Connection) -> Result<()> {
     let tx = conn.transaction()?;
     tx.execute_batch(
         "DELETE FROM hand_player_flags;
+         DELETE FROM custom_stat_hits;
          DELETE FROM player_hands;
          DELETE FROM hands;
          DELETE FROM players;

@@ -16,6 +16,7 @@ use serde_json::{json, Value};
 
 use crate::engines::actions::stack_bucket;
 use super::postflop_stats::PostflopTally;
+use crate::stats::custom::eval::{DEN_BIT, NUM_BIT};
 use crate::stats::flags::{Flag, Flags};
 use crate::stats::postflop::StreetCounts;
 use crate::stats::registry::{Denominator, Section, Segment, StatDef, STATS};
@@ -69,6 +70,8 @@ pub(crate) struct Row {
     pub(super) street_counts: StreetCounts,
     /// The stack in big blinds, worked out once (parsing the blinds is slow for a hot loop).
     stack_bb: Option<f64>,
+    /// Hits of the user's custom stats in this hand: `(stat id, bits)`, see `stats::custom::eval`.
+    custom: Option<Box<[(i64, u8)]>>,
 }
 
 impl Row {
@@ -76,7 +79,12 @@ impl Row {
     pub(crate) fn lean(player_count: i32, position: &str, flags: Flags, street_counts: u64, stack: i64, blinds: &str) -> Row {
         let sample = Sample { position: position.trim().to_uppercase(), blinds: blinds.to_string(), ..Sample::default() };
         let stack_bb = crate::engines::actions::stack_in_bb(stack as f64, blinds);
-        Row { sample, player_count, stack, flags, street_counts: StreetCounts(street_counts), stack_bb }
+        Row { sample, player_count, stack, flags, street_counts: StreetCounts(street_counts), stack_bb, custom: None }
+    }
+
+    pub(crate) fn with_custom(mut self, custom: Vec<(i64, u8)>) -> Row {
+        self.custom = (!custom.is_empty()).then(|| custom.into_boxed_slice());
+        self
     }
 
     /// The player's stack in big blinds, when known.
@@ -226,6 +234,8 @@ pub(crate) struct Accumulator {
     shove: HashMap<Flag, u64>,
     /// Rows counted by `consume_hud`, whatever they were counted for.
     rows: u64,
+    /// `(numerator, denominator)` of each custom stat, by stat id.
+    custom: HashMap<i64, (u64, u64)>,
 }
 
 /// What a HUD group needs counted: each part costs, and a group usually needs one.
@@ -234,6 +244,8 @@ pub(crate) enum HudPart {
     Preflop,
     Postflop,
     Shove,
+    /// The user's custom stats.
+    Custom,
     /// Only the number of rows.
     Rows,
 }
@@ -248,6 +260,7 @@ impl Accumulator {
             postflop: PostflopTally::new(),
             shove: HashMap::new(),
             rows: 0,
+            custom: HashMap::new(),
         }
     }
 
@@ -273,6 +286,13 @@ impl Accumulator {
                     }
                 }
             }
+            HudPart::Custom => {
+                for (id, bits) in row.custom.iter().flat_map(|hits| hits.iter()) {
+                    let entry = self.custom.entry(*id).or_default();
+                    entry.1 += u64::from(bits & DEN_BIT != 0);
+                    entry.0 += u64::from(bits & NUM_BIT != 0);
+                }
+            }
             HudPart::Rows => {}
         }
     }
@@ -285,6 +305,11 @@ impl Accumulator {
     /// `(numerator, denominator)` of a postflop figure (see `postflop_stats::figure_names`).
     pub(crate) fn postflop_counts(&self, name: &str) -> Option<(u64, u64)> {
         self.postflop.try_counts(name)
+    }
+
+    /// `(numerator, denominator)` of a custom stat; `(0, 0)` when no hand counted.
+    pub(crate) fn custom_counts(&self, id: i64) -> (u64, u64) {
+        self.custom.get(&id).copied().unwrap_or((0, 0))
     }
 
     /// `(numerator, denominator)` of a shove figure.
@@ -643,6 +668,7 @@ pub fn detailed_stats(conn: &Connection, q: &DetailedQuery) -> Result<Value> {
             flags: Flags::from_words([word(19)?, word(20)?, word(21)?, word(22)?]),
             street_counts: StreetCounts(word(23)?),
             stack_bb: None,
+            custom: None,
         };
         if row.sample.player_name.trim().is_empty() {
             continue;
@@ -656,7 +682,11 @@ pub fn detailed_stats(conn: &Connection, q: &DetailedQuery) -> Result<Value> {
     let stack_depths: Vec<Value> =
         buckets.iter().map(|(bucket, acc)| json!({ "stack": bucket, "data": acc.to_response(Value::Null) })).collect();
 
-    Ok(overall.to_response(Value::Array(stack_depths)))
+    let mut response = overall.to_response(Value::Array(stack_depths));
+    if let Some(object) = response.as_object_mut() {
+        object.insert("customStats".into(), crate::stats::custom::store::report(conn, &filters.join(" AND "), &params)?);
+    }
+    Ok(response)
 }
 
 #[cfg(test)]

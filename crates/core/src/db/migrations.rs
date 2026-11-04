@@ -39,6 +39,7 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611050001, "AddImportFiles", "202611050001_add_import_files.sql"),
     migration!(202611060001, "AddPlayerNotes", "202611060001_add_player_notes.sql"),
     migration!(202611070001, "NormalizeEntryCost", "202611070001_normalize_entry_cost.sql"),
+    migration!(202611080001, "AddCustomStats", "202611080001_add_custom_stats.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -106,7 +107,7 @@ mod tests {
         assert_eq!(run(&mut conn).unwrap(), MIGRATIONS.len());
 
         let t = names(&conn, "table");
-        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes"] {
+        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes", "custom_stats", "custom_stat_hits"] {
             assert!(t.iter().any(|n| n == expected), "table {expected} missing");
         }
         assert!(!t.iter().any(|n| n == "config"), "config must be dropped");
@@ -155,6 +156,8 @@ mod tests {
              DROP TABLE hand_player_flags;
              DROP TABLE import_files;
              DROP TABLE player_notes;
+             DROP TABLE custom_stats;
+             DROP TABLE custom_stat_hits;
              ALTER TABLE players DROP COLUMN alias_id;
              ALTER TABLE players DROP COLUMN room;
              ALTER TABLE hands DROP COLUMN position;
@@ -175,7 +178,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 9);
+        assert_eq!(run(&mut conn).unwrap(), 10);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))
