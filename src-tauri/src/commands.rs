@@ -6,9 +6,11 @@ use std::sync::Mutex;
 
 use serde_json::{json, Value};
 use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindow, WebviewWindowBuilder};
+use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_opener::OpenerExt;
 
 use crate::backend::BackendState;
+use crate::autoimport::{self, WatchedFolder};
 use crate::{api, backend, export, import, updater};
 
 const REPLAYER_BACKGROUND: tauri::window::Color = tauri::window::Color(14, 16, 20, 255);
@@ -60,6 +62,8 @@ pub async fn set_active_database(app: AppHandle, id: Value) -> Value {
         other => other.to_string(),
     };
     let endpoint = format!("/api/databases/{}/set-active", encode_segment(&id));
+    // The watcher must not write into a database that is being swapped out.
+    autoimport::pause(&app);
     let result = api::call(&app, "POST", &endpoint, Some(json!({}))).await;
 
     if result["success"].as_bool().unwrap_or(false) {
@@ -69,7 +73,29 @@ pub async fn set_active_database(app: AppHandle, id: Value) -> Value {
             let _ = tauri::async_runtime::spawn_blocking(move || backend::backfill(&handle, &backend)).await;
         }
     }
+    autoimport::reload(&app);
     result
+}
+
+#[tauri::command]
+pub fn auto_import_get(app: AppHandle) -> Value {
+    autoimport::get(&app)
+}
+
+#[tauri::command]
+pub fn auto_import_set(app: AppHandle, enabled: bool, folders: Vec<WatchedFolder>) -> Value {
+    autoimport::set(&app, enabled, folders)
+}
+
+/// Lets the user choose a history folder; `null` when the dialog is cancelled.
+#[tauri::command]
+pub async fn auto_import_pick_folder(app: AppHandle) -> Option<String> {
+    tauri::async_runtime::spawn_blocking(move || app.dialog().file().blocking_pick_folder())
+        .await
+        .ok()
+        .flatten()
+        .and_then(|p| p.into_path().ok())
+        .map(|p| p.to_string_lossy().into_owned())
 }
 
 #[tauri::command]

@@ -1,4 +1,5 @@
 mod api;
+mod autoimport;
 mod backend;
 mod commands;
 mod export;
@@ -22,6 +23,7 @@ pub fn run() {
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(backend::BackendState::default())
+        .manage(autoimport::AutoImportState::default())
         .manage(commands::ReplayerState::default())
         .manage(updater::UpdateState::default())
         .setup(|app| {
@@ -44,6 +46,7 @@ pub fn run() {
             log::info!("UserData: {}", backend::data_dir(&handle).display());
 
             backend::start(&handle);
+            autoimport::start(&handle);
 
             let failsafe_handle = handle.clone();
             tauri::async_runtime::spawn(async move {
@@ -74,6 +77,9 @@ pub fn run() {
             commands::export_data,
             commands::delete_all_hands,
             commands::set_active_database,
+            commands::auto_import_get,
+            commands::auto_import_set,
+            commands::auto_import_pick_folder,
             commands::open_logs_folder,
             commands::get_app_version,
             commands::frontend_log,
