@@ -16,6 +16,7 @@ export default function TopNav() {
     { name: t('navigation.charts'), href: '/charts' },
     { name: t('navigation.multipliers'), href: '/multipliers' },
     { name: t('navigation.players'), href: '/players' },
+    { name: t('navigation.hud'), href: '/hud' },
   ]
 
   return (

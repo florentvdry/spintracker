@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import clsx from 'clsx'
 import {
   Bell, Calendar, Check, ChevronDown, ChevronRight, Filter, Hash, RefreshCw, Search, Trash2, Trophy, Upload, Users, X,
@@ -29,6 +30,8 @@ function Dot() {
 
 export default function Header() {
   const { t } = useTranslation()
+  // The HUD page has nothing to filter: its figures come from every hand of the opponents.
+  const hideFilters = useLocation().pathname === '/hud'
   const app = useAppStore()
   const filters = useFilterStore()
   const updates = useUpdateStore()
@@ -166,6 +169,7 @@ export default function Header() {
   return (
     <header className="shrink-0 bg-dark-500 border-b border-dark-200 px-5 py-2">
       <div className="flex flex-wrap items-center gap-2">
+        <div className={hideFilters ? 'hidden' : 'contents'}>
         {/* Buy-in selector */}
         <div className="relative">
           <div className={clsx(pickerButton, 'min-w-[120px]')} onClick={() => setBuyInOpen(!buyInOpen)}>
@@ -358,6 +362,8 @@ export default function Header() {
               </div>
             </>
           )}
+        </div>
+
         </div>
 
         <div className="flex-1" />

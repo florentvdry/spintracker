@@ -18,6 +18,7 @@ const Charts = lazy(() => import('@/views/Charts'))
 const Players = lazy(() => import('@/views/Players'))
 const Stats = lazy(() => import('@/views/Stats'))
 const Multipliers = lazy(() => import('@/views/Multipliers'))
+const LiveHud = lazy(() => import('@/views/LiveHud'))
 const Settings = lazy(() => import('@/views/Settings'))
 
 export default function App() {
@@ -56,6 +57,7 @@ export default function App() {
               <Route path="/players" element={<Players />} />
               <Route path="/stats" element={<Stats />} />
               <Route path="/multipliers" element={<Multipliers />} />
+              <Route path="/hud" element={<LiveHud />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
           </Suspense>

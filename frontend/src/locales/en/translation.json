@@ -4,6 +4,7 @@
     "history": "Tournament History",
     "ranges": "Range Analyzer",
     "charts": "Charts",
+    "hud": "HUD",
     "players": "Players",
     "settings": "Settings",
     "stats": "Statistics",
@@ -95,6 +96,66 @@
       "importing": "Importing...",
       "paused": "Paused",
       "error": "Import error"
+    }
+  },
+  "liveHud": {
+    "tabs": { "live": "Live", "profiles": "Profiles", "placement": "Placement" },
+    "block": { "threeWay": "3-way", "headsUp": "Heads-up", "main": "Preflop" },
+    "variant": { "spin": "Spin", "compact": "Compact", "minimal": "Minimal" },
+    "variant_note": {
+      "spin": "Shows the three-handed and heads-up blocks at all times, whatever the hand being played.",
+      "compact": "VPIP, PFR, 3-Bet and Fold vs Steal.",
+      "minimal": "VPIP and PFR only; the rest stays in the popup."
+    },
+    "format": { "threeMax": "3 players", "headsUp": "Heads-up" },
+    "panel": { "first_hand_expected": "First hand expected" },
+    "preview": { "player": "Player {{n}}" },
+    "live": {
+      "status": "Status",
+      "on": "HUD on",
+      "off": "HUD off",
+      "off_by_default": "The HUD is off by default and only reads your own hand histories.",
+      "enable": "Enable the HUD",
+      "active_profile": "Active profile",
+      "tables": "Detected tables",
+      "no_detection": "Tables are not detected yet: the HUD cannot appear on a table in this version. Profiles and positions can already be prepared."
+    },
+    "profiles": {
+      "mine": "My profiles",
+      "new": "New",
+      "new_name": "New profile",
+      "export": "Export",
+      "export_note": "A profile file holds presentation settings only: no player names, notes or figures.",
+      "presentation": "Presentation",
+      "name": "Profile name",
+      "duplicate": "Duplicate",
+      "panel_stats": "Panel stats",
+      "col_block": "Block",
+      "col_stat": "Stat",
+      "col_abbr": "Abbr.",
+      "col_below": "Below",
+      "col_above": "Above",
+      "col_sample": "Min. sample",
+      "pick_stat": "Add a stat...",
+      "add_stat": "Add",
+      "thresholds_note": "Below and Above colour a figure when it leaves the range; a figure with fewer opportunities than the minimum sample is shown muted. Leave a limit empty for none.",
+      "preview": "Preview",
+      "opacity": "Opacity",
+      "size": "Size",
+      "show_hero": "Show my own panel",
+      "import_ok": "Profiles imported.",
+      "import_invalid": "This file is not a SpinTracker HUD profile file."
+    },
+    "placement": {
+      "title": "Panel positions",
+      "subtitle": "Drag the panels where they should sit on a table. Positions are saved per room, table size and seat.",
+      "room": "Room",
+      "format": "Table size",
+      "snap": "Snap to grid",
+      "reset": "Reset",
+      "hero": "Hero",
+      "seat": "Seat {{seat}}",
+      "note": "The example figures are made up. The seat is counted from the hero: +1 is the next player in turn order."
     }
   },
   "header": {

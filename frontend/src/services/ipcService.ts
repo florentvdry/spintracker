@@ -162,6 +162,9 @@ export const ipcService = {
   importHandHistory: () => command<ApiResult>('import_hand_history'),
   getAutoImport: () => command<ApiResult>('auto_import_get'),
   setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),
+  getHudCatalog: () => backend<{ stats: { section: string; label: string; id: string; fixedSeat: boolean }[] }>('GET', '/hud/catalog'),
+  getHudSettings: () => command<ApiResult>('hud_settings_get'),
+  setHudSettings: (settings: Json) => command<ApiResult>('hud_settings_set', { settings }),
   pickAutoImportFolder: async (): Promise<string | null> => {
     const path = await command<unknown>('auto_import_pick_folder')
     return typeof path === 'string' ? path : null

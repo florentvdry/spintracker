@@ -4,6 +4,7 @@
     "history": "Historique",
     "ranges": "Analyseur de ranges",
     "charts": "Graphiques",
+    "hud": "HUD",
     "players": "Joueurs",
     "settings": "Paramètres",
     "stats": "Statistiques",
@@ -95,6 +96,66 @@
       "importing": "Import en cours...",
       "paused": "En pause",
       "error": "Erreur d'import"
+    }
+  },
+  "liveHud": {
+    "tabs": { "live": "En direct", "profiles": "Profils", "placement": "Placement" },
+    "block": { "threeWay": "3-way", "headsUp": "Heads-up", "main": "Preflop" },
+    "variant": { "spin": "Spin", "compact": "Compact", "minimal": "Minimal" },
+    "variant_note": {
+      "spin": "Affiche toujours les blocs 3-way et heads-up, quelle que soit la main en cours.",
+      "compact": "VPIP, PFR, 3-Bet et Fold vs Steal.",
+      "minimal": "VPIP et PFR seulement ; le reste est dans le popup."
+    },
+    "format": { "threeMax": "3 joueurs", "headsUp": "Heads-up" },
+    "panel": { "first_hand_expected": "1re main attendue" },
+    "preview": { "player": "Joueur {{n}}" },
+    "live": {
+      "status": "État",
+      "on": "HUD actif",
+      "off": "HUD désactivé",
+      "off_by_default": "Le HUD est désactivé par défaut et ne lit que vos propres historiques de mains.",
+      "enable": "Activer le HUD",
+      "active_profile": "Profil actif",
+      "tables": "Tables détectées",
+      "no_detection": "Les tables ne sont pas encore détectées : le HUD ne peut pas apparaître sur une table dans cette version. Vous pouvez déjà préparer profils et positions."
+    },
+    "profiles": {
+      "mine": "Mes profils",
+      "new": "Nouveau",
+      "new_name": "Nouveau profil",
+      "export": "Exporter",
+      "export_note": "Un fichier de profil ne contient que des réglages de présentation : ni pseudos, ni notes, ni chiffres de joueurs.",
+      "presentation": "Présentation",
+      "name": "Nom du profil",
+      "duplicate": "Dupliquer",
+      "panel_stats": "Stats du panneau",
+      "col_block": "Bloc",
+      "col_stat": "Stat",
+      "col_abbr": "Abrév.",
+      "col_below": "Sous",
+      "col_above": "Au-dessus",
+      "col_sample": "Échantillon min.",
+      "pick_stat": "Ajouter une stat...",
+      "add_stat": "Ajouter",
+      "thresholds_note": "Sous et Au-dessus colorent un chiffre hors de la plage ; un chiffre avec moins d'occasions que l'échantillon minimum est grisé. Laissez une limite vide pour aucune.",
+      "preview": "Aperçu",
+      "opacity": "Opacité",
+      "size": "Taille",
+      "show_hero": "Afficher mon panneau",
+      "import_ok": "Profils importés.",
+      "import_invalid": "Ce fichier n'est pas un fichier de profils HUD SpinTracker."
+    },
+    "placement": {
+      "title": "Position des panneaux",
+      "subtitle": "Déplacez les panneaux là où ils doivent se placer sur une table. Les positions sont enregistrées par room, taille de table et siège.",
+      "room": "Room",
+      "format": "Taille de table",
+      "snap": "Aligner sur la grille",
+      "reset": "Réinitialiser",
+      "hero": "Hero",
+      "seat": "Siège {{seat}}",
+      "note": "Les chiffres d'exemple sont fictifs. Le siège est compté depuis le hero : +1 est le joueur suivant dans l'ordre de jeu."
     }
   },
   "header": {
