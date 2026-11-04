@@ -6,7 +6,7 @@ import { ipcService, type AutoImportFolder } from '@/services/ipcService'
 import { useAutoImportStore } from '@/stores/autoImportStore'
 import { useNotificationStore } from '@/stores/notificationStore'
 
-const WATCHABLE_ROOMS = ['Winamax'] as const
+const WATCHABLE_ROOMS = ['Winamax', 'Unibet'] as const
 
 export default function AutoImportCard() {
   const { t } = useTranslation()
@@ -69,6 +69,9 @@ export default function AutoImportCard() {
                 </button>
               </div>
             ))}
+            {room === 'Unibet' && folders.every((f) => f.room !== 'Unibet') && suggestions.every((s) => s.room !== 'Unibet') && (
+              <p className="mt-2 text-xs text-gray-500">{t('auto_import.unibet_hint')}</p>
+            )}
             {suggestions.filter((s) => s.room === room).map((folder) => (
               <div key={folder.path} className="mt-2 flex items-center gap-2 text-sm text-gray-400">
                 <span className="flex-1 truncate font-mono text-xs" title={folder.path}>{folder.path}</span>

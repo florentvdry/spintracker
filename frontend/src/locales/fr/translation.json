@@ -87,7 +87,8 @@
     "enable": "Importer les mains automatiquement",
     "choose_folder": "Choisir un dossier",
     "use_detected": "Utiliser ce dossier",
-    "manual_rooms": "Betclic et Unibet n'écrivent plus les historiques de mains sur votre ordinateur : ils ne peuvent pas être importés automatiquement. Exportez-les depuis le client de la salle puis utilisez le bouton Importer.",
+    "unibet_hint": "Sélectionnez le dossier où Unibet enregistre ses exports automatiques (Documents\\Unibet Poker\\History\\Exports\\Automatic).",
+    "manual_rooms": "Betclic n'écrit plus les historiques de mains sur votre ordinateur : ils ne peuvent pas être importés automatiquement. Exportez-les depuis le client Betclic puis utilisez le bouton Importer.",
     "state": {
       "off": "Import auto désactivé",
       "watching": "En surveillance",
