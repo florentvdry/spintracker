@@ -6,6 +6,7 @@ import {
   MAX_PROFILES,
   newProfileId,
   sanitizeSettings,
+  type HudDetection,
   type HudFormat,
   type HudProfile,
   type HudRoom,
@@ -23,6 +24,8 @@ interface LiveHudState {
   loaded: boolean
   load: () => Promise<void>
   setEnabled: (enabled: boolean) => void
+  setRoomEnabled: (room: HudRoom, enabled: boolean) => void
+  setDetection: (room: HudRoom, change: Partial<HudDetection>) => void
   setActiveProfile: (id: string) => void
   updateProfile: (id: string, change: (profile: HudProfile) => HudProfile) => void
   addProfile: (name: string) => string | null
@@ -55,6 +58,8 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
     },
 
     setEnabled: (enabled) => commit((s) => ({ ...s, enabled })),
+    setRoomEnabled: (room, enabled) => commit((s) => ({ ...s, rooms: { ...s.rooms, [room]: enabled } })),
+    setDetection: (room, change) => commit((s) => ({ ...s, detection: { ...s.detection, [room]: { ...s.detection[room], ...change } } })),
     setActiveProfile: (id) => commit((s) => (s.profiles.some((p) => p.id === id) ? { ...s, activeProfileId: id } : s)),
 
     updateProfile: (id, change) =>

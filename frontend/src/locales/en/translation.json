@@ -99,11 +99,26 @@
     }
   },
   "liveHud": {
-    "tabs": { "live": "Live", "profiles": "Profiles", "placement": "Placement" },
-    "block": { "threeWay": "3-way", "headsUp": "Heads-up", "main": "Preflop" },
-    "format": { "threeMax": "3 players", "headsUp": "Heads-up" },
-    "panel": { "first_hand_expected": "First hand expected" },
-    "preview": { "player": "Player {{n}}" },
+    "tabs": {
+      "live": "Live",
+      "profiles": "Profiles",
+      "placement": "Placement"
+    },
+    "block": {
+      "threeWay": "3-way",
+      "headsUp": "Heads-up",
+      "main": "Preflop"
+    },
+    "format": {
+      "threeMax": "3 players",
+      "headsUp": "Heads-up"
+    },
+    "panel": {
+      "first_hand_expected": "First hand expected"
+    },
+    "preview": {
+      "player": "Player {{n}}"
+    },
     "live": {
       "status": "Status",
       "on": "HUD on",
@@ -112,7 +127,31 @@
       "enable": "Enable the HUD",
       "active_profile": "Active profile",
       "tables": "Detected tables",
-      "no_detection": "Tables are not detected yet: the HUD cannot appear on a table in this version. Profiles and positions can already be prepared."
+      "no_detection": "Tables are not detected yet: the HUD cannot appear on a table in this version. Profiles and positions can already be prepared.",
+      "pause_switch": "HUD active",
+      "rooms_on": "Enabled on: {{rooms}}",
+      "no_room": "Not enabled on any room yet: accept the warning for a room in Settings.",
+      "table_mode": "Table mode: equity is not computed while a table is open. Hands imported meanwhile are completed once the tables are closed.",
+      "no_table": "No poker table found. Open a table of an enabled room; if your tables are not found, adjust the detection below.",
+      "not_enabled": "The HUD is not enabled on any room.",
+      "col_table": "Table",
+      "col_room": "Room",
+      "col_opponents": "Opponents",
+      "col_state": "State",
+      "unknown_opponents": "Unknown",
+      "state_shown": "HUD shown",
+      "state_hidden": "HUD hidden",
+      "state_waiting": "First hand expected",
+      "state_toAssociate": "To associate",
+      "associate": "Associate...",
+      "hide": "Hide",
+      "show": "Show",
+      "detection": "Table detection",
+      "detection_note": "The HUD looks for the windows of your room's program. Empty fields use a first guess; fill them in if your tables are not found.",
+      "detection_process": "Program name contains",
+      "detection_title": "Table window title pattern (regular expression)",
+      "detection_title_placeholder": "any title except the lobby's",
+      "detection_minutes": "A tournament is being played if a hand was written in the last (minutes)"
     },
     "profiles": {
       "mine": "My profiles",
@@ -154,6 +193,15 @@
       "hero": "Hero",
       "seat": "Seat {{seat}}",
       "note": "The example figures are made up. The seat is counted from the hero: +1 is the next player in turn order."
+    },
+    "activation": {
+      "title": "HUD on poker tables",
+      "subtitle": "Off by default, room by room.",
+      "enable_on": "Enable the HUD on {{room}}",
+      "enabled_on": "The HUD is enabled on {{room}}.",
+      "disable": "Disable",
+      "warning": "{{room}}'s rules require its approval for any program that is not on its list, and it may sanction accounts that use one. SpinTracker has no answer from {{room}} yet. You enable the HUD at your own risk.",
+      "accept": "I understand, enable the HUD on {{room}}"
     }
   },
   "header": {

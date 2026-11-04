@@ -12,6 +12,7 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { usePlayersStore } from '@/stores/playersStore'
 import { useUpdateStore } from '@/stores/updateStore'
 import AutoImportCard from './components/AutoImportCard'
+import HudActivationCard from './components/HudActivationCard'
 import SettingRow from './components/SettingRow'
 
 const STATUS_POLL_MS = 30_000
@@ -213,6 +214,8 @@ export default function Settings() {
       </Card>
 
       <AutoImportCard />
+
+      <HudActivationCard />
 
       <Card title={t('settings.database.multiple.title')} subtitle={t('settings.database.multiple.desc')}>
         <div className="space-y-4">

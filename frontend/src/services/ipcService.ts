@@ -168,6 +168,10 @@ export const ipcService = {
     return state && state.success === false ? null : state
   },
   setHudPanelRects: (rects: { x: number; y: number; width: number; height: number }[]) => command<ApiResult>('hud_set_panel_rects', { rects }),
+  getHudTables: () => command<ApiResult>('hud_tables'),
+  associateHudTable: (table: number, gameId: string) => command<ApiResult>('hud_associate', { table, gameId }),
+  setHudTableHidden: (table: number, hidden: boolean) => command<ApiResult>('hud_set_hidden', { table, hidden }),
+  getHudPlayers: (body: Json) => backend('POST', '/hud/players', body),
   getHudSettings: () => command<ApiResult>('hud_settings_get'),
   setHudSettings: (settings: Json) => command<ApiResult>('hud_settings_set', { settings }),
   pickAutoImportFolder: async (): Promise<string | null> => {

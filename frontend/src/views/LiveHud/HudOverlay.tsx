@@ -1,11 +1,11 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import HudPanel, { type HudFigures } from '@/components/livehud/HudPanel'
-import { ipcService } from '@/services/ipcService'
+import HudPanel, { type HudFigure, type HudFigures } from '@/components/livehud/HudPanel'
+import { ipcService, type Json } from '@/services/ipcService'
 import { useLiveHudStore } from '@/stores/liveHudStore'
-import { SEATS_BY_FORMAT, type HudFormat, type HudRoom } from './hudProfile'
+import { figureKey, requestsOf, SEATS_BY_FORMAT, type HudFormat, type HudRoom } from './hudProfile'
 import { previewFigures } from './previewData'
 
-/** One opponent's panel, as the shell sends it. */
+/** One opponent's panel. */
 export interface LivePanel {
   /** Seat relative to the hero: `+1`, `+2`. */
   seat: string
@@ -16,16 +16,59 @@ export interface LivePanel {
   waiting?: boolean
 }
 
-/** What a HUD window shows. `demo` fills it with example panels (development aid). */
+/** What the shell tells a HUD window about its table. `demo` fills it with example panels (development aid). */
 export interface HudPayload {
   demo?: boolean
   room?: HudRoom
   format?: HudFormat
-  panels?: LivePanel[]
+  hero?: string
+  players?: { seat: string; name: string }[]
+  /** Changes with every hand of the table. */
+  lastHandAt?: string
 }
 
 const DEMO_ROOM: HudRoom = 'Winamax'
 const DEMO_FORMAT: HudFormat = 'threeMax'
+
+/** Figures of every player of a table, read from the backend. */
+function useLivePanels(payload: HudPayload | null, layoutKey: string, requests: ReturnType<typeof requestsOf>): LivePanel[] {
+  const [panels, setPanels] = useState<LivePanel[]>([])
+  const seats = payload?.players
+  const room = payload?.room
+  const hero = payload?.hero
+  const lastHandAt = payload?.lastHandAt
+
+  useEffect(() => {
+    if (!seats || !room || !hero) {
+      setPanels([])
+      return
+    }
+    let cancelled = false
+    void ipcService
+      .getHudPlayers({ room, heroName: hero, players: seats.map((p) => p.name), stats: requests })
+      .then((result) => {
+        if (cancelled || !result.success) return
+        const answers: Json[] = result.data?.players ?? []
+        setPanels(
+          seats.map((seat) => {
+            const answer = answers.find((a) => a.name === seat.name)
+            const figures: HudFigures = {}
+            for (const stat of (answer?.stats ?? []) as Json[]) {
+              const figure: HudFigure = { pct: stat.pct ?? null, num: stat.num ?? 0, den: stat.den ?? 0 }
+              figures[figureKey(stat.section, stat.label, stat.column ?? null, stat.bucket ?? null)] = figure
+            }
+            return { seat: seat.seat, name: seat.name, figures, tag: answer?.tag || undefined, waiting: !answer || answer.hands === 0 }
+          }),
+        )
+      })
+    return () => {
+      cancelled = true
+    }
+    // The figures are read again with each hand and when the layout changes.
+  }, [seats, room, hero, lastHandAt, layoutKey, requests])
+
+  return panels
+}
 
 /** The page of a HUD window: the panels of one table, at their saved positions. */
 export default function HudOverlay() {
@@ -54,13 +97,16 @@ export default function HudOverlay() {
   const format = payload?.format ?? DEMO_FORMAT
   const layout = profile.layouts[format]
   const placements = settings.placements[room][format]
+  const requests = useMemo(() => requestsOf(layout), [layout])
+  const live = useLivePanels(payload, `${profile.id}:${format}`, requests)
 
   const panels = useMemo<LivePanel[]>(() => {
-    if (payload?.panels) return payload.panels
-    if (!payload?.demo) return []
-    const figures = previewFigures(layout)
-    return SEATS_BY_FORMAT[format].map((seat, i) => ({ seat, name: `Player ${i + 1}`, figures }))
-  }, [payload, layout, format])
+    if (payload?.demo) {
+      const figures = previewFigures(layout)
+      return SEATS_BY_FORMAT[format].map((seat, i) => ({ seat, name: `Player ${i + 1}`, figures }))
+    }
+    return live
+  }, [payload, layout, format, live])
 
   // The shell lets clicks through everywhere except on the panels, so it needs their rectangles.
   useLayoutEffect(() => {
