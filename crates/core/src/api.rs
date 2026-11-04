@@ -366,7 +366,7 @@ impl Backend {
             ("GET", []) => Response::data(Value::Array(self.registry.get_all().iter().map(database_json).collect())),
             ("GET", ["active"]) => Response::data(self.registry.get_active().map_or(Value::Null, |d| database_json(&d))),
             ("POST", []) => {
-                let name = r.body_str("name").unwrap_or_else(|| "Nouvelle base de données".into());
+                let name = r.body_str("name").unwrap_or_else(|| "New database".into());
                 Response::data(database_json(&self.registry.create(&name)?))
             }
             ("POST", [id, "set-active"]) => {

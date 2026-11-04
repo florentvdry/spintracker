@@ -54,20 +54,20 @@ const numericHudValue = (value: Json) => {
 
 const inferHudDefinition = (label: Json = '') => {
   const text = String(label).trim()
-  if (!text) return 'Statistique de frequence exprimee en pourcentage pour le spot selectionne.'
-  if (text.includes('Hands') || text === 'HH' || text.startsWith('Hv')) return 'Nombre d opportunites observees dans ce spot.'
-  if (text.includes('Fold') || text.startsWith('Fv') || text === 'XF') return 'Pourcentage de fois ou le joueur abandonne dans cette situation.'
-  if (text.includes('Call') || text.startsWith('Cv') || text === 'XC') return 'Pourcentage de fois ou le joueur paie dans cette situation.'
-  if (text.includes('Raise') || text.includes('3Bet') || text === 'XR') return 'Pourcentage de fois ou le joueur relance ou sur-relance dans cette situation.'
-  if (text.includes('Limp') || text === 'L') return 'Pourcentage de fois ou le joueur entre dans le pot en limp ou complete.'
-  if (text.includes('ISO') || text.startsWith('IS')) return 'Pourcentage de fois ou le joueur relance pour isoler un limper.'
-  if (text.includes('CBet')) return 'Continuation bet: mise du relanceur preflop sur la street indiquee.'
-  if (text.includes('Donk')) return 'Donk bet: mise hors initiative avant l action du relanceur preflop.'
-  if (text.includes('Probe')) return 'Probe bet: mise apres que le relanceur preflop a manque son continuation bet.'
-  if (text.includes('Delay')) return 'Delayed c-bet: mise retardee apres avoir check la street precedente.'
-  if (text.includes('Shove') || text === 'OS' || text === 'COS') return 'Frequence liee aux decisions tapis preflop dans ce spot.'
-  if (text.includes('Agg')) return 'Aggression frequency: proportion de bets et raises parmi les decisions postflop.'
-  return `Frequence ${text}: pourcentage d occurrences de cette action dans le spot selectionne.`
+  if (!text) return 'Frequency statistic, as a percentage, for the selected spot.'
+  if (text.includes('Hands') || text === 'HH' || text.startsWith('Hv')) return 'Number of opportunities observed in this spot.'
+  if (text.includes('Fold') || text.startsWith('Fv') || text === 'XF') return 'How often the player folds in this situation.'
+  if (text.includes('Call') || text.startsWith('Cv') || text === 'XC') return 'How often the player calls in this situation.'
+  if (text.includes('Raise') || text.includes('3Bet') || text === 'XR') return 'How often the player raises or re-raises in this situation.'
+  if (text.includes('Limp') || text === 'L') return 'How often the player enters the pot by limping or completing.'
+  if (text.includes('ISO') || text.startsWith('IS')) return 'How often the player raises to isolate a limper.'
+  if (text.includes('CBet')) return 'Continuation bet: bet by the preflop raiser on the indicated street.'
+  if (text.includes('Donk')) return 'Donk bet: bet without the initiative before the preflop raiser acts.'
+  if (text.includes('Probe')) return 'Probe bet: bet after the preflop raiser missed the continuation bet.'
+  if (text.includes('Delay')) return 'Delayed c-bet: bet on a later street after checking the previous one.'
+  if (text.includes('Shove') || text === 'OS' || text === 'COS') return 'Frequency of the preflop all-in decisions in this spot.'
+  if (text.includes('Agg')) return 'Aggression frequency: share of bets and raises among postflop decisions.'
+  return `Frequency ${text}: how often this action occurs in the selected spot.`
 }
 
 export const hudTone = (label: Json, value: Json) => {

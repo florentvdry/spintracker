@@ -76,11 +76,11 @@ export default function Multipliers() {
 
         <div className="flex items-center gap-4 bg-dark-500/50 p-2 rounded-lg border border-dark-100/20">
           <div className="px-4 py-2 text-center border-r border-dark-100/20">
-            <span className="block text-[10px] font-black text-dark-100 uppercase tracking-widest leading-none mb-1">Total Games</span>
+            <span className="block text-[10px] font-black text-dark-100 uppercase tracking-widest leading-none mb-1">{t('multipliers.total_games')}</span>
             <span className="text-lg font-black text-white leading-none">{totalGames}</span>
           </div>
           <div className="px-4 py-2 text-center">
-            <span className="block text-[10px] font-black text-dark-100 uppercase tracking-widest leading-none mb-1">Global Win Rate</span>
+            <span className="block text-[10px] font-black text-dark-100 uppercase tracking-widest leading-none mb-1">{t('multipliers.global_win_rate')}</span>
             <span className={clsx('text-lg font-black leading-none', globalWinRate >= GOOD_WIN_RATE ? 'text-profit-positive' : 'text-yellow-400')}>
               {globalWinRate.toFixed(2)}%
             </span>
@@ -147,7 +147,7 @@ export default function Multipliers() {
                     <td className="px-6 py-5 text-right">
                       <div className="flex flex-col items-end gap-1">
                         <span className={clsx('text-xl font-black', winRateColor(s.winPercentage))}>{s.winPercentage.toFixed(2)}%</span>
-                        <span className="text-[10px] text-dark-100 font-black uppercase tracking-tighter opacity-60">Success rate</span>
+                        <span className="text-[10px] text-dark-100 font-black uppercase tracking-tighter opacity-60">{t('multipliers.success_rate')}</span>
                       </div>
                     </td>
                   </tr>
