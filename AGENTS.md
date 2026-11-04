@@ -44,7 +44,7 @@ npm run setup           # full install + backend build
 npm run dev             # desktop dev (Tauri + Vite + backend)
 npm run frontend:dev    # frontend alone in a browser (no Rust shell)
 npm run build           # Windows build (installer)
-cargo test -p spintracker-core --release
+cargo test -p spintracker-core
 npm run frontend:test   # Vitest, pure frontend modules
 ```
 

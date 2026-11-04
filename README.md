@@ -106,7 +106,7 @@ npm run dev            # Tauri desktop app: Vite + Rust (the backend runs inside
 | `npm run frontend:build` | Type-check and build the frontend |
 | `npm run frontend:test` | Run the frontend unit tests (Vitest, pure modules such as the HUD model) |
 | `npm run build` | Build the Windows installer |
-| `cargo test -p spintracker-core --release` | Run backend tests |
+| `cargo test -p spintracker-core` | Run backend tests |
 
 ## Architecture
 
