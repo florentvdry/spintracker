@@ -223,13 +223,27 @@ pub fn open_replayer(app: AppHandle, state: tauri::State<ReplayerState>, data: V
     let label = format!("replayer-{}", state.counter.fetch_add(1, Ordering::Relaxed));
     state.data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).insert(label.clone(), data);
 
-    WebviewWindowBuilder::new(&app, &label, WebviewUrl::App("replayer.html".into()))
+    let built = WebviewWindowBuilder::new(&app, &label, WebviewUrl::App("replayer.html".into()))
         .title("SpinTracker Replayer")
         .inner_size(1000.0, 700.0)
         .background_color(REPLAYER_BACKGROUND)
-        .build()
-        .map_err(|e| e.to_string())?;
-    Ok(())
+        .build();
+    match built {
+        Ok(window) => {
+            // The hand is only needed while its window lives.
+            let handle = app.clone();
+            window.on_window_event(move |event| {
+                if matches!(event, tauri::WindowEvent::Destroyed) {
+                    handle.state::<ReplayerState>().data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).remove(&label);
+                }
+            });
+            Ok(())
+        }
+        Err(err) => {
+            state.data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).remove(&label);
+            Err(err.to_string())
+        }
+    }
 }
 
 #[tauri::command]
