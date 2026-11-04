@@ -215,3 +215,36 @@ fn a_summary_reported_by_the_watcher_finishes_its_tournament_once() {
     assert!(!importer.needs_live_import(&summary).unwrap(), "the summary is remembered");
     assert_eq!(snapshot(&db), full_import_snapshot());
 }
+
+#[test]
+fn a_unibet_file_written_in_pieces_gives_the_same_result_as_a_full_import() {
+    let unibet = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/exemple-data/Unibet");
+    let history = "H20260513 T83605156 €10 Power Spin €9.30 + €0.70 No Limit Holdem.txt";
+    let summary = "TS20260513 T83605156 No Limit Holdem €9.30 + €0.70.txt";
+
+    let expected = {
+        let (_dir, db, importer) = importer();
+        importer.import_file(&unibet.join(history), &AtomicBool::new(false), |_| {}).unwrap();
+        snapshot(&db)
+    };
+
+    let dir = tempfile::tempdir().unwrap();
+    std::fs::copy(unibet.join(summary), dir.path().join(summary)).unwrap();
+    let text = std::fs::read_to_string(unibet.join(history)).unwrap();
+    let target = dir.path().join(history);
+    let (_db_dir, db, importer) = importer();
+
+    let step = text.len() / 9 + 1;
+    for len in (step..text.len()).step_by(step) {
+        let mut end = len;
+        while !text.is_char_boundary(end) {
+            end -= 1;
+        }
+        std::fs::write(&target, &text.as_bytes()[..end]).unwrap();
+        importer.import_live(&target, LiveMode::Resume).unwrap();
+    }
+    std::fs::write(&target, &text).unwrap();
+    let last = importer.import_live(&target, LiveMode::Resume).unwrap();
+    assert!(!last.pending);
+    assert_same(&snapshot(&db), &expected);
+}
