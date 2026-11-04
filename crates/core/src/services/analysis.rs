@@ -766,15 +766,6 @@ pub fn range_breakdown(conn: &Connection, filters: &AnalysisFilters) -> Result<V
     Ok(Value::Object(ranges.into_iter().collect()))
 }
 
-/// Placeholder range kept for the API (it never depended on the data).
-pub fn analyze_range(position: Option<&str>, action: Option<&str>, stack: i64) -> Value {
-    json!({
-        "position": position.unwrap_or("BTN"), "action": action.unwrap_or("Open"), "stack": stack,
-        "range": "22+, A2s+, K5s+, Q8s+, J8s+, T8s+, 98s, A7o+, KTo+, QTo+, JTo",
-        "vpip": 24.5, "pfr": 18.2,
-    })
-}
-
 // ---------------------------------------------------------------------------------------------
 // Replayer
 // ---------------------------------------------------------------------------------------------

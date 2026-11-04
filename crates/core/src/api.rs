@@ -122,7 +122,6 @@ impl Backend {
 
     fn route(&self, r: &Request, segments: &[&str]) -> Result<Option<Response>> {
         let conn = || self.db.conn();
-        let get = r.method == "GET";
         let post = r.method == "POST";
 
         let response = match (r.method, segments) {
@@ -291,13 +290,9 @@ impl Backend {
             }
 
             // --- Analysis and equity
-            ("POST", ["analysis", "stats"]) => Response::data(analysis::analysis_stats(&*conn()?, &r.body_as::<AnalysisFilters>()?)?),
-            ("POST", ["analysis", "hands"]) => Response::data(analysis::analysis_hands(&*conn()?, &r.body_as::<AnalysisHandsRequest>()?)?),
-            ("POST", ["analysis", "range-breakdown"]) => Response::data(analysis::range_breakdown(&*conn()?, &r.body_as::<AnalysisFilters>()?)?),
-            ("POST", ["analyze", "range"]) => {
-                let stack = r.body_field::<i64>("stack").unwrap_or(20);
-                Response::data(analysis::analyze_range(r.body_str("position").as_deref(), r.body_str("action").as_deref(), stack))
-            }
+            ("POST", ["analysis", "stats"]) => Response::data(analysis::analysis_stats(&*conn()?, &r.body_as_camel::<AnalysisFilters>()?)?),
+            ("POST", ["analysis", "hands"]) => Response::data(analysis::analysis_hands(&*conn()?, &r.body_as_camel::<AnalysisHandsRequest>()?)?),
+            ("POST", ["analysis", "range-breakdown"]) => Response::data(analysis::range_breakdown(&*conn()?, &r.body_as_camel::<AnalysisFilters>()?)?),
             ("GET", ["analysis", "replayer", id]) => match analysis::hand_replay(&*conn()?, id, r.query_str("heroName").as_deref())? {
                 Some(replay) => Response::data(replay),
                 None => Response::failure(404, "Hand not found"),
@@ -308,10 +303,7 @@ impl Backend {
             // --- Databases
             (_, ["api", "databases", rest @ ..]) => return self.databases(r, rest),
 
-            _ => {
-                let _ = get;
-                return Ok(None);
-            }
+            _ => return Ok(None),
         };
         Ok(Some(response))
     }
@@ -442,6 +434,13 @@ impl Request<'_> {
         Ok(serde_json::from_value(self.body.clone().unwrap_or_else(|| json!({})))?)
     }
 
+    /// Like [`Request::body_as`], accepting PascalCase keys too: the analysis screens saved their
+    /// filters that way (the former backend read JSON keys case-insensitively).
+    fn body_as_camel<T: DeserializeOwned>(&self) -> Result<T> {
+        let body = self.body.clone().unwrap_or_else(|| json!({}));
+        Ok(serde_json::from_value(camelize_keys(body))?)
+    }
+
     /// The body as `T`, or `T::default()` without one.
     fn body_or_default<T: DeserializeOwned + Default>(&self) -> Result<T> {
         match &self.body {
@@ -468,6 +467,20 @@ impl Request<'_> {
         let limit = self.query_i64("limit").map_or(DEFAULT_SESSION_LIMIT, |l| l.max(0) as usize);
         (limit, stats_query_from_query(self.query))
     }
+}
+
+/// Lower-cases the first letter of every top-level key ("HeroName" -> "heroName"). A key that is
+/// already camelCase wins over its PascalCase twin.
+fn camelize_keys(value: Value) -> Value {
+    let Value::Object(map) = value else { return value };
+    let (camel, pascal): (Vec<_>, Vec<_>) = map.into_iter().partition(|(k, _)| !k.chars().next().is_some_and(char::is_uppercase));
+    let mut out: serde_json::Map<String, Value> = camel.into_iter().collect();
+    for (key, v) in pascal {
+        let mut chars = key.chars();
+        let first = chars.next().map(|c| c.to_lowercase().collect::<String>()).unwrap_or_default();
+        out.entry(first + chars.as_str()).or_insert(v);
+    }
+    Value::Object(out)
 }
 
 fn q(query: &HashMap<String, String>, key: &str) -> Option<String> {
@@ -572,6 +585,16 @@ mod tests {
         assert_eq!(query["flag"], "");
         assert_eq!(percent_decode("100%"), "100%");
         assert_eq!(percent_decode("%e2%82%ac"), "€");
+    }
+
+    #[test]
+    fn pascal_case_filters_are_read_like_camel_case_ones() {
+        let body = json!({ "HeroName": "Hero", "PlayerCount": 3, "MinStackBB": 5.0, "heroName": "Kept", "Positions": ["SB"] });
+        let filters: AnalysisFilters = serde_json::from_value(camelize_keys(body)).unwrap();
+        assert_eq!(filters.hero_name.as_deref(), Some("Kept"), "camelCase wins over its PascalCase twin");
+        assert_eq!(filters.player_count, Some(3));
+        assert_eq!(filters.min_stack_bb, Some(5.0));
+        assert_eq!(filters.positions, Some(vec!["SB".to_string()]));
     }
 
     fn backend() -> (tempfile::TempDir, Backend) {
