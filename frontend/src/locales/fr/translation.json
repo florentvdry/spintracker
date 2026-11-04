@@ -166,7 +166,8 @@
     },
     "placement": {
       "format": "Taille de table",
-      "snap": "Aligner sur la grille"
+      "snap": "Placement magnétique",
+      "snap_hint": "Quand vous déplacez une grille, elle se cale sur un pas régulier et s'accroche aux bords des autres grilles. Maintenez Alt pour la déplacer librement."
     },
     "editor": {
       "profile": "Profil",

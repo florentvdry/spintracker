@@ -129,7 +129,7 @@ export default function LiveStatus() {
             <span className="font-medium text-white">{settings.enabled ? t('liveHud.live.on') : t('liveHud.live.off')}</span>
             <span className="text-gray-400">{settings.enabled ? t('liveHud.live.tables_shown', { count }) : t('liveHud.live.pause_switch')}</span>
           </label>
-          <label className="flex items-center gap-2 text-xs text-gray-300" title={t('liveHud.live.move_hint')}>
+          <label className="flex items-center gap-2 text-xs text-gray-300" title={t('liveHud.placement.snap_hint')}>
             <input type="checkbox" checked={settings.snapToGrid} onChange={(e) => setSnapToGrid(e.target.checked)} />
             {t('liveHud.placement.snap')}
           </label>

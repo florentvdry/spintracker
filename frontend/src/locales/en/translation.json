@@ -166,7 +166,8 @@
     },
     "placement": {
       "format": "Table size",
-      "snap": "Snap to grid"
+      "snap": "Magnetic placement",
+      "snap_hint": "While you drag a grid, it lands on a regular step and sticks to the edges of the other grids. Hold Alt to move it freely."
     },
     "editor": {
       "profile": "Profile",
