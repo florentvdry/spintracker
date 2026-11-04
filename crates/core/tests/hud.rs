@@ -2,10 +2,14 @@
 
 use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicBool;
+use std::sync::Mutex;
 use std::time::Instant;
 
 use serde_json::{json, Value};
 use spintracker_core::api::Backend;
+
+/// The timing tests run one at a time: two of them sharing the processor would measure each other.
+static TIMING: Mutex<()> = Mutex::new(());
 
 const HERO: &str = "Nelfrot-YT";
 const OPPONENTS: [&str; 2] = ["riickyy777", "CG_Boss2336"];
@@ -188,6 +192,7 @@ fn backend_with_ten_thousand_hands() -> (tempfile::TempDir, Backend) {
 
 #[test]
 fn a_player_with_ten_thousand_hands_is_answered_quickly() {
+    let _alone = TIMING.lock().unwrap_or_else(|e| e.into_inner());
     let (_dir, backend) = backend_with_ten_thousand_hands();
 
     // A heads-up layout asked in one go: two stack-depth tables of eight figures over seven depths.
@@ -345,6 +350,7 @@ fn a_tournament_being_played_is_listed_with_the_seats_around_the_hero() {
 
 #[test]
 fn a_full_grid_layout_of_a_thousand_figures_is_answered_quickly() {
+    let _alone = TIMING.lock().unwrap_or_else(|e| e.into_inner());
     let (_dir, backend) = backend_with_ten_thousand_hands();
     let buckets = ["13+", "11-13", "9-11", "7-9", "5-7", "3-5", "0-3"];
     let columns = ["sb_hu", "bb_hu", "btn", "sb_3w", "bb_3w"];
