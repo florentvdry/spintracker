@@ -5,7 +5,7 @@
 //! in the three room formats ("Name: action", "Name action", with or without a timestamp).
 
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 use chrono::NaiveDateTime;
 use rusqlite::types::Value as SqlValue;
@@ -440,26 +440,28 @@ fn matches_situation_id(hand: &AnalysisHand, situation_id: &str, positions: Opti
     true
 }
 
-fn opponent_is_reg(conn: &Connection, hand: &AnalysisHand, hero: Option<&str>) -> Result<bool> {
-    let Some(hero) = hero.or(hand.hero_name.as_deref()).filter(|h| !h.is_empty()) else { return Ok(false) };
-    for pair in hand.player_positions.split('|') {
-        let parts: Vec<&str> = pair.split(':').collect();
-        if parts.len() < 2 {
-            continue;
-        }
-        let name = parts[0].trim();
-        if eq_ic(name, hero) {
-            continue;
-        }
-        // Only the first other player decides.
-        let reg = conn.query_row("SELECT is_reg FROM players WHERE name = ?1", [name], |r| r.get::<_, Option<i64>>(0)).ok().flatten();
-        return Ok(reg == Some(1));
-    }
-    Ok(false)
+/// Lower-cased names of the regulars, read once for a whole analysis.
+fn regular_players(conn: &Connection) -> Result<HashSet<String>> {
+    let mut stmt = conn.prepare("SELECT name FROM players WHERE is_reg = 1")?;
+    let names = stmt.query_map([], |r| r.get::<_, String>(0))?.collect::<std::result::Result<Vec<_>, _>>()?;
+    Ok(names.into_iter().map(|n| n.to_lowercase()).collect())
+}
+
+/// Whether at least one opponent of the hero in this hand is a regular.
+fn opponent_is_reg(regulars: &HashSet<String>, hand: &AnalysisHand, hero: Option<&str>) -> bool {
+    let Some(hero) = hero.or(hand.hero_name.as_deref()).filter(|h| !h.is_empty()) else { return false };
+    hand.player_positions
+        .split('|')
+        .filter_map(|pair| pair.split(':').next())
+        .map(str::trim)
+        .filter(|name| !name.is_empty() && !eq_ic(name, hero))
+        .any(|name| regulars.contains(&name.to_lowercase()))
 }
 
 fn filter_hands(conn: &Connection, hands: Vec<AnalysisHand>, f: &AnalysisFilters) -> Result<Vec<AnalysisHand>> {
     let mut out = Vec::new();
+    let opponent_kind = non_empty(&f.opponent_type).filter(|k| *k != "all");
+    let regulars = if opponent_kind.is_some() { regular_players(conn)? } else { HashSet::new() };
     'hands: for hand in hands {
         let hero = hand.hero_name.clone().or_else(|| f.hero_name.clone());
 
@@ -472,8 +474,8 @@ fn filter_hands(conn: &Connection, hands: Vec<AnalysisHand>, f: &AnalysisFilters
                 }
             }
         }
-        if let Some(kind) = non_empty(&f.opponent_type).filter(|k| *k != "all") {
-            let reg = opponent_is_reg(conn, &hand, hero.as_deref())?;
+        if let Some(kind) = opponent_kind {
+            let reg = opponent_is_reg(&regulars, &hand, hero.as_deref());
             if (kind == "reg" && !reg) || (kind == "fish" && reg) {
                 continue;
             }
