@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = ["crates/core", "src-tauri"]
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
+
+# Exact equity enumerates millions of boards: keep the core crate fast in debug builds and tests.
+[profile.dev.package.spintracker-core]
+opt-level = 3

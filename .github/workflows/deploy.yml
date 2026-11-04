@@ -65,27 +65,67 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            frontend/package-lock.json
 
-      - uses: actions/setup-dotnet@v4
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
         with:
-          dotnet-version: 8.0.x
+          workspaces: .
 
       - name: Version de l'application
-        run: npm version "$VERSION" --no-git-tag-version --allow-same-version
+        run: |
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+          # tauri.conf.json reads the version from package.json; keep Cargo.toml in sync.
+          sed -i -E "0,/^version = \".*\"/s//version = \"$VERSION\"/" src-tauri/Cargo.toml
 
       - name: Dependances
         run: |
-          npm ci
-          cd frontend-vue && npm ci
+          npm ci --ignore-scripts
+          npm --prefix frontend ci
 
-      - name: Build frontend
-        run: npm run react:build
+      - name: Installeur Tauri (frontend + app, signe pour l'updater)
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npx tauri build
 
-      - name: Build backend
-        run: npm run backend:build
+      - name: Manifestes d'update (Tauri latest.json + passerelle electron-updater latest.yml)
+        run: |
+          bundle="target/release/bundle/nsis"
+          installer="$(ls "$bundle"/*-setup.exe | head -n1)"
+          name="$(basename "$installer")"
+          url="https://github.com/${GITHUB_REPOSITORY}/releases/download/v$VERSION/$name"
+          now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-      - name: Installeur (sans publication)
-        run: npx electron-builder --win --publish never
+          # Tauri updater manifest (new clients).
+          node -e '
+            const fs = require("fs");
+            const [, , version, url, sigPath, now] = process.argv;
+            const signature = fs.readFileSync(sigPath, "utf8").trim();
+            fs.writeFileSync("latest.json", JSON.stringify({
+              version, notes: "", pub_date: now,
+              platforms: { "windows-x86_64": { signature, url } }
+            }, null, 2));
+          ' "$VERSION" "$url" "$installer.sig" "$now"
+
+          # electron-updater manifest: lets installed Electron builds discover and download
+          # this installer. Best effort bridge, to be removed once users have migrated.
+          sha512="$(openssl dgst -sha512 -binary "$installer" | openssl base64 -A)"
+          size="$(stat -c %s "$installer")"
+          cat > latest.yml <<YML
+          version: $VERSION
+          files:
+            - url: $name
+              sha512: $sha512
+              size: $size
+          path: $name
+          sha512: $sha512
+          releaseDate: '$now'
+          YML
+          cat latest.json latest.yml
 
       - name: Notes de release
         run: |
@@ -126,6 +166,7 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "SpinTracker v$VERSION" \
             --notes-file release-notes.md \
-            "dist/SpinTracker-Setup-$VERSION.exe" \
-            "dist/SpinTracker-Setup-$VERSION.exe.blockmap" \
-            dist/latest.yml
+            target/release/bundle/nsis/*-setup.exe \
+            target/release/bundle/nsis/*-setup.exe.sig \
+            latest.json \
+            latest.yml

@@ -17,8 +17,8 @@
 ## Checklist
 
 - [ ] PR title follows Conventional Commits (`feat(scope): description`)
-- [ ] `dotnet build` and backend tests pass
-- [ ] `npm run react:build` passes
+- [ ] `cargo test -p spintracker-core` passes
+- [ ] `npm run frontend:build` and `cargo check -p spintracker` pass
 - [ ] New or fixed behavior is covered by a test (required for parser fixes)
 - [ ] UI strings added to **every** locale file (English first)
 - [ ] Commit subjects describe the user-visible change (release notes come from them)

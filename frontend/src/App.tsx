@@ -1,0 +1,65 @@
+import { lazy, Suspense, useEffect } from 'react'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import Layout from '@/components/layout/Layout'
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
+import NotificationContainer from '@/components/ui/NotificationContainer'
+import ProgressModal from '@/components/ui/ProgressModal'
+import UpdateModal from '@/components/ui/UpdateModal'
+import { useAppStore } from '@/stores/appStore'
+import { useFilterStore } from '@/stores/filterStore'
+import { useUpdateStore } from '@/stores/updateStore'
+
+const Dashboard = lazy(() => import('@/views/Dashboard'))
+const HandHistory = lazy(() => import('@/views/HandHistory'))
+const Analysis = lazy(() => import('@/views/Analysis'))
+const RangeResearch = lazy(() => import('@/views/RangeResearch'))
+const Charts = lazy(() => import('@/views/Charts'))
+const Players = lazy(() => import('@/views/Players'))
+const Stats = lazy(() => import('@/views/Stats'))
+const Multipliers = lazy(() => import('@/views/Multipliers'))
+const Settings = lazy(() => import('@/views/Settings'))
+
+export default function App() {
+  const initialize = useAppStore((s) => s.initialize)
+  const refreshAll = useAppStore((s) => s.refreshAll)
+  const isInitialized = useAppStore((s) => s.isInitialized)
+  const initializeUpdates = useUpdateStore((s) => s.initialize)
+  const { pathname } = useLocation()
+
+  const { heroName, dateRange, customDateFrom, customDateTo, buyIn, selectedSession, hasHydrated } = useFilterStore()
+
+  useEffect(() => {
+    void initialize()
+    return initializeUpdates()
+  }, [initialize, initializeUpdates])
+
+  // Any change to the global filters reloads the shared dashboard data.
+  useEffect(() => {
+    if (hasHydrated && isInitialized && heroName) void refreshAll()
+  }, [heroName, dateRange, customDateFrom, customDateTo, buyIn, selectedSession, hasHydrated, isInitialized, refreshAll])
+
+  return (
+    <>
+      <Layout>
+        <ErrorBoundary resetKey={pathname}>
+          <Suspense fallback={<div className="spinner mx-auto mt-24" />}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/hands" element={<HandHistory />} />
+              <Route path="/analysis" element={<Analysis />} />
+              <Route path="/ranges" element={<RangeResearch />} />
+              <Route path="/charts" element={<Charts />} />
+              <Route path="/players" element={<Players />} />
+              <Route path="/stats" element={<Stats />} />
+              <Route path="/multipliers" element={<Multipliers />} />
+              <Route path="/settings" element={<Settings />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
+      </Layout>
+      <NotificationContainer />
+      <ProgressModal />
+      <UpdateModal />
+    </>
+  )
+}

@@ -8,10 +8,10 @@
 - Code: identifiers (classes, methods, variables, files, folders, DB tables/columns, API routes, JSON fields).
 - Comments, XML docs, log messages, exception messages.
 - Commit messages, branch names, PR titles/descriptions, issues.
-- Documentation: README, `backend/README.md`, this file.
+- Documentation: README, this file.
 - Tests: names and descriptions.
 
-Exception: user-facing UI text lives in `frontend-vue/src/locales/` and may exist in several languages (see §6). English is the reference locale; every key must exist in it.
+Exception: user-facing UI text lives in `frontend/src/locales/` and may exist in several languages (see §6). English is the reference locale; every key must exist in it.
 
 Legacy French found in the codebase (comments, names, docs) must be translated to English when you touch that code. Do not leave mixed-language files. Do not do large translation sweeps mixed into functional changes: use a dedicated `refactor`/`docs` commit.
 
@@ -19,35 +19,35 @@ Legacy French found in the codebase (comments, names, docs) must be translated t
 
 | Area | Tech | Role |
 |---|---|---|
-| `backend/` | C# / .NET 8, ASP.NET Core, SQLite, FluentMigrator | API, parsing/import, stats |
-| `frontend-vue/` | Vue 3, Vite, Tailwind, Pinia (`stores/`) | UI |
-| `main.js` | Electron | Desktop main process, launches the backend (port `5050`) |
+| `crates/core/` | Rust, SQLite (rusqlite), rayon | Backend library: parsing/import, stats, EV, request routes (`api.rs`) |
+| `frontend/` | React, TypeScript, Vite, Tailwind, Zustand (`stores/`) | UI |
+| `src-tauri/` | Tauri 2 (Rust) | Desktop shell: windows, native dialogs, updater; hosts the backend in-process (no server, no port) |
 | `website/` | — | Landing site |
 | `.github/workflows/deploy.yml` | GitHub Actions | Automated release |
 
-Backend layering (never mix layers):
-- `Controllers/`: HTTP endpoints only, **no business logic**.
-- `Services/`: application logic.
-- `Engines/`: pure analytical computations (stats, EV, leaks).
-- `Parsers/`: per-room hand history parsing (Winamax, Unibet, Betclic…).
-- `Data/Repositories/`: data access only.
-- `Migrations/`: FluentMigrator.
-- `Extensions/`, `Configuration/`: DI, pipeline, runtime paths.
-- `Models/`, `Interfaces/`: DTOs/entities, contracts.
+Backend layering in `crates/core/src` (never mix layers):
+- `api.rs`: request routing and JSON shapes only, **no business logic**.
+- `services/`: application logic (import, analysis).
+- `engines/`: pure analytical computations (cards, equity, EV).
+- `stats/`: per-hand stat flags, the stat registry and their storage.
+- `parsers/`: per-room hand history parsing (Winamax, Unibet, Betclic…).
+- `repos/`: data access only.
+- `db/`: pool, migrations (`db/sql/`) and the database registry.
+- `models/`: shared data types.
 
-Allowed dependency direction: Controllers → Services → Engines/Repositories. Never the reverse.
+Allowed dependency direction: api → services → engines/stats/repos. Never the reverse.
 
 ## 2. Commands
 
 ```bash
 npm run setup           # full install + backend build
-npm run dev:electron    # desktop dev (recommended)
-npm run dev             # backend + frontend separately
+npm run dev             # desktop dev (Tauri + Vite + backend)
+npm run frontend:dev    # frontend alone in a browser (no Rust shell)
 npm run build           # Windows build (installer)
-cd backend && dotnet test Tests/SpinTrackerBackend.Tests.csproj
+cargo test -p spintracker-core --release
 ```
 
-**Before declaring a task done**: backend builds (`dotnet build`), tests pass, `npm run react:build` passes. If a check could not be run, say so explicitly.
+**Before declaring a task done**: `cargo test -p spintracker-core` passes, `npm run frontend:build` passes and `cargo check -p spintracker` passes. If a check could not be run, say so explicitly.
 
 ## 3. Commits (STRICT)
 
@@ -59,7 +59,7 @@ Format: **Conventional Commits**, in **English**, imperative mood, lowercase des
 
 Allowed types: `feat`, `fix`, `perf`, `refactor`, `test`, `docs`, `style`, `build`, `ci`, `chore`.
 
-Suggested scopes: `parser`, `import`, `stats`, `range`, `dashboard`, `session`, `replayer`, `db`, `migration`, `electron`, `ui`, `i18n`, `website`.
+Suggested scopes: `parser`, `import`, `stats`, `range`, `dashboard`, `session`, `replayer`, `db`, `migration`, `tauri`, `ui`, `i18n`, `website`.
 
 Valid examples:
 - `feat(session): add session filter to history`
@@ -99,37 +99,42 @@ V1.2.0 - new range analysis
 - PR title follows the commit format (§3). PR description: what changed, why, how it was tested, screenshots for UI changes.
 - Keep PRs small and focused; one concern per PR.
 
-## 5. C# conventions (backend)
+## 5. Rust conventions (backend)
 
-- Nullable enabled; do not add `!` to silence a warning without justification.
-- Naming: `PascalCase` (types, methods, properties), `camelCase` (locals, parameters), `_camelCase` (private fields), interfaces prefixed `I`.
-- One public type per file; file name = type name.
-- `async`/`await` end to end, `Async` suffix, never `.Result` / `.Wait()`.
-- Constructor dependency injection; no hidden static singletons.
-- SQL: **parameterized only**, never string concatenation with user input.
-- DB schema: **every** change goes through a new FluentMigrator migration. Never edit a published migration.
-- No silent `catch (Exception)`; log or rethrow. No leftover `Console.WriteLine` debugging.
-- Stat computations belong in `Engines/` and must be deterministic and testable.
-- No magic numbers: use named constants (buy-ins, prize pool multipliers…).
+- No `unwrap()`/`expect()` on data that comes from files or the UI; return `crate::Result`. `expect` is for invariants only, with a message saying why.
+- SQL: **parameterized only**, never string concatenation with user input. Dynamic fragments come from fixed whitelists.
+- DB schema: **every** change goes through a new SQL file in `db/sql/` registered in `db/migrations.rs`. Never edit a published migration. Versions keep the FluentMigrator `VersionInfo` table.
+- Stat flags are persisted: **append** new flags in `stats/flags.rs`, never reorder or remove one; bump `FLAGS_VERSION` when the meaning of an existing flag changes.
+- Stat computations belong in `engines/` and `stats/` and must be deterministic and testable.
+- No magic numbers: use named constants (buy-ins, prize pool shares…).
+- No silent error swallowing: log or return the error.
+- Comments explain the *why*; English only.
 
-## 6. Vue / JS conventions (frontend)
+## 6. React / TypeScript conventions (frontend)
 
-- Vue 3 **Composition API** with `<script setup>`. No Options API in new code.
-- Components: `PascalCase.vue`. Composables: `useXxx.js`. Pinia stores: `xxxStore.js` / `useXxxStore`.
-- API calls only through `src/services/`; never `fetch`/`axios` inside a component.
+- React function components and hooks, TypeScript in `strict` mode. No `any` in new code except the shared `Json` alias for untyped backend payloads. A class component is acceptable only for error boundaries.
+- Components: `PascalCase.tsx`. Hooks: `useXxx.ts`. Zustand stores: `xxxStore.ts` exporting `useXxxStore`.
+- Backend calls only through `src/services/ipcService.ts` (Tauri commands); never `fetch`/`axios` or `invoke` inside a component.
 - Shared state in `stores/`; do not duplicate server state in components.
-- Styling: Tailwind classes; no inline CSS except dynamic values. No new CSS library.
-- **i18n**: all visible text goes through `locales/`. Add the key to **every** locale file, English first. No hardcoded strings in templates. Locale keys are English identifiers.
+- Styling: Tailwind classes; no inline CSS except dynamic values. No new CSS library. Feature-specific stylesheets (replayer, stats HUD) are scoped under a root class.
+- **i18n**: all visible text goes through `locales/` (`useTranslation`). Add the key to **every** locale file, English first. No hardcoded strings in JSX. Locale keys are English identifiers. Placeholders use i18next syntax (`{{name}}`).
+- Never render untrusted text as HTML (no `dangerouslySetInnerHTML`).
 - No leftover `console.log`, no dead commented-out code.
 - `const` by default, `let` when needed, never `var`. `===` only.
-- Typed/validated props, events declared with `defineEmits`.
-- Lists: stable unique `:key` (never the index for mutable lists).
-- Performance: no heavy computation in templates; use `computed`, and virtualization for long hand/tournament lists.
+- Effects: declare every dependency, clean up timers/listeners, and ignore stale async results.
+- Lists: stable unique `key` (never the index for mutable lists).
+- Performance: no heavy computation in render (use `useMemo`), and virtualization for long hand/tournament lists.
+
+### Rust shell (`src-tauri/`)
+
+- Native concerns only (windows, dialogs, files, updater, in-process backend). Business logic stays in `crates/core`.
+- Expose a Tauri command only for what the UI needs; validate inputs coming from the webview (the generic `backend_request` command only accepts absolute backend paths).
+- Run `cargo check` (and `cargo clippy` when available) before delivering.
 
 ## 7. Parsers & import (sensitive area)
 
 - Each room has its own parser in `Parsers/`; never put room-specific behavior in another one.
-- **Every parser fix ships with a test** (`Tests/*ImportTests.cs`) based on a sample from `exemple-data/`.
+- **Every parser fix ships with a test** (`crates/core/tests/parser_samples.rs`) based on a sample from `crates/core/tests/fixtures/exemple-data/`.
 - Sample data must be **fully anonymized** (player names, IDs, emails, paths). This repository is public: never commit real player data.
 - Import must remain **idempotent**: re-importing the same file creates no duplicates.
 
@@ -163,7 +168,7 @@ V1.2.0 - new range analysis
 ## 11. Documentation & release notes
 
 - There is no changelog file: release notes come from the commit subjects (§3), so write them for the user.
-- Architecture, command or config change → update `README.md` (root or `backend/README.md`).
+- Architecture, command or config change → update `README.md` (root).
 - New feature → mention it in `README.md` if it changes what the app does.
 
 ## 12. Expected agent behavior
@@ -179,7 +184,7 @@ V1.2.0 - new range analysis
 
 ## 13. Pre-delivery checklist
 
-- [ ] Builds (`dotnet build`, `npm run react:build`)
+- [ ] Builds (`cargo test -p spintracker-core`, `npm run frontend:build`, `cargo check -p spintracker`)
 - [ ] Backend tests green; new test added for any bug/feature
 - [ ] No hardcoded strings (i18n), no leftover `console.log`/debug
 - [ ] Migration added if the schema changes

@@ -1,0 +1,30 @@
+[package]
+name = "spintracker"
+version = "1.1.7"
+description = "Free, open-source poker tracker for Spin & Go tournaments."
+authors = ["florentvdry"]
+edition = "2021"
+license = "MIT"
+rust-version = "1.77"
+
+[lib]
+name = "spintracker_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-process = "2"
+tauri-plugin-log = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync"] }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+log = "0.4"
+spintracker-core = { path = "../crates/core" }

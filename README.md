@@ -86,7 +86,7 @@ SpinTracker updates itself automatically when a new release is published. macOS 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (LTS)
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [Rust](https://rustup.rs/) (stable) with the MSVC build tools — see the [Tauri prerequisites](https://tauri.app/start/prerequisites/)
 - Windows (the dev scripts and installer currently target Windows)
 
 ### Setup and run
@@ -94,37 +94,37 @@ SpinTracker updates itself automatically when a new release is published. macOS 
 ```bash
 git clone https://github.com/florentvdry/spintracker.git
 cd spintracker
-npm run setup          # installs dependencies and builds the backend
-npm run dev:electron   # recommended: Vite + Electron + C# backend
+npm run setup          # installs dependencies
+npm run dev            # Tauri desktop app: Vite + Rust (the backend runs inside the app)
 ```
 
 | Command | Description |
 |---|---|
-| `npm run dev:electron` | Full desktop dev mode (frontend on `:3000`, backend on `:5050`) |
-| `npm run dev` | Backend and frontend in a browser (some features need Electron IPC) |
-| `npm run react:dev` | Frontend only (Vite) |
-| `npm run backend:dev` | Backend only, hot reload |
+| `npm run dev` | Full desktop dev mode (frontend on `:3000`) |
+| `npm run frontend:dev` | Frontend only in a browser (Vite; features that need the Rust shell are unavailable) |
+| `npm run frontend:build` | Type-check and build the frontend |
 | `npm run build` | Build the Windows installer |
-| `cd backend && dotnet test Tests/SpinTrackerBackend.Tests.csproj` | Run backend tests |
+| `cargo test -p spintracker-core --release` | Run backend tests |
 
 ## Architecture
 
 ```
-backend/        ASP.NET Core (.NET 8) API — parsing, import, stats, SQLite, FluentMigrator
-  Controllers/  HTTP endpoints
-  Services/     Application logic
-  Engines/      Analytics: stats, equity, EV, leaks
-  Parsers/      One parser per poker room
-  Data/         Repositories (SQLite)
-  Migrations/   Database migrations
-frontend-vue/   Vue 3 + Vite + Tailwind + Pinia UI
-main.js         Electron main process (launches the backend on port 5050)
+crates/core/    Rust backend library — parsing, import, stats, EV, SQLite
+  src/api.rs        Request routes (same paths and JSON as the former HTTP API)
+  src/services/    Import and analysis
+  src/engines/     Cards, equity, all-in EV
+  src/stats/       Per-hand stat flags and the stat registry
+  src/parsers/     One parser per poker room
+  src/repos/       SQL reads and writes
+  src/db/          Pool, migrations, database registry
+frontend/       React + TypeScript + Vite + Tailwind + Zustand UI
+src-tauri/      Tauri 2 shell in Rust (window, native dialogs, updater; hosts the backend in-process)
 website/        Landing site (Next.js)
 ```
 
-**Tech stack:** Electron · Vue 3 · Vite · TailwindCSS · Pinia · C# / ASP.NET Core (.NET 8) · SQLite · FluentMigrator.
+**Tech stack:** Tauri 2 (Rust) · React · TypeScript · Vite · TailwindCSS · Zustand · Rust (rusqlite, rayon) · SQLite.
 
-More details in [backend/README.md](backend/README.md) and [AGENTS.md](AGENTS.md).
+More details in [AGENTS.md](AGENTS.md).
 
 ## Contributing
 

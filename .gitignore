@@ -15,3 +15,10 @@ publish/
 
 database_registry.json
 *.lscache
+
+# Tauri build output and generated schemas
+src-tauri/target/
+src-tauri/gen/
+
+# Rust
+/target/
