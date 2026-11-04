@@ -16,7 +16,7 @@ Not sure where to start? Ask in [Discussions](https://github.com/florentvdry/spi
 
 ## Development setup
 
-Prerequisites: Node.js 18+, the .NET 8 SDK, Rust (stable, MSVC toolchain), Windows.
+Prerequisites: Node.js 18+, Rust (stable, MSVC toolchain), Windows.
 
 ```bash
 git clone https://github.com/<your-username>/spintracker.git
@@ -28,8 +28,8 @@ npm run dev
 Run the checks before opening a PR:
 
 ```bash
-cd backend && dotnet build && dotnet test Tests/SpinTrackerBackend.Tests.csproj
-cd .. && npm run frontend:build && cargo check --manifest-path src-tauri/Cargo.toml
+cargo test -p spintracker-core --release
+npm run frontend:build && cargo check -p spintracker
 ```
 
 ## Workflow
@@ -63,12 +63,12 @@ The full conventions live in [AGENTS.md](AGENTS.md) and apply to humans and AI a
 
 ## Adding or fixing a parser
 
-Each poker room has its own parser in `backend/Parsers/` (see `WinamaxParser.cs`, `BetclicParser.cs`, `UnibetParser.cs`).
+Each poker room has its own parser in `crates/core/src/parsers/` (`winamax.rs`, `betclic.rs`, `unibet.rs`).
 
 1. Get a few hand history samples from the room and **anonymize them completely** (player names, IDs, emails, file paths).
-2. Place them in `backend/exemple-data/`.
+2. Place them in `crates/core/tests/fixtures/exemple-data/`.
 3. Implement the parser, keeping room-specific behavior inside it.
-4. Add tests in `backend/Tests/` (see the existing `*ImportTests.cs`).
+4. Add tests in `crates/core/tests/` (see `parser_samples.rs` and `importer_samples.rs`).
 5. Make sure re-importing the same file creates no duplicates.
 
 > This repository is public: **never commit real player data**.

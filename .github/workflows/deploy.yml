@@ -69,15 +69,11 @@ jobs:
             package-lock.json
             frontend/package-lock.json
 
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-
       - uses: dtolnay/rust-toolchain@stable
 
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: src-tauri
+          workspaces: .
 
       - name: Version de l'application
         run: |
@@ -90,9 +86,6 @@ jobs:
           npm ci --ignore-scripts
           npm --prefix frontend ci
 
-      - name: Build backend
-        run: npm run backend:build
-
       - name: Installeur Tauri (frontend + app, signe pour l'updater)
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -101,7 +94,7 @@ jobs:
 
       - name: Manifestes d'update (Tauri latest.json + passerelle electron-updater latest.yml)
         run: |
-          bundle="src-tauri/target/release/bundle/nsis"
+          bundle="target/release/bundle/nsis"
           installer="$(ls "$bundle"/*-setup.exe | head -n1)"
           name="$(basename "$installer")"
           url="https://github.com/${GITHUB_REPOSITORY}/releases/download/v$VERSION/$name"
@@ -173,7 +166,7 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "SpinTracker v$VERSION" \
             --notes-file release-notes.md \
-            src-tauri/target/release/bundle/nsis/*-setup.exe \
-            src-tauri/target/release/bundle/nsis/*-setup.exe.sig \
+            target/release/bundle/nsis/*-setup.exe \
+            target/release/bundle/nsis/*-setup.exe.sig \
             latest.json \
             latest.yml

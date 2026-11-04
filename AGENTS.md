@@ -19,23 +19,23 @@ Legacy French found in the codebase (comments, names, docs) must be translated t
 
 | Area | Tech | Role |
 |---|---|---|
-| `backend/` | C# / .NET 8, ASP.NET Core, SQLite, FluentMigrator | API, parsing/import, stats |
+| `crates/core/` | Rust, SQLite (rusqlite), rayon | Backend library: parsing/import, stats, EV, request routes (`api.rs`) |
 | `frontend/` | React, TypeScript, Vite, Tailwind, Zustand (`stores/`) | UI |
-| `src-tauri/` | Tauri 2 (Rust) | Desktop shell: windows, native dialogs, updater, launches the backend (port `5050`) |
+| `src-tauri/` | Tauri 2 (Rust) | Desktop shell: windows, native dialogs, updater; hosts the backend in-process (no server, no port) |
 | `website/` | — | Landing site |
 | `.github/workflows/deploy.yml` | GitHub Actions | Automated release |
 
-Backend layering (never mix layers):
-- `Controllers/`: HTTP endpoints only, **no business logic**.
-- `Services/`: application logic.
-- `Engines/`: pure analytical computations (stats, EV, leaks).
-- `Parsers/`: per-room hand history parsing (Winamax, Unibet, Betclic…).
-- `Data/Repositories/`: data access only.
-- `Migrations/`: FluentMigrator.
-- `Extensions/`, `Configuration/`: DI, pipeline, runtime paths.
-- `Models/`, `Interfaces/`: DTOs/entities, contracts.
+Backend layering in `crates/core/src` (never mix layers):
+- `api.rs`: request routing and JSON shapes only, **no business logic**.
+- `services/`: application logic (import, analysis).
+- `engines/`: pure analytical computations (cards, equity, EV).
+- `stats/`: per-hand stat flags, the stat registry and their storage.
+- `parsers/`: per-room hand history parsing (Winamax, Unibet, Betclic…).
+- `repos/`: data access only.
+- `db/`: pool, migrations (`db/sql/`) and the database registry.
+- `models/`: shared data types.
 
-Allowed dependency direction: Controllers → Services → Engines/Repositories. Never the reverse.
+Allowed dependency direction: api → services → engines/stats/repos. Never the reverse.
 
 ## 2. Commands
 
@@ -44,10 +44,10 @@ npm run setup           # full install + backend build
 npm run dev             # desktop dev (Tauri + Vite + backend)
 npm run frontend:dev    # frontend alone in a browser (no Rust shell)
 npm run build           # Windows build (installer)
-cd backend && dotnet test Tests/SpinTrackerBackend.Tests.csproj
+cargo test -p spintracker-core --release
 ```
 
-**Before declaring a task done**: backend builds (`dotnet build`), tests pass, `npm run frontend:build` passes and `cargo check` passes in `src-tauri/`. If a check could not be run, say so explicitly.
+**Before declaring a task done**: `cargo test -p spintracker-core` passes, `npm run frontend:build` passes and `cargo check -p spintracker` passes. If a check could not be run, say so explicitly.
 
 ## 3. Commits (STRICT)
 
@@ -98,19 +98,16 @@ V1.2.0 - new range analysis
 - PR title follows the commit format (§3). PR description: what changed, why, how it was tested, screenshots for UI changes.
 - Keep PRs small and focused; one concern per PR.
 
-## 5. C# conventions (backend)
+## 5. Rust conventions (backend)
 
-- Nullable enabled; do not add `!` to silence a warning without justification.
-- Naming: `PascalCase` (types, methods, properties), `camelCase` (locals, parameters), `_camelCase` (private fields), interfaces prefixed `I`.
-- One public type per file; file name = type name.
-- `async`/`await` end to end, `Async` suffix, never `.Result` / `.Wait()`.
-- Constructor dependency injection; no hidden static singletons.
-- SQL: **parameterized only**, never string concatenation with user input.
-- DB schema: **every** change goes through a new FluentMigrator migration. Never edit a published migration.
-- No silent `catch (Exception)`; log or rethrow. No leftover `Console.WriteLine` debugging.
-- Stat computations belong in `Engines/` and must be deterministic and testable.
-- No magic numbers: use named constants (buy-ins, prize pool multipliers…).
-- Money/EV: use `decimal` for amounts, not `float`.
+- No `unwrap()`/`expect()` on data that comes from files or the UI; return `crate::Result`. `expect` is for invariants only, with a message saying why.
+- SQL: **parameterized only**, never string concatenation with user input. Dynamic fragments come from fixed whitelists.
+- DB schema: **every** change goes through a new SQL file in `db/sql/` registered in `db/migrations.rs`. Never edit a published migration. Versions keep the FluentMigrator `VersionInfo` table.
+- Stat flags are persisted: **append** new flags in `stats/flags.rs`, never reorder or remove one; bump `FLAGS_VERSION` when the meaning of an existing flag changes.
+- Stat computations belong in `engines/` and `stats/` and must be deterministic and testable.
+- No magic numbers: use named constants (buy-ins, prize pool shares…).
+- No silent error swallowing: log or return the error.
+- Comments explain the *why*; English only.
 
 ## 6. React / TypeScript conventions (frontend)
 
@@ -129,14 +126,14 @@ V1.2.0 - new range analysis
 
 ### Rust shell (`src-tauri/`)
 
-- Native concerns only (windows, dialogs, files, updater, backend process). Business logic stays in the C# backend.
+- Native concerns only (windows, dialogs, files, updater, in-process backend). Business logic stays in `crates/core`.
 - Expose a Tauri command only for what the UI needs; validate inputs coming from the webview (the generic `backend_request` command only accepts absolute backend paths).
 - Run `cargo check` (and `cargo clippy` when available) before delivering.
 
 ## 7. Parsers & import (sensitive area)
 
 - Each room has its own parser in `Parsers/`; never put room-specific behavior in another one.
-- **Every parser fix ships with a test** (`Tests/*ImportTests.cs`) based on a sample from `exemple-data/`.
+- **Every parser fix ships with a test** (`crates/core/tests/parser_samples.rs`) based on a sample from `crates/core/tests/fixtures/exemple-data/`.
 - Sample data must be **fully anonymized** (player names, IDs, emails, paths). This repository is public: never commit real player data.
 - Import must remain **idempotent**: re-importing the same file creates no duplicates.
 
@@ -170,7 +167,7 @@ V1.2.0 - new range analysis
 ## 11. Documentation & changelog
 
 - User-visible change → add an entry in `changelogs.txt` (source of release notes), in English.
-- Architecture, command or config change → update `README.md` (root or `backend/README.md`).
+- Architecture, command or config change → update `README.md` (root).
 - New feature → mention it in the changelog under the current version.
 
 ## 12. Expected agent behavior
@@ -186,7 +183,7 @@ V1.2.0 - new range analysis
 
 ## 13. Pre-delivery checklist
 
-- [ ] Builds (`dotnet build`, `npm run frontend:build`, `cargo check` in `src-tauri/`)
+- [ ] Builds (`cargo test -p spintracker-core`, `npm run frontend:build`, `cargo check -p spintracker`)
 - [ ] Backend tests green; new test added for any bug/feature
 - [ ] No hardcoded strings (i18n), no leftover `console.log`/debug
 - [ ] Migration added if the schema changes
