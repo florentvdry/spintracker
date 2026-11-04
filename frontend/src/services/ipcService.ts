@@ -163,6 +163,11 @@ export const ipcService = {
   getAutoImport: () => command<ApiResult>('auto_import_get'),
   setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),
   getHudCatalog: () => backend<{ stats: { section: string; label: string; id: string; fixedSeat: boolean }[] }>('GET', '/hud/catalog'),
+  getHudState: async (): Promise<Json | null> => {
+    const state = await command<Json | null>('hud_get_state')
+    return state && state.success === false ? null : state
+  },
+  setHudPanelRects: (rects: { x: number; y: number; width: number; height: number }[]) => command<ApiResult>('hud_set_panel_rects', { rects }),
   getHudSettings: () => command<ApiResult>('hud_settings_get'),
   setHudSettings: (settings: Json) => command<ApiResult>('hud_settings_set', { settings }),
   pickAutoImportFolder: async (): Promise<string | null> => {
@@ -195,6 +200,7 @@ export const ipcService = {
   onImportProgress: (callback: (progress: ImportProgress) => void) => subscribe('import-progress', callback),
   onHandsImported: (callback: (payload: HandsImported) => void) => subscribe('hands-imported', callback),
   onAutoImportStatus: (callback: (status: AutoImportStatus) => void) => subscribe('auto-import-status', callback),
+  onHudState: (callback: (state: Json) => void) => subscribe('hud-state', callback),
   onUpdateStatus: (callback: (status: UpdateStatus) => void) => subscribe('update-status', callback),
 }
 

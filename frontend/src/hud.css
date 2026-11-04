@@ -1,0 +1,9 @@
+/* The HUD window is transparent: only the panels are drawn. */
+@tailwind base;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  background: transparent;
+}
