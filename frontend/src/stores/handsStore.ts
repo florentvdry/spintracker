@@ -41,6 +41,10 @@ interface HandsState {
   clearSelection: () => void
 }
 
+// Only the answer to the latest request is kept: a slow older one must not overwrite it.
+let tournamentsRequest = 0
+let handsRequest = 0
+
 export const useHandsStore = create<HandsState>((set, get) => ({
   tournaments: [],
   totalTournaments: 0,
@@ -58,6 +62,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
   tournamentHands: [],
 
   loadTournaments: async () => {
+    const request = ++tournamentsRequest
     set({ isLoading: true })
     const { heroName, buyIn } = useFilterStore.getState()
     const { dateFrom, dateTo } = currentDateRange()
@@ -76,17 +81,18 @@ export const useHandsStore = create<HandsState>((set, get) => ({
         minPot: filters.minPot,
         maxPot: filters.maxPot,
       })
-      if (result?.success && result.data) {
+      if (request === tournamentsRequest && result?.success && result.data) {
         set({ tournaments: result.data.tournaments ?? [], totalTournaments: result.data.total ?? 0 })
       }
     } catch (error) {
       logError('Failed to load tournaments:', error)
     } finally {
-      set({ isLoading: false })
+      if (request === tournamentsRequest) set({ isLoading: false })
     }
   },
 
   loadHandsList: async () => {
+    const request = ++handsRequest
     set({ isLoading: true })
     const { heroName } = useFilterStore.getState()
     const { dateFrom, dateTo } = currentDateRange()
@@ -102,13 +108,13 @@ export const useHandsStore = create<HandsState>((set, get) => ({
         result: filters.result,
         sortBy: filters.sortBy,
       })
-      if (result?.success && result.data) {
+      if (request === handsRequest && result?.success && result.data) {
         set({ handsList: result.data.hands ?? [], totalHandsCount: result.data.total ?? 0 })
       }
     } catch (error) {
       logError('Failed to load hands list:', error)
     } finally {
-      set({ isLoading: false })
+      if (request === handsRequest) set({ isLoading: false })
     }
   },
 

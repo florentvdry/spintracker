@@ -10,6 +10,8 @@ const SESSION_LIMIT = 50
 
 // React StrictMode mounts twice in development; share one in-flight initialization.
 let initialization: Promise<void> | null = null
+// Only the answer to the latest dashboard request is kept.
+let dashboardRequest = 0
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -77,12 +79,13 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   loadDashboardStats: async () => {
     const { heroName, buyIn } = useFilterStore.getState()
+    const request = ++dashboardRequest
     if (!heroName) return set({ dashboardStats: null })
 
     const { dateFrom, dateTo } = currentDateRange()
     try {
       const result = await ipcService.getDashboardStats(heroName, dateFrom, dateTo, buyInParam(buyIn))
-      if (result.success) {
+      if (request === dashboardRequest && result.success) {
         const stats = result.data ?? {}
         set({
           dashboardStats: {
