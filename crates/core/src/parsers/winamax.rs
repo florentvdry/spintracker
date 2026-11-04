@@ -340,7 +340,8 @@ fn investment_for_player(streets: &StreetLines, player: &str) -> f64 {
     for lines in [&streets.preflop, &streets.flop, &streets.turn, &streets.river] {
         let mut street_investment = 0.0;
         for line in lines {
-            if !starts_with_ic(line, player) {
+            // The name must be followed by a space: "Ann" is not "Anna".
+            if !starts_with_ic(line, &format!("{player} ")) {
                 continue;
             }
             for re in [
@@ -364,4 +365,19 @@ fn investment_for_player(streets: &StreetLines, player: &str) -> f64 {
 
 fn parse_euro(raw: &str) -> f64 {
     parse_f64(&raw.replace(',', "."))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_name_that_starts_another_name_does_not_share_its_investment() {
+        let streets = StreetLines {
+            preflop: vec!["Ann posts small blind 10".into(), "Anna posts big blind 20".into(), "Anna calls 40".into()],
+            ..StreetLines::default()
+        };
+        assert_eq!(investment_for_player(&streets, "Ann"), 10.0);
+        assert_eq!(investment_for_player(&streets, "Anna"), 60.0);
+    }
 }

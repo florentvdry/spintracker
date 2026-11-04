@@ -422,6 +422,12 @@ fn parse_card_reveals(line: &str, hand: &mut ParsedHand, section: Section, st: &
     false
 }
 
+/// Whether an action line ("22:53:05 - Name: Raises to 680") is the player's own. Comparing the
+/// name exactly keeps "Ann" apart from "Anna" and from names found in the rest of the line.
+fn is_line_of(line: &str, player: &str) -> bool {
+    regex!(r"^(?:[0-9]{1,2}:[0-9]{2}(?::[0-9]{2})?\s*-\s*)?(.+?):").captures(line).is_some_and(|c| eq_ic(c[1].trim(), player))
+}
+
 fn parse_action_line(line: &str, hand: &mut ParsedHand, section: Section, st: &mut State) {
     let lower = line.to_lowercase();
 
@@ -441,7 +447,7 @@ fn parse_action_line(line: &str, hand: &mut ParsedHand, section: Section, st: &m
             hand.all_in_street = Some(section.name().to_string());
         }
         for p in &mut hand.players {
-            if lower.contains(&p.name.to_lowercase()) {
+            if is_line_of(line, &p.name) {
                 p.is_all_in = true;
             }
         }
@@ -575,7 +581,7 @@ fn calculate_player_investment(streets: &StreetLines, player: &str) -> f64 {
     for (_, actions) in streets.by_street() {
         let mut street_investment = 0.0;
         for action in actions {
-            if !action.contains(player) {
+            if !is_line_of(action, player) {
                 continue;
             }
             if let Some(c) = regex!(r"Posts SB (\d+)").captures(action) {
