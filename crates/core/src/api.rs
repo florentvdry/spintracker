@@ -275,6 +275,10 @@ impl Backend {
                     Err(message) => Response::message(400, &message),
                 }
             }
+            ("GET", ["hud", "tables"]) => match (r.query_str("room"), r.query_str("since")) {
+                (Some(room), Some(since)) => Response::data(self.hud.active_tables(&room, &since)?),
+                _ => Response::message(400, "room and since are required"),
+            },
             ("PUT", ["hud", "notes"]) => {
                 let request: HudNoteRequest = r.body_as()?;
                 match request.validate() {

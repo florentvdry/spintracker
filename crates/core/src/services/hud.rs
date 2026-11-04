@@ -12,6 +12,7 @@ use serde_json::{json, Value};
 use crate::db::Database;
 use crate::repos::detailed_stats::Row;
 use crate::repos::hud_stats::{self, HudStatRequest};
+use crate::repos::hud_tables;
 use crate::repos::player_notes::{self, PlayerNote, MAX_NOTE_CHARS};
 use crate::Result;
 
@@ -131,6 +132,11 @@ impl HudService {
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));
         }
         Ok(json!({ "players": players }))
+    }
+
+    /// Tournaments of `room` being played: see [`hud_tables::active_tables`].
+    pub fn active_tables(&self, room: &str, since: &str) -> Result<Value> {
+        Ok(Value::Array(hud_tables::active_tables(&*self.db.conn()?, room, since)?))
     }
 
     pub fn set_note(&self, request: &HudNoteRequest) -> Result<()> {

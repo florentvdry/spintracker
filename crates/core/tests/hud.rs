@@ -304,3 +304,35 @@ fn shove_figures_equal_the_push_fold_table() {
         }
     }
 }
+
+#[test]
+fn a_tournament_being_played_is_listed_with_the_seats_around_the_hero() {
+    let (_dir, backend) = backend_with_hands();
+    let tables = |room: &str, since: &str| -> Vec<Value> {
+        let r = backend.handle("GET", &format!("/hud/tables?room={room}&since={since}"), None);
+        assert_eq!(r.status, 200, "{:?}", r.body);
+        r.body["data"].as_array().unwrap().clone()
+    };
+
+    // The fixtures have summaries, which end a tournament: with them imported nothing is live.
+    assert!(tables("Winamax", "2000-01-01 00:00:00").is_empty());
+
+    // The same tournaments before their summary arrived.
+    let conn = backend.database().conn().unwrap();
+    conn.execute("UPDATE hands SET position = 0", []).unwrap();
+    drop(conn);
+    let live = tables("Winamax", "2000-01-01 00:00:00");
+    assert_eq!(live.len(), 2, "both imported tournaments are live without summaries");
+    for table in &live {
+        assert_eq!(table["hero"], HERO);
+        let players = table["players"].as_array().unwrap();
+        assert!(!players.is_empty() && players.len() <= 2);
+        assert_eq!(players[0]["seat"], "+1");
+        assert!(matches!(table["format"].as_str(), Some("threeMax" | "headsUp")));
+        assert_eq!(players.len() + 1, if table["format"] == "headsUp" { 2 } else { 3 });
+    }
+
+    assert!(tables("Winamax", "2999-01-01 00:00:00").is_empty(), "hands older than `since` are not live");
+    assert!(tables("Unibet", "2000-01-01 00:00:00").is_empty(), "other rooms are not mixed in");
+    assert_eq!(backend.handle("GET", "/hud/tables?room=Winamax", None).status, 400);
+}

@@ -50,6 +50,9 @@ pub(super) struct PipelineInput<'a> {
     pub parser: &'static dyn HandParser,
     pub summaries: &'a Summaries,
     pub detected_hero: Option<&'a str>,
+    /// Whether all-in equity may be computed. It is not while the user sits at a poker table: the
+    /// hands then get their plain result and are completed once the tables are closed.
+    pub equity: bool,
     pub cancel: &'a AtomicBool,
 }
 
@@ -121,7 +124,7 @@ impl Importer {
         let blocks = split_hands(&text, parser.hand_separator());
         let run = self.run_pipeline(
             &mut conn,
-            PipelineInput { parser, summaries: &summaries, detected_hero: detected_hero.as_deref(), cancel },
+            PipelineInput { parser, summaries: &summaries, detected_hero: detected_hero.as_deref(), cancel, equity: true },
             &blocks,
             &mut on_progress,
         );
@@ -169,7 +172,7 @@ impl Importer {
         blocks: &[String],
         on_progress: &mut impl FnMut(ImportProgress),
     ) -> PipelineRun {
-        let PipelineInput { parser, summaries, detected_hero, cancel } = input;
+        let PipelineInput { parser, summaries, detected_hero, cancel, equity } = input;
         let total = blocks.len();
         let skipped = AtomicUsize::new(0);
         let abort = AtomicBool::new(false);
@@ -190,7 +193,7 @@ impl Importer {
                         return;
                     }
                     let processed: Vec<Option<ImportedHand>> =
-                        chunk.par_iter().map(|block| self.process_block(parser, block, summaries, detected_hero)).collect();
+                        chunk.par_iter().map(|block| self.process_block(parser, block, summaries, detected_hero, equity)).collect();
                     for item in processed {
                         match item {
                             Some(item) => {
@@ -281,6 +284,7 @@ impl Importer {
         block: &str,
         summaries: &Summaries,
         detected_hero: Option<&str>,
+        equity: bool,
     ) -> Option<ImportedHand> {
         // A parser bug on one hand must not take the whole import down.
         let mut hand = match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| parser.parse_hand(block))) {
@@ -293,7 +297,7 @@ impl Importer {
         summaries::apply(&mut hand, summaries);
         select_hero(&mut hand, detected_hero);
 
-        let analytics = if needs_analytics(&hand) {
+        let analytics = if equity && needs_analytics(&hand) {
             self.analytics.calculate_hand_analytics(&hand)
         } else {
             plain_analytics(&hand)
