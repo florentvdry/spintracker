@@ -94,6 +94,11 @@ pub struct HudStatRequest {
     pub bucket: Option<String>,
 }
 
+/// Whether a request asks for a stat the user defined.
+pub fn is_custom(request: &HudStatRequest) -> bool {
+    request.section == CUSTOM
+}
+
 /// The catalog plus the stats the user defined (their label is the id, `name` is what to show).
 pub fn catalog_with_custom(conn: &Connection) -> Result<Value> {
     let mut catalog = catalog();
@@ -134,12 +139,9 @@ pub fn catalog() -> Value {
     json!({ "stats": stats, "buckets": BUCKETS.map(|(name, _, _)| name) })
 }
 
-/// The custom-stat hits of a player by hand; nothing is read while the user has no custom stat.
+/// The custom-stat hits of a player by hand.
 fn load_custom_hits(conn: &Connection, player: &str) -> Result<HashMap<String, Vec<(i64, u8)>>> {
     let mut hits: HashMap<String, Vec<(i64, u8)>> = HashMap::new();
-    if custom_store::count(conn)? == 0 {
-        return Ok(hits);
-    }
     let mut stmt = conn.prepare_cached("SELECT hand_id, stat_id, bits FROM custom_stat_hits WHERE player_name = ?1")?;
     let rows = stmt.query_map([player], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?, r.get::<_, i64>(2)? as u8)))?;
     for row in rows {
@@ -149,10 +151,12 @@ fn load_custom_hits(conn: &Connection, player: &str) -> Result<HashMap<String, V
     Ok(hits)
 }
 
-/// Everything the HUD needs of one player: the rows of the hands that count.
-pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str) -> Result<Vec<Row>> {
+/// Everything the HUD needs of one player: the rows of the hands that count. `with_custom` also
+/// reads the hits of the custom stats; a request that asks for none pays nothing for them.
+pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Vec<Row>> {
+    let hand_column = if with_custom { "ph.hand_id" } else { "NULL" };
     let sql = format!(
-        "SELECT h.player_count, ph.position, f.flags_0, f.flags_1, f.flags_2, f.flags_3, f.street_counts, ph.stack, h.blinds, ph.hand_id
+        "SELECT h.player_count, ph.position, f.flags_0, f.flags_1, f.flags_2, f.flags_3, f.street_counts, ph.stack, h.blinds, {hand_column}
          FROM player_hands ph
          JOIN hands h ON h.id = ph.hand_id
          LEFT JOIN hand_player_flags f ON f.hand_id = ph.hand_id AND f.player_name = ph.player_name
@@ -166,7 +170,7 @@ pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str)
         ("@hero", SqlValue::Text(hero.into())),
     ];
     let params: Vec<(&str, &dyn ToSql)> = binds.iter().map(|(n, v)| (*n, v as &dyn ToSql)).collect();
-    let mut custom = load_custom_hits(conn, player)?;
+    let mut custom = if with_custom { load_custom_hits(conn, player)? } else { HashMap::new() };
     let mut stmt = conn.prepare_cached(&sql)?;
     let rows = stmt
         .query_map(&params[..], |r| {
@@ -174,7 +178,7 @@ pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str)
             let position: Option<String> = r.get(1)?;
             let flags = Flags::from_words([word(2)?, word(3)?, word(4)?, word(5)?]);
             let blinds: Option<String> = r.get(8)?;
-            let hits = if custom.is_empty() { Vec::new() } else { custom.remove(&r.get::<_, String>(9)?).unwrap_or_default() };
+            let hits = if with_custom { custom.remove(&r.get::<_, String>(9)?).unwrap_or_default() } else { Vec::new() };
             Ok(Row::lean(
                 r.get::<_, Option<i32>>(0)?.unwrap_or(0),
                 position.as_deref().unwrap_or(""),

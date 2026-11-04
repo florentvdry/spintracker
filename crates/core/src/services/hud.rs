@@ -85,6 +85,8 @@ struct CacheKey {
     room: String,
     hero: String,
     player: String,
+    /// Rows read with the custom-stat hits are not the rows read without them.
+    with_custom: bool,
 }
 
 #[derive(Default)]
@@ -103,9 +105,9 @@ impl HudService {
         Self { db, cache: Mutex::new(Cache::default()) }
     }
 
-    fn rows_of(&self, room: &str, hero: &str, player: &str) -> Result<Arc<Vec<Row>>> {
+    fn rows_of(&self, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Arc<Vec<Row>>> {
         let version = self.db.data_version();
-        let key = CacheKey { room: room.into(), hero: hero.into(), player: player.into() };
+        let key = CacheKey { room: room.into(), hero: hero.into(), player: player.into(), with_custom };
         {
             let mut cache = self.cache.lock().expect("the HUD cache lock is never held across a panic");
             if cache.version != version || cache.rows.len() >= CACHE_CAPACITY {
@@ -116,7 +118,7 @@ impl HudService {
                 return Ok(rows.clone());
             }
         }
-        let rows = Arc::new(hud_stats::load_rows(&*self.db.conn()?, room, hero, player)?);
+        let rows = Arc::new(hud_stats::load_rows(&*self.db.conn()?, room, hero, player, with_custom)?);
         let mut cache = self.cache.lock().expect("the HUD cache lock is never held across a panic");
         // Data written while the rows were being read makes them stale: do not keep them.
         if cache.version == version {
@@ -127,10 +129,12 @@ impl HudService {
 
     pub fn players(&self, request: &HudPlayersRequest) -> Result<Value> {
         let conn = self.db.conn()?;
-        let ready = custom_store::ready_ids(&conn)?;
+        // Custom stats cost two queries: only a request that asks for one pays for them.
+        let with_custom = request.stats.iter().any(hud_stats::is_custom);
+        let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
         let mut players = Vec::with_capacity(request.players.len());
         for name in &request.players {
-            let rows = self.rows_of(&request.room, &request.hero_name, name)?;
+            let rows = self.rows_of(&request.room, &request.hero_name, name, with_custom)?;
             let (hands, stats) = hud_stats::compute(&rows, &request.stats, &ready);
             let note = player_notes::get(&conn, &request.room, name)?.unwrap_or_default();
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));

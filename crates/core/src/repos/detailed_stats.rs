@@ -71,7 +71,7 @@ pub(crate) struct Row {
     /// The stack in big blinds, worked out once (parsing the blinds is slow for a hot loop).
     stack_bb: Option<f64>,
     /// Hits of the user's custom stats in this hand: `(stat id, bits)`, see `stats::custom::eval`.
-    custom: Vec<(i64, u8)>,
+    custom: Option<Box<[(i64, u8)]>>,
 }
 
 impl Row {
@@ -79,11 +79,11 @@ impl Row {
     pub(crate) fn lean(player_count: i32, position: &str, flags: Flags, street_counts: u64, stack: i64, blinds: &str) -> Row {
         let sample = Sample { position: position.trim().to_uppercase(), blinds: blinds.to_string(), ..Sample::default() };
         let stack_bb = crate::engines::actions::stack_in_bb(stack as f64, blinds);
-        Row { sample, player_count, stack, flags, street_counts: StreetCounts(street_counts), stack_bb, custom: Vec::new() }
+        Row { sample, player_count, stack, flags, street_counts: StreetCounts(street_counts), stack_bb, custom: None }
     }
 
     pub(crate) fn with_custom(mut self, custom: Vec<(i64, u8)>) -> Row {
-        self.custom = custom;
+        self.custom = (!custom.is_empty()).then(|| custom.into_boxed_slice());
         self
     }
 
@@ -287,7 +287,7 @@ impl Accumulator {
                 }
             }
             HudPart::Custom => {
-                for (id, bits) in &row.custom {
+                for (id, bits) in row.custom.iter().flat_map(|hits| hits.iter()) {
                     let entry = self.custom.entry(*id).or_default();
                     entry.1 += u64::from(bits & DEN_BIT != 0);
                     entry.0 += u64::from(bits & NUM_BIT != 0);
@@ -669,7 +669,7 @@ pub fn detailed_stats(conn: &Connection, q: &DetailedQuery) -> Result<Value> {
             flags: Flags::from_words([word(19)?, word(20)?, word(21)?, word(22)?]),
             street_counts: StreetCounts(word(23)?),
             stack_bb: None,
-            custom: Vec::new(),
+            custom: None,
         };
         if row.sample.player_name.trim().is_empty() {
             continue;

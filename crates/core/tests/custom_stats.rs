@@ -131,3 +131,18 @@ fn the_preview_does_not_store_anything() {
     let invalid = backend.handle("POST", "/custom-stats/preview", Some(json!({ "definition": { "schema": 2 } })));
     assert_eq!(invalid.status, 400);
 }
+
+#[test]
+fn a_custom_request_after_a_plain_one_still_sees_the_hits() {
+    let dir = tempfile::tempdir().unwrap();
+    let backend = Backend::open(dir.path(), None).unwrap();
+    import(&backend, FILES[0]);
+    let id = create(&backend, vpip_definition("My VPIP"));
+    backend.handle("POST", "/custom-stats/recompute", None);
+
+    // The rows read for a request without custom stats must not be reused for one with them.
+    let plain = hud_figure(&backend, "preflop", "VPIP");
+    let custom = hud_figure(&backend, "custom", &id.to_string());
+    assert!(custom["den"].as_u64().unwrap() > 0);
+    assert_eq!((&custom["num"], &custom["den"]), (&plain["num"], &plain["den"]));
+}
