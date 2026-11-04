@@ -5,6 +5,7 @@ import {
   Bell, Calendar, Check, ChevronDown, ChevronRight, Filter, Hash, RefreshCw, Search, Trash2, Trophy, Upload, Users, X,
 } from 'lucide-react'
 import RoomLogo from '@/components/common/RoomLogo'
+import AutoImportIndicator from './AutoImportIndicator'
 import { ipcService, type ImportProgress, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore, type DateRange } from '@/stores/filterStore'
@@ -58,9 +59,10 @@ export default function Header() {
     }
   }, [])
 
+  // `lastUpdate` changes after every data reload, including the ones the automatic import triggers.
   useEffect(() => {
     if (app.isInitialized) void loadPlayers()
-  }, [app.isInitialized, loadPlayers])
+  }, [app.isInitialized, app.lastUpdate, loadPlayers])
 
   useEffect(() => {
     setCustomFrom(filters.customDateFrom ?? '')
@@ -359,6 +361,8 @@ export default function Header() {
         </div>
 
         <div className="flex-1" />
+
+        <AutoImportIndicator />
 
         <button onClick={handleImport} className="btn-primary flex items-center gap-2">
           <Upload className="w-4 h-4" />

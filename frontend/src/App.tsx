@@ -6,6 +6,7 @@ import NotificationContainer from '@/components/ui/NotificationContainer'
 import ProgressModal from '@/components/ui/ProgressModal'
 import UpdateModal from '@/components/ui/UpdateModal'
 import { useAppStore } from '@/stores/appStore'
+import { useAutoImportStore } from '@/stores/autoImportStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { useUpdateStore } from '@/stores/updateStore'
 
@@ -24,6 +25,7 @@ export default function App() {
   const refreshAll = useAppStore((s) => s.refreshAll)
   const isInitialized = useAppStore((s) => s.isInitialized)
   const initializeUpdates = useUpdateStore((s) => s.initialize)
+  const listenAutoImport = useAutoImportStore((s) => s.listen)
   const { pathname } = useLocation()
 
   const { heroName, dateRange, customDateFrom, customDateTo, buyIn, selectedSession, hasHydrated } = useFilterStore()
@@ -32,6 +34,8 @@ export default function App() {
     void initialize()
     return initializeUpdates()
   }, [initialize, initializeUpdates])
+
+  useEffect(() => listenAutoImport(), [listenAutoImport])
 
   // Any change to the global filters reloads the shared dashboard data.
   useEffect(() => {

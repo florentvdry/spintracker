@@ -81,6 +81,21 @@
     "confirm": "Confirm",
     "aliases": "Aliases"
   },
+  "auto_import": {
+    "title": "Automatic import",
+    "subtitle": "Import new hands as soon as the poker room writes them",
+    "enable": "Import hands automatically",
+    "choose_folder": "Choose folder",
+    "use_detected": "Use this folder",
+    "manual_rooms": "Betclic and Unibet no longer write hand histories to your computer, so they cannot be imported automatically. Export them from the room's client and use the Import button.",
+    "state": {
+      "off": "Auto-import off",
+      "watching": "Watching",
+      "importing": "Importing...",
+      "paused": "Paused",
+      "error": "Import error"
+    }
+  },
   "header": {
     "search_placeholder": "Search hand, player...",
     "select_hero": "Select...",
