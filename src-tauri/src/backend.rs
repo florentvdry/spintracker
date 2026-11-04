@@ -29,7 +29,7 @@ enum Status {
 
 impl BackendState {
     pub fn ready(&self) -> Option<Arc<Backend>> {
-        match &*self.inner.lock().unwrap() {
+        match &*self.inner.lock().unwrap_or_else(std::sync::PoisonError::into_inner) {
             Status::Ready(backend) => Some(backend.clone()),
             _ => None,
         }
@@ -37,14 +37,14 @@ impl BackendState {
 
     /// `Err` with the reason when the backend failed to start.
     pub fn failure(&self) -> Option<String> {
-        match &*self.inner.lock().unwrap() {
+        match &*self.inner.lock().unwrap_or_else(std::sync::PoisonError::into_inner) {
             Status::Failed(reason) => Some(reason.clone()),
             _ => None,
         }
     }
 
     fn set(&self, status: Status) {
-        *self.inner.lock().unwrap() = status;
+        *self.inner.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = status;
     }
 }
 

@@ -94,7 +94,7 @@ impl Default for AutoImportState {
 
 impl AutoImportState {
     fn send(&self, msg: Msg) {
-        if let Some(sender) = self.sender.lock().unwrap().as_ref() {
+        if let Some(sender) = self.sender.lock().unwrap_or_else(std::sync::PoisonError::into_inner).as_ref() {
             let _ = sender.send(msg);
         }
     }
@@ -104,7 +104,7 @@ impl AutoImportState {
 pub fn start(app: &AppHandle) {
     let state = app.state::<AutoImportState>();
     let (tx, rx) = channel();
-    *state.sender.lock().unwrap() = Some(tx.clone());
+    *state.sender.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = Some(tx.clone());
     let status = state.status.clone();
     let app = app.clone();
     std::thread::Builder::new()
@@ -204,7 +204,7 @@ fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
 
 pub fn get(app: &AppHandle) -> Value {
     let state = app.state::<AutoImportState>();
-    let status = state.status.lock().unwrap().clone();
+    let status = state.status.lock().unwrap_or_else(std::sync::PoisonError::into_inner).clone();
     let (enabled, folders) = active_settings(app).map_or((false, Vec::new()), |(_, s)| (s.enabled, s.folders));
     json!({
         "success": true,
@@ -309,7 +309,7 @@ impl Worker {
 
     fn set_status(&self, state: State, message: Option<String>) {
         let status = Status { state, message };
-        *self.status.lock().unwrap() = status.clone();
+        *self.status.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = status.clone();
         let _ = self.app.emit(STATUS_EVENT, status);
     }
 

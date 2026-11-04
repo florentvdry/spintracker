@@ -200,7 +200,7 @@ pub fn app_ready(app: AppHandle) -> Value {
 #[tauri::command]
 pub fn open_replayer(app: AppHandle, state: tauri::State<ReplayerState>, data: Value) -> Result<(), String> {
     let label = format!("replayer-{}", state.counter.fetch_add(1, Ordering::Relaxed));
-    state.data.lock().unwrap().insert(label.clone(), data);
+    state.data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).insert(label.clone(), data);
 
     WebviewWindowBuilder::new(&app, &label, WebviewUrl::App("replayer.html".into()))
         .title("SpinTracker Replayer")
@@ -213,7 +213,7 @@ pub fn open_replayer(app: AppHandle, state: tauri::State<ReplayerState>, data: V
 
 #[tauri::command]
 pub fn replayer_get_data(window: WebviewWindow, state: tauri::State<ReplayerState>) -> Option<Value> {
-    state.data.lock().unwrap().get(window.label()).cloned()
+    state.data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).get(window.label()).cloned()
 }
 
 #[tauri::command]
