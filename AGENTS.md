@@ -8,7 +8,7 @@
 - Code: identifiers (classes, methods, variables, files, folders, DB tables/columns, API routes, JSON fields).
 - Comments, XML docs, log messages, exception messages.
 - Commit messages, branch names, PR titles/descriptions, issues.
-- Documentation: README, `changelogs.txt`, `todo.txt`, this file.
+- Documentation: README, `backend/README.md`, this file.
 - Tests: names and descriptions.
 
 Exception: user-facing UI text lives in `frontend-vue/src/locales/` and may exist in several languages (see §6). English is the reference locale; every key must exist in it.
@@ -87,7 +87,8 @@ V1.2.0 - new range analysis
 ```
 
 - Only produce such a commit on an explicit release request.
-- The version must match `package.json` and `changelogs.txt`.
+- The version must match `package.json`.
+- The release notes are generated from the commit subjects since the previous tag (`deploy.yml`), so every subject must say clearly what changed for the user.
 - No other commit may ever start with `V<digits>.<digits>.<digits>`.
 - Automated bumps use `[skip ci]`; do not imitate them by hand unless asked.
 
@@ -110,7 +111,6 @@ V1.2.0 - new range analysis
 - No silent `catch (Exception)`; log or rethrow. No leftover `Console.WriteLine` debugging.
 - Stat computations belong in `Engines/` and must be deterministic and testable.
 - No magic numbers: use named constants (buy-ins, prize pool multipliers…).
-- Money/EV: use `decimal` for amounts, not `float`.
 
 ## 6. Vue / JS conventions (frontend)
 
@@ -148,23 +148,23 @@ V1.2.0 - new range analysis
 - No secret, token or key in code, history or workflows; use GitHub secrets. Public repo: anything committed is public forever.
 - Dependencies: add a NuGet/npm package only if necessary, justify it, pin versions, check its license is MIT-compatible. Do not hand-edit `package-lock.json`.
 - Do not copy code from incompatible-license sources. Keep the `LICENSE` file and headers intact.
-- Security issues: do not open public issues with exploit details; follow `SECURITY.md` if present.
+- Security issues: do not open public issues with exploit details; follow `SECURITY.md`.
 
 ## 10. General code quality
 
 - Readability over cleverness. Short functions, single responsibility.
 - No duplication: reuse existing code first (search `utils/`, `Extensions/`, `Engines/`).
-- Comments explain the *why*, never the *what*, in English. No context-free TODOs; track tasks in `todo.txt`.
+- Comments explain the *why*, never the *what*, in English. No context-free TODOs; track tasks in GitHub issues.
 - No opportunistic refactoring outside the requested scope; mention it instead.
 - No mass reformatting mixed into functional changes.
 - Encoding: **UTF-8** for all files.
 - Line endings and indentation: follow the existing file.
 
-## 11. Documentation & changelog
+## 11. Documentation & release notes
 
-- User-visible change → add an entry in `changelogs.txt` (source of release notes), in English.
+- There is no changelog file: release notes come from the commit subjects (§3), so write them for the user.
 - Architecture, command or config change → update `README.md` (root or `backend/README.md`).
-- New feature → mention it in the changelog under the current version.
+- New feature → mention it in `README.md` if it changes what the app does.
 
 ## 12. Expected agent behavior
 
@@ -183,7 +183,7 @@ V1.2.0 - new range analysis
 - [ ] Backend tests green; new test added for any bug/feature
 - [ ] No hardcoded strings (i18n), no leftover `console.log`/debug
 - [ ] Migration added if the schema changes
-- [ ] `changelogs.txt` / README updated if needed
+- [ ] README updated if needed
 - [ ] Everything written is in English (code, comments, docs, commit)
 - [ ] Commit message follows §3
 - [ ] No out-of-scope file modified
