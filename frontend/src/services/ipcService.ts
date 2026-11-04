@@ -22,6 +22,23 @@ export interface ImportProgress {
   totalHands: number | null
 }
 
+export type AutoImportState = 'off' | 'watching' | 'importing' | 'paused' | 'error'
+
+export interface AutoImportStatus {
+  state: AutoImportState
+  message: string | null
+}
+
+export interface AutoImportFolder {
+  room: string
+  path: string
+}
+
+export interface HandsImported {
+  imported: number
+  files: number
+}
+
 export interface UpdateStatus {
   status: 'checking' | 'available' | 'not-available' | 'downloading' | 'downloaded' | 'error'
   version?: string
@@ -143,6 +160,12 @@ export const ipcService = {
   resetDefaultStats: () => backend('POST', '/reset-default-stats', {}),
   deleteAllHands: () => command<ApiResult>('delete_all_hands'),
   importHandHistory: () => command<ApiResult>('import_hand_history'),
+  getAutoImport: () => command<ApiResult>('auto_import_get'),
+  setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),
+  pickAutoImportFolder: async (): Promise<string | null> => {
+    const path = await command<unknown>('auto_import_pick_folder')
+    return typeof path === 'string' ? path : null
+  },
   exportData: (dialogTitle: string) => command<ApiResult>('export_data', { dialogTitle }),
   checkServerStatus: () => command<ApiResult>('check_server_status'),
   openLogsFolder: () => command<ApiResult>('open_logs_folder'),
@@ -167,6 +190,8 @@ export const ipcService = {
 
   // Events
   onImportProgress: (callback: (progress: ImportProgress) => void) => subscribe('import-progress', callback),
+  onHandsImported: (callback: (payload: HandsImported) => void) => subscribe('hands-imported', callback),
+  onAutoImportStatus: (callback: (status: AutoImportStatus) => void) => subscribe('auto-import-status', callback),
   onUpdateStatus: (callback: (status: UpdateStatus) => void) => subscribe('update-status', callback),
 }
 

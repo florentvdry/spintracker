@@ -80,6 +80,22 @@
     "confirm": "Confirmer",
     "aliases": "Alias"
   },
+  "auto_import": {
+    "title": "Import automatique",
+    "subtitle": "Importe les nouvelles mains dès que la salle de poker les écrit",
+    "enable": "Importer les mains automatiquement",
+    "choose_folder": "Choisir un dossier",
+    "use_detected": "Utiliser ce dossier",
+    "unibet_hint": "Sélectionnez le dossier où Unibet enregistre ses exports automatiques (Documents\\Unibet Poker\\History\\Exports\\Automatic).",
+    "manual_rooms": "Betclic n'écrit plus les historiques de mains sur votre ordinateur : ils ne peuvent pas être importés automatiquement. Exportez-les depuis le client Betclic puis utilisez le bouton Importer.",
+    "state": {
+      "off": "Import auto désactivé",
+      "watching": "En surveillance",
+      "importing": "Import en cours...",
+      "paused": "En pause",
+      "error": "Erreur d'import"
+    }
+  },
   "header": {
     "search_placeholder": "Rechercher une main, joueur...",
     "select_hero": "Sélectionner...",

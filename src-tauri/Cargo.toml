@@ -28,3 +28,7 @@ zip = { version = "2", default-features = false, features = ["deflate"] }
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
 log = "0.4"
 spintracker-core = { path = "../crates/core" }
+notify = "=8.2.0"
+
+[dev-dependencies]
+tempfile = "3"

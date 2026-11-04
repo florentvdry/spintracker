@@ -12,7 +12,26 @@ pub const REG_HANDS_THRESHOLD: i64 = 500;
 /// (The former SQL compared a missing row to 0, so a new player only became a regular on the
 /// second recount; a player not yet known now counts as not forced.)
 pub fn update_player_stats(conn: &Connection) -> Result<()> {
-    conn.execute(
+    recount(conn, "", &[])
+}
+
+/// Names per statement; keeps the number of bound parameters far below SQLite's limit.
+const NAMES_PER_STATEMENT: usize = 500;
+
+/// Same recount as [`update_player_stats`], limited to `names`: what the automatic import needs
+/// after a few hands, instead of re-aggregating the whole database.
+pub fn update_stats_for_players(conn: &Connection, names: &[String]) -> Result<()> {
+    for chunk in names.chunks(NAMES_PER_STATEMENT) {
+        // Only `?N` placeholders are generated: the names themselves are always bound.
+        let placeholders = (0..chunk.len()).map(|i| format!("?{}", i + 2)).collect::<Vec<_>>().join(", ");
+        recount(conn, &format!("AND ph.player_name IN ({placeholders})"), chunk)?;
+    }
+    Ok(())
+}
+
+/// `extra_filter` is a fixed fragment built from placeholders only, never from user input.
+fn recount(conn: &Connection, extra_filter: &str, names: &[String]) -> Result<()> {
+    let sql = format!(
         "INSERT INTO players (name, room, total_hands, total_profit, total_ev_profit, is_reg, is_reg_forced, updated_at)
          SELECT
              ph.player_name,
@@ -29,7 +48,7 @@ pub fn update_player_stats(conn: &Connection) -> Result<()> {
              CURRENT_TIMESTAMP
          FROM player_hands ph
          JOIN hands h ON ph.hand_id = h.id
-         WHERE h.player_count <= 3
+         WHERE h.player_count <= 3 {extra_filter}
          GROUP BY ph.player_name
          ON CONFLICT(name) DO UPDATE SET
              room = excluded.room,
@@ -38,9 +57,11 @@ pub fn update_player_stats(conn: &Connection) -> Result<()> {
              total_ev_profit = excluded.total_ev_profit,
              is_reg = excluded.is_reg,
              is_reg_forced = excluded.is_reg_forced,
-             updated_at = excluded.updated_at",
-        [REG_HANDS_THRESHOLD],
-    )?;
+             updated_at = excluded.updated_at"
+    );
+    let mut params: Vec<&dyn rusqlite::ToSql> = vec![&REG_HANDS_THRESHOLD];
+    params.extend(names.iter().map(|n| n as &dyn rusqlite::ToSql));
+    conn.execute(&sql, params.as_slice())?;
     Ok(())
 }
 
@@ -99,6 +120,27 @@ mod tests {
         update_player_stats(&conn).unwrap();
         assert_eq!(player(&conn, "reg"), (510, 510.0, 0, 1));
         assert_eq!(player(&conn, "fish").2, 1);
+    }
+
+    #[test]
+    fn a_partial_recount_equals_the_full_one_for_the_touched_players() {
+        let dir = tempfile::tempdir().unwrap();
+        let db = Database::open(dir.path().join("a.db")).unwrap();
+        let conn = db.conn().unwrap();
+        add_hands(&conn, "a", 4, 2.0, 0);
+        add_hands(&conn, "b", 3, -1.0, 0);
+        update_player_stats(&conn).unwrap();
+
+        add_hands(&conn, "a", 2, 2.0, 4);
+        add_hands(&conn, "b", 2, -1.0, 3);
+        update_stats_for_players(&conn, &["a".to_string()]).unwrap();
+        assert_eq!(player(&conn, "a"), (6, 12.0, 0, 0));
+        assert_eq!(player(&conn, "b").0, 3, "untouched players keep their previous totals");
+
+        update_stats_for_players(&conn, &["b".to_string()]).unwrap();
+        let partial = (player(&conn, "a"), player(&conn, "b"));
+        update_player_stats(&conn).unwrap();
+        assert_eq!(partial, (player(&conn, "a"), player(&conn, "b")));
     }
 
     #[test]
