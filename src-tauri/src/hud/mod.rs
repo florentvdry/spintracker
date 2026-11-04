@@ -56,14 +56,14 @@ pub fn set_panel_rects(app: &AppHandle, label: &str, rects: &Value) -> Value {
 
 /// Development aid: lays a HUD window with example panels over the first visible window whose
 /// title contains `title_contains`, to check the window behaviour without a poker table.
-pub fn debug_attach(app: &AppHandle, title_contains: &str) -> Value {
+pub fn debug_attach(app: &AppHandle, title_contains: &str, format: Option<&str>) -> Value {
     #[cfg(all(windows, debug_assertions))]
     {
         let needle = title_contains.to_lowercase();
         let found = win32::visible_windows().into_iter().find(|(_, title)| title.to_lowercase().contains(&needle) && title != "SpinTracker HUD");
         match found {
             None => json!({ "success": false, "message": "No window with this title." }),
-            Some((table, title)) => match overlay::attach(app, table, json!({ "demo": true })) {
+            Some((table, title)) => match overlay::attach(app, table, json!({ "demo": true, "format": format.unwrap_or("threeMax") })) {
                 Ok(label) => json!({ "success": true, "label": label, "table": table, "title": title }),
                 Err(message) => json!({ "success": false, "message": message }),
             },
@@ -71,7 +71,7 @@ pub fn debug_attach(app: &AppHandle, title_contains: &str) -> Value {
     }
     #[cfg(not(all(windows, debug_assertions)))]
     {
-        let _ = (app, title_contains);
+        let _ = (app, title_contains, format);
         json!({ "success": false, "message": "Only available in debug builds on Windows." })
     }
 }

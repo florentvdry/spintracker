@@ -117,8 +117,8 @@ pub async fn hud_set_panel_rects(app: AppHandle, window: WebviewWindow, rects: V
 
 /// Development aid, debug builds only: see `hud::debug_attach`.
 #[tauri::command]
-pub async fn hud_debug_attach(app: AppHandle, title_contains: String) -> Value {
-    hud::debug_attach(&app, &title_contains)
+pub async fn hud_debug_attach(app: AppHandle, title_contains: String, format: Option<String>) -> Value {
+    hud::debug_attach(&app, &title_contains, format.as_deref())
 }
 
 #[tauri::command]
