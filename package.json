@@ -4,15 +4,13 @@
   "description": "Free, open-source poker tracker for Spin & Go tournaments: hand history import, leak detection, EV analysis, replayer and range research. 100% local.",
   "scripts": {
     "dev": "tauri dev",
-    "build": "npm run backend:build && tauri build",
+    "build": "tauri build",
     "tauri": "tauri",
     "frontend:dev": "npm --prefix frontend run dev",
     "frontend:build": "npm --prefix frontend run build",
     "frontend:install": "npm --prefix frontend install",
-    "backend:dev": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$conns = Get-NetTCPConnection -LocalPort 5050 -State Listen -ErrorAction SilentlyContinue; if ($conns) { $procIds = $conns | Select-Object -ExpandProperty OwningProcess -Unique; foreach ($procId in $procIds) { try { Stop-Process -Id $procId -Force -ErrorAction Stop } catch {} } Start-Sleep -Milliseconds 300 }; Set-Location backend; dotnet watch run -- 5050\"",
-    "backend:build": "cd backend && dotnet publish SpinTrackerBackend.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=true",
     "postinstall": "npm run frontend:install",
-    "setup": "npm install && npm run backend:build"
+    "setup": "npm install"
   },
   "keywords": [
     "poker",
@@ -30,8 +28,6 @@
     "unibet",
     "electron",
     "vue",
-    "csharp",
-    "dotnet",
     "sqlite",
     "open-source"
   ],

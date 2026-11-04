@@ -3,16 +3,15 @@
 use std::collections::HashMap;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Mutex;
-use std::time::Duration;
 
 use serde_json::{json, Value};
 use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindow, WebviewWindowBuilder};
 use tauri_plugin_opener::OpenerExt;
 
+use crate::backend::BackendState;
 use crate::{api, backend, export, import, updater};
 
 const REPLAYER_BACKGROUND: tauri::window::Color = tauri::window::Color(14, 16, 20, 255);
-const BACKEND_RESTART_DELAY: Duration = Duration::from_secs(1);
 
 /// Hand data handed to each replayer window, keyed by its label.
 #[derive(Default)]
@@ -22,16 +21,19 @@ pub struct ReplayerState {
 }
 
 #[tauri::command]
-pub async fn backend_request(method: String, endpoint: String, body: Option<Value>) -> Value {
-    api::call(&method, &endpoint, body).await
+pub async fn backend_request(app: AppHandle, method: String, endpoint: String, body: Option<Value>) -> Value {
+    api::call(&app, &method, &endpoint, body).await
 }
 
 #[tauri::command]
-pub async fn check_server_status() -> Value {
-    match api::client().get(api::url("/health")).send().await {
-        Ok(response) if response.status().is_success() => json!({ "success": true, "status": "running" }),
-        Ok(response) => json!({ "success": false, "status": "error", "message": response.status().to_string() }),
-        Err(err) => json!({ "success": false, "status": "stopped", "message": err.to_string() }),
+pub fn check_server_status(app: AppHandle) -> Value {
+    let state = app.state::<BackendState>();
+    if state.ready().is_some() {
+        json!({ "success": true, "status": "running" })
+    } else if let Some(reason) = state.failure() {
+        json!({ "success": false, "status": "error", "message": reason })
+    } else {
+        json!({ "success": false, "status": "stopped", "message": "The backend is starting" })
     }
 }
 
@@ -47,13 +49,8 @@ pub async fn export_data(app: AppHandle, dialog_title: String) -> Value {
 
 /// The caller is responsible for asking the user to confirm first.
 #[tauri::command]
-pub async fn delete_all_hands() -> Value {
-    let result = api::call("POST", "/db/delete-all", Some(json!({}))).await;
-    if result["success"].as_bool().unwrap_or(false) {
-        // Resetting data also resets default stats and profiles.
-        api::call("POST", "/reset-default-stats", Some(json!({}))).await;
-    }
-    result
+pub async fn delete_all_hands(app: AppHandle) -> Value {
+    api::call(&app, "POST", "/db/delete-all", Some(json!({}))).await
 }
 
 #[tauri::command]
@@ -62,15 +59,15 @@ pub async fn set_active_database(app: AppHandle, id: Value) -> Value {
         Value::String(s) => s.clone(),
         other => other.to_string(),
     };
-    let endpoint = format!("/api/databases/{}/set-active", urlencoding::encode(&id));
-    let result = api::call("POST", &endpoint, Some(json!({}))).await;
+    let endpoint = format!("/api/databases/{}/set-active", encode_segment(&id));
+    let result = api::call(&app, "POST", &endpoint, Some(json!({}))).await;
 
     if result["success"].as_bool().unwrap_or(false) {
-        // The backend opens its database at startup, so restart it.
-        log::info!("[Database] Switching active database, restarting backend");
-        backend::stop(&app);
-        tokio::time::sleep(BACKEND_RESTART_DELAY).await;
-        backend::start(&app);
+        // The database was swapped in place: bring the new one's statistics up to date.
+        if let Some(backend) = app.state::<BackendState>().ready() {
+            let handle = app.clone();
+            let _ = tauri::async_runtime::spawn_blocking(move || backend::backfill(&handle, &backend)).await;
+        }
     }
     result
 }
@@ -150,4 +147,14 @@ pub async fn download_update(app: AppHandle) {
 #[tauri::command]
 pub fn quit_and_install(app: AppHandle) -> Result<(), String> {
     updater::install(&app)
+}
+
+/// Percent-encodes a value used as a URL path segment.
+fn encode_segment(raw: &str) -> String {
+    raw.bytes()
+        .map(|b| match b {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => (b as char).to_string(),
+            other => format!("%{other:02X}"),
+        })
+        .collect()
 }

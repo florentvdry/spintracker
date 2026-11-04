@@ -7,7 +7,7 @@ mod updater;
 
 use std::time::Duration;
 
-use tauri::{Manager, RunEvent, WindowEvent};
+use tauri::{Manager, WindowEvent};
 use tauri_plugin_log::{Target, TargetKind};
 
 const STARTUP_UPDATE_CHECK_DELAY: Duration = Duration::from_secs(3);
@@ -64,7 +64,6 @@ pub fn run() {
         })
         .on_window_event(|window, event| {
             if window.label() == "main" && matches!(event, WindowEvent::Destroyed) {
-                backend::stop(window.app_handle());
                 window.app_handle().exit(0);
             }
         })
@@ -88,9 +87,5 @@ pub fn run() {
         .build(tauri::generate_context!())
         .expect("error while building SpinTracker");
 
-    app.run(|handle, event| {
-        if let RunEvent::Exit = event {
-            backend::stop(handle);
-        }
-    });
+    app.run(|_handle, _event| {});
 }

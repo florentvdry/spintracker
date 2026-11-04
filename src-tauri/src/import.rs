@@ -1,14 +1,17 @@
-//! Hand history import: file picking, zip expansion and SSE progress relay.
+//! Hand history import: file picking, zip expansion and progress events.
 
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::AtomicBool;
+use std::sync::Arc;
 
-use futures_util::StreamExt;
 use serde_json::{json, Value};
-use tauri::{AppHandle, Emitter};
+use spintracker_core::api::Backend;
+use spintracker_core::models::ImportProgress;
+use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_dialog::DialogExt;
 
-use crate::api;
+use crate::backend::BackendState;
 
 const PROGRESS_EVENT: &str = "import-progress";
 // The counting phase fills the first 10% of the global progress bar.
@@ -24,10 +27,7 @@ fn collect_hand_files(dir: &Path, out: &mut Vec<PathBuf>) {
             continue;
         }
         // Only accept text/xml files from archives to avoid garbage.
-        let ext = path
-            .extension()
-            .map(|e| e.to_string_lossy().to_lowercase())
-            .unwrap_or_default();
+        let ext = path.extension().map(|e| e.to_string_lossy().to_lowercase()).unwrap_or_default();
         if ext == "txt" || ext == "xml" {
             out.push(path);
         }
@@ -46,12 +46,14 @@ fn extract_zip(zip_path: &Path, dest: &Path) -> Result<Vec<PathBuf>, String> {
 }
 
 fn file_name(path: &Path) -> String {
-    path.file_name()
-        .map(|n| n.to_string_lossy().into_owned())
-        .unwrap_or_default()
+    path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()
 }
 
 pub async fn run(app: AppHandle) -> Value {
+    let Some(backend) = app.state::<BackendState>().ready() else {
+        return json!({ "success": false, "message": "The backend is not ready yet." });
+    };
+
     let picker_app = app.clone();
     let picked = tauri::async_runtime::spawn_blocking(move || {
         picker_app
@@ -73,7 +75,11 @@ pub async fn run(app: AppHandle) -> Value {
     let millis = chrono::Utc::now().timestamp_millis();
     let temp_dir = std::env::temp_dir().join(format!("SpinTracker_Import_{millis}"));
 
-    let outcome = import_files(&app, &selected, &temp_dir).await;
+    // Parsing and writing are blocking work.
+    let work_dir = temp_dir.clone();
+    let outcome = tauri::async_runtime::spawn_blocking(move || import_files(&app, &backend, &selected, &work_dir))
+        .await
+        .unwrap_or_else(|err| json!({ "success": false, "message": err.to_string() }));
 
     if temp_dir.exists() {
         if let Err(err) = fs::remove_dir_all(&temp_dir) {
@@ -83,13 +89,10 @@ pub async fn run(app: AppHandle) -> Value {
     outcome
 }
 
-async fn import_files(app: &AppHandle, selected: &[PathBuf], temp_dir: &Path) -> Value {
+fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], temp_dir: &Path) -> Value {
     let mut files: Vec<PathBuf> = Vec::new();
     for path in selected {
-        let is_zip = path
-            .extension()
-            .map(|e| e.eq_ignore_ascii_case("zip"))
-            .unwrap_or(false);
+        let is_zip = path.extension().map(|e| e.eq_ignore_ascii_case("zip")).unwrap_or(false);
         if !is_zip {
             files.push(path.clone());
             continue;
@@ -121,116 +124,55 @@ async fn import_files(app: &AppHandle, selected: &[PathBuf], temp_dir: &Path) ->
                 "totalHands": Value::Null,
             }),
         );
-
-        let response = api::client()
-            .post(api::url("/import/count-hands"))
-            .json(&json!({ "filePath": path.to_string_lossy() }))
-            .send()
-            .await;
         // A failed count is not fatal: the total is simply unknown.
-        if let Ok(response) = response {
-            if response.status().is_success() {
-                if let Ok(body) = response.json::<Value>().await {
-                    if body["success"].as_bool().unwrap_or(false) {
-                        total_hands_expected += body["count"].as_u64().unwrap_or(0);
-                    }
-                }
-            }
+        if let Ok(count) = backend.importer().count_hands(path) {
+            total_hands_expected += count as u64;
         }
     }
 
-    // Phase 2: import each file and relay the backend's SSE progress.
+    // Phase 2: import each file and relay its progress.
     let mut total_imported: u64 = 0;
     let mut total_skipped: u64 = 0;
     let mut errors: Vec<Value> = Vec::new();
     let file_share = IMPORT_SHARE / total_files as f64;
+    let cancel = AtomicBool::new(false);
 
     for (files_processed, path) in files.iter().enumerate() {
         let name = file_name(path);
-        let response = api::client()
-            .post(api::url("/import/file"))
-            .json(&json!({ "filePath": path.to_string_lossy() }))
-            .send()
-            .await;
+        let mut last = ImportProgress::default();
+        let outcome = backend.importer().import_file(path, &cancel, |progress| {
+            let current = (f64::from(progress.percent) * file_share / 100.0).round();
+            let global = (COUNTING_SHARE + (files_processed as f64 * file_share).round() + current).round();
+            let _ = app.emit(
+                PROGRESS_EVENT,
+                json!({
+                    "stage": "importing",
+                    "filesProcessed": files_processed,
+                    "totalFiles": total_files,
+                    "percent": global.min(100.0),
+                    "handsImported": total_imported + progress.hands_imported as u64,
+                    "handsSkipped": total_skipped + progress.hands_skipped as u64,
+                    "totalHands": if total_hands_expected > 0 { json!(total_hands_expected) } else { Value::Null },
+                }),
+            );
+            last = progress;
+        });
 
-        let response = match response {
-            Ok(r) if r.status().is_success() => r,
-            Ok(r) => {
-                errors.push(json!({ "file": name, "error": format!("Backend returned {}", r.status().as_u16()) }));
-                continue;
+        match outcome {
+            Ok(summary) => {
+                if last.success {
+                    total_imported += summary.imported as u64;
+                    total_skipped += summary.skipped as u64;
+                }
             }
             Err(err) => {
                 log::error!("[Import] Error processing {}: {err}", path.display());
                 errors.push(json!({ "file": name, "error": err.to_string() }));
-                continue;
             }
-        };
-
-        let mut buffer: Vec<u8> = Vec::new();
-        let mut stream = response.bytes_stream();
-        let mut file_imported: u64 = 0;
-        let mut file_skipped: u64 = 0;
-        let mut file_succeeded = false;
-        let mut stream_error: Option<String> = None;
-
-        while let Some(chunk) = stream.next().await {
-            let chunk = match chunk {
-                Ok(c) => c,
-                Err(err) => {
-                    stream_error = Some(err.to_string());
-                    break;
-                }
-            };
-            buffer.extend_from_slice(&chunk);
-
-            // SSE events are separated by a blank line.
-            while let Some(pos) = buffer.windows(2).position(|w| w == b"\n\n") {
-                let raw: Vec<u8> = buffer.drain(..pos + 2).collect();
-                let text = String::from_utf8_lossy(&raw);
-                for line in text.lines() {
-                    let Some(json_text) = line.strip_prefix("data:") else { continue };
-                    let Ok(progress) = serde_json::from_str::<Value>(json_text.trim()) else {
-                        log::error!("[Import] Failed to parse progress event");
-                        continue;
-                    };
-
-                    if let Some(err) = progress.get("error").filter(|e| !e.is_null()) {
-                        errors.push(json!({ "file": name, "error": err }));
-                    }
-
-                    let file_percent = progress["Percent"].as_f64().unwrap_or(0.0);
-                    let current = (file_percent * file_share / 100.0).round();
-                    let global = (COUNTING_SHARE + (files_processed as f64 * file_share).round() + current).round();
-
-                    file_imported = progress["HandsImported"].as_u64().unwrap_or(0);
-                    file_skipped = progress["HandsSkipped"].as_u64().unwrap_or(0);
-                    file_succeeded = progress["Success"].as_bool().unwrap_or(false);
-
-                    let _ = app.emit(
-                        PROGRESS_EVENT,
-                        json!({
-                            "stage": "importing",
-                            "filesProcessed": files_processed,
-                            "totalFiles": total_files,
-                            "percent": global.min(100.0),
-                            "handsImported": total_imported + file_imported,
-                            "handsSkipped": total_skipped + file_skipped,
-                            "totalHands": if total_hands_expected > 0 { json!(total_hands_expected) } else { Value::Null },
-                        }),
-                    );
-                }
-            }
-        }
-
-        if let Some(err) = stream_error {
-            errors.push(json!({ "file": name, "error": err }));
-        }
-        if file_succeeded {
-            total_imported += file_imported;
-            total_skipped += file_skipped;
         }
     }
 
+    // Statistics are read from per-hand flags written during the import; nothing else to refresh.
     json!({
         "success": true,
         "handsImported": total_imported,

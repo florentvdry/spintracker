@@ -1,54 +1,34 @@
-//! Thin HTTP client for the local C# backend.
-
-use std::sync::OnceLock;
-use std::time::Duration;
+//! Requests from the UI to the in-process backend.
 
 use serde_json::{json, Value};
+use tauri::{AppHandle, Manager};
 
-use crate::backend::BACKEND_PORT;
+use crate::backend::BackendState;
 
-// Imports can run for a long time; keep the historical 24h ceiling.
-const REQUEST_TIMEOUT: Duration = Duration::from_secs(86_400);
-
-pub fn client() -> &'static reqwest::Client {
-    static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
-    CLIENT.get_or_init(|| {
-        reqwest::Client::builder()
-            .timeout(REQUEST_TIMEOUT)
-            .build()
-            .expect("failed to build HTTP client")
-    })
-}
-
-pub fn url(endpoint: &str) -> String {
-    format!("http://127.0.0.1:{BACKEND_PORT}{endpoint}")
-}
-
-/// Calls the backend and always returns JSON; transport failures become
-/// `{ "success": false, "error": ... }` like the former Electron bridge.
-pub async fn call(method: &str, endpoint: &str, body: Option<Value>) -> Value {
-    // Reject anything that is not an absolute path so a crafted endpoint can
-    // never redirect the request to another host.
+/// Runs a request and always returns JSON, like the former HTTP bridge: failures become
+/// `{ "success": false, "error": ... }`.
+pub async fn call(app: &AppHandle, method: &str, endpoint: &str, body: Option<Value>) -> Value {
+    // Only absolute backend paths are accepted.
     if !endpoint.starts_with('/') {
         return json!({ "success": false, "error": "Invalid endpoint" });
     }
-
-    let http_method = match method.to_ascii_uppercase().as_str() {
-        "GET" => reqwest::Method::GET,
-        "POST" => reqwest::Method::POST,
-        "PUT" => reqwest::Method::PUT,
-        "DELETE" => reqwest::Method::DELETE,
-        _ => return json!({ "success": false, "error": "Unsupported method" }),
-    };
-
-    let mut request = client().request(http_method.clone(), url(endpoint));
-    if http_method == reqwest::Method::POST || http_method == reqwest::Method::PUT {
-        request = request.json(&body.unwrap_or_else(|| json!({})));
+    let method = method.to_ascii_uppercase();
+    if !matches!(method.as_str(), "GET" | "POST" | "PUT" | "DELETE") {
+        return json!({ "success": false, "error": "Unsupported method" });
     }
 
-    let result = async { request.send().await?.json::<Value>().await }.await;
-    result.unwrap_or_else(|err| {
-        log::error!("API call failed ({endpoint}): {err}");
-        json!({ "success": false, "error": err.to_string() })
-    })
+    let state = app.state::<BackendState>();
+    let Some(backend) = state.ready() else {
+        let reason = state.failure().unwrap_or_else(|| "The backend is starting".into());
+        return json!({ "success": false, "error": reason });
+    };
+
+    let endpoint = endpoint.to_string();
+    // Queries and imports are CPU and disk work: keep them off the async runtime.
+    tauri::async_runtime::spawn_blocking(move || backend.handle(&method, &endpoint, body).body)
+        .await
+        .unwrap_or_else(|err| {
+            log::error!("API call failed: {err}");
+            json!({ "success": false, "error": err.to_string() })
+        })
 }

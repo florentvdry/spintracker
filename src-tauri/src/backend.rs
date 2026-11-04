@@ -1,33 +1,57 @@
-//! Lifecycle of the C# backend process (ASP.NET Core, port 5050).
+//! Lifecycle of the in-process backend (`spintracker-core`).
 
 use std::fs;
-use std::path::{Path, PathBuf};
-use std::process::Stdio;
-use std::sync::Mutex;
+use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
 
-use tauri::{AppHandle, Manager};
-use tokio::io::{AsyncBufReadExt, BufReader};
-use tokio::process::Command;
+use serde_json::json;
+use spintracker_core::api::Backend;
+use tauri::{AppHandle, Emitter, Manager};
 
-pub const BACKEND_PORT: u16 = 5050;
 const APP_DATA_FOLDER: &str = "SpinTracker";
 const LEGACY_DATA_FOLDER: &str = "poker-tracker-pro";
 const DB_FILE_NAME: &str = "poker_tracker.db";
-#[cfg(windows)]
-const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+pub const BACKFILL_EVENT: &str = "backfill-progress";
 
+/// The backend once it is ready to answer; an error message when it could not start.
 #[derive(Default)]
 pub struct BackendState {
-    pid: Mutex<Option<u32>>,
+    inner: Mutex<Status>,
+}
+
+#[derive(Default)]
+enum Status {
+    #[default]
+    Starting,
+    Ready(Arc<Backend>),
+    Failed(String),
+}
+
+impl BackendState {
+    pub fn ready(&self) -> Option<Arc<Backend>> {
+        match &*self.inner.lock().unwrap() {
+            Status::Ready(backend) => Some(backend.clone()),
+            _ => None,
+        }
+    }
+
+    /// `Err` with the reason when the backend failed to start.
+    pub fn failure(&self) -> Option<String> {
+        match &*self.inner.lock().unwrap() {
+            Status::Failed(reason) => Some(reason.clone()),
+            _ => None,
+        }
+    }
+
+    fn set(&self, status: Status) {
+        *self.inner.lock().unwrap() = status;
+    }
 }
 
 /// Same folder as the former Electron `userData`, so existing databases and
 /// settings are picked up without any migration.
 pub fn data_dir(app: &AppHandle) -> PathBuf {
-    let base = app
-        .path()
-        .config_dir()
-        .unwrap_or_else(|_| std::env::temp_dir());
+    let base = app.path().config_dir().unwrap_or_else(|_| std::env::temp_dir());
     base.join(APP_DATA_FOLDER)
 }
 
@@ -35,20 +59,17 @@ pub fn logs_dir(app: &AppHandle) -> PathBuf {
     data_dir(app).join("logs")
 }
 
-fn db_path(app: &AppHandle) -> PathBuf {
+/// The database a first run starts with, copied from the Electron-era folder when it exists.
+fn default_db_path(app: &AppHandle) -> PathBuf {
     let user_data = data_dir(app);
     let db_path = user_data.join(DB_FILE_NAME);
 
     if !db_path.exists() {
-        let legacy_dir = user_data
-            .parent()
-            .map(|p| p.join(LEGACY_DATA_FOLDER))
-            .unwrap_or_default();
+        let legacy_dir = user_data.parent().map(|p| p.join(LEGACY_DATA_FOLDER)).unwrap_or_default();
         let legacy_db = legacy_dir.join(DB_FILE_NAME);
         if legacy_db.exists() {
             log::info!("Migrating database from {}", legacy_db.display());
-            let result = fs::create_dir_all(&user_data)
-                .and_then(|_| fs::copy(&legacy_db, &db_path).map(|_| ()));
+            let result = fs::create_dir_all(&user_data).and_then(|_| fs::copy(&legacy_db, &db_path).map(|_| ()));
             match result {
                 Ok(()) => {
                     let legacy_config = legacy_dir.join("config.json");
@@ -67,128 +88,33 @@ fn db_path(app: &AppHandle) -> PathBuf {
     db_path
 }
 
-fn backend_command(app: &AppHandle) -> Result<Command, String> {
-    let db_arg = format!("--db-path={}", db_path(app).display());
-    let port = BACKEND_PORT.to_string();
-
-    let mut cmd = if cfg!(debug_assertions) {
-        let backend_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("..").join("backend");
-        let mut cmd = Command::new("dotnet");
-        cmd.args(["run", "--", &port, &db_arg]).current_dir(backend_dir);
-        cmd
-    } else {
-        let backend_dir = app
-            .path()
-            .resource_dir()
-            .map_err(|e| e.to_string())?
-            .join("backend");
-        let exe = backend_dir.join("SpinTrackerBackend.exe");
-        if !exe.exists() {
-            return Err(format!("Backend executable not found: {}", exe.display()));
-        }
-        let mut cmd = Command::new(exe);
-        cmd.args([&port, &db_arg]).current_dir(backend_dir);
-        cmd
-    };
-
-    cmd.stdin(Stdio::null())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .kill_on_drop(false);
-    #[cfg(windows)]
-    cmd.creation_flags(CREATE_NO_WINDOW);
-    Ok(cmd)
-}
-
+/// Opens the database, brings its stored statistics up to date, then marks the backend ready.
 pub fn start(app: &AppHandle) {
-    let state = app.state::<BackendState>();
-    let mut guard = state.pid.lock().unwrap();
-    if guard.is_some() {
-        return;
-    }
-
-    let app_handle = app.clone();
-    // Reserve the slot immediately so concurrent calls do not spawn twice.
-    *guard = Some(0);
-    drop(guard);
-
-    tauri::async_runtime::spawn(async move {
-        let mut child = match backend_command(&app_handle).and_then(|mut c| c.spawn().map_err(|e| e.to_string())) {
-            Ok(child) => child,
+    let app = app.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let state = app.state::<BackendState>();
+        let backend = match Backend::open(data_dir(&app), Some(&default_db_path(&app))) {
+            Ok(backend) => Arc::new(backend),
             Err(err) => {
                 log::error!("Failed to start backend: {err}");
-                *app_handle.state::<BackendState>().pid.lock().unwrap() = None;
+                state.set(Status::Failed(err.to_string()));
                 return;
             }
         };
-
-        let pid = child.id().unwrap_or(0);
-        *app_handle.state::<BackendState>().pid.lock().unwrap() = Some(pid);
-
-        if let Some(stdout) = child.stdout.take() {
-            tauri::async_runtime::spawn(async move {
-                let mut lines = BufReader::new(stdout).lines();
-                while let Ok(Some(line)) = lines.next_line().await {
-                    let line = line.trim();
-                    // Routine ASP.NET request logs are noise.
-                    if line.is_empty()
-                        || line.contains("info: Microsoft.AspNetCore.Hosting.Diagnostics")
-                        || line.contains("info: Microsoft.AspNetCore.Routing.EndpointMiddleware")
-                    {
-                        continue;
-                    }
-                    log::info!("[Backend] {line}");
-                }
-            });
-        }
-
-        if let Some(stderr) = child.stderr.take() {
-            tauri::async_runtime::spawn(async move {
-                let mut lines = BufReader::new(stderr).lines();
-                while let Ok(Some(line)) = lines.next_line().await {
-                    let line = line.trim();
-                    if line.is_empty() || (line.contains("127.0.0.1") && line.contains("HTTP/1.1")) {
-                        continue;
-                    }
-                    log::error!("[Backend-Err] {line}");
-                }
-            });
-        }
-
-        match child.wait().await {
-            Ok(status) if !status.success() => log::error!("Backend exited with {status}"),
-            Err(err) => log::error!("Failed to wait for backend: {err}"),
-            _ => {}
-        }
-
-        let state = app_handle.state::<BackendState>();
-        let mut guard = state.pid.lock().unwrap();
-        if *guard == Some(pid) {
-            *guard = None;
-        }
+        backfill(&app, &backend);
+        state.set(Status::Ready(backend));
+        log::info!("Backend ready");
     });
 }
 
-/// Kills the whole process tree: `dotnet run` would otherwise leave orphans.
-pub fn stop(app: &AppHandle) {
-    let pid = app.state::<BackendState>().pid.lock().unwrap().take();
-    let Some(pid) = pid.filter(|p| *p != 0) else {
-        return;
-    };
-
-    #[cfg(windows)]
-    {
-        use std::os::windows::process::CommandExt;
-        let result = std::process::Command::new("taskkill")
-            .args(["/pid", &pid.to_string(), "/T", "/F"])
-            .creation_flags(CREATE_NO_WINDOW)
-            .status();
-        if let Err(err) = result {
-            log::error!("Failed to kill backend process tree: {err}");
-        }
-    }
-    #[cfg(not(windows))]
-    {
-        let _ = std::process::Command::new("kill").arg(pid.to_string()).status();
+/// Computes the stat flags that are missing (databases created by the former backend, or after an
+/// update changed them), reporting progress to the UI.
+pub fn backfill(app: &AppHandle, backend: &Backend) {
+    let result = backend.backfill_flags(|done, total| {
+        log::info!("Updating statistics: {done}/{total} hands");
+        let _ = app.emit(BACKFILL_EVENT, json!({ "done": done, "total": total }));
+    });
+    if let Err(err) = result {
+        log::error!("Failed to update statistics: {err}");
     }
 }

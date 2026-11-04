@@ -24,7 +24,7 @@ fn day_key(date_time: &str) -> Option<String> {
 }
 
 pub async fn run(app: AppHandle, dialog_title: String) -> Value {
-    let hands_result = api::call("POST", "/db/hands", Some(json!({ "limit": EXPORT_HAND_LIMIT }))).await;
+    let hands_result = api::call(&app, "POST", "/db/hands", Some(json!({ "limit": EXPORT_HAND_LIMIT }))).await;
     if !hands_result["success"].as_bool().unwrap_or(false) {
         return json!({ "success": false, "message": "Failed to fetch hands" });
     }
