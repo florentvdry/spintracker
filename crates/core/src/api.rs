@@ -7,7 +7,7 @@
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use serde::de::DeserializeOwned;
 use serde_json::{json, Value};
@@ -69,7 +69,18 @@ pub struct Backend {
     registry: DatabaseRegistry,
     importer: Importer,
     hud: HudService,
+    /// Detailed statistics by query, valid for one data version: they read every hand.
+    detailed_cache: Mutex<DetailedCache>,
 }
+
+#[derive(Default)]
+struct DetailedCache {
+    version: u64,
+    entries: HashMap<String, Value>,
+}
+
+/// Queries kept in the detailed statistics cache.
+const DETAILED_CACHE_CAPACITY: usize = 16;
 
 impl Backend {
     /// Opens the active database of the registry kept in `app_dir`, creating both on first run.
@@ -81,7 +92,7 @@ impl Backend {
         let analytics = Arc::new(AnalyticsCalculator::default());
         let importer = Importer::new(db.clone(), analytics.clone());
         let hud = HudService::new(db.clone());
-        Ok(Self { db, registry, importer, hud })
+        Ok(Self { db, registry, importer, hud, detailed_cache: Mutex::default() })
     }
 
     pub fn importer(&self) -> &Importer {
@@ -203,7 +214,7 @@ impl Backend {
                         stats_scope: r.query_str("statsScope"),
                         opponent_name: opponent,
                     };
-                    Response::data(detailed_stats(&*conn()?, &q)?)
+                    Response::data(self.detailed_stats_cached(&q)?)
                 }
             }
             ("GET" | "POST", ["db", "winrate-chart"]) => {
@@ -230,12 +241,17 @@ impl Backend {
             }
             ("POST", ["db", "players", "sync"]) => {
                 players::update_player_stats(&*conn()?)?;
+                self.db.bump_data_version();
                 Response::ok(json!({ "success": true }))
             }
             ("POST", ["db", "players", id, "reg-status"]) => {
                 let is_reg = r.body_field::<bool>("isReg").unwrap_or(false);
                 match id.parse::<i64>() {
-                    Ok(id) if player_queries::set_reg_status(&*conn()?, id, is_reg)? => Response::ok(json!({ "success": true })),
+                    Ok(id) if player_queries::set_reg_status(&*conn()?, id, is_reg)? => {
+                        // The regular/fish scope of the detailed statistics depends on it.
+                        self.db.bump_data_version();
+                        Response::ok(json!({ "success": true }))
+                    }
                     _ => Response::failure(404, "Player not found"),
                 }
             }
@@ -306,6 +322,31 @@ impl Backend {
             _ => return Ok(None),
         };
         Ok(Some(response))
+    }
+
+    fn detailed_stats_cached(&self, q: &DetailedQuery) -> Result<Value> {
+        let version = self.db.data_version();
+        let key = format!("{q:?}");
+        {
+            let mut cache = self.detailed_cache.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+            if cache.version != version {
+                cache.entries.clear();
+                cache.version = version;
+            }
+            if let Some(value) = cache.entries.get(&key) {
+                return Ok(value.clone());
+            }
+        }
+        let value = detailed_stats(&*self.db.conn()?, q)?;
+        let mut cache = self.detailed_cache.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+        // Data written while the statistics were computed makes them stale: do not keep them.
+        if cache.version == version {
+            if cache.entries.len() >= DETAILED_CACHE_CAPACITY {
+                cache.entries.clear();
+            }
+            cache.entries.insert(key, value.clone());
+        }
+        Ok(value)
     }
 
     fn parse_file(&self, r: &Request) -> Result<Response> {
