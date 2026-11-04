@@ -252,11 +252,7 @@ fn player_positions(map: &str) -> HashMap<String, String> {
 }
 
 fn big_blind(blinds: &str) -> f64 {
-    let parts: Vec<&str> = blinds.split('/').collect();
-    match parts[..] {
-        [_, bb] => bb.trim().parse().unwrap_or(0.0),
-        _ => 0.0,
-    }
+    crate::engines::actions::big_blind(blinds) as f64
 }
 
 // ---------------------------------------------------------------------------------------------
