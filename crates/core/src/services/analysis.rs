@@ -553,7 +553,8 @@ pub fn analysis_hands(conn: &Connection, request: &AnalysisHandsRequest) -> Resu
     Ok(json!({ "hands": ordered, "total": total, "page": page, "limit": limit, "pages": (total as f64 / limit as f64).ceil() as i64 }))
 }
 
-fn count_aggression(text: &str, hero: &str, counts: &mut [u32; 4]) {
+/// Bets, raises, calls, folds and checks of the hero on one street.
+fn count_aggression(text: &str, hero: &str, counts: &mut [u32; 5]) {
     for line in text.split('\n') {
         if let Some(act) = action_of_player(line, hero) {
             let act = act.to_lowercase();
@@ -565,6 +566,8 @@ fn count_aggression(text: &str, hero: &str, counts: &mut [u32; 4]) {
                 2
             } else if act.contains("folds") {
                 3
+            } else if act.contains("checks") {
+                4
             } else {
                 continue;
             };
@@ -591,7 +594,7 @@ pub fn analysis_stats(conn: &Connection, filters: &AnalysisFilters) -> Result<Va
 
     let (mut vpip, mut pfr, mut three_bet, mut three_bet_opp) = (0f64, 0f64, 0f64, 0f64);
     let (mut saw_flop, mut wtsd, mut wsd) = (0f64, 0f64, 0f64);
-    let mut aggression = [0u32; 4];
+    let mut aggression = [0u32; 5];
     let mut cumulative = 0.0;
     let mut graph = Vec::with_capacity(total);
 
@@ -602,6 +605,7 @@ pub fn analysis_stats(conn: &Connection, filters: &AnalysisFilters) -> Result<Va
         graph.push(json!({ "date": hand.date.format("%Y-%m-%d %H:%M:%S").to_string(), "profit": hand.profit, "cumulativeProfit": cumulative }));
 
         let (mut is_vpip, mut is_pfr, mut is_3bet, mut has_3bet_opp) = (false, false, false, false);
+        let mut folded_preflop = false;
         if !hand.preflop.is_empty() {
             // A 3-bet is a raise made facing exactly one earlier raise.
             let mut raises_before = 0;
@@ -610,6 +614,7 @@ pub fn analysis_stats(conn: &Connection, filters: &AnalysisFilters) -> Result<Va
                     continue;
                 }
                 if eq_ic(&act.player, hero) {
+                    folded_preflop |= act.kind == ActionKind::Fold;
                     if matches!(act.kind, ActionKind::Call | ActionKind::Raise | ActionKind::Bet) {
                         is_vpip = true;
                     }
@@ -631,7 +636,8 @@ pub fn analysis_stats(conn: &Connection, filters: &AnalysisFilters) -> Result<Va
         three_bet += f64::from(is_3bet);
         three_bet_opp += f64::from(has_3bet_opp);
 
-        if !hand.flop.is_empty() {
+        // A flop was dealt, but the hero only saw it when he did not fold before.
+        if !hand.flop.is_empty() && !folded_preflop {
             saw_flop += 1.0;
             if hand.went_to_showdown {
                 wtsd += 1.0;
@@ -988,6 +994,13 @@ mod tests {
         assert_eq!(action_of_player("Hero raises 20 to 60", "hero").as_deref(), Some("raises 20 to 60"));
         assert_eq!(action_of_player("Heroine raises 20", "Hero"), None, "a name prefix is not the player");
         assert_eq!(action_of_player("", "Hero"), None);
+    }
+
+    #[test]
+    fn aggression_counts_checks_among_the_actions() {
+        let mut counts = [0u32; 5];
+        count_aggression("Hero: Checks\nHero: Bets 40\nVillain: Folds", "Hero", &mut counts);
+        assert_eq!(counts, [1, 0, 0, 0, 1]);
     }
 
     #[test]
