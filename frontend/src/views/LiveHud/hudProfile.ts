@@ -33,7 +33,6 @@ export type HudRoom = 'Winamax' | 'Unibet'
 /** The table size a layout is for: the grids switch with it, between two hands. */
 export type HudFormat = 'threeMax' | 'headsUp'
 
-export const HUD_ROOMS: HudRoom[] = ['Winamax', 'Unibet']
 export const HUD_FORMATS: HudFormat[] = ['threeMax', 'headsUp']
 /** Seats a grid can sit on, relative to the hero (+1 is the next seat in turn order). */
 export const SEATS_BY_FORMAT: Record<HudFormat, string[]> = { threeMax: ['+1', '+2'], headsUp: ['+1'] }
@@ -52,8 +51,8 @@ export interface HudProfile {
 /** Positions of the grids of one seat, by grid id. */
 export type SeatPlacements = Record<string, GridPosition>
 
-/** room → format → seat → grid id → position, as fractions of the table. */
-export type Placements = Record<HudRoom, Record<HudFormat, Record<string, SeatPlacements>>>
+/** format → seat → grid id → position, as fractions of the table: the same for every room. */
+export type Placements = Record<HudFormat, Record<string, SeatPlacements>>
 
 export interface HudSettings {
   version: number
@@ -74,10 +73,8 @@ function defaultBundle(): { layouts: Record<HudFormat, HudLayout>; placements: P
   const headsUp = TEMPLATES.huFull.build()
   const threeMax = TEMPLATES.threeWayFull.build()
   const placements = emptyPlacements()
-  for (const room of HUD_ROOMS) {
-    placements[room].headsUp = templatePositions(headsUp, SEAT_ORIGINS.headsUp)
-    placements[room].threeMax = templatePositions(threeMax, SEAT_ORIGINS.threeMax)
-  }
+  placements.headsUp = templatePositions(headsUp, SEAT_ORIGINS.headsUp)
+  placements.threeMax = templatePositions(threeMax, SEAT_ORIGINS.threeMax)
   return { layouts: { headsUp: layoutOf(headsUp), threeMax: layoutOf(threeMax) }, placements }
 }
 
@@ -109,10 +106,7 @@ export const SEAT_ORIGINS: Record<HudFormat, Record<string, GridPosition>> = {
   headsUp: { '+1': { x: 0.05, y: 0.05 } },
 }
 
-const emptyPlacements = (): Placements => {
-  const forRoom = () => ({ threeMax: { '+1': {}, '+2': {} }, headsUp: { '+1': {} } })
-  return { Winamax: forRoom(), Unibet: forRoom() }
-}
+const emptyPlacements = (): Placements => ({ threeMax: { '+1': {}, '+2': {} }, headsUp: { '+1': {} } })
 
 export const defaultPlacements = emptyPlacements
 
@@ -129,9 +123,9 @@ export const defaultSettings = (): HudSettings => {
 }
 
 /** The positions of the grids of a seat, with a fallback under the previous grid for those never placed. */
-export function seatPositions(placements: Placements, room: HudRoom, format: HudFormat, seat: string, grids: HudGrid[]): Record<string, GridPosition> {
+export function seatPositions(placements: Placements, format: HudFormat, seat: string, grids: HudGrid[]): Record<string, GridPosition> {
   const origin = SEAT_ORIGINS[format][seat] ?? { x: 0.01, y: 0.1 }
-  return resolvePositions(grids, placements[room][format][seat], origin)
+  return resolvePositions(grids, placements[format][seat], origin)
 }
 
 // --- Validation: stored files and imported files are untrusted input.
@@ -189,23 +183,27 @@ function sanitizePosition(raw: unknown): GridPosition | null {
   return { x: finiteNumber(raw.x, 0, 0, 1), y: finiteNumber(raw.y, 0, 0, 1) }
 }
 
-/** Positions saved by version 3: seat → grid id → position. */
+/** Files written while placements were kept per room: the first room that has any is used for all. */
+const withoutRooms = (raw: Record<string, unknown>): Record<string, unknown> => {
+  if (isRecord(raw.headsUp) || isRecord(raw.threeMax)) return raw
+  for (const room of ['Winamax', 'Unibet']) if (isRecord(raw[room])) return raw[room] as Record<string, unknown>
+  return {}
+}
+
+/** Positions saved by version 3: format → seat → grid id → position. */
 function sanitizePlacements(raw: unknown): Placements {
   const result = emptyPlacements()
   if (!isRecord(raw)) return result
-  for (const room of HUD_ROOMS) {
-    const roomRaw = raw[room]
-    if (!isRecord(roomRaw)) continue
-    for (const format of HUD_FORMATS) {
-      const formatRaw = roomRaw[format]
-      if (!isRecord(formatRaw)) continue
-      for (const seat of SEATS_BY_FORMAT[format]) {
-        const seatRaw = formatRaw[seat]
-        if (!isRecord(seatRaw)) continue
-        for (const [gridId, position] of Object.entries(seatRaw).slice(0, MAX_PLACED_GRIDS)) {
-          const clean = sanitizePosition(position)
-          if (clean) result[room][format][seat][gridId.slice(0, 60)] = clean
-        }
+  const source = withoutRooms(raw)
+  for (const format of HUD_FORMATS) {
+    const formatRaw = source[format]
+    if (!isRecord(formatRaw)) continue
+    for (const seat of SEATS_BY_FORMAT[format]) {
+      const seatRaw = formatRaw[seat]
+      if (!isRecord(seatRaw)) continue
+      for (const [gridId, position] of Object.entries(seatRaw).slice(0, MAX_PLACED_GRIDS)) {
+        const clean = sanitizePosition(position)
+        if (clean) result[format][seat][gridId.slice(0, 60)] = clean
       }
     }
   }
@@ -218,17 +216,14 @@ function sanitizePlacements(raw: unknown): Placements {
  */
 function migratePlacements(raw: unknown, migrated: { profile: HudProfile; formats: HudFormat[] }[]): Placements {
   const result = emptyPlacements()
-  const old = isRecord(raw) ? raw : {}
-  for (const room of HUD_ROOMS) {
-    const roomRaw = isRecord(old[room]) ? old[room] : {}
-    for (const format of HUD_FORMATS) {
-      const formatRaw = isRecord(roomRaw[format]) ? roomRaw[format] : {}
-      for (const seat of SEATS_BY_FORMAT[format]) {
-        const origin = sanitizePosition(formatRaw[seat]) ?? SEAT_ORIGINS[format][seat]
-        for (const { profile, formats } of migrated) {
-          if (!formats.includes(format)) continue
-          Object.assign(result[room][format][seat], resolvePositions(profile.layouts[format].grids, undefined, origin))
-        }
+  const old = isRecord(raw) ? withoutRooms(raw) : {}
+  for (const format of HUD_FORMATS) {
+    const formatRaw = isRecord(old[format]) ? old[format] : {}
+    for (const seat of SEATS_BY_FORMAT[format]) {
+      const origin = sanitizePosition(formatRaw[seat]) ?? SEAT_ORIGINS[format][seat]
+      for (const { profile, formats } of migrated) {
+        if (!formats.includes(format)) continue
+        Object.assign(result[format][seat], resolvePositions(profile.layouts[format].grids, undefined, origin))
       }
     }
   }
@@ -309,15 +304,13 @@ export const snap = (value: number) => Math.round(value / GRID_STEP) * GRID_STEP
 export function duplicateWithPlacements(source: HudProfile, placements: Placements, name: string): { profile: HudProfile; placements: Placements } {
   const profile = { ...withFreshIds(source), name }
   const next = structuredClone(placements)
-  for (const room of HUD_ROOMS) {
-    for (const format of HUD_FORMATS) {
-      for (const seat of SEATS_BY_FORMAT[format]) {
-        const seatPlacements = next[room][format][seat]
-        source.layouts[format].grids.forEach((grid, i) => {
-          const position = seatPlacements[grid.id]
-          if (position) seatPlacements[profile.layouts[format].grids[i].id] = { ...position }
-        })
-      }
+  for (const format of HUD_FORMATS) {
+    for (const seat of SEATS_BY_FORMAT[format]) {
+      const seatPlacements = next[format][seat]
+      source.layouts[format].grids.forEach((grid, i) => {
+        const position = seatPlacements[grid.id]
+        if (position) seatPlacements[profile.layouts[format].grids[i].id] = { ...position }
+      })
     }
   }
   return { profile, placements: next }
@@ -328,7 +321,7 @@ const POPUP_FORMATS: Partial<Record<TemplateId, HudFormat[]>> = { popupGeneral: 
 
 /**
  * A shipped model applied to a profile. A layout model replaces the grids of its table size (and
- * where they sit, in every room); a popup model adds its popup to the layouts it serves.
+ * where they sit); a popup model adds its popup to the layouts it serves.
  */
 export function applyTemplateToSettings(settings: HudSettings, profileId: string, templateId: TemplateId): HudSettings {
   const template = TEMPLATES[templateId]
@@ -336,7 +329,7 @@ export function applyTemplateToSettings(settings: HudSettings, profileId: string
   if (template.format) {
     const format = template.format
     const placements = structuredClone(settings.placements)
-    for (const room of HUD_ROOMS) placements[room][format] = templatePositions(instance, SEAT_ORIGINS[format])
+    placements[format] = templatePositions(instance, SEAT_ORIGINS[format])
     const profiles = settings.profiles.map((p) => (p.id === profileId ? { ...p, layouts: { ...p.layouts, [format]: layoutOf(instance) } } : p))
     return { ...settings, profiles, placements }
   }

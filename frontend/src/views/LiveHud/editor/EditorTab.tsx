@@ -17,7 +17,7 @@ import {
   type EditorHistory,
 } from '../hudEditor'
 import { newGrid, validateLayout, type CellContent, type GridPosition, type HudGrid, type HudIssue } from '../hudGrid'
-import { GRID_STEP, HUD_FORMATS, HUD_ROOMS, SEATS_BY_FORMAT, seatPositions, type HudFormat, type HudRoom } from '../hudProfile'
+import { GRID_STEP, HUD_FORMATS, SEATS_BY_FORMAT, seatPositions, type HudFormat } from '../hudProfile'
 import { TEMPLATE_IDS, TEMPLATES, type TemplateId } from '../hudTemplates'
 import { previewFigures } from '../previewData'
 import Canvas from './Canvas'
@@ -62,7 +62,6 @@ export default function EditorTab() {
   const { t } = useTranslation()
   const { settings, setActiveProfile, setSnapToGrid } = useLiveHudStore()
   const profile = settings.profiles.find((p) => p.id === settings.activeProfileId) ?? settings.profiles[0]
-  const [room, setRoom] = useState<HudRoom>('Winamax')
   const [format, setFormat] = useState<HudFormat>('threeMax')
   const [seatChoice, setSeatChoice] = useState('+1')
   const seats = SEATS_BY_FORMAT[format]
@@ -93,29 +92,29 @@ export default function EditorTab() {
   const doc = useMemo<EditorDoc>(
     () => ({
       layout: profile.layouts[format],
-      seats: Object.fromEntries(seats.map((s) => [s, seatPositions(settings.placements, room, format, s, profile.layouts[format].grids)])),
+      seats: Object.fromEntries(seats.map((s) => [s, seatPositions(settings.placements, format, s, profile.layouts[format].grids)])),
     }),
-    [profile.layouts, format, seats, settings.placements, room],
+    [profile.layouts, format, seats, settings.placements],
   )
   const docRef = useRef(doc)
   docRef.current = doc
   const historyRef = useRef(history)
   historyRef.current = history
-  const target = useRef({ profileId: profile.id, room, format })
-  target.current = { profileId: profile.id, room, format }
+  const target = useRef({ profileId: profile.id, format })
+  target.current = { profileId: profile.id, format }
 
-  // A history belongs to one profile, room and format.
+  // A history belongs to one profile and format.
   useEffect(() => {
     setHistory(emptyHistory())
     setSelection(NO_SELECTION)
     setEditing(null)
     setActivePopupId(null)
-  }, [profile.id, room, format])
+  }, [profile.id, format])
 
   const commit = useCallback((next: EditorDoc) => {
     docRef.current = next
-    const { profileId, room: r, format: f } = target.current
-    useLiveHudStore.getState().setEditorDoc(profileId, r, f, next.layout, next.seats)
+    const { profileId, format: f } = target.current
+    useLiveHudStore.getState().setEditorDoc(profileId, f, next.layout, next.seats)
   }, [])
 
   const dispatch = useCallback(
@@ -360,14 +359,6 @@ export default function EditorTab() {
             {HUD_FORMATS.map((f) => (
               <button key={f} className={chip(f === format)} onClick={() => setFormat(f)}>
                 {t(`liveHud.format.${f}`)}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="mr-1 text-xs text-gray-500">{t('liveHud.placement.room')}</span>
-            {HUD_ROOMS.map((r) => (
-              <button key={r} className={chip(r === room)} onClick={() => setRoom(r)}>
-                {r}
               </button>
             ))}
           </div>

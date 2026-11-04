@@ -74,7 +74,7 @@ describe('applying a model', () => {
     expect(layout.grids.map((g) => g.name)).toEqual(['Player', 'Preflop', 'Post'])
     expect(next.profiles[0].layouts.headsUp).toEqual(settings.profiles[0].layouts.headsUp)
     for (const seat of SEATS_BY_FORMAT.threeMax) {
-      const positions = next.placements.Winamax.threeMax[seat]
+      const positions = next.placements.threeMax[seat]
       expect(layout.grids.every((g) => positions[g.id] !== undefined)).toBe(true)
     }
     expect(sanitizeSettings(JSON.parse(JSON.stringify(next)))).toEqual(next)
@@ -104,7 +104,7 @@ describe('fresh install', () => {
     const profile = settings.profiles[0]
     for (const format of ['headsUp', 'threeMax'] as const) {
       for (const seat of SEATS_BY_FORMAT[format]) {
-        const positions = seatPositions(settings.placements, 'Winamax', format, seat, profile.layouts[format].grids)
+        const positions = seatPositions(settings.placements, format, seat, profile.layouts[format].grids)
         for (const grid of profile.layouts[format].grids) {
           expect(positions[grid.id].x).toBeGreaterThanOrEqual(0)
           expect(positions[grid.id].x).toBeLessThan(1)

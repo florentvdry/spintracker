@@ -100,9 +100,7 @@
   },
   "liveHud": {
     "tabs": {
-      "live": "En direct",
-      "profiles": "Profils",
-      "editor": "Éditeur"
+      "profiles": "Profils"
     },
     "block": {
       "threeWay": "3-way",
@@ -122,7 +120,6 @@
       "off": "HUD désactivé",
       "off_by_default": "Le HUD est désactivé par défaut et ne lit que vos propres historiques de mains.",
       "enable": "Activer le HUD",
-      "active_profile": "Profil actif",
       "tables": "Tables détectées",
       "no_detection": "Les tables ne sont pas encore détectées : le HUD ne peut pas apparaître sur une table dans cette version. Vous pouvez déjà préparer profils et positions.",
       "pause_switch": "HUD actif",
@@ -141,7 +138,10 @@
       "associate": "Associer...",
       "hide": "Masquer",
       "show": "Afficher",
-      "rooms_all": "Actif sur toutes les rooms prises en charge."
+      "rooms_all": "Actif sur toutes les rooms prises en charge.",
+      "tables_shown": "{{count}} table(s) avec le HUD",
+      "show_tables": "Tables",
+      "hide_tables": "Masquer les tables"
     },
     "profiles": {
       "mine": "Mes profils",
@@ -164,7 +164,6 @@
       "from_model": "Nouveau profil depuis un modèle"
     },
     "placement": {
-      "room": "Room",
       "format": "Taille de table",
       "snap": "Aligner sur la grille",
       "hero": "Hero",
@@ -306,7 +305,8 @@
         "stack_label": "Libellé",
         "stack_note": "Plusieurs profondeurs sont additionnées en nombres de mains, jamais moyennées.",
         "track_note": "Une ligne ou une colonne prime sur la grille ; une cellule prime sur les deux."
-      }
+      },
+      "popup_editing": "Édition du popup : {{name}} (s'ouvre au clic sur la cellule qui y renvoie, dans le HUD)"
     },
     "templates": {
       "models": "Modèles…",

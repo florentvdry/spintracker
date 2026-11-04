@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { Lock } from 'lucide-react'
@@ -271,6 +271,13 @@ export default function Canvas(props: CanvasProps) {
   const table = useRef<HTMLDivElement>(null)
   const frames = useRef<Record<string, HTMLDivElement | null>>({})
   const [moving, setMoving] = useState<Moving | null>(null)
+  const popupPanel = useRef<HTMLDivElement>(null)
+  const popupId = popup?.id
+
+  // The popup is edited under the table, out of sight: bring it into view when it is picked.
+  useEffect(() => {
+    if (popupId) popupPanel.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [popupId])
   const tableWidth = REFERENCE_WIDTH * zoom
   const scale = zoom * size
 
@@ -381,7 +388,8 @@ export default function Canvas(props: CanvasProps) {
       </div>
 
       {popup && (
-        <div className="overflow-auto rounded-lg border border-dark-100 bg-dark-500">
+        <div ref={popupPanel} className="overflow-auto rounded-lg border border-primary-500/50 bg-dark-500">
+          <p className="border-b border-dark-100 px-3 py-1.5 text-xs text-gray-300">{t('liveHud.editor.popup_editing', { name: popup.name })}</p>
           <div style={{ padding: `${56}px 40px 24px 40px` }}>
             <div style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: 'max-content', marginBottom: 0 }}>
               {frameFor(popup, { title: `${t('liveHud.editor.popup')}: ${popup.name}`, onTitlePointerDown: (e) => e.button === 0 && onSelect({ gridIds: [popup.id], cellIds: [], track: null }) })}

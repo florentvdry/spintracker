@@ -1,50 +1,38 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
+import { Users } from 'lucide-react'
 import { useLiveHudStore } from '@/stores/liveHudStore'
-import LiveTab from './LiveTab'
 import EditorTab from './editor/EditorTab'
+import LiveStatus from './LiveStatus'
 import ProfilesTab from './ProfilesTab'
 
-type TabId = 'live' | 'profiles' | 'editor'
-const TABS: TabId[] = ['live', 'profiles', 'editor']
-
-/** The HUD page: live state, profiles and the grid editor. */
+/** The HUD page: the switch and tables on top, then the editor; profiles open on demand. */
 export default function LiveHud() {
   const { t } = useTranslation()
   const load = useLiveHudStore((s) => s.load)
   const loaded = useLiveHudStore((s) => s.loaded)
-  const [tab, setTab] = useState<TabId>('live')
+  const [showProfiles, setShowProfiles] = useState(false)
 
   useEffect(() => {
     void load()
   }, [load])
 
+  if (!loaded) return <div className="spinner mx-auto mt-16" />
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 border-b border-dark-200">
-        {TABS.map((id) => (
-          <button
-            key={id}
-            onClick={() => setTab(id)}
-            className={clsx(
-              '-mb-px border-b-2 px-3 py-2 text-sm',
-              tab === id ? 'border-primary-500 text-white' : 'border-transparent text-gray-400 hover:text-gray-200',
-            )}
-          >
-            {t(`liveHud.tabs.${id}`)}
-          </button>
-        ))}
+      <LiveStatus />
+      <div>
+        <button
+          className={clsx('btn-secondary flex items-center gap-1.5 text-sm', showProfiles && 'border-primary-500')}
+          onClick={() => setShowProfiles((v) => !v)}
+        >
+          <Users className="h-4 w-4" />
+          {t('liveHud.tabs.profiles')}
+        </button>
       </div>
-      {!loaded ? (
-        <div className="spinner mx-auto mt-16" />
-      ) : (
-        <>
-          {tab === 'live' && <LiveTab />}
-          {tab === 'profiles' && <ProfilesTab />}
-          {tab === 'editor' && <EditorTab />}
-        </>
-      )}
+      {showProfiles && <ProfilesTab />}
+      <EditorTab />
     </div>
   )
 }

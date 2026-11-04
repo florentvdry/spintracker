@@ -112,44 +112,29 @@ function TablesCard() {
   )
 }
 
-export default function LiveTab() {
+/** The HUD switch and, on demand, the tables it found: one line above the editor. */
+export default function LiveStatus() {
   const { t } = useTranslation()
-  const { settings, setEnabled, setActiveProfile } = useLiveHudStore()
+  const { settings, setEnabled } = useLiveHudStore()
+  const { view } = useTables()
+  const [open, setOpen] = useState(false)
+  const count = (view.tables ?? []).filter((table: Json) => table.state === 'shown').length
 
   return (
-    <div className="space-y-4">
-      <Card title={t('liveHud.live.status')}>
+    <div className="space-y-3">
+      <Card>
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="font-medium text-white">{settings.enabled ? t('liveHud.live.on') : t('liveHud.live.off')}</p>
-            <p className="text-sm text-gray-400">{t('liveHud.live.rooms_all')}</p>
-          </div>
-          <label className="flex items-center gap-2 text-sm text-gray-300">
+          <label className="flex items-center gap-3 text-sm text-gray-200">
             <input type="checkbox" checked={settings.enabled} onChange={(e) => setEnabled(e.target.checked)} />
-            {t('liveHud.live.pause_switch')}
+            <span className="font-medium text-white">{settings.enabled ? t('liveHud.live.on') : t('liveHud.live.off')}</span>
+            <span className="text-gray-400">{settings.enabled ? t('liveHud.live.tables_shown', { count }) : t('liveHud.live.pause_switch')}</span>
           </label>
+          <button className="text-xs text-gray-400 hover:text-gray-200" onClick={() => setOpen((o) => !o)}>
+            {open ? t('liveHud.live.hide_tables') : t('liveHud.live.show_tables')}
+          </button>
         </div>
       </Card>
-
-      <Card title={t('liveHud.live.active_profile')}>
-        <div className="flex flex-wrap gap-2">
-          {settings.profiles.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => setActiveProfile(p.id)}
-              className={
-                p.id === settings.activeProfileId
-                  ? 'rounded-md border border-primary-500 bg-primary-500 px-3 py-1.5 text-sm text-white'
-                  : 'rounded-md border border-dark-100 px-3 py-1.5 text-sm text-gray-300'
-              }
-            >
-              {p.name}
-            </button>
-          ))}
-        </div>
-      </Card>
-
-      <TablesCard />
+      {open && <TablesCard />}
     </div>
   )
 }

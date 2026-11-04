@@ -11,7 +11,6 @@ import {
   sanitizeSettings,
   type HudFormat,
   type HudProfile,
-  type HudRoom,
   type HudSettings,
   type HudLayout,
   type SeatPlacements,
@@ -39,8 +38,8 @@ interface LiveHudState {
   /** Applies a shipped model to a profile (see `applyTemplateToSettings`). */
   applyTemplate: (profileId: string, templateId: TemplateId) => void
   setSnapToGrid: (snap: boolean) => void
-  /** Sets the layout of a format and where its grids sit in a room, in one save (one undo step for the editor). */
-  setEditorDoc: (profileId: string, room: HudRoom, format: HudFormat, layout: HudLayout, seats: Record<string, SeatPlacements>) => void
+  /** Sets the layout of a format and where its grids sit, in one save (one undo step for the editor). */
+  setEditorDoc: (profileId: string, format: HudFormat, layout: HudLayout, seats: Record<string, SeatPlacements>) => void
 }
 
 export const useLiveHudStore = create<LiveHudState>((set, get) => {
@@ -105,11 +104,11 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
 
     setSnapToGrid: (snapToGrid) => commit((s) => ({ ...s, snapToGrid })),
 
-    setEditorDoc: (profileId, room, format, layout, seats) =>
+    setEditorDoc: (profileId, format, layout, seats) =>
       commit((s) => ({
         ...s,
         profiles: s.profiles.map((p) => (p.id === profileId ? { ...p, layouts: { ...p.layouts, [format]: layout } } : p)),
-        placements: { ...s.placements, [room]: { ...s.placements[room], [format]: seats } },
+        placements: { ...s.placements, [format]: seats },
       })),
   }
 })

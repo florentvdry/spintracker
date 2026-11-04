@@ -156,7 +156,7 @@ describe('migration from version 2', () => {
   it('stacks the grids of a panel from its old position', () => {
     const migrated = sanitizeSettings(v2Settings())
     const grids = migrated.profiles[0].layouts.threeMax.grids
-    const positions = seatPositions(migrated.placements, 'Winamax', 'threeMax', '+1', grids)
+    const positions = seatPositions(migrated.placements, 'threeMax', '+1', grids)
     expect(positions[grids[0].id]).toEqual({ x: 0.2, y: 0.3 })
     expect(positions[grids[1].id].x).toBe(0.2)
     expect(positions[grids[1].id].y).toBeGreaterThan(0.3)
@@ -213,5 +213,16 @@ describe('activation', () => {
     expect(settings).not.toHaveProperty('rooms')
     expect(settings).not.toHaveProperty('detection')
     expect(settings.enabled).toBe(true)
+  })
+})
+
+describe('placements without rooms', () => {
+  it('reads files saved while positions were kept per room, using the first room that has any', () => {
+    const settings = sanitizeSettings(v2Settings())
+    const saved = JSON.parse(JSON.stringify(settings))
+    const grid = settings.profiles[0].layouts.threeMax.grids[0].id
+    saved.placements = { Winamax: { threeMax: { '+1': { [grid]: { x: 0.3, y: 0.4 } } } }, Unibet: {} }
+    expect(sanitizeSettings(saved).placements.threeMax['+1'][grid]).toEqual({ x: 0.3, y: 0.4 })
+    expect(sanitizeSettings(saved).placements).not.toHaveProperty('Winamax')
   })
 })

@@ -100,9 +100,7 @@
   },
   "liveHud": {
     "tabs": {
-      "live": "Live",
-      "profiles": "Profiles",
-      "editor": "Editor"
+      "profiles": "Profiles"
     },
     "block": {
       "threeWay": "3-way",
@@ -122,7 +120,6 @@
       "off": "HUD off",
       "off_by_default": "The HUD is off by default and only reads your own hand histories.",
       "enable": "Enable the HUD",
-      "active_profile": "Active profile",
       "tables": "Detected tables",
       "no_detection": "Tables are not detected yet: the HUD cannot appear on a table in this version. Profiles and positions can already be prepared.",
       "pause_switch": "HUD active",
@@ -141,7 +138,10 @@
       "associate": "Associate...",
       "hide": "Hide",
       "show": "Show",
-      "rooms_all": "Runs on every supported room."
+      "rooms_all": "Runs on every supported room.",
+      "tables_shown": "{{count}} table(s) with the HUD",
+      "show_tables": "Tables",
+      "hide_tables": "Hide tables"
     },
     "profiles": {
       "mine": "My profiles",
@@ -164,7 +164,6 @@
       "from_model": "New profile from a model"
     },
     "placement": {
-      "room": "Room",
       "format": "Table size",
       "snap": "Snap to grid",
       "hero": "Hero",
@@ -306,7 +305,8 @@
         "stack_label": "Label",
         "stack_note": "Several depths are added up as counts, never averaged.",
         "track_note": "A row or column overrides the grid; a cell overrides both."
-      }
+      },
+      "popup_editing": "Editing popup: {{name}} (opens when the cell that links to it is clicked in the HUD)"
     },
     "templates": {
       "models": "Models…",

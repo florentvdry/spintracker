@@ -27,7 +27,6 @@ export interface HudPayload {
   lastHandAt?: string
 }
 
-const DEMO_ROOM: HudRoom = 'Winamax'
 const DEMO_FORMAT: HudFormat = 'threeMax'
 
 /** Figures of every player of a table, read from the backend. */
@@ -105,7 +104,6 @@ export default function HudOverlay() {
   }, [load])
 
   const profile = settings.profiles.find((p) => p.id === settings.activeProfileId) ?? settings.profiles[0]
-  const room = payload?.room ?? DEMO_ROOM
   // The grids follow the table's size: a table of two players shows the heads-up layout.
   const format = payload?.format ?? DEMO_FORMAT
   const layout = profile.layouts[format]
@@ -121,8 +119,8 @@ export default function HudOverlay() {
   }, [payload, layout, format, live])
 
   const positions = useMemo(
-    () => Object.fromEntries(SEATS_BY_FORMAT[format].map((seat) => [seat, seatPositions(settings.placements, room, format, seat, layout.grids)])),
-    [settings.placements, room, format, layout.grids],
+    () => Object.fromEntries(SEATS_BY_FORMAT[format].map((seat) => [seat, seatPositions(settings.placements, format, seat, layout.grids)])),
+    [settings.placements, format, layout.grids],
   )
 
   // A popup belongs to one hand's figures: the next hand closes it. The window never has the
