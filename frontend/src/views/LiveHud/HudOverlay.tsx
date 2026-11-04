@@ -4,6 +4,7 @@ import { ipcService, type Json } from '@/services/ipcService'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import { figureKey, requestsOf, type CellView, type HudFigure, type HudFigures } from './hudGrid'
 import { seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom } from './hudProfile'
+import { placePopup } from './hudPopup'
 import { previewFigures } from './previewData'
 
 /** One opponent's figures. */
@@ -28,7 +29,6 @@ export interface HudPayload {
 
 const DEMO_ROOM: HudRoom = 'Winamax'
 const DEMO_FORMAT: HudFormat = 'threeMax'
-const POPUP_OFFSET_PX = 2
 
 /** Figures of every player of a table, read from the backend. */
 function useLivePanels(payload: HudPayload | null, layoutKey: string, requests: ReturnType<typeof requestsOf>): LivePanel[] {
@@ -75,8 +75,8 @@ interface OpenPopup {
   key: string
   seat: string
   popupId: string
-  left: number
-  top: number
+  /** The clicked cell's rectangle, in window pixels. */
+  anchor: { left: number; top: number; width: number; height: number }
 }
 
 /** The page of a HUD window: the grids of one table, at their saved positions. */
@@ -133,7 +133,7 @@ export default function HudOverlay() {
     if (!cell.popupId) return
     const rect = event.currentTarget.getBoundingClientRect()
     const key = `${seat}:${grid}:${cell.id}`
-    setPopup((current) => (current?.key === key ? null : { key, seat, popupId: cell.popupId as string, left: rect.left, top: rect.bottom + POPUP_OFFSET_PX }))
+    setPopup((current) => (current?.key === key ? null : { key, seat, popupId: cell.popupId as string, anchor: { left: rect.left, top: rect.top, width: rect.width, height: rect.height } }))
   }, [])
 
   // The shell lets clicks through everywhere except on the grids, so it needs their rectangles.
@@ -201,12 +201,14 @@ export default function HudOverlay() {
             refs.current.popup = el
             // Kept inside the window, whatever the scale.
             if (el) {
-              el.style.left = `${Math.max(0, Math.min(popup.left, window.innerWidth - el.getBoundingClientRect().width))}px`
-              el.style.top = `${Math.max(0, Math.min(popup.top, window.innerHeight - el.getBoundingClientRect().height))}px`
+              const box = el.getBoundingClientRect()
+              const spot = placePopup(popup.anchor, { width: box.width, height: box.height }, { width: window.innerWidth, height: window.innerHeight })
+              el.style.left = `${spot.left}px`
+              el.style.top = `${spot.top}px`
             }
           }}
           className="absolute origin-top-left"
-          style={{ left: popup.left, top: popup.top, transform: `scale(${profile.size})` }}
+          style={{ left: popup.anchor.left, top: popup.anchor.top + popup.anchor.height, transform: `scale(${profile.size})` }}
         >
           <HudGridView grid={popupGrid} figures={popupPlayer.figures} player={{ name: popupPlayer.name, tag: popupPlayer.tag }} opacity={1} />
           <button
