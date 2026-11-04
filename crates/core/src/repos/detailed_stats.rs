@@ -67,13 +67,29 @@ pub(crate) struct Row {
     pub(super) stack: i64,
     pub(super) flags: Flags,
     pub(super) street_counts: StreetCounts,
+    /// The stack in big blinds, worked out once (parsing the blinds is slow for a hot loop).
+    stack_bb: Option<f64>,
 }
 
 impl Row {
-    /// A row carrying only what the preflop counters read (the HUD needs no example hands).
-    pub(crate) fn lean(player_count: i32, position: &str, flags: Flags) -> Row {
-        let sample = Sample { position: position.trim().to_uppercase(), ..Sample::default() };
-        Row { sample, player_count, stack: 0, flags, street_counts: StreetCounts(0) }
+    /// A row carrying only what the HUD's counters read (no example hands).
+    pub(crate) fn lean(player_count: i32, position: &str, flags: Flags, street_counts: u64, stack: i64, blinds: &str) -> Row {
+        let sample = Sample { position: position.trim().to_uppercase(), blinds: blinds.to_string(), ..Sample::default() };
+        let stack_bb = crate::engines::actions::stack_in_bb(stack as f64, blinds);
+        Row { sample, player_count, stack, flags, street_counts: StreetCounts(street_counts), stack_bb }
+    }
+
+    /// The player's stack in big blinds, when known.
+    pub(crate) fn stack_bb(&self) -> Option<f64> {
+        self.stack_bb
+    }
+
+    pub(crate) fn position(&self) -> &str {
+        &self.sample.position
+    }
+
+    pub(crate) fn player_count(&self) -> i32 {
+        self.player_count
     }
 }
 
@@ -206,6 +222,20 @@ pub(crate) struct Accumulator {
     seats: Vec<Tally>,
     push_fold: Vec<PushFoldTally>,
     postflop: PostflopTally,
+    /// How many rows carry each push/fold flag (the HUD's shove figures).
+    shove: HashMap<Flag, u64>,
+    /// Rows counted by `consume_hud`, whatever they were counted for.
+    rows: u64,
+}
+
+/// What a HUD group needs counted: each part costs, and a group usually needs one.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub(crate) enum HudPart {
+    Preflop,
+    Postflop,
+    Shove,
+    /// Only the number of rows.
+    Rows,
 }
 
 impl Accumulator {
@@ -216,6 +246,8 @@ impl Accumulator {
             seats: vec![Tally::new(); SEATS.len()],
             push_fold: Vec::new(),
             postflop: PostflopTally::new(),
+            shove: HashMap::new(),
+            rows: 0,
         }
     }
 
@@ -227,9 +259,46 @@ impl Accumulator {
         self.postflop.consume(row, &mut shared);
     }
 
-    /// Counts the preflop figures only (the HUD shows nothing else).
-    pub(crate) fn consume_preflop(&mut self, row: &Row) {
-        self.count_preflop(row, &mut None);
+    /// Counts one part of what the HUD can show.
+    pub(crate) fn consume_hud(&mut self, row: &Row, part: HudPart) {
+        self.rows += 1;
+        let mut shared: Option<Rc<Sample>> = None;
+        match part {
+            HudPart::Preflop => self.count_preflop(row, &mut shared),
+            HudPart::Postflop => self.postflop.consume(row, &mut shared),
+            HudPart::Shove => {
+                for flag in PUSH_FOLD_FLAGS {
+                    if row.flags.has(flag) {
+                        *self.shove.entry(flag).or_default() += 1;
+                    }
+                }
+            }
+            HudPart::Rows => {}
+        }
+    }
+
+    /// Rows counted by `consume_hud`.
+    pub(crate) fn row_count(&self) -> u64 {
+        self.rows
+    }
+
+    /// `(numerator, denominator)` of a postflop figure (see `postflop_stats::figure_names`).
+    pub(crate) fn postflop_counts(&self, name: &str) -> Option<(u64, u64)> {
+        self.postflop.try_counts(name)
+    }
+
+    /// `(numerator, denominator)` of a shove figure.
+    pub(crate) fn shove_counts(&self, label: &str) -> Option<(u64, u64)> {
+        let count = |flag: Flag| self.shove.get(&flag).copied().unwrap_or(0);
+        let facing = count(Flag::CallShove) + count(Flag::FoldVsShove);
+        match label {
+            "Open Shove" => Some((count(Flag::OpenShove), count(Flag::OpenShoveOpp))),
+            "Iso Shove" => Some((count(Flag::IsoShove), count(Flag::IsoShoveOpp))),
+            "Rejam" => Some((count(Flag::Rejam), count(Flag::RejamOpp))),
+            "Call Shove" => Some((count(Flag::CallShove), facing)),
+            "Fold vs Shove" => Some((count(Flag::FoldVsShove), facing)),
+            _ => None,
+        }
     }
 
     fn count_preflop(&mut self, row: &Row, shared: &mut Option<Rc<Sample>>) {
@@ -302,11 +371,6 @@ fn empty_sample(num: u64, den: u64) -> Value {
 }
 
 impl Accumulator {
-    /// Hands counted so far (rows of the 2- and 3-handed hands consumed).
-    pub(crate) fn hand_count(&self) -> u64 {
-        self.all.hands
-    }
-
     /// `(numerator, denominator)` of one registered stat in one table column, using the same
     /// tallies as the detailed-stats response so both always agree. `None` for an unknown
     /// stat or column, and for the postflop stats (not counted here).
@@ -579,6 +643,7 @@ pub fn detailed_stats(conn: &Connection, q: &DetailedQuery) -> Result<Value> {
             stack,
             flags: Flags::from_words([word(19)?, word(20)?, word(21)?, word(22)?]),
             street_counts: StreetCounts(word(23)?),
+            stack_bb: None,
         };
         if row.sample.player_name.trim().is_empty() {
             continue;

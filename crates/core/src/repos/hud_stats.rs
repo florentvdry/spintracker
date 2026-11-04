@@ -9,7 +9,10 @@ use rusqlite::types::Value as SqlValue;
 use rusqlite::{Connection, ToSql};
 use serde_json::{json, Value};
 
-use super::detailed_stats::{pct, Accumulator, Row};
+use std::collections::HashMap;
+
+use super::detailed_stats::{pct, Accumulator, HudPart, Row};
+use super::postflop_stats;
 use super::hands_query::hero_resolution_sql;
 use crate::stats::flags::Flags;
 use crate::stats::registry::{Section, STATS};
@@ -33,8 +36,50 @@ pub fn parse_section(key: &str) -> Option<Section> {
     SECTIONS.iter().find(|(_, k)| *k == key).map(|(section, _)| *section)
 }
 
-/// One stat asked for: its section, its label in the registry and, where a section has several
-/// table columns, which one.
+/// Sections that are not in the stat registry: the postflop figures, the shove figures (counted from
+/// the push/fold flags) and plain hand counts.
+const POSTFLOP: &str = "postflop";
+const SHOVE: &str = "shove";
+const META: &str = "meta";
+const SHOVE_LABELS: [&str; 5] = ["Open Shove", "Iso Shove", "Rejam", "Call Shove", "Fold vs Shove"];
+
+/// Stack depths a table can be split by, in big blinds: `(name, above, up to and including)`.
+/// The player's own stack at the start of the hand is used.
+const BUCKETS: [(&str, f64, f64); 7] = [
+    ("13+", 13.0, f64::INFINITY),
+    ("11-13", 11.0, 13.0),
+    ("9-11", 9.0, 11.0),
+    ("7-9", 7.0, 9.0),
+    ("5-7", 5.0, 7.0),
+    ("3-5", 3.0, 5.0),
+    ("0-3", 0.0, 3.0),
+];
+
+/// Index in `BUCKETS` of a stack in big blinds.
+fn bucket_index(bb: f64) -> Option<u8> {
+    BUCKETS.iter().position(|(_, above, up_to)| bb > *above && bb <= *up_to).map(|i| i as u8)
+}
+
+const COLUMNS: [&str; 8] = ["tot", "hu", "three_way", "btn", "sb_hu", "sb_3w", "bb_hu", "bb_3w"];
+
+/// The columns a row belongs to, as a bit per entry of `COLUMNS`.
+fn column_mask(row: &Row) -> u16 {
+    let (position, players) = (row.position(), row.player_count());
+    let member = [
+        true,
+        players == 2,
+        players == 3,
+        position == "BTN",
+        position == "SB" && players == 2,
+        position == "SB" && players == 3,
+        position == "BB" && players == 2,
+        position == "BB" && players == 3,
+    ];
+    member.iter().enumerate().fold(0, |mask, (bit, yes)| if *yes { mask | 1 << bit } else { mask })
+}
+
+/// One stat asked for: its section, its label and, where a section has several table columns,
+/// which one. `bucket` limits it to one stack depth.
 #[derive(Debug, Clone, PartialEq, Eq, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HudStatRequest {
@@ -42,6 +87,8 @@ pub struct HudStatRequest {
     pub label: String,
     #[serde(default)]
     pub column: Option<String>,
+    #[serde(default)]
+    pub bucket: Option<String>,
 }
 
 /// The stats the HUD can display, straight from the registry.
@@ -59,13 +106,21 @@ pub fn catalog() -> Value {
             }))
         })
         .collect();
-    json!({ "stats": stats })
+    let mut stats = stats;
+    for name in postflop_stats::figure_names() {
+        stats.push(json!({ "section": POSTFLOP, "label": name, "id": format!("{POSTFLOP}:{name}"), "fixedSeat": false }));
+    }
+    for label in SHOVE_LABELS {
+        stats.push(json!({ "section": SHOVE, "label": label, "id": format!("{SHOVE}:{label}"), "fixedSeat": false }));
+    }
+    stats.push(json!({ "section": META, "label": "hands", "id": format!("{META}:hands"), "fixedSeat": false }));
+    json!({ "stats": stats, "buckets": BUCKETS.map(|(name, _, _)| name) })
 }
 
 /// Everything the HUD needs of one player: the rows of the hands that count.
 pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str) -> Result<Vec<Row>> {
     let sql = format!(
-        "SELECT h.player_count, ph.position, f.flags_0, f.flags_1, f.flags_2, f.flags_3
+        "SELECT h.player_count, ph.position, f.flags_0, f.flags_1, f.flags_2, f.flags_3, f.street_counts, ph.stack, h.blinds
          FROM player_hands ph
          JOIN hands h ON h.id = ph.hand_id
          LEFT JOIN hand_player_flags f ON f.hand_id = ph.hand_id AND f.player_name = ph.player_name
@@ -85,32 +140,100 @@ pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str)
             let word = |i: usize| -> rusqlite::Result<u64> { Ok(r.get::<_, Option<i64>>(i)?.unwrap_or(0) as u64) };
             let position: Option<String> = r.get(1)?;
             let flags = Flags::from_words([word(2)?, word(3)?, word(4)?, word(5)?]);
-            Ok(Row::lean(r.get::<_, Option<i32>>(0)?.unwrap_or(0), position.as_deref().unwrap_or(""), flags))
+            let blinds: Option<String> = r.get(8)?;
+            Ok(Row::lean(
+                r.get::<_, Option<i32>>(0)?.unwrap_or(0),
+                position.as_deref().unwrap_or(""),
+                flags,
+                word(6)?,
+                r.get::<_, Option<i64>>(7)?.unwrap_or(0),
+                blinds.as_deref().unwrap_or(""),
+            ))
         })?
         .collect::<std::result::Result<Vec<_>, _>>()?;
     Ok(rows)
 }
 
+/// Rows grouped the way the requests ask: by stack depth and, for figures counted over the rows of
+/// a table column, by that column. Each group is counted once, however many figures read it.
+struct Groups<'a> {
+    rows: &'a [Row],
+    /// Stack depth and column membership of each row, worked out once.
+    buckets: Vec<Option<u8>>,
+    masks: Vec<u16>,
+    counted: HashMap<(Option<String>, Option<String>, HudPart), Accumulator>,
+}
+
+impl<'a> Groups<'a> {
+    fn new(rows: &'a [Row]) -> Self {
+        let buckets = rows.iter().map(|r| r.stack_bb().and_then(bucket_index)).collect();
+        let masks = rows.iter().map(column_mask).collect();
+        Groups { rows, buckets, masks, counted: HashMap::new() }
+    }
+
+    fn get(&mut self, bucket: Option<&str>, column: Option<&str>, part: HudPart) -> &Accumulator {
+        let key = (bucket.map(str::to_string), column.map(str::to_string), part);
+        let (rows, buckets, masks) = (self.rows, &self.buckets, &self.masks);
+        // Unknown names select nothing; callers check them first.
+        let wanted_bucket = bucket.map(|b| BUCKETS.iter().position(|(name, _, _)| *name == b).map_or(u8::MAX, |i| i as u8));
+        let wanted_bit = column.map(|c| COLUMNS.iter().position(|name| *name == c).map_or(0, |i| 1u16 << i));
+        self.counted.entry(key).or_insert_with(|| {
+            let mut acc = Accumulator::new();
+            for (i, row) in rows.iter().enumerate() {
+                let in_bucket = wanted_bucket.map_or(true, |b| buckets[i] == Some(b));
+                let in_column = wanted_bit.map_or(true, |bit| masks[i] & bit != 0);
+                if in_bucket && in_column {
+                    acc.consume_hud(row, part);
+                }
+            }
+            acc
+        })
+    }
+}
+
+fn counts_of(groups: &mut Groups, req: &HudStatRequest) -> Option<(u64, u64)> {
+    let bucket = req.bucket.as_deref();
+    if bucket.is_some_and(|b| !BUCKETS.iter().any(|(name, _, _)| *name == b)) {
+        return None;
+    }
+    let column = req.column.as_deref();
+    match req.section.as_str() {
+        POSTFLOP | SHOVE | META => {
+            // Figures counted over the rows of one column: unknown columns are refused.
+            if column.is_some_and(|c| !COLUMNS.contains(&c)) {
+                return None;
+            }
+            match req.section.as_str() {
+                POSTFLOP => groups.get(bucket, column, HudPart::Postflop).postflop_counts(&req.label),
+                SHOVE => groups.get(bucket, column, HudPart::Shove).shove_counts(&req.label),
+                _ => {
+                    let rows = groups.get(bucket, column, HudPart::Rows).row_count();
+                    (req.label == "hands").then_some((rows, rows))
+                }
+            }
+        }
+        other => parse_section(other).and_then(|section| groups.get(bucket, None, HudPart::Preflop).counts(section, &req.label, column)),
+    }
+}
+
 /// The requested figures of one player over `rows`: `(hands, one entry per requested stat)`.
 pub(crate) fn compute(rows: &[Row], requests: &[HudStatRequest]) -> (u64, Vec<Value>) {
-    let mut acc = Accumulator::new();
-    for row in rows {
-        acc.consume_preflop(row);
-    }
+    let mut groups = Groups::new(rows);
+    let hands = rows.len() as u64;
     let stats = requests
         .iter()
-        .map(|req| {
-            let counts = parse_section(&req.section).and_then(|s| acc.counts(s, &req.label, req.column.as_deref()));
-            match counts {
-                Some((num, den)) => json!({
-                    "section": req.section, "label": req.label, "column": req.column,
-                    "num": num, "den": den, "pct": pct(num, den),
-                }),
-                None => json!({ "section": req.section, "label": req.label, "column": req.column, "num": null, "den": null, "pct": null }),
-            }
+        .map(|req| match counts_of(&mut groups, req) {
+            Some((num, den)) => json!({
+                "section": req.section, "label": req.label, "column": req.column, "bucket": req.bucket,
+                "num": num, "den": den, "pct": pct(num, den),
+            }),
+            None => json!({
+                "section": req.section, "label": req.label, "column": req.column, "bucket": req.bucket,
+                "num": null, "den": null, "pct": null,
+            }),
         })
         .collect();
-    (acc.hand_count(), stats)
+    (hands, stats)
 }
 
 #[cfg(test)]

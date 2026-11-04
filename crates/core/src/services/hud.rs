@@ -17,8 +17,8 @@ use crate::Result;
 
 /// A table shows at most this many opponents, hero included.
 const MAX_PLAYERS: usize = 12;
-/// Enough for the whole catalog (about 80 stats).
-const MAX_STATS: usize = 128;
+/// Enough for a heads-up layout asked in one go (stack-depth tables hold about a hundred figures).
+const MAX_STATS: usize = 256;
 /// Players kept in memory; the cache is emptied when it grows past this.
 const CACHE_CAPACITY: usize = 500;
 

@@ -93,6 +93,12 @@ pub fn big_blind(blinds: &str) -> i64 {
     regex!(r"\d+").find_iter(blinds).last().and_then(|m| m.as_str().parse().ok()).unwrap_or(0)
 }
 
+/// A stack in big blinds, when the blinds are known and the stack is positive.
+pub fn stack_in_bb(stack: f64, blinds: &str) -> Option<f64> {
+    let bb = big_blind(blinds);
+    (bb > 0 && stack > 0.0).then(|| stack / bb as f64)
+}
+
 /// Size of a raise in big blinds, when its "to" amount and the blinds are known.
 pub fn raise_size_bb(action: &Action, blinds: &str) -> Option<f64> {
     let bb = big_blind(blinds);

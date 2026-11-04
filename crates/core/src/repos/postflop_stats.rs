@@ -219,6 +219,12 @@ impl PostflopTally {
         FIGURES.iter().position(|f| f.name == name).unwrap_or_else(|| panic!("unknown postflop figure {name}"))
     }
 
+    /// `(numerator, denominator)` of a figure, `None` when no figure has this name.
+    pub(super) fn try_counts(&self, name: &str) -> Option<(u64, u64)> {
+        let i = FIGURES.iter().position(|f| f.name == name)?;
+        Some((self.num[i], self.den[i]))
+    }
+
     /// `(numerator, denominator)` of a figure.
     fn counts(&self, name: &str) -> (u64, u64) {
         let i = self.find(name);
@@ -366,6 +372,11 @@ impl PostflopTally {
             ("showdown", with_samples(showdown, showdown_samples)),
         ]
     }
+}
+
+/// Names of the figures that can be asked for one by one.
+pub(super) fn figure_names() -> Vec<&'static str> {
+    FIGURES.iter().map(|f| f.name).collect()
 }
 
 fn sample_json(num: u64, den: u64, hands: &[Rc<Sample>]) -> Value {

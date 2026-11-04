@@ -165,9 +165,13 @@ fn a_player_with_ten_thousand_hands_is_answered_quickly() {
         let tx = conn.transaction().unwrap();
         for n in 0..10_000 {
             let id = format!("h{n}");
-            tx.execute("INSERT INTO hands (id, room, player_count) VALUES (?1, 'Winamax', 3)", [&id]).unwrap();
+            tx.execute("INSERT INTO hands (id, room, player_count, blinds) VALUES (?1, 'Winamax', ?2, '20/40')", rusqlite::params![id, if n % 3 == 0 { 2 } else { 3 }]).unwrap();
             for (name, position) in [("hero", "BTN"), ("villain", if n % 2 == 0 { "SB" } else { "BB" })] {
-                tx.execute("INSERT INTO player_hands (hand_id, player_name, position) VALUES (?1, ?2, ?3)", [&id, name, position]).unwrap();
+                tx.execute(
+                    "INSERT INTO player_hands (hand_id, player_name, position, stack) VALUES (?1, ?2, ?3, ?4)",
+                    rusqlite::params![id, name, position, 40 * (1 + n % 24)],
+                )
+                .unwrap();
                 tx.execute(
                     "INSERT INTO hand_player_flags (hand_id, player_name, flags_version, flags_0, flags_1) VALUES (?1, ?2, 1, ?3, 0)",
                     rusqlite::params![id, name, n % 7],
@@ -180,7 +184,21 @@ fn a_player_with_ten_thousand_hands_is_answered_quickly() {
     }
     backend.database().bump_data_version();
 
-    let stats = [stat("preflop", "VPIP", Some("tot")), stat("preflop", "PFR", Some("tot")), stat("threeWayPreflop", "BTN RFI", None)];
+    // A heads-up layout asked in one go: two stack-depth tables of eight figures over seven depths.
+    let mut stats = vec![stat("preflop", "VPIP", Some("tot")), stat("postflop", "wtsd", None), stat("threeWayPreflop", "BTN RFI", None)];
+    for bucket in ["13+", "11-13", "9-11", "7-9", "5-7", "3-5", "0-3"] {
+        for column in ["sb_hu", "bb_hu"] {
+            stats.push(stat_in("meta", "hands", Some(column), Some(bucket)));
+            for label in ["Open Shove", "Iso Shove", "Call Shove"] {
+                stats.push(stat_in("shove", label, Some(column), Some(bucket)));
+            }
+            for figure in ["cbet_flop", "fold_to_cbet_flop"] {
+                stats.push(stat_in("postflop", figure, Some(column), Some(bucket)));
+            }
+            stats.push(stat_in("preflop", "VPIP", Some(column), Some(bucket)));
+            stats.push(stat_in("preflop", "PFR", Some(column), Some(bucket)));
+        }
+    }
     let started = Instant::now();
     let cold = hud(&backend, "Winamax", "hero", &["villain"], &stats);
     let cold_time = started.elapsed();
@@ -193,5 +211,96 @@ fn a_player_with_ten_thousand_hands_is_answered_quickly() {
     // The target applies to optimised builds, which is how the tests are run (see AGENTS.md).
     if !cfg!(debug_assertions) {
         assert!(cold_time.as_millis() < 50 && warm_time.as_millis() < 50, "cold {cold_time:?}, warm {warm_time:?}");
+    }
+}
+
+fn figure(answer: &Value, index: usize) -> (u64, u64) {
+    counts(&answer["players"][0]["stats"][index])
+}
+
+#[test]
+fn postflop_and_showdown_figures_equal_the_detailed_statistics() {
+    let (_dir, backend) = backend_with_hands();
+    for player in OPPONENTS {
+        let detailed = detailed(&backend, player);
+        let street = |stat: &str, street: &str| {
+            let row = detailed["postflop"].as_array().unwrap().iter().find(|r| r["stat"] == stat).unwrap();
+            counts(&row["samples"][street])
+        };
+        let showdown = |name: &str| counts(&detailed["showdown"]["samples"][name]);
+
+        let asked = [
+            stat("postflop", "cbet_flop", None),
+            stat("postflop", "cbet_turn", None),
+            stat("postflop", "fold_to_cbet_flop", None),
+            stat("postflop", "donk_flop", None),
+            stat("postflop", "wtsd", None),
+            stat("postflop", "wsd", None),
+            stat("postflop", "wwsf", None),
+        ];
+        let answer = hud(&backend, "Winamax", HERO, &[player], &asked);
+        let expected = [
+            street("C-Bet", "flop"),
+            street("C-Bet", "turn"),
+            street("Fold to CBet", "flop"),
+            street("Donk Bet", "flop"),
+            showdown("wtsd"),
+            showdown("wsd"),
+            showdown("wwsf"),
+        ];
+        for (i, want) in expected.iter().enumerate() {
+            assert_eq!(figure(&answer, i), *want, "{player}: {}", asked[i]);
+        }
+    }
+}
+
+fn stat_in(section: &str, label: &str, column: Option<&str>, bucket: Option<&str>) -> Value {
+    json!({ "section": section, "label": label, "column": column, "bucket": bucket })
+}
+
+#[test]
+fn stack_depth_tables_partition_the_hands_and_formats_add_up() {
+    let (_dir, backend) = backend_with_hands();
+    let buckets: Vec<String> = backend.handle("GET", "/hud/catalog", None).body["data"]["buckets"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|b| b.as_str().unwrap().to_string())
+        .collect();
+    assert_eq!(buckets.len(), 7);
+
+    let mut asked = vec![stat_in("meta", "hands", Some("tot"), None), stat_in("meta", "hands", Some("hu"), None), stat_in("meta", "hands", Some("three_way"), None)];
+    asked.extend(buckets.iter().map(|b| stat_in("meta", "hands", Some("tot"), Some(b))));
+    let answer = hud(&backend, "Winamax", HERO, &["riickyy777"], &asked);
+    let hands = |i: usize| figure(&answer, i).0;
+
+    assert!(hands(0) > 0);
+    assert_eq!(hands(1) + hands(2), hands(0), "heads-up and three-handed hands make up all of them");
+    let in_buckets: u64 = (3..asked.len()).map(hands).sum();
+    assert_eq!(in_buckets, hands(0), "every hand falls in exactly one stack depth");
+
+    let unknown = hud(&backend, "Winamax", HERO, &["riickyy777"], &[stat_in("meta", "hands", Some("tot"), Some("99+"))]);
+    assert_eq!(unknown["players"][0]["stats"][0]["pct"], Value::Null);
+}
+
+#[test]
+fn shove_figures_equal_the_push_fold_table() {
+    let (_dir, backend) = backend_with_hands();
+    for player in OPPONENTS {
+        let detailed = detailed(&backend, player);
+        let rows = detailed["pushFold"].as_array().unwrap();
+        let sum = |key: &str| -> (u64, u64) {
+            rows.iter().map(|r| counts(&r[key])).fold((0, 0), |(n, d), (rn, rd)| (n + rn, d + rd))
+        };
+        let asked = [
+            stat_in("shove", "Open Shove", Some("tot"), None),
+            stat_in("shove", "Iso Shove", Some("tot"), None),
+            stat_in("shove", "Rejam", Some("tot"), None),
+            stat_in("shove", "Call Shove", Some("tot"), None),
+        ];
+        let answer = hud(&backend, "Winamax", HERO, &[player], &asked);
+        for (i, key) in ["open_shove_sample", "iso_shove_sample", "rejam_sample", "call_shove_sample"].iter().enumerate() {
+            assert_eq!(figure(&answer, i), sum(key), "{player}: {key}");
+        }
     }
 }
