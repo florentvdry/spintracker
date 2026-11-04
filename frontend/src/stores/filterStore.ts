@@ -34,8 +34,12 @@ interface FilterState {
 
 const pad = (n: number) => n.toString().padStart(2, '0')
 
+/**
+ * The backend stores hand times in UTC (as the rooms write them), while the user thinks in local
+ * time: a local instant is converted to UTC before being sent as a bound.
+ */
 function formatDateTime(date: Date): string {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+  return `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())} ${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`
 }
 
 function startOfDay(date: Date): Date {
@@ -46,10 +50,9 @@ function startOfDay(date: Date): Date {
 
 function toDateTime(value: string | null): string | null {
   if (!value) return null
-  // "2026-05-25" -> "2026-05-25 00:00:00"
-  if (!value.includes('T')) return `${value} 00:00:00`
-  // "2026-05-25T14:30" -> "2026-05-25 14:30:00"
-  return `${value.replace('T', ' ')}:00`
+  // "2026-05-25" or "2026-05-25T14:30", read as local time.
+  const local = new Date(value.includes('T') ? value : `${value}T00:00`)
+  return Number.isNaN(local.getTime()) ? null : formatDateTime(local)
 }
 
 export interface DateRangeParams {

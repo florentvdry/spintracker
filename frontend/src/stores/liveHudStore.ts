@@ -16,6 +16,7 @@ import {
   type SeatPlacements,
 } from '@/views/LiveHud/hudProfile'
 import type { TemplateId } from '@/views/LiveHud/hudTemplates'
+import { logError } from '@/utils/log'
 
 /** Edits made in quick succession (a slider, a drag) are written once. */
 const SAVE_DEBOUNCE_MS = 400
@@ -48,7 +49,7 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
     if (saveTimer) clearTimeout(saveTimer)
     saveTimer = setTimeout(() => {
       void ipcService.setHudSettings(get().settings).then((result) => {
-        if (!result.success) console.error('Could not save the HUD settings:', result.message)
+        if (!result.success) logError('Could not save the HUD settings:', result.message)
       })
     }, SAVE_DEBOUNCE_MS)
   }

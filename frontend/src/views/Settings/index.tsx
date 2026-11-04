@@ -13,6 +13,7 @@ import { usePlayersStore } from '@/stores/playersStore'
 import { useUpdateStore } from '@/stores/updateStore'
 import AutoImportCard from './components/AutoImportCard'
 import SettingRow from './components/SettingRow'
+import { logError } from '@/utils/log'
 
 const STATUS_POLL_MS = 30_000
 const RELOAD_AFTER_DB_SWITCH_MS = 2000
@@ -60,7 +61,7 @@ export default function Settings() {
       const result = await ipcService.getDatabases()
       if (result.success) setDatabases(result.data || [])
     } catch (error) {
-      console.error('Failed to load databases:', error)
+      logError('Failed to load databases:', error)
     } finally {
       setLoadingDatabases(false)
     }
@@ -69,7 +70,7 @@ export default function Settings() {
   useEffect(() => {
     void checkStatus()
     void loadDatabases()
-    void ipcService.getAppVersion().then((v) => v && setAppVersion(v)).catch((e) => console.error('Failed to load version:', e))
+    void ipcService.getAppVersion().then((v) => v && setAppVersion(v)).catch((e) => logError('Failed to load version:', e))
     const interval = setInterval(checkStatus, STATUS_POLL_MS)
     return () => clearInterval(interval)
   }, [checkStatus, loadDatabases])

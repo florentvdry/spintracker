@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { ipcService, type Json } from '@/services/ipcService'
+import { logError } from '@/utils/log'
 
 /** Actions that only set up the table; they are replayed instantly, not stepped through. */
 const SETUP_ACTION_TYPES = ['PostSB', 'PostBB']
@@ -357,7 +358,7 @@ export const useReplayerStore = create<ReplayerState>()(
               response.success ? { handIds, startIndex, heroName, ...response.data } : { handIds, startIndex, heroName },
             )
           } catch (err) {
-            console.error('Failed to load first hand for queue:', err)
+            logError('Failed to load first hand for queue:', err)
             await ipcService.openReplayer({ handIds, startIndex, heroName })
           }
         },

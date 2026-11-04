@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { ipcService, type Json } from '@/services/ipcService'
+import { logError } from '@/utils/log'
 
 interface PlayersFilters {
   sortBy: string
@@ -39,7 +40,7 @@ export const usePlayersStore = create<PlayersState>((set, get) => ({
         })
       }
     } catch (error) {
-      console.error('Failed to load players:', error)
+      logError('Failed to load players:', error)
     } finally {
       set({ isLoading: false })
     }

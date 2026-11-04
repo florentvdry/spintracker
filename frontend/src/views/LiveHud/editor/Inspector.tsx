@@ -129,8 +129,8 @@ export default function Inspector({ doc, selection, catalog, issues, dispatch, o
         <p className="text-[11px] text-profit-positive">{t('liveHud.editor.no_issue')}</p>
       ) : (
         <ul className="space-y-1">
-          {issues.map((issue, i) => (
-            <li key={i}>
+          {issues.map((issue) => (
+            <li key={`${issue.code}:${issue.gridId ?? ''}:${issue.cellId ?? ''}`}>
               <button
                 type="button"
                 className="w-full rounded border border-red-500/40 bg-red-500/10 px-2 py-1 text-left text-[11px] text-red-300 hover:bg-red-500/20"

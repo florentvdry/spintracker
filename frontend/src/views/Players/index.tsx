@@ -11,6 +11,7 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import { parseCards } from '@/utils/formatters'
 import AliasManagement from './AliasManagement'
+import { logError } from '@/utils/log'
 
 const PAGE_SIZE = 50
 const PLAYER_LIMIT = 1000
@@ -55,7 +56,7 @@ export default function Players() {
       })
       if (result.success) setPlayers(result.data || [])
     } catch (error) {
-      console.error('Failed to load players:', error)
+      logError('Failed to load players:', error)
     } finally {
       setLoading(false)
     }
@@ -89,7 +90,7 @@ export default function Players() {
         setPlayers((list) => list.map((p) => (p.id === player.id ? { ...p, is_reg: isReg, is_reg_forced: true } : p)))
       }
     } catch (error) {
-      console.error('Failed to update player reg status:', error)
+      logError('Failed to update player reg status:', error)
     } finally {
       setUpdatingId(null)
     }
@@ -104,7 +105,7 @@ export default function Players() {
       const result = await ipcService.getHandsAgainstPlayer(player.name, heroName, HANDS_PAGE_SIZE, 1)
       if (result.success) setPlayerHands(result.data)
     } catch (error) {
-      console.error('Failed to load player hands:', error)
+      logError('Failed to load player hands:', error)
     } finally {
       setHandsLoading(false)
     }
@@ -121,7 +122,7 @@ export default function Players() {
         setHandsPage(nextPage)
       }
     } catch (error) {
-      console.error('Failed to load more hands:', error)
+      logError('Failed to load more hands:', error)
     } finally {
       setHandsLoading(false)
     }

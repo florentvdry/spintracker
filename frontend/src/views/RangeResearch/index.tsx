@@ -9,6 +9,7 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { usePlayersStore } from '@/stores/playersStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import SituationSelector from './components/SituationSelector'
+import { logError } from '@/utils/log'
 
 const CONFIG_STORAGE_KEY = 'range_research_config_v2'
 const FILTER_DEBOUNCE_MS = 300
@@ -77,6 +78,14 @@ export default function RangeResearch() {
   const dateRange = useFilterStore((s) => s.dateRange)
   const selectedSession = useFilterStore((s) => s.selectedSession)
 
+  const setDateRange = useFilterStore((s) => s.setDateRange)
+
+  // The analysis reads every hand of the period: it opens on the current month at most. A wider
+  // period stays one click away and shows the loading indicator while it is read.
+  useEffect(() => {
+    if (useFilterStore.getState().dateRange === 'all') setDateRange('month')
+  }, [setDateRange])
+
   const [localFilters, setLocalFilters] = useState<Json>(DEFAULT_FILTERS)
   const [opponentType, setOpponentType] = useState<OpponentType>('all')
   const [rangeData, setRangeData] = useState<Json>({})
@@ -120,7 +129,7 @@ export default function RangeResearch() {
         const response = await ipcService.getRangeBreakdown(combinedFilters)
         if (!cancelled && response.success) setRangeData(response.data || {})
       } catch (err) {
-        console.error('Failed to fetch range breakdown', err)
+        logError('Failed to fetch range breakdown', err)
       } finally {
         if (!cancelled) setRangeLoading(false)
       }

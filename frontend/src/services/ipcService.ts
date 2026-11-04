@@ -34,6 +34,11 @@ export interface AutoImportFolder {
   path: string
 }
 
+export interface BackfillProgress {
+  done: number
+  total: number
+}
+
 export interface HandsImported {
   imported: number
   files: number
@@ -202,6 +207,8 @@ export const ipcService = {
 
   // Events
   onImportProgress: (callback: (progress: ImportProgress) => void) => subscribe('import-progress', callback),
+  /** The stored statistics are being recomputed (after an update changed their definition). */
+  onBackfillProgress: (callback: (progress: BackfillProgress) => void) => subscribe('backfill-progress', callback),
   onHandsImported: (callback: (payload: HandsImported) => void) => subscribe('hands-imported', callback),
   onAutoImportStatus: (callback: (status: AutoImportStatus) => void) => subscribe('auto-import-status', callback),
   onHudState: (callback: (state: Json) => void) => subscribe('hud-state', callback),
