@@ -37,7 +37,7 @@ npm run frontend:build && cargo check -p spintracker
 1. Fork the repository and create a branch from `main`: `feat/<slug>`, `fix/<slug>`, `docs/<slug>`… (kebab-case, English).
 2. Keep your change small and focused — one concern per pull request.
 3. Add or update tests (every bug fix and parser fix needs one).
-4. Add an entry to `changelogs.txt` for any user-visible change.
+4. Write the commit subject for the user: release notes are generated from commit subjects.
 5. Open a pull request and fill in the template.
 
 ### Commit messages
