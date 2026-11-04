@@ -200,3 +200,15 @@ describe('imported files', () => {
     expect(() => sanitizeSettings({ version: 3, profiles: [{}, null], placements: { Winamax: 4 } })).not.toThrow()
   })
 })
+
+describe('activation', () => {
+  it('is on for every room unless the user turned it off', () => {
+    const fresh = defaultSettings()
+    expect(fresh.enabled).toBe(true)
+    expect(fresh.rooms).toEqual({ Winamax: true, Unibet: true })
+    expect(sanitizeSettings({ version: 3, profiles: [] }).rooms).toEqual({ Winamax: true, Unibet: true })
+    const off = sanitizeSettings({ version: 3, enabled: false, rooms: { Winamax: false, Unibet: true } })
+    expect(off.enabled).toBe(false)
+    expect(off.rooms).toEqual({ Winamax: false, Unibet: true })
+  })
+})

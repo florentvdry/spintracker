@@ -69,9 +69,9 @@ export const DEFAULT_ACTIVE_MINUTES = 30
 
 export interface HudSettings {
   version: number
-  /** The HUD is off until the user turns it on. */
+  /** On unless the user turned it off. */
   enabled: boolean
-  /** The rooms the user accepted the HUD on, one by one. */
+  /** The rooms the HUD runs on; all of them unless the user turned one off. */
   rooms: Record<HudRoom, boolean>
   detection: Record<HudRoom, HudDetection>
   activeProfileId: string
@@ -140,8 +140,8 @@ export const defaultSettings = (): HudSettings => {
   const { layouts, placements } = defaultBundle()
   return {
     version: HUD_SETTINGS_VERSION,
-    enabled: false,
-    rooms: { Winamax: false, Unibet: false },
+    enabled: true,
+    rooms: { Winamax: true, Unibet: true },
     detection: defaultDetection(),
     activeProfileId: DEFAULT_PROFILE_ID,
     profiles: [{ ...defaultProfile(DEFAULT_PROFILE_ID, DEFAULT_PROFILE_NAME), layouts }],
@@ -290,8 +290,8 @@ export function sanitizeSettings(raw: unknown): HudSettings {
         : emptyPlacements()
   return {
     version: HUD_SETTINGS_VERSION,
-    enabled: raw.enabled === true,
-    rooms: { Winamax: isRecord(raw.rooms) && raw.rooms.Winamax === true, Unibet: isRecord(raw.rooms) && raw.rooms.Unibet === true },
+    enabled: raw.enabled !== false,
+    rooms: { Winamax: !isRecord(raw.rooms) || raw.rooms.Winamax !== false, Unibet: !isRecord(raw.rooms) || raw.rooms.Unibet !== false },
     detection: sanitizeDetection(raw.detection),
     activeProfileId: active,
     profiles,

@@ -108,10 +108,10 @@ struct RoomConfig {
 
 fn read_config(app: &AppHandle) -> Config {
     let settings: Value = std::fs::read_to_string(settings_path(app)).ok().and_then(|t| serde_json::from_str(&t).ok()).unwrap_or(Value::Null);
-    let enabled = settings["enabled"].as_bool() == Some(true);
+    let enabled = settings["enabled"].as_bool() != Some(false);
     let rooms = ROOMS
         .iter()
-        .filter(|d| enabled && settings["rooms"][d.room].as_bool() == Some(true))
+        .filter(|d| enabled && settings["rooms"][d.room].as_bool() != Some(false))
         .map(|defaults| {
             let detection = &settings["detection"][defaults.room];
             let process = detection["process"].as_str().filter(|p| !p.trim().is_empty()).unwrap_or(defaults.process).trim().to_lowercase();
