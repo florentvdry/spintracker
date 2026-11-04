@@ -1,11 +1,13 @@
 import { create } from 'zustand'
 import { ipcService, type Json } from '@/services/ipcService'
 import { buyInParam, currentDateRange, useFilterStore } from './filterStore'
+import { logError, logWarn } from '@/utils/log'
 
 const HYDRATION_POLL_MS = 50
 const HYDRATION_MAX_CHECKS = 40
 const BACKEND_POLL_MS = 500
-const BACKEND_MAX_ATTEMPTS = 120
+// The backend is given up on when it neither answers nor reports progress for this long.
+const BACKEND_STALL_MS = 60_000
 const SESSION_LIMIT = 50
 
 // React StrictMode mounts twice in development; share one in-flight initialization.
@@ -56,13 +58,19 @@ export const useAppStore = create<AppState>((set, get) => ({
         await sleep(HYDRATION_POLL_MS)
       }
 
+      // A long statistics update (after an application update) is progress, not a hang.
+      let lastSign = Date.now()
+      const stopListening = ipcService.onBackfillProgress(() => {
+        lastSign = Date.now()
+      })
       let backendReady = false
-      for (let attempts = 0; !backendReady && attempts < BACKEND_MAX_ATTEMPTS; attempts++) {
+      while (!backendReady && Date.now() - lastSign < BACKEND_STALL_MS) {
         const res = await ipcService.checkServerStatus()
         if (res?.success) backendReady = true
         else await sleep(BACKEND_POLL_MS)
       }
-      if (!backendReady) console.warn('[Init] Backend not responding after 60s')
+      stopListening()
+      if (!backendReady) logWarn('[Init] Backend not responding for 60s')
 
       await get().loadBuyIns()
       await Promise.all([get().loadDashboardStats(), get().loadSessions(SESSION_LIMIT)])
@@ -70,7 +78,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
       await ipcService.appReady()
     } catch (err) {
-      console.error('[Init] Critical failure:', err)
+      logError('[Init] Critical failure:', err)
       set({ error: err instanceof Error ? err.message : 'Initialization failed', isLoading: false })
       // Never leave the user stuck on the splash screen.
       await ipcService.appReady()
@@ -97,7 +105,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         })
       }
     } catch (err) {
-      console.error('Failed to load dashboard stats:', err)
+      logError('Failed to load dashboard stats:', err)
     }
   },
 
@@ -109,7 +117,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       const result = await ipcService.getSessionHistory(limit, heroName, null, null, buyInParam(buyIn))
       if (result.success) set({ sessions: result.data })
     } catch (err) {
-      console.error('Failed to load sessions:', err)
+      logError('Failed to load sessions:', err)
     }
   },
 
@@ -118,7 +126,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       const result = await ipcService.getBuyIns()
       if (result.success) set({ availableBuyIns: result.data ?? [] })
     } catch (err) {
-      console.error('Failed to load buy-ins:', err)
+      logError('Failed to load buy-ins:', err)
     }
   },
 
