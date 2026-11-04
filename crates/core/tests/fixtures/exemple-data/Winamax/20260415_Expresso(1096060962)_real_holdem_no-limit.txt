@@ -1,0 +1,321 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707545986212298753-1-1776262710 - Holdem no limit (10/20) - 2026/04/15 14:18:30 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ChauflaKlAAs (500)
+Seat 2: TheKingJames (500)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+ChauflaKlAAs posts big blind 20
+Dealt to Nelfrot-YT [Jc Qc]
+*** PRE-FLOP *** 
+TheKingJames folds
+Nelfrot-YT calls 10
+ChauflaKlAAs checks
+*** FLOP *** [3h Qs 7h]
+Nelfrot-YT bets 20
+ChauflaKlAAs folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [3h Qs 7h]
+Seat 3: Nelfrot-YT (small blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707545986212298753-2-1776262726 - Holdem no limit (10/20) - 2026/04/15 14:18:46 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ChauflaKlAAs (480)
+Seat 2: TheKingJames (500)
+Seat 3: Nelfrot-YT (520)
+*** ANTE/BLINDS ***
+ChauflaKlAAs posts small blind 10
+TheKingJames posts big blind 20
+Dealt to Nelfrot-YT [Ah Kh]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+ChauflaKlAAs folds
+TheKingJames folds
+Nelfrot-YT collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 3: Nelfrot-YT (button) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707545986212298753-3-1776262739 - Holdem no limit (10/20) - 2026/04/15 14:18:59 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ChauflaKlAAs (470)
+Seat 2: TheKingJames (480)
+Seat 3: Nelfrot-YT (550)
+*** ANTE/BLINDS ***
+TheKingJames posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [6h 3h]
+*** PRE-FLOP *** 
+ChauflaKlAAs folds
+TheKingJames calls 10
+Nelfrot-YT checks
+*** FLOP *** [Ac 4d 9d]
+TheKingJames bets 20
+Nelfrot-YT folds
+TheKingJames collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [Ac 4d 9d]
+Seat 2: TheKingJames (small blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707545986212298753-4-1776262764 - Holdem no limit (10/20) - 2026/04/15 14:19:24 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ChauflaKlAAs (470)
+Seat 2: TheKingJames (500)
+Seat 3: Nelfrot-YT (530)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+ChauflaKlAAs posts big blind 20
+Dealt to Nelfrot-YT [Qc 2d]
+*** PRE-FLOP *** 
+TheKingJames folds
+Nelfrot-YT calls 10
+ChauflaKlAAs checks
+*** FLOP *** [9s Jd 7c]
+Nelfrot-YT bets 20
+ChauflaKlAAs folds
+Nelfrot-YT collected 60 from pot
+*** SUMMARY ***
+Total pot 60 | No rake
+Board: [9s Jd 7c]
+Seat 3: Nelfrot-YT (small blind) won 60
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707545986212298753-5-1776262776 - Holdem no limit (10/20) - 2026/04/15 14:19:36 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ChauflaKlAAs (450)
+Seat 2: TheKingJames (500)
+Seat 3: Nelfrot-YT (550)
+*** ANTE/BLINDS ***
+ChauflaKlAAs posts small blind 10
+TheKingJames posts big blind 20
+Dealt to Nelfrot-YT [5h Ah]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+ChauflaKlAAs folds
+TheKingJames folds
+Nelfrot-YT collected 70 from pot
+*** SUMMARY ***
+Total pot 70 | No rake
+Seat 3: Nelfrot-YT (button) won 70
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707545986212298753-6-1776262797 - Holdem no limit (10/20) - 2026/04/15 14:19:57 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ChauflaKlAAs (440)
+Seat 2: TheKingJames (480)
+Seat 3: Nelfrot-YT (580)
+*** ANTE/BLINDS ***
+TheKingJames posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [5s Js]
+*** PRE-FLOP *** 
+ChauflaKlAAs folds
+TheKingJames folds
+Nelfrot-YT collected 30 from pot
+*** SUMMARY ***
+Total pot 30 | No rake
+Seat 3: Nelfrot-YT (big blind) won 30
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707545986212298753-7-1776262806 - Holdem no limit (15/30) - 2026/04/15 14:20:06 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ChauflaKlAAs (440)
+Seat 2: TheKingJames (470)
+Seat 3: Nelfrot-YT (590)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+ChauflaKlAAs posts big blind 30
+Dealt to Nelfrot-YT [Ah 6c]
+*** PRE-FLOP *** 
+TheKingJames raises 30 to 60
+Nelfrot-YT folds
+ChauflaKlAAs folds
+TheKingJames collected 105 from pot
+*** SUMMARY ***
+Total pot 105 | No rake
+Seat 2: TheKingJames (button) won 105
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707545986212298753-8-1776262820 - Holdem no limit (15/30) - 2026/04/15 14:20:20 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ChauflaKlAAs (410)
+Seat 2: TheKingJames (515)
+Seat 3: Nelfrot-YT (575)
+*** ANTE/BLINDS ***
+ChauflaKlAAs posts small blind 15
+TheKingJames posts big blind 30
+Dealt to Nelfrot-YT [Qd 7d]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 30 to 60
+ChauflaKlAAs calls 45
+TheKingJames folds
+*** FLOP *** [Ah 8s 4d]
+ChauflaKlAAs checks
+Nelfrot-YT bets 45
+ChauflaKlAAs folds
+Nelfrot-YT collected 195 from pot
+*** SUMMARY ***
+Total pot 195 | No rake
+Board: [Ah 8s 4d]
+Seat 3: Nelfrot-YT (button) won 195
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707545986212298753-9-1776262841 - Holdem no limit (15/30) - 2026/04/15 14:20:41 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ChauflaKlAAs (350)
+Seat 2: TheKingJames (485)
+Seat 3: Nelfrot-YT (665)
+*** ANTE/BLINDS ***
+TheKingJames posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Jc 9s]
+*** PRE-FLOP *** 
+ChauflaKlAAs folds
+TheKingJames folds
+Nelfrot-YT collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 3: Nelfrot-YT (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707545986212298753-10-1776262847 - Holdem no limit (15/30) - 2026/04/15 14:20:47 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ChauflaKlAAs (350)
+Seat 2: TheKingJames (470)
+Seat 3: Nelfrot-YT (680)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+ChauflaKlAAs posts big blind 30
+Dealt to Nelfrot-YT [Qh Qd]
+*** PRE-FLOP *** 
+TheKingJames raises 30 to 60
+Nelfrot-YT raises 620 to 680 and is all-in
+ChauflaKlAAs folds
+TheKingJames calls 410 and is all-in
+*** FLOP *** [Jd 5d 3h]
+*** TURN *** [Jd 5d 3h][7c]
+*** RIVER *** [Jd 5d 3h 7c][7d]
+*** SHOW DOWN ***
+TheKingJames shows [Jh 9h] (Two pairs : Jacks and 7)
+Nelfrot-YT shows [Qh Qd] (Two pairs : Queens and 7)
+Nelfrot-YT collected 1180 from pot
+*** SUMMARY ***
+Total pot 1180 | No rake
+Board: [Jd 5d 3h 7c 7d]
+Seat 2: TheKingJames (button) showed [Jh 9h] and lost with Two pairs : Jacks and 7
+Seat 3: Nelfrot-YT (small blind) showed [Qh Qd] and won 1180 with Two pairs : Queens and 7
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707545986212298753-11-1776262863 - Holdem no limit (15/30) - 2026/04/15 14:21:03 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ChauflaKlAAs (320)
+Seat 3: Nelfrot-YT (1180)
+*** ANTE/BLINDS ***
+ChauflaKlAAs posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Jc 2s]
+*** PRE-FLOP *** 
+ChauflaKlAAs folds
+Nelfrot-YT collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 3: Nelfrot-YT (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707545986212298753-12-1776262867 - Holdem no limit (15/30) - 2026/04/15 14:21:07 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ChauflaKlAAs (305)
+Seat 3: Nelfrot-YT (1195)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+ChauflaKlAAs posts big blind 30
+Dealt to Nelfrot-YT [6s Ks]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1165 to 1195 and is all-in
+ChauflaKlAAs folds
+Nelfrot-YT collected 1225 from pot
+*** SUMMARY ***
+Total pot 1225 | No rake
+Seat 3: Nelfrot-YT (small blind) (button) won 1225
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707545986212298753-13-1776262872 - Holdem no limit (15/30) - 2026/04/15 14:21:12 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ChauflaKlAAs (275)
+Seat 3: Nelfrot-YT (1225)
+*** ANTE/BLINDS ***
+ChauflaKlAAs posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [5d 8d]
+*** PRE-FLOP *** 
+ChauflaKlAAs folds
+Nelfrot-YT collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 3: Nelfrot-YT (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707545986212298753-14-1776262876 - Holdem no limit (15/30) - 2026/04/15 14:21:16 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ChauflaKlAAs (260)
+Seat 3: Nelfrot-YT (1240)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+ChauflaKlAAs posts big blind 30
+Dealt to Nelfrot-YT [2h 2c]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1210 to 1240 and is all-in
+ChauflaKlAAs folds
+Nelfrot-YT collected 1270 from pot
+*** SUMMARY ***
+Total pot 1270 | No rake
+Seat 3: Nelfrot-YT (small blind) (button) won 1270
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707545986212298753-15-1776262885 - Holdem no limit (15/30) - 2026/04/15 14:21:25 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ChauflaKlAAs (230)
+Seat 3: Nelfrot-YT (1270)
+*** ANTE/BLINDS ***
+ChauflaKlAAs posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [8s 6h]
+*** PRE-FLOP *** 
+ChauflaKlAAs folds
+Nelfrot-YT collected 45 from pot
+*** SUMMARY ***
+Total pot 45 | No rake
+Seat 3: Nelfrot-YT (big blind) won 45
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707545986212298753-16-1776262889 - Holdem no limit (20/40) - 2026/04/15 14:21:29 UTC
+Table: 'Expresso(1096060962)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ChauflaKlAAs (215)
+Seat 3: Nelfrot-YT (1285)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+ChauflaKlAAs posts big blind 40
+Dealt to Nelfrot-YT [4d 4c]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1245 to 1285 and is all-in
+ChauflaKlAAs calls 175 and is all-in
+*** FLOP *** [4h 9c Kh]
+*** TURN *** [4h 9c Kh][5h]
+*** RIVER *** [4h 9c Kh 5h][3d]
+*** SHOW DOWN ***
+ChauflaKlAAs shows [Kc 2c] (One pair : Kings)
+Nelfrot-YT shows [4d 4c] (Trips of 4)
+Nelfrot-YT collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [4h 9c Kh 5h 3d]
+Seat 1: ChauflaKlAAs (big blind) showed [Kc 2c] and lost with One pair : Kings
+Seat 3: Nelfrot-YT (small blind) (button) showed [4d 4c] and won 1500 with Trips of 4
+
+

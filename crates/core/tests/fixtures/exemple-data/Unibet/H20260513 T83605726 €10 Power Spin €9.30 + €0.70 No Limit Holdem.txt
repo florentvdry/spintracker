@@ -1,0 +1,779 @@
+Unibet Hand #1528432315, Tournament #83605726, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:40:59 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 3: Nenette2411 (500)
+Seat 5: 91geon_Reserve (500)
+*** Blinds and button ***
+91geon_Reserve has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Nenette2411 posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ad 5h]
+Dealt in Nenette2411
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve raises 362 to 362
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Nenette2411 folds
+91geon_Reserve wins 392
+*** Summary ***
+Total pot 392
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 3: Nenette2411: bet 20 and won 0, net result: -20
+Seat 5: 91geon_Reserve: bet 362 and won 392, net result: 30
+
+
+
+Unibet Hand #1528432671, Tournament #83605726, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:41:13 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (490)
+Seat 3: Nenette2411 (480)
+Seat 5: 91geon_Reserve (530)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Nenette2411 posts small blind 10
+91geon_Reserve posts big blind 20
+*** Hole cards ***
+Dealt in Nenette2411
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8c 2c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Nenette2411 calls 10
+91geon_Reserve checks
+*** Flop *** [9d 4h 5h]
+Nenette2411 checks
+91geon_Reserve checks
+*** Turn *** [9d 4h 5h] [Td]
+Nenette2411 bets 20
+91geon_Reserve folds
+Uncalled bet returned to Nenette2411: 20
+Nenette2411 wins 40
+*** Summary ***
+Total pot 40
+Seat 3: Nenette2411: bet 40 and won 60, net result: 20
+Seat 5: 91geon_Reserve: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528433330, Tournament #83605726, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:41:40 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (490)
+Seat 3: Nenette2411 (500)
+Seat 5: 91geon_Reserve (510)
+*** Blinds and button ***
+Nenette2411 has the button
+91geon_Reserve posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9h 3d]
+Dealt in Nenette2411
+*** Preflop ***
+Nenette2411 folds
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 30
+*** Summary ***
+Total pot 30
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 30, net result: 10
+Seat 5: 91geon_Reserve: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1528433578, Tournament #83605726, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:41:51 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 3: Nenette2411 (500)
+Seat 5: 91geon_Reserve (500)
+*** Blinds and button ***
+91geon_Reserve has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Nenette2411 posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [As 8d]
+Dealt in Nenette2411
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 490 to 500, and is all-in
+Nenette2411 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 520
+*** Summary ***
+Total pot 520
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 500 and won 520, net result: 20
+Seat 3: Nenette2411: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528433986, Tournament #83605726, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:42:09 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (520)
+Seat 3: Nenette2411 (480)
+Seat 5: 91geon_Reserve (500)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Nenette2411 posts small blind 15
+91geon_Reserve posts big blind 30
+*** Hole cards ***
+Dealt to Nenette2411 [As 4d]
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8s Ah]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 520 to 520, and is all-in
+Nenette2411 calls 465, and is all-in
+91geon_Reserve folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 40
+*** Showdown ***
+*** Flop *** [2d Kc 6h]
+*** Turn *** [2d Kc 6h] [Jh]
+*** River *** [2d Kc 6h] [Jh] [Qh]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [8s Ah], High card, Ace with an Eight kicker
+Nenette2411 shows [As 4d], High card, Ace with a Six kicker
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 990
+Nenette2411 finished the tournament in 3rd place
+*** Summary ***
+Total pot 990
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 520 and won 1030, net result: 510
+Seat 3: Nenette2411: bet 480 and won 0, net result: -480
+Seat 5: 91geon_Reserve: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1528434382, Tournament #83605726, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:42:26 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1030)
+Seat 5: 91geon_Reserve (470)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6s 7d]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+Seat 5: 91geon_Reserve: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1528434539, Tournament #83605726, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:42:33 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1045)
+Seat 5: 91geon_Reserve (455)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+91geon_Reserve posts big blind 30
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4c Qd]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+91geon_Reserve checks
+*** Flop *** [2d 5d 2h]
+91geon_Reserve bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to 91geon_Reserve: 30
+91geon_Reserve wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 0, net result: -30
+Seat 5: 91geon_Reserve: bet 60 and won 90, net result: 30
+
+
+
+Unibet Hand #1528434958, Tournament #83605726, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:42:51 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1015)
+Seat 5: 91geon_Reserve (485)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7h 9h]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+Seat 5: 91geon_Reserve: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1528435118, Tournament #83605726, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:42:58 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1030)
+Seat 5: 91geon_Reserve (470)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+91geon_Reserve posts big blind 30
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8d Ks]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 45 to 60
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 90
+*** Summary ***
+Total pot 90
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 90, net result: 30
+Seat 5: 91geon_Reserve: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1528435334, Tournament #83605726, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:08 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1060)
+Seat 5: 91geon_Reserve (440)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4d 7d]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+Seat 5: 91geon_Reserve: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528435521, Tournament #83605726, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:15 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1080)
+Seat 5: 91geon_Reserve (420)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+91geon_Reserve posts big blind 40
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kc 7h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 1060 to 1080, and is all-in
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 1120
+*** Summary ***
+Total pot 1120
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 1080 and won 1120, net result: 40
+Seat 5: 91geon_Reserve: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528435705, Tournament #83605726, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:23 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1120)
+Seat 5: 91geon_Reserve (380)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qd 6c]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve raises 360 to 380, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+91geon_Reserve wins 420
+*** Summary ***
+Total pot 420
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 5: 91geon_Reserve: bet 380 and won 420, net result: 40
+
+
+
+Unibet Hand #1528435944, Tournament #83605726, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:33 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1080)
+Seat 5: 91geon_Reserve (420)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+91geon_Reserve posts big blind 40
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5c 2s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+91geon_Reserve wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+Seat 5: 91geon_Reserve: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1528436121, Tournament #83605726, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:40 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1060)
+Seat 5: 91geon_Reserve (440)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9d Qd]
+Dealt to 91geon_Reserve [Kh Ac]
+*** Preflop ***
+91geon_Reserve raises 328 to 348
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 616 to 656
+91geon_Reserve calls 92, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 216
+*** Showdown ***
+*** Flop *** [5c Ts 6d]
+*** Turn *** [5c Ts 6d] [5h]
+*** River *** [5c Ts 6d] [5h] [3h]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [9d Qd], A Pair of Fives with a Queen kicker
+91geon_Reserve shows [Kh Ac], A Pair of Fives with an Ace kicker
+91geon_Reserve wins 880
+*** Summary ***
+Total pot 880
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 656 and won 216, net result: -440
+Seat 5: 91geon_Reserve: bet 440 and won 880, net result: 440
+
+
+
+Unibet Hand #1528436523, Tournament #83605726, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:58 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (620)
+Seat 5: 91geon_Reserve (880)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+91geon_Reserve posts big blind 40
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kh 8s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 60 to 80
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 120
+*** Summary ***
+Total pot 120
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 120, net result: 40
+Seat 5: 91geon_Reserve: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528436772, Tournament #83605726, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:44:08 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (660)
+Seat 5: 91geon_Reserve (840)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Tc Qh]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve raises 642 to 667
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+91geon_Reserve wins 717
+*** Summary ***
+Total pot 717
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 50 and won 0, net result: -50
+Seat 5: 91geon_Reserve: bet 667 and won 717, net result: 50
+
+
+
+Unibet Hand #1528437028, Tournament #83605726, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:44:19 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (610)
+Seat 5: 91geon_Reserve (890)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+91geon_Reserve posts big blind 50
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3c Ts]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+91geon_Reserve wins 75
+*** Summary ***
+Total pot 75
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 25 and won 0, net result: -25
+Seat 5: 91geon_Reserve: bet 50 and won 75, net result: 25
+
+
+
+Unibet Hand #1528437209, Tournament #83605726, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:44:26 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (585)
+Seat 5: 91geon_Reserve (915)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4s 3d]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve calls 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [Ts 4c Ad]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+91geon_Reserve bets 713
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to 91geon_Reserve: 713
+91geon_Reserve wins 100
+*** Summary ***
+Total pot 100
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 50 and won 0, net result: -50
+Seat 5: 91geon_Reserve: bet 763 and won 813, net result: 50
+
+
+
+Unibet Hand #1528437770, Tournament #83605726, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:44:50 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (535)
+Seat 5: 91geon_Reserve (965)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+91geon_Reserve posts big blind 50
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6d Ah]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 510 to 535, and is all-in
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 585
+*** Summary ***
+Total pot 585
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 535 and won 585, net result: 50
+Seat 5: 91geon_Reserve: bet 50 and won 0, net result: -50
+
+
+
+Unibet Hand #1528437944, Tournament #83605726, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:44:58 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (585)
+Seat 5: 91geon_Reserve (915)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks 5s]
+Dealt to 91geon_Reserve [6c Kd]
+*** Preflop ***
+91geon_Reserve raises 75 to 100
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 50
+*** Flop *** [2d 8d 7c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+91geon_Reserve checks
+*** Turn *** [2d 8d 7c] [6d]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+91geon_Reserve bets 100
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 100
+*** River *** [2d 8d 7c] [6d] [2c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+91geon_Reserve checks
+*** Showdown ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ks 5s], A Pair of Deuces
+91geon_Reserve shows [6c Kd], Two pairs, Sixes up
+91geon_Reserve wins 400
+*** Summary ***
+Total pot 400
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 200 and won 0, net result: -200
+Seat 5: 91geon_Reserve: bet 200 and won 400, net result: 200
+
+
+
+Unibet Hand #1528438431, Tournament #83605726, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 16:45:20 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (385)
+Seat 5: 91geon_Reserve (1115)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 30
+91geon_Reserve posts big blind 60
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ac Ks]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 355 to 385, and is all-in
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 445
+*** Summary ***
+Total pot 445
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 385 and won 445, net result: 60
+Seat 5: 91geon_Reserve: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1528438659, Tournament #83605726, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 16:45:29 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (445)
+Seat 5: 91geon_Reserve (1055)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qh 2s]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve raises 535 to 565
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+91geon_Reserve wins 625
+*** Summary ***
+Total pot 625
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 0, net result: -60
+Seat 5: 91geon_Reserve: bet 565 and won 625, net result: 60
+
+
+
+Unibet Hand #1528438871, Tournament #83605726, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 16:45:38 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (385)
+Seat 5: 91geon_Reserve (1115)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 30
+91geon_Reserve posts big blind 60
+*** Hole cards ***
+Dealt to 91geon_Reserve [2h Ks]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [As Jd]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 355 to 385, and is all-in
+91geon_Reserve calls 325
+*** Showdown ***
+*** Flop *** [4s Th 3d]
+*** Turn *** [4s Th 3d] [Td]
+*** River *** [4s Th 3d] [Td] [5c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [As Jd], A Pair of Tens with an Ace kicker
+91geon_Reserve shows [2h Ks], A Pair of Tens with a King kicker
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 770
+*** Summary ***
+Total pot 770
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 385 and won 770, net result: 385
+Seat 5: 91geon_Reserve: bet 385 and won 0, net result: -385
+
+
+
+Unibet Hand #1528439266, Tournament #83605726, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 16:45:54 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (770)
+Seat 5: 91geon_Reserve (730)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6d 3h]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve raises 588 to 618
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+91geon_Reserve wins 678
+*** Summary ***
+Total pot 678
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 0, net result: -60
+Seat 5: 91geon_Reserve: bet 618 and won 678, net result: 60
+
+
+
+Unibet Hand #1528439672, Tournament #83605726, €9.30 + €0.70 - 40.00/80.00 - No Limit Hold'Em - Total prize €20 - UTC 16:46:10 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (710)
+Seat 5: 91geon_Reserve (790)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 40
+91geon_Reserve posts big blind 80
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3h Td]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+91geon_Reserve wins 120
+*** Summary ***
+Total pot 120
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 5: 91geon_Reserve: bet 80 and won 120, net result: 40
+
+
+
+Unibet Hand #1528439844, Tournament #83605726, €9.30 + €0.70 - 40.00/80.00 - No Limit Hold'Em - Total prize €20 - UTC 16:46:18 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (670)
+Seat 5: 91geon_Reserve (830)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 80
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7c 6c]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 120
+*** Summary ***
+Total pot 120
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 120, net result: 40
+Seat 5: 91geon_Reserve: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528440026, Tournament #83605726, €9.30 + €0.70 - 40.00/80.00 - No Limit Hold'Em - Total prize €20 - UTC 16:46:25 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (710)
+Seat 5: 91geon_Reserve (790)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 40
+91geon_Reserve posts big blind 80
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6s Jc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+91geon_Reserve wins 120
+*** Summary ***
+Total pot 120
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 5: 91geon_Reserve: bet 80 and won 120, net result: 40
+
+
+
+Unibet Hand #1528440239, Tournament #83605726, €9.30 + €0.70 - 40.00/80.00 - No Limit Hold'Em - Total prize €20 - UTC 16:46:33 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (670)
+Seat 5: 91geon_Reserve (830)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 80
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Jh 2h]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 120
+*** Summary ***
+Total pot 120
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 120, net result: 40
+Seat 5: 91geon_Reserve: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528440400, Tournament #83605726, €9.30 + €0.70 - 40.00/80.00 - No Limit Hold'Em - Total prize €20 - UTC 16:46:40 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (710)
+Seat 5: 91geon_Reserve (790)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 40
+91geon_Reserve posts big blind 80
+*** Hole cards ***
+Dealt in 91geon_Reserve
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7d Ts]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 40
+91geon_Reserve raises 710 to 790, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+91geon_Reserve wins 870
+*** Summary ***
+Total pot 870
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 0, net result: -80
+Seat 5: 91geon_Reserve: bet 790 and won 870, net result: 80
+
+
+
+Unibet Hand #1528440879, Tournament #83605726, €9.30 + €0.70 - 50.00/100.00 - No Limit Hold'Em - Total prize €20 - UTC 16:47:00 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (630)
+Seat 5: 91geon_Reserve (870)
+*** Blinds and button ***
+91geon_Reserve has the button
+91geon_Reserve posts small blind 50
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 100
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9c Kc]
+Dealt in 91geon_Reserve
+*** Preflop ***
+91geon_Reserve folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 150
+*** Summary ***
+Total pot 150
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 100 and won 150, net result: 50
+Seat 5: 91geon_Reserve: bet 50 and won 0, net result: -50
+
+
+
+Unibet Hand #1528441111, Tournament #83605726, €9.30 + €0.70 - 50.00/100.00 - No Limit Hold'Em - Total prize €20 - UTC 16:47:09 2026/05/13
+Table "84104650" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (680)
+Seat 5: 91geon_Reserve (820)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 50
+91geon_Reserve posts big blind 100
+*** Hole cards ***
+Dealt to 91geon_Reserve [8s Js]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7c 6c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 630 to 680, and is all-in
+91geon_Reserve calls 580
+*** Showdown ***
+*** Flop *** [Tc 4h Ks]
+*** Turn *** [Tc 4h Ks] [9s]
+*** River *** [Tc 4h Ks] [9s] [3h]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [7c 6c], High card, King with a Ten kicker
+91geon_Reserve shows [8s Js], High card, King with a Jack kicker
+91geon_Reserve wins 1360
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 2nd place
+91geon_Reserve finished the tournament in 1st place, and won €20
+*** Summary ***
+Total pot 1360
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 680 and won 0, net result: -680
+Seat 5: 91geon_Reserve: bet 680 and won 1360, net result: 680
+
+
+

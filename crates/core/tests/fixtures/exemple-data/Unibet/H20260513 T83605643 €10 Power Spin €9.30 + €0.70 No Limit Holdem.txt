@@ -1,0 +1,471 @@
+Unibet Hand #1528431069, Tournament #83605643, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:40:06 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (500)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: Amir4l_Serieux (500)
+*** Blinds and button ***
+Amir4l_Serieux has the button
+benchspa12 posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in benchspa12
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8h 7h]
+Dealt in Amir4l_Serieux
+*** Preflop ***
+Amir4l_Serieux folds
+benchspa12 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 30
+*** Summary ***
+Total pot 30
+Seat 1: benchspa12: bet 10 and won 0, net result: -10
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 30, net result: 10
+
+
+
+Unibet Hand #1528431310, Tournament #83605643, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:40:17 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (490)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (510)
+Seat 5: Amir4l_Serieux (500)
+*** Blinds and button ***
+benchspa12 has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Amir4l_Serieux posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6d 9c]
+Dealt in Amir4l_Serieux
+Dealt in benchspa12
+*** Preflop ***
+benchspa12 raises 50 to 50
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Amir4l_Serieux folds
+benchspa12 wins 80
+*** Summary ***
+Total pot 80
+Seat 1: benchspa12: bet 50 and won 80, net result: 30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 5: Amir4l_Serieux: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528431604, Tournament #83605643, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:40:30 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (520)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: Amir4l_Serieux (480)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Amir4l_Serieux posts small blind 10
+benchspa12 posts big blind 20
+*** Hole cards ***
+Dealt in Amir4l_Serieux
+Dealt in benchspa12
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3h Qc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Amir4l_Serieux calls 10
+benchspa12 raises 130 to 150
+Amir4l_Serieux folds
+benchspa12 wins 170
+*** Summary ***
+Total pot 170
+Seat 1: benchspa12: bet 150 and won 170, net result: 20
+Seat 5: Amir4l_Serieux: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528431887, Tournament #83605643, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:40:40 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (540)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: Amir4l_Serieux (460)
+*** Blinds and button ***
+Amir4l_Serieux has the button
+benchspa12 posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in benchspa12
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5h 5c]
+Dealt in Amir4l_Serieux
+*** Preflop ***
+Amir4l_Serieux folds
+benchspa12 calls 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 480 to 500, and is all-in
+benchspa12 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 520
+*** Summary ***
+Total pot 520
+Seat 1: benchspa12: bet 20 and won 0, net result: -20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 500 and won 520, net result: 20
+
+
+
+Unibet Hand #1528432462, Tournament #83605643, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:41:04 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (520)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (520)
+Seat 5: Amir4l_Serieux (460)
+*** Blinds and button ***
+benchspa12 has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Amir4l_Serieux posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5c 9d]
+Dealt to Amir4l_Serieux [8d Ah]
+Dealt to benchspa12 [6s 7s]
+*** Preflop ***
+benchspa12 calls 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Amir4l_Serieux raises 20 to 40
+benchspa12 calls 20
+*** Flop *** [9h 6c Th]
+Amir4l_Serieux bets 20
+benchspa12 calls 20
+*** Turn *** [9h 6c Th] [4d]
+Amir4l_Serieux checks
+benchspa12 checks
+*** River *** [9h 6c Th] [4d] [3s]
+Amir4l_Serieux checks
+benchspa12 checks
+*** Showdown ***
+benchspa12 shows [6s 7s], A Pair of Sixes
+Amir4l_Serieux shows [8d Ah], High card
+benchspa12 wins 130
+*** Summary ***
+Total pot 130
+Seat 1: benchspa12: bet 60 and won 130, net result: 70
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 5: Amir4l_Serieux: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1528433208, Tournament #83605643, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:41:35 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (590)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (510)
+Seat 5: Amir4l_Serieux (400)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Amir4l_Serieux posts small blind 15
+benchspa12 posts big blind 30
+*** Hole cards ***
+Dealt to Amir4l_Serieux [Jh Jc]
+Dealt in benchspa12
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7s 7h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 510 to 510, and is all-in
+Amir4l_Serieux calls 385, and is all-in
+benchspa12 folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 110
+*** Showdown ***
+*** Flop *** [9c 9s 2c]
+*** Turn *** [9c 9s 2c] [6s]
+*** River *** [9c 9s 2c] [6s] [9h]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [7s 7h], Full House, Nines full of Sevens
+Amir4l_Serieux shows [Jh Jc], Full House, Nines full of Jacks
+Amir4l_Serieux wins 830
+*** Summary ***
+Total pot 830
+Seat 1: benchspa12: bet 30 and won 0, net result: -30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 510 and won 110, net result: -400
+Seat 5: Amir4l_Serieux: bet 400 and won 830, net result: 430
+
+
+
+Unibet Hand #1528433646, Tournament #83605643, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:41:54 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (560)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (110)
+Seat 5: Amir4l_Serieux (830)
+*** Blinds and button ***
+Amir4l_Serieux has the button
+benchspa12 posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt in benchspa12
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7h 9d]
+Dealt to Amir4l_Serieux [Jc 5h]
+*** Preflop ***
+Amir4l_Serieux calls 30
+benchspa12 calls 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [4c 5d 9s]
+benchspa12 checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 80, and is all-in
+Amir4l_Serieux calls 80
+benchspa12 folds
+*** Showdown ***
+*** Turn *** [4c 5d 9s] [Qh]
+*** River *** [4c 5d 9s] [Qh] [7c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [7h 9d], Two pairs, Nines up
+Amir4l_Serieux shows [Jc 5h], A Pair of Fives
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 250
+*** Summary ***
+Total pot 250
+Seat 1: benchspa12: bet 30 and won 0, net result: -30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 110 and won 250, net result: 140
+Seat 5: Amir4l_Serieux: bet 110 and won 0, net result: -110
+
+
+
+Unibet Hand #1528434423, Tournament #83605643, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:42:28 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (530)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (250)
+Seat 5: Amir4l_Serieux (720)
+*** Blinds and button ***
+benchspa12 has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+Amir4l_Serieux posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6d 6h]
+Dealt to Amir4l_Serieux [Th Td]
+Dealt to benchspa12 [Jd Js]
+*** Preflop ***
+benchspa12 raises 80 to 80
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 230 to 250, and is all-in
+Amir4l_Serieux raises 680 to 720, and is all-in
+benchspa12 calls 450, and is all-in
+Uncalled bet returned to Amir4l_Serieux: 190
+*** Showdown ***
+*** Flop *** [4s 6s 9c]
+*** Turn *** [4s 6s 9c] [4d]
+*** River *** [4s 6s 9c] [4d] [Qd]
+benchspa12 shows [Jd Js], Two pairs, Jacks up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [6d 6h], Full House
+Amir4l_Serieux shows [Th Td], Two pairs, Tens up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins main pot, 750
+benchspa12 wins side pot #1, 560
+*** Summary ***
+Total pot 1310
+Seat 1: benchspa12: bet 530 and won 560, net result: 30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 250 and won 750, net result: 500
+Seat 5: Amir4l_Serieux: bet 720 and won 190, net result: -530
+
+
+
+Unibet Hand #1528434999, Tournament #83605643, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:42:53 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (560)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (750)
+Seat 5: Amir4l_Serieux (190)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Amir4l_Serieux posts small blind 20
+benchspa12 posts big blind 40
+*** Hole cards ***
+Dealt in Amir4l_Serieux
+Dealt in benchspa12
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks 7c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Amir4l_Serieux folds
+benchspa12 wins 60
+*** Summary ***
+Total pot 60
+Seat 1: benchspa12: bet 40 and won 60, net result: 20
+Seat 5: Amir4l_Serieux: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528435162, Tournament #83605643, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:00 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (580)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (750)
+Seat 5: Amir4l_Serieux (170)
+*** Blinds and button ***
+Amir4l_Serieux has the button
+benchspa12 posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt in benchspa12
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kd 2s]
+Dealt in Amir4l_Serieux
+*** Preflop ***
+Amir4l_Serieux raises 170 to 170, and is all-in
+benchspa12 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Amir4l_Serieux wins 230
+*** Summary ***
+Total pot 230
+Seat 1: benchspa12: bet 20 and won 0, net result: -20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 5: Amir4l_Serieux: bet 170 and won 230, net result: 60
+
+
+
+Unibet Hand #1528435433, Tournament #83605643, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:11 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (560)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (710)
+Seat 5: Amir4l_Serieux (230)
+*** Blinds and button ***
+benchspa12 has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+Amir4l_Serieux posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5h 4c]
+Dealt to Amir4l_Serieux [Ah 4s]
+Dealt to benchspa12 [Th Qc]
+*** Preflop ***
+benchspa12 raises 560 to 560, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Amir4l_Serieux calls 180, and is all-in
+Uncalled bet returned to benchspa12: 330
+*** Showdown ***
+*** Flop *** [Js 9h 4d]
+*** Turn *** [Js 9h 4d] [6h]
+*** River *** [Js 9h 4d] [6h] [Kh]
+benchspa12 shows [Th Qc], A Straight
+Amir4l_Serieux shows [Ah 4s], A Pair of Fours
+benchspa12 wins 485
+Amir4l_Serieux finished the tournament in 3rd place
+*** Summary ***
+Total pot 485
+Seat 1: benchspa12: bet 560 and won 815, net result: 255
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 25 and won 0, net result: -25
+Seat 5: Amir4l_Serieux: bet 230 and won 0, net result: -230
+
+
+
+Unibet Hand #1528435945, Tournament #83605643, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:33 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (815)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (685)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+benchspa12 posts big blind 50
+*** Hole cards ***
+Dealt in benchspa12
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Td 3s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+benchspa12 wins 75
+*** Summary ***
+Total pot 75
+Seat 1: benchspa12: bet 50 and won 75, net result: 25
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 25 and won 0, net result: -25
+
+
+
+Unibet Hand #1528436120, Tournament #83605643, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:40 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (840)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (660)
+*** Blinds and button ***
+benchspa12 has the button
+benchspa12 posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8c Kd]
+Dealt in benchspa12
+*** Preflop ***
+benchspa12 calls 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 610 to 660, and is all-in
+benchspa12 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 710
+*** Summary ***
+Total pot 710
+Seat 1: benchspa12: bet 50 and won 0, net result: -50
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 660 and won 710, net result: 50
+
+
+
+Unibet Hand #1528436439, Tournament #83605643, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 16:43:55 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (790)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (710)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+benchspa12 posts big blind 50
+*** Hole cards ***
+Dealt to benchspa12 [Kd Qc]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7h 7d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 685 to 710, and is all-in
+benchspa12 calls 660
+*** Showdown ***
+*** Flop *** [Jd 8d 9c]
+*** Turn *** [Jd 8d 9c] [3s]
+*** River *** [Jd 8d 9c] [3s] [8h]
+benchspa12 shows [Kd Qc], A Pair of Eights
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [7h 7d], Two pairs, Eights up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 1420
+*** Summary ***
+Total pot 1420
+Seat 1: benchspa12: bet 710 and won 0, net result: -710
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 710 and won 1420, net result: 710
+
+
+
+Unibet Hand #1528437091, Tournament #83605643, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 16:44:21 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (80)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1420)
+*** Blinds and button ***
+benchspa12 has the button
+benchspa12 posts small blind 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3d 7d]
+Dealt in benchspa12
+*** Preflop ***
+benchspa12 raises 50 to 80, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+benchspa12 wins 140
+*** Summary ***
+Total pot 140
+Seat 1: benchspa12: bet 80 and won 140, net result: 60
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1528437306, Tournament #83605643, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 16:44:29 2026/05/13
+Table "84104571" 3-max
+*** Seated players ***
+Seat 1: benchspa12 (140)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1360)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 30
+benchspa12 posts big blind 60
+*** Hole cards ***
+Dealt to benchspa12 [7d 8d]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4h 4c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 1330 to 1360, and is all-in
+benchspa12 calls 80, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 1220
+*** Showdown ***
+*** Flop *** [Ad Ah 5h]
+*** Turn *** [Ad Ah 5h] [Ac]
+*** River *** [Ad Ah 5h] [Ac] [2c]
+benchspa12 shows [7d 8d], Three of a kind, Aces
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [4h 4c], Full House
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 280
+benchspa12 finished the tournament in 2nd place
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 1st place, and won €20
+*** Summary ***
+Total pot 280
+Seat 1: benchspa12: bet 140 and won 0, net result: -140
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 1360 and won 1500, net result: 140
+
+
+

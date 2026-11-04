@@ -1,0 +1,11 @@
+ALTER TABLE hands ADD COLUMN limit_type TEXT;
+ALTER TABLE hands ADD COLUMN game_variant TEXT;
+ALTER TABLE hands ADD COLUMN currency TEXT;
+ALTER TABLE hands ADD COLUMN button_seat INTEGER;
+ALTER TABLE hands ADD COLUMN ante REAL;
+ALTER TABLE hands ADD COLUMN tournament_id TEXT;
+ALTER TABLE hands ADD COLUMN tournament_name TEXT;
+ALTER TABLE hands ADD COLUMN tournament_level INTEGER;
+ALTER TABLE hands ADD COLUMN buyin_currency TEXT;
+ALTER TABLE hands ADD COLUMN rake_per_player REAL;
+ALTER TABLE hands ADD COLUMN structured_actions TEXT;

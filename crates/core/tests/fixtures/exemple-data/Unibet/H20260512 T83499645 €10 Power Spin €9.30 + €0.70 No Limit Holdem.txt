@@ -1,0 +1,663 @@
+Unibet Hand #1526894387, Tournament #83499645, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:35:08 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 3: QIDI (500)
+Seat 5: nizaritoux (500)
+*** Blinds and button ***
+nizaritoux has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+QIDI posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [As 7h]
+Dealt in QIDI
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux raises 40 to 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+QIDI calls 20
+*** Flop *** [2c Qh Th]
+QIDI checks
+nizaritoux bets 30
+QIDI calls 30
+*** Turn *** [2c Qh Th] [7d]
+QIDI checks
+nizaritoux bets 40
+QIDI calls 40
+*** River *** [2c Qh Th] [7d] [5s]
+QIDI checks
+nizaritoux bets 161
+QIDI folds
+Uncalled bet returned to nizaritoux: 161
+nizaritoux wins 230
+*** Summary ***
+Total pot 230
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 3: QIDI: bet 110 and won 0, net result: -110
+Seat 5: nizaritoux: bet 271 and won 391, net result: 120
+
+
+
+Unibet Hand #1526895485, Tournament #83499645, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:35:57 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (490)
+Seat 3: QIDI (390)
+Seat 5: nizaritoux (620)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+QIDI posts small blind 10
+nizaritoux posts big blind 20
+*** Hole cards ***
+Dealt in QIDI
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js 2d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+QIDI calls 10
+nizaritoux checks
+*** Flop *** [6d Qd 2s]
+QIDI bets 20
+nizaritoux folds
+Uncalled bet returned to QIDI: 20
+QIDI wins 40
+*** Summary ***
+Total pot 40
+Seat 3: QIDI: bet 40 and won 60, net result: 20
+Seat 5: nizaritoux: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526895895, Tournament #83499645, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:36:15 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (490)
+Seat 3: QIDI (410)
+Seat 5: nizaritoux (600)
+*** Blinds and button ***
+QIDI has the button
+nizaritoux posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5s Th]
+Dealt in QIDI
+*** Preflop ***
+QIDI folds
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 30
+*** Summary ***
+Total pot 30
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 30, net result: 10
+Seat 5: nizaritoux: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1526896169, Tournament #83499645, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:36:27 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 3: QIDI (410)
+Seat 5: nizaritoux (590)
+*** Blinds and button ***
+nizaritoux has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+QIDI posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ts 3s]
+Dealt to QIDI [8s 8c]
+Dealt to nizaritoux [Kd Qs]
+*** Preflop ***
+nizaritoux raises 40 to 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+QIDI raises 390 to 410, and is all-in
+nizaritoux calls 370
+*** Showdown ***
+*** Flop *** [Ks Jh Ad]
+*** Turn *** [Ks Jh Ad] [Ac]
+*** River *** [Ks Jh Ad] [Ac] [5d]
+QIDI shows [8s 8c], Two pairs, Aces and Eights
+nizaritoux shows [Kd Qs], Two pairs, Aces and Kings
+nizaritoux wins 830
+QIDI finished the tournament in 3rd place
+*** Summary ***
+Total pot 830
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 3: QIDI: bet 410 and won 0, net result: -410
+Seat 5: nizaritoux: bet 410 and won 830, net result: 420
+
+
+
+Unibet Hand #1526896704, Tournament #83499645, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:36:53 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (490)
+Seat 5: nizaritoux (1010)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+nizaritoux posts big blind 20
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7s Th]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 30 to 40
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+Seat 5: nizaritoux: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526896926, Tournament #83499645, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:37:03 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (510)
+Seat 5: nizaritoux (990)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qd 8s]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 30
+*** Summary ***
+Total pot 30
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 30, net result: 10
+Seat 5: nizaritoux: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1526897077, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:37:11 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (520)
+Seat 5: nizaritoux (980)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+nizaritoux posts big blind 30
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Td 7d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+nizaritoux checks
+*** Flop *** [3h Qs As]
+nizaritoux checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 30
+nizaritoux folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 90, net result: 30
+Seat 5: nizaritoux: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1526897397, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:37:26 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (550)
+Seat 5: nizaritoux (950)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qd Th]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+Seat 5: nizaritoux: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1526897556, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:37:34 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (565)
+Seat 5: nizaritoux (935)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+nizaritoux posts big blind 30
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7c 5d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+nizaritoux checks
+*** Flop *** [8d 6c Jh]
+nizaritoux bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 90 to 90
+nizaritoux raises 875 to 905, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to nizaritoux: 815
+nizaritoux wins 240
+*** Summary ***
+Total pot 240
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 120 and won 0, net result: -120
+Seat 5: nizaritoux: bet 935 and won 1055, net result: 120
+
+
+
+Unibet Hand #1526897961, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:37:53 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (445)
+Seat 5: nizaritoux (1055)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6s 5c]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+Seat 5: nizaritoux: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1526898154, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:38:00 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (460)
+Seat 5: nizaritoux (1040)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+nizaritoux posts big blind 30
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6h Jd]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+nizaritoux wins 45
+*** Summary ***
+Total pot 45
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 15 and won 0, net result: -15
+Seat 5: nizaritoux: bet 30 and won 45, net result: 15
+
+
+
+Unibet Hand #1526898318, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:38:09 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (445)
+Seat 5: nizaritoux (1055)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Tc Ac]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+Seat 5: nizaritoux: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1526898474, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:38:16 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (460)
+Seat 5: nizaritoux (1040)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+nizaritoux posts big blind 30
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8h 9s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 45 to 60
+nizaritoux calls 30
+*** Flop *** [Ac Qh 7c]
+nizaritoux bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 30
+*** Turn *** [Ac Qh 7c] [Ks]
+nizaritoux bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to nizaritoux: 30
+nizaritoux wins 180
+*** Summary ***
+Total pot 180
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 90 and won 0, net result: -90
+Seat 5: nizaritoux: bet 120 and won 210, net result: 90
+
+
+
+Unibet Hand #1526899034, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:38:43 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (370)
+Seat 5: nizaritoux (1130)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2d Qh]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux raises 1115 to 1130, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+nizaritoux wins 1160
+*** Summary ***
+Total pot 1160
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 0, net result: -30
+Seat 5: nizaritoux: bet 1130 and won 1160, net result: 30
+
+
+
+Unibet Hand #1526899211, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:38:51 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (340)
+Seat 5: nizaritoux (1160)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+nizaritoux posts big blind 30
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qh 8s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 45 to 60
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 90
+*** Summary ***
+Total pot 90
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 90, net result: 30
+Seat 5: nizaritoux: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1526899392, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:38:59 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (370)
+Seat 5: nizaritoux (1130)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9d Ac]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+Seat 5: nizaritoux: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1526899548, Tournament #83499645, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:39:06 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (385)
+Seat 5: nizaritoux (1115)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+nizaritoux posts big blind 30
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8d 7d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+nizaritoux checks
+*** Flop *** [2h Qs Jd]
+nizaritoux bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 30
+*** Turn *** [2h Qs Jd] [Jh]
+nizaritoux bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 90 to 90
+nizaritoux raises 120 to 150
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to nizaritoux: 60
+nizaritoux wins 300
+*** Summary ***
+Total pot 300
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 150 and won 0, net result: -150
+Seat 5: nizaritoux: bet 210 and won 360, net result: 150
+
+
+
+Unibet Hand #1526900013, Tournament #83499645, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:39:28 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (235)
+Seat 5: nizaritoux (1265)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6s Tc]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux raises 60 to 80
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+nizaritoux wins 120
+*** Summary ***
+Total pot 120
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 5: nizaritoux: bet 80 and won 120, net result: 40
+
+
+
+Unibet Hand #1526900169, Tournament #83499645, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:39:35 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (195)
+Seat 5: nizaritoux (1305)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+nizaritoux posts big blind 40
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6d Tc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 175 to 195, and is all-in
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 235
+*** Summary ***
+Total pot 235
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 195 and won 235, net result: 40
+Seat 5: nizaritoux: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1526900328, Tournament #83499645, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:39:42 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (235)
+Seat 5: nizaritoux (1265)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7s Jc]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+Seat 5: nizaritoux: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526900483, Tournament #83499645, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:39:50 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (255)
+Seat 5: nizaritoux (1245)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+nizaritoux posts big blind 40
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6h 4c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+nizaritoux wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+Seat 5: nizaritoux: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1526900630, Tournament #83499645, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:39:58 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (235)
+Seat 5: nizaritoux (1265)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2h 8c]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux raises 60 to 80
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+nizaritoux wins 120
+*** Summary ***
+Total pot 120
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 5: nizaritoux: bet 80 and won 120, net result: 40
+
+
+
+Unibet Hand #1526900819, Tournament #83499645, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:40:06 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (195)
+Seat 5: nizaritoux (1305)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+nizaritoux posts big blind 40
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks Qh]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 175 to 195, and is all-in
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 235
+*** Summary ***
+Total pot 235
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 195 and won 235, net result: 40
+Seat 5: nizaritoux: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1526901104, Tournament #83499645, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:40:19 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (235)
+Seat 5: nizaritoux (1265)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9s 4h]
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+Seat 5: nizaritoux: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526901257, Tournament #83499645, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:40:26 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (255)
+Seat 5: nizaritoux (1245)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+nizaritoux posts big blind 40
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Jc Qd]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 235 to 255, and is all-in
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 295
+*** Summary ***
+Total pot 295
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 255 and won 295, net result: 40
+Seat 5: nizaritoux: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1526901574, Tournament #83499645, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:40:42 2026/05/12
+Table "83998722" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (295)
+Seat 5: nizaritoux (1205)
+*** Blinds and button ***
+nizaritoux has the button
+nizaritoux posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Td Ah]
+Dealt to nizaritoux [7s Kh]
+*** Preflop ***
+nizaritoux raises 1185 to 1205, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 255, and is all-in
+Uncalled bet returned to nizaritoux: 910
+*** Showdown ***
+*** Flop *** [7c 9s 3d]
+*** Turn *** [7c 9s 3d] [6d]
+*** River *** [7c 9s 3d] [6d] [6c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Td Ah], A Pair of Sixes
+nizaritoux shows [7s Kh], Two pairs, Sevens up
+nizaritoux wins 590
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 2nd place
+nizaritoux finished the tournament in 1st place, and won €30
+*** Summary ***
+Total pot 590
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 295 and won 0, net result: -295
+Seat 5: nizaritoux: bet 1205 and won 1500, net result: 295
+
+
+

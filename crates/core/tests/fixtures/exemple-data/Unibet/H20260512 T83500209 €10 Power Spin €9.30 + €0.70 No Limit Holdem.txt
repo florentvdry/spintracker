@@ -1,0 +1,479 @@
+Unibet Hand #1526902331, Tournament #83500209, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:41:18 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (500)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: Costablanca (500)
+*** Blinds and button ***
+Costablanca has the button
+nizaritoux posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2c 9d]
+Dealt in Costablanca
+*** Preflop ***
+Costablanca raises 40 to 40
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Costablanca wins 70
+*** Summary ***
+Total pot 70
+Seat 1: nizaritoux: bet 10 and won 0, net result: -10
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+Seat 5: Costablanca: bet 40 and won 70, net result: 30
+
+
+
+Unibet Hand #1526902830, Tournament #83500209, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:41:42 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (490)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (480)
+Seat 5: Costablanca (530)
+*** Blinds and button ***
+nizaritoux has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Costablanca posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Th Qs]
+Dealt in Costablanca
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux raises 490 to 490, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Costablanca folds
+nizaritoux wins 520
+*** Summary ***
+Total pot 520
+Seat 1: nizaritoux: bet 490 and won 520, net result: 30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 5: Costablanca: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526903171, Tournament #83500209, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:41:58 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (520)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (470)
+Seat 5: Costablanca (510)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Costablanca posts small blind 10
+nizaritoux posts big blind 20
+*** Hole cards ***
+Dealt in Costablanca
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5h 2s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Costablanca folds
+nizaritoux wins 30
+*** Summary ***
+Total pot 30
+Seat 1: nizaritoux: bet 20 and won 30, net result: 10
+Seat 5: Costablanca: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1526903356, Tournament #83500209, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 15:42:08 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (530)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (470)
+Seat 5: Costablanca (500)
+*** Blinds and button ***
+Costablanca has the button
+nizaritoux posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2c 6d]
+Dealt in Costablanca
+*** Preflop ***
+Costablanca folds
+nizaritoux raises 30 to 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+nizaritoux wins 60
+*** Summary ***
+Total pot 60
+Seat 1: nizaritoux: bet 40 and won 60, net result: 20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526903654, Tournament #83500209, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:42:21 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (550)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (450)
+Seat 5: Costablanca (500)
+*** Blinds and button ***
+nizaritoux has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+Costablanca posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Th Jh]
+Dealt in Costablanca
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+Costablanca raises 120 to 150
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Costablanca wins 180
+*** Summary ***
+Total pot 180
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 0, net result: -30
+Seat 5: Costablanca: bet 150 and won 180, net result: 30
+
+
+
+Unibet Hand #1526904237, Tournament #83500209, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:42:50 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (550)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (420)
+Seat 5: Costablanca (530)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Costablanca posts small blind 15
+nizaritoux posts big blind 30
+*** Hole cards ***
+Dealt in Costablanca
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5d 2d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Costablanca raises 60 to 75
+nizaritoux folds
+Costablanca wins 105
+*** Summary ***
+Total pot 105
+Seat 1: nizaritoux: bet 30 and won 0, net result: -30
+Seat 5: Costablanca: bet 75 and won 105, net result: 30
+
+
+
+Unibet Hand #1526904560, Tournament #83500209, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:43:05 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (520)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (420)
+Seat 5: Costablanca (560)
+*** Blinds and button ***
+Costablanca has the button
+nizaritoux posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5c Qs]
+Dealt in Costablanca
+*** Preflop ***
+Costablanca folds
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 45
+*** Summary ***
+Total pot 45
+Seat 1: nizaritoux: bet 15 and won 0, net result: -15
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 45, net result: 15
+
+
+
+Unibet Hand #1526904770, Tournament #83500209, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 15:43:15 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (505)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (435)
+Seat 5: Costablanca (560)
+*** Blinds and button ***
+nizaritoux has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+Costablanca posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js 7d]
+Dealt in Costablanca
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux raises 60 to 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Costablanca folds
+nizaritoux wins 105
+*** Summary ***
+Total pot 105
+Seat 1: nizaritoux: bet 60 and won 105, net result: 45
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 15 and won 0, net result: -15
+Seat 5: Costablanca: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1526905096, Tournament #83500209, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:43:30 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (550)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (420)
+Seat 5: Costablanca (530)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Costablanca posts small blind 20
+nizaritoux posts big blind 40
+*** Hole cards ***
+Dealt in Costablanca
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4d Kd]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Costablanca raises 60 to 80
+nizaritoux folds
+Costablanca wins 120
+*** Summary ***
+Total pot 120
+Seat 1: nizaritoux: bet 40 and won 0, net result: -40
+Seat 5: Costablanca: bet 80 and won 120, net result: 40
+
+
+
+Unibet Hand #1526905476, Tournament #83500209, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:43:47 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (510)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (420)
+Seat 5: Costablanca (570)
+*** Blinds and button ***
+Costablanca has the button
+nizaritoux posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js 8s]
+Dealt in Costablanca
+*** Preflop ***
+Costablanca folds
+nizaritoux raises 60 to 80
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 40
+*** Flop *** [6c 7c Qs]
+nizaritoux bets 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 120 to 120
+nizaritoux folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 80
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 240
+*** Summary ***
+Total pot 240
+Seat 1: nizaritoux: bet 120 and won 0, net result: -120
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 200 and won 320, net result: 120
+
+
+
+Unibet Hand #1526906100, Tournament #83500209, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 15:44:17 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (390)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (540)
+Seat 5: Costablanca (570)
+*** Blinds and button ***
+nizaritoux has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+Costablanca posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7s Ad]
+Dealt in Costablanca
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux raises 80 to 80
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 520 to 540, and is all-in
+Costablanca folds
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 660
+*** Summary ***
+Total pot 660
+Seat 1: nizaritoux: bet 80 and won 0, net result: -80
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 540 and won 660, net result: 120
+Seat 5: Costablanca: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1526906498, Tournament #83500209, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 15:44:34 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (310)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (660)
+Seat 5: Costablanca (530)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Costablanca posts small blind 25
+nizaritoux posts big blind 50
+*** Hole cards ***
+Dealt in Costablanca
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kd Ac]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 660 to 660, and is all-in
+Costablanca folds
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 735
+*** Summary ***
+Total pot 735
+Seat 1: nizaritoux: bet 50 and won 0, net result: -50
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 660 and won 735, net result: 75
+Seat 5: Costablanca: bet 25 and won 0, net result: -25
+
+
+
+Unibet Hand #1526906847, Tournament #83500209, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €20 - UTC 15:44:50 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (260)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (735)
+Seat 5: Costablanca (505)
+*** Blinds and button ***
+Costablanca has the button
+nizaritoux posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7c 6d]
+Dealt in Costablanca
+*** Preflop ***
+Costablanca raises 505 to 505, and is all-in
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Costablanca wins 580
+*** Summary ***
+Total pot 580
+Seat 1: nizaritoux: bet 25 and won 0, net result: -25
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 50 and won 0, net result: -50
+Seat 5: Costablanca: bet 505 and won 580, net result: 75
+
+
+
+Unibet Hand #1526907564, Tournament #83500209, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 15:45:22 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (235)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (685)
+Seat 5: Costablanca (580)
+*** Blinds and button ***
+nizaritoux has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 30
+Costablanca posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9h 6d]
+Dealt in Costablanca
+Dealt in nizaritoux
+*** Preflop ***
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Costablanca wins 90
+*** Summary ***
+Total pot 90
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 0, net result: -30
+Seat 5: Costablanca: bet 60 and won 90, net result: 30
+
+
+
+Unibet Hand #1526907759, Tournament #83500209, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 15:45:31 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (235)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (655)
+Seat 5: Costablanca (610)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Costablanca posts small blind 30
+nizaritoux posts big blind 60
+*** Hole cards ***
+Dealt to Costablanca [6d Ah]
+Dealt to nizaritoux [2s 7s]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks 7c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 655 to 655, and is all-in
+Costablanca calls 580, and is all-in
+nizaritoux calls 175, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 45
+*** Showdown ***
+*** Flop *** [3s 4s 6h]
+*** Turn *** [3s 4s 6h] [8s]
+*** River *** [3s 4s 6h] [8s] [Jc]
+nizaritoux shows [2s 7s], A Flush
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ks 7c], High card
+Costablanca shows [6d Ah], A Pair of Sixes
+nizaritoux wins main pot, 705
+Costablanca wins side pot #1, 750
+*** Summary ***
+Total pot 1455
+Seat 1: nizaritoux: bet 235 and won 705, net result: 470
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 655 and won 45, net result: -610
+Seat 5: Costablanca: bet 610 and won 750, net result: 140
+
+
+
+Unibet Hand #1526908446, Tournament #83500209, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 15:46:02 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (705)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (45)
+Seat 5: Costablanca (750)
+*** Blinds and button ***
+Costablanca has the button
+nizaritoux posts small blind 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 45, and is all-in
+*** Hole cards ***
+Dealt in nizaritoux
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Jd Kh]
+Dealt in Costablanca
+*** Preflop ***
+Costablanca folds
+nizaritoux folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 75
+*** Summary ***
+Total pot 75
+Seat 1: nizaritoux: bet 30 and won 0, net result: -30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 45 and won 75, net result: 30
+
+
+
+Unibet Hand #1526908662, Tournament #83500209, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €20 - UTC 15:46:13 2026/05/12
+Table "83999290" 3-max
+*** Seated players ***
+Seat 1: nizaritoux (675)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (75)
+Seat 5: Costablanca (750)
+*** Blinds and button ***
+nizaritoux has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 30
+Costablanca posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8d 6d]
+Dealt to Costablanca [4s 3s]
+Dealt to nizaritoux [Ts Ks]
+*** Preflop ***
+nizaritoux raises 120 to 120
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 45, and is all-in
+Costablanca calls 60
+*** Flop *** [7c Kc 3h]
+Costablanca checks
+nizaritoux bets 60
+Costablanca calls 60
+*** Turn *** [7c Kc 3h] [Qs]
+Costablanca checks
+nizaritoux bets 60
+Costablanca calls 60
+*** River *** [7c Kc 3h] [Qs] [2c]
+Costablanca checks
+nizaritoux checks
+*** Showdown ***
+nizaritoux shows [Ts Ks], A Pair of Kings
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [8d 6d], High card
+Costablanca shows [4s 3s], A Pair of Threes
+nizaritoux wins main pot, 225
+nizaritoux wins side pot #1, 330
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 3rd place
+*** Summary ***
+Total pot 555
+Seat 1: nizaritoux: bet 240 and won 555, net result: 315
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 75 and won 0, net result: -75
+Seat 5: Costablanca: bet 240 and won 0, net result: -240
+
+
+

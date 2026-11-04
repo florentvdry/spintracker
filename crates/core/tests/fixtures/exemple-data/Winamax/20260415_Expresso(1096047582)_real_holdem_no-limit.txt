@@ -1,0 +1,71 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707488519549878273-8-1776261098 - Holdem no limit (15/30) - 2026/04/15 13:51:38 UTC
+Table: 'Expresso(1096047582)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Pokwina34 (950)
+Seat 2: Nelfrot-YT (550)
+*** ANTE/BLINDS ***
+Pokwina34 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [6s 9c]
+*** PRE-FLOP *** 
+Pokwina34 calls 15
+Nelfrot-YT checks
+*** FLOP *** [Th Js 5h]
+Nelfrot-YT checks
+Pokwina34 checks
+*** TURN *** [Th Js 5h][7s]
+Nelfrot-YT checks
+Pokwina34 checks
+*** RIVER *** [Th Js 5h 7s][2s]
+Nelfrot-YT bets 30
+Pokwina34 folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [Th Js 5h 7s 2s]
+Seat 2: Nelfrot-YT (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707488519549878273-9-1776261125 - Holdem no limit (15/30) - 2026/04/15 13:52:05 UTC
+Table: 'Expresso(1096047582)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Pokwina34 (920)
+Seat 2: Nelfrot-YT (580)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Pokwina34 posts big blind 30
+Dealt to Nelfrot-YT [7d 2h]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 15
+Pokwina34 raises 60 to 90
+Nelfrot-YT folds
+Pokwina34 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 1: Pokwina34 (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707488519549878273-10-1776261135 - Holdem no limit (15/30) - 2026/04/15 13:52:15 UTC
+Table: 'Expresso(1096047582)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Pokwina34 (950)
+Seat 2: Nelfrot-YT (550)
+*** ANTE/BLINDS ***
+Pokwina34 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [9h Ad]
+*** PRE-FLOP *** 
+Pokwina34 raises 60 to 90
+Nelfrot-YT raises 460 to 550 and is all-in
+Pokwina34 raises 400 to 950 and is all-in
+*** FLOP *** [6d 5d Jc]
+*** TURN *** [6d 5d Jc][7d]
+*** RIVER *** [6d 5d Jc 7d][5c]
+*** SHOW DOWN ***
+Nelfrot-YT shows [9h Ad] (One pair : 5)
+Pokwina34 shows [Qh Ac] (One pair : 5)
+Pokwina34 collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [6d 5d Jc 7d 5c]
+Seat 1: Pokwina34 (small blind) (button) showed [Qh Ac] and won 1500 with One pair : 5
+Seat 2: Nelfrot-YT (big blind) showed [9h Ad] and lost with One pair : 5
+
+

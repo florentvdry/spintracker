@@ -1,0 +1,811 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707514422497640449-1-1776261684 - Holdem no limit (10/20) - 2026/04/15 14:01:24 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ghislain39 (500)
+Seat 2: UhlanX17 (500)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+ghislain39 posts big blind 20
+Dealt to Nelfrot-YT [8c 4s]
+*** PRE-FLOP *** 
+UhlanX17 raises 50 to 70
+Nelfrot-YT folds
+ghislain39 calls 50
+*** FLOP *** [Ad Js 6d]
+ghislain39 checks
+UhlanX17 bets 430 and is all-in
+ghislain39 folds
+UhlanX17 collected 580 from pot
+*** SUMMARY ***
+Total pot 580 | No rake
+Board: [Ad Js 6d]
+Seat 2: UhlanX17 (button) won 580
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707514422497640449-2-1776261699 - Holdem no limit (10/20) - 2026/04/15 14:01:39 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ghislain39 (430)
+Seat 2: UhlanX17 (580)
+Seat 3: Nelfrot-YT (490)
+*** ANTE/BLINDS ***
+ghislain39 posts small blind 10
+UhlanX17 posts big blind 20
+Dealt to Nelfrot-YT [5c 7d]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+ghislain39 calls 10
+UhlanX17 checks
+*** FLOP *** [Tc 4d Qd]
+ghislain39 checks
+UhlanX17 checks
+*** TURN *** [Tc 4d Qd][Ks]
+ghislain39 checks
+UhlanX17 bets 20
+ghislain39 calls 20
+*** RIVER *** [Tc 4d Qd Ks][As]
+ghislain39 bets 390 and is all-in
+UhlanX17 raises 150 to 540 and is all-in
+*** SHOW DOWN ***
+ghislain39 shows [Td Jc] (Straight Ace high)
+UhlanX17 shows [Jh 6s] (Straight Ace high)
+UhlanX17 collected 580 from side pot 1
+ghislain39 collected 430 from main pot
+*** SUMMARY ***
+Total pot 1010 | No rake
+Board: [Tc 4d Qd Ks As]
+Seat 1: ghislain39 (small blind) showed [Td Jc] and won 430 with Straight Ace high
+Seat 2: UhlanX17 (big blind) showed [Jh 6s] and won 580 with Straight Ace high
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707514422497640449-3-1776261718 - Holdem no limit (10/20) - 2026/04/15 14:01:58 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #1 is the button
+Seat 1: ghislain39 (430)
+Seat 2: UhlanX17 (580)
+Seat 3: Nelfrot-YT (490)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Td 2h]
+*** PRE-FLOP *** 
+ghislain39 calls 20
+UhlanX17 raises 60 to 80
+Nelfrot-YT folds
+ghislain39 calls 60
+*** FLOP *** [8h 3s Ks]
+UhlanX17 bets 180
+ghislain39 folds
+UhlanX17 collected 360 from pot
+*** SUMMARY ***
+Total pot 360 | No rake
+Board: [8h 3s Ks]
+Seat 2: UhlanX17 (small blind) won 360
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707514422497640449-4-1776261735 - Holdem no limit (10/20) - 2026/04/15 14:02:15 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 1: ghislain39 (350)
+Seat 2: UhlanX17 (680)
+Seat 3: Nelfrot-YT (470)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+ghislain39 posts big blind 20
+Dealt to Nelfrot-YT [Js 4s]
+*** PRE-FLOP *** 
+UhlanX17 calls 20
+Nelfrot-YT calls 10
+ghislain39 checks
+*** FLOP *** [6c Ac 3d]
+Nelfrot-YT checks
+ghislain39 bets 20
+UhlanX17 calls 20
+Nelfrot-YT folds
+*** TURN *** [6c Ac 3d][5h]
+ghislain39 bets 20
+UhlanX17 calls 20
+*** RIVER *** [6c Ac 3d 5h][Jh]
+ghislain39 checks
+UhlanX17 bets 140
+ghislain39 folds
+UhlanX17 collected 280 from pot
+*** SUMMARY ***
+Total pot 280 | No rake
+Board: [6c Ac 3d 5h Jh]
+Seat 2: UhlanX17 (button) won 280
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707514422497640449-5-1776261758 - Holdem no limit (10/20) - 2026/04/15 14:02:38 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 1: ghislain39 (290)
+Seat 2: UhlanX17 (760)
+Seat 3: Nelfrot-YT (450)
+*** ANTE/BLINDS ***
+ghislain39 posts small blind 10
+UhlanX17 posts big blind 20
+Dealt to Nelfrot-YT [9d Qs]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+ghislain39 raises 20 to 40
+UhlanX17 raises 720 to 760 and is all-in
+ghislain39 calls 250 and is all-in
+*** FLOP *** [Tc 3d Ts]
+*** TURN *** [Tc 3d Ts][6d]
+*** RIVER *** [Tc 3d Ts 6d][Kh]
+*** SHOW DOWN ***
+ghislain39 shows [Ad Js] (One pair : Tens)
+UhlanX17 shows [5d 5c] (Two pairs : Tens and 5)
+UhlanX17 collected 1050 from pot
+*** SUMMARY ***
+Total pot 1050 | No rake
+Board: [Tc 3d Ts 6d Kh]
+Seat 1: ghislain39 (small blind) showed [Ad Js] and lost with One pair : Tens
+Seat 2: UhlanX17 (big blind) showed [5d 5c] and won 1050 with Two pairs : Tens and 5
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707514422497640449-6-1776261782 - Holdem no limit (15/30) - 2026/04/15 14:03:02 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (1050)
+Seat 3: Nelfrot-YT (450)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [5d 8c]
+*** PRE-FLOP *** 
+UhlanX17 calls 15
+Nelfrot-YT checks
+*** FLOP *** [7c 9d 5h]
+Nelfrot-YT checks
+UhlanX17 bets 30
+Nelfrot-YT calls 30
+*** TURN *** [7c 9d 5h][Qs]
+Nelfrot-YT checks
+UhlanX17 bets 30
+Nelfrot-YT calls 30
+*** RIVER *** [7c 9d 5h Qs][Tc]
+Nelfrot-YT checks
+UhlanX17 bets 960 and is all-in
+Nelfrot-YT folds
+UhlanX17 collected 1140 from pot
+*** SUMMARY ***
+Total pot 1140 | No rake
+Board: [7c 9d 5h Qs Tc]
+Seat 2: UhlanX17 (small blind) (button) won 1140
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707514422497640449-7-1776261800 - Holdem no limit (15/30) - 2026/04/15 14:03:20 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (1140)
+Seat 3: Nelfrot-YT (360)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+UhlanX17 posts big blind 30
+Dealt to Nelfrot-YT [Jh As]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 330 to 360 and is all-in
+UhlanX17 calls 330
+*** FLOP *** [Jc 3s 9c]
+*** TURN *** [Jc 3s 9c][6h]
+*** RIVER *** [Jc 3s 9c 6h][8c]
+*** SHOW DOWN ***
+UhlanX17 shows [Kh 3h] (One pair : 3)
+Nelfrot-YT shows [Jh As] (One pair : Jacks)
+Nelfrot-YT collected 720 from pot
+*** SUMMARY ***
+Total pot 720 | No rake
+Board: [Jc 3s 9c 6h 8c]
+Seat 2: UhlanX17 (big blind) showed [Kh 3h] and lost with One pair : 3
+Seat 3: Nelfrot-YT (small blind) (button) showed [Jh As] and won 720 with One pair : Jacks
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707514422497640449-8-1776261811 - Holdem no limit (15/30) - 2026/04/15 14:03:31 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (780)
+Seat 3: Nelfrot-YT (720)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Ts 2s]
+*** PRE-FLOP *** 
+UhlanX17 calls 15
+Nelfrot-YT checks
+*** FLOP *** [3d Ad 7c]
+Nelfrot-YT checks
+UhlanX17 bets 30
+Nelfrot-YT folds
+UhlanX17 collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [3d Ad 7c]
+Seat 2: UhlanX17 (small blind) (button) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707514422497640449-9-1776261822 - Holdem no limit (15/30) - 2026/04/15 14:03:42 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (810)
+Seat 3: Nelfrot-YT (690)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+UhlanX17 posts big blind 30
+Dealt to Nelfrot-YT [9c 4c]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 15
+UhlanX17 raises 60 to 90
+Nelfrot-YT folds
+UhlanX17 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 2: UhlanX17 (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707514422497640449-10-1776261830 - Holdem no limit (15/30) - 2026/04/15 14:03:50 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (840)
+Seat 3: Nelfrot-YT (660)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [Th 4c]
+*** PRE-FLOP *** 
+UhlanX17 raises 60 to 90
+Nelfrot-YT folds
+UhlanX17 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 2: UhlanX17 (small blind) (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707514422497640449-11-1776261837 - Holdem no limit (15/30) - 2026/04/15 14:03:57 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (870)
+Seat 3: Nelfrot-YT (630)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+UhlanX17 posts big blind 30
+Dealt to Nelfrot-YT [7d 9s]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 15
+UhlanX17 checks
+*** FLOP *** [8s As 4h]
+UhlanX17 checks
+Nelfrot-YT bets 30
+UhlanX17 calls 30
+*** TURN *** [8s As 4h][8h]
+UhlanX17 bets 120
+Nelfrot-YT folds
+UhlanX17 collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Board: [8s As 4h 8h]
+Seat 2: UhlanX17 (big blind) won 240
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707514422497640449-12-1776261855 - Holdem no limit (15/30) - 2026/04/15 14:04:15 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (930)
+Seat 3: Nelfrot-YT (570)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [6d 5h]
+*** PRE-FLOP *** 
+UhlanX17 raises 60 to 90
+Nelfrot-YT folds
+UhlanX17 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 2: UhlanX17 (small blind) (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707514422497640449-13-1776261862 - Holdem no limit (20/40) - 2026/04/15 14:04:22 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (960)
+Seat 3: Nelfrot-YT (540)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+UhlanX17 posts big blind 40
+Dealt to Nelfrot-YT [2s 4c]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+UhlanX17 checks
+*** FLOP *** [6d 7c 3s]
+UhlanX17 bets 80
+Nelfrot-YT folds
+UhlanX17 collected 160 from pot
+*** SUMMARY ***
+Total pot 160 | No rake
+Board: [6d 7c 3s]
+Seat 2: UhlanX17 (big blind) won 160
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707514422497640449-14-1776261874 - Holdem no limit (20/40) - 2026/04/15 14:04:34 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (1000)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [9s Jh]
+*** PRE-FLOP *** 
+UhlanX17 calls 20
+Nelfrot-YT checks
+*** FLOP *** [4c 5h Ks]
+Nelfrot-YT checks
+UhlanX17 checks
+*** TURN *** [4c 5h Ks][7s]
+Nelfrot-YT checks
+UhlanX17 checks
+*** RIVER *** [4c 5h Ks 7s][Ad]
+Nelfrot-YT bets 40
+UhlanX17 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [4c 5h Ks 7s Ad]
+Seat 3: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707514422497640449-15-1776261888 - Holdem no limit (20/40) - 2026/04/15 14:04:48 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (960)
+Seat 3: Nelfrot-YT (540)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+UhlanX17 posts big blind 40
+Dealt to Nelfrot-YT [2s 5d]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+UhlanX17 checks
+*** FLOP *** [2c 6c 4c]
+UhlanX17 bets 80
+Nelfrot-YT folds
+UhlanX17 collected 160 from pot
+*** SUMMARY ***
+Total pot 160 | No rake
+Board: [2c 6c 4c]
+Seat 2: UhlanX17 (big blind) won 160
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707514422497640449-16-1776261899 - Holdem no limit (20/40) - 2026/04/15 14:04:59 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (1000)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Jd 4c]
+*** PRE-FLOP *** 
+UhlanX17 calls 20
+Nelfrot-YT checks
+*** FLOP *** [2d 4s 2c]
+Nelfrot-YT checks
+UhlanX17 bets 40
+Nelfrot-YT raises 80 to 120
+UhlanX17 calls 80
+*** TURN *** [2d 4s 2c][9d]
+Nelfrot-YT bets 340 and is all-in
+UhlanX17 calls 340
+*** RIVER *** [2d 4s 2c 9d][9h]
+*** SHOW DOWN ***
+UhlanX17 shows [7h Td] (Two pairs : 9 and 2)
+Nelfrot-YT shows [Jd 4c] (Two pairs : 9 and 4)
+Nelfrot-YT collected 1000 from pot
+*** SUMMARY ***
+Total pot 1000 | No rake
+Board: [2d 4s 2c 9d 9h]
+Seat 2: UhlanX17 (small blind) (button) showed [7h Td] and lost with Two pairs : 9 and 2
+Seat 3: Nelfrot-YT (big blind) showed [Jd 4c] and won 1000 with Two pairs : 9 and 4
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707514422497640449-17-1776261919 - Holdem no limit (20/40) - 2026/04/15 14:05:19 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (500)
+Seat 3: Nelfrot-YT (1000)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+UhlanX17 posts big blind 40
+Dealt to Nelfrot-YT [9h 4c]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+UhlanX17 raises 40 to 80
+Nelfrot-YT folds
+UhlanX17 collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 2: UhlanX17 (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707514422497640449-18-1776261927 - Holdem no limit (20/40) - 2026/04/15 14:05:27 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (540)
+Seat 3: Nelfrot-YT (960)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Js Tc]
+*** PRE-FLOP *** 
+UhlanX17 raises 40 to 80
+Nelfrot-YT calls 40
+*** FLOP *** [9s Jh 3s]
+Nelfrot-YT checks
+UhlanX17 bets 40
+Nelfrot-YT raises 840 to 880 and is all-in
+UhlanX17 folds
+Nelfrot-YT collected 1080 from pot
+*** SUMMARY ***
+Total pot 1080 | No rake
+Board: [9s Jh 3s]
+Seat 3: Nelfrot-YT (big blind) won 1080
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707514422497640449-19-1776261937 - Holdem no limit (20/40) - 2026/04/15 14:05:37 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (420)
+Seat 3: Nelfrot-YT (1080)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+UhlanX17 posts big blind 40
+Dealt to Nelfrot-YT [Qs 6h]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+UhlanX17 checks
+*** FLOP *** [2d Th Ts]
+UhlanX17 checks
+Nelfrot-YT bets 40
+UhlanX17 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Board: [2d Th Ts]
+Seat 3: Nelfrot-YT (small blind) (button) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707514422497640449-20-1776261946 - Holdem no limit (20/40) - 2026/04/15 14:05:46 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (380)
+Seat 3: Nelfrot-YT (1120)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [7s 7h]
+*** PRE-FLOP *** 
+UhlanX17 calls 20
+Nelfrot-YT raises 1080 to 1120 and is all-in
+UhlanX17 folds
+Nelfrot-YT collected 1160 from pot
+*** SUMMARY ***
+Total pot 1160 | No rake
+Seat 3: Nelfrot-YT (big blind) won 1160
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-21-1776261954 - Holdem no limit (30/60) - 2026/04/15 14:05:54 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (340)
+Seat 3: Nelfrot-YT (1160)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+UhlanX17 posts big blind 60
+Dealt to Nelfrot-YT [Th 6h]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1100 to 1160 and is all-in
+UhlanX17 folds
+Nelfrot-YT collected 1220 from pot
+*** SUMMARY ***
+Total pot 1220 | No rake
+Seat 3: Nelfrot-YT (small blind) (button) won 1220
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-22-1776261960 - Holdem no limit (30/60) - 2026/04/15 14:06:00 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (280)
+Seat 3: Nelfrot-YT (1220)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [3c 2h]
+*** PRE-FLOP *** 
+UhlanX17 calls 30
+Nelfrot-YT checks
+*** FLOP *** [8h Td Js]
+Nelfrot-YT checks
+UhlanX17 bets 120
+Nelfrot-YT folds
+UhlanX17 collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Board: [8h Td Js]
+Seat 2: UhlanX17 (small blind) (button) won 240
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-23-1776261970 - Holdem no limit (30/60) - 2026/04/15 14:06:10 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (340)
+Seat 3: Nelfrot-YT (1160)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+UhlanX17 posts big blind 60
+Dealt to Nelfrot-YT [Ad 3h]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1100 to 1160 and is all-in
+UhlanX17 folds
+Nelfrot-YT collected 1220 from pot
+*** SUMMARY ***
+Total pot 1220 | No rake
+Seat 3: Nelfrot-YT (small blind) (button) won 1220
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-24-1776261976 - Holdem no limit (30/60) - 2026/04/15 14:06:16 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (280)
+Seat 3: Nelfrot-YT (1220)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [As 4d]
+*** PRE-FLOP *** 
+UhlanX17 folds
+Nelfrot-YT collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Seat 3: Nelfrot-YT (big blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-25-1776261981 - Holdem no limit (30/60) - 2026/04/15 14:06:21 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (250)
+Seat 3: Nelfrot-YT (1250)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+UhlanX17 posts big blind 60
+Dealt to Nelfrot-YT [Kc 6d]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1190 to 1250 and is all-in
+UhlanX17 folds
+Nelfrot-YT collected 1310 from pot
+*** SUMMARY ***
+Total pot 1310 | No rake
+Seat 3: Nelfrot-YT (small blind) (button) won 1310
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-26-1776261989 - Holdem no limit (30/60) - 2026/04/15 14:06:29 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (190)
+Seat 3: Nelfrot-YT (1310)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [As 9s]
+*** PRE-FLOP *** 
+UhlanX17 raises 120 to 180
+Nelfrot-YT raises 1130 to 1310 and is all-in
+UhlanX17 calls 10 and is all-in
+*** FLOP *** [Th 6h Jh]
+*** TURN *** [Th 6h Jh][Td]
+*** RIVER *** [Th 6h Jh Td][7c]
+*** SHOW DOWN ***
+UhlanX17 shows [Tc 8h] (Trips of Tens)
+Nelfrot-YT shows [As 9s] (One pair : Tens)
+Nelfrot-YT collected 1120 from side pot 1
+UhlanX17 collected 380 from main pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [Th 6h Jh Td 7c]
+Seat 2: UhlanX17 (small blind) (button) showed [Tc 8h] and won 380 with Trips of Tens
+Seat 3: Nelfrot-YT (big blind) showed [As 9s] and won 1120 with One pair : Tens
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-27-1776262003 - Holdem no limit (30/60) - 2026/04/15 14:06:43 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (380)
+Seat 3: Nelfrot-YT (1120)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+UhlanX17 posts big blind 60
+Dealt to Nelfrot-YT [9d Td]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 1060 to 1120 and is all-in
+UhlanX17 calls 320 and is all-in
+*** FLOP *** [4s 4d 7s]
+*** TURN *** [4s 4d 7s][Kc]
+*** RIVER *** [4s 4d 7s Kc][3s]
+*** SHOW DOWN ***
+UhlanX17 shows [Qh As] (One pair : 4)
+Nelfrot-YT shows [9d Td] (One pair : 4)
+Nelfrot-YT collected 740 from side pot 1
+UhlanX17 collected 760 from main pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [4s 4d 7s Kc 3s]
+Seat 2: UhlanX17 (big blind) showed [Qh As] and won 760 with One pair : 4
+Seat 3: Nelfrot-YT (small blind) (button) showed [9d Td] and won 740 with One pair : 4
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-28-1776262015 - Holdem no limit (30/60) - 2026/04/15 14:06:55 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (760)
+Seat 3: Nelfrot-YT (740)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [Kh Qc]
+*** PRE-FLOP *** 
+UhlanX17 calls 30
+Nelfrot-YT raises 680 to 740 and is all-in
+UhlanX17 folds
+Nelfrot-YT collected 800 from pot
+*** SUMMARY ***
+Total pot 800 | No rake
+Seat 3: Nelfrot-YT (big blind) won 800
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-29-1776262022 - Holdem no limit (30/60) - 2026/04/15 14:07:02 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (700)
+Seat 3: Nelfrot-YT (800)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+UhlanX17 posts big blind 60
+Dealt to Nelfrot-YT [Ts 5d]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 30
+UhlanX17 raises 120 to 180
+Nelfrot-YT folds
+UhlanX17 collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Seat 2: UhlanX17 (big blind) won 240
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707514422497640449-30-1776262029 - Holdem no limit (30/60) - 2026/04/15 14:07:09 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (760)
+Seat 3: Nelfrot-YT (740)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 30
+Nelfrot-YT posts big blind 60
+Dealt to Nelfrot-YT [2h 2c]
+*** PRE-FLOP *** 
+UhlanX17 calls 30
+Nelfrot-YT raises 680 to 740 and is all-in
+UhlanX17 folds
+Nelfrot-YT collected 800 from pot
+*** SUMMARY ***
+Total pot 800 | No rake
+Seat 3: Nelfrot-YT (big blind) won 800
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707514422497640449-31-1776262043 - Holdem no limit (40/80) - 2026/04/15 14:07:23 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (700)
+Seat 3: Nelfrot-YT (800)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+UhlanX17 posts big blind 80
+Dealt to Nelfrot-YT [6h 7s]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 40
+UhlanX17 raises 620 to 700 and is all-in
+Nelfrot-YT folds
+UhlanX17 collected 780 from pot
+*** SUMMARY ***
+Total pot 780 | No rake
+Seat 2: UhlanX17 (big blind) won 780
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707514422497640449-32-1776262054 - Holdem no limit (40/80) - 2026/04/15 14:07:34 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (780)
+Seat 3: Nelfrot-YT (720)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [7h Kh]
+*** PRE-FLOP *** 
+UhlanX17 calls 40
+Nelfrot-YT raises 640 to 720 and is all-in
+UhlanX17 folds
+Nelfrot-YT collected 800 from pot
+*** SUMMARY ***
+Total pot 800 | No rake
+Seat 3: Nelfrot-YT (big blind) won 800
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707514422497640449-33-1776262063 - Holdem no limit (40/80) - 2026/04/15 14:07:43 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (700)
+Seat 3: Nelfrot-YT (800)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+UhlanX17 posts big blind 80
+Dealt to Nelfrot-YT [9s 8d]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 40
+UhlanX17 raises 620 to 700 and is all-in
+Nelfrot-YT folds
+UhlanX17 collected 780 from pot
+*** SUMMARY ***
+Total pot 780 | No rake
+Seat 2: UhlanX17 (big blind) won 780
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707514422497640449-34-1776262071 - Holdem no limit (40/80) - 2026/04/15 14:07:51 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (780)
+Seat 3: Nelfrot-YT (720)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [2d 6d]
+*** PRE-FLOP *** 
+UhlanX17 folds
+Nelfrot-YT collected 120 from pot
+*** SUMMARY ***
+Total pot 120 | No rake
+Seat 3: Nelfrot-YT (big blind) won 120
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707514422497640449-35-1776262075 - Holdem no limit (40/80) - 2026/04/15 14:07:55 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (740)
+Seat 3: Nelfrot-YT (760)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+UhlanX17 posts big blind 80
+Dealt to Nelfrot-YT [Js 8h]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 40
+UhlanX17 checks
+*** FLOP *** [3d Kh 8s]
+UhlanX17 checks
+Nelfrot-YT bets 80
+UhlanX17 folds
+Nelfrot-YT collected 240 from pot
+*** SUMMARY ***
+Total pot 240 | No rake
+Board: [3d Kh 8s]
+Seat 3: Nelfrot-YT (small blind) (button) won 240
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707514422497640449-36-1776262088 - Holdem no limit (40/80) - 2026/04/15 14:08:08 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #2 is the button
+Seat 2: UhlanX17 (660)
+Seat 3: Nelfrot-YT (840)
+*** ANTE/BLINDS ***
+UhlanX17 posts small blind 40
+Nelfrot-YT posts big blind 80
+Dealt to Nelfrot-YT [Ah 8s]
+*** PRE-FLOP *** 
+UhlanX17 calls 40
+Nelfrot-YT raises 760 to 840 and is all-in
+UhlanX17 folds
+Nelfrot-YT collected 920 from pot
+*** SUMMARY ***
+Total pot 920 | No rake
+Seat 3: Nelfrot-YT (big blind) won 920
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 5 - HandId: #4707514422497640449-37-1776262095 - Holdem no limit (40/80) - 2026/04/15 14:08:15 UTC
+Table: 'Expresso(1096053613)#0' 3-max (real money) Seat #3 is the button
+Seat 2: UhlanX17 (580)
+Seat 3: Nelfrot-YT (920)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 40
+UhlanX17 posts big blind 80
+Dealt to Nelfrot-YT [Jd 7s]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 40
+UhlanX17 checks
+*** FLOP *** [8d 7d 8c]
+UhlanX17 bets 500 and is all-in
+Nelfrot-YT raises 340 to 840 and is all-in
+*** TURN *** [8d 7d 8c][3s]
+*** RIVER *** [8d 7d 8c 3s][Td]
+*** SHOW DOWN ***
+UhlanX17 shows [7c 2d] (Two pairs : 8 and 7)
+Nelfrot-YT shows [Jd 7s] (Two pairs : 8 and 7)
+Nelfrot-YT collected 1500 from pot
+*** SUMMARY ***
+Total pot 1500 | No rake
+Board: [8d 7d 8c 3s Td]
+Seat 2: UhlanX17 (big blind) showed [7c 2d] and lost with Two pairs : 8 and 7
+Seat 3: Nelfrot-YT (small blind) (button) showed [Jd 7s] and won 1500 with Two pairs : 8 and 7
+
+

@@ -1,0 +1,228 @@
+Unibet Hand #1528412336, Tournament #83604369, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:26:57 2026/05/13
+Table "84103286" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 3: Ch4calDirect (500)
+Seat 5: JuanPardon (500)
+*** Blinds and button ***
+JuanPardon has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Ch4calDirect posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7s Kh]
+Dealt in Ch4calDirect
+Dealt in JuanPardon
+*** Preflop ***
+JuanPardon raises 40 to 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Ch4calDirect calls 20
+*** Flop *** [4d 7d 6c]
+Ch4calDirect checks
+JuanPardon bets 90
+Ch4calDirect folds
+Uncalled bet returned to JuanPardon: 90
+JuanPardon wins 90
+*** Summary ***
+Total pot 90
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 3: Ch4calDirect: bet 40 and won 0, net result: -40
+Seat 5: JuanPardon: bet 130 and won 180, net result: 50
+
+
+
+Unibet Hand #1528412976, Tournament #83604369, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:27:26 2026/05/13
+Table "84103286" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (490)
+Seat 3: Ch4calDirect (460)
+Seat 5: JuanPardon (550)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Ch4calDirect posts small blind 10
+JuanPardon posts big blind 20
+*** Hole cards ***
+Dealt in Ch4calDirect
+Dealt in JuanPardon
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks 6s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 40 to 40
+Ch4calDirect folds
+JuanPardon raises 530 to 550, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+JuanPardon wins 600
+*** Summary ***
+Total pot 600
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 3: Ch4calDirect: bet 10 and won 0, net result: -10
+Seat 5: JuanPardon: bet 550 and won 600, net result: 50
+
+
+
+Unibet Hand #1528413390, Tournament #83604369, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:27:44 2026/05/13
+Table "84103286" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (450)
+Seat 3: Ch4calDirect (450)
+Seat 5: JuanPardon (600)
+*** Blinds and button ***
+Ch4calDirect has the button
+JuanPardon posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in JuanPardon
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2h 3c]
+Dealt in Ch4calDirect
+*** Preflop ***
+Ch4calDirect calls 20
+JuanPardon folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [2c 4s Js]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+Ch4calDirect checks
+*** Turn *** [2c 4s Js] [Td]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+Ch4calDirect checks
+*** River *** [2c 4s Js] [Td] [Qs]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+Ch4calDirect bets 211
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to Ch4calDirect: 211
+Ch4calDirect wins 50
+*** Summary ***
+Total pot 50
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+Seat 3: Ch4calDirect: bet 231 and won 261, net result: 30
+Seat 5: JuanPardon: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1528414347, Tournament #83604369, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:28:25 2026/05/13
+Table "84103286" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (430)
+Seat 3: Ch4calDirect (480)
+Seat 5: JuanPardon (590)
+*** Blinds and button ***
+JuanPardon has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Ch4calDirect posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js 7d]
+Dealt in Ch4calDirect
+Dealt in JuanPardon
+*** Preflop ***
+JuanPardon folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 30 to 40
+Ch4calDirect calls 20
+*** Flop *** [4c Ah 7c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 32
+Ch4calDirect folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 32
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 80
+*** Summary ***
+Total pot 80
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 72 and won 112, net result: 40
+Seat 3: Ch4calDirect: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528414859, Tournament #83604369, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 16:28:46 2026/05/13
+Table "84103286" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (470)
+Seat 3: Ch4calDirect (440)
+Seat 5: JuanPardon (590)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Ch4calDirect posts small blind 10
+JuanPardon posts big blind 20
+*** Hole cards ***
+Dealt in Ch4calDirect
+Dealt in JuanPardon
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8c Qd]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 40 to 40
+Ch4calDirect calls 30
+JuanPardon calls 20
+*** Flop *** [7s 6s Ah]
+Ch4calDirect bets 60
+JuanPardon folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to Ch4calDirect: 60
+Ch4calDirect wins 120
+*** Summary ***
+Total pot 120
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+Seat 3: Ch4calDirect: bet 100 and won 180, net result: 80
+Seat 5: JuanPardon: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528415426, Tournament #83604369, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 16:29:11 2026/05/13
+Table "84103286" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (430)
+Seat 3: Ch4calDirect (520)
+Seat 5: JuanPardon (550)
+*** Blinds and button ***
+Ch4calDirect has the button
+JuanPardon posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt in JuanPardon
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [9h 7s]
+Dealt in Ch4calDirect
+*** Preflop ***
+Ch4calDirect calls 30
+JuanPardon folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [5s 9d 7h]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 56
+Ch4calDirect folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 56
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 75
+*** Summary ***
+Total pot 75
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 86 and won 131, net result: 45
+Seat 3: Ch4calDirect: bet 30 and won 0, net result: -30
+Seat 5: JuanPardon: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1528416081, Tournament #83604369, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 16:29:37 2026/05/13
+Table "84103286" 3-max
+*** Seated players ***
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f] (475)
+Seat 3: Ch4calDirect (490)
+Seat 5: JuanPardon (535)
+*** Blinds and button ***
+JuanPardon has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+Ch4calDirect posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Jh Jc]
+Dealt to Ch4calDirect [8s Ts]
+Dealt in JuanPardon
+*** Preflop ***
+JuanPardon folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 45 to 60
+Ch4calDirect calls 30
+*** Flop *** [7s 8h 5s]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 150
+Ch4calDirect raises 300 to 300
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 265 to 415, and is all-in
+Ch4calDirect calls 115
+*** Showdown ***
+*** Turn *** [7s 8h 5s] [3c]
+*** River *** [7s 8h 5s] [3c] [Td]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Jh Jc], A Pair of Jacks
+Ch4calDirect shows [8s Ts], Two pairs, Tens up
+Ch4calDirect wins 950
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 3rd place
+*** Summary ***
+Total pot 950
+Seat 1: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 475 and won 0, net result: -475
+Seat 3: Ch4calDirect: bet 475 and won 950, net result: 475
+
+
+

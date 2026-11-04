@@ -1,0 +1,649 @@
+Unibet Hand #1526910620, Tournament #83500785, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:47:44 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (500)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: CCheckwell (500)
+*** Blinds and button ***
+CCheckwell has the button
+FuretSage posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5c 4d]
+Dealt in CCheckwell
+*** Preflop ***
+CCheckwell folds
+FuretSage calls 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [5s Ac 6d]
+FuretSage checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 20
+FuretSage folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 40
+*** Summary ***
+Total pot 40
+Seat 1: FuretSage: bet 20 and won 0, net result: -20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1526911402, Tournament #83500785, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:48:21 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (480)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (520)
+Seat 5: CCheckwell (500)
+*** Blinds and button ***
+FuretSage has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+CCheckwell posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Kd Qh]
+Dealt in CCheckwell
+Dealt in FuretSage
+*** Preflop ***
+FuretSage calls 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 160 to 170
+CCheckwell folds
+FuretSage folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 210
+*** Summary ***
+Total pot 210
+Seat 1: FuretSage: bet 20 and won 0, net result: -20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 170 and won 210, net result: 40
+Seat 5: CCheckwell: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526911993, Tournament #83500785, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:48:47 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (460)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (560)
+Seat 5: CCheckwell (480)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+CCheckwell posts small blind 10
+FuretSage posts big blind 20
+*** Hole cards ***
+Dealt in CCheckwell
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [7h 9h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+CCheckwell folds
+FuretSage wins 30
+*** Summary ***
+Total pot 30
+Seat 1: FuretSage: bet 20 and won 30, net result: 10
+Seat 5: CCheckwell: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1526912342, Tournament #83500785, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:49:05 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (470)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (560)
+Seat 5: CCheckwell (470)
+*** Blinds and button ***
+CCheckwell has the button
+FuretSage posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5d 2h]
+Dealt in CCheckwell
+*** Preflop ***
+CCheckwell raises 40 to 40
+FuretSage calls 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+*** Flop *** [4h Qc Qd]
+FuretSage checks
+CCheckwell bets 30
+FuretSage folds
+Uncalled bet returned to CCheckwell: 30
+CCheckwell wins 100
+*** Summary ***
+Total pot 100
+Seat 1: FuretSage: bet 40 and won 0, net result: -40
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+Seat 5: CCheckwell: bet 70 and won 130, net result: 60
+
+
+
+Unibet Hand #1526912697, Tournament #83500785, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €30 - UTC 15:49:22 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (430)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (540)
+Seat 5: CCheckwell (530)
+*** Blinds and button ***
+FuretSage has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+CCheckwell posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Jd 3c]
+Dealt in CCheckwell
+Dealt in FuretSage
+*** Preflop ***
+FuretSage calls 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+CCheckwell checks
+*** Flop *** [Kc 8s Ah]
+CCheckwell checks
+FuretSage checks
+*** Turn *** [Kc 8s Ah] [Td]
+CCheckwell checks
+FuretSage checks
+*** River *** [Kc 8s Ah] [Td] [5c]
+CCheckwell bets 30
+FuretSage folds
+Uncalled bet returned to CCheckwell: 30
+CCheckwell wins 50
+*** Summary ***
+Total pot 50
+Seat 1: FuretSage: bet 20 and won 0, net result: -20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+Seat 5: CCheckwell: bet 50 and won 80, net result: 30
+
+
+
+Unibet Hand #1526913700, Tournament #83500785, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:50:09 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (410)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (530)
+Seat 5: CCheckwell (560)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+CCheckwell posts small blind 15
+FuretSage posts big blind 30
+*** Hole cards ***
+Dealt in CCheckwell
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2d 4s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+CCheckwell calls 15
+FuretSage checks
+*** Flop *** [Td 9c 8c]
+CCheckwell checks
+FuretSage checks
+*** Turn *** [Td 9c 8c] [9d]
+CCheckwell bets 60
+FuretSage folds
+Uncalled bet returned to CCheckwell: 60
+CCheckwell wins 60
+*** Summary ***
+Total pot 60
+Seat 1: FuretSage: bet 30 and won 0, net result: -30
+Seat 5: CCheckwell: bet 90 and won 120, net result: 30
+
+
+
+Unibet Hand #1526914704, Tournament #83500785, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:50:56 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (380)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (530)
+Seat 5: CCheckwell (590)
+*** Blinds and button ***
+CCheckwell has the button
+FuretSage posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [As Td]
+Dealt in CCheckwell
+*** Preflop ***
+CCheckwell folds
+FuretSage calls 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 500 to 530, and is all-in
+FuretSage folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 560
+*** Summary ***
+Total pot 560
+Seat 1: FuretSage: bet 30 and won 0, net result: -30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 530 and won 560, net result: 30
+
+
+
+Unibet Hand #1526915524, Tournament #83500785, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:51:34 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (350)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (560)
+Seat 5: CCheckwell (590)
+*** Blinds and button ***
+FuretSage has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+CCheckwell posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6d 3h]
+Dealt in CCheckwell
+Dealt in FuretSage
+*** Preflop ***
+FuretSage folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+CCheckwell wins 45
+*** Summary ***
+Total pot 45
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 15 and won 0, net result: -15
+Seat 5: CCheckwell: bet 30 and won 45, net result: 15
+
+
+
+Unibet Hand #1526915712, Tournament #83500785, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €30 - UTC 15:51:41 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (350)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (545)
+Seat 5: CCheckwell (605)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+CCheckwell posts small blind 15
+FuretSage posts big blind 30
+*** Hole cards ***
+Dealt in CCheckwell
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js 2h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+CCheckwell calls 15
+FuretSage checks
+*** Flop *** [9s 3c Qs]
+CCheckwell bets 30
+FuretSage calls 30
+*** Turn *** [9s 3c Qs] [8h]
+CCheckwell checks
+FuretSage checks
+*** River *** [9s 3c Qs] [8h] [8d]
+CCheckwell checks
+FuretSage bets 60
+CCheckwell folds
+Uncalled bet returned to FuretSage: 60
+FuretSage wins 120
+*** Summary ***
+Total pot 120
+Seat 1: FuretSage: bet 120 and won 180, net result: 60
+Seat 5: CCheckwell: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1526916410, Tournament #83500785, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:52:14 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (410)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (545)
+Seat 5: CCheckwell (545)
+*** Blinds and button ***
+CCheckwell has the button
+FuretSage posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Js 8d]
+Dealt in CCheckwell
+*** Preflop ***
+CCheckwell folds
+FuretSage folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: FuretSage: bet 20 and won 0, net result: -20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1526916762, Tournament #83500785, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:52:29 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (390)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (565)
+Seat 5: CCheckwell (545)
+*** Blinds and button ***
+FuretSage has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+CCheckwell posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ad 7d]
+Dealt in CCheckwell
+Dealt in FuretSage
+*** Preflop ***
+FuretSage folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 545 to 565, and is all-in
+CCheckwell folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 605
+*** Summary ***
+Total pot 605
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 565 and won 605, net result: 40
+Seat 5: CCheckwell: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1526917164, Tournament #83500785, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:52:48 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (390)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (605)
+Seat 5: CCheckwell (505)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+CCheckwell posts small blind 20
+FuretSage posts big blind 40
+*** Hole cards ***
+Dealt in CCheckwell
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ac Tc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 605 to 605, and is all-in
+CCheckwell folds
+FuretSage folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 665
+*** Summary ***
+Total pot 665
+Seat 1: FuretSage: bet 40 and won 0, net result: -40
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 605 and won 665, net result: 60
+Seat 5: CCheckwell: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1526917323, Tournament #83500785, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:52:56 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (350)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (665)
+Seat 5: CCheckwell (485)
+*** Blinds and button ***
+CCheckwell has the button
+FuretSage posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8s Jc]
+Dealt in CCheckwell
+*** Preflop ***
+CCheckwell folds
+FuretSage calls 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [7s As 9h]
+FuretSage checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 60
+FuretSage calls 60
+*** Turn *** [7s As 9h] [Qc]
+FuretSage checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** River *** [7s As 9h] [Qc] [3d]
+FuretSage bets 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to FuretSage: 60
+FuretSage wins 200
+*** Summary ***
+Total pot 200
+Seat 1: FuretSage: bet 160 and won 260, net result: 100
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 100 and won 0, net result: -100
+
+
+
+Unibet Hand #1526917758, Tournament #83500785, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €30 - UTC 15:53:17 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (450)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (565)
+Seat 5: CCheckwell (485)
+*** Blinds and button ***
+FuretSage has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+CCheckwell posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ts 9s]
+Dealt to CCheckwell [3s Tc]
+Dealt in FuretSage
+*** Preflop ***
+FuretSage folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+CCheckwell checks
+*** Flop *** [As 3d 5d]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 40
+CCheckwell calls 40
+*** Turn *** [As 3d 5d] [Jc]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+CCheckwell checks
+*** River *** [As 3d 5d] [Jc] [2s]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+CCheckwell checks
+*** Showdown ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ts 9s], High card
+CCheckwell shows [3s Tc], A Pair of Threes
+CCheckwell wins 160
+*** Summary ***
+Total pot 160
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 80 and won 0, net result: -80
+Seat 5: CCheckwell: bet 80 and won 160, net result: 80
+
+
+
+Unibet Hand #1526918940, Tournament #83500785, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €30 - UTC 15:54:11 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (450)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (485)
+Seat 5: CCheckwell (565)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+CCheckwell posts small blind 25
+FuretSage posts big blind 50
+*** Hole cards ***
+Dealt in CCheckwell
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6s 3s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+CCheckwell folds
+FuretSage wins 75
+*** Summary ***
+Total pot 75
+Seat 1: FuretSage: bet 50 and won 75, net result: 25
+Seat 5: CCheckwell: bet 25 and won 0, net result: -25
+
+
+
+Unibet Hand #1526919192, Tournament #83500785, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €30 - UTC 15:54:23 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (475)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (485)
+Seat 5: CCheckwell (540)
+*** Blinds and button ***
+CCheckwell has the button
+FuretSage posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to FuretSage [Kh Qc]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6s 8s]
+Dealt in CCheckwell
+*** Preflop ***
+CCheckwell folds
+FuretSage calls 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [6d 7c As]
+FuretSage checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 50
+FuretSage calls 50
+*** Turn *** [6d 7c As] [Ks]
+FuretSage checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** River *** [6d 7c As] [Ks] [8d]
+FuretSage bets 75
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 75
+*** Showdown ***
+FuretSage shows [Kh Qc], A Pair of Kings
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [6s 8s], Two pairs, Eights up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 350
+*** Summary ***
+Total pot 350
+Seat 1: FuretSage: bet 175 and won 0, net result: -175
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 175 and won 350, net result: 175
+
+
+
+Unibet Hand #1526919835, Tournament #83500785, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €30 - UTC 15:54:52 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (300)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (660)
+Seat 5: CCheckwell (540)
+*** Blinds and button ***
+FuretSage has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 25
+CCheckwell posts big blind 50
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Th 2d]
+Dealt in CCheckwell
+Dealt in FuretSage
+*** Preflop ***
+FuretSage raises 300 to 300, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+CCheckwell folds
+FuretSage wins 375
+*** Summary ***
+Total pot 375
+Seat 1: FuretSage: bet 300 and won 375, net result: 75
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 25 and won 0, net result: -25
+Seat 5: CCheckwell: bet 50 and won 0, net result: -50
+
+
+
+Unibet Hand #1526920084, Tournament #83500785, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €30 - UTC 15:55:02 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (375)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (635)
+Seat 5: CCheckwell (490)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+CCheckwell posts small blind 25
+FuretSage posts big blind 50
+*** Hole cards ***
+Dealt in CCheckwell
+Dealt in FuretSage
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [2h 7c]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+CCheckwell raises 465 to 490, and is all-in
+FuretSage folds
+CCheckwell wins 540
+*** Summary ***
+Total pot 540
+Seat 1: FuretSage: bet 50 and won 0, net result: -50
+Seat 5: CCheckwell: bet 490 and won 540, net result: 50
+
+
+
+Unibet Hand #1526920315, Tournament #83500785, €9.30 + €0.70 - 25.00/50.00 - No Limit Hold'Em - Total prize €30 - UTC 15:55:13 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 1: FuretSage (325)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (635)
+Seat 5: CCheckwell (540)
+*** Blinds and button ***
+CCheckwell has the button
+FuretSage posts small blind 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 50
+*** Hole cards ***
+Dealt to FuretSage [7d 4d]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Jh 2d]
+Dealt in CCheckwell
+*** Preflop ***
+CCheckwell folds
+FuretSage calls 25
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [Jd Ad Ks]
+FuretSage checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 50
+FuretSage calls 50
+*** Turn *** [Jd Ad Ks] [2c]
+FuretSage checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 80
+FuretSage calls 80
+*** River *** [Jd Ad Ks] [2c] [7s]
+FuretSage bets 75
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 150 to 150
+FuretSage calls 70, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 5
+*** Showdown ***
+FuretSage shows [7d 4d], A Pair of Sevens
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Jh 2d], Two pairs, Jacks up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 650
+FuretSage finished the tournament in 3rd place
+*** Summary ***
+Total pot 650
+Seat 1: FuretSage: bet 325 and won 0, net result: -325
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 330 and won 655, net result: 325
+
+
+
+Unibet Hand #1526921194, Tournament #83500785, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €30 - UTC 15:55:54 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (960)
+Seat 5: CCheckwell (540)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 30
+CCheckwell posts big blind 60
+*** Hole cards ***
+Dealt in CCheckwell
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5d Jc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 30
+CCheckwell checks
+*** Flop *** [4d Jd Qc]
+CCheckwell checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 60
+CCheckwell folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 120
+*** Summary ***
+Total pot 120
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 120 and won 180, net result: 60
+Seat 5: CCheckwell: bet 60 and won 0, net result: -60
+
+
+
+Unibet Hand #1526921485, Tournament #83500785, €9.30 + €0.70 - 30.00/60.00 - No Limit Hold'Em - Total prize €30 - UTC 15:56:09 2026/05/12
+Table "83999857" 3-max
+*** Seated players ***
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1020)
+Seat 5: CCheckwell (480)
+*** Blinds and button ***
+CCheckwell has the button
+CCheckwell posts small blind 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 60
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5d Ad]
+Dealt to CCheckwell [Js Jd]
+*** Preflop ***
+CCheckwell calls 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 960 to 1020, and is all-in
+CCheckwell calls 420, and is all-in
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 540
+*** Showdown ***
+*** Flop *** [As 2s 7c]
+*** Turn *** [As 2s 7c] [6d]
+*** River *** [As 2s 7c] [6d] [3c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [5d Ad], A Pair of Aces
+CCheckwell shows [Js Jd], A Pair of Jacks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 960
+CCheckwell finished the tournament in 2nd place
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 1st place, and won €30
+*** Summary ***
+Total pot 960
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 1020 and won 1500, net result: 480
+Seat 5: CCheckwell: bet 480 and won 0, net result: -480
+
+
+

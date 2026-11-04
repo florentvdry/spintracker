@@ -1,0 +1,345 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707505205497823233-1-1776261380 - Holdem no limit (10/20) - 2026/04/15 13:56:20 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #3 is the button
+Seat 1: NeVerMort (500)
+Seat 2: Kalail50130 (500)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+NeVerMort posts small blind 10
+Kalail50130 posts big blind 20
+Dealt to Nelfrot-YT [9s 5c]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+NeVerMort raises 20 to 40
+Kalail50130 calls 20
+*** FLOP *** [Qs 6s Th]
+NeVerMort checks
+Kalail50130 bets 80
+NeVerMort folds
+Kalail50130 collected 160 from pot
+*** SUMMARY ***
+Total pot 160 | No rake
+Board: [Qs 6s Th]
+Seat 2: Kalail50130 (big blind) won 160
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707505205497823233-2-1776261410 - Holdem no limit (10/20) - 2026/04/15 13:56:50 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #1 is the button
+Seat 1: NeVerMort (460)
+Seat 2: Kalail50130 (540)
+Seat 3: Nelfrot-YT (500)
+*** ANTE/BLINDS ***
+Kalail50130 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Tc Js]
+*** PRE-FLOP *** 
+NeVerMort folds
+Kalail50130 calls 10
+Nelfrot-YT raises 40 to 60
+Kalail50130 calls 40
+*** FLOP *** [6d Ah Qc]
+Kalail50130 checks
+Nelfrot-YT bets 36
+Kalail50130 calls 36
+*** TURN *** [6d Ah Qc][9h]
+Kalail50130 checks
+Nelfrot-YT checks
+*** RIVER *** [6d Ah Qc 9h][Kd]
+Kalail50130 checks
+Nelfrot-YT bets 404 and is all-in
+Kalail50130 folds
+Nelfrot-YT collected 596 from pot
+*** SUMMARY ***
+Total pot 596 | No rake
+Board: [6d Ah Qc 9h Kd]
+Seat 3: Nelfrot-YT (big blind) won 596
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707505205497823233-3-1776261446 - Holdem no limit (10/20) - 2026/04/15 13:57:26 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #2 is the button
+Seat 1: NeVerMort (460)
+Seat 2: Kalail50130 (444)
+Seat 3: Nelfrot-YT (596)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+NeVerMort posts big blind 20
+Dealt to Nelfrot-YT [7h 8c]
+*** PRE-FLOP *** 
+Kalail50130 folds
+Nelfrot-YT calls 10
+NeVerMort raises 440 to 460 and is all-in
+Nelfrot-YT folds
+NeVerMort collected 480 from pot
+*** SUMMARY ***
+Total pot 480 | No rake
+Seat 1: NeVerMort (big blind) won 480
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707505205497823233-4-1776261462 - Holdem no limit (10/20) - 2026/04/15 13:57:42 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #3 is the button
+Seat 1: NeVerMort (480)
+Seat 2: Kalail50130 (444)
+Seat 3: Nelfrot-YT (576)
+*** ANTE/BLINDS ***
+NeVerMort posts small blind 10
+Kalail50130 posts big blind 20
+Dealt to Nelfrot-YT [Th As]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+NeVerMort calls 30
+Kalail50130 raises 404 to 444 and is all-in
+Nelfrot-YT folds
+NeVerMort folds
+Kalail50130 collected 524 from pot
+*** SUMMARY ***
+Total pot 524 | No rake
+Seat 2: Kalail50130 (big blind) won 524
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707505205497823233-5-1776261480 - Holdem no limit (15/30) - 2026/04/15 13:58:00 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #1 is the button
+Seat 1: NeVerMort (440)
+Seat 2: Kalail50130 (524)
+Seat 3: Nelfrot-YT (536)
+*** ANTE/BLINDS ***
+Kalail50130 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [5d Qh]
+*** PRE-FLOP *** 
+NeVerMort raises 410 to 440 and is all-in
+Kalail50130 calls 425
+Nelfrot-YT folds
+*** FLOP *** [5h 8h 8c]
+*** TURN *** [5h 8h 8c][Ac]
+*** RIVER *** [5h 8h 8c Ac][Tc]
+*** SHOW DOWN ***
+NeVerMort shows [As Jc] (Two pairs : Aces and 8)
+Kalail50130 shows [Ad Jh] (Two pairs : Aces and 8)
+Kalail50130 collected 455 from pot
+NeVerMort collected 455 from pot
+*** SUMMARY ***
+Total pot 910 | No rake
+Board: [5h 8h 8c Ac Tc]
+Seat 1: NeVerMort (button) showed [As Jc] and won 455 with Two pairs : Aces and 8
+Seat 2: Kalail50130 (small blind) showed [Ad Jh] and won 455 with Two pairs : Aces and 8
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707505205497823233-6-1776261496 - Holdem no limit (15/30) - 2026/04/15 13:58:16 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #2 is the button
+Seat 1: NeVerMort (455)
+Seat 2: Kalail50130 (539)
+Seat 3: Nelfrot-YT (506)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+NeVerMort posts big blind 30
+Dealt to Nelfrot-YT [6d 7s]
+*** PRE-FLOP *** 
+Kalail50130 calls 30
+Nelfrot-YT calls 15
+NeVerMort checks
+*** FLOP *** [6h Qc Ah]
+Nelfrot-YT checks
+NeVerMort checks
+Kalail50130 checks
+*** TURN *** [6h Qc Ah][Qs]
+Nelfrot-YT checks
+NeVerMort checks
+Kalail50130 checks
+*** RIVER *** [6h Qc Ah Qs][Qh]
+Nelfrot-YT bets 50
+NeVerMort calls 50
+Kalail50130 folds
+*** SHOW DOWN ***
+NeVerMort shows [Th 6c] (Full of Queens and 6)
+Nelfrot-YT shows [6d 7s] (Full of Queens and 6)
+Nelfrot-YT collected 95 from pot
+NeVerMort collected 95 from pot
+*** SUMMARY ***
+Total pot 190 | No rake
+Board: [6h Qc Ah Qs Qh]
+Seat 1: NeVerMort (big blind) showed [Th 6c] and won 95 with Full of Queens and 6
+Seat 3: Nelfrot-YT (small blind) showed [6d 7s] and won 95 with Full of Queens and 6
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707505205497823233-7-1776261535 - Holdem no limit (15/30) - 2026/04/15 13:58:55 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #3 is the button
+Seat 1: NeVerMort (470)
+Seat 2: Kalail50130 (509)
+Seat 3: Nelfrot-YT (521)
+*** ANTE/BLINDS ***
+NeVerMort posts small blind 15
+Kalail50130 posts big blind 30
+Dealt to Nelfrot-YT [2s Jh]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+NeVerMort raises 30 to 60
+Kalail50130 calls 30
+*** FLOP *** [Th Js Ks]
+NeVerMort bets 45
+Kalail50130 calls 45
+*** TURN *** [Th Js Ks][3s]
+NeVerMort bets 365 and is all-in
+Kalail50130 folds
+NeVerMort collected 575 from pot
+*** SUMMARY ***
+Total pot 575 | No rake
+Board: [Th Js Ks 3s]
+Seat 1: NeVerMort (small blind) won 575
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707505205497823233-8-1776261562 - Holdem no limit (20/40) - 2026/04/15 13:59:22 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #1 is the button
+Seat 1: NeVerMort (575)
+Seat 2: Kalail50130 (404)
+Seat 3: Nelfrot-YT (521)
+*** ANTE/BLINDS ***
+Kalail50130 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [Jd 8s]
+*** PRE-FLOP *** 
+NeVerMort raises 40 to 80
+Kalail50130 calls 60
+Nelfrot-YT calls 40
+*** FLOP *** [Ks 5c 6h]
+Kalail50130 checks
+Nelfrot-YT checks
+NeVerMort bets 180
+Kalail50130 folds
+Nelfrot-YT folds
+NeVerMort collected 420 from pot
+*** SUMMARY ***
+Total pot 420 | No rake
+Board: [Ks 5c 6h]
+Seat 1: NeVerMort (button) won 420
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707505205497823233-9-1776261589 - Holdem no limit (20/40) - 2026/04/15 13:59:49 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #2 is the button
+Seat 1: NeVerMort (735)
+Seat 2: Kalail50130 (324)
+Seat 3: Nelfrot-YT (441)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+NeVerMort posts big blind 40
+Dealt to Nelfrot-YT [Ac 6d]
+*** PRE-FLOP *** 
+Kalail50130 raises 40 to 80
+Nelfrot-YT folds
+NeVerMort folds
+Kalail50130 collected 140 from pot
+*** SUMMARY ***
+Total pot 140 | No rake
+Seat 2: Kalail50130 (button) won 140
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707505205497823233-10-1776261598 - Holdem no limit (20/40) - 2026/04/15 13:59:58 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #3 is the button
+Seat 1: NeVerMort (695)
+Seat 2: Kalail50130 (384)
+Seat 3: Nelfrot-YT (421)
+*** ANTE/BLINDS ***
+NeVerMort posts small blind 20
+Kalail50130 posts big blind 40
+Dealt to Nelfrot-YT [2h 9h]
+*** PRE-FLOP *** 
+Nelfrot-YT folds
+NeVerMort raises 655 to 695 and is all-in
+Kalail50130 folds
+NeVerMort collected 735 from pot
+*** SUMMARY ***
+Total pot 735 | No rake
+Seat 1: NeVerMort (small blind) won 735
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707505205497823233-11-1776261606 - Holdem no limit (20/40) - 2026/04/15 14:00:06 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #1 is the button
+Seat 1: NeVerMort (735)
+Seat 2: Kalail50130 (344)
+Seat 3: Nelfrot-YT (421)
+*** ANTE/BLINDS ***
+Kalail50130 posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [6h 6s]
+*** PRE-FLOP *** 
+NeVerMort folds
+Kalail50130 raises 80 to 120
+Nelfrot-YT raises 301 to 421 and is all-in
+Kalail50130 calls 224 and is all-in
+*** FLOP *** [Kd Qc Jd]
+*** TURN *** [Kd Qc Jd][3h]
+*** RIVER *** [Kd Qc Jd 3h][8d]
+*** SHOW DOWN ***
+Kalail50130 shows [5h 5d] (One pair : 5)
+Nelfrot-YT shows [6h 6s] (One pair : 6)
+Nelfrot-YT collected 765 from pot
+*** SUMMARY ***
+Total pot 765 | No rake
+Board: [Kd Qc Jd 3h 8d]
+Seat 2: Kalail50130 (small blind) showed [5h 5d] and lost with One pair : 5
+Seat 3: Nelfrot-YT (big blind) showed [6h 6s] and won 765 with One pair : 6
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707505205497823233-12-1776261623 - Holdem no limit (20/40) - 2026/04/15 14:00:23 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #3 is the button
+Seat 1: NeVerMort (735)
+Seat 3: Nelfrot-YT (765)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 20
+NeVerMort posts big blind 40
+Dealt to Nelfrot-YT [4s Kd]
+*** PRE-FLOP *** 
+Nelfrot-YT calls 20
+NeVerMort raises 695 to 735 and is all-in
+Nelfrot-YT folds
+NeVerMort collected 775 from pot
+*** SUMMARY ***
+Total pot 775 | No rake
+Seat 1: NeVerMort (big blind) won 775
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 3 - HandId: #4707505205497823233-13-1776261640 - Holdem no limit (20/40) - 2026/04/15 14:00:40 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #1 is the button
+Seat 1: NeVerMort (775)
+Seat 3: Nelfrot-YT (725)
+*** ANTE/BLINDS ***
+NeVerMort posts small blind 20
+Nelfrot-YT posts big blind 40
+Dealt to Nelfrot-YT [6d 5c]
+*** PRE-FLOP *** 
+NeVerMort raises 40 to 80
+Nelfrot-YT calls 40
+*** FLOP *** [3h 9h Js]
+Nelfrot-YT checks
+NeVerMort bets 128
+Nelfrot-YT folds
+NeVerMort collected 288 from pot
+*** SUMMARY ***
+Total pot 288 | No rake
+Board: [3h 9h Js]
+Seat 1: NeVerMort (small blind) (button) won 288
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 4 - HandId: #4707505205497823233-14-1776261658 - Holdem no limit (30/60) - 2026/04/15 14:00:58 UTC
+Table: 'Expresso(1096051467)#0' 3-max (real money) Seat #3 is the button
+Seat 1: NeVerMort (855)
+Seat 3: Nelfrot-YT (645)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 30
+NeVerMort posts big blind 60
+Dealt to Nelfrot-YT [9d Ad]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 585 to 645 and is all-in
+NeVerMort calls 585
+*** FLOP *** [Ts 2c 2h]
+*** TURN *** [Ts 2c 2h][6s]
+*** RIVER *** [Ts 2c 2h 6s][4c]
+*** SHOW DOWN ***
+Nelfrot-YT shows [9d Ad] (One pair : 2)
+NeVerMort shows [Ah 4d] (Two pairs : 4 and 2)
+NeVerMort collected 1290 from pot
+*** SUMMARY ***
+Total pot 1290 | No rake
+Board: [Ts 2c 2h 6s 4c]
+Seat 1: NeVerMort (big blind) showed [Ah 4d] and won 1290 with Two pairs : 4 and 2
+Seat 3: Nelfrot-YT (small blind) (button) showed [9d Ad] and lost with One pair : 2
+
+

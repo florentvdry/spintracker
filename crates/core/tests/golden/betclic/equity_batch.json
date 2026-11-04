@@ -1,0 +1,1 @@
+{"success":true,"data":[{"id":"a","heroEquity":91.61616161616162,"villainEquity":8.383838383838384,"tieEquity":0,"error":null},{"id":"b","heroEquity":null,"villainEquity":null,"tieEquity":null,"error":"Invalid card rank: 'Z'"}],"processed":2}

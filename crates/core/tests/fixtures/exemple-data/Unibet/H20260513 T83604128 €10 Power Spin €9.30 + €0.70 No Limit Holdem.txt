@@ -1,0 +1,286 @@
+Unibet Hand #1528408653, Tournament #83604128, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:24:19 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (500)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+Seat 5: Yaya591 (500)
+*** Blinds and button ***
+Yaya591 has the button
+Anaconda_Sag3 posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in Anaconda_Sag3
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ac 9c]
+Dealt to Yaya591 [4h Kh]
+*** Preflop ***
+Yaya591 raises 52 to 52
+Anaconda_Sag3 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 480 to 500, and is all-in
+Yaya591 calls 448, and is all-in
+*** Showdown ***
+*** Flop *** [2d Qc 9h]
+*** Turn *** [2d Qc 9h] [7c]
+*** River *** [2d Qc 9h] [7c] [9d]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ac 9c], Three of a kind, Nines
+Yaya591 shows [4h Kh], A Pair of Nines
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 1010
+Yaya591 finished the tournament in 3rd place
+*** Summary ***
+Total pot 1010
+Seat 1: Anaconda_Sag3: bet 10 and won 0, net result: -10
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 500 and won 1010, net result: 510
+Seat 5: Yaya591: bet 500 and won 0, net result: -500
+
+
+
+Unibet Hand #1528409213, Tournament #83604128, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:24:42 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (490)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1010)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Anaconda_Sag3 posts big blind 20
+*** Hole cards ***
+Dealt in Anaconda_Sag3
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3s 8h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Anaconda_Sag3 wins 30
+*** Summary ***
+Total pot 30
+Seat 1: Anaconda_Sag3: bet 20 and won 30, net result: 10
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 10 and won 0, net result: -10
+
+
+
+Unibet Hand #1528409442, Tournament #83604128, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:24:52 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (500)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1000)
+*** Blinds and button ***
+Anaconda_Sag3 has the button
+Anaconda_Sag3 posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3d 4s]
+Dealt in Anaconda_Sag3
+*** Preflop ***
+Anaconda_Sag3 calls 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [3h Jc 4c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 30
+Anaconda_Sag3 folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 40
+*** Summary ***
+Total pot 40
+Seat 1: Anaconda_Sag3: bet 20 and won 0, net result: -20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 50 and won 70, net result: 20
+
+
+
+Unibet Hand #1528409811, Tournament #83604128, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:25:07 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (480)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1020)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Anaconda_Sag3 posts big blind 20
+*** Hole cards ***
+Dealt in Anaconda_Sag3
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Tc 9s]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 30 to 40
+Anaconda_Sag3 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Anaconda_Sag3: bet 20 and won 0, net result: -20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 60, net result: 20
+
+
+
+Unibet Hand #1528410002, Tournament #83604128, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:25:15 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (460)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1040)
+*** Blinds and button ***
+Anaconda_Sag3 has the button
+Anaconda_Sag3 posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qh 7d]
+Dealt in Anaconda_Sag3
+*** Preflop ***
+Anaconda_Sag3 raises 30 to 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Anaconda_Sag3 wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Anaconda_Sag3: bet 40 and won 60, net result: 20
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528410254, Tournament #83604128, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:25:25 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (480)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1020)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+Anaconda_Sag3 posts big blind 30
+*** Hole cards ***
+Dealt in Anaconda_Sag3
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Th Qh]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 45 to 60
+Anaconda_Sag3 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 90
+*** Summary ***
+Total pot 90
+Seat 1: Anaconda_Sag3: bet 30 and won 0, net result: -30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 90, net result: 30
+
+
+
+Unibet Hand #1528410422, Tournament #83604128, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:25:32 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (450)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1050)
+*** Blinds and button ***
+Anaconda_Sag3 has the button
+Anaconda_Sag3 posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5h 4s]
+Dealt in Anaconda_Sag3
+*** Preflop ***
+Anaconda_Sag3 calls 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [5s 9c Ad]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+Anaconda_Sag3 bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to Anaconda_Sag3: 30
+Anaconda_Sag3 wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Anaconda_Sag3: bet 60 and won 90, net result: 30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1528410918, Tournament #83604128, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:25:54 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (480)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1020)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+Anaconda_Sag3 posts big blind 30
+*** Hole cards ***
+Dealt in Anaconda_Sag3
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [3s 8h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+Anaconda_Sag3 checks
+*** Flop *** [Kh Kc 9c]
+Anaconda_Sag3 bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Uncalled bet returned to Anaconda_Sag3: 30
+Anaconda_Sag3 wins 60
+*** Summary ***
+Total pot 60
+Seat 1: Anaconda_Sag3: bet 60 and won 90, net result: 30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 30 and won 0, net result: -30
+
+
+
+Unibet Hand #1528411157, Tournament #83604128, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:26:05 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (510)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (990)
+*** Blinds and button ***
+Anaconda_Sag3 has the button
+Anaconda_Sag3 posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ks 8d]
+Dealt in Anaconda_Sag3
+*** Preflop ***
+Anaconda_Sag3 calls 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 960 to 990, and is all-in
+Anaconda_Sag3 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 1020
+*** Summary ***
+Total pot 1020
+Seat 1: Anaconda_Sag3: bet 30 and won 0, net result: -30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 990 and won 1020, net result: 30
+
+
+
+Unibet Hand #1528411360, Tournament #83604128, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:26:13 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (480)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1020)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+Anaconda_Sag3 posts big blind 30
+*** Hole cards ***
+Dealt in Anaconda_Sag3
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qc Ks]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 45 to 60
+Anaconda_Sag3 folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 90
+*** Summary ***
+Total pot 90
+Seat 1: Anaconda_Sag3: bet 30 and won 0, net result: -30
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 60 and won 90, net result: 30
+
+
+
+Unibet Hand #1528411549, Tournament #83604128, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:26:22 2026/05/13
+Table "84103044" 3-max
+*** Seated players ***
+Seat 1: Anaconda_Sag3 (450)
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1050)
+*** Blinds and button ***
+Anaconda_Sag3 has the button
+Anaconda_Sag3 posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4d Ad]
+Dealt to Anaconda_Sag3 [7c 7h]
+*** Preflop ***
+Anaconda_Sag3 raises 430 to 450, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 410
+*** Showdown ***
+*** Flop *** [Js 2c Jh]
+*** Turn *** [Js 2c Jh] [Qh]
+*** River *** [Js 2c Jh] [Qh] [Ac]
+Anaconda_Sag3 shows [7c 7h], Two pairs, Jacks up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [4d Ad], Two pairs, Aces up
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 900
+Anaconda_Sag3 finished the tournament in 2nd place
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 1st place, and won €20
+*** Summary ***
+Total pot 900
+Seat 1: Anaconda_Sag3: bet 450 and won 0, net result: -450
+Seat 3: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 450 and won 900, net result: 450
+
+
+

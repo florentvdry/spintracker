@@ -1,0 +1,244 @@
+Unibet Hand #1528407434, Tournament #83604053, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:23:28 2026/05/13
+Table "84102969" 3-max
+*** Seated players ***
+Seat 1: Assazsin_Fort (500)
+Seat 3: OliseOrFold (500)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+Assazsin_Fort posts small blind 10
+OliseOrFold posts big blind 20
+*** Hole cards ***
+Dealt in Assazsin_Fort
+Dealt in OliseOrFold
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8c 4d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+Assazsin_Fort calls 10
+OliseOrFold checks
+*** Flop *** [Kh Th 5h]
+Assazsin_Fort bets 20
+OliseOrFold folds
+Uncalled bet returned to Assazsin_Fort: 20
+Assazsin_Fort wins 40
+*** Summary ***
+Total pot 40
+Seat 1: Assazsin_Fort: bet 40 and won 60, net result: 20
+Seat 3: OliseOrFold: bet 20 and won 0, net result: -20
+
+
+
+Unibet Hand #1528407747, Tournament #83604053, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:23:41 2026/05/13
+Table "84102969" 3-max
+*** Seated players ***
+Seat 1: Assazsin_Fort (520)
+Seat 3: OliseOrFold (480)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (500)
+*** Blinds and button ***
+Assazsin_Fort has the button
+OliseOrFold posts small blind 10
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 20
+*** Hole cards ***
+Dealt in OliseOrFold
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [As Qc]
+Dealt to Assazsin_Fort [Ks Qs]
+*** Preflop ***
+Assazsin_Fort raises 40 to 40
+OliseOrFold folds
+AA2Spew2Brok[Unibet_b3081becc3e7563f] raises 480 to 500, and is all-in
+Assazsin_Fort calls 460
+*** Showdown ***
+*** Flop *** [6s Jh 5h]
+*** Turn *** [6s Jh 5h] [7c]
+*** River *** [6s Jh 5h] [7c] [6h]
+Assazsin_Fort shows [Ks Qs], A Pair of Sixes with a King kicker
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [As Qc], A Pair of Sixes with an Ace kicker
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 1010
+*** Summary ***
+Total pot 1010
+Seat 1: Assazsin_Fort: bet 500 and won 0, net result: -500
+Seat 3: OliseOrFold: bet 10 and won 0, net result: -10
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 500 and won 1010, net result: 510
+
+
+
+Unibet Hand #1528408348, Tournament #83604053, €9.30 + €0.70 - 10.00/20.00 - No Limit Hold'Em - Total prize €20 - UTC 16:24:05 2026/05/13
+Table "84102969" 3-max
+*** Seated players ***
+Seat 1: Assazsin_Fort (20)
+Seat 3: OliseOrFold (470)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1010)
+*** Blinds and button ***
+OliseOrFold has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 10
+Assazsin_Fort posts big blind 20, and is all-in
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [8c Ah]
+Dealt to Assazsin_Fort [7c Jh]
+Dealt in OliseOrFold
+*** Preflop ***
+OliseOrFold raises 40 to 40
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 30
+*** Flop *** [Qc 9d 5s]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+OliseOrFold bets 30
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 30
+*** Turn *** [Qc 9d 5s] [Kc]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+OliseOrFold checks
+*** River *** [Qc 9d 5s] [Kc] [2c]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 120
+OliseOrFold folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 120
+*** Showdown ***
+Assazsin_Fort shows [7c Jh], High card, King
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [8c Ah], High card, Ace
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins main pot, 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins side pot #1, 100
+Assazsin_Fort finished the tournament in 3rd place
+*** Summary ***
+Total pot 160
+Seat 1: Assazsin_Fort: bet 20 and won 0, net result: -20
+Seat 3: OliseOrFold: bet 70 and won 0, net result: -70
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 190 and won 280, net result: 90
+
+
+
+Unibet Hand #1528409406, Tournament #83604053, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:24:50 2026/05/13
+Table "84102969" 3-max
+*** Seated players ***
+Seat 3: OliseOrFold (400)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1100)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+OliseOrFold posts big blind 30
+*** Hole cards ***
+Dealt in OliseOrFold
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [4d 5d]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 15
+OliseOrFold checks
+*** Flop *** [3s 3h 8d]
+OliseOrFold checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Turn *** [3s 3h 8d] [Ac]
+OliseOrFold checks
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 60
+OliseOrFold folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 3: OliseOrFold: bet 30 and won 0, net result: -30
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 90 and won 120, net result: 30
+
+
+
+Unibet Hand #1528409861, Tournament #83604053, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:25:09 2026/05/13
+Table "84102969" 3-max
+*** Seated players ***
+Seat 3: OliseOrFold (370)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1130)
+*** Blinds and button ***
+OliseOrFold has the button
+OliseOrFold posts small blind 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 30
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [6d 9d]
+Dealt in OliseOrFold
+*** Preflop ***
+OliseOrFold calls 15
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+*** Flop *** [Td 3d 6s]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] checks
+OliseOrFold checks
+*** Turn *** [Td 3d 6s] [Kc]
+AA2Spew2Brok[Unibet_b3081becc3e7563f] bets 60
+OliseOrFold folds
+Uncalled bet returned to AA2Spew2Brok[Unibet_b3081becc3e7563f]: 60
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 60
+*** Summary ***
+Total pot 60
+Seat 3: OliseOrFold: bet 30 and won 0, net result: -30
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 90 and won 120, net result: 30
+
+
+
+Unibet Hand #1528410299, Tournament #83604053, €9.30 + €0.70 - 15.00/30.00 - No Limit Hold'Em - Total prize €20 - UTC 16:25:27 2026/05/13
+Table "84102969" 3-max
+*** Seated players ***
+Seat 3: OliseOrFold (340)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1160)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 15
+OliseOrFold posts big blind 30
+*** Hole cards ***
+Dealt in OliseOrFold
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [5d 9h]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+OliseOrFold wins 45
+*** Summary ***
+Total pot 45
+Seat 3: OliseOrFold: bet 30 and won 45, net result: 15
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 15 and won 0, net result: -15
+
+
+
+Unibet Hand #1528410471, Tournament #83604053, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:25:34 2026/05/13
+Table "84102969" 3-max
+*** Seated players ***
+Seat 3: OliseOrFold (355)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1145)
+*** Blinds and button ***
+OliseOrFold has the button
+OliseOrFold posts small blind 20
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts big blind 40
+*** Hole cards ***
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Qh 3s]
+Dealt in OliseOrFold
+*** Preflop ***
+OliseOrFold raises 335 to 355, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] folds
+OliseOrFold wins 395
+*** Summary ***
+Total pot 395
+Seat 3: OliseOrFold: bet 355 and won 395, net result: 40
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 40 and won 0, net result: -40
+
+
+
+Unibet Hand #1528410659, Tournament #83604053, €9.30 + €0.70 - 20.00/40.00 - No Limit Hold'Em - Total prize €20 - UTC 16:25:42 2026/05/13
+Table "84102969" 3-max
+*** Seated players ***
+Seat 3: OliseOrFold (395)
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f] (1105)
+*** Blinds and button ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] has the button
+AA2Spew2Brok[Unibet_b3081becc3e7563f] posts small blind 20
+OliseOrFold posts big blind 40
+*** Hole cards ***
+Dealt to OliseOrFold [3c As]
+Dealt to AA2Spew2Brok[Unibet_b3081becc3e7563f] [Ts Tc]
+*** Preflop ***
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 20
+OliseOrFold raises 355 to 395, and is all-in
+AA2Spew2Brok[Unibet_b3081becc3e7563f] calls 355
+*** Showdown ***
+*** Flop *** [Ks 3s Js]
+*** Turn *** [Ks 3s Js] [Td]
+*** River *** [Ks 3s Js] [Td] [6d]
+OliseOrFold shows [3c As], A Pair of Threes
+AA2Spew2Brok[Unibet_b3081becc3e7563f] shows [Ts Tc], Three of a kind, Tens
+AA2Spew2Brok[Unibet_b3081becc3e7563f] wins 790
+OliseOrFold finished the tournament in 2nd place
+AA2Spew2Brok[Unibet_b3081becc3e7563f] finished the tournament in 1st place, and won €20
+*** Summary ***
+Total pot 790
+Seat 3: OliseOrFold: bet 395 and won 0, net result: -395
+Seat 5: AA2Spew2Brok[Unibet_b3081becc3e7563f]: bet 395 and won 790, net result: 395
+
+
+

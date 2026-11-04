@@ -1,0 +1,155 @@
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707506313599385601-1-1776261454 - Holdem no limit (10/20) - 2026/04/15 13:57:34 UTC
+Table: 'Expresso(1096051725)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Var1anced0 (500)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Tutur-Balou (500)
+*** ANTE/BLINDS ***
+Tutur-Balou posts small blind 10
+Var1anced0 posts big blind 20
+Dealt to Nelfrot-YT [4h 4d]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+Tutur-Balou folds
+Var1anced0 calls 20
+*** FLOP *** [Js 3s 3c]
+Var1anced0 checks
+Nelfrot-YT bets 50
+Var1anced0 folds
+Nelfrot-YT collected 140 from pot
+*** SUMMARY ***
+Total pot 140 | No rake
+Board: [Js 3s 3c]
+Seat 2: Nelfrot-YT (button) won 140
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707506313599385601-2-1776261491 - Holdem no limit (10/20) - 2026/04/15 13:58:11 UTC
+Table: 'Expresso(1096051725)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Var1anced0 (460)
+Seat 2: Nelfrot-YT (550)
+Seat 3: Tutur-Balou (490)
+*** ANTE/BLINDS ***
+Var1anced0 posts small blind 10
+Nelfrot-YT posts big blind 20
+Dealt to Nelfrot-YT [Jh 4h]
+*** PRE-FLOP *** 
+Tutur-Balou folds
+Var1anced0 calls 10
+Nelfrot-YT checks
+*** FLOP *** [3c Tc 8s]
+Var1anced0 checks
+Nelfrot-YT bets 20
+Var1anced0 calls 20
+*** TURN *** [3c Tc 8s][Ah]
+Var1anced0 checks
+Nelfrot-YT checks
+*** RIVER *** [3c Tc 8s Ah][5s]
+Var1anced0 bets 52
+Nelfrot-YT folds
+Var1anced0 collected 132 from pot
+*** SUMMARY ***
+Total pot 132 | No rake
+Board: [3c Tc 8s Ah 5s]
+Seat 1: Var1anced0 (small blind) won 132
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707506313599385601-3-1776261525 - Holdem no limit (10/20) - 2026/04/15 13:58:45 UTC
+Table: 'Expresso(1096051725)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Var1anced0 (500)
+Seat 2: Nelfrot-YT (510)
+Seat 3: Tutur-Balou (490)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 10
+Tutur-Balou posts big blind 20
+Dealt to Nelfrot-YT [Qh 2d]
+*** PRE-FLOP *** 
+Var1anced0 raises 20 to 40
+Nelfrot-YT folds
+Tutur-Balou calls 20
+*** FLOP *** [Kd 8s 3h]
+Tutur-Balou bets 20
+Var1anced0 folds
+Tutur-Balou collected 110 from pot
+*** SUMMARY ***
+Total pot 110 | No rake
+Board: [Kd 8s 3h]
+Seat 3: Tutur-Balou (big blind) won 110
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 1 - HandId: #4707506313599385601-4-1776261541 - Holdem no limit (10/20) - 2026/04/15 13:59:01 UTC
+Table: 'Expresso(1096051725)#0' 3-max (real money) Seat #2 is the button
+Seat 1: Var1anced0 (460)
+Seat 2: Nelfrot-YT (500)
+Seat 3: Tutur-Balou (540)
+*** ANTE/BLINDS ***
+Tutur-Balou posts small blind 10
+Var1anced0 posts big blind 20
+Dealt to Nelfrot-YT [9d As]
+*** PRE-FLOP *** 
+Nelfrot-YT raises 20 to 40
+Tutur-Balou calls 30
+Var1anced0 calls 20
+*** FLOP *** [6c 8d Tc]
+Tutur-Balou checks
+Var1anced0 checks
+Nelfrot-YT bets 30
+Tutur-Balou calls 30
+Var1anced0 raises 68 to 98
+Nelfrot-YT folds
+Tutur-Balou folds
+Var1anced0 collected 278 from pot
+*** SUMMARY ***
+Total pot 278 | No rake
+Board: [6c 8d Tc]
+Seat 1: Var1anced0 (big blind) won 278
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707506313599385601-5-1776261588 - Holdem no limit (15/30) - 2026/04/15 13:59:48 UTC
+Table: 'Expresso(1096051725)#0' 3-max (real money) Seat #3 is the button
+Seat 1: Var1anced0 (600)
+Seat 2: Nelfrot-YT (430)
+Seat 3: Tutur-Balou (470)
+*** ANTE/BLINDS ***
+Var1anced0 posts small blind 15
+Nelfrot-YT posts big blind 30
+Dealt to Nelfrot-YT [8c 9c]
+*** PRE-FLOP *** 
+Tutur-Balou folds
+Var1anced0 calls 15
+Nelfrot-YT checks
+*** FLOP *** [Ks 2c Ts]
+Var1anced0 bets 30
+Nelfrot-YT folds
+Var1anced0 collected 90 from pot
+*** SUMMARY ***
+Total pot 90 | No rake
+Board: [Ks 2c Ts]
+Seat 1: Var1anced0 (small blind) won 90
+
+
+Winamax Poker - Tournament "Expresso" buyIn: 0.93€ + 0.07€ level: 2 - HandId: #4707506313599385601-6-1776261605 - Holdem no limit (15/30) - 2026/04/15 14:00:05 UTC
+Table: 'Expresso(1096051725)#0' 3-max (real money) Seat #1 is the button
+Seat 1: Var1anced0 (630)
+Seat 2: Nelfrot-YT (400)
+Seat 3: Tutur-Balou (470)
+*** ANTE/BLINDS ***
+Nelfrot-YT posts small blind 15
+Tutur-Balou posts big blind 30
+Dealt to Nelfrot-YT [Th 9h]
+*** PRE-FLOP *** 
+Var1anced0 folds
+Nelfrot-YT raises 370 to 400 and is all-in
+Tutur-Balou calls 370
+*** FLOP *** [Js 7s 5d]
+*** TURN *** [Js 7s 5d][4d]
+*** RIVER *** [Js 7s 5d 4d][5h]
+*** SHOW DOWN ***
+Nelfrot-YT shows [Th 9h] (One pair : 5)
+Tutur-Balou shows [Ad 2d] (One pair : 5)
+Tutur-Balou collected 800 from pot
+*** SUMMARY ***
+Total pot 800 | No rake
+Board: [Js 7s 5d 4d 5h]
+Seat 2: Nelfrot-YT (small blind) showed [Th 9h] and lost with One pair : 5
+Seat 3: Tutur-Balou (big blind) showed [Ad 2d] and won 800 with One pair : 5
+
+
