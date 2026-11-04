@@ -21,6 +21,6 @@
 - [ ] `npm run react:build` passes
 - [ ] New or fixed behavior is covered by a test (required for parser fixes)
 - [ ] UI strings added to **every** locale file (English first)
-- [ ] `changelogs.txt` updated for user-visible changes
+- [ ] Commit subjects describe the user-visible change (release notes come from them)
 - [ ] No personal data, real player names or secrets added (this repo is public)
 - [ ] Everything written (code, comments, docs) is in English
