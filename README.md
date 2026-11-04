@@ -45,7 +45,7 @@ It is a free alternative to paid poker trackers for 3-max Spin & Go, Heads-Up an
 | 🎰 **Multipliers analysis** | Break down your results by Spin multiplier. |
 | 👥 **Player database** | Overview of every opponent you faced and how they play. |
 | 🔄 **Automatic import** | Detects the room and imports hand histories idempotently — re-importing never creates duplicates. Optionally watches your Winamax and Unibet history folders and imports new hands as they are written (off by default; Betclic stays a manual export). |
-| 🖥️ **Table HUD (Windows, opt-in)** | On by default for every room, and can be turned off room by room. Shows opponent stats over your Winamax and Unibet tables, computed from your local hand histories. A built-in editor lets you compose your own grids (stats, stack-depth rows, colour bands, popups) or start from seven shipped models. |
+| 🖥️ **Table HUD (Windows, opt-in)** | On by default, with a single switch in the HUD page. Shows opponent stats over your Winamax and Unibet tables, computed from your local hand histories. A built-in editor lets you compose your own grids (stats, stack-depth rows, colour bands, popups) or start from seven shipped models. |
 | 🌍 **Multilingual UI** | English and French, easy to extend. |
 
 SpinTracker is first a post-session analysis tool. The optional table HUD only reads your own imported hands: it never reads the poker client's memory or screen, and never clicks or types for you.
@@ -144,7 +144,7 @@ Please follow our [Code of Conduct](CODE_OF_CONDUCT.md). For vulnerabilities, se
 
 **Is SpinTracker free?** Yes. It is MIT-licensed: free to use, modify and redistribute.
 
-**Is it a HUD?** Mainly an analysis tool (stats, leaks, replayer, ranges), with a table HUD on Windows that you can turn off, for all rooms or one by one. It only follows the table window's position and shows figures from your local database. Check your room's terms regarding HUDs before using it.
+**Is it a HUD?** Mainly an analysis tool (stats, leaks, replayer, ranges), with a table HUD on Windows that you can turn off with one switch. It only follows the table window's position and shows figures from your local database. Check your room's terms regarding HUDs before using it.
 
 **Is it allowed by poker rooms?** SpinTracker only reads the hand history files your room already saves on disk. Always check your room's terms of service regarding tracking software.
 

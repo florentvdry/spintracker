@@ -126,10 +126,8 @@
       "tables": "Detected tables",
       "no_detection": "Tables are not detected yet: the HUD cannot appear on a table in this version. Profiles and positions can already be prepared.",
       "pause_switch": "HUD active",
-      "rooms_on": "Enabled on: {{rooms}}",
-      "no_room": "Not enabled on any room yet: accept the warning for a room in Settings.",
       "table_mode": "Table mode: equity is not computed while a table is open. Hands imported meanwhile are completed once the tables are closed.",
-      "no_table": "No poker table found. Open a table of an enabled room; if your tables are not found, adjust the detection below.",
+      "no_table": "No poker table found. Open a poker table; the HUD only follows tables of the supported rooms.",
       "not_enabled": "The HUD is not enabled on any room.",
       "col_table": "Table",
       "col_room": "Room",
@@ -143,12 +141,7 @@
       "associate": "Associate...",
       "hide": "Hide",
       "show": "Show",
-      "detection": "Table detection",
-      "detection_note": "The HUD looks for the windows of your room's program. Empty fields use a first guess; fill them in if your tables are not found.",
-      "detection_process": "Program name contains",
-      "detection_title": "Table window title pattern (regular expression)",
-      "detection_title_placeholder": "any title except the lobby's",
-      "detection_minutes": "A tournament is being played if a hand was written in the last (minutes)"
+      "rooms_all": "Runs on every supported room."
     },
     "profiles": {
       "mine": "My profiles",
@@ -176,15 +169,6 @@
       "snap": "Snap to grid",
       "hero": "Hero",
       "seat": "Seat {{seat}}"
-    },
-    "activation": {
-      "title": "HUD on poker tables",
-      "subtitle": "Off by default, room by room.",
-      "enable_on": "Enable the HUD on {{room}}",
-      "enabled_on": "The HUD is enabled on {{room}}.",
-      "disable": "Disable",
-      "warning": "{{room}}'s rules require its approval for any program that is not on its list, and it may sanction accounts that use one. SpinTracker has no answer from {{room}} yet. You enable the HUD at your own risk.",
-      "accept": "I understand, enable the HUD on {{room}}"
     },
     "editor": {
       "profile": "Profile",

@@ -5,7 +5,6 @@ import { Info, ShieldAlert } from 'lucide-react'
 import Card from '@/components/ui/Card'
 import { ipcService, type Json } from '@/services/ipcService'
 import { useLiveHudStore } from '@/stores/liveHudStore'
-import { HUD_ROOMS, type HudRoom } from './hudProfile'
 
 const POLL_MS = 2000
 
@@ -113,56 +112,17 @@ function TablesCard() {
   )
 }
 
-const inputClass = 'w-full rounded border border-dark-100 bg-dark-300 px-2 py-1 text-sm text-gray-200 focus:border-primary-500 focus:outline-none'
-
-/** How the HUD looks for a room's tables; the defaults are a first guess that can be adjusted. */
-function DetectionCard() {
-  const { t } = useTranslation()
-  const { settings, setDetection } = useLiveHudStore()
-  return (
-    <Card title={t('liveHud.live.detection')} subtitle={t('liveHud.live.detection_note')}>
-      <div className="grid gap-4 md:grid-cols-2">
-        {HUD_ROOMS.map((room: HudRoom) => (
-          <div key={room} className="space-y-2">
-            <p className="text-sm font-medium text-gray-200">{room}</p>
-            <label className="block text-xs text-gray-400">
-              {t('liveHud.live.detection_process')}
-              <input className={clsx(inputClass, 'mt-1')} placeholder={room.toLowerCase()} value={settings.detection[room].process} onChange={(e) => setDetection(room, { process: e.target.value })} />
-            </label>
-            <label className="block text-xs text-gray-400">
-              {t('liveHud.live.detection_title')}
-              <input className={clsx(inputClass, 'mt-1 font-mono')} placeholder={t('liveHud.live.detection_title_placeholder')} value={settings.detection[room].titleRegex} onChange={(e) => setDetection(room, { titleRegex: e.target.value })} />
-            </label>
-            <label className="block text-xs text-gray-400">
-              {t('liveHud.live.detection_minutes')}
-              <input
-                className={clsx(inputClass, 'mt-1 w-24')}
-                inputMode="numeric"
-                value={settings.detection[room].activeMinutes}
-                onChange={(e) => setDetection(room, { activeMinutes: Math.min(720, Math.max(1, Math.round(Number(e.target.value) || 30))) })}
-              />
-            </label>
-          </div>
-        ))}
-      </div>
-    </Card>
-  )
-}
-
 export default function LiveTab() {
   const { t } = useTranslation()
   const { settings, setEnabled, setActiveProfile } = useLiveHudStore()
-  const roomsOn = HUD_ROOMS.filter((r) => settings.rooms[r])
 
   return (
     <div className="space-y-4">
       <Card title={t('liveHud.live.status')}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="font-medium text-white">{settings.enabled && roomsOn.length > 0 ? t('liveHud.live.on') : t('liveHud.live.off')}</p>
-            <p className="text-sm text-gray-400">
-              {roomsOn.length > 0 ? t('liveHud.live.rooms_on', { rooms: roomsOn.join(', ') }) : t('liveHud.live.no_room')}
-            </p>
+            <p className="font-medium text-white">{settings.enabled ? t('liveHud.live.on') : t('liveHud.live.off')}</p>
+            <p className="text-sm text-gray-400">{t('liveHud.live.rooms_all')}</p>
           </div>
           <label className="flex items-center gap-2 text-sm text-gray-300">
             <input type="checkbox" checked={settings.enabled} onChange={(e) => setEnabled(e.target.checked)} />
@@ -190,7 +150,6 @@ export default function LiveTab() {
       </Card>
 
       <TablesCard />
-      <DetectionCard />
     </div>
   )
 }

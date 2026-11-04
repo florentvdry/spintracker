@@ -33,18 +33,21 @@ const DEFAULT_ACTIVE_MINUTES: i64 = 30;
 const MIN_TABLE_WIDTH: i32 = 500;
 const MIN_TABLE_HEIGHT: i32 = 350;
 
-/// Rooms with a client the HUD knows how to look for. The program name and the window title
-/// pattern are a first guess, adjustable in the HUD settings (`detection`).
+/// Rooms with a client the HUD knows how to look for. How their tables are found is set here, not
+/// in the settings.
 struct RoomDefaults {
     room: &'static str,
+    /// Part of the name of the room's program.
     process: &'static str,
+    /// Pattern a table window title must match (`.` accepts any title but the client's own).
+    title: &'static str,
     /// Titles that are the client's own window, not a table.
     not_tables: &'static [&'static str],
 }
 
 const ROOMS: [RoomDefaults; 2] = [
-    RoomDefaults { room: "Winamax", process: "winamax", not_tables: &["winamax", "winamax poker"] },
-    RoomDefaults { room: "Unibet", process: "unibet", not_tables: &["unibet", "unibet poker"] },
+    RoomDefaults { room: "Winamax", process: "winamax", title: ".", not_tables: &["winamax", "winamax poker"] },
+    RoomDefaults { room: "Unibet", process: "unibet", title: ".", not_tables: &["unibet", "unibet poker"] },
 ];
 
 static TABLE_MODE: AtomicBool = AtomicBool::new(false);
@@ -108,21 +111,18 @@ struct RoomConfig {
 
 fn read_config(app: &AppHandle) -> Config {
     let settings: Value = std::fs::read_to_string(settings_path(app)).ok().and_then(|t| serde_json::from_str(&t).ok()).unwrap_or(Value::Null);
-    let enabled = settings["enabled"].as_bool() != Some(false);
+    // On unless the user turned it off.
+    if settings["enabled"].as_bool() == Some(false) {
+        return Config { rooms: Vec::new() };
+    }
     let rooms = ROOMS
         .iter()
-        .filter(|d| enabled && settings["rooms"][d.room].as_bool() != Some(false))
-        .map(|defaults| {
-            let detection = &settings["detection"][defaults.room];
-            let process = detection["process"].as_str().filter(|p| !p.trim().is_empty()).unwrap_or(defaults.process).trim().to_lowercase();
+        .map(|defaults| RoomConfig {
+            defaults,
+            process: defaults.process.to_lowercase(),
             // A pattern that does not compile falls back to "any title" rather than hiding the HUD.
-            let title = detection["titleRegex"]
-                .as_str()
-                .filter(|p| !p.trim().is_empty())
-                .and_then(|p| Regex::new(p).ok())
-                .unwrap_or_else(|| Regex::new(".").expect("a valid pattern"));
-            let active_minutes = detection["activeMinutes"].as_i64().filter(|m| *m > 0).unwrap_or(DEFAULT_ACTIVE_MINUTES);
-            RoomConfig { defaults, process, title, active_minutes }
+            title: Regex::new(defaults.title).unwrap_or_else(|_| Regex::new(".").expect("a valid pattern")),
+            active_minutes: DEFAULT_ACTIVE_MINUTES,
         })
         .collect();
     Config { rooms }

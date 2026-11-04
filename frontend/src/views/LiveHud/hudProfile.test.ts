@@ -202,13 +202,16 @@ describe('imported files', () => {
 })
 
 describe('activation', () => {
-  it('is on for every room unless the user turned it off', () => {
-    const fresh = defaultSettings()
-    expect(fresh.enabled).toBe(true)
-    expect(fresh.rooms).toEqual({ Winamax: true, Unibet: true })
-    expect(sanitizeSettings({ version: 3, profiles: [] }).rooms).toEqual({ Winamax: true, Unibet: true })
-    const off = sanitizeSettings({ version: 3, enabled: false, rooms: { Winamax: false, Unibet: true } })
-    expect(off.enabled).toBe(false)
-    expect(off.rooms).toEqual({ Winamax: false, Unibet: true })
+  it('is on for every room at once unless the user turned it off', () => {
+    expect(defaultSettings().enabled).toBe(true)
+    expect(sanitizeSettings({ version: 3, profiles: [] }).enabled).toBe(true)
+    expect(sanitizeSettings({ version: 3, enabled: false }).enabled).toBe(false)
+  })
+
+  it('ignores the per-room switches and detection fields older files had', () => {
+    const settings = sanitizeSettings({ version: 3, rooms: { Winamax: false }, detection: { Winamax: { process: 'x' } } })
+    expect(settings).not.toHaveProperty('rooms')
+    expect(settings).not.toHaveProperty('detection')
+    expect(settings.enabled).toBe(true)
   })
 })

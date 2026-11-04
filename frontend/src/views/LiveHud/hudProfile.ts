@@ -55,25 +55,10 @@ export type SeatPlacements = Record<string, GridPosition>
 /** room → format → seat → grid id → position, as fractions of the table. */
 export type Placements = Record<HudRoom, Record<HudFormat, Record<string, SeatPlacements>>>
 
-/** How to find a room's table windows. Empty fields use the built-in guess. */
-export interface HudDetection {
-  /** Part of the name of the room's program (`winamax`). */
-  process: string
-  /** Pattern a table window title must match (empty: any title but the lobby's). */
-  titleRegex: string
-  /** A tournament is being played when a hand was written this many minutes ago. */
-  activeMinutes: number
-}
-
-export const DEFAULT_ACTIVE_MINUTES = 30
-
 export interface HudSettings {
   version: number
-  /** On unless the user turned it off. */
+  /** On unless the user turned it off, for every room at once. */
   enabled: boolean
-  /** The rooms the HUD runs on; all of them unless the user turned one off. */
-  rooms: Record<HudRoom, boolean>
-  detection: Record<HudRoom, HudDetection>
   activeProfileId: string
   profiles: HudProfile[]
   placements: Placements
@@ -131,18 +116,11 @@ const emptyPlacements = (): Placements => {
 
 export const defaultPlacements = emptyPlacements
 
-const defaultDetection = (): Record<HudRoom, HudDetection> => ({
-  Winamax: { process: '', titleRegex: '', activeMinutes: DEFAULT_ACTIVE_MINUTES },
-  Unibet: { process: '', titleRegex: '', activeMinutes: DEFAULT_ACTIVE_MINUTES },
-})
-
 export const defaultSettings = (): HudSettings => {
   const { layouts, placements } = defaultBundle()
   return {
     version: HUD_SETTINGS_VERSION,
     enabled: true,
-    rooms: { Winamax: true, Unibet: true },
-    detection: defaultDetection(),
     activeProfileId: DEFAULT_PROFILE_ID,
     profiles: [{ ...defaultProfile(DEFAULT_PROFILE_ID, DEFAULT_PROFILE_NAME), layouts }],
     placements,
@@ -257,21 +235,6 @@ function migratePlacements(raw: unknown, migrated: { profile: HudProfile; format
   return result
 }
 
-function sanitizeDetection(raw: unknown): Record<HudRoom, HudDetection> {
-  const result = defaultDetection()
-  if (!isRecord(raw)) return result
-  for (const room of HUD_ROOMS) {
-    const entry = raw[room]
-    if (!isRecord(entry)) continue
-    result[room] = {
-      process: typeof entry.process === 'string' ? entry.process.trim().slice(0, 60) : '',
-      titleRegex: typeof entry.titleRegex === 'string' ? entry.titleRegex.slice(0, 120) : '',
-      activeMinutes: Math.round(finiteNumber(entry.activeMinutes, DEFAULT_ACTIVE_MINUTES, 1, 720)),
-    }
-  }
-  return result
-}
-
 /** Stored settings, repaired where they do not match the current shape; version 2 files are converted. */
 export function sanitizeSettings(raw: unknown): HudSettings {
   if (!isRecord(raw)) return defaultSettings()
@@ -291,8 +254,6 @@ export function sanitizeSettings(raw: unknown): HudSettings {
   return {
     version: HUD_SETTINGS_VERSION,
     enabled: raw.enabled !== false,
-    rooms: { Winamax: !isRecord(raw.rooms) || raw.rooms.Winamax !== false, Unibet: !isRecord(raw.rooms) || raw.rooms.Unibet !== false },
-    detection: sanitizeDetection(raw.detection),
     activeProfileId: active,
     profiles,
     placements,
