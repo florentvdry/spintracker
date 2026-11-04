@@ -1,10 +1,9 @@
 //! Betclic Spin & Rush hand histories.
 
 use chrono::NaiveDateTime;
-use uuid::Uuid;
 
 use crate::util::eq_ic;
-use super::{after_first, clean_lines, join_lines, parse_f64, parse_i32, regex, HandParser};
+use super::{after_first, clean_lines, content_id, join_lines, parse_f64, parse_i32, regex, HandParser};
 use crate::models::{
     ActionType, BlindsInfo, BoardInfo, HandActions, HandInfo, HandSummary, ParseResult, ParsedHand, PlayerHandInfo,
     PlayerInfo, StreetAction, WinnerInfo,
@@ -652,7 +651,7 @@ fn generate_hand_id(hand: &mut ParsedHand) {
         hand.id = Some(id.replace(':', "").replace(' ', "_"));
         hand.hand_id = hand.game_id.clone();
     } else {
-        hand.id = Some(Uuid::new_v4().to_string());
+        hand.id = Some(content_id(&hand.result));
     }
 }
 

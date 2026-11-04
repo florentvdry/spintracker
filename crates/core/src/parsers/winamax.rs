@@ -3,11 +3,10 @@
 use std::collections::HashMap;
 
 use chrono::NaiveDateTime;
-use uuid::Uuid;
 
 use crate::util::{eq_ic, starts_with_ic};
 use super::{
-    clean_lines, join_lines, parse_f64, parse_i32, regex, split_before_marker, HandParser,
+    clean_lines, content_id, entry_cost, join_lines, parse_f64, parse_i32, regex, split_before_marker, HandParser,
 };
 use crate::models::{BlindsInfo, ParseResult, ParsedHand, PlayerInfo};
 
@@ -228,7 +227,7 @@ impl HandParser for WinamaxParser {
 
         hand.id = match hand.hand_id.as_deref() {
             Some(id) if !id.trim().is_empty() => Some(id.to_string()),
-            _ => Some(Uuid::new_v4().to_string()),
+            _ => Some(content_id(&hand.result)),
         };
         Some(hand)
     }

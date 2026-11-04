@@ -1,8 +1,7 @@
 //! Unibet Power Spin hand histories.
 
-use uuid::Uuid;
 
-use super::{clean_lines, join_lines, parse_f64, parse_i32, regex, split_before_marker, HandParser};
+use super::{clean_lines, content_id, entry_cost, join_lines, parse_f64, parse_i32, regex, split_before_marker, HandParser};
 use crate::models::{BlindsInfo, ParseResult, ParsedHand, PlayerInfo};
 
 const HAND_SEPARATOR: &str = "Unibet Hand #";
@@ -250,7 +249,7 @@ impl HandParser for UnibetParser {
         }
 
         hand.player_count = hand.players.len() as i32;
-        hand.id = Some(hand.hand_id.clone().unwrap_or_else(|| Uuid::new_v4().to_string()));
+        hand.id = Some(hand.hand_id.clone().unwrap_or_else(|| content_id(&hand.result)));
         Some(hand)
     }
 }
