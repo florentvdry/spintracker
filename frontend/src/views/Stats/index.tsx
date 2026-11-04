@@ -5,6 +5,10 @@ import clsx from 'clsx'
 import { ipcService, type Json } from '@/services/ipcService'
 import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterStore'
 import { useReplayerStore } from '@/stores/replayerStore'
+import { useCustomStatsStore } from '@/stores/customStatsStore'
+import CustomStatsPanel from '../CustomStats/CustomStatsPanel'
+import StatBuilder from '../CustomStats/StatBuilder'
+import type { CustomStat } from '../CustomStats/customStatModel'
 import { HudMatrix, HudMiniTable, HudPostflopBox, HudStatLine, type OpenHands } from './components/HudParts'
 import {
   buildHudDetail, compactActions, compactNumber, createHudModel, fmt, formatChips, formatHandDate, formatStake,
@@ -54,6 +58,13 @@ export default function Stats() {
   const [opponentSearch, setOpponentSearch] = useState('')
   const [activeHudPopup, setActiveHudPopup] = useState<string>('General')
   const [hudDetail, setHudDetail] = useState<ReturnType<typeof buildHudDetail>>(null)
+  const customStats = useCustomStatsStore((s) => s.stats)
+  const loadCustomStats = useCustomStatsStore((s) => s.load)
+  const [builder, setBuilder] = useState<{ stat: CustomStat | null; template?: CustomStat['definition'] } | null>(null)
+
+  useEffect(() => {
+    void loadCustomStats()
+  }, [loadCustomStats])
 
   useEffect(() => {
     void fetchAliases()
@@ -99,7 +110,8 @@ export default function Stats() {
       cancelled = true
       clearTimeout(timer)
     }
-  }, [heroName, buyIn, dateRange, customFrom, customTo, selectedSession, statsScope, selectedOpponent])
+  // `customStats` changes when a custom stat is saved, deleted or finished computing.
+  }, [heroName, buyIn, dateRange, customFrom, customTo, selectedSession, statsScope, selectedOpponent, customStats])
 
   const model = useMemo(() => createHudModel(stats), [stats])
   const needle = opponentSearch.toLowerCase()
@@ -250,6 +262,11 @@ export default function Stats() {
           )}
         </section>
       )}
+
+      {!loading && stats && (
+        <CustomStatsPanel figures={stats.customStats ?? []} onCreate={() => setBuilder({ stat: null })} onEdit={(stat) => setBuilder({ stat })} onDuplicate={(stat) => setBuilder({ stat: null, template: stat.definition })} />
+      )}
+      {builder && <StatBuilder stat={builder.stat} template={builder.template} onClose={() => setBuilder(null)} />}
 
       {hudDetail && (
         <div className="stat-hands-backdrop" onClick={() => setHudDetail(null)}>

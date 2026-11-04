@@ -352,7 +352,7 @@ function CellPanel({
         )}
         {content.kind === 'stat' && (
           <p className="text-xs text-gray-200">
-            {content.label} <span className="text-gray-500">({content.section})</span>
+            {catalog.find((c) => c.id === `${content.section}:${content.label}`)?.name ?? content.label} <span className="text-gray-500">({content.section})</span>
           </p>
         )}
         <div className="flex flex-wrap gap-1">
