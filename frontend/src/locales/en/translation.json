@@ -7,8 +7,7 @@
     "hud": "HUD",
     "players": "Players",
     "settings": "Settings",
-    "stats": "Statistics",
-    "multipliers": "Multipliers"
+    "stats": "Statistics"
   },
   "sidebar": {
     "sqlite_local": "SQLite Local"
