@@ -75,7 +75,7 @@ Rules:
 - Breaking change: `feat(api)!: ...` plus a `BREAKING CHANGE:` footer.
 - Never commit unless the user explicitly asks.
 - Never use `--no-verify`, never force-push `main`, never rewrite published history.
-- Never commit secrets, `.db`, `.sqlite`, `userData/`, `node_modules/`, `dist/`, `bin/`, `obj/` (see `.gitignore`).
+- Never commit secrets, `.db`, `.sqlite`, `userData/`, `node_modules/`, `dist/`, `target/` (see `.gitignore`).
 
 ### Release commit (SPECIAL — triggers CI)
 
@@ -103,7 +103,7 @@ V1.2.0 - new range analysis
 
 - No `unwrap()`/`expect()` on data that comes from files or the UI; return `crate::Result`. `expect` is for invariants only, with a message saying why.
 - SQL: **parameterized only**, never string concatenation with user input. Dynamic fragments come from fixed whitelists.
-- DB schema: **every** change goes through a new SQL file in `db/sql/` registered in `db/migrations.rs`. Never edit a published migration. Versions keep the FluentMigrator `VersionInfo` table.
+- DB schema: **every** change goes through a new SQL file in `db/sql/` registered in `db/migrations.rs`. Never edit a published migration. The legacy FluentMigrator `VersionInfo` table is kept for databases created by older versions.
 - Stat flags are persisted: **append** new flags in `stats/flags.rs`, never reorder or remove one; bump `FLAGS_VERSION` when the meaning of an existing flag changes.
 - Stat computations belong in `engines/` and `stats/` and must be deterministic and testable.
 - No magic numbers: use named constants (buy-ins, prize pool shares…).
@@ -133,32 +133,32 @@ V1.2.0 - new range analysis
 
 ## 7. Parsers & import (sensitive area)
 
-- Each room has its own parser in `Parsers/`; never put room-specific behavior in another one.
+- Each room has its own parser in `crates/core/src/parsers/`; never put room-specific behavior in another one.
 - **Every parser fix ships with a test** (`crates/core/tests/parser_samples.rs`) based on a sample from `crates/core/tests/fixtures/exemple-data/`.
 - Sample data must be **fully anonymized** (player names, IDs, emails, paths). This repository is public: never commit real player data.
 - Import must remain **idempotent**: re-importing the same file creates no duplicates.
 
 ## 8. Tests
 
-- New backend code in `Engines/`, `Parsers/`, `Services/` → accompanying unit test.
+- New backend code in `engines/`, `parsers/`, `services/` → accompanying unit test.
 - A fixed bug = a test that fails before and passes after.
 - Tests must not depend on network, system time, or `userData/`.
 - Never delete or disable a test to make the build pass.
-- Test names in English, descriptive (`Parse_UnibetHand_ReturnsExpectedRange`).
+- Test names in English, descriptive (`parse_unibet_hand_returns_expected_range`).
 
 ## 9. Security, privacy & open source
 
 - User data is **local** (SQLite in `userData/`). Send nothing externally without explicit request; no telemetry without opt-in.
-- Validate all Controller inputs (size, type, file paths: no path traversal).
+- Validate all inputs coming from the webview or the file system (size, type, file paths: no path traversal).
 - No secret, token or key in code, history or workflows; use GitHub secrets. Public repo: anything committed is public forever.
-- Dependencies: add a NuGet/npm package only if necessary, justify it, pin versions, check its license is MIT-compatible. Do not hand-edit `package-lock.json`.
+- Dependencies: add a crate or npm package only if necessary, justify it, pin versions, check its license is MIT-compatible. Do not hand-edit `package-lock.json`.
 - Do not copy code from incompatible-license sources. Keep the `LICENSE` file and headers intact.
 - Security issues: do not open public issues with exploit details; follow `SECURITY.md`.
 
 ## 10. General code quality
 
 - Readability over cleverness. Short functions, single responsibility.
-- No duplication: reuse existing code first (search `utils/`, `Extensions/`, `Engines/`).
+- No duplication: reuse existing code first (search `frontend/src/utils/`, `engines/`).
 - Comments explain the *why*, never the *what*, in English. No context-free TODOs; track tasks in GitHub issues.
 - No opportunistic refactoring outside the requested scope; mention it instead.
 - No mass reformatting mixed into functional changes.
@@ -177,7 +177,7 @@ V1.2.0 - new range analysis
 2. **Stay in scope**: do not touch unrelated files.
 3. **Do not guess**: if a requirement is ambiguous and changes the outcome, ask.
 4. **Destructive or irreversible actions** (data deletion, `git reset --hard`, table drop, release, push): **ask for confirmation first**.
-5. **Never modify**: `bin/`, `obj/`, `node_modules/`, `*.lscache`, `publish/`, `.github/workflows/` (unless explicitly asked).
+5. **Never modify**: `target/`, `node_modules/`, `dist/`, `.github/workflows/` (unless explicitly asked).
 6. **Report honestly**: state what was tested, what was not, and any failure with its output.
 7. **Platform**: development happens on Windows; scripts must work in PowerShell/Git Bash and handle path separators correctly.
 8. **Reply to the user in the language they write in**, but everything written into the repo is English (§0).

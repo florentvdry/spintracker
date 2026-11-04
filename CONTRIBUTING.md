@@ -57,8 +57,8 @@ Do **not** start a commit message with `V<number>.<number>.<number>` — that tr
 The full conventions live in [AGENTS.md](AGENTS.md) and apply to humans and AI agents alike. Highlights:
 
 - **Everything in the repo is in English** (code, comments, docs, commits). UI strings go through `frontend/src/locales/`, English being the reference locale.
-- Backend layering: Controllers → Services → Engines/Repositories. No business logic in controllers.
-- Database changes go through a new FluentMigrator migration — never edit a published one.
+- Backend layering: `api.rs` → `services/` → `engines/`, `stats/`, `repos/`. No business logic in `api.rs`.
+- Database changes go through a new SQL file in `crates/core/src/db/sql/` registered in `db/migrations.rs` — never edit a published one.
 - React function components with TypeScript (strict); backend calls only through `src/services/`.
 
 ## Adding or fixing a parser

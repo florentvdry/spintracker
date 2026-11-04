@@ -26,8 +26,9 @@
     "winamax",
     "betclic",
     "unibet",
-    "electron",
-    "vue",
+    "tauri",
+    "rust",
+    "react",
     "sqlite",
     "open-source"
   ],
