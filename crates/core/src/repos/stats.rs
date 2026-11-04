@@ -6,7 +6,7 @@
 
 use std::collections::{BTreeMap, HashMap};
 
-use chrono::{Datelike, Local, NaiveDate, NaiveDateTime};
+use chrono::{Datelike, NaiveDate, NaiveDateTime, Utc};
 use rusqlite::types::Value as SqlValue;
 use rusqlite::{Connection, ToSql};
 use serde::{Deserialize, Serialize};
@@ -136,43 +136,96 @@ fn round_to(value: f64, digits: i32) -> f64 {
 /// What one tournament's hands say about its result.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct TournamentFigures {
+    pub(crate) room: Room,
     pub(crate) buy_in: f64,
     pub(crate) prize_pool: f64,
-    pub(crate) rake_per_player: f64,
     pub(crate) multiplier: i32,
     /// Hero's finishing place when known, 0 otherwise.
     pub(crate) position: i32,
-    /// Largest table size seen (2 means the hero finished heads-up).
-    pub(crate) max_player_count: i32,
+    /// Smallest table size the hero played (2 means the hero reached heads-up).
+    pub(crate) lowest_player_count: i32,
     pub(crate) chip_profit: f64,
 }
 
-/// Prize pool shared 75/15/10 from this prize-to-cost ratio, or from this multiplier.
-const SHARING_PRIZE_RATIO: f64 = 19.5;
-const SHARING_MULTIPLIER: i32 = 20;
-const SHARE_FIRST: f64 = 0.75;
-const SHARE_SECOND: f64 = 0.15;
-const SHARE_THIRD: f64 = 0.10;
+/// The rooms do not share their prize pool the same way, so the room is part of a result.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Room {
+    Winamax,
+    Unibet,
+    Betclic,
+    Other,
+}
+
+impl Room {
+    pub(crate) fn from_name(name: &str) -> Room {
+        match name.trim().to_ascii_lowercase().as_str() {
+            "winamax" => Room::Winamax,
+            "unibet" => Room::Unibet,
+            "betclic" => Room::Betclic,
+            _ => Room::Other,
+        }
+    }
+}
+
+/// Shares of the prize pool going to the first, second and third place.
+type Shares = (f64, f64, f64);
+
+const SHARES_75_15_10: Shares = (0.75, 0.15, 0.10);
+const SHARES_80_12_8: Shares = (0.80, 0.12, 0.08);
+const SHARES_80_10_10: Shares = (0.80, 0.10, 0.10);
+
+/// Winamax Expresso and Unibet Power Spin share from x100, Unibet also at x10; Betclic from x20.
+/// Below that the winner takes the whole pool. These are the prize tables published by the rooms.
+const WINAMAX_SHARING_MULTIPLIER: i32 = 100;
+const UNIBET_SHARING_MULTIPLIER: i32 = 100;
+const UNIBET_SMALL_SHARING_MULTIPLIER: i32 = 10;
+const BETCLIC_SHARING_MULTIPLIER: i32 = 20;
+
+fn prize_shares(room: Room, multiplier: i32) -> Option<Shares> {
+    match room {
+        Room::Winamax if multiplier >= WINAMAX_SHARING_MULTIPLIER => Some(SHARES_80_12_8),
+        Room::Unibet if multiplier >= UNIBET_SHARING_MULTIPLIER => Some(SHARES_80_12_8),
+        Room::Unibet if multiplier >= UNIBET_SMALL_SHARING_MULTIPLIER => Some(SHARES_80_10_10),
+        Room::Betclic | Room::Other if multiplier >= BETCLIC_SHARING_MULTIPLIER => Some(SHARES_75_15_10),
+        _ => None,
+    }
+}
 
 impl TournamentFigures {
     fn is_prized(&self) -> bool {
         self.prize_pool > 0.0 || self.multiplier > 0
     }
 
+    /// What the player paid to enter: `buy_in` already includes the fee in every room.
     fn total_cost(&self) -> f64 {
-        self.buy_in + self.rake_per_player
+        self.buy_in
+    }
+
+    /// The multiplier, or the one the prize pool implies when it was not recorded.
+    fn effective_multiplier(&self) -> i32 {
+        let cost = self.total_cost();
+        if self.multiplier > 0 {
+            self.multiplier
+        } else if cost > 0.0 {
+            (self.prize_pool / cost).round() as i32
+        } else {
+            0
+        }
+    }
+
+    fn shares(&self) -> Option<Shares> {
+        prize_shares(self.room, self.effective_multiplier())
     }
 
     fn has_sharing(&self) -> bool {
-        let cost = self.total_cost();
-        (cost > 0.0 && self.prize_pool / cost >= SHARING_PRIZE_RATIO) || self.multiplier >= SHARING_MULTIPLIER
+        self.shares().is_some()
     }
 
     /// Finishing place: the recorded one, else deduced from the chips and the table size.
     fn finish_position(&self) -> i32 {
         match self.position {
             0 if self.chip_profit > 0.0 => 1,
-            0 if self.max_player_count == 2 => 2,
+            0 if self.lowest_player_count == 2 => 2,
             0 => 3,
             p => p,
         }
@@ -182,11 +235,11 @@ impl TournamentFigures {
         let cost = self.total_cost();
         let m = self.multiplier as f64;
         let total_prize = if self.prize_pool > m * cost * 0.5 { self.prize_pool } else { cost * m };
-        match self.finish_position() {
-            1 if self.has_sharing() => total_prize * SHARE_FIRST,
-            1 => total_prize,
-            2 if self.has_sharing() => total_prize * SHARE_SECOND,
-            3 if self.has_sharing() => total_prize * SHARE_THIRD,
+        match (self.finish_position(), self.shares()) {
+            (1, Some((first, _, _))) => total_prize * first,
+            (1, None) => total_prize,
+            (2, Some((_, second, _))) => total_prize * second,
+            (3, Some((_, _, third))) => total_prize * third,
             _ => 0.0,
         }
     }
@@ -250,7 +303,7 @@ fn sessions(conn: &Connection, q: &StatsQuery) -> Result<Vec<Session>> {
     let scope = scope(hero.as_deref(), non_empty(&q.date_from), non_empty(&q.date_to), q.buy_in, false, &[]);
 
     let sql = format!(
-        "SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, ph.net_profit, h.player_count, h.multiplier, h.position, COALESCE(h.rake_per_player, 0)
+        "SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, ph.net_profit, h.player_count, h.multiplier, h.position
          FROM hands h
          {}
          {}
@@ -269,26 +322,26 @@ fn sessions(conn: &Connection, q: &StatsQuery) -> Result<Vec<Session>> {
             r.get::<_, Option<i32>>(6)?.unwrap_or(3),
             r.get::<_, Option<i32>>(7)?.unwrap_or(0),
             r.get::<_, Option<i32>>(8)?.unwrap_or(0),
-            r.get::<_, Option<f64>>(9)?.unwrap_or(0.0),
         ))
     })?;
 
     let mut hands = Vec::new();
     for row in rows {
-        let (date, room, game_id, buy_in, prize_pool, hand_profit, pc, multiplier, position, rake) = row?;
+        let (date, room, game_id, buy_in, prize_pool, hand_profit, pc, multiplier, position) = row?;
         let Some(time) = parse_date_time(&date) else { continue };
+        let room_kind = Room::from_name(&room);
         hands.push(SessionHand {
             time,
             room,
             game_id,
             hand_profit,
             figures: TournamentFigures {
+                room: room_kind,
                 buy_in,
                 prize_pool,
-                rake_per_player: rake,
                 multiplier,
                 position,
-                max_player_count: pc,
+                lowest_player_count: pc,
                 chip_profit: 0.0,
             },
         });
@@ -338,7 +391,7 @@ fn session_of(hands: &[&SessionHand]) -> Session {
             TournamentFigures {
                 multiplier: hands.iter().map(|h| h.figures.multiplier).max().unwrap_or(0),
                 position: hands.iter().map(|h| h.figures.position).max().unwrap_or(0),
-                max_player_count: hands.iter().map(|h| h.figures.max_player_count).max().unwrap_or(0),
+                lowest_player_count: hands.iter().map(|h| h.figures.lowest_player_count).min().unwrap_or(3),
                 chip_profit: hands.iter().map(|h| h.hand_profit).sum(),
                 ..first
             }
@@ -400,20 +453,20 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let mut total_profit_euro = 0.0;
     {
         let mut stmt = conn.prepare(&format!(
-            "SELECT h.buy_in, h.prize_pool, SUM(ph.net_profit) as chip_profit, MAX(h.player_count) as max_players,
-                    MAX(h.multiplier) as multiplier, MAX(h.position) as position, MAX(COALESCE(h.rake_per_player, 0)) as rake_per_player
+            "SELECT h.buy_in, h.prize_pool, SUM(ph.net_profit) as chip_profit, MIN(h.player_count) as lowest_players,
+                    MAX(h.multiplier) as multiplier, MAX(h.position) as position, h.room
              FROM hands h {join} {filter}
              GROUP BY h.game_id"
         ))?;
         let rows = stmt.query_map(&scope.params()[..], |r| {
             Ok(TournamentFigures {
+                room: Room::from_name(&r.get::<_, Option<String>>(6)?.unwrap_or_default()),
                 buy_in: r.get::<_, Option<f64>>(0)?.unwrap_or(0.0),
                 prize_pool: r.get::<_, Option<f64>>(1)?.unwrap_or(0.0),
                 chip_profit: r.get::<_, Option<f64>>(2)?.unwrap_or(0.0),
-                max_player_count: r.get::<_, Option<i32>>(3)?.unwrap_or(3),
+                lowest_player_count: r.get::<_, Option<i32>>(3)?.unwrap_or(3),
                 multiplier: r.get::<_, Option<i32>>(4)?.unwrap_or(0),
                 position: r.get::<_, Option<i32>>(5)?.unwrap_or(0),
-                rake_per_player: r.get::<_, Option<f64>>(6)?.unwrap_or(0.0),
             })
         })?;
         for figures in rows {
@@ -485,7 +538,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let total_tournaments: i64 = sessions.iter().map(|s| s.tournaments).sum();
     let avg_chips_ev = if total_tournaments > 0 { round_to(total_ev / total_tournaments as f64, 2) } else { 0.0 };
 
-    let sessions_this_month = count_in_month_of(sessions.iter().map(|s| s.start), Local::now().naive_local());
+    let sessions_this_month = count_in_month_of(sessions.iter().map(|s| s.start), Utc::now().naive_utc());
 
     Ok(json!({
         "total_hands": total_hands,
@@ -500,8 +553,6 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         "tournaments_by_position": tournaments_by_position,
         "sessions_this_month": sessions_this_month,
         "total_sessions": sessions.len(),
-        "avg_multiplier": 0.0,
-        "best_win": 0.0,
     }))
 }
 
@@ -580,8 +631,7 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
             SUM(COALESCE(CASE WHEN NOT (ph.went_to_showdown = 1) THEN ph.net_profit ELSE 0 END, 0)) OVER (ORDER BY h.date_time, h.id) as cumulative_no_showdown,
             SUM(COALESCE(ph.net_won_adjusted, ph.net_profit)) OVER (ORDER BY h.date_time, h.id) as cumulative_ev,
             h.game_id, h.buy_in, h.prize_pool, h.player_count,
-            ph.net_profit as hand_profit, h.multiplier, h.position,
-            COALESCE(h.rake_per_player, 0) as rake_per_player
+            ph.net_profit as hand_profit, h.multiplier, h.position, h.room
          FROM hands h
          {}
          {}
@@ -601,12 +651,12 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
                 game_id: r.get(5)?,
                 hand_profit,
                 figures: TournamentFigures {
+                    room: Room::from_name(&r.get::<_, Option<String>>(12)?.unwrap_or_default()),
                     buy_in: r.get::<_, Option<f64>>(6)?.unwrap_or(0.0),
                     prize_pool: r.get::<_, Option<f64>>(7)?.unwrap_or(0.0),
-                    max_player_count: r.get::<_, Option<i32>>(8)?.unwrap_or(0),
+                    lowest_player_count: r.get::<_, Option<i32>>(8)?.unwrap_or(3),
                     multiplier: r.get::<_, Option<i32>>(10)?.unwrap_or(0),
                     position: r.get::<_, Option<i32>>(11)?.unwrap_or(0),
-                    rake_per_player: r.get::<_, Option<f64>>(12)?.unwrap_or(0.0),
                     chip_profit: 0.0,
                 },
             })
@@ -630,7 +680,7 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
             let figures = TournamentFigures {
                 multiplier: hands_of_game.iter().map(|h| h.figures.multiplier).max().unwrap_or(0),
                 position: hands_of_game.iter().map(|h| h.figures.position).max().unwrap_or(0),
-                max_player_count: hands_of_game.iter().map(|h| h.figures.max_player_count).max().unwrap_or(0),
+                lowest_player_count: hands_of_game.iter().map(|h| h.figures.lowest_player_count).min().unwrap_or(3),
                 chip_profit: hands_of_game.iter().map(|h| h.hand_profit).sum(),
                 ..hands_of_game[0].figures
             };
@@ -719,7 +769,43 @@ mod tests {
     use super::*;
 
     fn figures(buy_in: f64, prize_pool: f64, multiplier: i32, position: i32, chips: f64, players: i32) -> TournamentFigures {
-        TournamentFigures { buy_in, prize_pool, rake_per_player: 0.0, multiplier, position, max_player_count: players, chip_profit: chips }
+        TournamentFigures { room: Room::Betclic, buy_in, prize_pool, multiplier, position, lowest_player_count: players, chip_profit: chips }
+    }
+
+    fn in_room(room: Room, t: TournamentFigures) -> TournamentFigures {
+        TournamentFigures { room, ..t }
+    }
+
+    #[test]
+    fn winamax_shares_from_x100_with_80_12_8_and_not_before() {
+        // Expresso 5: the 500 euro prize (x100) is split 400 / 60 / 40, the 100 euro one (x20) is not.
+        let split = |position| in_room(Room::Winamax, figures(5.0, 500.0, 100, position, 0.0, 3)).euro_profit();
+        assert!((split(1) - (400.0 - 5.0)).abs() < 1e-9);
+        assert!((split(2) - (60.0 - 5.0)).abs() < 1e-9);
+        assert!((split(3) - (40.0 - 5.0)).abs() < 1e-9);
+        let x20 = |position| in_room(Room::Winamax, figures(5.0, 100.0, 20, position, 0.0, 3));
+        assert_eq!(x20(1).euro_profit(), 100.0 - 5.0);
+        assert_eq!(x20(2).euro_profit(), -5.0);
+        assert!(!x20(2).is_in_the_money());
+    }
+
+    #[test]
+    fn unibet_shares_80_10_10_at_x10_and_80_12_8_from_x100() {
+        let at = |multiplier, pool, position| in_room(Room::Unibet, figures(250.0, pool, multiplier, position, 0.0, 3)).euro_profit();
+        assert_eq!(at(10, 2500.0, 1), 2000.0 - 250.0);
+        assert_eq!(at(10, 2500.0, 2), 250.0 - 250.0);
+        assert_eq!(at(100, 25000.0, 2), 3000.0 - 250.0);
+        assert_eq!(at(100, 25000.0, 3), 2000.0 - 250.0);
+        assert_eq!(at(5, 1250.0, 1), 1250.0 - 250.0);
+        assert_eq!(at(5, 1250.0, 2), -250.0);
+    }
+
+    #[test]
+    fn betclic_shares_75_15_10_from_x20() {
+        let at = |multiplier, pool, position| in_room(Room::Betclic, figures(1.0, pool, multiplier, position, 0.0, 3)).euro_profit();
+        assert_eq!(at(20, 20.0, 2), 20.0 * 0.15 - 1.0);
+        assert_eq!(at(10, 10.0, 1), 10.0 - 1.0);
+        assert_eq!(at(10, 10.0, 2), -1.0);
     }
 
     #[test]
@@ -741,12 +827,12 @@ mod tests {
     fn big_multipliers_share_the_prize() {
         let first = figures(1.0, 100.0, 100, 1, 500.0, 3);
         assert!(first.has_sharing());
-        assert_eq!(first.euro_profit(), 100.0 * SHARE_FIRST - 1.0);
+        assert_eq!(first.euro_profit(), 100.0 * 0.75 - 1.0);
         let second = figures(1.0, 100.0, 100, 2, 0.0, 3);
-        assert_eq!(second.euro_profit(), 100.0 * SHARE_SECOND - 1.0);
+        assert_eq!(second.euro_profit(), 100.0 * 0.15 - 1.0);
         assert!(second.is_in_the_money());
         let third = figures(1.0, 100.0, 100, 3, 0.0, 3);
-        assert_eq!(third.euro_profit(), 100.0 * SHARE_THIRD - 1.0);
+        assert_eq!(third.euro_profit(), 100.0 * 0.10 - 1.0);
     }
 
     #[test]

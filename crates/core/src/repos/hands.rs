@@ -106,6 +106,8 @@ pub fn insert_batch(conn: &mut Connection, items: &[ImportedHand]) -> Result<usi
                 structured,
             ])?;
 
+            // A hand imported again replaces its players too: none of the previous rows may remain.
+            tx.prepare_cached("DELETE FROM player_hands WHERE hand_id = ?1")?.execute([id])?;
             for p in h.players.iter().filter(|p| !p.name.is_empty()) {
                 insert_player(&mut player_stmt, id, p, &item.analytics)?;
             }

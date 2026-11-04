@@ -1,8 +1,7 @@
 //! Unibet Power Spin hand histories.
 
-use uuid::Uuid;
 
-use super::{clean_lines, join_lines, parse_f64, parse_i32, regex, split_before_marker, HandParser};
+use super::{clean_lines, content_id, entry_cost, join_lines, parse_f64, parse_i32, regex, split_before_marker, HandParser};
 use crate::models::{BlindsInfo, ParseResult, ParsedHand, PlayerInfo};
 
 const HAND_SEPARATOR: &str = "Unibet Hand #";
@@ -250,7 +249,7 @@ impl HandParser for UnibetParser {
         }
 
         hand.player_count = hand.players.len() as i32;
-        hand.id = Some(hand.hand_id.clone().unwrap_or_else(|| Uuid::new_v4().to_string()));
+        hand.id = Some(hand.hand_id.clone().unwrap_or_else(|| content_id(&hand.result)));
         Some(hand)
     }
 }
@@ -263,7 +262,7 @@ fn parse_header_line(line: &str, hand: &mut ParsedHand) {
         hand.hand_id = Some(m["handId"].to_string());
         hand.game_id = Some(m["tournamentId"].to_string());
         hand.tournament_id = hand.game_id.clone();
-        hand.buy_in = parse_f64(&m["buyin"]);
+        hand.buy_in = entry_cost(parse_f64(&m["buyin"]), parse_f64(&m["fee"]));
         hand.rake_per_player = Some(parse_f64(&m["fee"]));
         let (sb, bb) = (parse_f64(&m["sb"]), parse_f64(&m["bb"]));
         hand.blinds = Some(format!("{sb}/{bb}"));
@@ -271,11 +270,10 @@ fn parse_header_line(line: &str, hand: &mut ParsedHand) {
         hand.date_time = Some(format!("{} {}", m["date"].replace('/', "-"), &m["time"]));
 
         if hand.buy_in > 0.0 {
-            let total_buy_in = hand.buy_in + hand.rake_per_player.unwrap_or(0.0);
             if let Some(prize) = regex!(r"Total prize €(\d+(?:\.\d+)?)").captures(line) {
                 hand.prize_pool = parse_f64(&prize[1]);
                 // Banker's rounding, like .NET's default `Math.Round`.
-                hand.multiplier = (hand.prize_pool / total_buy_in).round_ties_even() as i32;
+                hand.multiplier = (hand.prize_pool / hand.buy_in).round_ties_even() as i32;
             }
         }
     }
