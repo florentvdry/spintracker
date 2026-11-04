@@ -9,11 +9,12 @@ use rusqlite::types::Value as SqlValue;
 use rusqlite::{Connection, ToSql};
 use serde_json::{json, Value};
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use super::detailed_stats::{pct, Accumulator, HudPart, Row};
 use super::postflop_stats;
 use super::hands_query::hero_resolution_sql;
+use crate::stats::custom::store as custom_store;
 use crate::stats::flags::Flags;
 use crate::stats::registry::{Section, STATS};
 use crate::Result;
@@ -41,6 +42,8 @@ pub fn parse_section(key: &str) -> Option<Section> {
 const POSTFLOP: &str = "postflop";
 const SHOVE: &str = "shove";
 const META: &str = "meta";
+/// Stats the user defined; the label of a request is the stat id.
+const CUSTOM: &str = "custom";
 const SHOVE_LABELS: [&str; 5] = ["Open Shove", "Iso Shove", "Rejam", "Call Shove", "Fold vs Shove"];
 
 /// Stack depths a table can be split by, in big blinds: `(name, above, up to and including)`.
@@ -91,6 +94,20 @@ pub struct HudStatRequest {
     pub bucket: Option<String>,
 }
 
+/// The catalog plus the stats the user defined (their label is the id, `name` is what to show).
+pub fn catalog_with_custom(conn: &Connection) -> Result<Value> {
+    let mut catalog = catalog();
+    if let Some(stats) = catalog["stats"].as_array_mut() {
+        for stat in custom_store::load_all(conn)? {
+            stats.push(json!({
+                "section": CUSTOM, "label": stat.id.to_string(), "name": stat.def.name, "id": format!("{CUSTOM}:{}", stat.id),
+                "fixedSeat": false, "ready": stat.ready,
+            }));
+        }
+    }
+    Ok(catalog)
+}
+
 /// The stats the HUD can display, straight from the registry.
 pub fn catalog() -> Value {
     let stats: Vec<Value> = STATS
@@ -117,10 +134,25 @@ pub fn catalog() -> Value {
     json!({ "stats": stats, "buckets": BUCKETS.map(|(name, _, _)| name) })
 }
 
+/// The custom-stat hits of a player by hand; nothing is read while the user has no custom stat.
+fn load_custom_hits(conn: &Connection, player: &str) -> Result<HashMap<String, Vec<(i64, u8)>>> {
+    let mut hits: HashMap<String, Vec<(i64, u8)>> = HashMap::new();
+    if custom_store::count(conn)? == 0 {
+        return Ok(hits);
+    }
+    let mut stmt = conn.prepare_cached("SELECT hand_id, stat_id, bits FROM custom_stat_hits WHERE player_name = ?1")?;
+    let rows = stmt.query_map([player], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?, r.get::<_, i64>(2)? as u8)))?;
+    for row in rows {
+        let (hand, stat, bits) = row?;
+        hits.entry(hand).or_default().push((stat, bits));
+    }
+    Ok(hits)
+}
+
 /// Everything the HUD needs of one player: the rows of the hands that count.
 pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str) -> Result<Vec<Row>> {
     let sql = format!(
-        "SELECT h.player_count, ph.position, f.flags_0, f.flags_1, f.flags_2, f.flags_3, f.street_counts, ph.stack, h.blinds
+        "SELECT h.player_count, ph.position, f.flags_0, f.flags_1, f.flags_2, f.flags_3, f.street_counts, ph.stack, h.blinds, ph.hand_id
          FROM player_hands ph
          JOIN hands h ON h.id = ph.hand_id
          LEFT JOIN hand_player_flags f ON f.hand_id = ph.hand_id AND f.player_name = ph.player_name
@@ -134,6 +166,7 @@ pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str)
         ("@hero", SqlValue::Text(hero.into())),
     ];
     let params: Vec<(&str, &dyn ToSql)> = binds.iter().map(|(n, v)| (*n, v as &dyn ToSql)).collect();
+    let mut custom = load_custom_hits(conn, player)?;
     let mut stmt = conn.prepare_cached(&sql)?;
     let rows = stmt
         .query_map(&params[..], |r| {
@@ -141,6 +174,7 @@ pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str)
             let position: Option<String> = r.get(1)?;
             let flags = Flags::from_words([word(2)?, word(3)?, word(4)?, word(5)?]);
             let blinds: Option<String> = r.get(8)?;
+            let hits = if custom.is_empty() { Vec::new() } else { custom.remove(&r.get::<_, String>(9)?).unwrap_or_default() };
             Ok(Row::lean(
                 r.get::<_, Option<i32>>(0)?.unwrap_or(0),
                 position.as_deref().unwrap_or(""),
@@ -148,7 +182,8 @@ pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str)
                 word(6)?,
                 r.get::<_, Option<i64>>(7)?.unwrap_or(0),
                 blinds.as_deref().unwrap_or(""),
-            ))
+            )
+            .with_custom(hits))
         })?
         .collect::<std::result::Result<Vec<_>, _>>()?;
     Ok(rows)
@@ -191,13 +226,21 @@ impl<'a> Groups<'a> {
     }
 }
 
-fn counts_of(groups: &mut Groups, req: &HudStatRequest) -> Option<(u64, u64)> {
+fn counts_of(groups: &mut Groups, req: &HudStatRequest, ready: &HashSet<i64>) -> Option<(u64, u64)> {
     let bucket = req.bucket.as_deref();
     if bucket.is_some_and(|b| !BUCKETS.iter().any(|(name, _, _)| *name == b)) {
         return None;
     }
     let column = req.column.as_deref();
     match req.section.as_str() {
+        CUSTOM => {
+            // A stat still being computed has no figure yet.
+            let id: i64 = req.label.parse().ok().filter(|id| ready.contains(id))?;
+            if column.is_some_and(|c| !COLUMNS.contains(&c)) {
+                return None;
+            }
+            Some(groups.get(bucket, column, HudPart::Custom).custom_counts(id))
+        }
         POSTFLOP | SHOVE | META => {
             // Figures counted over the rows of one column: unknown columns are refused.
             if column.is_some_and(|c| !COLUMNS.contains(&c)) {
@@ -217,12 +260,13 @@ fn counts_of(groups: &mut Groups, req: &HudStatRequest) -> Option<(u64, u64)> {
 }
 
 /// The requested figures of one player over `rows`: `(hands, one entry per requested stat)`.
-pub(crate) fn compute(rows: &[Row], requests: &[HudStatRequest]) -> (u64, Vec<Value>) {
+/// `ready` holds the ids of the custom stats whose figures are up to date.
+pub(crate) fn compute(rows: &[Row], requests: &[HudStatRequest], ready: &HashSet<i64>) -> (u64, Vec<Value>) {
     let mut groups = Groups::new(rows);
     let hands = rows.len() as u64;
     let stats = requests
         .iter()
-        .map(|req| match counts_of(&mut groups, req) {
+        .map(|req| match counts_of(&mut groups, req, ready) {
             Some((num, den)) => json!({
                 "section": req.section, "label": req.label, "column": req.column, "bucket": req.bucket,
                 "num": num, "den": den, "pct": pct(num, den),

@@ -13,6 +13,7 @@ use crate::db::Database;
 use crate::repos::detailed_stats::Row;
 use crate::repos::hud_stats::{self, HudStatRequest};
 use crate::repos::hud_tables;
+use crate::stats::custom::store as custom_store;
 use crate::repos::player_notes::{self, PlayerNote, MAX_NOTE_CHARS};
 use crate::Result;
 
@@ -126,10 +127,11 @@ impl HudService {
 
     pub fn players(&self, request: &HudPlayersRequest) -> Result<Value> {
         let conn = self.db.conn()?;
+        let ready = custom_store::ready_ids(&conn)?;
         let mut players = Vec::with_capacity(request.players.len());
         for name in &request.players {
             let rows = self.rows_of(&request.room, &request.hero_name, name)?;
-            let (hands, stats) = hud_stats::compute(&rows, &request.stats);
+            let (hands, stats) = hud_stats::compute(&rows, &request.stats, &ready);
             let note = player_notes::get(&conn, &request.room, name)?.unwrap_or_default();
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));
         }
