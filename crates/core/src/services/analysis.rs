@@ -5,7 +5,7 @@
 //! in the three room formats ("Name: action", "Name action", with or without a timestamp).
 
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 use chrono::NaiveDateTime;
 use rusqlite::types::Value as SqlValue;
@@ -252,11 +252,7 @@ fn player_positions(map: &str) -> HashMap<String, String> {
 }
 
 fn big_blind(blinds: &str) -> f64 {
-    let parts: Vec<&str> = blinds.split('/').collect();
-    match parts[..] {
-        [_, bb] => bb.trim().parse().unwrap_or(0.0),
-        _ => 0.0,
-    }
+    crate::engines::actions::big_blind(blinds) as f64
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -444,26 +440,28 @@ fn matches_situation_id(hand: &AnalysisHand, situation_id: &str, positions: Opti
     true
 }
 
-fn opponent_is_reg(conn: &Connection, hand: &AnalysisHand, hero: Option<&str>) -> Result<bool> {
-    let Some(hero) = hero.or(hand.hero_name.as_deref()).filter(|h| !h.is_empty()) else { return Ok(false) };
-    for pair in hand.player_positions.split('|') {
-        let parts: Vec<&str> = pair.split(':').collect();
-        if parts.len() < 2 {
-            continue;
-        }
-        let name = parts[0].trim();
-        if eq_ic(name, hero) {
-            continue;
-        }
-        // Only the first other player decides.
-        let reg = conn.query_row("SELECT is_reg FROM players WHERE name = ?1", [name], |r| r.get::<_, Option<i64>>(0)).ok().flatten();
-        return Ok(reg == Some(1));
-    }
-    Ok(false)
+/// Lower-cased names of the regulars, read once for a whole analysis.
+fn regular_players(conn: &Connection) -> Result<HashSet<String>> {
+    let mut stmt = conn.prepare("SELECT name FROM players WHERE is_reg = 1")?;
+    let names = stmt.query_map([], |r| r.get::<_, String>(0))?.collect::<std::result::Result<Vec<_>, _>>()?;
+    Ok(names.into_iter().map(|n| n.to_lowercase()).collect())
+}
+
+/// Whether at least one opponent of the hero in this hand is a regular.
+fn opponent_is_reg(regulars: &HashSet<String>, hand: &AnalysisHand, hero: Option<&str>) -> bool {
+    let Some(hero) = hero.or(hand.hero_name.as_deref()).filter(|h| !h.is_empty()) else { return false };
+    hand.player_positions
+        .split('|')
+        .filter_map(|pair| pair.split(':').next())
+        .map(str::trim)
+        .filter(|name| !name.is_empty() && !eq_ic(name, hero))
+        .any(|name| regulars.contains(&name.to_lowercase()))
 }
 
 fn filter_hands(conn: &Connection, hands: Vec<AnalysisHand>, f: &AnalysisFilters) -> Result<Vec<AnalysisHand>> {
     let mut out = Vec::new();
+    let opponent_kind = non_empty(&f.opponent_type).filter(|k| *k != "all");
+    let regulars = if opponent_kind.is_some() { regular_players(conn)? } else { HashSet::new() };
     'hands: for hand in hands {
         let hero = hand.hero_name.clone().or_else(|| f.hero_name.clone());
 
@@ -476,8 +474,8 @@ fn filter_hands(conn: &Connection, hands: Vec<AnalysisHand>, f: &AnalysisFilters
                 }
             }
         }
-        if let Some(kind) = non_empty(&f.opponent_type).filter(|k| *k != "all") {
-            let reg = opponent_is_reg(conn, &hand, hero.as_deref())?;
+        if let Some(kind) = opponent_kind {
+            let reg = opponent_is_reg(&regulars, &hand, hero.as_deref());
             if (kind == "reg" && !reg) || (kind == "fish" && reg) {
                 continue;
             }
@@ -553,7 +551,8 @@ pub fn analysis_hands(conn: &Connection, request: &AnalysisHandsRequest) -> Resu
     Ok(json!({ "hands": ordered, "total": total, "page": page, "limit": limit, "pages": (total as f64 / limit as f64).ceil() as i64 }))
 }
 
-fn count_aggression(text: &str, hero: &str, counts: &mut [u32; 4]) {
+/// Bets, raises, calls, folds and checks of the hero on one street.
+fn count_aggression(text: &str, hero: &str, counts: &mut [u32; 5]) {
     for line in text.split('\n') {
         if let Some(act) = action_of_player(line, hero) {
             let act = act.to_lowercase();
@@ -565,6 +564,8 @@ fn count_aggression(text: &str, hero: &str, counts: &mut [u32; 4]) {
                 2
             } else if act.contains("folds") {
                 3
+            } else if act.contains("checks") {
+                4
             } else {
                 continue;
             };
@@ -591,7 +592,7 @@ pub fn analysis_stats(conn: &Connection, filters: &AnalysisFilters) -> Result<Va
 
     let (mut vpip, mut pfr, mut three_bet, mut three_bet_opp) = (0f64, 0f64, 0f64, 0f64);
     let (mut saw_flop, mut wtsd, mut wsd) = (0f64, 0f64, 0f64);
-    let mut aggression = [0u32; 4];
+    let mut aggression = [0u32; 5];
     let mut cumulative = 0.0;
     let mut graph = Vec::with_capacity(total);
 
@@ -602,6 +603,7 @@ pub fn analysis_stats(conn: &Connection, filters: &AnalysisFilters) -> Result<Va
         graph.push(json!({ "date": hand.date.format("%Y-%m-%d %H:%M:%S").to_string(), "profit": hand.profit, "cumulativeProfit": cumulative }));
 
         let (mut is_vpip, mut is_pfr, mut is_3bet, mut has_3bet_opp) = (false, false, false, false);
+        let mut folded_preflop = false;
         if !hand.preflop.is_empty() {
             // A 3-bet is a raise made facing exactly one earlier raise.
             let mut raises_before = 0;
@@ -610,6 +612,7 @@ pub fn analysis_stats(conn: &Connection, filters: &AnalysisFilters) -> Result<Va
                     continue;
                 }
                 if eq_ic(&act.player, hero) {
+                    folded_preflop |= act.kind == ActionKind::Fold;
                     if matches!(act.kind, ActionKind::Call | ActionKind::Raise | ActionKind::Bet) {
                         is_vpip = true;
                     }
@@ -631,7 +634,8 @@ pub fn analysis_stats(conn: &Connection, filters: &AnalysisFilters) -> Result<Va
         three_bet += f64::from(is_3bet);
         three_bet_opp += f64::from(has_3bet_opp);
 
-        if !hand.flop.is_empty() {
+        // A flop was dealt, but the hero only saw it when he did not fold before.
+        if !hand.flop.is_empty() && !folded_preflop {
             saw_flop += 1.0;
             if hand.went_to_showdown {
                 wtsd += 1.0;
@@ -762,15 +766,6 @@ pub fn range_breakdown(conn: &Connection, filters: &AnalysisFilters) -> Result<V
     Ok(Value::Object(ranges.into_iter().collect()))
 }
 
-/// Placeholder range kept for the API (it never depended on the data).
-pub fn analyze_range(position: Option<&str>, action: Option<&str>, stack: i64) -> Value {
-    json!({
-        "position": position.unwrap_or("BTN"), "action": action.unwrap_or("Open"), "stack": stack,
-        "range": "22+, A2s+, K5s+, Q8s+, J8s+, T8s+, 98s, A7o+, KTo+, QTo+, JTo",
-        "vpip": 24.5, "pfr": 18.2,
-    })
-}
-
 // ---------------------------------------------------------------------------------------------
 // Replayer
 // ---------------------------------------------------------------------------------------------
@@ -800,6 +795,8 @@ fn action_value(street: &str, kind: &str) -> Value {
 /// Adds the actions of one street; returns the pot afterwards.
 fn parse_action_text(text: &str, street: &str, initial_pot: f64, replay: &mut Replay) -> f64 {
     let mut pot = initial_pot;
+    // What each player already put in during this street: a raise "to" X only adds the difference.
+    let mut invested: HashMap<String, f64> = HashMap::new();
     for line in text.split('\n').filter(|l| !l.is_empty()) {
         let line = strip_timestamp(line);
         let (player, content) = match line.find(':') {
@@ -815,7 +812,10 @@ fn parse_action_text(text: &str, street: &str, initial_pot: f64, replay: &mut Re
 
         let number = |pattern: &regex::Regex| pattern.captures(&content).and_then(|c| c.get(1)).and_then(|m| m.as_str().parse::<f64>().ok());
         let first_number = regex!(r"(\d+\.?\d*)");
+        // "raises 30 to 60" and "Raises to 60": the amount is the one after "to", else the first one.
+        let raise_to = || number(regex!(r"to\s+(\d+\.?\d*)")).or_else(|| number(first_number)).unwrap_or(0.0);
         let (mut kind, mut amount) = ("Unknown", 0.0);
+        let mut is_raise = false;
 
         if content.contains("posts sb") || content.contains("posts small blind") {
             (kind, amount) = ("PostSB", number(first_number).unwrap_or(0.0));
@@ -828,19 +828,26 @@ fn parse_action_text(text: &str, street: &str, initial_pot: f64, replay: &mut Re
         } else if content.contains("call") || content.contains("paye") || content.contains("suit") {
             (kind, amount) = ("Call", number(first_number).unwrap_or(0.0));
         } else if content.contains("raise") || content.contains("relance") || content.contains("mise") {
-            // Only the "to <amount>" form is read; a bare amount leaves 0, as before.
-            (kind, amount) = ("Raise", number(regex!(r"to\s+(\d+\.?\d*)|(\d+\.?\d*)")).unwrap_or(0.0));
+            (kind, amount) = ("Raise", raise_to());
+            is_raise = true;
         } else if content.contains("bet") {
             (kind, amount) = ("Bet", number(first_number).unwrap_or(0.0));
         }
         if content.contains("all-in") || content.contains("all in") || content.contains("tapis") {
-            (kind, amount) = ("AllIn", number(first_number).unwrap_or(0.0));
+            (kind, amount) = ("AllIn", if is_raise { raise_to() } else { number(first_number).unwrap_or(0.0) });
         }
         if kind == "Unknown" {
             continue;
         }
 
-        let added = if matches!(kind, "Call" | "Bet" | "Raise" | "AllIn") { amount } else { 0.0 };
+        let put_in = invested.entry(player.to_lowercase()).or_insert(0.0);
+        let added = match kind {
+            "PostSB" | "PostBB" | "Call" | "Bet" => amount,
+            "Raise" | "AllIn" if is_raise => (amount - *put_in).max(0.0),
+            "AllIn" => amount,
+            _ => 0.0,
+        };
+        *put_in += added;
         pot += added;
         let mut action = action_value(street, kind);
         action["playerName"] = json!(player);
@@ -881,7 +888,10 @@ pub fn hand_replay(conn: &Connection, hand_id: &str, hero_name: Option<&str>) ->
     replay.push(deal);
 
     let mut pot = 0.0;
-    for p in &replay_players {
+    // The blinds are read from the action text when it holds them (their real amounts); the
+    // position-based guess only serves hands whose text has no posts.
+    let posts_in_text = text("preflop_action").to_lowercase().contains("posts");
+    for p in replay_players.iter().filter(|_| !posts_in_text) {
         let position = p["position"].as_str().unwrap_or("");
         let (kind, amount) = if position.contains("SB") {
             ("PostSB", sb)
@@ -991,6 +1001,13 @@ mod tests {
     }
 
     #[test]
+    fn aggression_counts_checks_among_the_actions() {
+        let mut counts = [0u32; 5];
+        count_aggression("Hero: Checks\nHero: Bets 40\nVillain: Folds", "Hero", &mut counts);
+        assert_eq!(counts, [1, 0, 0, 0, 1]);
+    }
+
+    #[test]
     fn action_sequences_match_in_order() {
         let h = hand("SB: Posts SB 10\nBB: Posts BB 20\nHero: Raises to 50\nSB: Calls 40\nBB: Folds", "Hero:BTN|SB:SB|BB:BB");
         assert!(matches_action_sequence(&h, &["BTN:raise".into(), "SB:call".into()]));
@@ -1029,6 +1046,16 @@ mod tests {
         assert_eq!(determine_action_type(&h, None, Some("rfi"), "Hero"), "Raise4BB");
         assert_eq!(determine_action_type(&h, None, None, "Hero"), "Raise");
         assert_eq!(determine_action_type(&h, Some("flop"), None, "Hero"), "None");
+    }
+
+    #[test]
+    fn a_raise_to_only_adds_what_the_player_had_not_put_in() {
+        let mut replay = Replay { actions: Vec::new() };
+        let text = "Bob posts small blind 10\nAnn posts big blind 20\nBob raises 40 to 60\nAnn calls 40";
+        let pot = parse_action_text(text, "Preflop", 0.0, &mut replay);
+        assert_eq!(pot, 120.0);
+        assert_eq!(replay.actions[2]["amount"], 60.0, "the raise keeps its to-amount");
+        assert_eq!(replay.actions[2]["potAfter"], 80.0);
     }
 
     #[test]

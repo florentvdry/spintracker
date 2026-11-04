@@ -375,7 +375,6 @@ fn replayer_and_placeholder_range_match_the_former_backend() {
     let replay = analysis::hand_replay(&conn, "01KE0SWZ3MWW23307PVSF796TN", Some("jmenfouu")).unwrap().unwrap();
     assert_same("replayer.json", replay);
     assert!(analysis::hand_replay(&conn, "missing", None).unwrap().is_none());
-    assert_same("analyze_range.json", analysis::analyze_range(Some("SB"), None, 20));
 }
 
 #[test]

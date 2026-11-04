@@ -6,7 +6,7 @@ use rusqlite::{Connection, ToSql};
 use serde::Serialize;
 
 use super::hands_query::{hero_join, hero_resolution_sql, HandsQuery};
-use super::stats::TournamentFigures;
+use super::stats::{Room, TournamentFigures};
 use crate::Result;
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -71,8 +71,8 @@ pub fn get_tournaments(conn: &Connection, q: &HandsQuery) -> Result<TournamentsR
 
     let sql = format!(
         "SELECT h.game_id, h.room, MIN(h.date_time) as start_time, h.buy_in, h.prize_pool, COUNT(*) as hand_count,
-                SUM(ph.net_profit) as chip_profit, AVG(ph.ev_chips) as avg_cev, MAX(h.player_count) as max_players,
-                MAX(h.multiplier) as multiplier, MAX(h.position) as position, MAX(COALESCE(h.rake_per_player, 0)) as rake_per_player
+                SUM(ph.net_profit) as chip_profit, AVG(ph.ev_chips) as avg_cev, MIN(h.player_count) as lowest_players,
+                MAX(h.multiplier) as multiplier, MAX(h.position) as position
          FROM hands h
          {}
          WHERE {}
@@ -91,12 +91,12 @@ pub fn get_tournaments(conn: &Connection, q: &HandsQuery) -> Result<TournamentsR
             let multiplier = r.get::<_, Option<i32>>(9)?.unwrap_or(0);
             let position = r.get::<_, Option<i32>>(10)?.unwrap_or(0);
             let net_profit = TournamentFigures {
+                room: Room::from_name(&r.get::<_, Option<String>>(1)?.unwrap_or_default()),
                 buy_in,
                 prize_pool,
-                rake_per_player: r.get::<_, Option<f64>>(11)?.unwrap_or(0.0),
                 multiplier,
                 position,
-                max_player_count: r.get::<_, Option<i32>>(8)?.unwrap_or(3),
+                lowest_player_count: r.get::<_, Option<i32>>(8)?.unwrap_or(3),
                 chip_profit,
             }
             .euro_profit();

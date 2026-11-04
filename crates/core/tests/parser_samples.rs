@@ -213,7 +213,7 @@ fn winamax_hand_has_the_expected_fields() {
     assert_eq!(hand.game_id.as_deref(), Some("1096047576"));
     assert_eq!(hand.hand_id.as_deref(), Some("4707488493780074497-6-1776261096"));
     assert_eq!(hand.date_time.as_deref(), Some("2026-04-15 13:51:36"));
-    assert_eq!((hand.buy_in, hand.rake_per_player), (0.93, Some(0.07)));
+    assert_eq!((hand.buy_in, hand.rake_per_player), (1.0, Some(0.07)), "0.93 + 0.07 is stored as the entry cost");
     assert_eq!(hand.tournament_level, Some(2));
     assert_eq!(hand.blinds.as_deref(), Some("15/30"));
     assert_eq!(hand.button_seat, Some(3));

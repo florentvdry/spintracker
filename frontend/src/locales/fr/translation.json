@@ -441,8 +441,10 @@
       "linked": "Joueur lié à l'alias",
       "link_failed": "Échec de la liaison du joueur",
       "unlinked": "Joueur délié",
-      "unlink_failed": "Échec de la déliaison du joueur"
-    }
+      "unlink_failed": "Échec de la déliaison du joueur",
+      "syncing": "Synchronisation..."
+    },
+    "hero_label": "Héros : {{name}}"
   },
   "analysis": {
     "title": "Analyse",
@@ -649,7 +651,10 @@
     "percentage": "% Total",
     "won": "Gagnés",
     "lost": "Perdus",
-    "win_rate": "% Victoire"
+    "win_rate": "% Victoire",
+    "total_games": "Parties totales",
+    "global_win_rate": "Taux de victoire global",
+    "success_rate": "Taux de réussite"
   },
   "update": {
     "title": "Mise à jour disponible",

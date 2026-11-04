@@ -34,6 +34,11 @@ export interface AutoImportFolder {
   path: string
 }
 
+export interface BackfillProgress {
+  done: number
+  total: number
+}
+
 export interface HandsImported {
   imported: number
   files: number
@@ -144,9 +149,6 @@ export const ipcService = {
   getAnalysisHands: (request: Json = {}) => backend('POST', '/analysis/hands', request),
   getRangeBreakdown: (filters: Json = {}) => backend('POST', '/analysis/range-breakdown', filters),
   calculateEquity: (params: Json) => backend('POST', '/equity', params),
-  analyzeRange: ({ position, stack, action }: { position: string; stack: number; action: string }) =>
-    backend('POST', '/analyze/range', { position, stack, action }),
-  evaluateStat: (stat: Json) => backend('POST', '/stats/builder/evaluate', stat),
 
   // Databases
   getDatabases: () => backend('GET', '/api/databases'),
@@ -157,7 +159,6 @@ export const ipcService = {
   renameDatabase: (id: number | string, name: string) => backend('PUT', `/api/databases/${id}`, { name }),
 
   // Maintenance
-  resetDefaultStats: () => backend('POST', '/reset-default-stats', {}),
   deleteAllHands: () => command<ApiResult>('delete_all_hands'),
   importHandHistory: () => command<ApiResult>('import_hand_history'),
   getAutoImport: () => command<ApiResult>('auto_import_get'),
@@ -213,6 +214,8 @@ export const ipcService = {
 
   // Events
   onImportProgress: (callback: (progress: ImportProgress) => void) => subscribe('import-progress', callback),
+  /** The stored statistics are being recomputed (after an update changed their definition). */
+  onBackfillProgress: (callback: (progress: BackfillProgress) => void) => subscribe('backfill-progress', callback),
   onHandsImported: (callback: (payload: HandsImported) => void) => subscribe('hands-imported', callback),
   onAutoImportStatus: (callback: (status: AutoImportStatus) => void) => subscribe('auto-import-status', callback),
   onHudState: (callback: (state: Json) => void) => subscribe('hud-state', callback),

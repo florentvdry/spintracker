@@ -7,6 +7,7 @@ import { useBrushChart } from '@/hooks/useBrushChart'
 import { ipcService, type Json } from '@/services/ipcService'
 import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterStore'
 import PositionStat from './components/PositionStat'
+import { logError } from '@/utils/log'
 
 type LineKey = 'chipsWon' | 'netExpected' | 'wonWithShowdown' | 'wonWithoutShowdown'
 
@@ -98,7 +99,7 @@ export default function Charts() {
         setData(chart?.success && Array.isArray(chart.data) ? groupByDate(chart.data) : [])
         setStats(dashboard?.success && dashboard.data ? dashboard.data : null)
       } catch (error) {
-        console.error('Failed to load chart data:', error)
+        logError('Failed to load chart data:', error)
         if (!cancelled) setData([])
       } finally {
         if (!cancelled) setIsLoading(false)

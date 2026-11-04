@@ -22,6 +22,12 @@ pub struct ReplayerState {
     counter: AtomicU32,
 }
 
+/// Commands that change or export the user's data answer the main window only: the HUD and
+/// replayer windows show hand data and have no reason to call them.
+fn main_window_only(window: &WebviewWindow) -> Option<Value> {
+    (window.label() != "main").then(|| json!({ "success": false, "message": "Only the main window can do this." }))
+}
+
 #[tauri::command]
 pub async fn backend_request(app: AppHandle, method: String, endpoint: String, body: Option<Value>) -> Value {
     api::call(&app, &method, &endpoint, body).await
@@ -40,23 +46,35 @@ pub fn check_server_status(app: AppHandle) -> Value {
 }
 
 #[tauri::command]
-pub async fn import_hand_history(app: AppHandle) -> Value {
+pub async fn import_hand_history(app: AppHandle, window: WebviewWindow) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
     import::run(app).await
 }
 
 #[tauri::command]
-pub async fn export_data(app: AppHandle, dialog_title: String) -> Value {
+pub async fn export_data(app: AppHandle, window: WebviewWindow, dialog_title: String) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
     export::run(app, dialog_title).await
 }
 
 /// The caller is responsible for asking the user to confirm first.
 #[tauri::command]
-pub async fn delete_all_hands(app: AppHandle) -> Value {
+pub async fn delete_all_hands(app: AppHandle, window: WebviewWindow) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
     api::call(&app, "POST", "/db/delete-all", Some(json!({}))).await
 }
 
 #[tauri::command]
-pub async fn set_active_database(app: AppHandle, id: Value) -> Value {
+pub async fn set_active_database(app: AppHandle, window: WebviewWindow, id: Value) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
     let id = match &id {
         Value::String(s) => s.clone(),
         other => other.to_string(),
@@ -83,7 +101,10 @@ pub fn auto_import_get(app: AppHandle) -> Value {
 }
 
 #[tauri::command]
-pub fn auto_import_set(app: AppHandle, enabled: bool, folders: Vec<WatchedFolder>) -> Value {
+pub fn auto_import_set(app: AppHandle, window: WebviewWindow, enabled: bool, folders: Vec<WatchedFolder>) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
     autoimport::set(&app, enabled, folders)
 }
 
@@ -200,20 +221,34 @@ pub fn app_ready(app: AppHandle) -> Value {
 #[tauri::command]
 pub fn open_replayer(app: AppHandle, state: tauri::State<ReplayerState>, data: Value) -> Result<(), String> {
     let label = format!("replayer-{}", state.counter.fetch_add(1, Ordering::Relaxed));
-    state.data.lock().unwrap().insert(label.clone(), data);
+    state.data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).insert(label.clone(), data);
 
-    WebviewWindowBuilder::new(&app, &label, WebviewUrl::App("replayer.html".into()))
+    let built = WebviewWindowBuilder::new(&app, &label, WebviewUrl::App("replayer.html".into()))
         .title("SpinTracker Replayer")
         .inner_size(1000.0, 700.0)
         .background_color(REPLAYER_BACKGROUND)
-        .build()
-        .map_err(|e| e.to_string())?;
-    Ok(())
+        .build();
+    match built {
+        Ok(window) => {
+            // The hand is only needed while its window lives.
+            let handle = app.clone();
+            window.on_window_event(move |event| {
+                if matches!(event, tauri::WindowEvent::Destroyed) {
+                    handle.state::<ReplayerState>().data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).remove(&label);
+                }
+            });
+            Ok(())
+        }
+        Err(err) => {
+            state.data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).remove(&label);
+            Err(err.to_string())
+        }
+    }
 }
 
 #[tauri::command]
 pub fn replayer_get_data(window: WebviewWindow, state: tauri::State<ReplayerState>) -> Option<Value> {
-    state.data.lock().unwrap().get(window.label()).cloned()
+    state.data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).get(window.label()).cloned()
 }
 
 #[tauri::command]

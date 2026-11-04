@@ -191,7 +191,8 @@ fn tick(app: &AppHandle) {
 
     for room in &config.rooms {
         let windows = table_windows(room);
-        let active = active_tables(app, room.defaults.room, room.active_minutes);
+        // Without a table window there is nothing to pair: the database is not asked.
+        let active = if windows.is_empty() { Vec::new() } else { active_tables(app, room.defaults.room, room.active_minutes) };
         candidates.extend(active.iter().cloned());
         open_tables.extend(windows.iter().map(|w| w.handle));
 

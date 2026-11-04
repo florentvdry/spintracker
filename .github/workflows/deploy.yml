@@ -1,15 +1,15 @@
 name: Release
 
-# Un commit sur main dont le message commence par "V<major>.<minor>.<patch>"
-# (ex: "V1.2.0", "V1.2.0 - nouvelle analyse de range") construit l'installeur
-# Windows, cree le tag v<version> et publie la release avec ses notes.
+# A commit on main whose message starts with "V<major>.<minor>.<patch>"
+# (e.g. "V1.2.0", "V1.2.0 - new range analysis") builds the Windows installer,
+# creates the tag v<version> and publishes the release with its notes.
 on:
   push:
     branches: [main]
   workflow_dispatch:
     inputs:
       version:
-        description: "Version a publier (ex: 1.2.0) depuis le dernier commit de main"
+        description: "Version to publish (e.g. 1.2.0) from the last commit of main"
         required: true
 
 permissions:
@@ -37,7 +37,7 @@ jobs:
             version="$(printf '%s' "$first" | sed -nE 's/^[Vv]([0-9]+\.[0-9]+\.[0-9]+)([^0-9.].*)?$/\1/p')"
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          [ -n "$version" ] && echo "Release v$version" || echo "Pas de commit de version, rien a publier."
+          [ -n "$version" ] && echo "Release v$version" || echo "No version commit, nothing to publish."
 
   release:
     needs: detect
@@ -54,10 +54,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Verifier que le tag n'existe pas
+      - name: Check that the tag does not exist yet
         run: |
           if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
-            echo "::error::Le tag v$VERSION existe deja"
+            echo "::error::The tag v$VERSION already exists"
             exit 1
           fi
 
@@ -75,24 +75,29 @@ jobs:
         with:
           workspaces: .
 
-      - name: Version de l'application
+      - name: Application version
         run: |
           npm version "$VERSION" --no-git-tag-version --allow-same-version
           # tauri.conf.json reads the version from package.json; keep Cargo.toml in sync.
           sed -i -E "0,/^version = \".*\"/s//version = \"$VERSION\"/" src-tauri/Cargo.toml
 
-      - name: Dependances
+      - name: Dependencies
         run: |
           npm ci --ignore-scripts
           npm --prefix frontend ci
 
-      - name: Installeur Tauri (frontend + app, signe pour l'updater)
+      - name: Tests (nothing is published when they fail)
+        run: |
+          cargo test -p spintracker-core
+          npm --prefix frontend run test
+
+      - name: Tauri installer (frontend + app, signed for the updater)
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: npx tauri build
 
-      - name: Manifestes d'update (Tauri latest.json + passerelle electron-updater latest.yml)
+      - name: Update manifests (Tauri latest.json + electron-updater bridge latest.yml)
         run: |
           bundle="target/release/bundle/nsis"
           installer="$(ls "$bundle"/*-setup.exe | head -n1)"
@@ -127,7 +132,7 @@ jobs:
           YML
           cat latest.json latest.yml
 
-      - name: Notes de release
+      - name: Release notes
         run: |
           prev="$(git describe --tags --abbrev=0 --match 'v*' HEAD 2>/dev/null || true)"
           {
@@ -135,16 +140,16 @@ jobs:
             echo
             if [ -n "$prev" ]; then
               range="$prev..HEAD"
-              echo "### Changements depuis $prev"
+              echo "### Changes since $prev"
             else
               range="HEAD"
-              echo "### Changements"
+              echo "### Changes"
             fi
             echo
             git log "$range" --no-merges --pretty='- %s (%h)' \
               --invert-grep --grep='^[Vv][0-9]' --grep='\[skip ci\]' -n 100
             echo
-            echo "### Fichiers modifies"
+            echo "### Modified files"
             echo
             echo '```'
             if [ -n "$prev" ]; then
@@ -155,12 +160,12 @@ jobs:
             echo '```'
             if [ -n "$prev" ]; then
               echo
-              echo "**Comparaison complete** : https://github.com/${GITHUB_REPOSITORY}/compare/$prev...v$VERSION"
+              echo "**Full comparison** : https://github.com/${GITHUB_REPOSITORY}/compare/$prev...v$VERSION"
             fi
           } > release-notes.md
           cat release-notes.md
 
-      - name: Creer la release
+      - name: Create the release
         run: |
           gh release create "v$VERSION" \
             --target "$GITHUB_SHA" \

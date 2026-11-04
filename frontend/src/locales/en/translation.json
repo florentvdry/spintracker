@@ -370,7 +370,10 @@
     "table": {
       "ev_chips": "EV Chips",
       "pot": "Pot"
-    }
+    },
+    "by_tournaments": "By tournaments",
+    "by_hands": "By hands",
+    "total_hands": "{{total}} hands found"
   },
   "players": {
     "title": "Players",
@@ -436,8 +439,12 @@
       "linked": "Player linked to alias",
       "link_failed": "Failed to link player",
       "unlinked": "Player unlinked",
-      "unlink_failed": "Failed to unlink player"
-    }
+      "unlink_failed": "Failed to unlink player",
+      "sync": "Sync players",
+      "sync_hint": "Rebuild the player list from the hand history",
+      "syncing": "Syncing..."
+    },
+    "hero_label": "Hero: {{name}}"
   },
   "analysis": {
     "title": "Analysis",
@@ -644,7 +651,10 @@
     "percentage": "% Total",
     "won": "Won",
     "lost": "Lost",
-    "win_rate": "Win Rate"
+    "win_rate": "Win Rate",
+    "total_games": "Total games",
+    "global_win_rate": "Global win rate",
+    "success_rate": "Success rate"
   },
   "update": {
     "title": "Update available",
