@@ -543,7 +543,6 @@ impl Accumulator {
             "huBb": fixed_segment(Section::HuBb),
             "threeWayPreflop": fixed_segment(Section::ThreeWayPreflop),
             "pushFold": push_fold,
-            "performance": { "showdown_chips": 0, "non_showdown_chips": 0 },
             "steal": steal,
             "vsSteal": vs_steal,
         });
