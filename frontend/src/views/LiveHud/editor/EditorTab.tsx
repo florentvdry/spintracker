@@ -16,8 +16,8 @@ import {
   type EditorDoc,
   type EditorHistory,
 } from '../hudEditor'
-import { newGrid, validateLayout, type CellContent, type GridPosition, type HudGrid, type HudIssue } from '../hudGrid'
-import { GRID_STEP, HUD_FORMATS, SEATS_BY_FORMAT, seatPositions, type HudFormat } from '../hudProfile'
+import { newGrid, validateLayout, type CellContent, type HudGrid, type HudIssue } from '../hudGrid'
+import { HUD_FORMATS, SEATS_BY_FORMAT, seatPositions, type HudFormat } from '../hudProfile'
 import { TEMPLATE_IDS, TEMPLATES, type TemplateId } from '../hudTemplates'
 import { previewFigures } from '../previewData'
 import Canvas from './Canvas'
@@ -29,10 +29,6 @@ import { useDrag, type DragPayload, type DropTarget } from './useDrag'
 const MIN_ZOOM = 0.6
 const MAX_ZOOM = 1.6
 const DEFAULT_ZOOM = 1
-const NUDGE_FAST = 5
-/** Where the next new grid goes, so that it does not cover the previous one. */
-const NEW_GRID_OFFSET = { x: 0.03, y: 0.04 }
-const NEW_GRID_ORIGIN = { x: 0.05, y: 0.08 }
 const NEW_GRID_ROWS = 3
 const NEW_GRID_COLS = 3
 
@@ -60,19 +56,16 @@ function cleanSelection(selection: Selection, doc: EditorDoc): Selection {
 
 export default function EditorTab() {
   const { t } = useTranslation()
-  const { settings, setActiveProfile, setSnapToGrid } = useLiveHudStore()
+  const { settings, setActiveProfile } = useLiveHudStore()
   const profile = settings.profiles.find((p) => p.id === settings.activeProfileId) ?? settings.profiles[0]
   const [format, setFormat] = useState<HudFormat>('threeMax')
-  const [seatChoice, setSeatChoice] = useState('+1')
   const seats = SEATS_BY_FORMAT[format]
-  const seat = seats.includes(seatChoice) ? seatChoice : seats[0]
 
   const [catalog, setCatalog] = useState<CatalogStat[]>([])
   const [catalogLoading, setCatalogLoading] = useState(true)
   const [selectionRaw, setSelection] = useState<Selection>(NO_SELECTION)
   const [editing, setEditing] = useState<EditingCell | null>(null)
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
-  const [sizes, setSizes] = useState<Record<string, { w: number; h: number }>>({})
   const [activePopupId, setActivePopupId] = useState<string | null>(null)
   const [history, setHistory] = useState<EditorHistory>(emptyHistory)
 
@@ -202,8 +195,7 @@ export default function EditorTab() {
   const addGrid = (popup: boolean) => {
     const n = (popup ? popups.length : doc.layout.grids.length) + 1
     const grid = newGrid(t(popup ? 'liveHud.editor.popup_n' : 'liveHud.editor.grid_n', { n }), NEW_GRID_ROWS, NEW_GRID_COLS)
-    const spot: GridPosition = { x: NEW_GRID_ORIGIN.x + NEW_GRID_OFFSET.x * (n % 8), y: NEW_GRID_ORIGIN.y + NEW_GRID_OFFSET.y * (n % 8) }
-    dispatch({ type: 'addGrid', grid, popup, positions: popup ? undefined : Object.fromEntries(seats.map((s) => [s, spot])) })
+    dispatch({ type: 'addGrid', grid, popup })
     setSelection({ gridIds: [grid.id], cellIds: [], track: null })
     if (popup) setActivePopupId(grid.id)
   }
@@ -301,34 +293,17 @@ export default function EditorTab() {
         event.preventDefault()
         return dispatch({ type: 'duplicateGrid', gridId })
       }
-      const arrows: Record<string, [number, number]> = { arrowleft: [-1, 0], arrowright: [1, 0], arrowup: [0, -1], arrowdown: [0, 1] }
-      const move = arrows[key]
-      if (move && sel.cellIds.length === 0 && !sel.track) {
-        event.preventDefault()
-        const step = GRID_STEP * (event.shiftKey ? NUDGE_FAST : 1)
-        for (const id of sel.gridIds) {
-          const at = current.seats[seat]?.[id]
-          if (at) dispatch({ type: 'placeGrid', seat, gridId: id, position: { x: at.x + move[0] * step, y: at.y + move[1] * step } })
-        }
-      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [selectionRaw, seat, dispatch, doUndo, doRedo])
+  }, [selectionRaw, dispatch, doUndo, doRedo])
 
   // --- Live validation
 
   const catalogIds = useMemo(() => (catalog.length > 0 ? new Set(catalog.map((c) => c.id)) : null), [catalog])
   const issues = useMemo<HudIssue[]>(() => {
-    const found = validateLayout(doc.layout, catalogIds)
-    // A grid reaching past the table's edge is cut off in the HUD window.
-    for (const grid of doc.layout.grids) {
-      const at = doc.seats[seat]?.[grid.id]
-      const size = sizes[grid.id]
-      if (at && size && (at.x + size.w > 1.001 || at.y + size.h > 1.001)) found.push({ code: 'outOfTable', gridId: grid.id })
-    }
-    return found
-  }, [doc, catalogIds, seat, sizes])
+    return validateLayout(doc.layout, catalogIds)
+  }, [doc.layout, catalogIds])
   const badCells = useMemo(() => {
     const out: Record<string, Set<string>> = {}
     for (const issue of issues) if (issue.gridId && issue.cellId) (out[issue.gridId] ??= new Set()).add(issue.cellId)
@@ -336,8 +311,6 @@ export default function EditorTab() {
   }, [issues])
 
   const figures = useMemo(() => previewFigures(doc.layout), [doc.layout])
-  const position = useCallback((id: string): GridPosition => doc.seats[seat]?.[id] ?? { x: 0.02, y: 0.02 }, [doc, seat])
-
   const chip = (active: boolean) => clsx('rounded-md border px-2.5 py-1 text-xs', active ? 'border-primary-500 bg-primary-500 text-white' : 'border-dark-100 text-gray-300 hover:border-gray-500')
 
   return (
@@ -363,14 +336,6 @@ export default function EditorTab() {
             ))}
           </div>
           <div className="flex items-center gap-1">
-            <span className="mr-1 text-xs text-gray-500">{t('liveHud.editor.seat')}</span>
-            {seats.map((s) => (
-              <button key={s} className={chip(s === seat)} onClick={() => setSeatChoice(s)}>
-                {t('liveHud.placement.seat', { seat: s })}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-1">
             <button className="btn-icon" title={`${t('liveHud.editor.undo')} (Ctrl+Z)`} disabled={history.past.length === 0} onClick={doUndo}>
               <Undo2 className="h-4 w-4" />
             </button>
@@ -378,10 +343,6 @@ export default function EditorTab() {
               <Redo2 className="h-4 w-4" />
             </button>
           </div>
-          <label className="flex items-center gap-2 text-xs text-gray-300">
-            <input type="checkbox" checked={settings.snapToGrid} onChange={(e) => setSnapToGrid(e.target.checked)} />
-            {t('liveHud.placement.snap')}
-          </label>
           <label className="flex items-center gap-2 text-xs text-gray-400">
             {t('liveHud.editor.zoom')}
             <input type="range" min={MIN_ZOOM} max={MAX_ZOOM} step={0.05} value={zoom} onChange={(e) => setZoom(Number(e.target.value))} />
@@ -437,26 +398,20 @@ export default function EditorTab() {
         <div className="min-w-0">
           <Canvas
             doc={doc}
-            seat={seat}
             figures={figures}
             opacity={profile.opacity}
-            size={profile.size}
             zoom={zoom}
-            snapToGrid={settings.snapToGrid}
-            playerName={t('liveHud.preview.player', { n: seat === '+1' ? 1 : 2 })}
+            playerName={t('liveHud.preview.player', { n: 1 })}
             selection={selection}
             hover={hover}
             editing={editing}
             editorNode={editorNode}
             badCells={badCells}
             popup={activePopup}
-            sizes={sizes}
-            onSizes={setSizes}
             dispatch={dispatch}
             onSelect={setSelection}
             onStartDrag={startDrag}
             onEdit={startEditing}
-            position={position}
           />
           <p className="mt-2 text-xs text-gray-500">{t('liveHud.editor.help')}</p>
         </div>
@@ -465,11 +420,8 @@ export default function EditorTab() {
           <Inspector
             doc={doc}
             selection={selection}
-            seat={seat}
-            seats={seats}
             catalog={catalog}
             issues={issues}
-            sizes={sizes}
             dispatch={dispatch}
             onSelect={setSelection}
             onNewPopup={newPopupFor}

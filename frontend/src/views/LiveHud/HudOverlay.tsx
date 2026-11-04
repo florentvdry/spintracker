@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import HudGridView from '@/components/livehud/HudGridView'
 import { ipcService, type Json } from '@/services/ipcService'
 import { useLiveHudStore } from '@/stores/liveHudStore'
-import { figureKey, requestsOf, type CellView, type HudFigure, type HudFigures } from './hudGrid'
-import { seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom } from './hudProfile'
+import { figureKey, requestsOf, type CellView, type GridPosition, type HudFigure, type HudFigures, type HudGrid } from './hudGrid'
+import { dragTo, type Rect } from './hudEditor'
+import { GRID_STEP, seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom, type SeatPlacements } from './hudProfile'
 import { placePopup } from './hudPopup'
 import { previewFigures } from './previewData'
 
@@ -85,6 +86,7 @@ export default function HudOverlay() {
   const loaded = useLiveHudStore((s) => s.loaded)
   const [payload, setPayload] = useState<HudPayload | null>(null)
   const [popup, setPopup] = useState<OpenPopup | null>(null)
+  const [moving, setMoving] = useState<{ key: string; position: GridPosition } | null>(null)
   const refs = useRef<Record<string, HTMLDivElement | null>>({})
 
   useEffect(() => {
@@ -134,20 +136,62 @@ export default function HudOverlay() {
     setPopup((current) => (current?.key === key ? null : { key, seat, popupId: cell.popupId as string, anchor: { left: rect.left, top: rect.top, width: rect.width, height: rect.height } }))
   }, [])
 
+  // Dragging a grid by its bar: it follows the pointer, and is saved where it is dropped.
+  const startMove = (seat: string, grid: HudGrid, event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0) return
+    event.preventDefault()
+    const key = `${seat}:${grid.id}`
+    const box = refs.current[key]?.getBoundingClientRect()
+    const start = positions[seat]?.[grid.id]
+    if (!box || !start) return
+    const screen = { width: window.innerWidth, height: window.innerHeight }
+    const size = { w: box.width / screen.width, h: box.height / screen.height }
+    const others: Rect[] = []
+    for (const other of layout.grids) {
+      const r = refs.current[`${seat}:${other.id}`]?.getBoundingClientRect()
+      const at = positions[seat]?.[other.id]
+      if (other.id !== grid.id && r && at) others.push({ ...at, w: r.width / screen.width, h: r.height / screen.height })
+    }
+    const origin = { x: event.clientX, y: event.clientY }
+    // Alt: free placement, no magnetism.
+    const compute = (e: PointerEvent) =>
+      dragTo(start, { x: e.clientX - origin.x, y: e.clientY - origin.y }, screen, size, others, settings.snapToGrid && !e.altKey ? GRID_STEP : null, !e.altKey)
+    setMoving({ key, position: start })
+    const move = (e: PointerEvent) => setMoving({ key, position: compute(e) })
+    const up = (e: PointerEvent) => {
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', up)
+      setMoving(null)
+      const end = compute(e)
+      if (end.x === start.x && end.y === start.y) return
+      const seats: Record<string, SeatPlacements> = {}
+      for (const s of SEATS_BY_FORMAT[format]) seats[s] = { ...positions[s] }
+      seats[seat][grid.id] = end
+      useLiveHudStore.getState().setEditorDoc(profile.id, format, layout, seats)
+    }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+    window.addEventListener('pointercancel', up)
+  }
+
   // The shell lets clicks through everywhere except on the grids, so it needs their rectangles.
   const popupGrid = popup ? layout.popups.find((p) => p.id === popup.popupId) : undefined
   useLayoutEffect(() => {
     const report = () => {
-      const rects = Object.values(refs.current)
-        .filter((el): el is HTMLDivElement => el !== null)
-        .map((el) => el.getBoundingClientRect())
-        .map((r) => ({ x: r.x, y: r.y, width: r.width, height: r.height }))
+      // While a grid is dragged the whole window takes the mouse, so that the pointer never slips off it.
+      const rects = moving
+        ? [{ x: 0, y: 0, width: window.innerWidth, height: window.innerHeight }]
+        : Object.values(refs.current)
+            .filter((el): el is HTMLDivElement => el !== null)
+            .map((el) => el.getBoundingClientRect())
+            .map((r) => ({ x: r.x, y: r.y, width: r.width, height: r.height }))
       void ipcService.setHudPanelRects(rects)
     }
     report()
     window.addEventListener('resize', report)
     return () => window.removeEventListener('resize', report)
-  }, [panels, positions, profile.size, loaded, popup, layout])
+  }, [panels, positions, profile.size, loaded, popup, layout, moving])
 
   // Escape and a click outside also close it, for the day the window can have the focus.
   useEffect(() => {
@@ -169,16 +213,17 @@ export default function HudOverlay() {
     <div className="relative h-screen w-screen overflow-hidden">
       {panels.flatMap((panel) =>
         layout.grids.map((grid) => {
-          const position = positions[panel.seat]?.[grid.id]
-          if (!position) return null
+          const saved = positions[panel.seat]?.[grid.id]
+          if (!saved) return null
           const key = `${panel.seat}:${grid.id}`
+          const position = moving?.key === key ? moving.position : saved
           return (
             <div
               key={key}
               ref={(el) => {
                 refs.current[key] = el
               }}
-              className="absolute origin-top-left"
+              className="group absolute origin-top-left"
               style={{ left: `${position.x * 100}%`, top: `${position.y * 100}%`, transform: `scale(${profile.size})` }}
             >
               <HudGridView
@@ -188,6 +233,12 @@ export default function HudOverlay() {
                 opacity={profile.opacity}
                 onPopup={(cell, event) => openPopup(panel.seat, grid.id, cell, event)}
               />
+              {!grid.locked && (
+                <div
+                  className="absolute inset-x-0 top-0 h-[7px] cursor-move touch-none rounded-t-[4px] bg-[#6c9fff]/70 opacity-0 transition-opacity group-hover:opacity-100"
+                  onPointerDown={(e) => startMove(panel.seat, grid, e)}
+                />
+              )}
             </div>
           )
         }),

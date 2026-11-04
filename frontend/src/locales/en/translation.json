@@ -141,7 +141,8 @@
       "rooms_all": "Runs on every supported room.",
       "tables_shown": "{{count}} table(s) with the HUD",
       "show_tables": "Tables",
-      "hide_tables": "Hide tables"
+      "hide_tables": "Hide tables",
+      "move_hint": "Place the grids on the table itself: hover a grid and drag the bar at its top edge. Hold Alt to move freely."
     },
     "profiles": {
       "mine": "My profiles",
@@ -165,13 +166,10 @@
     },
     "placement": {
       "format": "Table size",
-      "snap": "Snap to grid",
-      "hero": "Hero",
-      "seat": "Seat {{seat}}"
+      "snap": "Snap to grid"
     },
     "editor": {
       "profile": "Profile",
-      "seat": "Seat",
       "undo": "Undo",
       "redo": "Redo",
       "zoom": "Zoom",
@@ -207,7 +205,7 @@
         "shove": "Shoves",
         "meta": "Counts"
       },
-      "help": "Drag a stat onto a cell, or onto a column number to fill the whole column. Alt + drag copies a cell. Double-click edits text. Shift or Ctrl + click selects several cells. Arrows move the grid, Delete clears, Ctrl+Z / Ctrl+Y undo and redo. The figures are made up.",
+      "help": "Drag a stat onto a cell, or onto a column number to fill the whole column. Alt + drag copies a cell. Double-click edits text. Shift or Ctrl + click selects several cells. Delete clears, Ctrl+Z / Ctrl+Y undo and redo. The figures are made up. To place the grids, drag them by the bar at their top edge directly on the poker table.",
       "nothing_selected": "Select a grid, a row, a column or a cell.",
       "issues": "Checks",
       "no_issue": "Nothing to report.",
@@ -217,8 +215,7 @@
         "unknownBucket": "Unknown stack depth: {{detail}}",
         "emptyGrid": "This grid is empty.",
         "tooManyStats": "Too many figures ({{detail}}): the HUD may be slow.",
-        "missingPopup": "This cell opens a popup that no longer exists.",
-        "outOfTable": "This grid goes beyond the table."
+        "missingPopup": "This cell opens a popup that no longer exists."
       },
       "grid": "Grid",
       "name": "Name",
@@ -233,17 +230,6 @@
       "add_row": "Add a row",
       "add_col": "Add a column",
       "structure_note": "{{rows}} rows × {{cols}} columns. Select a row or column number to change it; drag its edge to resize, double-click the edge for automatic size.",
-      "placement": "Placement",
-      "place_every_seat": "Place at every seat",
-      "mirror": "Mirror to the other seat",
-      "align": {
-        "left": "Left",
-        "centerX": "Center",
-        "right": "Right",
-        "top": "Top",
-        "centerY": "Middle",
-        "bottom": "Bottom"
-      },
       "row_n": "Row {{n}}",
       "col_n": "Column {{n}}",
       "size": "Size (px)",

@@ -141,7 +141,8 @@
       "rooms_all": "Actif sur toutes les rooms prises en charge.",
       "tables_shown": "{{count}} table(s) avec le HUD",
       "show_tables": "Tables",
-      "hide_tables": "Masquer les tables"
+      "hide_tables": "Masquer les tables",
+      "move_hint": "Placez les grilles sur la table elle-même : survolez une grille et glissez la barre de son bord supérieur. Alt pour déplacer librement."
     },
     "profiles": {
       "mine": "Mes profils",
@@ -165,13 +166,10 @@
     },
     "placement": {
       "format": "Taille de table",
-      "snap": "Aligner sur la grille",
-      "hero": "Hero",
-      "seat": "Siège {{seat}}"
+      "snap": "Aligner sur la grille"
     },
     "editor": {
       "profile": "Profil",
-      "seat": "Siège",
       "undo": "Annuler",
       "redo": "Rétablir",
       "zoom": "Zoom",
@@ -207,7 +205,7 @@
         "shove": "Tapis",
         "meta": "Compteurs"
       },
-      "help": "Glissez une stat sur une cellule, ou sur un numéro de colonne pour remplir toute la colonne. Alt + glisser copie une cellule. Double-clic pour éditer un texte. Maj ou Ctrl + clic sélectionne plusieurs cellules. Les flèches déplacent la grille, Suppr efface, Ctrl+Z / Ctrl+Y annulent et rétablissent. Les chiffres sont inventés.",
+      "help": "Glissez une stat sur une cellule, ou sur un numéro de colonne pour remplir toute la colonne. Alt + glisser copie une cellule. Double-clic pour éditer un texte. Maj ou Ctrl + clic sélectionne plusieurs cellules. Suppr efface, Ctrl+Z / Ctrl+Y annulent et rétablissent. Les chiffres sont inventés. Pour placer les grilles, déplacez-les par la barre de leur bord supérieur directement sur la table de poker.",
       "nothing_selected": "Sélectionnez une grille, une ligne, une colonne ou une cellule.",
       "issues": "Vérifications",
       "no_issue": "Rien à signaler.",
@@ -217,8 +215,7 @@
         "unknownBucket": "Profondeur de stack inconnue : {{detail}}",
         "emptyGrid": "Cette grille est vide.",
         "tooManyStats": "Trop de chiffres ({{detail}}) : le HUD risque d'être lent.",
-        "missingPopup": "Cette cellule ouvre un popup qui n'existe plus.",
-        "outOfTable": "Cette grille dépasse de la table."
+        "missingPopup": "Cette cellule ouvre un popup qui n'existe plus."
       },
       "grid": "Grille",
       "name": "Nom",
@@ -233,17 +230,6 @@
       "add_row": "Ajouter une ligne",
       "add_col": "Ajouter une colonne",
       "structure_note": "{{rows}} lignes × {{cols}} colonnes. Sélectionnez un numéro de ligne ou de colonne pour la modifier ; tirez son bord pour la redimensionner, double-cliquez sur le bord pour la taille automatique.",
-      "placement": "Placement",
-      "place_every_seat": "Placer à tous les sièges",
-      "mirror": "Copier en miroir vers l'autre siège",
-      "align": {
-        "left": "Gauche",
-        "centerX": "Centre",
-        "right": "Droite",
-        "top": "Haut",
-        "centerY": "Milieu",
-        "bottom": "Bas"
-      },
       "row_n": "Ligne {{n}}",
       "col_n": "Colonne {{n}}",
       "size": "Taille (px)",

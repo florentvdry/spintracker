@@ -115,7 +115,7 @@ function TablesCard() {
 /** The HUD switch and, on demand, the tables it found: one line above the editor. */
 export default function LiveStatus() {
   const { t } = useTranslation()
-  const { settings, setEnabled } = useLiveHudStore()
+  const { settings, setEnabled, setSnapToGrid } = useLiveHudStore()
   const { view } = useTables()
   const [open, setOpen] = useState(false)
   const count = (view.tables ?? []).filter((table: Json) => table.state === 'shown').length
@@ -129,10 +129,15 @@ export default function LiveStatus() {
             <span className="font-medium text-white">{settings.enabled ? t('liveHud.live.on') : t('liveHud.live.off')}</span>
             <span className="text-gray-400">{settings.enabled ? t('liveHud.live.tables_shown', { count }) : t('liveHud.live.pause_switch')}</span>
           </label>
+          <label className="flex items-center gap-2 text-xs text-gray-300" title={t('liveHud.live.move_hint')}>
+            <input type="checkbox" checked={settings.snapToGrid} onChange={(e) => setSnapToGrid(e.target.checked)} />
+            {t('liveHud.placement.snap')}
+          </label>
           <button className="text-xs text-gray-400 hover:text-gray-200" onClick={() => setOpen((o) => !o)}>
             {open ? t('liveHud.live.hide_tables') : t('liveHud.live.show_tables')}
           </button>
         </div>
+        <p className="mt-2 text-xs text-gray-500">{t('liveHud.live.move_hint')}</p>
       </Card>
       {open && <TablesCard />}
     </div>

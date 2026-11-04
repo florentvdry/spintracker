@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { Users } from 'lucide-react'
+import { ipcService } from '@/services/ipcService'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import EditorTab from './editor/EditorTab'
 import LiveStatus from './LiveStatus'
@@ -16,6 +17,8 @@ export default function LiveHud() {
 
   useEffect(() => {
     void load()
+    // The HUD window saves the positions the user sets on the table.
+    return ipcService.onHudSettingsChanged(() => void load())
   }, [load])
 
   if (!loaded) return <div className="spinner mx-auto mt-16" />

@@ -32,7 +32,6 @@ export interface EditorDoc {
 }
 
 export type Axis = 'row' | 'col'
-export type AlignEdge = 'left' | 'right' | 'top' | 'bottom' | 'centerX' | 'centerY'
 
 /** `null` removes a field of the style. */
 export type CellStylePatch = { [K in keyof CellStyle]?: CellStyle[K] | null }
@@ -66,10 +65,6 @@ export type EditAction =
   | { type: 'patchTrack'; gridId: string; axis: Axis; index: number; patch: Partial<Track> }
   | { type: 'merge'; gridId: string; cellIds: string[] }
   | { type: 'split'; gridId: string; cellId: string }
-  | { type: 'placeGrid'; seat: string; gridId: string; position: GridPosition }
-  | { type: 'alignGrids'; seat: string; gridIds: string[]; edge: AlignEdge; sizes: Record<string, { w: number; h: number }> }
-  | { type: 'placeEverySeat'; gridId: string; fromSeat: string }
-  | { type: 'mirrorToSeat'; gridId: string; fromSeat: string; toSeat: string; width: number }
 
 // --- Abbreviations of the stats, for the header a dropped column creates
 
@@ -355,31 +350,6 @@ function dropColumn(grid: HudGrid, col: number, section: string, label: string, 
 
 const CLAMP = (value: number) => Math.min(1, Math.max(0, value))
 
-function setPositions(doc: EditorDoc, seat: string, change: (positions: SeatPlacements) => SeatPlacements): EditorDoc {
-  const current = doc.seats[seat] ?? {}
-  const next = change(current)
-  return next === current ? doc : { ...doc, seats: { ...doc.seats, [seat]: next } }
-}
-
-function align(positions: SeatPlacements, ids: string[], edge: AlignEdge, sizes: Record<string, { w: number; h: number }>): SeatPlacements {
-  const chosen = ids.filter((id) => positions[id] && sizes[id])
-  if (chosen.length < 2) return positions
-  const left = Math.min(...chosen.map((id) => positions[id].x))
-  const right = Math.max(...chosen.map((id) => positions[id].x + sizes[id].w))
-  const top = Math.min(...chosen.map((id) => positions[id].y))
-  const bottom = Math.max(...chosen.map((id) => positions[id].y + sizes[id].h))
-  const next = { ...positions }
-  for (const id of chosen) {
-    const { x, y } = positions[id]
-    const { w, h } = sizes[id]
-    next[id] = {
-      x: CLAMP(edge === 'left' ? left : edge === 'right' ? right - w : edge === 'centerX' ? (left + right) / 2 - w / 2 : x),
-      y: CLAMP(edge === 'top' ? top : edge === 'bottom' ? bottom - h : edge === 'centerY' ? (top + bottom) / 2 - h / 2 : y),
-    }
-  }
-  return next
-}
-
 const DUPLICATE_OFFSET = 0.03
 
 function withoutGrid(doc: EditorDoc, gridId: string): EditorDoc {
@@ -466,28 +436,6 @@ export function applyEdit(doc: EditorDoc, action: EditAction): EditorDoc {
         if (!target || (target.rowSpan === 1 && target.colSpan === 1)) return g
         return { ...g, cells: g.cells.map((c) => (c === target ? { ...c, rowSpan: 1, colSpan: 1 } : c)) }
       })
-    case 'placeGrid': {
-      const grid = findGrid(doc.layout, action.gridId)
-      if (!grid || grid.locked || !doc.layout.grids.includes(grid)) return doc
-      const position = { x: CLAMP(action.position.x), y: CLAMP(action.position.y) }
-      const known = doc.seats[action.seat]?.[action.gridId]
-      if (known && known.x === position.x && known.y === position.y) return doc
-      return setPositions(doc, action.seat, (p) => ({ ...p, [action.gridId]: position }))
-    }
-    case 'alignGrids': {
-      const unlocked = action.gridIds.filter((id) => !findGrid(doc.layout, id)?.locked)
-      return setPositions(doc, action.seat, (p) => align(p, unlocked, action.edge, action.sizes))
-    }
-    case 'placeEverySeat': {
-      const origin = doc.seats[action.fromSeat]?.[action.gridId]
-      if (!origin) return doc
-      return { ...doc, seats: Object.fromEntries(Object.entries(doc.seats).map(([seat, p]) => [seat, { ...p, [action.gridId]: origin }])) }
-    }
-    case 'mirrorToSeat': {
-      const origin = doc.seats[action.fromSeat]?.[action.gridId]
-      if (!origin) return doc
-      return setPositions(doc, action.toSeat, (p) => ({ ...p, [action.gridId]: { x: CLAMP(1 - origin.x - action.width), y: origin.y } }))
-    }
   }
 }
 
@@ -549,6 +497,15 @@ export function snapPosition(position: GridPosition, size: { w: number; h: numbe
   const x = snapAxis(position.x, size.w, near.map((o) => [o.x, o.w]), step)
   const y = snapAxis(position.y, size.h, near.map((o) => [o.y, o.h]), step)
   return { x: Math.min(Math.max(0, x), Math.max(0, 1 - size.w)), y: Math.min(Math.max(0, y), Math.max(0, 1 - size.h)) }
+}
+
+/**
+ * Where a grid dragged on the table lands: its start plus the pointer's travel, snapped, and kept
+ * inside the window. `delta` and `window` are in pixels, `size` and `others` in fractions of it.
+ */
+export function dragTo(start: GridPosition, delta: { x: number; y: number }, window: { width: number; height: number }, size: { w: number; h: number }, others: Rect[], step: number | null, edges = true): GridPosition {
+  const raw = { x: start.x + delta.x / window.width, y: start.y + delta.y / window.height }
+  return snapPosition(raw, size, others, step, edges)
 }
 
 // --- History

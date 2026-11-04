@@ -3,16 +3,12 @@ import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { Lock } from 'lucide-react'
 import HudGridView, { type GridSlot } from '@/components/livehud/HudGridView'
-import { snapPosition, type Axis, type EditorDoc, type Rect } from '../hudEditor'
-import { GRID_STEP } from '../hudProfile'
-import type { GridPosition, HudFigures, HudGrid } from '../hudGrid'
+import type { Axis, EditorDoc } from '../hudEditor'
+import type { HudFigures, HudGrid } from '../hudGrid'
 import { MAX_TRACK_SIZE, MIN_TRACK_SIZE } from '../hudGrid'
 import type { Dispatch, EditingCell, Selection } from './types'
 import type { DragPayload, DropTarget } from './useDrag'
 
-/** Width of the reference table; the zoom scales everything drawn on it. */
-export const REFERENCE_WIDTH = 1000
-const TABLE_ASPECT = 0.625
 const HANDLE_PX = 12
 const RESIZE_EDGE_PX = 5
 
@@ -201,7 +197,7 @@ function GridFrame({
       {title !== undefined && (
         <div
           className="absolute left-0 flex items-center gap-1 whitespace-nowrap rounded-t bg-dark-200/90 px-1 text-[9px] leading-[14px] text-gray-300"
-          style={{ top: -(HANDLE_PX + 16), cursor: grid.locked ? 'not-allowed' : 'grab', touchAction: 'none' }}
+          style={{ top: -(HANDLE_PX + 16), cursor: 'pointer' }}
           onPointerDown={onTitlePointerDown}
         >
           {grid.locked && <Lock className="h-2.5 w-2.5" />}
@@ -232,12 +228,9 @@ function GridFrame({
 
 export interface CanvasProps {
   doc: EditorDoc
-  seat: string
   figures: HudFigures
   opacity: number
-  size: number
   zoom: number
-  snapToGrid: boolean
   playerName: string
   selection: Selection
   hover: DropTarget | null
@@ -246,86 +239,28 @@ export interface CanvasProps {
   /** Cells flagged by the live validation, by grid id. */
   badCells: Record<string, ReadonlySet<string>>
   popup: HudGrid | null
-  sizes: Record<string, { w: number; h: number }>
-  onSizes: (sizes: Record<string, { w: number; h: number }>) => void
   dispatch: Dispatch
   onSelect: (next: Selection) => void
   onStartDrag: FrameProps['onStartDrag']
   onEdit: (cell: EditingCell) => void
-  position: (gridId: string) => GridPosition
-}
-
-interface Moving {
-  gridId: string
-  offsetX: number
-  offsetY: number
-  live: GridPosition
 }
 
 const NO_BAD: ReadonlySet<string> = new Set()
 
-/** The preview table with the grids of one seat, and below it the popup being edited. */
+/**
+ * The grids of the layout side by side, to edit their content. Where they sit on a poker table is
+ * set on the table itself, in the HUD window.
+ */
 export default function Canvas(props: CanvasProps) {
-  const { doc, seat, figures, opacity, size, zoom, snapToGrid, playerName, selection, hover, editing, editorNode, badCells, popup, sizes, onSizes, dispatch, onSelect, onStartDrag, onEdit, position } = props
+  const { doc, figures, opacity, zoom, playerName, selection, hover, editing, editorNode, badCells, popup, dispatch, onSelect, onStartDrag, onEdit } = props
   const { t } = useTranslation()
-  const table = useRef<HTMLDivElement>(null)
-  const frames = useRef<Record<string, HTMLDivElement | null>>({})
-  const [moving, setMoving] = useState<Moving | null>(null)
   const popupPanel = useRef<HTMLDivElement>(null)
   const popupId = popup?.id
 
-  // The popup is edited under the table, out of sight: bring it into view when it is picked.
+  // The popup is edited under the grids, out of sight: bring it into view when it is picked.
   useEffect(() => {
     if (popupId) popupPanel.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }, [popupId])
-  const tableWidth = REFERENCE_WIDTH * zoom
-  const scale = zoom * size
-
-  // Grid sizes as fractions of the table: needed to keep a grid on it and to line grids up.
-  useLayoutEffect(() => {
-    const box = table.current?.getBoundingClientRect()
-    if (!box || box.width === 0) return
-    const next: Record<string, { w: number; h: number }> = {}
-    for (const grid of doc.layout.grids) {
-      const el = frames.current[grid.id]
-      if (!el) continue
-      const r = el.getBoundingClientRect()
-      next[grid.id] = { w: Math.round((r.width / box.width) * 10000) / 10000, h: Math.round((r.height / box.height) * 10000) / 10000 }
-    }
-    const same = Object.keys(next).length === Object.keys(sizes).length && Object.entries(next).every(([id, s]) => sizes[id]?.w === s.w && sizes[id]?.h === s.h)
-    if (!same) onSizes(next)
-  })
-
-  const box = () => table.current?.getBoundingClientRect() ?? null
-
-  const startMove = (grid: HudGrid, event: ReactPointerEvent<HTMLDivElement>) => {
-    const rect = box()
-    if (!rect || event.button !== 0) return
-    const additive = event.shiftKey || event.ctrlKey || event.metaKey
-    onSelect({ gridIds: additive ? [...new Set([...selection.gridIds, grid.id])] : [grid.id], cellIds: [], track: null })
-    if (grid.locked) return
-    const start = position(grid.id)
-    const pointer = { x: event.clientX, y: event.clientY }
-    event.currentTarget.setPointerCapture(event.pointerId)
-    const others: Rect[] = doc.layout.grids.filter((g) => g.id !== grid.id && sizes[g.id]).map((g) => ({ ...position(g.id), w: sizes[g.id].w, h: sizes[g.id].h }))
-    const own = sizes[grid.id] ?? { w: 0, h: 0 }
-    const compute = (e: PointerEvent): GridPosition => {
-      const raw = { x: start.x + (e.clientX - pointer.x) / rect.width, y: start.y + (e.clientY - pointer.y) / rect.height }
-      // Alt switches the magnetism off for a free placement.
-      return snapPosition(raw, own, others, snapToGrid && !e.altKey ? GRID_STEP : null, !e.altKey)
-    }
-    setMoving({ gridId: grid.id, offsetX: 0, offsetY: 0, live: start })
-    const move = (e: PointerEvent) => setMoving({ gridId: grid.id, offsetX: 0, offsetY: 0, live: compute(e) })
-    const up = (e: PointerEvent) => {
-      window.removeEventListener('pointermove', move)
-      window.removeEventListener('pointerup', up)
-      const end = compute(e)
-      setMoving(null)
-      if (end.x !== start.x || end.y !== start.y) dispatch({ type: 'placeGrid', seat, gridId: grid.id, position: end })
-    }
-    window.addEventListener('pointermove', move)
-    window.addEventListener('pointerup', up)
-  }
 
   const frameFor = useCallback(
     (grid: HudGrid, extra: Partial<FrameProps>) => (
@@ -335,7 +270,7 @@ export default function Canvas(props: CanvasProps) {
         figures={figures}
         playerName={playerName}
         opacity={opacity}
-        scale={scale}
+        scale={zoom}
         selected={selection.gridIds.includes(grid.id)}
         primary={selection.gridIds[0] === grid.id}
         selection={selection}
@@ -350,54 +285,37 @@ export default function Canvas(props: CanvasProps) {
         {...extra}
       />
     ),
-    [figures, playerName, opacity, scale, selection, hover, editing, editorNode, badCells, dispatch, onSelect, onStartDrag, onEdit],
+    [figures, playerName, opacity, zoom, selection, hover, editing, editorNode, badCells, dispatch, onSelect, onStartDrag, onEdit],
   )
+
+  const select = (grid: HudGrid) => (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return
+    const additive = e.shiftKey || e.ctrlKey || e.metaKey
+    onSelect({ gridIds: additive ? [...new Set([...selection.gridIds, grid.id])] : [grid.id], cellIds: [], track: null })
+  }
 
   return (
     <div className="space-y-4">
-      <div className="overflow-auto rounded-lg border border-dark-100 bg-dark-500" onPointerDown={(e) => e.target === e.currentTarget && onSelect({ gridIds: [], cellIds: [], track: null })}>
-        <div style={{ padding: `${56}px 40px 40px 40px`, width: tableWidth + 80 }}>
-          <div
-            ref={table}
-            className="relative rounded-lg border border-dark-100 bg-dark-400"
-            style={{ width: tableWidth, height: tableWidth * TABLE_ASPECT }}
-            onPointerDown={(e) => e.target === e.currentTarget && onSelect({ gridIds: [], cellIds: [], track: null })}
-          >
-            <div className="pointer-events-none absolute inset-x-[12%] inset-y-[18%] rounded-[50%] border border-dark-100 bg-dark-300" />
-            <span className="pointer-events-none absolute bottom-[8%] left-1/2 -translate-x-1/2 rounded bg-dark-200 px-2 py-0.5 text-xs text-gray-400">{t('liveHud.placement.hero')}</span>
-            {doc.layout.grids.map((grid) => {
-              const live = moving?.gridId === grid.id ? moving.live : position(grid.id)
-              return (
-                <div
-                  key={grid.id}
-                  ref={(el) => {
-                    frames.current[grid.id] = el
-                  }}
-                  className="absolute"
-                  style={{ left: `${live.x * 100}%`, top: `${live.y * 100}%`, transform: `scale(${scale})`, transformOrigin: 'top left', zIndex: selection.gridIds.includes(grid.id) ? 5 : 1 }}
-                >
-                  {frameFor(grid, {
-                    title: grid.name,
-                    onTitlePointerDown: (e) => startMove(grid, e),
-                  })}
-                </div>
-              )
-            })}
-          </div>
+      <div
+        className="min-h-[300px] overflow-auto rounded-lg border border-dark-100 bg-dark-500"
+        onPointerDown={(e) => e.target === e.currentTarget && onSelect({ gridIds: [], cellIds: [], track: null })}
+      >
+        {doc.layout.grids.length === 0 && <p className="p-6 text-sm text-gray-500">{t('liveHud.profiles.empty_layout')}</p>}
+        <div className="flex flex-wrap items-start gap-x-10 gap-y-16 px-10 pb-10 pt-16" style={{ zoom }} onPointerDown={(e) => e.target === e.currentTarget && onSelect({ gridIds: [], cellIds: [], track: null })}>
+          {doc.layout.grids.map((grid) => (
+            <div key={grid.id}>{frameFor(grid, { title: grid.name, onTitlePointerDown: select(grid) })}</div>
+          ))}
         </div>
       </div>
 
       {popup && (
         <div ref={popupPanel} className="overflow-auto rounded-lg border border-primary-500/50 bg-dark-500">
           <p className="border-b border-dark-100 px-3 py-1.5 text-xs text-gray-300">{t('liveHud.editor.popup_editing', { name: popup.name })}</p>
-          <div style={{ padding: `${56}px 40px 24px 40px` }}>
-            <div style={{ transform: `scale(${scale})`, transformOrigin: 'top left', width: 'max-content', marginBottom: 0 }}>
-              {frameFor(popup, { title: `${t('liveHud.editor.popup')}: ${popup.name}`, onTitlePointerDown: (e) => e.button === 0 && onSelect({ gridIds: [popup.id], cellIds: [], track: null }) })}
-            </div>
+          <div className="px-10 pb-6 pt-16" style={{ zoom }}>
+            {frameFor(popup, { title: `${t('liveHud.editor.popup')}: ${popup.name}`, onTitlePointerDown: select(popup) })}
           </div>
         </div>
       )}
     </div>
   )
 }
-

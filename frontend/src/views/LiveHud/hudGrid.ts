@@ -518,7 +518,7 @@ export function estimateGridSize(grid: HudGrid): { width: number; height: number
 
 // --- Validation of a layout (live, in the editor)
 
-export type HudIssueCode = 'unknownStat' | 'unknownColumn' | 'unknownBucket' | 'emptyGrid' | 'tooManyStats' | 'missingPopup' | 'outOfTable'
+export type HudIssueCode = 'unknownStat' | 'unknownColumn' | 'unknownBucket' | 'emptyGrid' | 'tooManyStats' | 'missingPopup'
 
 export interface HudIssue {
   code: HudIssueCode

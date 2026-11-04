@@ -1,8 +1,8 @@
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
-import { AlignCenter, AlignLeft, AlignRight, ArrowLeft, ArrowRight, Copy, FlipHorizontal, Lock, LockOpen, Merge, Split, Trash2 } from 'lucide-react'
-import type { AlignEdge, Axis, CellPatch, EditorDoc } from '../hudEditor'
+import { AlignCenter, AlignLeft, AlignRight, ArrowLeft, ArrowRight, Copy, Lock, LockOpen, Merge, Split, Trash2 } from 'lucide-react'
+import type { Axis, CellPatch, EditorDoc } from '../hudEditor'
 import {
   MAX_FONT_SIZE,
   MIN_FONT_SIZE,
@@ -111,24 +111,17 @@ function ContextEditor({ value, onChange }: { value: StatContext | undefined; on
 interface Props {
   doc: EditorDoc
   selection: Selection
-  seat: string
-  seats: string[]
   catalog: CatalogStat[]
   issues: HudIssue[]
-  /** Widths of the grids as fractions of the table, to mirror and align them. */
-  sizes: Record<string, { w: number; h: number }>
   dispatch: Dispatch
   onSelect: (next: Selection) => void
   onNewPopup: (gridId: string, cellIds: string[]) => void
 }
 
-const ALIGNMENTS: AlignEdge[] = ['left', 'centerX', 'right', 'top', 'centerY', 'bottom']
-
-export default function Inspector({ doc, selection, seat, seats, catalog, issues, sizes, dispatch, onSelect, onNewPopup }: Props) {
+export default function Inspector({ doc, selection, catalog, issues, dispatch, onSelect, onNewPopup }: Props) {
   const { t } = useTranslation()
   const gridId = selection.gridIds[0]
   const grid = gridId ? [...doc.layout.grids, ...doc.layout.popups].find((g) => g.id === gridId) : undefined
-  const isPopup = grid ? doc.layout.popups.includes(grid) : false
 
   const issueList = (
     <Section title={t('liveHud.editor.issues')}>
@@ -160,7 +153,7 @@ export default function Inspector({ doc, selection, seat, seats, catalog, issues
   let body: ReactNode
   if (selection.track) body = <TrackPanel grid={grid} track={selection.track} dispatch={dispatch} />
   else if (selection.cellIds.length > 0) body = <CellPanel grid={grid} cells={cells} slotIds={selection.cellIds} primary={primary} popups={doc.layout.popups} catalog={catalog} dispatch={dispatch} onNewPopup={onNewPopup} />
-  else body = <GridPanel doc={doc} grid={grid} isPopup={isPopup} selection={selection} seat={seat} seats={seats} sizes={sizes} dispatch={dispatch} />
+  else body = <GridPanel grid={grid} dispatch={dispatch} />
 
   return (
     <div className="space-y-4">
@@ -172,10 +165,9 @@ export default function Inspector({ doc, selection, seat, seats, catalog, issues
 
 // --- Grid
 
-function GridPanel({ doc, grid, isPopup, selection, seat, seats, sizes, dispatch }: { doc: EditorDoc; grid: HudGrid; isPopup: boolean; selection: Selection; seat: string; seats: string[]; sizes: Props['sizes']; dispatch: Dispatch }) {
+function GridPanel({ grid, dispatch }: { grid: HudGrid; dispatch: Dispatch }) {
   const { t } = useTranslation()
   const patch = (change: Partial<Pick<HudGrid, 'name' | 'locked' | 'context' | 'style'>>) => dispatch({ type: 'patchGrid', gridId: grid.id, patch: change })
-  const otherSeat = seats.find((s) => s !== seat)
   return (
     <>
       <Section title={t('liveHud.editor.grid')}>
@@ -228,34 +220,6 @@ function GridPanel({ doc, grid, isPopup, selection, seat, seats, sizes, dispatch
         <ContextEditor value={grid.context} onChange={(context) => patch({ context: context ?? {} })} />
       </Section>
 
-      {!isPopup && (
-        <Section title={t('liveHud.editor.placement')}>
-          <div className="flex flex-wrap gap-1">
-            <button type="button" className={smallButton} disabled={seats.length < 2} onClick={() => dispatch({ type: 'placeEverySeat', gridId: grid.id, fromSeat: seat })}>
-              {t('liveHud.editor.place_every_seat')}
-            </button>
-            <button
-              type="button"
-              className={smallButton}
-              disabled={!otherSeat || !sizes[grid.id]}
-              onClick={() => otherSeat && dispatch({ type: 'mirrorToSeat', gridId: grid.id, fromSeat: seat, toSeat: otherSeat, width: sizes[grid.id]?.w ?? 0 })}
-            >
-              <FlipHorizontal className="h-3 w-3" />
-              {t('liveHud.editor.mirror')}
-            </button>
-          </div>
-          {selection.gridIds.length > 1 && (
-            <div className="flex flex-wrap gap-1">
-              {ALIGNMENTS.map((edge) => (
-                <button key={edge} type="button" className={smallButton} onClick={() => dispatch({ type: 'alignGrids', seat, gridIds: selection.gridIds, edge, sizes })}>
-                  {t(`liveHud.editor.align.${edge}`)}
-                </button>
-              ))}
-            </div>
-          )}
-          <p className="text-[10px] text-gray-500">{doc.seats[seat]?.[grid.id] ? `x ${Math.round(doc.seats[seat][grid.id].x * 1000) / 10}% · y ${Math.round(doc.seats[seat][grid.id].y * 1000) / 10}%` : ''}</p>
-        </Section>
-      )}
     </>
   )
 }

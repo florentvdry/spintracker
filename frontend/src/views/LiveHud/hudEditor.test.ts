@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { applyEdit, emptyHistory, snapPosition, MAX_HISTORY, record, redo, undo, abbreviationOf, type EditorDoc } from './hudEditor'
+import { applyEdit, dragTo, emptyHistory, snapPosition, MAX_HISTORY, record, redo, undo, abbreviationOf, type EditorDoc } from './hudEditor'
 import { cellAt, newGrid, statCell, type HudGrid } from './hudGrid'
 
 const docWith = (grid: HudGrid): EditorDoc => ({ layout: { grids: [grid], popups: [] }, seats: { '+1': { [grid.id]: { x: 0.1, y: 0.1 } }, '+2': {} } })
@@ -158,44 +158,11 @@ describe('grids', () => {
     expect(doc.seats['+1'][copy.id]).toEqual({ x: 0.13, y: 0.13 })
   })
 
-  it('does not edit or move a locked grid, but lets it be unlocked', () => {
+  it('does not edit a locked grid, but lets it be unlocked', () => {
     const doc = docWith({ ...newGrid('g', 1, 1), locked: true })
     const id = gridOf(doc).id
     expect(applyEdit(doc, { type: 'dropContent', gridId: id, row: 0, col: 0, content: { kind: 'tag' } })).toBe(doc)
-    expect(applyEdit(doc, { type: 'placeGrid', seat: '+1', gridId: id, position: { x: 0.5, y: 0.5 } })).toBe(doc)
     expect(gridOf(applyEdit(doc, { type: 'patchGrid', gridId: id, patch: { locked: false } })).locked).toBe(false)
-  })
-})
-
-describe('placement', () => {
-  const two = (): EditorDoc => {
-    const a = newGrid('a', 1, 1)
-    const b = newGrid('b', 1, 1)
-    return { layout: { grids: [a, b], popups: [] }, seats: { '+1': { [a.id]: { x: 0.1, y: 0.2 }, [b.id]: { x: 0.5, y: 0.6 } }, '+2': {} } }
-  }
-
-  it('keeps a grid on the table', () => {
-    const doc = two()
-    const moved = applyEdit(doc, { type: 'placeGrid', seat: '+1', gridId: doc.layout.grids[0].id, position: { x: -3, y: 4 } })
-    expect(moved.seats['+1'][doc.layout.grids[0].id]).toEqual({ x: 0, y: 1 })
-  })
-
-  it('aligns, copies to every seat and mirrors', () => {
-    const doc = two()
-    const [a, b] = doc.layout.grids
-    const sizes = { [a.id]: { w: 0.1, h: 0.1 }, [b.id]: { w: 0.2, h: 0.1 } }
-    const aligned = applyEdit(doc, { type: 'alignGrids', seat: '+1', gridIds: [a.id, b.id], edge: 'left', sizes })
-    expect(aligned.seats['+1'][b.id].x).toBe(0.1)
-    expect(aligned.seats['+1'][b.id].y).toBe(0.6)
-    const right = applyEdit(doc, { type: 'alignGrids', seat: '+1', gridIds: [a.id, b.id], edge: 'right', sizes })
-    expect(right.seats['+1'][a.id].x).toBeCloseTo(0.6)
-
-    const everywhere = applyEdit(doc, { type: 'placeEverySeat', gridId: a.id, fromSeat: '+1' })
-    expect(everywhere.seats['+2'][a.id]).toEqual({ x: 0.1, y: 0.2 })
-
-    const mirrored = applyEdit(doc, { type: 'mirrorToSeat', gridId: a.id, fromSeat: '+1', toSeat: '+2', width: 0.1 })
-    expect(mirrored.seats['+2'][a.id].x).toBeCloseTo(0.8)
-    expect(mirrored.seats['+2'][a.id].y).toBe(0.2)
   })
 })
 
@@ -240,5 +207,19 @@ describe('snapping', () => {
     expect(snapPosition({ x: 0.705, y: 0.6 }, size, [other], null)).toEqual({ x: 0.7, y: 0.6 })
     expect(snapPosition({ x: 0.304, y: 0.2 }, size, [other], null).x).toBeCloseTo(0.3)
     expect(snapPosition({ x: 0.75, y: 0.6 }, size, [other], null).x).toBe(0.75)
+  })
+})
+
+describe('dragTo', () => {
+  it('moves by the pointer travel as a fraction of the window and stays inside it', () => {
+    const size = { w: 0.2, h: 0.1 }
+    expect(dragTo({ x: 0.1, y: 0.1 }, { x: 100, y: 50 }, { width: 1000, height: 500 }, size, [], null)).toEqual({ x: 0.2, y: 0.2 })
+    expect(dragTo({ x: 0.1, y: 0.1 }, { x: 5000, y: -900 }, { width: 1000, height: 500 }, size, [], null)).toEqual({ x: 0.8, y: 0 })
+  })
+
+  it('snaps to the step, and not at all with the step off and edges off', () => {
+    const size = { w: 0.2, h: 0.1 }
+    expect(dragTo({ x: 0.1, y: 0.1 }, { x: 13, y: 0 }, { width: 1000, height: 500 }, size, [], 0.02).x).toBeCloseTo(0.12)
+    expect(dragTo({ x: 0.1, y: 0.1 }, { x: 13, y: 0 }, { width: 1000, height: 500 }, size, [], null, false).x).toBeCloseTo(0.113)
   })
 })

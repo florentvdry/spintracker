@@ -59,6 +59,8 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
 
     load: async () => {
       const result = await ipcService.getHudSettings()
+      // Edits waiting to be saved are newer than what was just read.
+      if (saveTimer) return
       set({ settings: sanitizeSettings(result.success ? result.settings : null), loaded: true })
     },
 
