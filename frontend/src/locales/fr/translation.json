@@ -181,7 +181,9 @@
       "strip": "Bandeau (au-dessus des tableaux)",
       "rows_stack": "une ligne par profondeur de stack",
       "rows_single": "une ligne",
-      "import_invalid": "Ce fichier n'est pas un fichier de profils HUD SpinTracker."
+      "import_invalid": "Ce fichier n'est pas un fichier de profils HUD SpinTracker.",
+      "new_empty": "Vide",
+      "empty_layout": "Cette disposition n'a pas encore de grille. Ajoutez-en dans l'éditeur."
     },
     "placement": {
       "title": "Position des panneaux",

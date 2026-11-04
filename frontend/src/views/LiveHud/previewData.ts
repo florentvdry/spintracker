@@ -1,5 +1,4 @@
-import type { HudFigures } from '@/components/livehud/HudPanel'
-import { requestsOf, figureKey, type HudLayout } from './hudProfile'
+import { figureKey, requestsOf, type HudFigures, type HudLayout } from './hudGrid'
 
 /** Example players for the previews. These are made-up figures, never read from the database. */
 
@@ -13,6 +12,11 @@ function hash01(text: string): number {
   return ((h >>> 0) % 10000) / 10000
 }
 
+const EXAMPLE_HU_HANDS = 37
+const EXAMPLE_THREE_WAY_HANDS = 125
+const MAX_EXAMPLE_BUCKET_HANDS = 14
+const MAX_EXAMPLE_SAMPLE = 40
+
 /** Example figures for every figure a layout shows. */
 export function previewFigures(layout: HudLayout): HudFigures {
   const figures: HudFigures = {}
@@ -20,11 +24,13 @@ export function previewFigures(layout: HudLayout): HudFigures {
     const key = figureKey(r.section, r.label, r.column, r.bucket)
     const roll = hash01(key)
     if (r.section === 'meta') {
-      const count = r.column === 'three_way' ? 125 : r.column === 'hu' ? 37 : Math.round(roll * 14)
+      const count = r.column === 'three_way' ? EXAMPLE_THREE_WAY_HANDS : r.column === 'hu' ? EXAMPLE_HU_HANDS : Math.round(roll * MAX_EXAMPLE_BUCKET_HANDS)
       figures[key] = { pct: null, num: count, den: count }
     } else {
-      const den = Math.round(1 + hash01(`${key}#`) * 24)
-      figures[key] = { pct: Math.round(roll * 100), num: Math.round((roll * den)), den }
+      // Some figures rest on very few opportunities, so that the low-sample display is visible.
+      const den = Math.round(1 + hash01(`${key}#`) * (MAX_EXAMPLE_SAMPLE - 1))
+      const num = Math.round(roll * den)
+      figures[key] = { pct: den === 0 ? null : Math.round((1000 * num) / den) / 10, num, den }
     }
   }
   return figures

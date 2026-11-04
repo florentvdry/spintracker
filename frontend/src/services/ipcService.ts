@@ -205,6 +205,8 @@ export const ipcService = {
   onHandsImported: (callback: (payload: HandsImported) => void) => subscribe('hands-imported', callback),
   onAutoImportStatus: (callback: (status: AutoImportStatus) => void) => subscribe('auto-import-status', callback),
   onHudState: (callback: (state: Json) => void) => subscribe('hud-state', callback),
+  /** The HUD settings were saved: a HUD window already open reads them again. */
+  onHudSettingsChanged: (callback: () => void) => subscribe('hud-settings-changed', callback),
   onUpdateStatus: (callback: (status: UpdateStatus) => void) => subscribe('update-status', callback),
 }
 

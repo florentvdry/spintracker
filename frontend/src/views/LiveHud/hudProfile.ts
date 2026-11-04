@@ -327,3 +327,21 @@ export function importProfiles(content: string): HudProfile[] | null {
 
 /** Rounds to the placement grid. */
 export const snap = (value: number) => Math.round(value / GRID_STEP) * GRID_STEP
+
+/** A copy of a profile under a new name, whose grids sit where the original's do (positions are kept by grid id). */
+export function duplicateWithPlacements(source: HudProfile, placements: Placements, name: string): { profile: HudProfile; placements: Placements } {
+  const profile = { ...withFreshIds(source), name }
+  const next = structuredClone(placements)
+  for (const room of HUD_ROOMS) {
+    for (const format of HUD_FORMATS) {
+      for (const seat of SEATS_BY_FORMAT[format]) {
+        const seatPlacements = next[room][format][seat]
+        source.layouts[format].grids.forEach((grid, i) => {
+          const position = seatPlacements[grid.id]
+          if (position) seatPlacements[profile.layouts[format].grids[i].id] = { ...position }
+        })
+      }
+    }
+  }
+  return { profile, placements: next }
+}

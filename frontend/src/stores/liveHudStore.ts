@@ -2,6 +2,8 @@ import { create } from 'zustand'
 import { ipcService } from '@/services/ipcService'
 import {
   defaultSettings,
+  duplicateWithPlacements,
+  emptyProfile,
   importProfiles,
   MAX_PROFILES,
   newProfileId,
@@ -11,7 +13,8 @@ import {
   type HudProfile,
   type HudRoom,
   type HudSettings,
-  type PanelPosition,
+  type HudLayout,
+  type SeatPlacements,
 } from '@/views/LiveHud/hudProfile'
 
 /** Edits made in quick succession (a slider, a drag) are written once. */
@@ -28,13 +31,15 @@ interface LiveHudState {
   setDetection: (room: HudRoom, change: Partial<HudDetection>) => void
   setActiveProfile: (id: string) => void
   updateProfile: (id: string, change: (profile: HudProfile) => HudProfile) => void
-  addProfile: (name: string) => string | null
+  /** A copy of the first profile, or an empty one to build from scratch. */
+  addProfile: (name: string, empty?: boolean) => string | null
   duplicateProfile: (id: string, name: string) => string | null
   removeProfile: (id: string) => void
   /** Adds the profiles of a shared file; `false` when the file is not a valid one. */
   importProfilesFile: (content: string) => boolean
   setSnapToGrid: (snap: boolean) => void
-  setPlacements: (room: HudRoom, format: HudFormat, positions: Record<string, PanelPosition>) => void
+  /** Sets the layout of a format and where its grids sit in a room, in one save (one undo step for the editor). */
+  setEditorDoc: (profileId: string, room: HudRoom, format: HudFormat, layout: HudLayout, seats: Record<string, SeatPlacements>) => void
 }
 
 export const useLiveHudStore = create<LiveHudState>((set, get) => {
@@ -65,20 +70,22 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
     updateProfile: (id, change) =>
       commit((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === id ? change(p) : p)) })),
 
-    addProfile: (name) => {
+    addProfile: (name, empty = false) => {
       if (get().settings.profiles.length >= MAX_PROFILES) return null
       const id = newProfileId()
-      const base = get().settings.profiles[0]
-      commit((s) => ({ ...s, profiles: [...s.profiles, { ...structuredClone(base), id, name }], activeProfileId: id }))
-      return id
+      if (empty) {
+        commit((s) => ({ ...s, profiles: [...s.profiles, emptyProfile(id, name)], activeProfileId: id }))
+        return id
+      }
+      return get().duplicateProfile(get().settings.profiles[0].id, name)
     },
 
     duplicateProfile: (id, name) => {
       const source = get().settings.profiles.find((p) => p.id === id)
       if (!source || get().settings.profiles.length >= MAX_PROFILES) return null
-      const copyId = newProfileId()
-      commit((s) => ({ ...s, profiles: [...s.profiles, { ...structuredClone(source), id: copyId, name }], activeProfileId: copyId }))
-      return copyId
+      const copy = duplicateWithPlacements(source, get().settings.placements, name)
+      commit((s) => ({ ...s, profiles: [...s.profiles, copy.profile], placements: copy.placements, activeProfileId: copy.profile.id }))
+      return copy.profile.id
     },
 
     removeProfile: (id) =>
@@ -97,10 +104,11 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
 
     setSnapToGrid: (snapToGrid) => commit((s) => ({ ...s, snapToGrid })),
 
-    setPlacements: (room, format, positions) =>
+    setEditorDoc: (profileId, room, format, layout, seats) =>
       commit((s) => ({
         ...s,
-        placements: { ...s.placements, [room]: { ...s.placements[room], [format]: positions } },
+        profiles: s.profiles.map((p) => (p.id === profileId ? { ...p, layouts: { ...p.layouts, [format]: layout } } : p)),
+        placements: { ...s.placements, [room]: { ...s.placements[room], [format]: seats } },
       })),
   }
 })

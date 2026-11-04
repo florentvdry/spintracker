@@ -181,7 +181,9 @@
       "strip": "Strip (above the tables)",
       "rows_stack": "one row per stack depth",
       "rows_single": "one row",
-      "import_invalid": "This file is not a SpinTracker HUD profile file."
+      "import_invalid": "This file is not a SpinTracker HUD profile file.",
+      "new_empty": "Empty",
+      "empty_layout": "This layout has no grid yet. Add some in the editor."
     },
     "placement": {
       "title": "Panel positions",
