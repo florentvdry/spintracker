@@ -802,6 +802,8 @@ fn action_value(street: &str, kind: &str) -> Value {
 /// Adds the actions of one street; returns the pot afterwards.
 fn parse_action_text(text: &str, street: &str, initial_pot: f64, replay: &mut Replay) -> f64 {
     let mut pot = initial_pot;
+    // What each player already put in during this street: a raise "to" X only adds the difference.
+    let mut invested: HashMap<String, f64> = HashMap::new();
     for line in text.split('\n').filter(|l| !l.is_empty()) {
         let line = strip_timestamp(line);
         let (player, content) = match line.find(':') {
@@ -817,7 +819,10 @@ fn parse_action_text(text: &str, street: &str, initial_pot: f64, replay: &mut Re
 
         let number = |pattern: &regex::Regex| pattern.captures(&content).and_then(|c| c.get(1)).and_then(|m| m.as_str().parse::<f64>().ok());
         let first_number = regex!(r"(\d+\.?\d*)");
+        // "raises 30 to 60" and "Raises to 60": the amount is the one after "to", else the first one.
+        let raise_to = || number(regex!(r"to\s+(\d+\.?\d*)")).or_else(|| number(first_number)).unwrap_or(0.0);
         let (mut kind, mut amount) = ("Unknown", 0.0);
+        let mut is_raise = false;
 
         if content.contains("posts sb") || content.contains("posts small blind") {
             (kind, amount) = ("PostSB", number(first_number).unwrap_or(0.0));
@@ -830,19 +835,26 @@ fn parse_action_text(text: &str, street: &str, initial_pot: f64, replay: &mut Re
         } else if content.contains("call") || content.contains("paye") || content.contains("suit") {
             (kind, amount) = ("Call", number(first_number).unwrap_or(0.0));
         } else if content.contains("raise") || content.contains("relance") || content.contains("mise") {
-            // Only the "to <amount>" form is read; a bare amount leaves 0, as before.
-            (kind, amount) = ("Raise", number(regex!(r"to\s+(\d+\.?\d*)|(\d+\.?\d*)")).unwrap_or(0.0));
+            (kind, amount) = ("Raise", raise_to());
+            is_raise = true;
         } else if content.contains("bet") {
             (kind, amount) = ("Bet", number(first_number).unwrap_or(0.0));
         }
         if content.contains("all-in") || content.contains("all in") || content.contains("tapis") {
-            (kind, amount) = ("AllIn", number(first_number).unwrap_or(0.0));
+            (kind, amount) = ("AllIn", if is_raise { raise_to() } else { number(first_number).unwrap_or(0.0) });
         }
         if kind == "Unknown" {
             continue;
         }
 
-        let added = if matches!(kind, "Call" | "Bet" | "Raise" | "AllIn") { amount } else { 0.0 };
+        let put_in = invested.entry(player.to_lowercase()).or_insert(0.0);
+        let added = match kind {
+            "PostSB" | "PostBB" | "Call" | "Bet" => amount,
+            "Raise" | "AllIn" if is_raise => (amount - *put_in).max(0.0),
+            "AllIn" => amount,
+            _ => 0.0,
+        };
+        *put_in += added;
         pot += added;
         let mut action = action_value(street, kind);
         action["playerName"] = json!(player);
@@ -883,7 +895,10 @@ pub fn hand_replay(conn: &Connection, hand_id: &str, hero_name: Option<&str>) ->
     replay.push(deal);
 
     let mut pot = 0.0;
-    for p in &replay_players {
+    // The blinds are read from the action text when it holds them (their real amounts); the
+    // position-based guess only serves hands whose text has no posts.
+    let posts_in_text = text("preflop_action").to_lowercase().contains("posts");
+    for p in replay_players.iter().filter(|_| !posts_in_text) {
         let position = p["position"].as_str().unwrap_or("");
         let (kind, amount) = if position.contains("SB") {
             ("PostSB", sb)
@@ -1038,6 +1053,16 @@ mod tests {
         assert_eq!(determine_action_type(&h, None, Some("rfi"), "Hero"), "Raise4BB");
         assert_eq!(determine_action_type(&h, None, None, "Hero"), "Raise");
         assert_eq!(determine_action_type(&h, Some("flop"), None, "Hero"), "None");
+    }
+
+    #[test]
+    fn a_raise_to_only_adds_what_the_player_had_not_put_in() {
+        let mut replay = Replay { actions: Vec::new() };
+        let text = "Bob posts small blind 10\nAnn posts big blind 20\nBob raises 40 to 60\nAnn calls 40";
+        let pot = parse_action_text(text, "Preflop", 0.0, &mut replay);
+        assert_eq!(pot, 120.0);
+        assert_eq!(replay.actions[2]["amount"], 60.0, "the raise keeps its to-amount");
+        assert_eq!(replay.actions[2]["potAfter"], 80.0);
     }
 
     #[test]
