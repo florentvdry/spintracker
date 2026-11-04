@@ -239,6 +239,10 @@ fn follow(app: &AppHandle, table: Handle) {
         overlay.rect = Some(rect);
         (overlay.label.clone(), overlay.hud, overlay.click_through, changed)
     };
+    // The window is still being created: its handle is not known yet.
+    if hud == 0 {
+        return;
+    }
     if changed {
         if let Some(window) = app.get_webview_window(&label) {
             place(&window, rect);
