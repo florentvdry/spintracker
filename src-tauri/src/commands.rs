@@ -11,7 +11,7 @@ use tauri_plugin_opener::OpenerExt;
 
 use crate::backend::BackendState;
 use crate::autoimport::{self, WatchedFolder};
-use crate::{api, backend, export, import, updater};
+use crate::{api, backend, export, hud_settings, import, updater};
 
 const REPLAYER_BACKGROUND: tauri::window::Color = tauri::window::Color(14, 16, 20, 255);
 
@@ -85,6 +85,16 @@ pub fn auto_import_get(app: AppHandle) -> Value {
 #[tauri::command]
 pub fn auto_import_set(app: AppHandle, enabled: bool, folders: Vec<WatchedFolder>) -> Value {
     autoimport::set(&app, enabled, folders)
+}
+
+#[tauri::command]
+pub fn hud_settings_get(app: AppHandle) -> Value {
+    hud_settings::get(&app)
+}
+
+#[tauri::command]
+pub fn hud_settings_set(app: AppHandle, settings: Value) -> Value {
+    hud_settings::set(&app, &settings)
 }
 
 /// Lets the user choose a history folder; `null` when the dialog is cancelled.

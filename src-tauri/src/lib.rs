@@ -3,6 +3,7 @@ mod autoimport;
 mod backend;
 mod commands;
 mod export;
+mod hud_settings;
 mod import;
 mod updater;
 
@@ -80,6 +81,8 @@ pub fn run() {
             commands::auto_import_get,
             commands::auto_import_set,
             commands::auto_import_pick_folder,
+            commands::hud_settings_get,
+            commands::hud_settings_set,
             commands::open_logs_folder,
             commands::get_app_version,
             commands::frontend_log,
