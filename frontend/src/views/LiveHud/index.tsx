@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import LiveTab from './LiveTab'
-import PlacementTab from './PlacementTab'
+import EditorTab from './editor/EditorTab'
 import ProfilesTab from './ProfilesTab'
 
-type TabId = 'live' | 'profiles' | 'placement'
-const TABS: TabId[] = ['live', 'profiles', 'placement']
+type TabId = 'live' | 'profiles' | 'editor'
+const TABS: TabId[] = ['live', 'profiles', 'editor']
 
-/** The HUD page: live state, profiles and panel positions. */
+/** The HUD page: live state, profiles and the grid editor. */
 export default function LiveHud() {
   const { t } = useTranslation()
   const load = useLiveHudStore((s) => s.load)
@@ -42,7 +42,7 @@ export default function LiveHud() {
         <>
           {tab === 'live' && <LiveTab />}
           {tab === 'profiles' && <ProfilesTab />}
-          {tab === 'placement' && <PlacementTab />}
+          {tab === 'editor' && <EditorTab />}
         </>
       )}
     </div>

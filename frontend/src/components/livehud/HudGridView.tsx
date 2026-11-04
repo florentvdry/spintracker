@@ -183,6 +183,7 @@ function HudGridViewBase({ grid, figures, player, opacity = 1, showEmptySlots, d
     >
       <div className="absolute inset-0 rounded-[4px]" style={{ background, opacity }} />
       <div
+        data-grid-body
         className="relative grid"
         style={{
           gridTemplateColumns: grid.cols.map((c) => trackSize(c, '1.4em')).join(' '),
