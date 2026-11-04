@@ -167,7 +167,8 @@
       "layout_note": "Le panneau change de disposition avec la table : trois joueurs affichent les tableaux 3-way, deux joueurs les tableaux heads-up. Le changement se fait entre deux mains.",
       "import_invalid": "Ce fichier n'est pas un fichier de profils HUD SpinTracker.",
       "new_empty": "Vide",
-      "empty_layout": "Cette disposition n'a pas encore de grille. Ajoutez-en dans l'éditeur."
+      "empty_layout": "Cette disposition n'a pas encore de grille. Ajoutez-en dans l'éditeur.",
+      "from_model": "Nouveau profil depuis un modèle"
     },
     "placement": {
       "room": "Room",
@@ -322,6 +323,17 @@
         "stack_note": "Plusieurs profondeurs sont additionnées en nombres de mains, jamais moyennées.",
         "track_note": "Une ligne ou une colonne prime sur la grille ; une cellule prime sur les deux."
       }
+    },
+    "templates": {
+      "models": "Modèles…",
+      "confirm": "Remplacer les grilles de cette taille de table par le modèle « {{name}} » ? Ctrl+Z l'annule, sauf si le modèle est pour l'autre taille de table.",
+      "huFull": "HU Full",
+      "huFlash": "HU Flash",
+      "threeWayFull": "3-Way Full",
+      "threeWayFlash": "3-Way Flash",
+      "popupGeneral": "Popup Général",
+      "popupHeadsUp": "Popup Heads-Up",
+      "popupThreeWay": "Popup 3-Way"
     }
   },
   "header": {

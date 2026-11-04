@@ -167,7 +167,8 @@
       "layout_note": "The panel switches layout with the table: three players show the 3-way tables, two players the heads-up ones. The switch happens between hands.",
       "import_invalid": "This file is not a SpinTracker HUD profile file.",
       "new_empty": "Empty",
-      "empty_layout": "This layout has no grid yet. Add some in the editor."
+      "empty_layout": "This layout has no grid yet. Add some in the editor.",
+      "from_model": "New profile from a model"
     },
     "placement": {
       "room": "Room",
@@ -322,6 +323,17 @@
         "stack_note": "Several depths are added up as counts, never averaged.",
         "track_note": "A row or column overrides the grid; a cell overrides both."
       }
+    },
+    "templates": {
+      "models": "Models…",
+      "confirm": "Replace the grids of this table size with the model \"{{name}}\"? You can undo it with Ctrl+Z, unless the model is for the other table size.",
+      "huFull": "HU Full",
+      "huFlash": "HU Flash",
+      "threeWayFull": "3-Way Full",
+      "threeWayFlash": "3-Way Flash",
+      "popupGeneral": "Popup General",
+      "popupHeadsUp": "Popup Heads-Up",
+      "popupThreeWay": "Popup 3-Way"
     }
   },
   "header": {

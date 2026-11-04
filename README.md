@@ -103,6 +103,7 @@ npm run dev            # Tauri desktop app: Vite + Rust (the backend runs inside
 | `npm run dev` | Full desktop dev mode (frontend on `:3000`) |
 | `npm run frontend:dev` | Frontend only in a browser (Vite; features that need the Rust shell are unavailable) |
 | `npm run frontend:build` | Type-check and build the frontend |
+| `npm run frontend:test` | Run the frontend unit tests (Vitest, pure modules such as the HUD model) |
 | `npm run build` | Build the Windows installer |
 | `cargo test -p spintracker-core --release` | Run backend tests |
 

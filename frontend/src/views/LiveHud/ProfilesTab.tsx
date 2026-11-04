@@ -6,6 +6,7 @@ import HudGridView from '@/components/livehud/HudGridView'
 import Card from '@/components/ui/Card'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import { useNotificationStore } from '@/stores/notificationStore'
+import { TEMPLATE_IDS, type TemplateId } from './hudTemplates'
 import { exportProfiles, HUD_FORMATS, MAX_OPACITY, MAX_SIZE, MIN_OPACITY, MIN_SIZE, type HudFormat } from './hudProfile'
 import { previewFigures } from './previewData'
 
@@ -13,7 +14,7 @@ import { previewFigures } from './previewData'
 export default function ProfilesTab() {
   const { t } = useTranslation()
   const notify = useNotificationStore()
-  const { settings, updateProfile, setActiveProfile, addProfile, duplicateProfile, removeProfile, importProfilesFile } = useLiveHudStore()
+  const { settings, updateProfile, setActiveProfile, addProfile, duplicateProfile, removeProfile, importProfilesFile, applyTemplate } = useLiveHudStore()
   const profile = settings.profiles.find((p) => p.id === settings.activeProfileId) ?? settings.profiles[0]
   const [format, setFormat] = useState<HudFormat>('threeMax')
   const fileInput = useRef<HTMLInputElement>(null)
@@ -74,6 +75,25 @@ export default function ProfilesTab() {
           </button>
           <input ref={fileInput} type="file" accept="application/json,.json" className="hidden" onChange={(e) => void handleImport(e.target.files?.[0])} />
         </div>
+        <label className="mt-3 block text-xs text-gray-400">
+          {t('liveHud.profiles.from_model')}
+          <select
+            className="mt-1 w-full rounded border border-dark-100 bg-dark-300 px-2 py-1.5 text-sm text-gray-200"
+            value=""
+            onChange={(e) => {
+              const id = e.target.value as TemplateId
+              const created = id ? addProfile(t(`liveHud.templates.${id}`), true) : null
+              if (created) applyTemplate(created, id)
+            }}
+          >
+            <option value="">{t('liveHud.templates.models')}</option>
+            {TEMPLATE_IDS.map((id) => (
+              <option key={id} value={id}>
+                {t(`liveHud.templates.${id}`)}
+              </option>
+            ))}
+          </select>
+        </label>
         <p className="mt-3 text-xs text-gray-500">{t('liveHud.profiles.export_note')}</p>
       </Card>
 

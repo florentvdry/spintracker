@@ -2,7 +2,95 @@ import { describe, expect, it } from 'vitest'
 import { hudBaselines } from '@/views/Stats/hudText'
 import { buildCellView, figureKey, pickColor, requestsOf, type HudFigures } from './hudGrid'
 import { defaultSettings, exportProfiles, importProfiles, sanitizeSettings, seatPositions } from './hudProfile'
-import { legacyDefaultLayouts } from './hudMigration'
+import type { LegacyCell, LegacyFamily, LegacyLayout, LegacyTable } from './hudMigration'
+
+// --- The layouts version 2 shipped with, to build files as that version wrote them
+const LEGACY_DEFAULT_MIN_SAMPLE = 5
+
+const legacyCell = (section: string, label: string, abbr: string, family: LegacyFamily, baseline?: string, column: string | null = null): LegacyCell => {
+  const found = baseline ? hudBaselines[baseline] : undefined
+  return {
+    section,
+    label,
+    column,
+    abbr,
+    family,
+    below: found ? found.target - found.tolerance : null,
+    above: found ? found.target + found.tolerance : null,
+    minSample: LEGACY_DEFAULT_MIN_SAMPLE,
+  }
+}
+
+const legacyStrip = (): LegacyCell[] => [
+  legacyCell('postflop', 'wtsd', 'WTSD', 'showdown', 'WTSD'),
+  legacyCell('postflop', 'wwsf', 'WWSF', 'showdown'),
+  legacyCell('postflop', 'wsd', 'W$SD', 'showdown'),
+  legacyCell('meta', 'hands', 'HU', 'count', undefined, 'hu'),
+  legacyCell('meta', 'hands', '3W', 'count', undefined, 'three_way'),
+]
+
+const legacyPostflop = (): LegacyCell[] => [
+  legacyCell('postflop', 'cbet_flop', 'CB', 'postflop', 'CBet'),
+  legacyCell('postflop', 'cbet_turn', 'CB2', 'postflop'),
+  legacyCell('postflop', 'fold_to_cbet_flop', 'FvCB', 'postflop'),
+  legacyCell('postflop', 'donk_flop', 'Dk', 'postflop'),
+]
+
+const legacyTable = (id: string, title: string, rows: LegacyTable['rows'], column: string, cells: LegacyCell[]): LegacyTable => ({ id, title, rows, column, cells })
+
+const legacyDefaultLayouts = (): { headsUp: LegacyLayout; threeMax: LegacyLayout } => ({
+  headsUp: {
+    strip: legacyStrip(),
+    tables: [
+      legacyTable('sb', 'SB', 'stack', 'sb_hu', [
+        legacyCell('huSb', 'Raise First In', 'Rfi', 'open'),
+        legacyCell('huSb', 'Open Limp', 'L', 'limp', 'Limp'),
+        legacyCell('huSb', 'Limp-Fold vs Raise', 'LF', 'limp', 'LF'),
+        legacyCell('shove', 'Open Shove', 'OS', 'shove', 'OS'),
+      ]),
+      legacyTable('bb', 'BB', 'stack', 'bb_hu', [
+        legacyCell('huBb', 'vs Raise Fold', 'FvR', 'defense', 'FvR'),
+        legacyCell('huBb', 'vs Raise 3-Bet', '3B', 'threeBet'),
+        legacyCell('preflop', '3-Bet Shove', '3BS', 'shove'),
+        legacyCell('shove', 'Call Shove', 'COS', 'shove', 'COS'),
+        legacyCell('huBb', 'vs Limp Raise', 'IS', 'open'),
+      ]),
+      legacyTable('sb-post', 'SB', 'single', 'sb_hu', legacyPostflop()),
+      legacyTable('bb-post', 'BB', 'single', 'bb_hu', legacyPostflop()),
+    ],
+  },
+  threeMax: {
+    strip: legacyStrip(),
+    tables: [
+      legacyTable('btn', 'BTN', 'single', 'btn', [
+        legacyCell('preflop', 'VPIP', 'VP', 'open', 'VPIP'),
+        legacyCell('preflop', 'PFR', 'PFR', 'open'),
+        legacyCell('preflop', 'Fold to 3-Bet Shove', 'F3S', 'defense'),
+        legacyCell('preflop', 'Open Limp', 'L', 'limp', 'Limp'),
+        legacyCell('preflop', 'Limp-Fold', 'LF', 'limp', 'LF'),
+        legacyCell('shove', 'Open Shove', 'OS', 'shove', 'OS'),
+      ]),
+      legacyTable('sb', 'SB', 'single', 'sb_3w', [
+        legacyCell('preflop', 'VPIP', 'VP', 'open', 'VPIP'),
+        legacyCell('preflop', 'PFR', 'PFR', 'open'),
+        legacyCell('preflop', 'Fold to 3-Bet Shove', 'F3S', 'defense'),
+        legacyCell('preflop', 'Limp-Fold', 'LF', 'limp', 'LF'),
+        legacyCell('shove', 'Open Shove', 'OS', 'shove', 'OS'),
+        legacyCell('preflop', '3-Bet', '3B', 'threeBet', '3Bet'),
+      ]),
+      legacyTable('bb', 'BB', 'single', 'bb_3w', [
+        legacyCell('preflop', 'Fold vs 2x', 'FvM', 'defense'),
+        legacyCell('preflop', '3-Bet Shove', '3BS', 'shove'),
+        legacyCell('preflop', 'Iso Raise', 'IST', 'open', 'ISO'),
+        legacyCell('preflop', 'Iso Non-All-In', 'ISN', 'open', 'ISN'),
+        legacyCell('preflop', 'Iso All-In', 'ISS', 'shove', 'ISA'),
+      ]),
+      legacyTable('btn-post', 'BTN', 'single', 'btn', legacyPostflop()),
+      legacyTable('sb-post', 'SB', 'single', 'sb_3w', legacyPostflop()),
+      legacyTable('bb-post', 'BB', 'single', 'bb_3w', legacyPostflop()),
+    ],
+  },
+})
 
 /** A settings file as version 2 wrote it. */
 function v2Settings() {

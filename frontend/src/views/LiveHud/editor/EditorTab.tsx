@@ -18,6 +18,7 @@ import {
 } from '../hudEditor'
 import { newGrid, validateLayout, type CellContent, type GridPosition, type HudGrid, type HudIssue } from '../hudGrid'
 import { GRID_STEP, HUD_FORMATS, HUD_ROOMS, SEATS_BY_FORMAT, seatPositions, type HudFormat, type HudRoom } from '../hudProfile'
+import { TEMPLATE_IDS, TEMPLATES, type TemplateId } from '../hudTemplates'
 import { previewFigures } from '../previewData'
 import Canvas from './Canvas'
 import Inspector from './Inspector'
@@ -215,6 +216,19 @@ export default function EditorTab() {
     setActivePopupId(popup.id)
   }
 
+  // --- Shipped models
+
+  const applyModel = (id: TemplateId) => {
+    const template = TEMPLATES[id]
+    // A layout model replaces the grids of its table size: ask first, and keep a step to undo it.
+    if (template.format && !window.confirm(t('liveHud.templates.confirm', { name: t(`liveHud.templates.${id}`) }))) return
+    if (template.format && template.format !== format) setFormat(template.format)
+    else setHistory((h) => record(h, docRef.current))
+    useLiveHudStore.getState().applyTemplate(profile.id, id)
+    setSelection(NO_SELECTION)
+    setActivePopupId(null)
+  }
+
   // --- In-place text editing
 
   const commitText = (value: string) => {
@@ -382,6 +396,19 @@ export default function EditorTab() {
             <input type="range" min={MIN_ZOOM} max={MAX_ZOOM} step={0.05} value={zoom} onChange={(e) => setZoom(Number(e.target.value))} />
           </label>
           <div className="ml-auto flex items-center gap-1">
+            <select
+              className="rounded border border-dark-100 bg-dark-300 px-2 py-1 text-xs text-gray-200"
+              value=""
+              aria-label={t('liveHud.templates.models')}
+              onChange={(e) => e.target.value && applyModel(e.target.value as TemplateId)}
+            >
+              <option value="">{t('liveHud.templates.models')}</option>
+              {TEMPLATE_IDS.map((id) => (
+                <option key={id} value={id}>
+                  {t(`liveHud.templates.${id}`)}
+                </option>
+              ))}
+            </select>
             <button className="btn-secondary flex items-center gap-1 text-xs" onClick={() => addGrid(false)}>
               <Plus className="h-3.5 w-3.5" />
               {t('liveHud.editor.add_grid')}

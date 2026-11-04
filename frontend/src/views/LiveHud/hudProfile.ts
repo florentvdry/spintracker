@@ -7,7 +7,9 @@ import {
   type HudGrid,
   type HudLayout,
 } from './hudGrid'
-import { legacyDefaultLayouts, migrateLayout, parseLegacyLayout } from './hudMigration'
+import { migrateLayout, parseLegacyLayout } from './hudMigration'
+import { MAX_POPUPS } from './hudGrid'
+import { TEMPLATES, templatePositions, type TemplateId, type TemplateInstance } from './hudTemplates'
 
 export { STACK_BUCKETS }
 
@@ -80,10 +82,21 @@ export interface HudSettings {
 
 // --- Defaults
 
-export const defaultLayouts = (): Record<HudFormat, HudLayout> => {
-  const legacy = legacyDefaultLayouts()
-  return { headsUp: migrateLayout(legacy.headsUp), threeMax: migrateLayout(legacy.threeMax) }
+const layoutOf = (instance: TemplateInstance): HudLayout => ({ grids: instance.grids, popups: instance.popups })
+
+/** The layouts of a fresh install: the full models, with the positions their grids were designed for. */
+function defaultBundle(): { layouts: Record<HudFormat, HudLayout>; placements: Placements } {
+  const headsUp = TEMPLATES.huFull.build()
+  const threeMax = TEMPLATES.threeWayFull.build()
+  const placements = emptyPlacements()
+  for (const room of HUD_ROOMS) {
+    placements[room].headsUp = templatePositions(headsUp, SEAT_ORIGINS.headsUp)
+    placements[room].threeMax = templatePositions(threeMax, SEAT_ORIGINS.threeMax)
+  }
+  return { layouts: { headsUp: layoutOf(headsUp), threeMax: layoutOf(threeMax) }, placements }
 }
+
+export const defaultLayouts = (): Record<HudFormat, HudLayout> => defaultBundle().layouts
 
 export const DEFAULT_PROFILE_ID = 'default'
 const DEFAULT_PROFILE_NAME = 'Spin'
@@ -108,7 +121,7 @@ export const emptyProfile = (id: string, name: string): HudProfile => ({
 /** Where the first grid of a seat sits on a fresh install: out of the way of the cards and the buttons. */
 export const SEAT_ORIGINS: Record<HudFormat, Record<string, GridPosition>> = {
   threeMax: { '+1': { x: 0.01, y: 0.1 }, '+2': { x: 0.57, y: 0.1 } },
-  headsUp: { '+1': { x: 0.3, y: 0.05 } },
+  headsUp: { '+1': { x: 0.05, y: 0.05 } },
 }
 
 const emptyPlacements = (): Placements => {
@@ -123,16 +136,19 @@ const defaultDetection = (): Record<HudRoom, HudDetection> => ({
   Unibet: { process: '', titleRegex: '', activeMinutes: DEFAULT_ACTIVE_MINUTES },
 })
 
-export const defaultSettings = (): HudSettings => ({
-  version: HUD_SETTINGS_VERSION,
-  enabled: false,
-  rooms: { Winamax: false, Unibet: false },
-  detection: defaultDetection(),
-  activeProfileId: DEFAULT_PROFILE_ID,
-  profiles: [defaultProfile(DEFAULT_PROFILE_ID, DEFAULT_PROFILE_NAME)],
-  placements: emptyPlacements(),
-  snapToGrid: true,
-})
+export const defaultSettings = (): HudSettings => {
+  const { layouts, placements } = defaultBundle()
+  return {
+    version: HUD_SETTINGS_VERSION,
+    enabled: false,
+    rooms: { Winamax: false, Unibet: false },
+    detection: defaultDetection(),
+    activeProfileId: DEFAULT_PROFILE_ID,
+    profiles: [{ ...defaultProfile(DEFAULT_PROFILE_ID, DEFAULT_PROFILE_NAME), layouts }],
+    placements,
+    snapToGrid: true,
+  }
+}
 
 /** The positions of the grids of a seat, with a fallback under the previous grid for those never placed. */
 export function seatPositions(placements: Placements, room: HudRoom, format: HudFormat, seat: string, grids: HudGrid[]): Record<string, GridPosition> {
@@ -344,4 +360,33 @@ export function duplicateWithPlacements(source: HudProfile, placements: Placemen
     }
   }
   return { profile, placements: next }
+}
+
+/** The table sizes a popup model can serve. */
+const POPUP_FORMATS: Partial<Record<TemplateId, HudFormat[]>> = { popupGeneral: ['headsUp', 'threeMax'], popupHeadsUp: ['headsUp'], popupThreeWay: ['threeMax'] }
+
+/**
+ * A shipped model applied to a profile. A layout model replaces the grids of its table size (and
+ * where they sit, in every room); a popup model adds its popup to the layouts it serves.
+ */
+export function applyTemplateToSettings(settings: HudSettings, profileId: string, templateId: TemplateId): HudSettings {
+  const template = TEMPLATES[templateId]
+  const instance = template.build()
+  if (template.format) {
+    const format = template.format
+    const placements = structuredClone(settings.placements)
+    for (const room of HUD_ROOMS) placements[room][format] = templatePositions(instance, SEAT_ORIGINS[format])
+    const profiles = settings.profiles.map((p) => (p.id === profileId ? { ...p, layouts: { ...p.layouts, [format]: layoutOf(instance) } } : p))
+    return { ...settings, profiles, placements }
+  }
+  const formats = POPUP_FORMATS[templateId] ?? []
+  const profiles = settings.profiles.map((p) => {
+    if (p.id !== profileId) return p
+    const layouts = { ...p.layouts }
+    for (const format of formats) {
+      if (layouts[format].popups.length < MAX_POPUPS) layouts[format] = { ...layouts[format], popups: [...layouts[format].popups, ...instance.popups.map((g) => structuredClone(g))] }
+    }
+    return { ...p, layouts }
+  })
+  return { ...settings, profiles }
 }

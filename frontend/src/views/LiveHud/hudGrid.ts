@@ -500,13 +500,19 @@ const hasVisibleStyle = (cell: HudGridCell) => cell.style.bg !== undefined || ce
 export const cellAt = (grid: HudGrid, row: number, col: number): HudGridCell | undefined =>
   grid.cells.find((c) => row >= c.row && row < c.row + c.rowSpan && col >= c.col && col < c.col + c.colSpan)
 
-/** Rough height of a grid in pixels at scale 1, for placing grids one under another. */
+/** Measured on the rendered grids: an automatic column is about this many em wide (a figure and its sample). */
+const AUTO_COLUMN_EM = 2.8
+const LINE_EM = 1.5
+/** Padding and frame around the tracks, in pixels. */
+const GRID_PADDING_PX = { width: 8, height: 6 }
+
+/** Rough size of a grid in pixels at scale 1, for placing grids side by side or one under another. */
 export function estimateGridSize(grid: HudGrid): { width: number; height: number } {
   const fontSize = grid.style.fontSize ?? BASE_FONT_SIZE
   const track = (t: Track, fallback: number) => (t.size === 'auto' ? fallback : t.size)
   return {
-    width: grid.cols.reduce((sum, c) => sum + track(c, fontSize * 2.6), 0),
-    height: grid.rows.reduce((sum, r) => sum + track(r, fontSize * 1.5), 0),
+    width: grid.cols.reduce((sum, c) => sum + track(c, fontSize * AUTO_COLUMN_EM), GRID_PADDING_PX.width),
+    height: grid.rows.reduce((sum, r) => sum + track(r, fontSize * LINE_EM), GRID_PADDING_PX.height),
   }
 }
 
