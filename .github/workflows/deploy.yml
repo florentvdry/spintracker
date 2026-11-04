@@ -103,7 +103,7 @@ jobs:
           # Tauri updater manifest (new clients).
           node -e '
             const fs = require("fs");
-            const [, , version, url, sigPath, now] = process.argv;
+            const [version, url, sigPath, now] = process.argv.slice(1);
             const signature = fs.readFileSync(sigPath, "utf8").trim();
             fs.writeFileSync("latest.json", JSON.stringify({
               version, notes: "", pub_date: now,
