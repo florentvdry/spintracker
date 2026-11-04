@@ -38,6 +38,7 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611040001, "AddStreetCounts", "202611040001_add_street_counts.sql"),
     migration!(202611050001, "AddImportFiles", "202611050001_add_import_files.sql"),
     migration!(202611060001, "AddPlayerNotes", "202611060001_add_player_notes.sql"),
+    migration!(202611070001, "NormalizeEntryCost", "202611070001_normalize_entry_cost.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -174,12 +175,37 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 8);
+        assert_eq!(run(&mut conn).unwrap(), 9);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))
             .unwrap();
         assert_eq!(room.as_deref(), Some("Winamax"));
+    }
+
+    #[test]
+    fn entry_cost_migration_adds_the_missing_fees_only() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        run(&mut conn).unwrap();
+        conn.execute_batch(
+            "DELETE FROM VersionInfo WHERE Version = 202611070001;
+             INSERT INTO hands (id, room, buy_in, rake_per_player, prize_pool, multiplier) VALUES
+               ('wx_header', 'Winamax', 0.93, 0.07, 0, 0),
+               ('wx_summary', 'Winamax', 1.0, 0.07, 3, 3),
+               ('wx_big', 'Winamax', 93.0, 7.0, 0, 0),
+               ('ub', 'Unibet', 9.3, 0.7, 100, 11),
+               ('bc', 'Betclic', 1.0, NULL, 3, 3);",
+        )
+        .unwrap();
+        assert_eq!(run(&mut conn).unwrap(), 1);
+        let get = |id: &str| -> (f64, i64) {
+            conn.query_row("SELECT buy_in, multiplier FROM hands WHERE id = ?1", [id], |r| Ok((r.get(0)?, r.get(1)?))).unwrap()
+        };
+        assert_eq!(get("wx_header").0, 1.0);
+        assert_eq!(get("wx_summary").0, 1.0, "a hand completed by its summary already holds the entry cost");
+        assert_eq!(get("wx_big").0, 100.0);
+        assert_eq!(get("ub"), (10.0, 10));
+        assert_eq!(get("bc").0, 1.0);
     }
 
     #[test]

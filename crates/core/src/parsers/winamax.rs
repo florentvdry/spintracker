@@ -240,7 +240,7 @@ fn parse_header_line(line: &str, hand: &mut ParsedHand) {
 
     if let Some(m) = header.captures(line) {
         hand.game_name = Some(m["gameName"].trim().to_string());
-        hand.buy_in = parse_euro(&m["buyIn"]);
+        hand.buy_in = entry_cost(parse_euro(&m["buyIn"]), parse_euro(&m["fee"]));
         hand.rake_per_player = Some(parse_euro(&m["fee"]));
         hand.tournament_level = Some(parse_i32(&m["level"]));
         hand.hand_id = Some(m["handId"].trim().to_string());
@@ -254,7 +254,7 @@ fn parse_header_line(line: &str, hand: &mut ParsedHand) {
             hand.game_name = Some(c[1].trim().to_string());
         }
         if let Some(c) = regex!(r"buyIn:\s*(\d+(?:[.,]\d+)?)\D+\+\s*(\d+(?:[.,]\d+)?)").captures(line) {
-            hand.buy_in = parse_euro(&c[1]);
+            hand.buy_in = entry_cost(parse_euro(&c[1]), parse_euro(&c[2]));
             hand.rake_per_player = Some(parse_euro(&c[2]));
         }
         if let Some(c) = regex!(r"level:\s*(\d+)").captures(line) {

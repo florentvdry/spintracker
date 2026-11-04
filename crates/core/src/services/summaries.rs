@@ -8,7 +8,7 @@ use std::fs;
 use std::path::Path;
 
 use crate::models::ParsedHand;
-use crate::parsers::regex;
+use crate::parsers::{entry_cost, regex};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
 pub struct TournamentSummary {
@@ -62,7 +62,7 @@ pub fn parse_winamax(text: &str) -> Option<(String, TournamentSummary)> {
     // Buy-in and fee are summed: the hand history only shows them separately.
     let buy_in = regex!(r"(?i)Buy-In\s*:\s*(?<buy>\d+(?:[.,]\d+)?)\D+\+\s*(?<fee>\d+(?:[.,]\d+)?)")
         .captures(text)
-        .map_or(0.0, |c| number(&c["buy"]) + number(&c["fee"]));
+        .map_or(0.0, |c| entry_cost(number(&c["buy"]), number(&c["fee"])));
     let pos = position(text, regex!(r"(?i)You finished in\s*(?<pos>\d+)(?:st|nd|rd|th)\s*place"));
     Some((id, TournamentSummary { position: pos, prize_pool, buy_in }))
 }
@@ -75,10 +75,10 @@ pub fn parse_unibet(text: &str) -> Option<(String, TournamentSummary)> {
     let prize_pool = regex!(r"(?i)Total Prize Pool: €(?<value>\d+(?:[.,]\d+)?)")
         .captures(text)
         .map_or(0.0, |c| number(&c["value"]));
-    // Only the buy-in is kept (the fee is not part of it for Unibet).
+    // Buy-in and fee are summed, like the other rooms: that is what the player paid.
     let buy_in = regex!(r"(?i)Buy-In: €(?<buy>\d+(?:[.,]\d+)?)\s*\+\s*€(?<fee>\d+(?:[.,]\d+)?)")
         .captures(text)
-        .map_or(0.0, |c| number(&c["buy"]).max(0.0));
+        .map_or(0.0, |c| entry_cost(number(&c["buy"]), number(&c["fee"])));
     let pos = position(text, regex!(r"(?i)You finished in (?<pos>\d+)(?:st|nd|rd|th) place"));
     Some((id, TournamentSummary { position: pos, prize_pool, buy_in }))
 }
@@ -203,10 +203,19 @@ mod tests {
     }
 
     #[test]
-    fn parses_a_unibet_summary_keeping_only_the_buy_in() {
+    fn parses_a_unibet_summary_summing_buy_in_and_fee() {
         let (id, s) = parse_unibet(UNIBET).unwrap();
         assert_eq!(id, "83498893");
-        assert_eq!(s, TournamentSummary { position: 3, prize_pool: 30.0, buy_in: 9.3 });
+        assert_eq!(s, TournamentSummary { position: 3, prize_pool: 30.0, buy_in: 10.0 });
+    }
+
+    #[test]
+    fn a_big_multiplier_is_derived_from_the_full_entry_cost() {
+        let mut summaries = Summaries::new();
+        summaries.insert("g1".into(), TournamentSummary { position: 1, prize_pool: 100.0, buy_in: 10.0 });
+        let mut hand = ParsedHand { game_id: Some("g1".into()), buy_in: 10.0, ..ParsedHand::default() };
+        apply(&mut hand, &summaries);
+        assert_eq!(hand.multiplier, 10);
     }
 
     #[test]
