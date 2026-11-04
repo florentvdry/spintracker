@@ -3,6 +3,7 @@ mod autoimport;
 mod backend;
 mod commands;
 mod export;
+mod hud;
 mod hud_settings;
 mod import;
 mod updater;
@@ -25,6 +26,7 @@ pub fn run() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(backend::BackendState::default())
         .manage(autoimport::AutoImportState::default())
+        .manage(hud::OverlayState::default())
         .manage(commands::ReplayerState::default())
         .manage(updater::UpdateState::default())
         .setup(|app| {
@@ -83,6 +85,10 @@ pub fn run() {
             commands::auto_import_pick_folder,
             commands::hud_settings_get,
             commands::hud_settings_set,
+            commands::hud_get_state,
+            commands::hud_set_panel_rects,
+            commands::hud_debug_attach,
+            commands::hud_debug_detach,
             commands::open_logs_folder,
             commands::get_app_version,
             commands::frontend_log,

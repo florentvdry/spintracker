@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "hud",
+  "description": "The HUD windows laid over poker tables: they listen to the HUD events and nothing else",
+  "windows": ["hud-*"],
+  "permissions": ["core:event:allow-listen", "core:event:allow-unlisten"]
+}

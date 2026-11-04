@@ -11,7 +11,7 @@ use tauri_plugin_opener::OpenerExt;
 
 use crate::backend::BackendState;
 use crate::autoimport::{self, WatchedFolder};
-use crate::{api, backend, export, hud_settings, import, updater};
+use crate::{api, backend, export, hud, hud_settings, import, updater};
 
 const REPLAYER_BACKGROUND: tauri::window::Color = tauri::window::Color(14, 16, 20, 255);
 
@@ -95,6 +95,35 @@ pub fn hud_settings_get(app: AppHandle) -> Value {
 #[tauri::command]
 pub fn hud_settings_set(app: AppHandle, settings: Value) -> Value {
     hud_settings::set(&app, &settings)
+}
+
+/// What the HUD window that asks should show. Only HUD windows may ask.
+#[tauri::command]
+pub async fn hud_get_state(app: AppHandle, window: WebviewWindow) -> Value {
+    if !window.label().starts_with("hud-") {
+        return Value::Null;
+    }
+    hud::state_of(&app, window.label())
+}
+
+/// The HUD page reports where its panels are, so the rest of the window lets clicks through.
+#[tauri::command]
+pub async fn hud_set_panel_rects(app: AppHandle, window: WebviewWindow, rects: Value) -> Value {
+    if !window.label().starts_with("hud-") {
+        return json!({ "success": false, "message": "Only HUD windows can do this." });
+    }
+    hud::set_panel_rects(&app, window.label(), &rects)
+}
+
+/// Development aid, debug builds only: see `hud::debug_attach`.
+#[tauri::command]
+pub async fn hud_debug_attach(app: AppHandle, title_contains: String) -> Value {
+    hud::debug_attach(&app, &title_contains)
+}
+
+#[tauri::command]
+pub async fn hud_debug_detach(app: AppHandle) -> Value {
+    hud::debug_detach(&app)
 }
 
 /// Lets the user choose a history folder; `null` when the dialog is cancelled.

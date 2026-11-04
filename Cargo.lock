@@ -3894,6 +3894,7 @@ dependencies = [
  "tauri-plugin-updater",
  "tempfile",
  "tokio",
+ "windows",
  "zip 2.6.1",
 ]
 
