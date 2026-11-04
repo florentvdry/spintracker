@@ -1,7 +1,7 @@
 import { memo, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import clsx from 'clsx'
-import { ChevronDown, ChevronRight, Copy, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { ChevronDown, ChevronRight, Copy, GripVertical, Pencil, Plus, Search, Trash2 } from 'lucide-react'
+import { abbreviationOf } from '../hudEditor'
 import { statCell, type CellContent } from '../hudGrid'
 import type { DragPayload } from './useDrag'
 
@@ -31,7 +31,8 @@ interface Props {
   computing: boolean
 }
 
-const itemClass = 'flex cursor-grab touch-none select-none items-center rounded border border-dark-100 bg-dark-300 px-2 py-1 text-xs text-gray-200 hover:border-primary-500 active:cursor-grabbing'
+const chipClass = 'cursor-grab touch-none select-none rounded border border-dark-100 bg-dark-300 px-2 py-0.5 text-xs text-gray-200 hover:border-primary-500 active:cursor-grabbing'
+const rowClass = 'group flex cursor-grab touch-none select-none items-center gap-1.5 rounded py-0.5 pl-1.5 pr-1.5 text-[13px] text-gray-300 hover:bg-dark-300 active:cursor-grabbing'
 
 function PaletteBase({ catalog, loading, onStart, onPick, onCreateCustom, onEditCustom, onDuplicateCustom, onDeleteCustom, computing }: Props) {
   const { t } = useTranslation()
@@ -57,27 +58,27 @@ function PaletteBase({ catalog, loading, onStart, onPick, onCreateCustom, onEdit
   ]
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-2">
+    <div className="flex h-full min-h-0 flex-col gap-2 p-2">
       <div className="relative">
-        <Search className="pointer-events-none absolute left-2 top-1.5 h-3.5 w-3.5 text-gray-500" />
+        <Search className="pointer-events-none absolute left-2 top-2 h-3.5 w-3.5 text-gray-500" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t('liveHud.editor.search')}
-          className="w-full rounded border border-dark-100 bg-dark-300 py-1 pl-7 pr-2 text-xs text-gray-200 focus:border-primary-500 focus:outline-none"
+          className="w-full rounded-md border border-dark-100 bg-dark-500 py-1.5 pl-7 pr-2 text-xs text-gray-200 focus:border-primary-500 focus:outline-none"
         />
       </div>
 
-      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+      <div className="min-h-0 flex-1 space-y-2.5 overflow-y-auto pr-1">
         <div>
-          <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-gray-500">{t('liveHud.editor.elements')}</p>
-          <div className="grid grid-cols-2 gap-1">
+          <p className="mb-1 text-[11px] font-semibold text-gray-500">{t('liveHud.editor.elements')}</p>
+          <div className="flex flex-wrap gap-1">
             {specials.map(({ key, content }) => {
               const label = t(`liveHud.editor.element.${key}`)
               return (
                 <div
                   key={key}
-                  className={itemClass}
+                  className={chipClass}
                   onPointerDown={(e) => {
                     if (e.button === 0) onStart({ kind: 'content', content, label }, e, () => onPick(content))
                   }}
@@ -101,14 +102,14 @@ function PaletteBase({ catalog, loading, onStart, onPick, onCreateCustom, onEdit
             <div key={section}>
               <button
                 type="button"
-                className="mb-1 flex w-full items-center gap-1 text-left text-[10px] font-semibold uppercase tracking-wide text-gray-400 hover:text-gray-200"
+                className="mb-0.5 flex w-full items-center gap-1 px-0.5 py-1 text-left text-xs font-semibold text-gray-300 hover:text-white"
                 onClick={() => setClosed((c) => ({ ...c, [section]: !c[section] }))}
               >
                 {isClosed ? <ChevronRight className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                {t(`liveHud.editor.section.${section}`, { defaultValue: section })} <span className="text-gray-600">({stats.length})</span>
+                {t(`liveHud.editor.section.${section}`, { defaultValue: section })} <span className="font-normal text-gray-500">{stats.length}</span>
               </button>
               {!isClosed && (
-                <div className={clsx('grid gap-1', 'grid-cols-1')}>
+                <div>
                   {stats.map((stat) => {
                     const content = stat.section === 'meta' ? ({ kind: 'hands' } as CellContent) : statCell(stat.section, stat.label)
                     const ref = { section: stat.section, label: stat.label }
@@ -117,13 +118,15 @@ function PaletteBase({ catalog, loading, onStart, onPick, onCreateCustom, onEdit
                     return (
                       <div
                         key={stat.id}
-                        className={itemClass}
+                        className={rowClass}
                         title={stat.id}
                         onPointerDown={(e) => {
                           if (e.button === 0) onStart({ kind: 'content', content, label: shown, stat: ref }, e, () => onPick(content, ref))
                         }}
                       >
+                        <GripVertical className="h-3.5 w-3.5 shrink-0 text-dark-50" aria-hidden />
                         <span className="min-w-0 flex-1 truncate">{shown}</span>
+                        {customId === null && stat.section !== 'meta' && <span className="shrink-0 font-mono text-[11px] text-gray-500">{abbreviationOf(stat.label)}</span>}
                         {customId !== null && (
                           <span className="ml-1 flex shrink-0 gap-1" onPointerDown={(e) => e.stopPropagation()}>
                             {stat.ready === false && <span className="text-[10px] text-amber-300">{t('customStats.pending')}</span>}
