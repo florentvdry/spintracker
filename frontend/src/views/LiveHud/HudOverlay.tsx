@@ -1,17 +1,16 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import HudPanel, { type HudFigure } from '@/components/livehud/HudPanel'
+import HudPanel, { type HudFigures } from '@/components/livehud/HudPanel'
 import { ipcService } from '@/services/ipcService'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import { SEATS_BY_FORMAT, type HudFormat, type HudRoom } from './hudProfile'
-import { PREVIEW_HANDS, previewFigures } from './previewData'
+import { previewFigures } from './previewData'
 
 /** One opponent's panel, as the shell sends it. */
 export interface LivePanel {
   /** Seat relative to the hero: `+1`, `+2`. */
   seat: string
   name: string
-  hands: number
-  figures: Record<string, HudFigure | undefined>
+  figures: HudFigures
   tag?: string
   /** No hand of this opponent was written yet. */
   waiting?: boolean
@@ -50,17 +49,18 @@ export default function HudOverlay() {
   }, [load])
 
   const profile = settings.profiles.find((p) => p.id === settings.activeProfileId) ?? settings.profiles[0]
-  const rows = profile.stats[profile.variant]
   const room = payload?.room ?? DEMO_ROOM
+  // The panel follows the table's size: a table of two players shows the heads-up layout.
   const format = payload?.format ?? DEMO_FORMAT
+  const layout = profile.layouts[format]
   const placements = settings.placements[room][format]
 
   const panels = useMemo<LivePanel[]>(() => {
     if (payload?.panels) return payload.panels
     if (!payload?.demo) return []
-    const figures = previewFigures(rows)
-    return SEATS_BY_FORMAT[format].map((seat, i) => ({ seat, name: `Player ${i + 1}`, hands: PREVIEW_HANDS, figures }))
-  }, [payload, rows, format])
+    const figures = previewFigures(layout)
+    return SEATS_BY_FORMAT[format].map((seat, i) => ({ seat, name: `Player ${i + 1}`, figures }))
+  }, [payload, layout, format])
 
   // The shell lets clicks through everywhere except on the panels, so it needs their rectangles.
   useLayoutEffect(() => {
@@ -93,9 +93,7 @@ export default function HudOverlay() {
           >
             <HudPanel
               name={panel.name}
-              hands={panel.hands}
-              variant={profile.variant}
-              rows={rows}
+              layout={layout}
               figures={panel.figures}
               opacity={profile.opacity}
               size={profile.size}

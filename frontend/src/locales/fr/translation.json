@@ -101,12 +101,6 @@
   "liveHud": {
     "tabs": { "live": "En direct", "profiles": "Profils", "placement": "Placement" },
     "block": { "threeWay": "3-way", "headsUp": "Heads-up", "main": "Preflop" },
-    "variant": { "spin": "Spin", "compact": "Compact", "minimal": "Minimal" },
-    "variant_note": {
-      "spin": "Affiche toujours les blocs 3-way et heads-up, quelle que soit la main en cours.",
-      "compact": "VPIP, PFR, 3-Bet et Fold vs Steal.",
-      "minimal": "VPIP et PFR seulement ; le reste est dans le popup."
-    },
     "format": { "threeMax": "3 joueurs", "headsUp": "Heads-up" },
     "panel": { "first_hand_expected": "1re main attendue" },
     "preview": { "player": "Joueur {{n}}" },
@@ -144,6 +138,10 @@
       "size": "Taille",
       "show_hero": "Afficher mon panneau",
       "import_ok": "Profils importés.",
+      "layout_note": "Le panneau change de disposition avec la table : trois joueurs affichent les tableaux 3-way, deux joueurs les tableaux heads-up. Le changement se fait entre deux mains.",
+      "strip": "Bandeau (au-dessus des tableaux)",
+      "rows_stack": "une ligne par profondeur de stack",
+      "rows_single": "une ligne",
       "import_invalid": "Ce fichier n'est pas un fichier de profils HUD SpinTracker."
     },
     "placement": {
