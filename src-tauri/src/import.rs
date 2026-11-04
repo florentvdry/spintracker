@@ -91,6 +91,7 @@ pub async fn run(app: AppHandle) -> Value {
 
 fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], temp_dir: &Path) -> Value {
     let mut files: Vec<PathBuf> = Vec::new();
+    let mut errors: Vec<Value> = Vec::new();
     for path in selected {
         let is_zip = path.extension().map(|e| e.eq_ignore_ascii_case("zip")).unwrap_or(false);
         if !is_zip {
@@ -100,12 +101,15 @@ fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], t
         let stem = path.file_stem().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default();
         match extract_zip(path, &temp_dir.join(stem)) {
             Ok(extracted) => files.extend(extracted),
-            Err(err) => log::error!("Failed to extract {}: {err}", path.display()),
+            Err(err) => {
+                log::error!("Failed to extract {}: {err}", path.display());
+                errors.push(json!({ "file": file_name(path), "error": err }));
+            }
         }
     }
 
     if files.is_empty() {
-        return json!({ "success": false, "message": "No valid hand history files found to import." });
+        return json!({ "success": false, "message": "No valid hand history files found to import.", "errors": errors });
     }
 
     let total_files = files.len();
@@ -133,7 +137,6 @@ fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], t
     // Phase 2: import each file and relay its progress.
     let mut total_imported: u64 = 0;
     let mut total_skipped: u64 = 0;
-    let mut errors: Vec<Value> = Vec::new();
     let file_share = IMPORT_SHARE / total_files as f64;
     let cancel = AtomicBool::new(false);
 
