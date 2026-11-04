@@ -70,8 +70,8 @@ const layoutOf = (instance: TemplateInstance): HudLayout => ({ grids: instance.g
 
 /** The layouts of a fresh install: the full models, with the positions their grids were designed for. */
 function defaultBundle(): { layouts: Record<HudFormat, HudLayout>; placements: Placements } {
-  const headsUp = TEMPLATES.huFull.build()
-  const threeMax = TEMPLATES.threeWayFull.build()
+  const headsUp = TEMPLATES.full.build('headsUp')
+  const threeMax = TEMPLATES.full.build('threeMax')
   const placements = emptyPlacements()
   placements.headsUp = templatePositions(headsUp, SEAT_ORIGINS.headsUp)
   placements.threeMax = templatePositions(threeMax, SEAT_ORIGINS.threeMax)
@@ -320,19 +320,24 @@ export function duplicateWithPlacements(source: HudProfile, placements: Placemen
 const POPUP_FORMATS: Partial<Record<TemplateId, HudFormat[]>> = { popupGeneral: ['headsUp', 'threeMax'], popupHeadsUp: ['headsUp'], popupThreeWay: ['threeMax'] }
 
 /**
- * A shipped model applied to a profile. A layout model replaces the grids of its table size (and
- * where they sit); a popup model adds its popup to the layouts it serves.
+ * A shipped model applied to a profile. A layout model replaces the grids of both table sizes (and
+ * where they sit), or only of `onlyFormat` when the editor applies it to the size being edited; a
+ * popup model adds its popup to the layouts it serves.
  */
-export function applyTemplateToSettings(settings: HudSettings, profileId: string, templateId: TemplateId): HudSettings {
+export function applyTemplateToSettings(settings: HudSettings, profileId: string, templateId: TemplateId, onlyFormat?: HudFormat): HudSettings {
   const template = TEMPLATES[templateId]
-  const instance = template.build()
-  if (template.format) {
-    const format = template.format
+  if (template.isLayout) {
     const placements = structuredClone(settings.placements)
-    placements[format] = templatePositions(instance, SEAT_ORIGINS[format])
-    const profiles = settings.profiles.map((p) => (p.id === profileId ? { ...p, layouts: { ...p.layouts, [format]: layoutOf(instance) } } : p))
+    const replaced: Partial<Record<HudFormat, HudLayout>> = {}
+    for (const format of onlyFormat ? [onlyFormat] : HUD_FORMATS) {
+      const instance = template.build(format)
+      placements[format] = templatePositions(instance, SEAT_ORIGINS[format])
+      replaced[format] = layoutOf(instance)
+    }
+    const profiles = settings.profiles.map((p) => (p.id === profileId ? { ...p, layouts: { ...p.layouts, ...replaced } } : p))
     return { ...settings, profiles, placements }
   }
+  const instance = template.build('headsUp')
   const formats = POPUP_FORMATS[templateId] ?? []
   const profiles = settings.profiles.map((p) => {
     if (p.id !== profileId) return p

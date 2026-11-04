@@ -297,11 +297,9 @@
     },
     "templates": {
       "models": "Modèles…",
-      "confirm": "Remplacer les grilles de cette taille de table par le modèle « {{name}} » ? Ctrl+Z l'annule, sauf si le modèle est pour l'autre taille de table.",
-      "huFull": "HU Full",
-      "huFlash": "HU Flash",
-      "threeWayFull": "3-Way Full",
-      "threeWayFlash": "3-Way Flash",
+      "confirm": "Remplacer les grilles de cette taille de table par le modèle « {{name}} » ? Ctrl+Z l'annule.",
+      "full": "Full",
+      "flash": "Flash",
       "popupGeneral": "Popup Général",
       "popupHeadsUp": "Popup Heads-Up",
       "popupThreeWay": "Popup 3-Way"

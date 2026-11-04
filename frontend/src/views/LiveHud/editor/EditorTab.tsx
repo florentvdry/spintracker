@@ -211,11 +211,10 @@ export default function EditorTab() {
 
   const applyModel = (id: TemplateId) => {
     const template = TEMPLATES[id]
-    // A layout model replaces the grids of its table size: ask first, and keep a step to undo it.
-    if (template.format && !window.confirm(t('liveHud.templates.confirm', { name: t(`liveHud.templates.${id}`) }))) return
-    if (template.format && template.format !== format) setFormat(template.format)
-    else setHistory((h) => record(h, docRef.current))
-    useLiveHudStore.getState().applyTemplate(profile.id, id)
+    // A layout model replaces the grids of the table size being edited: ask first, and keep a step to undo it.
+    if (template.isLayout && !window.confirm(t('liveHud.templates.confirm', { name: t(`liveHud.templates.${id}`) }))) return
+    setHistory((h) => record(h, docRef.current))
+    useLiveHudStore.getState().applyTemplate(profile.id, id, template.isLayout ? format : undefined)
     setSelection(NO_SELECTION)
     setActivePopupId(null)
   }

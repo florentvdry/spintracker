@@ -297,11 +297,9 @@
     },
     "templates": {
       "models": "Models…",
-      "confirm": "Replace the grids of this table size with the model \"{{name}}\"? You can undo it with Ctrl+Z, unless the model is for the other table size.",
-      "huFull": "HU Full",
-      "huFlash": "HU Flash",
-      "threeWayFull": "3-Way Full",
-      "threeWayFlash": "3-Way Flash",
+      "confirm": "Replace the grids of this table size with the model \"{{name}}\"? You can undo it with Ctrl+Z.",
+      "full": "Full",
+      "flash": "Flash",
       "popupGeneral": "Popup General",
       "popupHeadsUp": "Popup Heads-Up",
       "popupThreeWay": "Popup 3-Way"

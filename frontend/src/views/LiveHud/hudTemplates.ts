@@ -22,9 +22,10 @@ import {
 } from './hudGrid'
 import type { HudFormat, SeatPlacements } from './hudProfile'
 
-export type TemplateId = 'huFull' | 'huFlash' | 'threeWayFull' | 'threeWayFlash' | 'popupGeneral' | 'popupHeadsUp' | 'popupThreeWay'
+export type LayoutTemplateId = 'full' | 'flash'
+export type TemplateId = LayoutTemplateId | 'popupGeneral' | 'popupHeadsUp' | 'popupThreeWay'
 
-export const TEMPLATE_IDS: TemplateId[] = ['huFull', 'huFlash', 'threeWayFull', 'threeWayFlash', 'popupGeneral', 'popupHeadsUp', 'popupThreeWay']
+export const TEMPLATE_IDS: TemplateId[] = ['full', 'flash', 'popupGeneral', 'popupHeadsUp', 'popupThreeWay']
 
 export interface TemplateInstance {
   grids: HudGrid[]
@@ -431,19 +432,17 @@ function threeWayFlash(): TemplateInstance {
 
 export interface TemplateInfo {
   id: TemplateId
-  /** The table size a layout model is for; `null` for a popup model. */
-  format: HudFormat | null
-  build: () => TemplateInstance
+  /** A layout model has a version for each table size; a popup model is the same for both. */
+  isLayout: boolean
+  build: (format: HudFormat) => TemplateInstance
 }
 
 export const TEMPLATES: Record<TemplateId, TemplateInfo> = {
-  huFull: { id: 'huFull', format: 'headsUp', build: headsUpFull },
-  huFlash: { id: 'huFlash', format: 'headsUp', build: headsUpFlash },
-  threeWayFull: { id: 'threeWayFull', format: 'threeMax', build: threeWayFull },
-  threeWayFlash: { id: 'threeWayFlash', format: 'threeMax', build: threeWayFlash },
-  popupGeneral: { id: 'popupGeneral', format: null, build: () => ({ grids: [], popups: [generalPopup()], offsets: {} }) },
-  popupHeadsUp: { id: 'popupHeadsUp', format: null, build: () => ({ grids: [], popups: [headsUpPopup()], offsets: {} }) },
-  popupThreeWay: { id: 'popupThreeWay', format: null, build: () => ({ grids: [], popups: [threeWayPopup()], offsets: {} }) },
+  full: { id: 'full', isLayout: true, build: (format) => (format === 'headsUp' ? headsUpFull() : threeWayFull()) },
+  flash: { id: 'flash', isLayout: true, build: (format) => (format === 'headsUp' ? headsUpFlash() : threeWayFlash()) },
+  popupGeneral: { id: 'popupGeneral', isLayout: false, build: () => ({ grids: [], popups: [generalPopup()], offsets: {} }) },
+  popupHeadsUp: { id: 'popupHeadsUp', isLayout: false, build: () => ({ grids: [], popups: [headsUpPopup()], offsets: {} }) },
+  popupThreeWay: { id: 'popupThreeWay', isLayout: false, build: () => ({ grids: [], popups: [threeWayPopup()], offsets: {} }) },
 }
 
 /** Where a model's grids sit for each seat: its panel starts at the seat's usual spot. */

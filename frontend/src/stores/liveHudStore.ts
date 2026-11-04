@@ -36,7 +36,7 @@ interface LiveHudState {
   /** Adds the profiles of a shared file; `false` when the file is not a valid one. */
   importProfilesFile: (content: string) => boolean
   /** Applies a shipped model to a profile (see `applyTemplateToSettings`). */
-  applyTemplate: (profileId: string, templateId: TemplateId) => void
+  applyTemplate: (profileId: string, templateId: TemplateId, onlyFormat?: HudFormat) => void
   setSnapToGrid: (snap: boolean) => void
   /** Sets the layout of a format and where its grids sit, in one save (one undo step for the editor). */
   setEditorDoc: (profileId: string, format: HudFormat, layout: HudLayout, seats: Record<string, SeatPlacements>) => void
@@ -102,7 +102,7 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
       return true
     },
 
-    applyTemplate: (profileId, templateId) => commit((s) => applyTemplateToSettings(s, profileId, templateId)),
+    applyTemplate: (profileId, templateId, onlyFormat) => commit((s) => applyTemplateToSettings(s, profileId, templateId, onlyFormat)),
 
     setSnapToGrid: (snapToGrid) => commit((s) => ({ ...s, snapToGrid })),
 
