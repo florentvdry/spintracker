@@ -7,11 +7,12 @@
 use std::sync::mpsc::Sender;
 use std::sync::OnceLock;
 
-use windows::core::BOOL;
-use windows::Win32::Foundation::{HWND, LPARAM, POINT, RECT};
+use windows::core::{BOOL, PWSTR};
+use windows::Win32::Foundation::{CloseHandle, HWND, LPARAM, POINT, RECT};
+use windows::Win32::System::Threading::{OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_FORMAT, PROCESS_QUERY_LIMITED_INFORMATION};
 use windows::Win32::UI::Accessibility::{SetWinEventHook, HWINEVENTHOOK};
 use windows::Win32::UI::WindowsAndMessaging::{
-    DispatchMessageW, EnumWindows, GetCursorPos, GetMessageW, SetLayeredWindowAttributes, GetWindow, GetWindowLongPtrW, GetWindowRect,
+    DispatchMessageW, EnumWindows, GetCursorPos, GetMessageW, SetLayeredWindowAttributes, GetWindow, GetWindowLongPtrW, GetWindowRect, GetWindowThreadProcessId,
     GetWindowTextLengthW, GetWindowTextW, IsIconic, IsWindow, IsWindowVisible, SetWindowLongPtrW, SetWindowPos, ShowWindow, TranslateMessage,
     EVENT_OBJECT_DESTROY, EVENT_OBJECT_LOCATIONCHANGE, EVENT_SYSTEM_MINIMIZEEND, EVENT_SYSTEM_MINIMIZESTART, GWL_EXSTYLE,
     GW_HWNDPREV, HWND_TOP, HWND_TOPMOST, MSG, OBJID_WINDOW, SWP_NOACTIVATE, SWP_NOMOVE, SWP_NOSIZE, SW_HIDE, SW_SHOWNOACTIVATE, LWA_ALPHA, WS_EX_LAYERED, WS_EX_TRANSPARENT,
@@ -71,6 +72,26 @@ pub fn rect(handle: Handle) -> Option<Rect> {
     // SAFETY: `r` is a valid out pointer for the call.
     unsafe { GetWindowRect(hwnd(handle), &mut r).ok()? };
     Some(Rect { x: r.left, y: r.top, width: r.right - r.left, height: r.bottom - r.top })
+}
+
+/// File name of the program that owns a window (`winamax.exe`), if Windows lets us read it.
+pub fn process_name(handle: Handle) -> Option<String> {
+    let mut pid = 0u32;
+    // SAFETY: `pid` is a valid out pointer; the process handle is closed before returning.
+    unsafe {
+        GetWindowThreadProcessId(hwnd(handle), Some(&mut pid));
+        if pid == 0 {
+            return None;
+        }
+        let process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid).ok()?;
+        let mut buffer = [0u16; 520];
+        let mut length = buffer.len() as u32;
+        let queried = QueryFullProcessImageNameW(process, PROCESS_NAME_FORMAT(0), PWSTR(buffer.as_mut_ptr()), &mut length);
+        let _ = CloseHandle(process);
+        queried.ok()?;
+        let path = String::from_utf16_lossy(&buffer[..length as usize]);
+        path.rsplit(['\\', '/']).next().map(str::to_string)
+    }
 }
 
 /// The cursor position in physical screen pixels.

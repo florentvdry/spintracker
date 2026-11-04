@@ -27,6 +27,7 @@ pub fn run() {
         .manage(backend::BackendState::default())
         .manage(autoimport::AutoImportState::default())
         .manage(hud::OverlayState::default())
+        .manage(hud::EngineState::default())
         .manage(commands::ReplayerState::default())
         .manage(updater::UpdateState::default())
         .setup(|app| {
@@ -50,6 +51,7 @@ pub fn run() {
 
             backend::start(&handle);
             autoimport::start(&handle);
+            hud::start(&handle);
 
             let failsafe_handle = handle.clone();
             tauri::async_runtime::spawn(async move {
@@ -86,6 +88,9 @@ pub fn run() {
             commands::hud_settings_get,
             commands::hud_settings_set,
             commands::hud_get_state,
+            commands::hud_tables,
+            commands::hud_associate,
+            commands::hud_set_hidden,
             commands::hud_set_panel_rects,
             commands::hud_debug_attach,
             commands::hud_debug_detach,

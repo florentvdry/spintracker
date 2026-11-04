@@ -4,7 +4,7 @@
 //! catches whatever the watcher missed (and what changed while the app was closed). The worker is
 //! paused while the active database is being swapped, then restarted on the new one.
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::{channel, Receiver, RecvTimeoutError, Sender};
@@ -19,6 +19,7 @@ use spintracker_core::services::{is_history_file, list_history_files};
 use tauri::{AppHandle, Emitter, Manager};
 
 use crate::backend::{self, BackendState};
+use crate::hud;
 
 const CONFIG_FILE: &str = "auto_import.json";
 const HANDS_IMPORTED_EVENT: &str = "hands-imported";
@@ -254,6 +255,8 @@ struct Worker {
     reload_due: bool,
     /// Files waiting for their writer to go quiet, with the time of the last event.
     pending: HashMap<PathBuf, Instant>,
+    /// Files imported without equity because a table was open: imported again once none is.
+    deferred: HashSet<PathBuf>,
     last_sweep: Instant,
 }
 
@@ -269,6 +272,7 @@ impl Worker {
             paused: false,
             reload_due: true,
             pending: HashMap::new(),
+            deferred: HashSet::new(),
             last_sweep: Instant::now(),
         }
     }
@@ -296,6 +300,7 @@ impl Worker {
                 self.apply_settings();
             }
             self.flush_quiet_files();
+            self.complete_deferred();
             if self.watcher.is_some() && self.last_sweep.elapsed() >= SWEEP_INTERVAL {
                 self.sweep();
             }
@@ -379,6 +384,23 @@ impl Worker {
         }
     }
 
+    /// Imports again, with equity, the files that were imported while a table was open, as soon as
+    /// no table is.
+    fn complete_deferred(&mut self) {
+        if self.deferred.is_empty() || hud::table_mode() {
+            return;
+        }
+        let Some(backend) = self.app.state::<BackendState>().ready() else { return };
+        let files: Vec<PathBuf> = self.deferred.drain().collect();
+        for path in files.iter().filter(|p| p.is_file()) {
+            if let Err(err) = backend.importer().reimport_path(path) {
+                log::error!("[auto-import] completing {}: {err}", path.display());
+            }
+        }
+        log::info!("[auto-import] equity completed for {} files", files.len());
+        let _ = self.app.emit(HANDS_IMPORTED_EVENT, json!({ "imported": 0, "files": files.len() }));
+    }
+
     fn flush_quiet_files(&mut self) {
         let due: Vec<PathBuf> =
             self.pending.iter().filter(|(_, last)| last.elapsed() >= DEBOUNCE).map(|(path, _)| path.clone()).collect();
@@ -397,10 +419,15 @@ impl Worker {
             if !path.is_file() {
                 continue;
             }
-            match backend.importer().import_path(&path) {
+            // No equity while the user sits at a table: the file is completed afterwards.
+            let equity = !hud::table_mode();
+            match backend.importer().import_path(&path, equity) {
                 Ok(Some(result)) if result.imported > 0 => {
                     hands += result.imported;
                     files += 1;
+                    if !equity {
+                        self.deferred.insert(path.clone());
+                    }
                 }
                 Ok(_) => {}
                 Err(err) => {

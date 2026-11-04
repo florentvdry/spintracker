@@ -115,6 +115,23 @@ pub async fn hud_set_panel_rects(app: AppHandle, window: WebviewWindow, rects: V
     hud::set_panel_rects(&app, window.label(), &rects)
 }
 
+/// The tables the HUD found, and the tournaments they can be paired with.
+#[tauri::command]
+pub async fn hud_tables(app: AppHandle) -> Value {
+    hud::tables(&app)
+}
+
+/// Pairs a table window with a tournament (the user's choice when the HUD could not tell).
+#[tauri::command]
+pub async fn hud_associate(app: AppHandle, table: i64, game_id: String) -> Value {
+    hud::associate(&app, table, game_id)
+}
+
+#[tauri::command]
+pub async fn hud_set_hidden(app: AppHandle, table: i64, hidden: bool) -> Value {
+    hud::set_hidden(&app, table, hidden)
+}
+
 /// Development aid, debug builds only: see `hud::debug_attach`.
 #[tauri::command]
 pub async fn hud_debug_attach(app: AppHandle, title_contains: String, format: Option<String>) -> Value {

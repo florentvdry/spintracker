@@ -7,6 +7,8 @@
 #[allow(dead_code)]
 pub mod seats;
 #[cfg(windows)]
+mod engine;
+#[cfg(windows)]
 mod overlay;
 #[cfg(windows)]
 mod win32;
@@ -15,12 +17,17 @@ use serde_json::{json, Value};
 use tauri::AppHandle;
 
 #[cfg(windows)]
+pub use engine::EngineState;
+#[cfg(windows)]
 pub use overlay::OverlayState;
 
-/// State kept for the overlay windows; empty where there are none.
+/// State kept for the overlay windows and the table engine; empty where there are none.
 #[cfg(not(windows))]
 #[derive(Default)]
 pub struct OverlayState;
+#[cfg(not(windows))]
+#[derive(Default)]
+pub struct EngineState;
 
 /// What the HUD page of window `label` shows, or `null`.
 pub fn state_of(app: &AppHandle, label: &str) -> Value {
@@ -87,5 +94,62 @@ pub fn debug_detach(app: &AppHandle) -> Value {
     {
         let _ = app;
         json!({ "success": false, "message": "Only available in debug builds on Windows." })
+    }
+}
+
+/// Starts looking for tables once the HUD is turned on. Idle until then.
+pub fn start(app: &AppHandle) {
+    #[cfg(windows)]
+    engine::start(app);
+    #[cfg(not(windows))]
+    let _ = app;
+}
+
+/// Whether a poker table is open: equity must not be computed.
+pub fn table_mode() -> bool {
+    #[cfg(windows)]
+    {
+        engine::table_mode()
+    }
+    #[cfg(not(windows))]
+    {
+        false
+    }
+}
+
+/// The detected tables and the tournaments they can be paired with.
+pub fn tables(app: &AppHandle) -> Value {
+    #[cfg(windows)]
+    {
+        engine::view(app)
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = app;
+        json!({ "success": true, "enabled": false, "tableMode": false, "tables": [], "candidates": [] })
+    }
+}
+
+pub fn associate(app: &AppHandle, table: i64, game_id: String) -> Value {
+    #[cfg(windows)]
+    {
+        engine::associate(app, table as isize, game_id)
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = (app, table, game_id);
+        json!({ "success": false, "message": "The HUD is only available on Windows." })
+    }
+}
+
+pub fn set_hidden(app: &AppHandle, table: i64, hidden: bool) -> Value {
+    #[cfg(windows)]
+    {
+        engine::set_hidden(app, table as isize, hidden)
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = (app, table, hidden);
+        json!({ "success": false, "message": "The HUD is only available on Windows." })
     }
 }
