@@ -18,8 +18,10 @@ use crate::Result;
 
 /// A table shows at most this many opponents, hero included.
 const MAX_PLAYERS: usize = 12;
-/// Enough for a heads-up layout asked in one go (stack-depth tables hold about a hundred figures).
-const MAX_STATS: usize = 256;
+/// Enough for a full heads-up layout asked in one go: two stack-depth matrices of about fifteen
+/// columns over seven depths, with popups, come to a few hundred figures. The cost per figure is
+/// small (see the timing test in `tests/hud.rs`).
+pub const MAX_STATS: usize = 2048;
 /// Players kept in memory; the cache is emptied when it grows past this.
 const CACHE_CAPACITY: usize = 500;
 

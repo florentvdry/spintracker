@@ -7,13 +7,16 @@ use std::fs;
 use std::path::PathBuf;
 
 use serde_json::{json, Value};
-use tauri::AppHandle;
+use tauri::{AppHandle, Emitter};
 
 use crate::backend;
 
 const SETTINGS_FILE: &str = "hud_settings.json";
-/// Profiles and positions are small; this only stops a runaway payload from the webview.
-const MAX_SETTINGS_BYTES: usize = 256 * 1024;
+/// A profile holds two layouts of a few hundred cells each, and there are up to twenty profiles:
+/// a few megabytes at most. This only stops a runaway payload from the webview.
+const MAX_SETTINGS_BYTES: usize = 16 * 1024 * 1024;
+/// Sent to every window after a save, so that an open HUD window reads the new settings.
+const CHANGED_EVENT: &str = "hud-settings-changed";
 
 fn settings_path(app: &AppHandle) -> PathBuf {
     backend::data_dir(app).join(SETTINGS_FILE)
@@ -39,7 +42,7 @@ fn validate(settings: &Value) -> Result<String, String> {
     if !settings.get("version").is_some_and(Value::is_u64) {
         return Err("The HUD settings need a numeric version.".into());
     }
-    let text = serde_json::to_string_pretty(settings).map_err(|e| e.to_string())?;
+    let text = serde_json::to_string(settings).map_err(|e| e.to_string())?;
     if text.len() > MAX_SETTINGS_BYTES {
         return Err("The HUD settings are too large.".into());
     }
@@ -56,7 +59,12 @@ pub fn set(app: &AppHandle, settings: &Value) -> Value {
     let temporary = path.with_extension("json.tmp");
     let result = fs::write(&temporary, text).and_then(|_| fs::rename(&temporary, &path));
     match result {
-        Ok(()) => json!({ "success": true }),
+        Ok(()) => {
+            if let Err(err) = app.emit(CHANGED_EVENT, ()) {
+                log::warn!("[hud] cannot announce the new settings: {err}");
+            }
+            json!({ "success": true })
+        }
         Err(err) => {
             log::error!("[hud] cannot save the settings: {err}");
             json!({ "success": false, "message": err.to_string() })

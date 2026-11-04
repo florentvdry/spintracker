@@ -156,8 +156,8 @@ fn invalid_requests_are_rejected() {
     assert_eq!(backend.handle("GET", "/hud/catalog", None).status, 200);
 }
 
-#[test]
-fn a_player_with_ten_thousand_hands_is_answered_quickly() {
+/// A database where one opponent played 10 000 hands against the hero, at every stack depth.
+fn backend_with_ten_thousand_hands() -> (tempfile::TempDir, Backend) {
     let dir = tempfile::tempdir().unwrap();
     let backend = Backend::open(dir.path(), None).unwrap();
     {
@@ -183,6 +183,12 @@ fn a_player_with_ten_thousand_hands_is_answered_quickly() {
         tx.commit().unwrap();
     }
     backend.database().bump_data_version();
+    (dir, backend)
+}
+
+#[test]
+fn a_player_with_ten_thousand_hands_is_answered_quickly() {
+    let (_dir, backend) = backend_with_ten_thousand_hands();
 
     // A heads-up layout asked in one go: two stack-depth tables of eight figures over seven depths.
     let mut stats = vec![stat("preflop", "VPIP", Some("tot")), stat("postflop", "wtsd", None), stat("threeWayPreflop", "BTN RFI", None)];
@@ -335,4 +341,44 @@ fn a_tournament_being_played_is_listed_with_the_seats_around_the_hero() {
     assert!(tables("Winamax", "2999-01-01 00:00:00").is_empty(), "hands older than `since` are not live");
     assert!(tables("Unibet", "2000-01-01 00:00:00").is_empty(), "other rooms are not mixed in");
     assert_eq!(backend.handle("GET", "/hud/tables?room=Winamax", None).status, 400);
+}
+
+#[test]
+fn a_full_grid_layout_of_a_thousand_figures_is_answered_quickly() {
+    let (_dir, backend) = backend_with_ten_thousand_hands();
+    let buckets = ["13+", "11-13", "9-11", "7-9", "5-7", "3-5", "0-3"];
+    let columns = ["sb_hu", "bb_hu", "btn", "sb_3w", "bb_3w"];
+    // Seven depths, five columns, and about thirty figures per cell of the matrix.
+    let figures = [
+        ("preflop", "VPIP"), ("preflop", "PFR"), ("preflop", "Open Limp"), ("preflop", "3-Bet"), ("preflop", "Fold to 3-Bet"),
+        ("preflop", "Limp-Fold"), ("preflop", "Iso Raise"), ("preflop", "Fold vs Raise"), ("shove", "Open Shove"),
+        ("shove", "Call Shove"), ("shove", "Iso Shove"), ("postflop", "cbet_flop"), ("postflop", "fold_to_cbet_flop"),
+        ("postflop", "donk_flop"), ("postflop", "wtsd"), ("meta", "hands"),
+    ];
+    let mut stats = Vec::new();
+    for bucket in buckets {
+        for column in columns {
+            for (section, label) in figures {
+                stats.push(stat_in(section, label, Some(column), Some(bucket)));
+            }
+        }
+    }
+    assert!(stats.len() > 500, "{} figures", stats.len());
+
+    let started = Instant::now();
+    let answer = hud(&backend, "Winamax", "hero", &["villain"], &stats);
+    let cold = started.elapsed();
+    assert_eq!(answer["players"][0]["stats"].as_array().unwrap().len(), stats.len());
+    let started = Instant::now();
+    hud(&backend, "Winamax", "hero", &["villain"], &stats);
+    let warm = started.elapsed();
+    println!("{} figures over 10k hands: cold {cold:?}, warm {warm:?}", stats.len());
+    if !cfg!(debug_assertions) {
+        assert!(cold.as_millis() < 100 && warm.as_millis() < 100, "cold {cold:?}, warm {warm:?}");
+    }
+
+    // More than the limit is refused, not truncated.
+    let too_many: Vec<Value> = (0..2049).map(|_| stat("preflop", "VPIP", Some("tot"))).collect();
+    let refused = backend.handle("POST", "/hud/players", Some(json!({ "room": "Winamax", "heroName": "hero", "players": ["villain"], "stats": too_many })));
+    assert_eq!(refused.status, 400);
 }

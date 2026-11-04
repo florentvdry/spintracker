@@ -26,8 +26,8 @@ const STATE_EVENT: &str = "hud-state";
 const CURSOR_POLL: Duration = Duration::from_millis(30);
 /// The z-order check is slower: a table brought to the front is covered again within this delay.
 const ZORDER_EVERY_N_POLLS: u32 = 5;
-/// A table never has more panels than seats.
-const MAX_PANELS: usize = 12;
+/// Rectangles reported per window: one per visible grid (several per seat) and per open popup.
+const MAX_RECTS: usize = 128;
 
 /// A panel's rectangle in the HUD window, in CSS pixels.
 #[derive(Debug, Clone, Copy, Deserialize)]
@@ -193,7 +193,7 @@ pub fn set_panel_rects(app: &AppHandle, label: &str, rects: Vec<PanelRect>) {
     let state = app.state::<OverlayState>();
     let mut inner = state.lock();
     if let Some(overlay) = inner.overlays.values_mut().find(|o| o.label == label) {
-        overlay.panels = rects.into_iter().take(MAX_PANELS).collect();
+        overlay.panels = rects.into_iter().take(MAX_RECTS).collect();
     }
 }
 
