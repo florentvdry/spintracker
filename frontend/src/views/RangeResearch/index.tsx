@@ -9,6 +9,7 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { usePlayersStore } from '@/stores/playersStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import SituationSelector from './components/SituationSelector'
+import { logError } from '@/utils/log'
 
 const CONFIG_STORAGE_KEY = 'range_research_config_v2'
 const FILTER_DEBOUNCE_MS = 300
@@ -120,7 +121,7 @@ export default function RangeResearch() {
         const response = await ipcService.getRangeBreakdown(combinedFilters)
         if (!cancelled && response.success) setRangeData(response.data || {})
       } catch (err) {
-        console.error('Failed to fetch range breakdown', err)
+        logError('Failed to fetch range breakdown', err)
       } finally {
         if (!cancelled) setRangeLoading(false)
       }

@@ -7,6 +7,7 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import { ipcService, type Json } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
 import { useNotificationStore } from '@/stores/notificationStore'
+import { logError } from '@/utils/log'
 
 const MIN_SEARCH_LENGTH = 2
 const LARGE_LIST_THRESHOLD = 50
@@ -42,7 +43,7 @@ export default function AliasManagement() {
       const res = await ipcService.getPlayers({ limit: PLAYER_LIMIT })
       if (res.success) setAvailablePlayers(res.data)
     } catch (e) {
-      console.error('Failed to load players for linking', e)
+      logError('Failed to load players for linking', e)
     }
   }, [])
 

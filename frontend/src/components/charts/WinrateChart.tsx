@@ -6,6 +6,7 @@ import { useBrushChart } from '@/hooks/useBrushChart'
 import { ipcService, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterStore'
+import { logError } from '@/utils/log'
 
 type ChartMode = 'chips' | 'euro'
 type LineKey = 'chipsWon' | 'netExpected' | 'wonWithShowdown' | 'wonWithoutShowdown' | 'euroProfit'
@@ -94,7 +95,7 @@ export default function WinrateChart() {
         const result = await ipcService.getWinrateChartData({ dateFrom, dateTo, heroName, buyIn: buyInParam(buyIn) })
         if (!cancelled) setData(result?.success && result.data ? toPoints(result.data) : [])
       } catch (error) {
-        console.error('Failed to load chart data:', error)
+        logError('Failed to load chart data:', error)
         if (!cancelled) setData([])
       } finally {
         if (!cancelled) setIsLoading(false)

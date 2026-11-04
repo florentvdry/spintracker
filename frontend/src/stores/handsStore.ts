@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { ipcService, type Json } from '@/services/ipcService'
 import { buyInParam, currentDateRange, useFilterStore } from './filterStore'
+import { logError } from '@/utils/log'
 
 export type ViewMode = 'tournaments' | 'hands'
 
@@ -79,7 +80,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
         set({ tournaments: result.data.tournaments ?? [], totalTournaments: result.data.total ?? 0 })
       }
     } catch (error) {
-      console.error('Failed to load tournaments:', error)
+      logError('Failed to load tournaments:', error)
     } finally {
       set({ isLoading: false })
     }
@@ -105,7 +106,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
         set({ handsList: result.data.hands ?? [], totalHandsCount: result.data.total ?? 0 })
       }
     } catch (error) {
-      console.error('Failed to load hands list:', error)
+      logError('Failed to load hands list:', error)
     } finally {
       set({ isLoading: false })
     }
@@ -119,7 +120,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
       const result = await ipcService.getTournamentHands(gameId, useFilterStore.getState().heroName)
       if (result?.success) set({ tournamentHands: result.data ?? [] })
     } catch (error) {
-      console.error('Failed to load tournament hands:', error)
+      logError('Failed to load tournament hands:', error)
     } finally {
       set({ isLoadingHands: false })
     }
@@ -153,7 +154,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
       const result = await ipcService.getHandDetails(handId, useFilterStore.getState().heroName)
       if (result.success) set({ selectedHand: result.data })
     } catch (error) {
-      console.error('Failed to load hand details:', error)
+      logError('Failed to load hand details:', error)
     } finally {
       set({ isLoadingHand: false })
     }
