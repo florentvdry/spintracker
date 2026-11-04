@@ -6,8 +6,7 @@
     "charts": "Graphiques",
     "players": "Joueurs",
     "settings": "Paramètres",
-    "stats": "Statistiques",
-    "multipliers": "Multiplicateurs"
+    "stats": "Statistiques"
   },
   "sidebar": {
     "sqlite_local": "SQLite Local"

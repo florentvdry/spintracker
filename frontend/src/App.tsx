@@ -16,7 +16,6 @@ const RangeResearch = lazy(() => import('@/views/RangeResearch'))
 const Charts = lazy(() => import('@/views/Charts'))
 const Players = lazy(() => import('@/views/Players'))
 const Stats = lazy(() => import('@/views/Stats'))
-const Multipliers = lazy(() => import('@/views/Multipliers'))
 const Settings = lazy(() => import('@/views/Settings'))
 
 export default function App() {
@@ -51,7 +50,6 @@ export default function App() {
               <Route path="/charts" element={<Charts />} />
               <Route path="/players" element={<Players />} />
               <Route path="/stats" element={<Stats />} />
-              <Route path="/multipliers" element={<Multipliers />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
           </Suspense>
