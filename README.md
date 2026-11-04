@@ -44,7 +44,7 @@ It is a free alternative to paid poker trackers for 3-max Spin & Go, Heads-Up an
 | 🧮 **Range research** | Interactive 13×13 range grid to study your ranges and compare them with opponent tendencies. |
 | 🎰 **Multipliers analysis** | Break down your results by Spin multiplier. |
 | 👥 **Player database** | Overview of every opponent you faced and how they play. |
-| 🔄 **Automatic import** | Detects the room and imports hand histories idempotently — re-importing never creates duplicates. |
+| 🔄 **Automatic import** | Detects the room and imports hand histories idempotently — re-importing never creates duplicates. Optionally watches your Winamax history folder and imports new hands as they are written (off by default; Betclic and Unibet stay manual exports). |
 | 🌍 **Multilingual UI** | English and French, easy to extend. |
 
 SpinTracker is a post-session analysis tool: it is **not** a real-time HUD overlay.
