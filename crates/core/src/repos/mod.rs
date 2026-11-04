@@ -4,6 +4,7 @@ pub mod detailed_stats;
 pub mod hands;
 pub mod hands_query;
 pub mod heatmap;
+pub mod import_files;
 pub mod postflop_stats;
 pub mod player_queries;
 pub mod players;

@@ -36,6 +36,7 @@ const MIGRATIONS: &[Migration] = &[
     migration!(20260525001, "OptimizeIndexes", "20260525001_optimize_indexes.sql"),
     migration!(202611030001, "AddHandPlayerFlags", "202611030001_add_hand_player_flags.sql"),
     migration!(202611040001, "AddStreetCounts", "202611040001_add_street_counts.sql"),
+    migration!(202611050001, "AddImportFiles", "202611050001_add_import_files.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -103,7 +104,7 @@ mod tests {
         assert_eq!(run(&mut conn).unwrap(), MIGRATIONS.len());
 
         let t = names(&conn, "table");
-        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags"] {
+        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files"] {
             assert!(t.iter().any(|n| n == expected), "table {expected} missing");
         }
         assert!(!t.iter().any(|n| n == "config"), "config must be dropped");
@@ -150,6 +151,7 @@ mod tests {
             "DELETE FROM VersionInfo WHERE Version >= 202603151932;
              DROP TABLE aliases;
              DROP TABLE hand_player_flags;
+             DROP TABLE import_files;
              ALTER TABLE players DROP COLUMN alias_id;
              ALTER TABLE players DROP COLUMN room;
              ALTER TABLE hands DROP COLUMN position;
@@ -170,7 +172,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 6);
+        assert_eq!(run(&mut conn).unwrap(), 7);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))

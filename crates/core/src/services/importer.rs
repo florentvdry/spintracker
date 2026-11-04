@@ -4,6 +4,7 @@
 //! stores them in batches. Importing the same file again replaces the hands instead of
 //! duplicating them.
 
+use std::collections::HashSet;
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::mpsc::sync_channel;
@@ -11,6 +12,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use rayon::prelude::*;
+use rusqlite::Connection;
 
 use super::summaries::{self, SummaryKind, Summaries};
 use crate::db::Database;
@@ -43,8 +45,25 @@ pub struct ImportSummary {
     pub cancelled: bool,
 }
 
+/// What the parsing threads need besides the blocks themselves.
+pub(super) struct PipelineInput<'a> {
+    pub parser: &'static dyn HandParser,
+    pub summaries: &'a Summaries,
+    pub detected_hero: Option<&'a str>,
+    pub cancel: &'a AtomicBool,
+}
+
+/// What a run of [`Importer::run_pipeline`] did.
+pub(super) struct PipelineRun {
+    pub imported: usize,
+    pub skipped: usize,
+    /// Every player seen in the stored hands, for a partial recount of the player totals.
+    pub touched_players: HashSet<String>,
+    pub write_error: Option<Error>,
+}
+
 pub struct Importer {
-    db: Arc<Database>,
+    pub(super) db: Arc<Database>,
     analytics: Arc<AnalyticsCalculator>,
 }
 
@@ -100,16 +119,67 @@ impl Importer {
         let detected_hero = (parser.room_name() == "Unibet").then(|| detect_hero_name(&text)).flatten();
 
         let blocks = split_hands(&text, parser.hand_separator());
+        let run = self.run_pipeline(
+            &mut conn,
+            PipelineInput { parser, summaries: &summaries, detected_hero: detected_hero.as_deref(), cancel },
+            &blocks,
+            &mut on_progress,
+        );
+        let (imported, skipped, write_error) = (run.imported, run.skipped, run.write_error);
+        let total = blocks.len();
+
+        if let Some(e) = write_error {
+            on_progress(ImportProgress { message: "Import failed".into(), error: Some(e.to_string()), ..ImportProgress::default() });
+            return Err(e);
+        }
+
+        if imported > 0 {
+            players::update_player_stats(&conn)?;
+        }
+
+        let summary = ImportSummary {
+            imported,
+            skipped,
+            total_found: total,
+            cancelled: cancel.load(Ordering::Relaxed),
+        };
+        let stats = self.analytics.equity_cache().stats();
+        log::info!(
+            "[import] {} hands imported, {} skipped; equity cache {} hits, {} misses, {} entries",
+            summary.imported, summary.skipped, stats.hits, stats.misses, stats.size
+        );
+        on_progress(ImportProgress {
+            message: if summary.cancelled { "Import cancelled" } else { "Import completed successfully" }.into(),
+            percent: 100,
+            hands_imported: summary.imported,
+            hands_skipped: summary.skipped,
+            total_hands: summary.imported + summary.skipped,
+            success: true,
+            error: None,
+        });
+        Ok(summary)
+    }
+
+    /// Parses `blocks` in parallel and stores them through a single writer. Shared by the manual
+    /// import and the automatic one. Progress is reported only while hands are being written.
+    pub(super) fn run_pipeline(
+        &self,
+        conn: &mut Connection,
+        input: PipelineInput<'_>,
+        blocks: &[String],
+        on_progress: &mut impl FnMut(ImportProgress),
+    ) -> PipelineRun {
+        let PipelineInput { parser, summaries, detected_hero, cancel } = input;
         let total = blocks.len();
         let skipped = AtomicUsize::new(0);
         let abort = AtomicBool::new(false);
         let mut imported = 0usize;
         let mut write_error: Option<Error> = None;
+        let mut touched_players = HashSet::new();
         let mut last_report = Instant::now();
 
         std::thread::scope(|scope| {
             let (tx, rx) = sync_channel::<ImportedHand>(QUEUE_CAPACITY);
-            let (summaries, detected_hero) = (&summaries, detected_hero.as_deref());
             let (skipped, abort) = (&skipped, &abort);
 
             scope.spawn(move || {
@@ -138,7 +208,8 @@ impl Importer {
 
             let mut batch = Vec::with_capacity(BATCH_SIZE);
             let mut flush = |batch: &mut Vec<ImportedHand>| -> Result<usize> {
-                let written = hands::insert_batch(&mut conn, batch)?;
+                touched_players.extend(batch.iter().flat_map(|item| item.hand.players.iter().map(|p| p.name.clone())));
+                let written = hands::insert_batch(conn, batch)?;
                 batch.clear();
                 Ok(written)
             };
@@ -178,36 +249,7 @@ impl Importer {
             // Leaving the loop early drops `rx`; the producers then stop on `abort`.
         });
 
-        if let Some(e) = write_error {
-            on_progress(ImportProgress { message: "Import failed".into(), error: Some(e.to_string()), ..ImportProgress::default() });
-            return Err(e);
-        }
-
-        if imported > 0 {
-            players::update_player_stats(&conn)?;
-        }
-
-        let summary = ImportSummary {
-            imported,
-            skipped: skipped.load(Ordering::Relaxed),
-            total_found: total,
-            cancelled: cancel.load(Ordering::Relaxed),
-        };
-        let stats = self.analytics.equity_cache().stats();
-        log::info!(
-            "[import] {} hands imported, {} skipped; equity cache {} hits, {} misses, {} entries",
-            summary.imported, summary.skipped, stats.hits, stats.misses, stats.size
-        );
-        on_progress(ImportProgress {
-            message: if summary.cancelled { "Import cancelled" } else { "Import completed successfully" }.into(),
-            percent: 100,
-            hands_imported: summary.imported,
-            hands_skipped: summary.skipped,
-            total_hands: summary.imported + summary.skipped,
-            success: true,
-            error: None,
-        });
-        Ok(summary)
+        PipelineRun { imported, skipped: skipped.load(Ordering::Relaxed), touched_players, write_error }
     }
 
     /// Stores hands that were parsed elsewhere (the hero is the player marked as such), with their
@@ -314,7 +356,7 @@ fn plain_analytics(hand: &ParsedHand) -> HandAnalytics {
 }
 
 /// The player dealt cards most often in the file (the first one met wins ties).
-fn detect_hero_name(text: &str) -> Option<String> {
+pub(super) fn detect_hero_name(text: &str) -> Option<String> {
     let dealt = regex!(r"Dealt to\s+(.+?)\s+\[");
     let mut counts: Vec<(String, usize)> = Vec::new();
     for line in text.lines() {
@@ -335,7 +377,7 @@ fn detect_hero_name(text: &str) -> Option<String> {
     best.map(|(name, _)| name.clone())
 }
 
-fn sniff(text: &str) -> String {
+pub(super) fn sniff(text: &str) -> String {
     text.chars().take(SNIFF_CHARS).collect()
 }
 
@@ -347,7 +389,7 @@ fn is_hand_boundary(line: &str, separator: &str) -> bool {
 
 /// Splits a file into hand blocks. The boundary line stays at the top of the block it opens (the
 /// Winamax and Unibet headers are that line). Blocks holding nothing but the separator are dropped.
-fn split_hands(text: &str, separator: &str) -> Vec<String> {
+pub(super) fn split_hands(text: &str, separator: &str) -> Vec<String> {
     let mut blocks = Vec::new();
     let mut current = String::new();
     for raw in text.split('\n') {
@@ -369,7 +411,7 @@ fn split_hands(text: &str, separator: &str) -> Vec<String> {
 }
 
 /// Reads a text file, honouring a UTF-8 or UTF-16 byte-order mark; invalid bytes are replaced.
-fn read_text_file(path: &Path) -> Result<String> {
+pub(super) fn read_text_file(path: &Path) -> Result<String> {
     let bytes = std::fs::read(path)?;
     let utf16 = |rest: &[u8], big_endian: bool| -> String {
         let units: Vec<u16> = rest

@@ -109,6 +109,65 @@ pub fn load_for_file(imported_file: &Path, kind: SummaryKind) -> Summaries {
     map
 }
 
+/// Which room's summary a file name denotes, if it is a summary file at all.
+pub fn summary_kind_of(file_name: &str) -> Option<SummaryKind> {
+    [SummaryKind::Winamax, SummaryKind::Unibet].into_iter().find(|k| k.matches_file_name(file_name))
+}
+
+/// Tournament id carried by a hand-history or summary file name of `kind`.
+pub fn tournament_id_from_file_name(file_name: &str, kind: SummaryKind) -> Option<String> {
+    let pattern = match kind {
+        SummaryKind::Winamax => regex!(r"\((?<id>\d+)\)"),
+        SummaryKind::Unibet => regex!(r"\sT(?<id>\d+)\s"),
+    };
+    pattern.captures(file_name).map(|c| c["id"].to_string())
+}
+
+fn file_name_of(path: &Path) -> String {
+    path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()
+}
+
+/// Reads only the summary of one tournament, found next to `imported_file`: what the automatic
+/// import needs after each hand, instead of parsing every summary of the folder.
+pub fn load_for_tournament(imported_file: &Path, kind: SummaryKind, tournament_id: &str) -> Summaries {
+    let mut map = Summaries::new();
+    let Some(dir) = imported_file.parent().filter(|d| d.is_dir()) else { return map };
+    let Ok(entries) = fs::read_dir(dir) else { return map };
+    for path in entries.filter_map(|e| e.ok().map(|e| e.path())).filter(|p| p.is_file()) {
+        let name = file_name_of(&path);
+        if !kind.matches_file_name(&name) || tournament_id_from_file_name(&name, kind).as_deref() != Some(tournament_id) {
+            continue;
+        }
+        match fs::read(&path) {
+            Ok(bytes) => {
+                if let Some((id, summary)) = kind.parse(&String::from_utf8_lossy(&bytes)) {
+                    map.insert(id, summary);
+                }
+            }
+            Err(e) => log::debug!("failed to read summary {}: {e}", path.display()),
+        }
+    }
+    map
+}
+
+/// The hand-history file a summary file completes (same folder, same tournament id).
+pub fn hand_file_for_summary(summary_file: &Path) -> Option<std::path::PathBuf> {
+    let name = file_name_of(summary_file);
+    let kind = summary_kind_of(&name)?;
+    let id = tournament_id_from_file_name(&name, kind)?;
+    let dir = summary_file.parent()?;
+    fs::read_dir(dir)
+        .ok()?
+        .filter_map(|e| e.ok().map(|e| e.path()))
+        .filter(|p| p.is_file())
+        .find(|p| {
+            let n = file_name_of(p);
+            n.to_lowercase().ends_with(".txt")
+                && !kind.matches_file_name(&n)
+                && tournament_id_from_file_name(&n, kind).as_deref() == Some(id.as_str())
+        })
+}
+
 /// Fills the hand's tournament fields from its summary. Nothing known is ever overwritten with
 /// an empty value.
 pub fn apply(hand: &mut ParsedHand, summaries: &Summaries) {
@@ -154,6 +213,32 @@ mod tests {
     fn text_without_a_tournament_id_is_rejected() {
         assert!(parse_winamax("Buy-In : 1€ + 0€").is_none());
         assert!(parse_unibet("nothing here").is_none());
+    }
+
+    #[test]
+    fn tournament_ids_come_from_file_names() {
+        let w = "20260415_Expresso(1096047576)_real_holdem_no-limit_summary.txt";
+        assert_eq!(tournament_id_from_file_name(w, SummaryKind::Winamax).as_deref(), Some("1096047576"));
+        let u = "TS20260512 T83498893 No Limit Holdem €9.30 + €0.70.txt";
+        assert_eq!(tournament_id_from_file_name(u, SummaryKind::Unibet).as_deref(), Some("83498893"));
+        assert_eq!(tournament_id_from_file_name("notes.txt", SummaryKind::Winamax), None);
+        assert_eq!(summary_kind_of(w), Some(SummaryKind::Winamax));
+        assert_eq!(summary_kind_of("20260415_Expresso(1)_real_holdem_no-limit.txt"), None);
+    }
+
+    #[test]
+    fn only_the_requested_tournament_summary_is_loaded() {
+        let dir = tempfile::tempdir().unwrap();
+        let history = dir.path().join("20260415_Expresso(1096047576)_real_holdem_no-limit.txt");
+        std::fs::write(&history, "hands").unwrap();
+        let summary = dir.path().join("20260415_Expresso(1096047576)_real_holdem_no-limit_summary.txt");
+        std::fs::write(&summary, WINAMAX).unwrap();
+        let other = WINAMAX.replace("1096047576", "1096047999");
+        std::fs::write(dir.path().join("20260415_Expresso(1096047999)_real_holdem_no-limit_summary.txt"), other).unwrap();
+
+        let loaded = load_for_tournament(&history, SummaryKind::Winamax, "1096047576");
+        assert_eq!(loaded.keys().collect::<Vec<_>>(), ["1096047576"]);
+        assert_eq!(hand_file_for_summary(&summary), Some(history));
     }
 
     #[test]

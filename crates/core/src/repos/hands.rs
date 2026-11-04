@@ -191,7 +191,8 @@ pub fn delete_all(conn: &mut Connection) -> Result<()> {
         "DELETE FROM hand_player_flags;
          DELETE FROM player_hands;
          DELETE FROM hands;
-         DELETE FROM players;",
+         DELETE FROM players;
+         DELETE FROM import_files;",
     )?;
     // The table only exists once an AUTOINCREMENT table has been used.
     if let Err(e) = tx.execute("DELETE FROM sqlite_sequence", []) {
