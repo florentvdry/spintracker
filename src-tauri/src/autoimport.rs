@@ -30,8 +30,11 @@ const SWEEP_INTERVAL: Duration = Duration::from_secs(30);
 /// How often the worker wakes up to check its timers.
 const TICK: Duration = Duration::from_millis(250);
 
-/// Rooms whose files can be watched. Betclic and Unibet only offer manual exports.
-const WATCHABLE_ROOMS: [&str; 1] = ["Winamax"];
+/// Rooms whose files can be watched. Betclic only offers manual exports.
+const WATCHABLE_ROOMS: [&str; 2] = ["Winamax", "Unibet"];
+
+/// Where Unibet writes its automatic exports, relative to the Documents folder.
+const UNIBET_EXPORT_FOLDER: [&str; 4] = ["Unibet Poker", "History", "Exports", "Automatic"];
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct WatchedFolder {
@@ -169,11 +172,18 @@ fn validate(folders: Vec<WatchedFolder>) -> Result<Vec<WatchedFolder>, String> {
     Ok(accepted)
 }
 
+/// Unibet's default export folder, when it exists.
+fn unibet_folder(documents: &Path) -> Option<WatchedFolder> {
+    let dir = UNIBET_EXPORT_FOLDER.iter().fold(documents.to_path_buf(), |path, part| path.join(part));
+    dir.is_dir().then(|| WatchedFolder { room: "Unibet".into(), path: dir.to_string_lossy().into_owned() })
+}
+
 /// Where the rooms keep their history on a default install. Only folders that exist are returned.
 fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
     let mut found = Vec::new();
     let mut roots: Vec<(PathBuf, &str)> = Vec::new();
     if let Ok(documents) = app.path().document_dir() {
+        found.extend(unibet_folder(&documents));
         roots.push((documents.join("Winamax Poker").join("accounts"), "history"));
     }
     if let Ok(roaming) = app.path().config_dir() {
@@ -422,7 +432,8 @@ mod tests {
         assert_eq!(validate(vec![ok.clone(), ok.clone()]).unwrap(), vec![ok]);
 
         assert!(validate(vec![WatchedFolder { room: "Betclic".into(), path: path.clone() }]).is_err());
-        assert!(validate(vec![WatchedFolder { room: "Unibet".into(), path: path.clone() }]).is_err());
+        let unibet = WatchedFolder { room: "Unibet".into(), path: path.clone() };
+        assert_eq!(validate(vec![unibet.clone()]).unwrap(), vec![unibet]);
         assert!(validate(vec![WatchedFolder { room: "Winamax".into(), path: "relative/dir".into() }]).is_err());
         assert!(validate(vec![WatchedFolder { room: "Winamax".into(), path: format!("{path}/missing") }]).is_err());
     }
@@ -456,6 +467,17 @@ mod tests {
         while let Ok(path) = rx.recv_timeout(Duration::from_millis(500)) {
             assert_eq!(path.file_name(), history.file_name());
         }
+    }
+
+    #[test]
+    fn unibet_default_folder_is_detected_only_when_it_exists() {
+        let documents = tempfile::tempdir().unwrap();
+        assert_eq!(unibet_folder(documents.path()), None);
+
+        let export = documents.path().join("Unibet Poker").join("History").join("Exports").join("Automatic");
+        fs::create_dir_all(&export).unwrap();
+        let found = unibet_folder(documents.path()).expect("the folder exists now");
+        assert_eq!((found.room.as_str(), Path::new(&found.path)), ("Unibet", export.as_path()));
     }
 
     #[test]
