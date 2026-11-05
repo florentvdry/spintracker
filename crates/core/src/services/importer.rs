@@ -253,7 +253,7 @@ impl Importer {
         });
 
         if imported > 0 || write_error.is_some() {
-            self.db.bump_data_version();
+            self.db.bump_players(&touched_players);
         }
         PipelineRun { imported, skipped: skipped.load(Ordering::Relaxed), touched_players, write_error }
     }

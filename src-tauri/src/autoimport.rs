@@ -4,7 +4,7 @@
 //! catches whatever the watcher missed (and what changed while the app was closed). The worker is
 //! paused while the active database is being swapped, then restarted on the new one.
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::{channel, Receiver, RecvTimeoutError, Sender};
@@ -255,8 +255,9 @@ struct Worker {
     reload_due: bool,
     /// Files waiting for their writer to go quiet, with the time of the last event.
     pending: HashMap<PathBuf, Instant>,
-    /// Files imported without equity because a table was open: imported again once none is.
-    deferred: HashSet<PathBuf>,
+    /// Some files may have hands imported without equity (the list is in the database, so it survives
+    /// a restart): they are imported again once no table is open.
+    equity_check_due: bool,
     last_sweep: Instant,
 }
 
@@ -272,7 +273,7 @@ impl Worker {
             paused: false,
             reload_due: true,
             pending: HashMap::new(),
-            deferred: HashSet::new(),
+            equity_check_due: true,
             last_sweep: Instant::now(),
         }
     }
@@ -385,13 +386,24 @@ impl Worker {
     }
 
     /// Imports again, with equity, the files that were imported while a table was open, as soon as
-    /// no table is.
+    /// no table is. The files come from the database, so hands left without equity before a restart
+    /// are completed too.
     fn complete_deferred(&mut self) {
-        if self.deferred.is_empty() || hud::table_mode() {
+        if !self.equity_check_due || hud::table_mode() {
             return;
         }
         let Some(backend) = self.app.state::<BackendState>().ready() else { return };
-        let files: Vec<PathBuf> = self.deferred.drain().collect();
+        self.equity_check_due = false;
+        let files = match backend.importer().files_missing_equity() {
+            Ok(files) => files,
+            Err(err) => {
+                log::error!("[auto-import] cannot list the files missing equity: {err}");
+                return;
+            }
+        };
+        if files.is_empty() {
+            return;
+        }
         for path in files.iter().filter(|p| p.is_file()) {
             if let Err(err) = backend.importer().reimport_path(path) {
                 log::error!("[auto-import] completing {}: {err}", path.display());
@@ -426,7 +438,7 @@ impl Worker {
                     hands += result.imported;
                     files += 1;
                     if !equity {
-                        self.deferred.insert(path.clone());
+                        self.equity_check_due = true;
                     }
                 }
                 Ok(_) => {}

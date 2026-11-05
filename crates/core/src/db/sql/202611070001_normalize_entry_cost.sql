@@ -12,9 +12,9 @@ SET multiplier = MAX(1, CAST(ROUND(prize_pool / buy_in) AS INTEGER))
 WHERE room = 'Unibet' AND prize_pool > 0 AND buy_in > 0;
 
 -- Winamax: only the hands read before their tournament summary still hold the buy-in without
--- the fee. They are recognised by the Expresso fee ratio (fee / buy-in = 7 / 93), which the
+-- the fee. They are recognised by the Expresso fee ratio (fee / buy-in = 7 / 93, within 1%), which the
 -- hands completed by a summary (fee / entry cost = 7 / 100) never match.
 UPDATE hands
 SET buy_in = ROUND(buy_in + rake_per_player, 2)
 WHERE room = 'Winamax' AND rake_per_player > 0 AND buy_in > 0
-  AND ABS(rake_per_player * 93 - buy_in * 7) < 0.1;
+  AND ABS(rake_per_player * 93 - buy_in * 7) <= buy_in * 7 * 0.01;

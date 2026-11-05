@@ -1,8 +1,9 @@
 //! SQLite connection pool that can be swapped at runtime (switching database needs no restart).
 
+use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use arc_swap::ArcSwapOption;
 use r2d2::{Pool, PooledConnection};
@@ -26,6 +27,10 @@ pub struct Database {
     active: ArcSwapOption<Active>,
     /// Changes whenever the stored hands, players or aliases do; caches built on the data compare it.
     data_version: AtomicU64,
+    /// Bumped by writes that can change any player's figures; per-player writes only move `player_versions`.
+    epoch: AtomicU64,
+    /// Version at which each player (lower case) was last written to by an import.
+    player_versions: Mutex<HashMap<String, u64>>,
 }
 
 impl Database {
@@ -50,6 +55,10 @@ impl Database {
         // WAL is persisted in the file; migrations run on a dedicated connection.
         let mut conn = Connection::open(&path)?;
         conn.execute_batch("PRAGMA journal_mode = WAL;")?;
+        // A failed copy must not stop the application from starting: it is logged.
+        if let Err(err) = migrations::backup_before_migrating(&conn, &path) {
+            log::warn!("could not copy the database before migrating: {err}");
+        }
         migrations::run(&mut conn)?;
         drop(conn);
 
@@ -71,7 +80,28 @@ impl Database {
 
     /// To be called after every write that changes what the statistics are computed from.
     pub fn bump_data_version(&self) {
+        self.epoch.fetch_add(1, Ordering::AcqRel);
         self.data_version.fetch_add(1, Ordering::AcqRel);
+    }
+
+    /// To be called after hands were written: only the figures of the players in them change, so
+    /// caches kept per player (see [`Database::player_version`]) keep the other players' entries.
+    pub fn bump_players(&self, names: &HashSet<String>) {
+        let version = self.data_version.fetch_add(1, Ordering::AcqRel) + 1;
+        let mut versions = self.player_versions.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+        for name in names {
+            versions.insert(name.to_lowercase(), version);
+        }
+    }
+
+    /// Changes whenever a write may have changed any player's figures.
+    pub fn epoch(&self) -> u64 {
+        self.epoch.load(Ordering::Acquire)
+    }
+
+    /// Changes whenever hands of this player were written.
+    pub fn player_version(&self, name: &str) -> u64 {
+        self.player_versions.lock().unwrap_or_else(std::sync::PoisonError::into_inner).get(&name.to_lowercase()).copied().unwrap_or(0)
     }
 
     pub fn path(&self) -> Option<PathBuf> {
@@ -93,6 +123,18 @@ mod tests {
     use super::*;
 
     #[test]
+    fn writes_to_some_players_leave_the_versions_of_the_others() {
+        let db = Database::new();
+        let (epoch, before_other) = (db.epoch(), db.player_version("Other"));
+        db.bump_players(&HashSet::from(["Hero".to_string()]));
+        assert_eq!(db.epoch(), epoch, "a per-player write does not empty every cache");
+        assert_eq!(db.player_version("other"), before_other);
+        assert!(db.player_version("HERO") > 0, "names are compared whatever their case");
+        db.bump_data_version();
+        assert!(db.epoch() > epoch);
+    }
+
+    #[test]
     fn open_creates_file_migrates_and_uses_wal() {
         let dir = tempfile::tempdir().unwrap();
         let db = Database::open(dir.path().join("nested").join("a.db")).unwrap();
@@ -100,7 +142,7 @@ mod tests {
         let mode: String = conn.query_row("PRAGMA journal_mode", [], |r| r.get(0)).unwrap();
         assert_eq!(mode, "wal");
         let n: i64 = conn.query_row("SELECT COUNT(*) FROM VersionInfo", [], |r| r.get(0)).unwrap();
-        assert_eq!(n, 15);
+        assert_eq!(n, 17);
     }
 
     #[test]
