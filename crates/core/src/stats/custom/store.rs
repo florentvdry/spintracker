@@ -10,7 +10,7 @@ use rusqlite::types::Value as SqlValue;
 use rusqlite::{params, Connection, OptionalExtension, ToSql};
 use serde_json::{json, Value};
 
-use super::eval::{CompiledStat, HandContext, SeatContext, DEN_BIT, NUM_BIT};
+use super::eval::{CompiledStat, HandContext, SeatContext, Seated, DEN_BIT, NUM_BIT};
 use super::model::{definition_hash, parse_definition, CustomStatDef, MAX_CUSTOM_STATS};
 use crate::engines::actions::parse_actions;
 use crate::stats::flags::Flags;
@@ -222,7 +222,8 @@ pub fn evaluate_hand(stats: &[StoredStat], streets: [&str; 4], blinds: &str, pla
         return Vec::new();
     }
     let [preflop, flop, turn, river] = streets.map(parse_actions);
-    let context = HandContext { preflop: &preflop, flop: &flop, turn: &turn, river: &river, blinds, player_count };
+    let seated: Vec<Seated> = seats.iter().map(|(name, position, stack, _)| Seated { name, position, stack: *stack as f64 }).collect();
+    let context = HandContext::new([&preflop, &flop, &turn, &river], blinds, player_count, &seated);
     let seats: Vec<SeatContext> =
         seats.iter().map(|(name, position, stack, flags)| SeatContext { name, position, stack: *stack, flags: *flags }).collect();
     hits_for_hand(stats, &context, &seats)

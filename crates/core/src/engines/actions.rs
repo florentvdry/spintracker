@@ -28,6 +28,8 @@ pub struct Action {
     pub player: String,
     pub kind: ActionKind,
     pub is_all_in: bool,
+    /// A forced post that is an ante: dead money that does not count towards the bet to match.
+    pub is_ante: bool,
     /// First amount found after the verb ("calls 580" -> 580, "raises 30 to 60" -> 30).
     pub amount: Option<f64>,
     /// Total a raise goes to; falls back to `amount` when the line has no "to <n>".
@@ -64,6 +66,7 @@ pub fn parse_actions(text: &str) -> Vec<Action> {
                 player: m["name"].trim().to_string(),
                 kind,
                 is_all_in: raw.to_ascii_lowercase().contains("all-in"),
+                is_ante: kind == ActionKind::Post && raw.to_ascii_lowercase().contains("ante"),
                 amount,
                 amount_to,
             })

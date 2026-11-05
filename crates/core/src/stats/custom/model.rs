@@ -9,13 +9,18 @@ use serde::{Deserialize, Serialize};
 
 use crate::stats::flags::Flag;
 
-/// Version of the definition format.
-pub const SCHEMA_VERSION: u32 = 1;
+/// Version of the definition format. Version 1 definitions are still read and become version 2: the
+/// format only gained conditions (stack, sizing, sequences).
+pub const SCHEMA_VERSION: u32 = 2;
+/// Oldest version still read.
+pub const MIN_SCHEMA_VERSION: u32 = 1;
 pub const MAX_NAME_CHARS: usize = 40;
-pub const MAX_DEPTH: usize = 4;
-pub const MAX_LEAVES: usize = 12;
+pub const MAX_DEPTH: usize = 5;
+pub const MAX_LEAVES: usize = 16;
+/// Steps of one action sequence.
+pub const MAX_SEQUENCE_STEPS: usize = 6;
 /// Serialized size of a definition.
-pub const MAX_DEFINITION_BYTES: usize = 8 * 1024;
+pub const MAX_DEFINITION_BYTES: usize = 16 * 1024;
 pub const MAX_CUSTOM_STATS: usize = 100;
 
 const MAX_BB: f64 = 1000.0;
@@ -62,6 +67,120 @@ pub enum StreetName {
     River,
 }
 
+fn preflop() -> StreetName {
+    StreetName::Preflop
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum StackReference {
+    Own,
+    Effective,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum StackMoment {
+    #[default]
+    HandStart,
+    Action,
+}
+
+/// Which bet or raise a [`Cond::Sizing`] measures.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum SizingKind {
+    /// The player's first bet or raise on the street.
+    Aggression,
+    /// The player's first bet on the street.
+    Bet,
+    /// The player's first raise on the street.
+    Raise,
+    /// The last bet or raise before the player's first action on the street: what the player faces.
+    /// The size measured is the one of that bet, except in `effStackPct` (the price to call).
+    Facing,
+}
+
+/// What a size is measured against.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum SizingUnit {
+    /// The increase over the bet to match, in percent of the pot once that bet is called.
+    PotPct,
+    /// The increase over the bet to match, in percent of the previous increase on the street.
+    PrevBetPct,
+    /// The total the player bets or raises to, in big blinds.
+    Bb,
+    /// The chips added, in percent of the effective stack.
+    EffStackPct,
+}
+
+/// Who acts in a sequence step. `OpponentA` and `OpponentB` are two different opponents, each the
+/// same player wherever it appears in the sequence.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum SequenceActor {
+    #[serde(rename = "self")]
+    Myself,
+    Opponent,
+    OpponentA,
+    OpponentB,
+    Any,
+}
+
+/// What may happen between two matched steps of a sequence.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum SequenceGap {
+    /// Only folds.
+    #[default]
+    FoldsOnly,
+    /// Nothing: the steps are consecutive actions.
+    None,
+    /// Anything.
+    Any,
+}
+
+/// A player's role in the hand, resolved from the actions.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum SequenceRole {
+    /// The player who made the last preflop raise.
+    PreflopRaiser,
+    /// The player who made the last bet or raise of the street before.
+    PreviousStreetAggressor,
+}
+
+/// One action of a sequence. Every field but `actor` and `street` narrows what matches.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct SequenceStep {
+    pub actor: SequenceActor,
+    pub street: StreetName,
+    /// Missing: any action.
+    #[serde(default)]
+    pub action: Option<ActionName>,
+    #[serde(default)]
+    pub all_in: Option<bool>,
+    #[serde(default)]
+    pub role: Option<SequenceRole>,
+    /// Positions of the actor; empty means any.
+    #[serde(default)]
+    pub positions: Vec<String>,
+    /// Chips the actor has behind before acting, in big blinds.
+    #[serde(default)]
+    pub stack_bb: Option<Range>,
+    /// Size of the bet or raise, in percent of the pot (see [`SizingUnit::PotPct`]).
+    #[serde(default)]
+    pub size_pot_pct: Option<Range>,
+    /// The first action of the street.
+    #[serde(default)]
+    pub first_of_street: bool,
+    /// The first action of the street that is not a fold.
+    #[serde(default)]
+    pub first_non_fold: bool,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum ActionName {
@@ -83,7 +202,8 @@ pub enum Cond {
     Flag { name: String },
     /// The player took this action on the street (`all_in`: only counts all-in, or only not all-in).
     Action { street: StreetName, action: ActionName, #[serde(default)] all_in: Option<bool> },
-    /// The player acts last after the flop: the button, or the small blind heads-up.
+    /// The player acts last on the flop among the players still in the hand (the button, or the big
+    /// blind when the button folded before the flop).
     InPosition,
     /// Another player had bet or raised on the street before the player's first action there.
     FacingAggression { street: StreetName },
@@ -99,6 +219,25 @@ pub enum Cond {
     PlayersSeeingFlop { range: Range },
     /// Size of the player's first bet on the street, in percent of the pot before it.
     BetSizePercentPot { street: StreetName, range: Range },
+    /// A stack in big blinds: the player's own, or the effective one (the smaller of the player's and
+    /// the biggest opponent's still in the hand), at the start of the hand or just before the
+    /// player's first action on `street`.
+    StackBb {
+        reference: StackReference,
+        #[serde(default)]
+        at: StackMoment,
+        #[serde(default = "preflop")]
+        street: StreetName,
+        range: Range,
+    },
+    /// Size of a bet or raise on any street, or of the one the player faces (see [`SizingKind`]).
+    Sizing { street: StreetName, kind: SizingKind, unit: SizingUnit, range: Range },
+    /// Actions of several players, in order (see [`SequenceStep`]).
+    Sequence {
+        steps: Vec<SequenceStep>,
+        #[serde(default)]
+        gap: SequenceGap,
+    },
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
@@ -162,6 +301,24 @@ fn validate_cond(cond: &Cond, depth: usize, leaves: &mut usize) -> Result<(), St
                     }
                     range.validate("bet size", MAX_POT_PERCENT)
                 }
+                Cond::StackBb { range, .. } => range.validate("stack", MAX_BB),
+                Cond::Sizing { street, kind, range, .. } => {
+                    if *street == StreetName::Preflop && *kind == SizingKind::Bet {
+                        return Err("nobody bets preflop: measure a raise".into());
+                    }
+                    range.validate("size", MAX_POT_PERCENT)
+                }
+                Cond::Sequence { steps, .. } => {
+                    if steps.is_empty() || steps.len() > MAX_SEQUENCE_STEPS {
+                        return Err(format!("a sequence has 1 to {MAX_SEQUENCE_STEPS} steps"));
+                    }
+                    // Each step counts as a condition, so a long sequence cannot dodge the limit.
+                    *leaves += steps.len() - 1;
+                    if *leaves > MAX_LEAVES {
+                        return Err(format!("at most {MAX_LEAVES} conditions per stat"));
+                    }
+                    steps.iter().try_for_each(validate_step)
+                }
                 Cond::Action { street, action, .. } => match (street, action) {
                     (StreetName::Preflop, ActionName::Check) => Err("nobody checks preflop".into()),
                     _ => Ok(()),
@@ -172,10 +329,47 @@ fn validate_cond(cond: &Cond, depth: usize, leaves: &mut usize) -> Result<(), St
     }
 }
 
+fn validate_step(step: &SequenceStep) -> Result<(), String> {
+    if step.street == StreetName::Preflop && matches!(step.action, Some(ActionName::Check | ActionName::Bet)) {
+        return Err("nobody checks or bets preflop".into());
+    }
+    if step.positions.iter().any(|p| !POSITIONS.contains(&p.as_str())) {
+        return Err("unknown position".into());
+    }
+    if let Some(range) = &step.stack_bb {
+        range.validate("step stack", MAX_BB)?;
+    }
+    if let Some(range) = &step.size_pot_pct {
+        range.validate("step size", MAX_POT_PERCENT)?;
+    }
+    Ok(())
+}
+
+/// Whether a condition needs the schema 2 format.
+fn uses_schema_2(cond: &Cond) -> bool {
+    match cond {
+        Cond::And { items } | Cond::Or { items } => items.iter().any(uses_schema_2),
+        Cond::Not { item } => uses_schema_2(item),
+        Cond::StackBb { .. } | Cond::Sizing { .. } | Cond::Sequence { .. } => true,
+        _ => false,
+    }
+}
+
 impl CustomStatDef {
+    /// The format version this definition needs: a stat that only uses what version 1 offered keeps
+    /// the version (and so the fingerprint) it was saved with, which keeps its computed hits.
+    fn needed_schema(&self) -> u32 {
+        let v2 = uses_schema_2(&self.numerator) || self.denominator.as_ref().is_some_and(uses_schema_2);
+        if v2 {
+            2
+        } else {
+            1
+        }
+    }
+
     /// The first problem found, as a message for the user.
     pub fn validate(&self) -> Result<(), String> {
-        if self.schema != SCHEMA_VERSION {
+        if !(MIN_SCHEMA_VERSION..=SCHEMA_VERSION).contains(&self.schema) {
             return Err(format!("unsupported schema {}", self.schema));
         }
         let name = self.name.trim();
@@ -218,6 +412,8 @@ pub fn parse_definition(value: &serde_json::Value) -> Result<CustomStatDef, Stri
     let mut def: CustomStatDef = serde_json::from_value(value.clone()).map_err(|e| e.to_string())?;
     def.name = def.name.trim().to_string();
     def.validate()?;
+    // An older definition is upgraded in memory; the fingerprint ignores the difference.
+    def.schema = SCHEMA_VERSION;
     Ok(def)
 }
 
@@ -225,7 +421,7 @@ pub fn parse_definition(value: &serde_json::Value) -> Result<CustomStatDef, Stri
 /// is left out so a rename keeps the computed figures.
 pub fn definition_hash(def: &CustomStatDef) -> String {
     let mut hash: u64 = 0xcbf2_9ce4_8422_2325;
-    let counted = CustomStatDef { name: String::new(), ..def.clone() };
+    let counted = CustomStatDef { name: String::new(), schema: def.needed_schema(), ..def.clone() };
     for byte in counted.to_json().bytes() {
         hash ^= u64::from(byte);
         hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
@@ -313,6 +509,24 @@ mod tests {
         assert!(parse_definition(&v).is_err());
         v["numerator"] = json!({ "type": "and", "items": [] });
         assert!(parse_definition(&v).is_err());
+    }
+
+    #[test]
+    fn a_version_1_definition_is_upgraded_and_keeps_its_fingerprint() {
+        let old = parse_definition(&base()).unwrap();
+        assert_eq!(old.schema, SCHEMA_VERSION, "read as the current format");
+        let mut as_saved = base();
+        as_saved["schema"] = json!(2);
+        let upgraded = parse_definition(&as_saved).unwrap();
+        // Same content, same fingerprint: the hits already computed stay valid.
+        assert_eq!(definition_hash(&old), definition_hash(&upgraded));
+        // A definition that needs the new conditions has another fingerprint than its plain twin.
+        let mut sequence = base();
+        sequence["numerator"] = json!({ "type": "sequence", "steps": [{ "actor": "self", "street": "flop" }] });
+        assert_ne!(definition_hash(&parse_definition(&sequence).unwrap()), definition_hash(&old));
+        let mut future = base();
+        future["schema"] = json!(3);
+        assert!(parse_definition(&future).unwrap_err().contains("unsupported schema"));
     }
 
     #[test]

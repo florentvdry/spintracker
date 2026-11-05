@@ -7,7 +7,7 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useCustomStatsStore } from '@/stores/customStatsStore'
 import {
   ACTIONS, STREETS, LEAF_TYPES, RANGE_LIMITS, cleanDefinition, countLeaves, defaultLeaf, emptyDefinition, isGroup, parseBound,
-  copyOf, flagLabel, isSituationFlag, validateDefinition, type ActionName, type Cond, type CustomStat, type CustomStatDef, type LeafType, type Range, type Street,
+  copyOf, flagLabel, isSituationFlag, validateDefinition, type ActionName, type Cond, type CustomStat, type CustomStatDef, type LeafType, type Range, type Street, isAdvanced,
 } from './customStatModel'
 
 const PREVIEW_DEBOUNCE_MS = 400
@@ -101,6 +101,10 @@ function LeafFields({ cond, flags, onChange }: { cond: Cond; flags: string[]; on
     case 'or':
     case 'not':
       return null
+    case 'stackBb':
+    case 'sizing':
+    case 'sequence':
+      return <code className="max-w-full truncate text-xs text-gray-400" title={t('customStats.advanced_condition')}>{JSON.stringify(cond)}</code>
     default:
       return <RangeFields range={cond.range} limit={RANGE_LIMITS[cond.type]} onChange={(range) => onChange({ ...cond, range })} />
   }
@@ -179,6 +183,7 @@ function CondEditor({ cond, flags, onChange, onRemove, canAdd }: CondEditorProps
         onChange={(e) => onChange(defaultLeaf(e.target.value as LeafType, flags[0]))}
       >
         {LEAF_TYPES.map((type) => <option key={type} value={type}>{t(`customStats.leaf.${type}`)}</option>)}
+        {isAdvanced(cond) && <option value={cond.type}>{t(`customStats.leaf.${cond.type}`)}</option>}
       </select>
       <LeafFields cond={cond} flags={flags} onChange={onChange} />
       <button type="button" className="text-xs text-gray-500 hover:text-gray-200" onClick={() => onChange({ type: 'not', item: cond })}>{t('customStats.negate')}</button>

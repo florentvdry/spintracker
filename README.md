@@ -46,8 +46,10 @@ It is a free alternative to paid poker trackers for 3-max Spin & Go, Heads-Up an
 | 👥 **Player database** | Overview of every opponent you faced and how they play. |
 | 🔄 **Automatic import** | Detects the room and imports hand histories idempotently — re-importing never creates duplicates. Optionally watches your Winamax and Unibet history folders and imports new hands as they are written (off by default; Betclic stays a manual export). |
 | 🖥️ **Table HUD (Windows, opt-in)** | On by default, with a single switch in the HUD page. Shows opponent stats over your Winamax and Unibet tables, computed from your local hand histories. A built-in editor lets you compose your own grids (stats, stack-depth rows, colour bands, popups) or start from seven shipped models. |
-| 🧮 **Custom stats** | Build your own stats from conditions (a situation, an action, positions, stack depth, raise sizes, bet sizes…). They are computed over your whole history, shown on the Statistics page and available in the HUD editor like any built-in stat. |
+| 🧮 **Custom stats** | Build your own stats from conditions (a situation, an action, positions, stack depth, raise sizes, bet sizes…). They are computed over your whole history, shown on the Statistics page and available in the HUD editor like any built-in stat. Conditions also cover the effective stack, bet and raise sizes on every street and sequences of actions between players; the shipped models include c-bet, fold to c-bet, donk, 3-bet and shove after a limp. |
 | 🌍 **Multilingual UI** | English and French, easy to extend. |
+
+The HUD reads the history your room writes at the end of each hand: a table shows figures from the second hand on, and a player who just busted stays shown until the next hand. Pairing a table window with a tournament needs proof (the window title names the tournament, or there is a single candidate); otherwise the HUD asks you to pick.
 
 SpinTracker is first a post-session analysis tool. The optional table HUD only reads your own imported hands: it never reads the poker client's memory or screen, and never clicks or types for you.
 

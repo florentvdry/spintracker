@@ -4,7 +4,7 @@
  * (`crates/core/src/stats/custom/model.rs`, which stays the authority).
  */
 
-export const SCHEMA_VERSION = 1
+export const SCHEMA_VERSION = 2
 
 export const STREETS = ['preflop', 'flop', 'turn', 'river'] as const
 export const ACTIONS = ['bet', 'raise', 'call', 'check', 'fold'] as const
@@ -27,6 +27,18 @@ export type Cond =
   | { type: 'facingAggression'; street: Street }
   | { type: RangeLeafType; range: Range }
   | { type: 'betSizePercentPot'; street: Street; range: Range }
+  | AdvancedCond
+
+/**
+ * Conditions the editor shows but does not build: stack at an action, bet sizes and sequences of
+ * actions. They come from the shipped models; the backend validates them (`model.rs`).
+ */
+export type AdvancedCond =
+  | { type: 'stackBb'; reference: 'own' | 'effective'; at?: 'handStart' | 'action'; street?: Street; range: Range }
+  | { type: 'sizing'; street: Street; kind: 'aggression' | 'bet' | 'raise' | 'facing'; unit: 'potPct' | 'prevBetPct' | 'bb' | 'effStackPct'; range: Range }
+  | { type: 'sequence'; steps: Record<string, unknown>[]; gap?: 'foldsOnly' | 'none' | 'any' }
+
+export const isAdvanced = (cond: Cond): cond is AdvancedCond => cond.type === 'stackBb' || cond.type === 'sizing' || cond.type === 'sequence'
 
 export interface Filters {
   positions: string[]
@@ -72,7 +84,7 @@ export const RANGE_LIMITS: Record<string, number> = {
 /** Below this many opportunities a figure is shaky; the tables show it muted. */
 export const LOW_SAMPLE = 30
 
-export const DEFAULT_LIMITS: CustomStatOptions['limits'] = { nameChars: 40, depth: 4, leaves: 12, stats: 100 }
+export const DEFAULT_LIMITS: CustomStatOptions['limits'] = { nameChars: 40, depth: 5, leaves: 16, stats: 100 }
 
 export function defaultLeaf(type: LeafType, firstFlag = 'Vpip'): Cond {
   switch (type) {
@@ -100,6 +112,7 @@ export const isGroup = (cond: Cond): cond is Extract<Cond, { items: Cond[] }> =>
 export function countLeaves(cond: Cond): number {
   if (isGroup(cond)) return cond.items.reduce((sum, item) => sum + countLeaves(item), 0)
   if (cond.type === 'not') return countLeaves(cond.item)
+  if (cond.type === 'sequence') return Math.max(1, cond.steps.length)
   return 1
 }
 
@@ -132,6 +145,10 @@ function condError(cond: Cond, flags: ReadonlySet<string> | null): string | null
     case 'action': return cond.street === 'preflop' && cond.action === 'check' ? 'preflop_check' : null
     case 'inPosition': return null
     case 'facingAggression': return null
+    // The backend is the authority on the conditions the editor cannot build.
+    case 'sequence': return null
+    case 'stackBb':
+    case 'sizing': return rangeError(cond.range, 1000)
     case 'betSizePercentPot': return cond.street === 'preflop' ? 'preflop_bet_size' : rangeError(cond.range, RANGE_LIMITS.betSizePercentPot)
     default: return rangeError(cond.range, RANGE_LIMITS[cond.type])
   }
