@@ -97,6 +97,7 @@ pub fn run() {
             commands::hud_settings_set,
             commands::hud_get_state,
             commands::hud_tables,
+            commands::hud_set_heroes,
             commands::hud_associate,
             commands::hud_set_hidden,
             commands::hud_set_panel_rects,

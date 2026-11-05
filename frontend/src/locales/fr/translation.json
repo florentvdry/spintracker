@@ -141,7 +141,10 @@
       "tables_shown": "{{count}} table(s) avec le HUD",
       "show_tables": "Tables",
       "hide_tables": "Masquer les tables",
-      "move_hint": "Placez les grilles sur la table elle-même : survolez une grille et glissez la barre de son bord supérieur. Alt pour déplacer librement."
+      "move_hint": "Placez les grilles sur la table elle-même : survolez une grille et glissez la barre de son bord supérieur. Alt pour déplacer librement.",
+      "read_limit": "Le HUD lit l'historique que la salle écrit en fin de main : il est vide pendant la 1re main, et un joueur tout juste éliminé reste affiché jusqu'à la main suivante.",
+      "demo_player": "Joueur {{n}}",
+      "figures_error": "Impossible de mettre à jour les chiffres"
     },
     "profiles": {
       "mine": "Mes profils",
@@ -788,7 +791,10 @@
       "raisesBefore": "Relances avant le joueur",
       "playersSeeingFlop": "Joueurs voyant le flop",
       "betSizePercentPot": "Taille de sa mise (% du pot)",
-      "inPosition": "Parle en dernier après le flop (en position)"
+      "inPosition": "Parle en dernier après le flop (en position)",
+      "stackBb": "Stack en big blinds",
+      "sizing": "Taille de mise ou de relance",
+      "sequence": "Séquence d'actions"
     },
     "limits": "{{leaves}} conditions utilisées sur {{max}}",
     "preview": "{{num}} / {{den}} = {{pct}} % sur les {{hands}} dernières mains",
@@ -827,13 +833,22 @@
       "small_cbet": "Petite c-bet flop (50 % pot max)",
       "btn_fold_to_cbet": "Fold à la c-bet flop au bouton",
       "preflop_all_in": "Relance all-in préflop",
-      "showdown_after_flop": "Abattage après avoir vu le flop"
+      "showdown_after_flop": "Abattage après avoir vu le flop",
+      "seq_cbet": "C-bet au flop",
+      "seq_fold_to_cbet": "Fold au c-bet du flop",
+      "seq_raise_cbet": "Relance d'un c-bet du flop",
+      "seq_donk": "Donk bet au flop",
+      "seq_stab": "Mise après un c-bet manqué au flop",
+      "seq_three_bet": "3-bet contre une ouverture",
+      "seq_fold_to_three_bet": "Fold à un 3-bet après ouverture",
+      "seq_shove_after_limp": "Shove après un limp"
     },
     "search": "Rechercher",
     "flag_situations": "Situations (le joueur pouvait agir)",
     "flag_actions": "Actions effectuées",
     "duplicate": "Dupliquer",
     "copy_suffix": "(copie)",
-    "low_sample": "Moins de {{count}} occurrences : prenez ce chiffre avec prudence."
+    "low_sample": "Moins de {{count}} occurrences : prenez ce chiffre avec prudence.",
+    "advanced_condition": "Condition avancée (stack, taille ou séquence) : partez d'un modèle pour la modifier"
   }
 }

@@ -26,7 +26,7 @@ use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
-use crate::services::hud::{HudNoteRequest, HudPlayersRequest, HudService};
+use crate::services::hud::{HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
 use crate::services::Importer;
 use crate::stats::store;
 use crate::{Error, Result};
@@ -335,9 +335,17 @@ impl Backend {
                 }
             }
             ("GET", ["hud", "tables"]) => match (r.query_str("room"), r.query_str("since")) {
-                (Some(room), Some(since)) => Response::data(self.hud.active_tables(&room, &since)?),
+                (Some(room), Some(since)) => Response::data(self.hud.active_tables(&room, &since, &[])?),
                 _ => Response::message(400, "room and since are required"),
             },
+            ("POST", ["hud", "tables"]) => {
+                let request: HudTablesRequest = r.body_as()?;
+                if request.room.trim().is_empty() || request.since.trim().is_empty() {
+                    Response::message(400, "room and since are required")
+                } else {
+                    Response::data(self.hud.active_tables(&request.room, &request.since, &request.hero_names)?)
+                }
+            }
             ("PUT", ["hud", "notes"]) => {
                 let request: HudNoteRequest = r.body_as()?;
                 match request.validate() {

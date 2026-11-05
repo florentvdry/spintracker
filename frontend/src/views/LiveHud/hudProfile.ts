@@ -349,3 +349,22 @@ export function applyTemplateToSettings(settings: HudSettings, profileId: string
   })
   return { ...settings, profiles }
 }
+
+// --- Saving from several windows
+
+const SETTINGS_KEYS = ['enabled', 'activeProfileId', 'profiles', 'placements', 'snapToGrid'] as const
+
+/**
+ * Settings to write when this window changed `local` since it last read `base`, while another window
+ * may have saved `remote` in the meantime: a field this window did not touch keeps the other
+ * window's value, so two windows editing different things do not erase each other.
+ */
+export function mergeSettings(base: HudSettings, local: HudSettings, remote: HudSettings): HudSettings {
+  const merged: HudSettings = { ...remote }
+  for (const key of SETTINGS_KEYS) {
+    if (JSON.stringify(local[key]) !== JSON.stringify(base[key])) {
+      Object.assign(merged, { [key]: local[key] })
+    }
+  }
+  return merged
+}

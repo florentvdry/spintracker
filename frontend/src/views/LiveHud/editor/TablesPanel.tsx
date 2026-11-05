@@ -50,6 +50,7 @@ export default function TablesPanel({ view, refresh }: TablesState) {
     <div className="w-[560px] max-w-[calc(100vw-48px)] overflow-hidden rounded-lg border border-dark-100 bg-dark-300 shadow-2xl shadow-black/50">
       <h2 className="border-b border-dark-100 px-3 py-2.5 text-[13px] font-semibold text-white">{t('liveHud.live.tables')}</h2>
       {tables.length === 0 && <p className="px-3 py-3 text-xs text-gray-400">{view.enabled ? t('liveHud.live.no_table') : t('liveHud.live.not_enabled')}</p>}
+      {tables.length > 0 && <p className="border-b border-dark-200 px-3 py-2 text-xs text-gray-400">{t('liveHud.live.read_limit')}</p>}
       {tables.map((table) => (
         <div key={table.id} className="flex flex-wrap items-center gap-2.5 border-b border-dark-200 px-3 py-2">
           <div className="min-w-0 flex-1 basis-48">

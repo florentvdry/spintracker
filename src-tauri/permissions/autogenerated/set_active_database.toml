@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-set-active-database"
+description = "Enables the set_active_database command without any pre-configured scope."
+commands.allow = ["set_active_database"]
+
+[[permission]]
+identifier = "deny-set-active-database"
+description = "Denies the set_active_database command without any pre-configured scope."
+commands.deny = ["set_active_database"]

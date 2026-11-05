@@ -141,7 +141,10 @@
       "tables_shown": "{{count}} table(s) with the HUD",
       "show_tables": "Tables",
       "hide_tables": "Hide tables",
-      "move_hint": "Place the grids on the table itself: hover a grid and drag the bar at its top edge. Hold Alt to move freely."
+      "move_hint": "Place the grids on the table itself: hover a grid and drag the bar at its top edge. Hold Alt to move freely.",
+      "read_limit": "The HUD reads the history the room writes at the end of each hand: it is empty during the first hand, and a player who just busted stays until the next hand.",
+      "demo_player": "Player {{n}}",
+      "figures_error": "Could not refresh the figures"
     },
     "profiles": {
       "mine": "My profiles",
@@ -788,7 +791,10 @@
       "raisesBefore": "Raises before the player",
       "playersSeeingFlop": "Players seeing the flop",
       "betSizePercentPot": "Own bet size (% of pot)",
-      "inPosition": "Acts last after the flop (in position)"
+      "inPosition": "Acts last after the flop (in position)",
+      "stackBb": "Stack in big blinds",
+      "sizing": "Bet or raise size",
+      "sequence": "Sequence of actions"
     },
     "limits": "{{leaves}} of {{max}} conditions used",
     "preview": "{{num}} / {{den}} = {{pct}}% over the latest {{hands}} hands",
@@ -827,13 +833,22 @@
       "small_cbet": "Small flop c-bet (50% pot or less)",
       "btn_fold_to_cbet": "Fold to flop c-bet on the button",
       "preflop_all_in": "Preflop all-in raise",
-      "showdown_after_flop": "Showdown after seeing the flop"
+      "showdown_after_flop": "Showdown after seeing the flop",
+      "seq_cbet": "Flop c-bet",
+      "seq_fold_to_cbet": "Fold to flop c-bet",
+      "seq_raise_cbet": "Raise a flop c-bet",
+      "seq_donk": "Donk bet on the flop",
+      "seq_stab": "Bet after a missed flop c-bet",
+      "seq_three_bet": "3-bet over an open",
+      "seq_fold_to_three_bet": "Fold to a 3-bet after opening",
+      "seq_shove_after_limp": "Shove after a limp"
     },
     "search": "Search",
     "flag_situations": "Situations (the player could act)",
     "flag_actions": "Actions taken",
     "duplicate": "Duplicate",
     "copy_suffix": "(copy)",
-    "low_sample": "Fewer than {{count}} occurrences: take this figure with caution."
+    "low_sample": "Fewer than {{count}} occurrences: take this figure with caution.",
+    "advanced_condition": "Advanced condition (stack, size or sequence): start from a model to change it"
   }
 }

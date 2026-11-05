@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-auto-import-get"
+description = "Enables the auto_import_get command without any pre-configured scope."
+commands.allow = ["auto_import_get"]
+
+[[permission]]
+identifier = "deny-auto-import-get"
+description = "Denies the auto_import_get command without any pre-configured scope."
+commands.deny = ["auto_import_get"]

@@ -21,6 +21,8 @@ use regex::Regex;
 use serde_json::{json, Value};
 use tauri::{AppHandle, Manager};
 
+use spintracker_core::services::table_pairing::{pair_tables, PairTournament, PairWindow};
+
 use super::overlay;
 use super::win32::{self, Handle};
 use crate::backend::{self, BackendState};
@@ -60,6 +62,8 @@ pub fn table_mode() -> bool {
 
 #[derive(Default)]
 pub struct EngineState {
+    /// The names the user plays under, set by the UI; kept when the HUD is turned off.
+    heroes: Mutex<Vec<String>>,
     inner: Mutex<Inner>,
 }
 
@@ -133,34 +137,60 @@ struct TableWindow {
     title: String,
 }
 
+/// What was last logged per room, so the windows seen are written once per change, not every tick.
+static LOGGED_WINDOWS: Mutex<Vec<(&'static str, Vec<String>)>> = Mutex::new(Vec::new());
+
+/// Logs the windows of a room's program (title and size) when they change, to learn the real
+/// titles of the lobby and the tables of a client.
+fn log_windows_seen(room: &'static str, windows: &[(String, i32, i32)]) {
+    let mut seen: Vec<String> = windows.iter().map(|(title, w, h)| format!("{title:?} {w}x{h}")).collect();
+    seen.sort();
+    let mut logged = LOGGED_WINDOWS.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+    let slot = logged.iter().position(|(r, _)| *r == room);
+    if slot.is_some_and(|i| logged[i].1 == seen) {
+        return;
+    }
+    if !seen.is_empty() {
+        log::info!("[hud] {room} windows: {}", seen.join(", "));
+    }
+    match slot {
+        Some(i) => logged[i].1 = seen,
+        None => logged.push((room, seen)),
+    }
+}
+
 /// The table windows of a room: visible, big enough, of the room's program, not its lobby.
 fn table_windows(config: &RoomConfig) -> Vec<TableWindow> {
-    win32::visible_windows()
+    let of_room: Vec<(Handle, String)> = win32::visible_windows()
+        .into_iter()
+        .filter(|(handle, _)| win32::process_name(*handle).is_some_and(|name| name.to_lowercase().contains(&config.process)))
+        .collect();
+    let sizes: Vec<(String, i32, i32)> = of_room
+        .iter()
+        .map(|(handle, title)| {
+            let (w, h) = win32::rect(*handle).map_or((0, 0), |r| (r.width, r.height));
+            (title.clone(), w, h)
+        })
+        .collect();
+    log_windows_seen(config.defaults.room, &sizes);
+    of_room
         .into_iter()
         .filter(|(handle, title)| {
             let lower = title.trim().to_lowercase();
             !config.defaults.not_tables.contains(&lower.as_str())
                 && config.title.is_match(title)
                 && win32::rect(*handle).is_some_and(|r| r.width >= MIN_TABLE_WIDTH && r.height >= MIN_TABLE_HEIGHT)
-                && win32::process_name(*handle).is_some_and(|name| name.to_lowercase().contains(&config.process))
         })
         .map(|(handle, title)| TableWindow { handle, title })
         .collect()
 }
 
-fn active_tables(app: &AppHandle, room: &str, minutes: i64) -> Vec<Value> {
+fn active_tables(app: &AppHandle, room: &str, minutes: i64, heroes: &[String]) -> Vec<Value> {
     let Some(backend) = app.state::<BackendState>().ready() else { return Vec::new() };
     let since = (chrono::Utc::now() - chrono::Duration::minutes(minutes)).format("%Y-%m-%d %H:%M:%S").to_string();
-    let response = backend.handle("GET", &format!("/hud/tables?room={room}&since={}", since.replace(' ', "%20")), None);
+    let body = json!({ "room": room, "since": since, "heroNames": heroes });
+    let response = backend.handle("POST", "/hud/tables", Some(body));
     response.body["data"].as_array().cloned().unwrap_or_default()
-}
-
-/// Whether a window title names a tournament (its id, or its name when long enough to mean something).
-fn title_names(title: &str, table: &Value) -> bool {
-    let lower = title.to_lowercase();
-    let id = table["gameId"].as_str().unwrap_or_default();
-    let name = table["tournamentName"].as_str().unwrap_or_default().to_lowercase();
-    (!id.is_empty() && lower.contains(&id.to_lowercase())) || (name.len() >= 6 && lower.contains(&name))
 }
 
 fn tick(app: &AppHandle) {
@@ -184,44 +214,51 @@ fn tick(app: &AppHandle) {
         return;
     }
 
+    let heroes = engine.heroes.lock().unwrap_or_else(std::sync::PoisonError::into_inner).clone();
     let mut view_tables: Vec<Value> = Vec::new();
     let mut candidates: Vec<Value> = Vec::new();
     let mut shown: HashMap<Handle, Value> = HashMap::new();
     let mut open_tables: HashSet<Handle> = HashSet::new();
 
-    for room in &config.rooms {
-        let windows = table_windows(room);
-        // Without a table window there is nothing to pair: the database is not asked.
-        let active = if windows.is_empty() { Vec::new() } else { active_tables(app, room.defaults.room, room.active_minutes) };
+    // Every room is looked at before anything is paired, so a room without windows cannot erase
+    // the pairings of another one.
+    let looked: Vec<(&RoomConfig, Vec<TableWindow>, Vec<Value>)> = config
+        .rooms
+        .iter()
+        .map(|room| {
+            let windows = table_windows(room);
+            // Without a table window there is nothing to pair: the database is not asked.
+            let active = if windows.is_empty() { Vec::new() } else { active_tables(app, room.defaults.room, room.active_minutes, &heroes) };
+            (room, windows, active)
+        })
+        .collect();
+    let pair_windows: Vec<PairWindow> = looked
+        .iter()
+        .flat_map(|(room, windows, _)| {
+            windows.iter().map(|w| PairWindow { id: w.handle, room: room.defaults.room.to_string(), title: w.title.clone() })
+        })
+        .collect();
+    let pair_tournaments: Vec<PairTournament> = looked
+        .iter()
+        .flat_map(|(room, _, active)| {
+            active.iter().map(|t| PairTournament {
+                room: room.defaults.room.to_string(),
+                game_id: t["gameId"].as_str().unwrap_or_default().to_string(),
+                name: t["tournamentName"].as_str().unwrap_or_default().to_string(),
+            })
+        })
+        .collect();
+    {
+        let mut inner = engine.lock();
+        inner.associations = pair_tables(&pair_windows, &pair_tournaments, &inner.associations);
+    }
+
+    for (room, windows, active) in &looked {
         candidates.extend(active.iter().cloned());
         open_tables.extend(windows.iter().map(|w| w.handle));
+        let inner = engine.lock();
 
-        let mut inner = engine.lock();
-        // Pairings that no longer hold: the window closed or the tournament ended.
-        inner.associations.retain(|handle, game| {
-            windows.iter().any(|w| w.handle == *handle) && active.iter().any(|t| t["gameId"].as_str() == Some(game.as_str()))
-        });
-
-        let claimed: HashSet<String> = inner.associations.values().cloned().collect();
-        let free_windows: Vec<&TableWindow> = windows.iter().filter(|w| !inner.associations.contains_key(&w.handle)).collect();
-        let free_tournaments: Vec<&Value> = active.iter().filter(|t| !claimed.contains(t["gameId"].as_str().unwrap_or_default())).collect();
-
-        let mut new_pairs: Vec<(Handle, String)> = Vec::new();
-        if free_windows.len() == 1 && free_tournaments.len() == 1 {
-            new_pairs.push((free_windows[0].handle, free_tournaments[0]["gameId"].as_str().unwrap_or_default().to_string()));
-        } else {
-            for w in &free_windows {
-                let named: Vec<&&Value> = free_tournaments.iter().filter(|t| title_names(&w.title, t)).collect();
-                if let [only] = named.as_slice() {
-                    new_pairs.push((w.handle, only["gameId"].as_str().unwrap_or_default().to_string()));
-                }
-            }
-        }
-        for (handle, game) in new_pairs {
-            inner.associations.insert(handle, game);
-        }
-
-        for w in &windows {
+        for w in windows {
             let hidden = inner.hidden.contains(&w.handle);
             let table = inner.associations.get(&w.handle).and_then(|game| active.iter().find(|t| t["gameId"].as_str() == Some(game.as_str())));
             let (state, info) = match table {
@@ -248,6 +285,9 @@ fn tick(app: &AppHandle) {
             }));
         }
     }
+
+    // A hidden table that closed is forgotten, so the set does not grow with every table opened.
+    engine.lock().hidden.retain(|handle| open_tables.contains(handle));
 
     // Table mode follows the tables that are open, whether or not a panel can be shown on them.
     let was_open = table_mode();
@@ -309,5 +349,12 @@ pub fn set_hidden(app: &AppHandle, table: Handle, hidden: bool) -> Value {
     } else {
         inner.hidden.remove(&table);
     }
+    json!({ "success": true })
+}
+
+/// Tells the engine the names the user plays under (hero and aliases), to find the hero at a table.
+pub fn set_heroes(app: &AppHandle, names: Vec<String>) -> Value {
+    let engine = app.state::<EngineState>();
+    *engine.heroes.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = names;
     json!({ "success": true })
 }

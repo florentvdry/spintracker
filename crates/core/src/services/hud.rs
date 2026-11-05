@@ -6,6 +6,7 @@
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
+use rusqlite::Connection;
 use serde::Deserialize;
 use serde_json::{json, Value};
 
@@ -54,6 +55,17 @@ impl HudPlayersRequest {
     }
 }
 
+/// Which tournaments are being played: those of `room` with a hand written since `since`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HudTablesRequest {
+    pub room: String,
+    pub since: String,
+    /// The names the user plays under (hero and aliases), to tell the hero from the opponents.
+    #[serde(default)]
+    pub hero_names: Vec<String>,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HudNoteRequest {
@@ -89,10 +101,17 @@ struct CacheKey {
     with_custom: bool,
 }
 
+/// Rows of one player, with the version of that player's data they were read at.
+struct CachedRows {
+    player_version: u64,
+    rows: Arc<Vec<Row>>,
+}
+
 #[derive(Default)]
 struct Cache {
-    version: u64,
-    rows: HashMap<CacheKey, Arc<Vec<Row>>>,
+    /// The cache is emptied when this changes (a write that can touch anyone's figures).
+    epoch: u64,
+    rows: HashMap<CacheKey, CachedRows>,
 }
 
 pub struct HudService {
@@ -105,24 +124,30 @@ impl HudService {
         Self { db, cache: Mutex::new(Cache::default()) }
     }
 
-    fn rows_of(&self, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Arc<Vec<Row>>> {
-        let version = self.db.data_version();
+    /// `conn` is the caller's connection: asking the pool for a second one while holding the first
+    /// could wait for ever when every connection is held by a caller doing the same.
+    fn rows_of(&self, conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Arc<Vec<Row>>> {
+        // Versions are read before the rows: a write landing in between makes the entry look stale
+        // at the next read instead of hiding it.
+        let epoch = self.db.epoch();
+        let player_version = self.db.player_version(player).max(self.db.player_version(hero));
         let key = CacheKey { room: room.into(), hero: hero.into(), player: player.into(), with_custom };
         {
             let mut cache = self.cache.lock().expect("the HUD cache lock is never held across a panic");
-            if cache.version != version || cache.rows.len() >= CACHE_CAPACITY {
+            if cache.epoch != epoch || cache.rows.len() >= CACHE_CAPACITY {
                 cache.rows.clear();
-                cache.version = version;
+                cache.epoch = epoch;
             }
-            if let Some(rows) = cache.rows.get(&key) {
-                return Ok(rows.clone());
+            if let Some(cached) = cache.rows.get(&key) {
+                if cached.player_version == player_version {
+                    return Ok(cached.rows.clone());
+                }
             }
         }
-        let rows = Arc::new(hud_stats::load_rows(&*self.db.conn()?, room, hero, player, with_custom)?);
+        let rows = Arc::new(hud_stats::load_rows(conn, room, hero, player, with_custom)?);
         let mut cache = self.cache.lock().expect("the HUD cache lock is never held across a panic");
-        // Data written while the rows were being read makes them stale: do not keep them.
-        if cache.version == version {
-            cache.rows.insert(key, rows.clone());
+        if cache.epoch == epoch {
+            cache.rows.insert(key, CachedRows { player_version, rows: rows.clone() });
         }
         Ok(rows)
     }
@@ -134,7 +159,7 @@ impl HudService {
         let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
         let mut players = Vec::with_capacity(request.players.len());
         for name in &request.players {
-            let rows = self.rows_of(&request.room, &request.hero_name, name, with_custom)?;
+            let rows = self.rows_of(&conn, &request.room, &request.hero_name, name, with_custom)?;
             let (hands, stats) = hud_stats::compute(&rows, &request.stats, &ready);
             let note = player_notes::get(&conn, &request.room, name)?.unwrap_or_default();
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));
@@ -143,8 +168,8 @@ impl HudService {
     }
 
     /// Tournaments of `room` being played: see [`hud_tables::active_tables`].
-    pub fn active_tables(&self, room: &str, since: &str) -> Result<Value> {
-        Ok(Value::Array(hud_tables::active_tables(&*self.db.conn()?, room, since)?))
+    pub fn active_tables(&self, room: &str, since: &str, heroes: &[String]) -> Result<Value> {
+        Ok(Value::Array(hud_tables::active_tables(&*self.db.conn()?, room, since, heroes)?))
     }
 
     pub fn set_note(&self, request: &HudNoteRequest) -> Result<()> {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { hudBaselines } from '@/views/Stats/hudText'
 import { buildCellView, figureKey, pickColor, requestsOf, type HudFigures } from './hudGrid'
-import { defaultSettings, exportProfiles, importProfiles, sanitizeSettings, seatPositions } from './hudProfile'
+import { defaultSettings, exportProfiles, importProfiles, mergeSettings, sanitizeSettings, seatPositions } from './hudProfile'
 import type { LegacyCell, LegacyFamily, LegacyLayout, LegacyTable } from './hudMigration'
 
 // --- The layouts version 2 shipped with, to build files as that version wrote them
@@ -224,5 +224,23 @@ describe('placements without rooms', () => {
     saved.placements = { Winamax: { threeMax: { '+1': { [grid]: { x: 0.3, y: 0.4 } } } }, Unibet: {} }
     expect(sanitizeSettings(saved).placements.threeMax['+1'][grid]).toEqual({ x: 0.3, y: 0.4 })
     expect(sanitizeSettings(saved).placements).not.toHaveProperty('Winamax')
+  })
+})
+
+describe('saving from several windows', () => {
+  it('keeps the other window\'s change to a field this window did not touch', () => {
+    const base = defaultSettings()
+    const local = { ...base, snapToGrid: !base.snapToGrid }
+    const remote = { ...base, enabled: !base.enabled }
+    const merged = mergeSettings(base, local, remote)
+    expect(merged.snapToGrid).toBe(local.snapToGrid)
+    expect(merged.enabled).toBe(remote.enabled)
+  })
+
+  it('lets this window win on the fields it changed', () => {
+    const base = defaultSettings()
+    const local = { ...base, enabled: false }
+    const remote = { ...base, enabled: true }
+    expect(mergeSettings(base, local, remote).enabled).toBe(false)
   })
 })

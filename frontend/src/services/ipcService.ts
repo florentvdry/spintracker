@@ -186,6 +186,7 @@ export const ipcService = {
   getHudPlayers: (body: Json) => backend('POST', '/hud/players', body),
   getHudSettings: () => command<ApiResult>('hud_settings_get'),
   setHudSettings: (settings: Json) => command<ApiResult>('hud_settings_set', { settings }),
+  setHudHeroes: (names: string[]) => command<ApiResult>('hud_set_heroes', { names }),
   pickAutoImportFolder: async (): Promise<string | null> => {
     const path = await command<unknown>('auto_import_pick_folder')
     return typeof path === 'string' ? path : null

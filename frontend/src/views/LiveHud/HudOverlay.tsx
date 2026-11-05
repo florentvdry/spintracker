@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import HudGridView from '@/components/livehud/HudGridView'
 import { ipcService, type Json } from '@/services/ipcService'
+import { useTranslation } from 'react-i18next'
 import { useLiveHudStore } from '@/stores/liveHudStore'
+import { logError } from '@/utils/log'
 import { figureKey, requestsOf, type CellView, type GridPosition, type HudFigure, type HudFigures, type HudGrid } from './hudGrid'
 import { dragTo, type Rect } from './hudEditor'
 import { GRID_STEP, seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom, type SeatPlacements } from './hudProfile'
@@ -15,6 +17,8 @@ export interface LivePanel {
   name: string
   figures: HudFigures
   tag?: string
+  /** The last refresh failed: the figures are the previous ones, shown greyed out. */
+  stale?: boolean
 }
 
 /** What the shell tells a HUD window about its table. `demo` fills it with example panels (development aid). */
@@ -44,22 +48,35 @@ function useLivePanels(payload: HudPayload | null, layoutKey: string, requests: 
       return
     }
     let cancelled = false
+    const markStale = (reason: unknown) => {
+      logError('Could not read the HUD figures:', reason)
+      setPanels((previous) => previous.map((panel) => ({ ...panel, stale: true })))
+    }
     void ipcService
       .getHudPlayers({ room, heroName: hero, players: seats.map((p) => p.name), stats: requests })
       .then((result) => {
-        if (cancelled || !result.success) return
+        if (cancelled) return
+        if (!result.success) {
+          markStale(result.message)
+          return
+        }
         const answers: Json[] = result.data?.players ?? []
         setPanels(
           seats.map((seat) => {
             const answer = answers.find((a) => a.name === seat.name)
             const figures: HudFigures = {}
             for (const stat of (answer?.stats ?? []) as Json[]) {
-              const figure: HudFigure = { pct: stat.pct ?? null, num: stat.num ?? 0, den: stat.den ?? 0 }
+              // A figure the backend did not count stays absent (no data), it is not a zero.
+              if (typeof stat.num !== 'number' || typeof stat.den !== 'number') continue
+              const figure: HudFigure = { pct: stat.pct ?? null, num: stat.num, den: stat.den }
               figures[figureKey(stat.section, stat.label, stat.column ?? null, stat.bucket ?? null)] = figure
             }
             return { seat: seat.seat, name: seat.name, figures, tag: answer?.tag || undefined }
           }),
         )
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) markStale(error)
       })
     return () => {
       cancelled = true
@@ -81,6 +98,7 @@ interface OpenPopup {
 
 /** The page of a HUD window: the grids of one table, at their saved positions. */
 export default function HudOverlay() {
+  const { t } = useTranslation()
   const settings = useLiveHudStore((s) => s.settings)
   const load = useLiveHudStore((s) => s.load)
   const loaded = useLiveHudStore((s) => s.loaded)
@@ -115,10 +133,10 @@ export default function HudOverlay() {
   const panels = useMemo<LivePanel[]>(() => {
     if (payload?.demo) {
       const figures = previewFigures(layout)
-      return SEATS_BY_FORMAT[format].map((seat, i) => ({ seat, name: `Player ${i + 1}`, figures }))
+      return SEATS_BY_FORMAT[format].map((seat, i) => ({ seat, name: t('liveHud.live.demo_player', { n: i + 1 }), figures }))
     }
     return live
-  }, [payload, layout, format, live])
+  }, [payload, layout, format, live, t])
 
   const positions = useMemo(
     () => Object.fromEntries(SEATS_BY_FORMAT[format].map((seat) => [seat, seatPositions(settings.placements, format, seat, layout.grids)])),
@@ -223,7 +241,8 @@ export default function HudOverlay() {
               ref={(el) => {
                 refs.current[key] = el
               }}
-              className="group absolute origin-top-left"
+              className={`group absolute origin-top-left ${panel.stale ? 'opacity-40 grayscale' : ''}`}
+              title={panel.stale ? t('liveHud.live.figures_error') : undefined}
               style={{ left: `${position.x * 100}%`, top: `${position.y * 100}%`, transform: `scale(${profile.size})` }}
             >
               <HudGridView

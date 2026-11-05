@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-hud-debug-detach"
+description = "Enables the hud_debug_detach command without any pre-configured scope."
+commands.allow = ["hud_debug_detach"]
+
+[[permission]]
+identifier = "deny-hud-debug-detach"
+description = "Denies the hud_debug_detach command without any pre-configured scope."
+commands.deny = ["hud_debug_detach"]

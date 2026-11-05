@@ -1,11 +1,7 @@
 //! The table HUD: panels laid over poker tables.
 //!
-//! The overlay is Windows-only. Everything that does not touch Win32 (seat arithmetic) builds and
-//! is tested everywhere.
+//! The overlay is Windows-only.
 
-// Not used until tables are matched to hands, which needs measurements from a real client.
-#[allow(dead_code)]
-pub mod seats;
 #[cfg(windows)]
 mod engine;
 #[cfg(windows)]
@@ -151,5 +147,18 @@ pub fn set_hidden(app: &AppHandle, table: i64, hidden: bool) -> Value {
     {
         let _ = (app, table, hidden);
         json!({ "success": false, "message": "The HUD is only available on Windows." })
+    }
+}
+
+/// Names the user plays under, to find the hero at a table.
+pub fn set_heroes(app: &AppHandle, names: Vec<String>) -> Value {
+    #[cfg(windows)]
+    {
+        engine::set_heroes(app, names)
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = (app, names);
+        json!({ "success": true })
     }
 }

@@ -393,3 +393,41 @@ fn a_full_grid_layout_of_a_thousand_figures_is_answered_quickly() {
     let refused = backend.handle("POST", "/hud/players", Some(json!({ "room": "Winamax", "heroName": "hero", "players": ["villain"], "stats": too_many })));
     assert_eq!(refused.status, 400);
 }
+
+#[test]
+fn the_configured_hero_wins_over_the_player_with_known_cards() {
+    let (_dir, backend) = backend_with_hands();
+    backend.database().conn().unwrap().execute("UPDATE hands SET position = 0", []).unwrap();
+    let tables = |heroes: Value| -> Vec<Value> {
+        let body = json!({ "room": "Winamax", "since": "2000-01-01 00:00:00", "heroNames": heroes });
+        let r = backend.handle("POST", "/hud/tables", Some(body));
+        assert_eq!(r.status, 200, "{:?}", r.body);
+        r.body["data"].as_array().unwrap().clone()
+    };
+
+    // Without a configured hero, the player whose cards are known most often is guessed.
+    assert!(tables(json!([])).iter().all(|t| t["hero"] == HERO));
+    // An alias that played is matched whatever its case, and an unknown name falls back to the guess.
+    let others = tables(json!(["nobody", "MELIMELODYY"]));
+    assert!(others.iter().any(|t| t["hero"] == "melimelodyy"), "{others:?}");
+    // A configured hero who is no longer in the last hand has no table to show.
+    assert!(others.iter().all(|t| t["hero"] == "melimelodyy" || t["hero"] == HERO), "{others:?}");
+    assert!(tables(json!(["nobody"])).iter().all(|t| t["hero"] == HERO));
+}
+
+#[test]
+fn more_simultaneous_requests_than_pool_connections_all_complete() {
+    let (_dir, backend) = backend_with_hands();
+    let stats = [stat("general", "VPIP", None)];
+    let started = Instant::now();
+    std::thread::scope(|scope| {
+        for _ in 0..24 {
+            scope.spawn(|| {
+                let answer = hud(&backend, "Winamax", HERO, &OPPONENTS, &stats);
+                assert_eq!(answer["players"].as_array().map(Vec::len), Some(OPPONENTS.len()));
+            });
+        }
+    });
+    // A request waiting for a connection that another one holds would run into the pool timeout.
+    assert!(started.elapsed().as_secs() < 20, "took {:?}", started.elapsed());
+}

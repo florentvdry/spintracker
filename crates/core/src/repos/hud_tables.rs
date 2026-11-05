@@ -28,8 +28,17 @@ pub(crate) fn relative_seat(players: usize, hero_position: &str, position: &str)
     Some((other + order.len() - hero) % order.len())
 }
 
-/// The hero of a tournament is the player whose cards are known in most of its hands.
-fn hero_of(conn: &Connection, game_id: &str) -> Result<Option<String>> {
+/// The hero of a tournament: the first configured name (the hero's name and its aliases) that played
+/// in it. Without a match, the player whose cards are known in most of its hands: a last resort,
+/// because an opponent's cards are known too once they reach a showdown.
+fn hero_of(conn: &Connection, game_id: &str, configured: &[String]) -> Result<Option<String>> {
+    let mut stmt = conn.prepare("SELECT DISTINCT ph.player_name FROM player_hands ph JOIN hands h ON h.id = ph.hand_id WHERE h.game_id = ?1")?;
+    let players: Vec<String> = stmt.query_map([game_id], |r| r.get(0))?.collect::<std::result::Result<_, _>>()?;
+    for name in configured {
+        if let Some(found) = players.iter().find(|p| p.eq_ignore_ascii_case(name.trim())) {
+            return Ok(Some(found.clone()));
+        }
+    }
     Ok(conn
         .query_row(
             "SELECT ph.player_name FROM player_hands ph JOIN hands h ON h.id = ph.hand_id
@@ -45,9 +54,9 @@ fn hero_of(conn: &Connection, game_id: &str) -> Result<Option<String>> {
 }
 
 /// Tournaments of `room` with a hand written since `since` (a stored date, `YYYY-MM-DD HH:MM:SS`)
-/// and no summary yet, most recent first. A tournament whose table cannot be shown (more than three
+/// and no summary yet, most recent first. `heroes` are the names the user plays under. A tournament whose table cannot be shown (more than three
 /// players, no known hero) is left out.
-pub fn active_tables(conn: &Connection, room: &str, since: &str) -> Result<Vec<Value>> {
+pub fn active_tables(conn: &Connection, room: &str, since: &str, heroes: &[String]) -> Result<Vec<Value>> {
     let mut stmt = conn.prepare(
         "SELECT h.game_id, MAX(h.date_time) AS last_at
          FROM hands h
@@ -73,7 +82,7 @@ pub fn active_tables(conn: &Connection, room: &str, since: &str) -> Result<Vec<V
             continue;
         };
         let players = count as usize;
-        let (Some(hero), true) = (hero_of(conn, &game_id)?, cycle(players).is_some()) else { continue };
+        let (Some(hero), true) = (hero_of(conn, &game_id, heroes)?, cycle(players).is_some()) else { continue };
 
         let mut stmt = conn.prepare("SELECT player_name, position FROM player_hands WHERE hand_id = ?1")?;
         let seated: Vec<(String, String)> = stmt

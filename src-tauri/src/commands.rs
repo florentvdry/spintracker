@@ -275,3 +275,9 @@ fn encode_segment(raw: &str) -> String {
         })
         .collect()
 }
+
+/// The names the user plays under (hero and aliases), so the HUD can tell the hero from the opponents.
+#[tauri::command]
+pub async fn hud_set_heroes(app: AppHandle, names: Vec<String>) -> Value {
+    hud::set_heroes(&app, names)
+}
