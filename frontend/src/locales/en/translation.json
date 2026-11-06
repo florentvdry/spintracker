@@ -86,7 +86,7 @@
     "subtitle": "Import new hands as soon as the poker room writes them",
     "enable": "Import hands automatically",
     "choose_folder": "Choose folder",
-    "use_detected": "Use this folder",
+    "detected": "Found automatically",
     "unibet_hint": "Select the folder where Unibet saves its automatic exports (Documents\\Unibet Poker\\History\\Exports\\Automatic).",
     "manual_rooms": "Betclic no longer writes hand histories to your computer, so they cannot be imported automatically. Export them from the Betclic client and use the Import button.",
     "state": {

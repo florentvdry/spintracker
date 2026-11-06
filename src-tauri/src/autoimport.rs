@@ -152,14 +152,25 @@ fn active_database_id(backend: &Backend) -> Option<String> {
 fn active_settings(app: &AppHandle) -> Option<(String, DatabaseSettings)> {
     let backend = app.state::<BackendState>().ready()?;
     let id = active_database_id(&backend)?;
-    let settings = load_config(app).databases.remove(&id).unwrap_or_else(|| first_run_settings(detect_folders(app)));
+    let settings = load_config(app).databases.remove(&id).unwrap_or_else(first_run_settings);
     Some((id, settings))
 }
 
-/// A database that was never configured imports on its own from the folders found on this computer,
-/// so a fresh install works without any setup. Saving once from the settings replaces this.
-fn first_run_settings(detected: Vec<WatchedFolder>) -> DatabaseSettings {
-    DatabaseSettings { enabled: true, folders: detected }
+/// A database that was never configured imports on its own: the folders found on this computer are
+/// always watched (see [`all_folders`]), so a fresh install works without any setup.
+fn first_run_settings() -> DatabaseSettings {
+    DatabaseSettings { enabled: true, folders: Vec::new() }
+}
+
+/// The folders added by hand plus the ones found on this computer, each once.
+fn all_folders(added: &[WatchedFolder], detected: Vec<WatchedFolder>) -> Vec<WatchedFolder> {
+    let mut folders = added.to_vec();
+    for folder in detected {
+        if !folders.contains(&folder) {
+            folders.push(folder);
+        }
+    }
+    folders
 }
 
 /// Only existing absolute folders of a watchable room are accepted: the paths come from the UI.
@@ -335,7 +346,7 @@ impl Worker {
         self.reload_due = false;
         self.watcher = None;
         self.pending.clear();
-        self.folders = settings.folders.iter().map(|f| PathBuf::from(&f.path)).filter(|p| p.is_dir()).collect();
+        self.folders = all_folders(&settings.folders, detect_folders(&self.app)).iter().map(|f| PathBuf::from(&f.path)).filter(|p| p.is_dir()).collect();
 
         if !settings.enabled {
             self.set_status(State::Off, None);
@@ -532,11 +543,15 @@ mod tests {
     }
 
     #[test]
-    fn a_database_never_configured_imports_from_the_detected_folders() {
-        let detected = vec![WatchedFolder { room: "Winamax".into(), path: "C:\\history".into() }];
-        let settings = first_run_settings(detected.clone());
-        assert!(settings.enabled);
-        assert_eq!(settings.folders, detected);
+    fn a_database_never_configured_has_the_import_on() {
+        assert!(first_run_settings().enabled);
+    }
+
+    #[test]
+    fn detected_folders_are_always_watched_next_to_the_added_ones_without_duplicates() {
+        let folder = |path: &str| WatchedFolder { room: "Winamax".into(), path: path.into() };
+        let all = all_folders(&[folder("C:\\mine"), folder("C:\\found")], vec![folder("C:\\found"), folder("C:\\other")]);
+        assert_eq!(all, vec![folder("C:\\mine"), folder("C:\\found"), folder("C:\\other")]);
     }
 
     #[test]
