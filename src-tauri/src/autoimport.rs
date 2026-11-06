@@ -151,8 +151,14 @@ fn active_database_id(backend: &Backend) -> Option<String> {
 fn active_settings(app: &AppHandle) -> Option<(String, DatabaseSettings)> {
     let backend = app.state::<BackendState>().ready()?;
     let id = active_database_id(&backend)?;
-    let settings = load_config(app).databases.remove(&id).unwrap_or_default();
+    let settings = load_config(app).databases.remove(&id).unwrap_or_else(|| first_run_settings(detect_folders(app)));
     Some((id, settings))
+}
+
+/// A database that was never configured imports on its own from the folders found on this computer,
+/// so a fresh install works without any setup. Saving once from the settings replaces this.
+fn first_run_settings(detected: Vec<WatchedFolder>) -> DatabaseSettings {
+    DatabaseSettings { enabled: true, folders: detected }
 }
 
 /// Only existing absolute folders of a watchable room are accepted: the paths come from the UI.
@@ -517,6 +523,14 @@ mod tests {
         fs::create_dir_all(&export).unwrap();
         let found = unibet_folder(documents.path()).expect("the folder exists now");
         assert_eq!((found.room.as_str(), Path::new(&found.path)), ("Unibet", export.as_path()));
+    }
+
+    #[test]
+    fn a_database_never_configured_imports_from_the_detected_folders() {
+        let detected = vec![WatchedFolder { room: "Winamax".into(), path: "C:\\history".into() }];
+        let settings = first_run_settings(detected.clone());
+        assert!(settings.enabled);
+        assert_eq!(settings.folders, detected);
     }
 
     #[test]

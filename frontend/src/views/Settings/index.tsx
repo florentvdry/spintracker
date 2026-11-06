@@ -11,6 +11,8 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useNotificationStore } from '@/stores/notificationStore'
 import { usePlayersStore } from '@/stores/playersStore'
 import { useUpdateStore } from '@/stores/updateStore'
+import { useLocation } from 'react-router-dom'
+import { AUTO_IMPORT_ANCHOR } from './anchors'
 import AutoImportCard from './components/AutoImportCard'
 import SettingRow from './components/SettingRow'
 import { logError } from '@/utils/log'
@@ -31,6 +33,13 @@ export default function Settings() {
   const setHeroName = useFilterStore((s) => s.setHeroName)
   const loadPlayers = usePlayersStore((s) => s.loadPlayers)
   const isChecking = useUpdateStore((s) => s.isChecking)
+
+  const focus = (useLocation().state as { focus?: string } | null)?.focus
+
+  // Arriving from a link that targets a card (the import light in the header) scrolls to it.
+  useEffect(() => {
+    if (focus) document.getElementById(focus)?.scrollIntoView({ block: 'start' })
+  }, [focus])
 
   const [serverActive, setServerActive] = useState<boolean | null>(null)
   const [exportLoading, setExportLoading] = useState(false)
@@ -213,8 +222,9 @@ export default function Settings() {
         </SettingRow>
       </Card>
 
-      <AutoImportCard />
-
+      <div id={AUTO_IMPORT_ANCHOR}>
+        <AutoImportCard />
+      </div>
 
       <Card title={t('settings.database.multiple.title')} subtitle={t('settings.database.multiple.desc')}>
         <div className="space-y-4">
