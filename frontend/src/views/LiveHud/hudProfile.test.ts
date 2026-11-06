@@ -117,10 +117,10 @@ describe('migration from version 2', () => {
     expect(migrated.snapToGrid).toBe(false)
 
     const asked = new Set(requestsOf(migrated.profiles[0].layouts.headsUp).map((r) => figureKey(r.section, r.label, r.column, r.bucket)))
-    // The SB table: each figure for each of the seven stack depths, counted in the table's column.
-    expect(asked.has(figureKey('huSb', 'Raise First In', 'sb_hu', '13+'))).toBe(true)
-    expect(asked.has(figureKey('shove', 'Open Shove', 'sb_hu', '0-3'))).toBe(true)
-    expect(asked.has(figureKey('meta', 'hands', 'sb_hu', '5-7'))).toBe(true)
+    // The SB table: each figure for each of the six stack depths, counted in the table's column.
+    expect(asked.has(figureKey('huSb', 'Raise First In', 'sb_hu', '20+'))).toBe(true)
+    expect(asked.has(figureKey('shove', 'Open Shove', 'sb_hu', '3-8'))).toBe(true)
+    expect(asked.has(figureKey('meta', 'hands', 'sb_hu', '8-10'))).toBe(true)
     expect(asked.has(figureKey('meta', 'hands', 'hu', null))).toBe(true)
     expect(asked.has(figureKey('postflop', 'cbet_flop', 'bb_hu', null))).toBe(true)
   })
@@ -141,16 +141,16 @@ describe('migration from version 2', () => {
 
   it('shows the figures of a stack row', () => {
     const migrated = sanitizeSettings(v2Settings())
-    const grid = migrated.profiles[0].layouts.headsUp.grids.find((g) => g.rows.length === 8 && g.name === 'SB')
+    const grid = migrated.profiles[0].layouts.headsUp.grids.find((g) => g.rows.length === 7 && g.name === 'SB')
     expect(grid).toBeDefined()
     if (!grid) return
     const figures: HudFigures = {
-      [figureKey('huSb', 'Raise First In', 'sb_hu', '11-13')]: { pct: 50, num: 5, den: 10 },
-      [figureKey('meta', 'hands', 'sb_hu', '11-13')]: { pct: null, num: 12, den: 12 },
+      [figureKey('huSb', 'Raise First In', 'sb_hu', '13-16')]: { pct: 50, num: 5, den: 10 },
+      [figureKey('meta', 'hands', 'sb_hu', '13-16')]: { pct: null, num: 12, den: 12 },
     }
-    const row = grid.rows.findIndex((r) => r.context?.stack?.buckets[0] === '11-13')
+    const row = grid.rows.findIndex((r) => r.context?.stack?.buckets[0] === '13-16')
     const views = grid.cells.filter((c) => c.row === row).map((c) => buildCellView(grid, c, figures, { name: 'p' }, {}))
-    expect(views.map((v) => v.text).slice(0, 3)).toEqual(['11-13', '12', '50'])
+    expect(views.map((v) => v.text).slice(0, 3)).toEqual(['13-16', '12', '50'])
   })
 
   it('stacks the grids of a panel from its old position', () => {

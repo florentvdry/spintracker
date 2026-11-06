@@ -196,6 +196,26 @@ pub fn compute(input: &PostflopInput) -> (Flags, StreetCounts) {
         }
     }
 
+    // Check-raise: the player checks first, somebody bets, and the player's answer to that bet is a
+    // raise. Calling or folding instead still counts as the chance to check-raise.
+    let check_raise = [
+        (input.flop, Flag::XrOppFlop, Flag::XrFlop),
+        (input.turn, Flag::XrOppTurn, Flag::XrTurn),
+        (input.river, Flag::XrOppRiver, Flag::XrRiver),
+    ];
+    for (actions, opp, num) in check_raise {
+        let Some(first) = actions.iter().position(|a| is_player(a)) else { continue };
+        if actions[first].kind != ActionKind::Check {
+            continue;
+        }
+        let Some(bet) = actions[first + 1..].iter().position(|a| aggressive(&a) && by_others(&a)).map(|i| first + 1 + i) else { continue };
+        let Some(reaction) = actions[bet + 1..].iter().find(by_player) else { continue };
+        f.set(opp);
+        if reaction.kind.is_aggressive() {
+            f.set(num);
+        }
+    }
+
     // Answering a bet made by somebody else when the street opens with one.
     let vs_donk = [
         (input.flop, Flag::VsDonkOppFlop, Flag::FoldVsDonkFlop, Flag::RaiseVsDonkFlop),
@@ -437,6 +457,37 @@ mod tests {
         let s = Spot { pre: "Villain raises 20 to 50\nHero calls 30", ..spot("Hero bets 20\nVillain raises 60 to 80\nHero folds") };
         let (f, _) = s.flags();
         assert!(f.has(Flag::DonkFlop) && f.has(Flag::DonkFoldOppFlop) && f.has(Flag::DonkFoldFlop));
+    }
+
+    #[test]
+    fn check_raise_needs_a_check_then_a_bet_and_a_raise() {
+        let bb = |flop| Spot { pre: "Villain raises 20 to 50
+Hero calls 30", position: "BB", ..spot(flop) };
+        let (f, _) = bb("Hero checks
+Villain bets 40
+Hero raises 100 to 140").flags();
+        assert!(f.has(Flag::XrOppFlop) && f.has(Flag::XrFlop));
+
+        let (f, _) = bb("Hero checks
+Villain bets 40
+Hero calls 40").flags();
+        assert!(f.has(Flag::XrOppFlop) && !f.has(Flag::XrFlop), "calling is a chance not taken");
+
+        let (f, _) = bb("Hero bets 20
+Villain raises 60 to 80
+Hero raises 200 to 280").flags();
+        assert!(!f.has(Flag::XrOppFlop), "a player who bets first did not check");
+
+        let (f, _) = bb("Hero checks
+Villain checks").flags();
+        assert!(!f.has(Flag::XrOppFlop), "nobody bet");
+
+        let turn = Spot { turn: "Hero checks
+Villain bets 80
+Hero raises 200 to 280", ..bb("Hero checks
+Villain checks") };
+        let (f, _) = turn.flags();
+        assert!(f.has(Flag::XrOppTurn) && f.has(Flag::XrTurn) && !f.has(Flag::XrOppFlop));
     }
 
     #[test]

@@ -7,7 +7,22 @@
 // --- Constants
 
 /** Stack depths (big blinds) a table can be split by, deepest first; the backend names them the same way. */
-export const STACK_BUCKETS = ['13+', '11-13', '9-11', '7-9', '5-7', '3-5', '0-3'] as const
+export const STACK_BUCKETS = ['20+', '16-20', '13-16', '10-13', '8-10', '3-8'] as const
+
+/**
+ * Depths of the first versions, and the current ones each one overlaps: a stored layout that still
+ * names them keeps pointing at the same stacks as closely as the new boundaries allow. `0-3` has no
+ * counterpart: hands of three big blinds or less are in the totals only.
+ */
+const LEGACY_BUCKETS: Record<string, readonly string[]> = {
+  '13+': ['20+', '16-20', '13-16'],
+  '11-13': ['10-13'],
+  '9-11': ['10-13', '8-10'],
+  '7-9': ['8-10', '3-8'],
+  '5-7': ['3-8'],
+  '3-5': ['3-8'],
+  '0-3': [],
+}
 
 /** Table columns the backend counts figures in (`GET /hud/catalog` does not list them). */
 export const STAT_COLUMNS = ['tot', 'hu', 'three_way', 'btn', 'sb_hu', 'sb_3w', 'bb_hu', 'bb_3w', 'sb'] as const
@@ -565,7 +580,8 @@ function sanitizeStack(raw: unknown): HudStackGroup | null | undefined {
   if (raw === null) return null
   if (!isRecord(raw) || !Array.isArray(raw.buckets)) return undefined
   const known = STACK_BUCKETS as readonly string[]
-  const buckets = raw.buckets.filter((b): b is string => typeof b === 'string' && known.includes(b))
+  const named = raw.buckets.flatMap((b) => (typeof b === 'string' ? (known.includes(b) ? [b] : (LEGACY_BUCKETS[b] ?? [])) : []))
+  const buckets = STACK_BUCKETS.filter((b) => named.includes(b))
   if (buckets.length === 0) return undefined
   return { label: str(raw.label, 12) ?? buckets[0], buckets: [...new Set(buckets)] }
 }

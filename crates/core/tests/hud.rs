@@ -200,9 +200,9 @@ fn a_player_with_ten_thousand_hands_is_answered_quickly() {
     let _alone = TIMING.lock().unwrap_or_else(|e| e.into_inner());
     let (_dir, backend) = backend_with_ten_thousand_hands();
 
-    // A heads-up layout asked in one go: two stack-depth tables of eight figures over seven depths.
+    // A heads-up layout asked in one go: two stack-depth tables of eight figures over six depths.
     let mut stats = vec![stat("preflop", "VPIP", Some("tot")), stat("postflop", "wtsd", None), stat("threeWayPreflop", "BTN RFI", None)];
-    for bucket in ["13+", "11-13", "9-11", "7-9", "5-7", "3-5", "0-3"] {
+    for bucket in ["20+", "16-20", "13-16", "10-13", "8-10", "3-8"] {
         for column in ["sb_hu", "bb_hu"] {
             stats.push(stat_in("meta", "hands", Some(column), Some(bucket)));
             for label in ["Open Shove", "Iso Shove", "Call Shove"] {
@@ -283,7 +283,7 @@ fn stack_depth_tables_partition_the_hands_and_formats_add_up() {
         .iter()
         .map(|b| b.as_str().unwrap().to_string())
         .collect();
-    assert_eq!(buckets.len(), 7);
+    assert_eq!(buckets.len(), 6);
 
     let mut asked = vec![stat_in("meta", "hands", Some("tot"), None), stat_in("meta", "hands", Some("hu"), None), stat_in("meta", "hands", Some("three_way"), None)];
     asked.extend(buckets.iter().map(|b| stat_in("meta", "hands", Some("tot"), Some(b))));
@@ -293,7 +293,8 @@ fn stack_depth_tables_partition_the_hands_and_formats_add_up() {
     assert!(hands(0) > 0);
     assert_eq!(hands(1) + hands(2), hands(0), "heads-up and three-handed hands make up all of them");
     let in_buckets: u64 = (3..asked.len()).map(hands).sum();
-    assert_eq!(in_buckets, hands(0), "every hand falls in exactly one stack depth");
+    // Hands with three big blinds or less are in no depth, only in the totals.
+    assert!(in_buckets > 0 && in_buckets <= hands(0), "no hand falls in two stack depths");
 
     let unknown = hud(&backend, "Winamax", HERO, &["riickyy777"], &[stat_in("meta", "hands", Some("tot"), Some("99+"))]);
     assert_eq!(unknown["players"][0]["stats"][0]["pct"], Value::Null);
@@ -357,9 +358,9 @@ fn a_tournament_being_played_is_listed_with_the_seats_around_the_hero() {
 fn a_full_grid_layout_of_a_thousand_figures_is_answered_quickly() {
     let _alone = TIMING.lock().unwrap_or_else(|e| e.into_inner());
     let (_dir, backend) = backend_with_ten_thousand_hands();
-    let buckets = ["13+", "11-13", "9-11", "7-9", "5-7", "3-5", "0-3"];
+    let buckets = ["20+", "16-20", "13-16", "10-13", "8-10", "3-8"];
     let columns = ["sb_hu", "bb_hu", "btn", "sb_3w", "bb_3w"];
-    // Seven depths, five columns, and about thirty figures per cell of the matrix.
+    // Six depths, five columns, and about thirty figures per cell of the matrix.
     let figures = [
         ("preflop", "VPIP"), ("preflop", "PFR"), ("preflop", "Open Limp"), ("preflop", "3-Bet"), ("preflop", "Fold to 3-Bet"),
         ("preflop", "Limp-Fold"), ("preflop", "Iso Raise"), ("preflop", "Fold vs Raise"), ("shove", "Open Shove"),
@@ -374,7 +375,7 @@ fn a_full_grid_layout_of_a_thousand_figures_is_answered_quickly() {
             }
         }
     }
-    assert!(stats.len() > 500, "{} figures", stats.len());
+    assert!(stats.len() > 400, "{} figures", stats.len());
 
     let started = Instant::now();
     let answer = hud(&backend, "Winamax", "hero", &["villain"], &stats);

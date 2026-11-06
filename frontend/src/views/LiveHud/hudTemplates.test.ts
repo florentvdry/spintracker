@@ -59,12 +59,16 @@ describe('the shipped models', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  it('splits the heads-up matrix by the seven depths in the full model and by groups in the flash one', () => {
+  it('splits the heads-up matrix by a total and the six depths in the full model, and by groups in the flash one', () => {
     const rowsOf = (id: 'full' | 'flash') => TEMPLATES[id].build('headsUp').grids.find((g) => g.name === 'SB' && g.rows.some((r) => r.context?.stack))?.rows.filter((r) => r.context?.stack)
-    expect(rowsOf('full')).toHaveLength(7)
+    expect(rowsOf('full')).toHaveLength(6)
     const flash = rowsOf('flash')
-    expect(flash?.map((r) => r.context?.stack?.label)).toEqual(['12bb+', '8bb', '4bb', '2bb'])
-    expect(flash?.[0].context?.stack?.buckets).toEqual(['13+', '11-13'])
+    expect(flash?.map((r) => r.context?.stack?.label)).toEqual(['16+', '10-16', '3-10'])
+    expect(flash?.[0].context?.stack?.buckets).toEqual(['20+', '16-20'])
+    // Above the depth rows, the total row has no stack depth.
+    const sb = TEMPLATES.full.build('headsUp').grids.find((g) => g.name === 'SB' && g.rows.some((r) => r.context?.stack))
+    expect(sb?.rows.filter((r) => !r.context?.stack)).toHaveLength(2)
+    expect(sb?.cells.some((c) => c.content.kind === 'text' && c.content.text === 'Total')).toBe(true)
   })
 })
 

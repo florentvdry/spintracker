@@ -9,6 +9,7 @@ import {
   readFigure,
   requestsOf,
   resolveContext,
+  sanitizeContext,
   sanitizeGrid,
   sanitizeHudLayout,
   statCell,
@@ -201,5 +202,17 @@ describe('validateLayout', () => {
 describe('defaults', () => {
   it('has no colour rule by default', () => {
     expect(defaultColors().mode).toBe('none')
+  })
+})
+
+describe('stack depths of the first versions', () => {
+  it('point at the current depths they overlap', () => {
+    expect(sanitizeContext({ stack: { label: '13+', buckets: ['13+'] } })?.stack?.buckets).toEqual(['20+', '16-20', '13-16'])
+    expect(sanitizeContext({ stack: { label: '9-11', buckets: ['9-11', '11-13'] } })?.stack?.buckets).toEqual(['10-13', '8-10'])
+    expect(sanitizeContext({ stack: { label: '16-20', buckets: ['16-20'] } })?.stack?.buckets).toEqual(['16-20'])
+  })
+
+  it('are dropped when no current depth covers them', () => {
+    expect(sanitizeContext({ stack: { label: '0-3', buckets: ['0-3'] } })).toBeUndefined()
   })
 })

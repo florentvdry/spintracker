@@ -48,14 +48,13 @@ const SHOVE_LABELS: [&str; 5] = ["Open Shove", "Iso Shove", "Rejam", "Call Shove
 
 /// Stack depths a table can be split by, in big blinds: `(name, above, up to and including)`.
 /// The player's own stack at the start of the hand is used.
-const BUCKETS: [(&str, f64, f64); 7] = [
-    ("13+", 13.0, f64::INFINITY),
-    ("11-13", 11.0, 13.0),
-    ("9-11", 9.0, 11.0),
-    ("7-9", 7.0, 9.0),
-    ("5-7", 5.0, 7.0),
-    ("3-5", 3.0, 5.0),
-    ("0-3", 0.0, 3.0),
+const BUCKETS: [(&str, f64, f64); 6] = [
+    ("20+", 20.0, f64::INFINITY),
+    ("16-20", 16.0, 20.0),
+    ("13-16", 13.0, 16.0),
+    ("10-13", 10.0, 13.0),
+    ("8-10", 8.0, 10.0),
+    ("3-8", 3.0, 8.0),
 ];
 
 /// Index in `BUCKETS` of a stack in big blinds.

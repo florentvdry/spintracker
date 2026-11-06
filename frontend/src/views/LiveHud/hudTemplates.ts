@@ -42,10 +42,9 @@ const FULL_FONT = 12
 const FLASH_FONT = 14
 const COLUMN_GAP_PX = 8
 const STACK_GROUPS_FLASH: HudStackGroup[] = [
-  { label: '12bb+', buckets: ['13+', '11-13'] },
-  { label: '8bb', buckets: ['9-11', '7-9'] },
-  { label: '4bb', buckets: ['5-7', '3-5'] },
-  { label: '2bb', buckets: ['0-3'] },
+  { label: '16+', buckets: ['20+', '16-20'] },
+  { label: '10-16', buckets: ['13-16', '10-13'] },
+  { label: '3-10', buckets: ['8-10', '3-8'] },
 ]
 const STACK_GROUPS_FULL: HudStackGroup[] = STACK_BUCKETS.map((b) => ({ label: b, buckets: [b] }))
 
@@ -95,7 +94,7 @@ interface MatrixColumn {
   key?: boolean
 }
 
-/** A table with one row per stack depth (or group of depths): a seat's preflop tendencies. */
+/** A table with a total row, then one row per stack depth (or group of depths): a seat's preflop tendencies. */
 function matrix(name: string, color: string, column: string, groups: HudStackGroup[], columns: MatrixColumn[], fontSize: number, titleOpens?: string): HudGrid {
   const width = columns.length + 2
   const cells: HudGridCell[] = [
@@ -103,12 +102,14 @@ function matrix(name: string, color: string, column: string, groups: HudStackGro
     cell(0, 1, text('H'), label({ align: 'center' })),
   ]
   columns.forEach((c, i) => cells.push(cell(0, i + 2, text(c.abbr), header(c.family, c.key ? { border: { left: true, right: true } } : {}))))
-  groups.forEach((_, r) => {
-    cells.push(cell(r + 1, 0, { kind: 'stackLabel' }, label()))
+  // The total row has no stack depth: every hand of the seat counts.
+  const lines: { title: CellContent; stack?: HudStackGroup }[] = [{ title: text('Total') }, ...groups.map((stack) => ({ title: { kind: 'stackLabel' } as CellContent, stack }))]
+  lines.forEach((line, r) => {
+    cells.push(cell(r + 1, 0, line.title, label()))
     cells.push(cell(r + 1, 1, hands(), { align: 'center', fg: HUD_COLORS.sample }))
     columns.forEach((c, i) => cells.push(cell(r + 1, i + 2, c.content, c.key ? { align: 'center', bold: true, border: { left: true, right: true } } : { align: 'center' })))
   })
-  const rows = [{ size: 'auto' as const }, ...groups.map((g) => ({ size: 'auto' as const, context: { stack: g } }))]
+  const rows = [{ size: 'auto' as const }, ...lines.map((line) => ({ size: 'auto' as const, ...(line.stack ? { context: { stack: line.stack } } : {}) }))]
   return grid(name, rows, auto(width), cells, { column }, fontSize, true)
 }
 
@@ -128,24 +129,21 @@ function streetBox(name: string, color: string, column: string, lines: { name: s
 const CBET: { name: string; stats: [string, string, string] } = { name: 'CB', stats: ['cbet_flop', 'cbet_turn', 'cbet_river'] }
 const FOLD_TO_CBET: { name: string; stats: [string, string, string] } = { name: 'FvCB', stats: ['fold_to_cbet_flop', 'fold_to_cbet_turn', 'fold_to_cbet_river'] }
 const DONK: { name: string; stats: [string, string, string] } = { name: 'Dk', stats: ['donk_flop', 'donk_turn', 'donk_river'] }
-const DONK_FOLD: { name: string; stats: [string, string, string] } = { name: 'DkF', stats: ['donk_fold_flop', 'donk_fold_turn', 'donk_fold_river'] }
+const CHECK_RAISE: { name: string; stats: [string, string, string] } = { name: 'XR', stats: ['xr_flop', 'xr_turn', 'xr_river'] }
 
 /** The player's tag, name, how many hands the figures rest on, and the showdown figures. */
 function playerBlock(opens: string | undefined, fontSize: number): HudGrid {
   const cells: HudGridCell[] = [
     cell(0, 0, { kind: 'tag' }, { align: 'center' }),
-    { ...cell(0, 1, { kind: 'playerName' }, { bold: true, align: 'left' }, 1, 5), ...(opens ? { popupId: opens } : {}) },
+    { ...cell(0, 1, { kind: 'playerName' }, { bold: true, align: 'left' }, 1, 3), ...(opens ? { popupId: opens } : {}) },
     cell(1, 0, text('HU'), label({ align: 'center' })),
     cell(1, 1, hands({ column: 'hu' }), { align: 'center', fg: HUD_COLORS.sample }),
     cell(1, 2, text('3W'), label({ align: 'center' })),
     cell(1, 3, hands({ column: 'three_way' }), { align: 'center', fg: HUD_COLORS.sample }),
   ]
-  ;(['wtsd', 'wwsf', 'wsd'] as const).forEach((name, i) => {
-    const abbr = name === 'wsd' ? 'W$SD' : name.toUpperCase()
-    cells.push(cell(2, i * 2, text(abbr), header('reaction', { bg: '#2f3646' }), 1, 2))
-    cells.push(cell(3, i * 2, stat('postflop', name), { align: 'center', bold: true }, 1, 2))
-  })
-  return grid('Player', auto(4), auto(6), cells, { column: 'tot' }, fontSize)
+  cells.push(cell(2, 0, text('WTSD'), header('reaction', { bg: '#2f3646' }), 1, 2))
+  cells.push(cell(3, 0, stat('postflop', 'wtsd'), { align: 'center', bold: true }, 1, 2))
+  return grid('Player', auto(4), auto(4), cells, { column: 'tot' }, fontSize)
 }
 
 /** Rows for BTN, SB and BB: each seat counts in its own table column and has its own figures. */
@@ -262,24 +260,26 @@ function threeWayPopup(): HudGrid {
 
 // --- Layouts
 
+// O is the open raise and OF folding to the re-raise after it; LF/S is limp-fold against a shove.
 const sbColumnsFull = (): MatrixColumn[] => [
   { abbr: 'VP', family: 'entry', content: stat('preflop', 'VPIP'), key: true },
-  { abbr: 'OR', family: 'entry', content: stat('huSb', 'Raise First In'), key: true },
-  { abbr: 'F3B', family: 'reaction', content: stat('preflop', 'Fold to 3-Bet') },
+  { abbr: 'O', family: 'entry', content: stat('huSb', 'Raise First In'), key: true },
+  { abbr: 'OF', family: 'reaction', content: stat('preflop', 'Fold to 3-Bet') },
   { abbr: 'OS', family: 'shove', content: stat('shove', 'Open Shove') },
-  { abbr: 'Limp', family: 'limp', content: stat('huSb', 'Open Limp') },
+  { abbr: 'L', family: 'limp', content: stat('huSb', 'Open Limp') },
   { abbr: 'LR', family: 'limp', content: stat('huSb', 'Limp-Raise vs Raise') },
   { abbr: 'LF', family: 'limp', content: stat('huSb', 'Limp-Fold vs Raise') },
-  { abbr: 'LC', family: 'limp', content: stat('huSb', 'Limp-Call vs Raise') },
+  { abbr: 'LF/S', family: 'limp', content: stat('preflop', 'Limp-Fold vs All-In') },
 ]
 
+// F/O is folding to an open raise, F/OS folding to an open shove; IS and I are the shoving and the
+// plain raising isolation of a limp.
 const bbColumnsFull = (): MatrixColumn[] => [
-  { abbr: 'FvR', family: 'reaction', content: stat('huBb', 'vs Raise Fold'), key: true },
-  { abbr: 'CvR', family: 'reaction', content: stat('huBb', 'vs Raise Call') },
+  { abbr: 'F/O', family: 'reaction', content: stat('huBb', 'vs Raise Fold'), key: true },
   { abbr: '3B', family: 'raise', content: stat('huBb', 'vs Raise 3-Bet'), key: true },
-  { abbr: 'COS', family: 'shove', content: stat('shove', 'Call Shove') },
-  { abbr: 'ISO', family: 'raise', content: stat('huBb', 'vs Limp Raise') },
-  { abbr: 'X', family: 'limp', content: stat('huBb', 'vs Limp Check') },
+  { abbr: 'F/OS', family: 'reaction', content: stat('shove', 'Fold vs Shove') },
+  { abbr: 'IS', family: 'shove', content: stat('shove', 'Iso Shove') },
+  { abbr: 'I', family: 'raise', content: stat('huBb', 'vs Limp Raise') },
 ]
 
 /** Places grids in rows no wider than `maxWidth` pixels, each under the tallest of the row above. */
@@ -311,8 +311,8 @@ function headsUpFull(): TemplateInstance {
   const player = playerBlock(general.id, FULL_FONT)
   const sb = matrix('SB', POSITION.SB, 'sb_hu', STACK_GROUPS_FULL, sbColumnsFull(), FULL_FONT, heads.id)
   const bb = matrix('BB', POSITION.BB, 'bb_hu', STACK_GROUPS_FULL, bbColumnsFull(), FULL_FONT, heads.id)
-  const sbPost = streetBox('SB', POSITION.SB, 'sb_hu', [CBET, FOLD_TO_CBET, DONK, DONK_FOLD], FULL_FONT)
-  const bbPost = streetBox('BB', POSITION.BB, 'bb_hu', [CBET, FOLD_TO_CBET, DONK, DONK_FOLD], FULL_FONT)
+  const sbPost = streetBox('SB', POSITION.SB, 'sb_hu', [CBET, FOLD_TO_CBET, DONK, CHECK_RAISE], FULL_FONT)
+  const bbPost = streetBox('BB', POSITION.BB, 'bb_hu', [CBET, FOLD_TO_CBET, DONK, CHECK_RAISE], FULL_FONT)
   const grids = [player, sb, bb, sbPost, bbPost]
   return { grids, popups: [general, heads], offsets: flow(grids, HU_PANEL_WIDTH) }
 }
@@ -328,9 +328,10 @@ function headsUpFlash(): TemplateInstance {
     STACK_GROUPS_FLASH,
     [
       { abbr: 'VP', family: 'entry', content: stat('preflop', 'VPIP'), key: true },
-      { abbr: 'OR', family: 'entry', content: stat('huSb', 'Raise First In'), key: true },
+      { abbr: 'O', family: 'entry', content: stat('huSb', 'Raise First In'), key: true },
+      { abbr: 'OF', family: 'reaction', content: stat('preflop', 'Fold to 3-Bet') },
       { abbr: 'OS', family: 'shove', content: stat('shove', 'Open Shove') },
-      { abbr: 'Limp', family: 'limp', content: stat('huSb', 'Open Limp') },
+      { abbr: 'L', family: 'limp', content: stat('huSb', 'Open Limp') },
       { abbr: 'LF', family: 'limp', content: stat('huSb', 'Limp-Fold vs Raise') },
     ],
     FLASH_FONT,
@@ -342,9 +343,9 @@ function headsUpFlash(): TemplateInstance {
     'bb_hu',
     STACK_GROUPS_FLASH,
     [
-      { abbr: 'FvR', family: 'reaction', content: stat('huBb', 'vs Raise Fold'), key: true },
+      { abbr: 'F/O', family: 'reaction', content: stat('huBb', 'vs Raise Fold'), key: true },
       { abbr: '3B', family: 'raise', content: stat('huBb', 'vs Raise 3-Bet'), key: true },
-      { abbr: 'COS', family: 'shove', content: stat('shove', 'Call Shove') },
+      { abbr: 'F/OS', family: 'reaction', content: stat('shove', 'Fold vs Shove') },
     ],
     FLASH_FONT,
     heads.id,
@@ -414,8 +415,8 @@ function threeWayFull(): TemplateInstance {
   const three = threeWayPopup()
   const player = playerBlock(general.id, FULL_FONT)
   const preflop = seatRows('Preflop', threeWaySeats(false), FULL_FONT, three.id)
-  // Four boxes in two by two, as one grid: a box is a title, three streets and its lines.
-  const boxes = [streetBox('CB', FAMILY.raise, 'tot', [CBET], FULL_FONT), streetBox('FvCB', FAMILY.reaction, 'tot', [FOLD_TO_CBET], FULL_FONT), streetBox('Dk', FAMILY.entry, 'tot', [DONK], FULL_FONT), streetBox('DkF', FAMILY.limp, 'tot', [DONK_FOLD], FULL_FONT)]
+  // Three boxes: a box is a title, three streets and its lines.
+  const boxes = [streetBox('CB', FAMILY.raise, 'tot', [CBET], FULL_FONT), streetBox('FvCB', FAMILY.reaction, 'tot', [FOLD_TO_CBET], FULL_FONT), streetBox('Dk', FAMILY.entry, 'tot', [DONK], FULL_FONT)]
   const grids = [player, preflop, ...boxes]
   return { grids, popups: [general, three], offsets: flow(grids, THREE_WAY_PANEL_WIDTH) }
 }
