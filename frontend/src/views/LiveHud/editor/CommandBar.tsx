@@ -21,7 +21,6 @@ interface Props {
   canRedo: boolean
   onUndo: () => void
   onRedo: () => void
-  onOpenModels: () => void
 }
 
 function Segmented<T extends string>({ label, items, value, onChange }: { label: string; items: { id: T; text: string }[]; value: T; onChange: (id: T) => void }) {
@@ -45,8 +44,8 @@ function Segmented<T extends string>({ label, items, value, onChange }: { label:
 const buttonClass = (active: boolean) =>
   clsx('flex items-center gap-2 rounded-md border border-dark-100 px-2.5 py-1.5 text-[13px] text-gray-200 hover:border-gray-500', active ? 'bg-dark-200' : 'bg-dark-300')
 
-/** Every global control of the HUD on one line: the switch, the profile, the table size, the view, undo, tables and models. */
-export default function CommandBar({ format, onFormat, view, onView, canUndo, canRedo, onUndo, onRedo, onOpenModels }: Props) {
+/** Every global control of the HUD on one line: the switch, the profile, the table size, the view, undo and tables. */
+export default function CommandBar({ format, onFormat, view, onView, canUndo, canRedo, onUndo, onRedo }: Props) {
   const { t } = useTranslation()
   const { settings, setEnabled } = useLiveHudStore()
   const tables = useTables()
@@ -110,9 +109,6 @@ export default function CommandBar({ format, onFormat, view, onView, canUndo, ca
         >
           <TablesPanel {...tables} />
         </Dropdown>
-        <button type="button" className={buttonClass(false)} onClick={onOpenModels}>
-          {t('liveHud.ws.models')}
-        </button>
       </div>
     </div>
   )

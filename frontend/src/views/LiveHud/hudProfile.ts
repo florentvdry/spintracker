@@ -8,8 +8,7 @@ import {
   type HudLayout,
 } from './hudGrid'
 import { migrateLayout, parseLegacyLayout } from './hudMigration'
-import { MAX_POPUPS } from './hudGrid'
-import { TEMPLATES, templatePositions, type TemplateId, type TemplateInstance } from './hudTemplates'
+import { TEMPLATES, templatePositions, type TemplateInstance } from './hudTemplates'
 
 export { STACK_BUCKETS }
 
@@ -314,40 +313,6 @@ export function duplicateWithPlacements(source: HudProfile, placements: Placemen
     }
   }
   return { profile, placements: next }
-}
-
-/** The table sizes a popup model can serve. */
-const POPUP_FORMATS: Partial<Record<TemplateId, HudFormat[]>> = { popupGeneral: ['headsUp', 'threeMax'], popupHeadsUp: ['headsUp'], popupThreeWay: ['threeMax'] }
-
-/**
- * A shipped model applied to a profile. A layout model replaces the grids of both table sizes (and
- * where they sit), or only of `onlyFormat` when the editor applies it to the size being edited; a
- * popup model adds its popup to the layouts it serves.
- */
-export function applyTemplateToSettings(settings: HudSettings, profileId: string, templateId: TemplateId, onlyFormat?: HudFormat): HudSettings {
-  const template = TEMPLATES[templateId]
-  if (template.isLayout) {
-    const placements = structuredClone(settings.placements)
-    const replaced: Partial<Record<HudFormat, HudLayout>> = {}
-    for (const format of onlyFormat ? [onlyFormat] : HUD_FORMATS) {
-      const instance = template.build(format)
-      placements[format] = templatePositions(instance, SEAT_ORIGINS[format])
-      replaced[format] = layoutOf(instance)
-    }
-    const profiles = settings.profiles.map((p) => (p.id === profileId ? { ...p, layouts: { ...p.layouts, ...replaced } } : p))
-    return { ...settings, profiles, placements }
-  }
-  const instance = template.build('headsUp')
-  const formats = POPUP_FORMATS[templateId] ?? []
-  const profiles = settings.profiles.map((p) => {
-    if (p.id !== profileId) return p
-    const layouts = { ...p.layouts }
-    for (const format of formats) {
-      if (layouts[format].popups.length < MAX_POPUPS) layouts[format] = { ...layouts[format], popups: [...layouts[format].popups, ...instance.popups.map((g) => structuredClone(g))] }
-    }
-    return { ...p, layouts }
-  })
-  return { ...settings, profiles }
 }
 
 // --- Saving from several windows

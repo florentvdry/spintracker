@@ -317,31 +317,12 @@
       },
       "popup_editing": "Édition du popup : {{name}} (s'ouvre au clic sur la cellule qui y renvoie, dans le HUD)"
     },
-    "templates": {
-      "models": "Modèles…",
-      "confirm": "Remplacer les grilles de cette taille de table par le modèle « {{name}} » ? Ctrl+Z l'annule.",
-      "full": "Full",
-      "flash": "Flash",
-      "popupGeneral": "Popup Général",
-      "popupHeadsUp": "Popup Heads-Up",
-      "popupThreeWay": "Popup 3-Way"
-    },
     "ws": {
       "view": "Vue",
       "view_grids": "Grilles",
       "view_table": "Sur la table",
       "to_associate_one": "{{count}} à associer",
       "to_associate_other": "{{count}} à associer",
-      "models": "Modèles",
-      "models_title": "Modèles pour {{format}}",
-      "model_desc": {
-        "full": "toutes les profondeurs, {{count}} grilles",
-        "flash": "profondeurs regroupées, plus gros, lisible d’un coup d’œil ({{count}} grilles)"
-      },
-      "replace_grids": "Remplacer mes grilles",
-      "new_profile": "Nouveau profil",
-      "add_popup_title": "Ajouter un popup",
-      "undo_note": "Ctrl+Z annule le remplacement.",
       "import_file": "Importer un fichier",
       "grids": "Grilles",
       "popups": "Popups",

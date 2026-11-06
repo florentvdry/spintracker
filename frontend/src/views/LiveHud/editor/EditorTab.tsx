@@ -15,13 +15,11 @@ import {
 } from '../hudEditor'
 import { newGrid, validateLayout, type CellContent, type GridPosition, type HudGrid, type HudIssue } from '../hudGrid'
 import { SEATS_BY_FORMAT, seatPositions, type HudFormat } from '../hudProfile'
-import { TEMPLATES, type TemplateId } from '../hudTemplates'
 import { previewFigures } from '../previewData'
 import Canvas from './Canvas'
 import CommandBar, { type EditorView } from './CommandBar'
 import Inspector from './Inspector'
 import LayersPanel from './LayersPanel'
-import ModelsDialog from './ModelsDialog'
 import Palette, { type CatalogStat } from './Palette'
 import PlacementInspector, { type Placed } from './PlacementInspector'
 import ProfileInspector from './ProfileInspector'
@@ -83,7 +81,6 @@ export default function EditorTab() {
   const [gridsZoom, setGridsZoom] = useState(DEFAULT_ZOOM)
   const [tableZoom, setTableZoom] = useState(DEFAULT_TABLE_ZOOM)
   const [placed, setPlaced] = useState<Placed | null>(null)
-  const [modelsOpen, setModelsOpen] = useState(false)
   const zoom = view === 'table' ? tableZoom : gridsZoom
   const setZoom = view === 'table' ? setTableZoom : setGridsZoom
   const [activePopupId, setActivePopupId] = useState<string | null>(null)
@@ -233,19 +230,6 @@ export default function EditorTab() {
     setActivePopupId(popup.id)
   }
 
-  // --- Shipped models
-
-  const applyModel = (id: TemplateId) => {
-    const template = TEMPLATES[id]
-    // A layout model replaces the grids of the table size being edited: one step to undo it.
-    setHistory((h) => record(h, docRef.current))
-    useLiveHudStore.getState().applyTemplate(profile.id, id, template.isLayout ? format : undefined)
-    setSelection(NO_SELECTION)
-    setActivePopupId(null)
-    setPlaced(null)
-    setModelsOpen(false)
-  }
-
   // --- Placement on the table
 
   const place = useCallback((seat: string, gridId: string, position: GridPosition) => dispatch({ type: 'placeGrid', seat, gridId, position }), [dispatch])
@@ -369,7 +353,6 @@ export default function EditorTab() {
         canRedo={history.future.length > 0}
         onUndo={doUndo}
         onRedo={doRedo}
-        onOpenModels={() => setModelsOpen(true)}
       />
 
       <div className="flex min-h-0 flex-1">
@@ -458,7 +441,6 @@ export default function EditorTab() {
         </aside>
       </div>
 
-      {modelsOpen && <ModelsDialog format={format} onClose={() => setModelsOpen(false)} onApply={applyModel} />}
       {builder && <StatBuilder stat={builder.stat} template={builder.template} onClose={() => setBuilder(null)} />}
 
       {drag && (

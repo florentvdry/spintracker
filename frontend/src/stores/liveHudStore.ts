@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { ipcService } from '@/services/ipcService'
 import {
-  applyTemplateToSettings,
   defaultSettings,
   duplicateWithPlacements,
   mergeSettings,
@@ -16,7 +15,6 @@ import {
   type HudLayout,
   type SeatPlacements,
 } from '@/views/LiveHud/hudProfile'
-import type { TemplateId } from '@/views/LiveHud/hudTemplates'
 import { logError } from '@/utils/log'
 
 /** Edits made in quick succession (a slider, a drag) are written once. */
@@ -37,8 +35,6 @@ interface LiveHudState {
   removeProfile: (id: string) => void
   /** Adds the profiles of a shared file; `false` when the file is not a valid one. */
   importProfilesFile: (content: string) => boolean
-  /** Applies a shipped model to a profile (see `applyTemplateToSettings`). */
-  applyTemplate: (profileId: string, templateId: TemplateId, onlyFormat?: HudFormat) => void
   setSnapToGrid: (snap: boolean) => void
   /** Sets the layout of a format and where its grids sit, in one save (one undo step for the editor). */
   setEditorDoc: (profileId: string, format: HudFormat, layout: HudLayout, seats: Record<string, SeatPlacements>) => void
@@ -122,8 +118,6 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
       commit((s) => ({ ...s, profiles: [...s.profiles, ...imported].slice(0, MAX_PROFILES) }))
       return true
     },
-
-    applyTemplate: (profileId, templateId, onlyFormat) => commit((s) => applyTemplateToSettings(s, profileId, templateId, onlyFormat)),
 
     setSnapToGrid: (snapToGrid) => commit((s) => ({ ...s, snapToGrid })),
 

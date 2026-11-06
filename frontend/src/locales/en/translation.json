@@ -317,31 +317,12 @@
       },
       "popup_editing": "Editing popup: {{name}} (opens when the cell that links to it is clicked in the HUD)"
     },
-    "templates": {
-      "models": "Models…",
-      "confirm": "Replace the grids of this table size with the model \"{{name}}\"? You can undo it with Ctrl+Z.",
-      "full": "Full",
-      "flash": "Flash",
-      "popupGeneral": "Popup General",
-      "popupHeadsUp": "Popup Heads-Up",
-      "popupThreeWay": "Popup 3-Way"
-    },
     "ws": {
       "view": "View",
       "view_grids": "Grids",
       "view_table": "On the table",
       "to_associate_one": "{{count}} to associate",
       "to_associate_other": "{{count}} to associate",
-      "models": "Models",
-      "models_title": "Models for {{format}}",
-      "model_desc": {
-        "full": "every stack depth, {{count}} grids",
-        "flash": "stack depths grouped, bigger, readable at a glance ({{count}} grids)"
-      },
-      "replace_grids": "Replace my grids",
-      "new_profile": "New profile",
-      "add_popup_title": "Add a popup",
-      "undo_note": "Ctrl+Z undoes the replacement.",
       "import_file": "Import a file",
       "grids": "Grids",
       "popups": "Popups",
