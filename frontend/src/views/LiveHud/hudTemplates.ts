@@ -260,6 +260,9 @@ function threeWayPopup(): HudGrid {
 
 // --- Layouts
 
+/** Folding a limp to an isolation raise that is not a shove (LF/I); the shove has its own LF/S. */
+const LIMP_FOLD_VS_ISO = 'Limp-Fold vs Non-All-In'
+
 // O is the open raise and OF folding to the re-raise after it; LF/S is limp-fold against a shove.
 const sbColumnsFull = (): MatrixColumn[] => [
   { abbr: 'VP', family: 'entry', content: stat('preflop', 'VPIP'), key: true },
@@ -268,7 +271,7 @@ const sbColumnsFull = (): MatrixColumn[] => [
   { abbr: 'OS', family: 'shove', content: stat('shove', 'Open Shove') },
   { abbr: 'L', family: 'limp', content: stat('huSb', 'Open Limp') },
   { abbr: 'LR', family: 'limp', content: stat('huSb', 'Limp-Raise vs Raise') },
-  { abbr: 'LF', family: 'limp', content: stat('huSb', 'Limp-Fold vs Raise') },
+  { abbr: 'LF/I', family: 'limp', content: stat('preflop', LIMP_FOLD_VS_ISO) },
   { abbr: 'LF/S', family: 'limp', content: stat('preflop', 'Limp-Fold vs All-In') },
 ]
 
@@ -311,8 +314,9 @@ function headsUpFull(): TemplateInstance {
   const player = playerBlock(general.id, FULL_FONT)
   const sb = matrix('SB', POSITION.SB, 'sb_hu', STACK_GROUPS_FULL, sbColumnsFull(), FULL_FONT, heads.id)
   const bb = matrix('BB', POSITION.BB, 'bb_hu', STACK_GROUPS_FULL, bbColumnsFull(), FULL_FONT, heads.id)
-  const sbPost = streetBox('SB', POSITION.SB, 'sb_hu', [CBET, FOLD_TO_CBET, DONK, CHECK_RAISE], FULL_FONT)
-  const bbPost = streetBox('BB', POSITION.BB, 'bb_hu', [CBET, FOLD_TO_CBET, DONK, CHECK_RAISE], FULL_FONT)
+  // The small blind is the one who continuation bets and the big blind the one who donks.
+  const sbPost = streetBox('SB', POSITION.SB, 'sb_hu', [CBET, FOLD_TO_CBET, CHECK_RAISE], FULL_FONT)
+  const bbPost = streetBox('BB', POSITION.BB, 'bb_hu', [FOLD_TO_CBET, DONK, CHECK_RAISE], FULL_FONT)
   const grids = [player, sb, bb, sbPost, bbPost]
   return { grids, popups: [general, heads], offsets: flow(grids, HU_PANEL_WIDTH) }
 }
@@ -332,7 +336,7 @@ function headsUpFlash(): TemplateInstance {
       { abbr: 'OF', family: 'reaction', content: stat('preflop', 'Fold to 3-Bet') },
       { abbr: 'OS', family: 'shove', content: stat('shove', 'Open Shove') },
       { abbr: 'L', family: 'limp', content: stat('huSb', 'Open Limp') },
-      { abbr: 'LF', family: 'limp', content: stat('huSb', 'Limp-Fold vs Raise') },
+      { abbr: 'LF/I', family: 'limp', content: stat('preflop', LIMP_FOLD_VS_ISO) },
     ],
     FLASH_FONT,
     heads.id,
@@ -369,7 +373,7 @@ const threeWaySeats = (flash: boolean): Parameters<typeof seatRows>[1] => [
           { abbr: 'PFR', family: 'entry', content: stat('preflop', 'PFR') },
           { abbr: 'F3S', family: 'reaction', content: stat('preflop', 'Fold to 3-Bet Shove') },
           { abbr: 'L', family: 'limp', content: stat('preflop', 'Open Limp') },
-          { abbr: 'LF', family: 'limp', content: stat('preflop', 'Limp-Fold') },
+          { abbr: 'LF/I', family: 'limp', content: stat('preflop', LIMP_FOLD_VS_ISO) },
           { abbr: 'OS', family: 'shove', content: stat('shove', 'Open Shove') },
         ],
   },
@@ -387,7 +391,7 @@ const threeWaySeats = (flash: boolean): Parameters<typeof seatRows>[1] => [
           { abbr: 'PFR', family: 'entry', content: stat('preflop', 'PFR') },
           { abbr: 'F3S', family: 'reaction', content: stat('preflop', 'Fold to 3-Bet Shove') },
           { abbr: '3B', family: 'raise', content: stat('preflop', '3-Bet') },
-          { abbr: 'LF', family: 'limp', content: stat('preflop', 'Limp-Fold') },
+          { abbr: 'LF/I', family: 'limp', content: stat('preflop', LIMP_FOLD_VS_ISO) },
           { abbr: 'OS', family: 'shove', content: stat('shove', 'Open Shove') },
         ],
   },
