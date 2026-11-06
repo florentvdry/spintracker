@@ -59,6 +59,7 @@ struct Config {
 #[serde(rename_all = "lowercase")]
 enum State {
     Off,
+    NoFolder,
     Watching,
     Importing,
     Paused,
@@ -336,8 +337,13 @@ impl Worker {
         self.pending.clear();
         self.folders = settings.folders.iter().map(|f| PathBuf::from(&f.path)).filter(|p| p.is_dir()).collect();
 
-        if !settings.enabled || self.folders.is_empty() {
+        if !settings.enabled {
             self.set_status(State::Off, None);
+            return;
+        }
+        // Switched on but nothing to read: say so instead of looking switched off.
+        if self.folders.is_empty() {
+            self.set_status(State::NoFolder, None);
             return;
         }
         match self.watch_folders() {

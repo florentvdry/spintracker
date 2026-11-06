@@ -22,7 +22,7 @@ export interface ImportProgress {
   totalHands: number | null
 }
 
-export type AutoImportState = 'off' | 'watching' | 'importing' | 'paused' | 'error'
+export type AutoImportState = 'off' | 'nofolder' | 'watching' | 'importing' | 'paused' | 'error'
 
 export interface AutoImportStatus {
   state: AutoImportState

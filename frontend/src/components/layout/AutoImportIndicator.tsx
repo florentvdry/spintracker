@@ -7,6 +7,7 @@ import { useAutoImportStore } from '@/stores/autoImportStore'
 
 const DOT_STYLE: Record<AutoImportState, string> = {
   off: 'bg-gray-600',
+  nofolder: 'bg-yellow-500',
   watching: 'bg-profit-positive',
   importing: 'bg-primary-500 animate-pulse',
   paused: 'bg-yellow-500',

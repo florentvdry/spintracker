@@ -91,6 +91,7 @@
     "manual_rooms": "Betclic n'écrit plus les historiques de mains sur votre ordinateur : ils ne peuvent pas être importés automatiquement. Exportez-les depuis le client Betclic puis utilisez le bouton Importer.",
     "state": {
       "off": "Import auto désactivé",
+      "nofolder": "Aucun dossier à surveiller",
       "watching": "En surveillance",
       "importing": "Import en cours...",
       "paused": "En pause",
