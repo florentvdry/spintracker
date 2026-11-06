@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import RoomLogo from '@/components/common/RoomLogo'
 import AutoImportIndicator from './AutoImportIndicator'
+import HudSwitch from './HudSwitch'
 import { ipcService, type ImportProgress, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore, type DateRange } from '@/stores/filterStore'
@@ -368,6 +369,7 @@ export default function Header() {
 
         <div className="flex-1" />
 
+        <HudSwitch />
         <AutoImportIndicator />
 
         <button onClick={handleImport} className="btn-primary flex items-center gap-2">
