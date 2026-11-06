@@ -146,6 +146,25 @@
       "demo_player": "Player {{n}}",
       "figures_error": "Could not refresh the figures"
     },
+    "hands": {
+      "which": "Hands to show",
+      "which_done": "Done",
+      "which_chances": "All chances",
+      "count_all": "{{total}} hands",
+      "count_latest": "latest {{shown}} of {{total}}",
+      "loading": "Loading the hands…",
+      "empty": "No hand to show.",
+      "error": "Could not read the hands.",
+      "hidden_cards": "cards not shown",
+      "bb": "{{value}} bb",
+      "pot": "pot {{value}}",
+      "street_preflop": "Preflop",
+      "street_flop": "Flop",
+      "street_turn": "Turn",
+      "street_river": "River",
+      "custom_stat": "Custom stat",
+      "all_hands": "Hands"
+    },
     "profiles": {
       "mine": "My profiles",
       "new": "New",

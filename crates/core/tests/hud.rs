@@ -15,6 +15,8 @@ static TIMING: Mutex<()> = Mutex::new(());
 /// they still catch a regression to a per-hand scan.
 const SMALL_LAYOUT_BUDGET_MS: u128 = 200;
 const FULL_GRID_BUDGET_MS: u128 = 400;
+/// A list of hands is asked for once, after a pause: it may take longer than a refresh, not much.
+const FIGURE_HANDS_BUDGET_MS: u128 = 1500;
 
 const HERO: &str = "Nelfrot-YT";
 const OPPONENTS: [&str; 2] = ["riickyy777", "CG_Boss2336"];
@@ -431,4 +433,112 @@ fn more_simultaneous_requests_than_pool_connections_all_complete() {
     });
     // A request waiting for a connection that another one holds would run into the pool timeout.
     assert!(started.elapsed().as_secs() < 20, "took {:?}", started.elapsed());
+}
+
+fn figure_hands(backend: &Backend, player: &str, stat: Value, buckets: &[&str], which: &str, limit: usize) -> Value {
+    let body = json!({ "room": "Winamax", "heroName": HERO, "player": player, "stat": stat, "buckets": buckets, "which": which, "limit": limit });
+    let response = backend.handle("POST", "/hud/figure-hands", Some(body));
+    assert_eq!(response.status, 200, "{:?}", response.body);
+    response.body["data"].clone()
+}
+
+#[test]
+fn the_hands_listed_behind_a_figure_are_the_ones_it_counts() {
+    let (_dir, backend) = backend_with_hands();
+    let catalog = backend.handle("GET", "/hud/catalog", None).body["data"].clone();
+    let stats: Vec<(String, String)> =
+        catalog["stats"].as_array().unwrap().iter().map(|s| (s["section"].as_str().unwrap().to_string(), s["label"].as_str().unwrap().to_string())).collect();
+    assert!(stats.len() > 100, "the whole catalog is checked");
+
+    let mut checked = 0;
+    for player in OPPONENTS {
+        for (section, label) in &stats {
+            for column in [None, Some("tot"), Some("hu"), Some("sb_hu"), Some("bb_3w")] {
+                for bucket in [None, Some("10-13")] {
+                    let asked = json!({ "section": section, "label": label, "column": column, "bucket": bucket });
+                    let figure = hud(&backend, "Winamax", HERO, &[player], &[asked.clone()])["players"][0]["stats"][0].clone();
+                    let Some(num) = figure["num"].as_u64() else { continue };
+                    let den = figure["den"].as_u64().unwrap();
+                    let done = figure_hands(&backend, player, asked.clone(), &[], "done", 50);
+                    let chances = figure_hands(&backend, player, asked, &[], "chances", 50);
+                    assert_eq!(done["total"], num, "{player} {section}:{label} {column:?} {bucket:?}");
+                    assert_eq!(chances["total"], den, "{player} {section}:{label} {column:?} {bucket:?}");
+                    assert_eq!(done["hands"].as_array().unwrap().len() as u64, num.min(50));
+                    checked += 1;
+                }
+            }
+        }
+    }
+    assert!(checked > 1000, "{checked} figures compared");
+}
+
+#[test]
+fn a_stack_group_lists_the_hands_of_all_its_depths_and_the_list_is_summarised() {
+    let (_dir, backend) = backend_with_hands();
+    let vpip = |bucket: Option<&str>| json!({ "section": "preflop", "label": "VPIP", "column": "tot", "bucket": bucket });
+    let in_bucket = |bucket: &str| figure_hands(&backend, "riickyy777", vpip(Some(bucket)), &[], "chances", 50)["total"].as_u64().unwrap();
+    let group = figure_hands(&backend, "riickyy777", vpip(None), &["13-16", "10-13"], "chances", 50);
+    assert_eq!(group["total"].as_u64().unwrap(), in_bucket("13-16") + in_bucket("10-13"));
+
+    let all = figure_hands(&backend, "riickyy777", vpip(None), &[], "chances", 3);
+    assert!(all["total"].as_u64().unwrap() > 3);
+    let hands = all["hands"].as_array().unwrap();
+    assert_eq!(hands.len(), 3, "the list is capped, the total is not");
+    let dates: Vec<&str> = hands.iter().map(|h| h["playedAt"].as_str().unwrap()).collect();
+    assert!(dates.windows(2).all(|w| w[0] >= w[1]), "newest first: {dates:?}");
+    for hand in hands {
+        assert!(hand["id"].as_str().is_some_and(|id| !id.is_empty()));
+        assert!(hand["stackBb"].as_f64().is_some_and(|bb| bb > 0.0), "{hand}");
+        let streets = hand["streets"].as_array().unwrap();
+        assert_eq!(streets[0]["street"], "preflop");
+        assert!(streets[0]["actions"].as_array().unwrap().iter().any(|a| a["own"] == true), "the player acted preflop: {hand}");
+    }
+}
+
+#[test]
+fn figure_hands_rejects_bad_requests_and_knows_no_unknown_stat() {
+    let (_dir, backend) = backend_with_hands();
+    let vpip = json!({ "section": "preflop", "label": "VPIP", "column": "tot" });
+    let post = |body: Value| backend.handle("POST", "/hud/figure-hands", Some(body)).status;
+    let base = |limit: usize| json!({ "room": "Winamax", "heroName": HERO, "player": "riickyy777", "stat": vpip, "which": "done", "limit": limit });
+    assert_eq!(post(base(0)), 400);
+    assert_eq!(post(base(51)), 400);
+    assert_eq!(post(json!({ "room": "", "heroName": HERO, "player": "riickyy777", "stat": vpip, "which": "done" })), 400);
+
+    let unknown = figure_hands(&backend, "riickyy777", json!({ "section": "preflop", "label": "Nope" }), &[], "done", 5);
+    assert_eq!((unknown["total"].as_u64(), unknown["hands"].as_array().map(Vec::len)), (Some(0), Some(0)));
+    let nobody = figure_hands(&backend, "someone-else", vpip, &[], "chances", 5);
+    assert_eq!(nobody["total"], 0);
+}
+
+#[test]
+fn listing_the_hands_behind_a_figure_of_a_player_with_ten_thousand_hands_is_quick() {
+    let _alone = TIMING.lock().unwrap_or_else(|e| e.into_inner());
+    let (_dir, backend) = backend_with_ten_thousand_hands();
+    let body = json!({
+        "room": "Winamax", "heroName": "hero", "player": "villain", "which": "done", "limit": 30,
+        "stat": { "section": "preflop", "label": "VPIP", "column": "tot" },
+    });
+    let started = Instant::now();
+    let response = backend.handle("POST", "/hud/figure-hands", Some(body));
+    let elapsed = started.elapsed();
+    assert_eq!(response.status, 200, "{:?}", response.body);
+    assert!(response.body["data"]["total"].as_u64().unwrap() > 0);
+    assert!(elapsed.as_millis() < FIGURE_HANDS_BUDGET_MS, "took {elapsed:?}");
+}
+
+#[test]
+fn among_all_the_chances_the_hands_where_the_player_did_it_are_marked() {
+    let (_dir, backend) = backend_with_hands();
+    let vpip = json!({ "section": "preflop", "label": "VPIP", "column": "tot" });
+    let figure = hud(&backend, "Winamax", HERO, &["riickyy777"], &[vpip.clone()])["players"][0]["stats"][0].clone();
+    let (num, den) = counts(&figure);
+    assert!(num > 0 && den > num, "the fixture has both folded and played hands");
+
+    let chances = figure_hands(&backend, "riickyy777", vpip.clone(), &[], "chances", 50);
+    let marked = chances["hands"].as_array().unwrap().iter().filter(|h| h["done"] == true).count() as u64;
+    assert_eq!((chances["total"].as_u64(), marked), (Some(den), num.min(50)), "{chances}");
+
+    let done = figure_hands(&backend, "riickyy777", vpip, &[], "done", 50);
+    assert!(done["hands"].as_array().unwrap().iter().all(|h| h["done"] == true));
 }

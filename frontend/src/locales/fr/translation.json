@@ -146,6 +146,25 @@
       "demo_player": "Joueur {{n}}",
       "figures_error": "Impossible de mettre à jour les chiffres"
     },
+    "hands": {
+      "which": "Mains à afficher",
+      "which_done": "Réalisées",
+      "which_chances": "Toutes",
+      "count_all": "{{total}} mains",
+      "count_latest": "{{shown}} dernières sur {{total}}",
+      "loading": "Chargement des mains…",
+      "empty": "Aucune main à afficher.",
+      "error": "Impossible de lire les mains.",
+      "hidden_cards": "cartes non montrées",
+      "bb": "{{value}} bb",
+      "pot": "pot {{value}}",
+      "street_preflop": "Préflop",
+      "street_flop": "Flop",
+      "street_turn": "Turn",
+      "street_river": "River",
+      "custom_stat": "Stat perso",
+      "all_hands": "Mains"
+    },
     "profiles": {
       "mine": "Mes profils",
       "new": "Nouveau",

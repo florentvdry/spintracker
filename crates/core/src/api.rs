@@ -26,7 +26,7 @@ use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
-use crate::services::hud::{HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
+use crate::services::hud::{HudFigureHandsRequest, HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
 use crate::services::Importer;
 use crate::stats::store;
 use crate::{Error, Result};
@@ -331,6 +331,13 @@ impl Backend {
                 let request: HudPlayersRequest = r.body_as()?;
                 match request.validate() {
                     Ok(()) => Response::data(self.hud.players(&request)?),
+                    Err(message) => Response::message(400, &message),
+                }
+            }
+            ("POST", ["hud", "figure-hands"]) => {
+                let request: HudFigureHandsRequest = r.body_as()?;
+                match request.validate() {
+                    Ok(()) => Response::data(self.hud.figure_hands(&request)?),
                     Err(message) => Response::message(400, &message),
                 }
             }

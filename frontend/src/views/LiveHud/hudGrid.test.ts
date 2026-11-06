@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   buildCellView,
+  buildCellViews,
   cellRequests,
   defaultColors,
   figureKey,
@@ -214,5 +215,22 @@ describe('stack depths of the first versions', () => {
 
   it('are dropped when no current depth covers them', () => {
     expect(sanitizeContext({ stack: { label: '0-3', buckets: ['0-3'] } })).toBeUndefined()
+  })
+})
+
+describe('the stat behind a cell', () => {
+  it('is the one it shows, with the column and the stack depths it is counted in', () => {
+    const grid = newGrid('g', 2, 2)
+    grid.cols[1].context = { column: 'sb_hu' }
+    grid.rows[1].context = { stack: { label: '16+', buckets: ['20+', '16-20'] } }
+    const stat = cell(grid, 1, 1, statCell('huSb', 'Raise First In'))
+    const label = cell(grid, 0, 0, { kind: 'text', text: 'O' })
+    const hands = cell(grid, 1, 0, { kind: 'hands' })
+
+    const views = buildCellViews(grid, {}, { name: 'p' }, {})
+    const of = (id: string) => views.find((v) => v.id === id)
+    expect(of(stat.id)?.figure).toEqual({ section: 'huSb', label: 'Raise First In', column: 'sb_hu', buckets: ['20+', '16-20'] })
+    expect(of(hands.id)?.figure).toEqual({ section: 'meta', label: 'hands', column: null, buckets: ['20+', '16-20'] })
+    expect(of(label.id)?.figure).toBeUndefined()
   })
 })

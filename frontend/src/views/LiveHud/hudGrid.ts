@@ -4,6 +4,8 @@
  * input, so everything read back goes through `sanitizeGrid`.
  */
 
+import type { FigureRef } from './figureHands'
+
 // --- Constants
 
 /** Stack depths (big blinds) a table can be split by, deepest first; the backend names them the same way. */
@@ -434,9 +436,16 @@ export interface CellView {
   align?: CellStyle['align']
   border?: CellBorder
   popupId?: string
+  /** The stat the cell shows, when there are hands behind it to list. */
+  figure?: FigureRef
   /** Colour of the player's tag, for `tag` cells. */
   tagColor?: string
   numeric: boolean
+}
+
+/** The stat of a cell as the backend is asked for its hands: the same column and stack depths as its figure. */
+function figureRef(section: string, label: string, context: { column?: string | null; stack?: HudStackGroup | null }): FigureRef {
+  return { section, label, column: context.column ?? null, buckets: context.stack?.buckets ?? [] }
 }
 
 export function buildCellView(grid: HudGrid, cell: HudGridCell, figures: HudFigures, player: HudPlayerInfo, baselines: Record<string, Baseline>): CellView {
@@ -478,6 +487,7 @@ export function buildCellView(grid: HudGrid, cell: HudGridCell, figures: HudFigu
       const figure = readFigure(figures, META, 'hands', context)
       view.text = formatFigure(defaultDisplay(), figure, true).text
       view.numeric = true
+      view.figure = figureRef(META, 'hands', context)
       break
     }
     case 'stat': {
@@ -485,6 +495,7 @@ export function buildCellView(grid: HudGrid, cell: HudGridCell, figures: HudFigu
       const shown = formatFigure(content.display, figure, content.section === META)
       view.text = shown.text
       view.numeric = true
+      view.figure = figureRef(content.section, content.label, context)
       const { showSample } = content.display
       if (!shown.hidden && figure.den > 0 && (showSample === 'always' || (showSample === 'lowOnly' && shown.low))) view.sample = String(figure.den)
       if (!shown.hidden) {
@@ -583,7 +594,7 @@ function sanitizeStack(raw: unknown): HudStackGroup | null | undefined {
   const named = raw.buckets.flatMap((b) => (typeof b === 'string' ? (known.includes(b) ? [b] : (LEGACY_BUCKETS[b] ?? [])) : []))
   const buckets = STACK_BUCKETS.filter((b) => named.includes(b))
   if (buckets.length === 0) return undefined
-  return { label: str(raw.label, 12) ?? buckets[0], buckets: [...new Set(buckets)] }
+  return { label: str(raw.label, 12) ?? buckets[0], buckets }
 }
 
 export function sanitizeContext(raw: unknown): StatContext | undefined {

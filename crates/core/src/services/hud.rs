@@ -12,7 +12,8 @@ use serde_json::{json, Value};
 
 use crate::db::Database;
 use crate::repos::detailed_stats::Row;
-use crate::repos::hud_stats::{self, HudStatRequest};
+use crate::repos::hud_hands;
+use crate::repos::hud_stats::{self, HandsOf, HudStatRequest};
 use crate::repos::hud_tables;
 use crate::stats::custom::store as custom_store;
 use crate::repos::player_notes::{self, PlayerNote, MAX_NOTE_CHARS};
@@ -26,6 +27,11 @@ const MAX_PLAYERS: usize = 12;
 pub const MAX_STATS: usize = 2048;
 /// Players kept in memory; the cache is emptied when it grows past this.
 const CACHE_CAPACITY: usize = 500;
+/// Hands listed behind a figure by default, and at most: a list is read at a glance.
+const DEFAULT_FIGURE_HANDS: usize = 30;
+const MAX_FIGURE_HANDS: usize = 50;
+/// Stack depths a group can hold: there are not more depths than this.
+const MAX_GROUP_BUCKETS: usize = 16;
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -50,6 +56,41 @@ impl HudPlayersRequest {
         }
         if self.stats.len() > MAX_STATS {
             return Err(format!("at most {MAX_STATS} stats per request"));
+        }
+        Ok(())
+    }
+}
+
+/// The hands behind one figure of one player: the same stat, column and stack depths as the figure.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HudFigureHandsRequest {
+    pub room: String,
+    pub hero_name: String,
+    pub player: String,
+    pub stat: HudStatRequest,
+    /// The depths of a stack group, added up like the figure does; none means the stat's own bucket.
+    #[serde(default)]
+    pub buckets: Vec<String>,
+    pub which: HandsOf,
+    #[serde(default = "default_figure_hands")]
+    pub limit: usize,
+}
+
+fn default_figure_hands() -> usize {
+    DEFAULT_FIGURE_HANDS
+}
+
+impl HudFigureHandsRequest {
+    pub fn validate(&self) -> std::result::Result<(), String> {
+        if self.room.trim().is_empty() || self.hero_name.trim().is_empty() || self.player.trim().is_empty() {
+            return Err("room, heroName and player are required".into());
+        }
+        if self.limit == 0 || self.limit > MAX_FIGURE_HANDS {
+            return Err(format!("limit must be between 1 and {MAX_FIGURE_HANDS}"));
+        }
+        if self.buckets.len() > MAX_GROUP_BUCKETS {
+            return Err(format!("at most {MAX_GROUP_BUCKETS} buckets"));
         }
         Ok(())
     }
@@ -165,6 +206,22 @@ impl HudService {
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));
         }
         Ok(json!({ "players": players }))
+    }
+
+    /// The newest hands behind a figure, summarised, with how many there are in all.
+    pub fn figure_hands(&self, request: &HudFigureHandsRequest) -> Result<Value> {
+        let conn = self.db.conn()?;
+        let with_custom = hud_stats::is_custom(&request.stat);
+        let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
+        let rows = hud_stats::load_identified_rows(&conn, &request.room, &request.hero_name, &request.player, with_custom)?;
+        let (listed, total) = hud_stats::figure_hand_ids(&rows, &request.stat, &request.buckets, &ready, request.which, request.limit);
+        let ids: Vec<String> = listed.iter().map(|hand| hand.hand_id.clone()).collect();
+        let mut hands = hud_hands::summaries(&conn, &request.player, &ids)?;
+        for hand in &mut hands {
+            let done = listed.iter().find(|l| hand["id"].as_str() == Some(l.hand_id.as_str())).is_some_and(|l| l.done);
+            hand["done"] = json!(done);
+        }
+        Ok(json!({ "total": total, "hands": hands }))
     }
 
     /// Tournaments of `room` being played: see [`hud_tables::active_tables`].
