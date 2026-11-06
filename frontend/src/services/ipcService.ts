@@ -22,7 +22,7 @@ export interface ImportProgress {
   totalHands: number | null
 }
 
-export type AutoImportState = 'off' | 'watching' | 'importing' | 'paused' | 'error'
+export type AutoImportState = 'off' | 'nofolder' | 'watching' | 'importing' | 'paused' | 'error'
 
 export interface AutoImportStatus {
   state: AutoImportState
@@ -32,6 +32,11 @@ export interface AutoImportStatus {
 export interface AutoImportFolder {
   room: string
   path: string
+}
+
+export interface BackfillProgress {
+  done: number
+  total: number
 }
 
 export interface HandsImported {
@@ -144,9 +149,6 @@ export const ipcService = {
   getAnalysisHands: (request: Json = {}) => backend('POST', '/analysis/hands', request),
   getRangeBreakdown: (filters: Json = {}) => backend('POST', '/analysis/range-breakdown', filters),
   calculateEquity: (params: Json) => backend('POST', '/equity', params),
-  analyzeRange: ({ position, stack, action }: { position: string; stack: number; action: string }) =>
-    backend('POST', '/analyze/range', { position, stack, action }),
-  evaluateStat: (stat: Json) => backend('POST', '/stats/builder/evaluate', stat),
 
   // Databases
   getDatabases: () => backend('GET', '/api/databases'),
@@ -157,11 +159,35 @@ export const ipcService = {
   renameDatabase: (id: number | string, name: string) => backend('PUT', `/api/databases/${id}`, { name }),
 
   // Maintenance
-  resetDefaultStats: () => backend('POST', '/reset-default-stats', {}),
   deleteAllHands: () => command<ApiResult>('delete_all_hands'),
   importHandHistory: () => command<ApiResult>('import_hand_history'),
   getAutoImport: () => command<ApiResult>('auto_import_get'),
   setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),
+  getHudCatalog: () => backend<{ stats: { section: string; label: string; id: string; fixedSeat: boolean; name?: string; ready?: boolean }[] }>('GET', '/hud/catalog'),
+
+  // Custom stats (definitions are the JSON of views/CustomStats/customStatModel.ts)
+  getCustomStats: () => backend<Json[]>('GET', '/custom-stats'),
+  getCustomStatOptions: () => backend('GET', '/custom-stats/options'),
+  getCustomStatStatus: () => backend('GET', '/custom-stats/status'),
+  createCustomStat: (definition: Json) => backend('POST', '/custom-stats', definition),
+  updateCustomStat: (id: number, definition: Json) => backend('PUT', `/custom-stats/${id}`, definition),
+  deleteCustomStat: (id: number) => backend('DELETE', `/custom-stats/${id}`),
+  recomputeCustomStats: () => backend('POST', '/custom-stats/recompute', {}),
+  previewCustomStat: (definition: Json, heroName?: string | null) => backend('POST', '/custom-stats/preview', { definition, heroName: heroName ?? null }),
+
+  getHudState: async (): Promise<Json | null> => {
+    const state = await command<Json | null>('hud_get_state')
+    return state && state.success === false ? null : state
+  },
+  setHudPanelRects: (rects: { x: number; y: number; width: number; height: number }[]) => command<ApiResult>('hud_set_panel_rects', { rects }),
+  getHudTables: () => command<ApiResult>('hud_tables'),
+  associateHudTable: (table: number, gameId: string) => command<ApiResult>('hud_associate', { table, gameId }),
+  setHudTableHidden: (table: number, hidden: boolean) => command<ApiResult>('hud_set_hidden', { table, hidden }),
+  getHudPlayers: (body: Json) => backend('POST', '/hud/players', body),
+  getHudFigureHands: (body: Json) => backend('POST', '/hud/figure-hands', body),
+  getHudSettings: () => command<ApiResult>('hud_settings_get'),
+  setHudSettings: (settings: Json) => command<ApiResult>('hud_settings_set', { settings }),
+  setHudHeroes: (names: string[]) => command<ApiResult>('hud_set_heroes', { names }),
   pickAutoImportFolder: async (): Promise<string | null> => {
     const path = await command<unknown>('auto_import_pick_folder')
     return typeof path === 'string' ? path : null
@@ -190,8 +216,13 @@ export const ipcService = {
 
   // Events
   onImportProgress: (callback: (progress: ImportProgress) => void) => subscribe('import-progress', callback),
+  /** The stored statistics are being recomputed (after an update changed their definition). */
+  onBackfillProgress: (callback: (progress: BackfillProgress) => void) => subscribe('backfill-progress', callback),
   onHandsImported: (callback: (payload: HandsImported) => void) => subscribe('hands-imported', callback),
   onAutoImportStatus: (callback: (status: AutoImportStatus) => void) => subscribe('auto-import-status', callback),
+  onHudState: (callback: (state: Json) => void) => subscribe('hud-state', callback),
+  /** The HUD settings were saved: a HUD window already open reads them again. */
+  onHudSettingsChanged: (callback: () => void) => subscribe('hud-settings-changed', callback),
   onUpdateStatus: (callback: (status: UpdateStatus) => void) => subscribe('update-status', callback),
 }
 

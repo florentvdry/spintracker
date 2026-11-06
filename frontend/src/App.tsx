@@ -5,10 +5,12 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import NotificationContainer from '@/components/ui/NotificationContainer'
 import ProgressModal from '@/components/ui/ProgressModal'
 import UpdateModal from '@/components/ui/UpdateModal'
+import { ipcService } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useAutoImportStore } from '@/stores/autoImportStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { useUpdateStore } from '@/stores/updateStore'
+import { heroNamesOf } from '@/utils/heroNames'
 
 const Dashboard = lazy(() => import('@/views/Dashboard'))
 const HandHistory = lazy(() => import('@/views/HandHistory'))
@@ -17,6 +19,7 @@ const RangeResearch = lazy(() => import('@/views/RangeResearch'))
 const Charts = lazy(() => import('@/views/Charts'))
 const Players = lazy(() => import('@/views/Players'))
 const Stats = lazy(() => import('@/views/Stats'))
+const LiveHud = lazy(() => import('@/views/LiveHud'))
 const Settings = lazy(() => import('@/views/Settings'))
 
 export default function App() {
@@ -36,6 +39,12 @@ export default function App() {
 
   useEffect(() => listenAutoImport(), [listenAutoImport])
 
+  // The HUD finds the hero at a table from the names the user plays under.
+  const aliases = useFilterStore((s) => s.aliases)
+  useEffect(() => {
+    void ipcService.setHudHeroes(heroNamesOf(heroName, aliases))
+  }, [heroName, aliases])
+
   // Any change to the global filters reloads the shared dashboard data.
   useEffect(() => {
     if (hasHydrated && isInitialized && heroName) void refreshAll()
@@ -54,6 +63,7 @@ export default function App() {
               <Route path="/charts" element={<Charts />} />
               <Route path="/players" element={<Players />} />
               <Route path="/stats" element={<Stats />} />
+              <Route path="/hud" element={<LiveHud />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
           </Suspense>

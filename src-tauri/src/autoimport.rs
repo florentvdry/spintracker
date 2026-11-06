@@ -19,6 +19,7 @@ use spintracker_core::services::{is_history_file, list_history_files};
 use tauri::{AppHandle, Emitter, Manager};
 
 use crate::backend::{self, BackendState};
+use crate::hud;
 
 const CONFIG_FILE: &str = "auto_import.json";
 const HANDS_IMPORTED_EVENT: &str = "hands-imported";
@@ -58,6 +59,7 @@ struct Config {
 #[serde(rename_all = "lowercase")]
 enum State {
     Off,
+    NoFolder,
     Watching,
     Importing,
     Paused,
@@ -93,7 +95,7 @@ impl Default for AutoImportState {
 
 impl AutoImportState {
     fn send(&self, msg: Msg) {
-        if let Some(sender) = self.sender.lock().unwrap().as_ref() {
+        if let Some(sender) = self.sender.lock().unwrap_or_else(std::sync::PoisonError::into_inner).as_ref() {
             let _ = sender.send(msg);
         }
     }
@@ -103,7 +105,7 @@ impl AutoImportState {
 pub fn start(app: &AppHandle) {
     let state = app.state::<AutoImportState>();
     let (tx, rx) = channel();
-    *state.sender.lock().unwrap() = Some(tx.clone());
+    *state.sender.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = Some(tx.clone());
     let status = state.status.clone();
     let app = app.clone();
     std::thread::Builder::new()
@@ -150,8 +152,25 @@ fn active_database_id(backend: &Backend) -> Option<String> {
 fn active_settings(app: &AppHandle) -> Option<(String, DatabaseSettings)> {
     let backend = app.state::<BackendState>().ready()?;
     let id = active_database_id(&backend)?;
-    let settings = load_config(app).databases.remove(&id).unwrap_or_default();
+    let settings = load_config(app).databases.remove(&id).unwrap_or_else(first_run_settings);
     Some((id, settings))
+}
+
+/// A database that was never configured imports on its own: the folders found on this computer are
+/// always watched (see [`all_folders`]), so a fresh install works without any setup.
+fn first_run_settings() -> DatabaseSettings {
+    DatabaseSettings { enabled: true, folders: Vec::new() }
+}
+
+/// The folders added by hand plus the ones found on this computer, each once.
+fn all_folders(added: &[WatchedFolder], detected: Vec<WatchedFolder>) -> Vec<WatchedFolder> {
+    let mut folders = added.to_vec();
+    for folder in detected {
+        if !folders.contains(&folder) {
+            folders.push(folder);
+        }
+    }
+    folders
 }
 
 /// Only existing absolute folders of a watchable room are accepted: the paths come from the UI.
@@ -203,7 +222,7 @@ fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
 
 pub fn get(app: &AppHandle) -> Value {
     let state = app.state::<AutoImportState>();
-    let status = state.status.lock().unwrap().clone();
+    let status = state.status.lock().unwrap_or_else(std::sync::PoisonError::into_inner).clone();
     let (enabled, folders) = active_settings(app).map_or((false, Vec::new()), |(_, s)| (s.enabled, s.folders));
     json!({
         "success": true,
@@ -254,6 +273,9 @@ struct Worker {
     reload_due: bool,
     /// Files waiting for their writer to go quiet, with the time of the last event.
     pending: HashMap<PathBuf, Instant>,
+    /// Some files may have hands imported without equity (the list is in the database, so it survives
+    /// a restart): they are imported again once no table is open.
+    equity_check_due: bool,
     last_sweep: Instant,
 }
 
@@ -269,6 +291,7 @@ impl Worker {
             paused: false,
             reload_due: true,
             pending: HashMap::new(),
+            equity_check_due: true,
             last_sweep: Instant::now(),
         }
     }
@@ -296,6 +319,7 @@ impl Worker {
                 self.apply_settings();
             }
             self.flush_quiet_files();
+            self.complete_deferred();
             if self.watcher.is_some() && self.last_sweep.elapsed() >= SWEEP_INTERVAL {
                 self.sweep();
             }
@@ -304,7 +328,7 @@ impl Worker {
 
     fn set_status(&self, state: State, message: Option<String>) {
         let status = Status { state, message };
-        *self.status.lock().unwrap() = status.clone();
+        *self.status.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = status.clone();
         let _ = self.app.emit(STATUS_EVENT, status);
     }
 
@@ -322,10 +346,15 @@ impl Worker {
         self.reload_due = false;
         self.watcher = None;
         self.pending.clear();
-        self.folders = settings.folders.iter().map(|f| PathBuf::from(&f.path)).filter(|p| p.is_dir()).collect();
+        self.folders = all_folders(&settings.folders, detect_folders(&self.app)).iter().map(|f| PathBuf::from(&f.path)).filter(|p| p.is_dir()).collect();
 
-        if !settings.enabled || self.folders.is_empty() {
+        if !settings.enabled {
             self.set_status(State::Off, None);
+            return;
+        }
+        // Switched on but nothing to read: say so instead of looking switched off.
+        if self.folders.is_empty() {
+            self.set_status(State::NoFolder, None);
             return;
         }
         match self.watch_folders() {
@@ -379,6 +408,34 @@ impl Worker {
         }
     }
 
+    /// Imports again, with equity, the files that were imported while a table was open, as soon as
+    /// no table is. The files come from the database, so hands left without equity before a restart
+    /// are completed too.
+    fn complete_deferred(&mut self) {
+        if !self.equity_check_due || hud::table_mode() {
+            return;
+        }
+        let Some(backend) = self.app.state::<BackendState>().ready() else { return };
+        self.equity_check_due = false;
+        let files = match backend.importer().files_missing_equity() {
+            Ok(files) => files,
+            Err(err) => {
+                log::error!("[auto-import] cannot list the files missing equity: {err}");
+                return;
+            }
+        };
+        if files.is_empty() {
+            return;
+        }
+        for path in files.iter().filter(|p| p.is_file()) {
+            if let Err(err) = backend.importer().reimport_path(path) {
+                log::error!("[auto-import] completing {}: {err}", path.display());
+            }
+        }
+        log::info!("[auto-import] equity completed for {} files", files.len());
+        let _ = self.app.emit(HANDS_IMPORTED_EVENT, json!({ "imported": 0, "files": files.len() }));
+    }
+
     fn flush_quiet_files(&mut self) {
         let due: Vec<PathBuf> =
             self.pending.iter().filter(|(_, last)| last.elapsed() >= DEBOUNCE).map(|(path, _)| path.clone()).collect();
@@ -397,10 +454,15 @@ impl Worker {
             if !path.is_file() {
                 continue;
             }
-            match backend.importer().import_path(&path) {
+            // No equity while the user sits at a table: the file is completed afterwards.
+            let equity = !hud::table_mode();
+            match backend.importer().import_path(&path, equity) {
                 Ok(Some(result)) if result.imported > 0 => {
                     hands += result.imported;
                     files += 1;
+                    if !equity {
+                        self.equity_check_due = true;
+                    }
                 }
                 Ok(_) => {}
                 Err(err) => {
@@ -478,6 +540,18 @@ mod tests {
         fs::create_dir_all(&export).unwrap();
         let found = unibet_folder(documents.path()).expect("the folder exists now");
         assert_eq!((found.room.as_str(), Path::new(&found.path)), ("Unibet", export.as_path()));
+    }
+
+    #[test]
+    fn a_database_never_configured_has_the_import_on() {
+        assert!(first_run_settings().enabled);
+    }
+
+    #[test]
+    fn detected_folders_are_always_watched_next_to_the_added_ones_without_duplicates() {
+        let folder = |path: &str| WatchedFolder { room: "Winamax".into(), path: path.into() };
+        let all = all_folders(&[folder("C:\\mine"), folder("C:\\found")], vec![folder("C:\\found"), folder("C:\\other")]);
+        assert_eq!(all, vec![folder("C:\\mine"), folder("C:\\found"), folder("C:\\other")]);
     }
 
     #[test]

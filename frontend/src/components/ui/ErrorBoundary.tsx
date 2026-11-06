@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { logError } from '@/utils/log'
 
 interface BoundaryProps {
   title: string
@@ -26,7 +27,7 @@ class Boundary extends Component<BoundaryProps, BoundaryState> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
-    console.error('View crashed:', error, info.componentStack)
+    logError(`View crashed in:${info.componentStack}`, error)
   }
 
   render() {

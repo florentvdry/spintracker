@@ -108,21 +108,44 @@ impl Importer {
 
     /// Handles a file the watcher reported: a summary finishes its tournament, anything else is a
     /// hand history that may have grown. `None` when a summary has no hand history (yet).
-    pub fn import_path(&self, path: &Path) -> Result<Option<LiveImport>> {
+    pub fn import_path(&self, path: &Path, equity: bool) -> Result<Option<LiveImport>> {
         if !is_summary_file(path) {
-            return self.import_live(path, LiveMode::Resume).map(Some);
+            return self.import_live_with(path, LiveMode::Resume, equity).map(Some);
         }
         let Some(history) = summaries::hand_file_for_summary(path) else { return Ok(None) };
         let (size, mtime) = file_state(path)?;
-        let result = self.import_live(&history, LiveMode::Finish)?;
+        let result = self.import_live_with(&history, LiveMode::Finish, equity)?;
         // The summary is remembered like a history file, so the startup catch-up skips it.
         let conn = self.db.conn()?;
         import_files::upsert(&conn, &path.to_string_lossy(), ImportFileState { size, mtime, hands_done: 0 })?;
         Ok(Some(result))
     }
 
+    /// The history files that still have hands imported without equity (see [`Importer::import_path`]).
+    pub fn files_missing_equity(&self) -> Result<Vec<PathBuf>> {
+        let conn = self.db.conn()?;
+        Ok(import_files::equity_pending_paths(&conn)?.into_iter().map(PathBuf::from).collect())
+    }
+
+    /// Imports a file again from its first hand, with equity: what the automatic import left
+    /// without while a table was open.
+    pub fn reimport_path(&self, path: &Path) -> Result<()> {
+        if is_summary_file(path) {
+            self.import_path(path, true)?;
+        } else {
+            self.import_live_with(path, LiveMode::Finish, true)?;
+        }
+        Ok(())
+    }
+
     /// Imports what `path` holds beyond what was already handled. See [`LiveMode`].
     pub fn import_live(&self, path: &Path, mode: LiveMode) -> Result<LiveImport> {
+        self.import_live_with(path, mode, true)
+    }
+
+    /// Like [`Importer::import_live`]; with `equity` off the hands get no all-in equity (see
+    /// `PipelineInput::equity`), and importing the file again later completes them.
+    pub fn import_live_with(&self, path: &Path, mode: LiveMode, equity: bool) -> Result<LiveImport> {
         if !path.is_file() {
             return Err(Error::Message(format!("File not found: {}", path.display())));
         }
@@ -164,7 +187,7 @@ impl Importer {
             };
             let detected_hero = (room == "Unibet").then(|| detect_hero_name(&text)).flatten();
             let cancel = AtomicBool::new(false);
-            let input = PipelineInput { parser, summaries: &summaries, detected_hero: detected_hero.as_deref(), cancel: &cancel };
+            let input = PipelineInput { parser, summaries: &summaries, detected_hero: detected_hero.as_deref(), cancel: &cancel, equity };
             let run = self.run_pipeline(&mut conn, input, &blocks[start..], &mut |_| {});
             if let Some(e) = run.write_error {
                 return Err(e);
@@ -178,6 +201,13 @@ impl Importer {
         }
 
         import_files::upsert(&conn, &key, ImportFileState { size, mtime, hands_done: blocks.len() })?;
+        // Hands imported without equity stay flagged until the whole file is imported again with it.
+        let pending_equity = if equity && mode == LiveMode::Finish {
+            false
+        } else {
+            (!equity && result.imported > 0) || import_files::is_equity_pending(&conn, &key)?
+        };
+        import_files::set_equity_pending(&conn, &key, pending_equity)?;
         Ok(result)
     }
 }

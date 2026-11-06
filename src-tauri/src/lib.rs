@@ -3,6 +3,8 @@ mod autoimport;
 mod backend;
 mod commands;
 mod export;
+mod hud;
+mod hud_settings;
 mod import;
 mod updater;
 
@@ -24,6 +26,8 @@ pub fn run() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(backend::BackendState::default())
         .manage(autoimport::AutoImportState::default())
+        .manage(hud::OverlayState::default())
+        .manage(hud::EngineState::default())
         .manage(commands::ReplayerState::default())
         .manage(updater::UpdateState::default())
         .setup(|app| {
@@ -47,12 +51,21 @@ pub fn run() {
 
             backend::start(&handle);
             autoimport::start(&handle);
+            hud::start(&handle);
 
             let failsafe_handle = handle.clone();
             tauri::async_runtime::spawn(async move {
-                tokio::time::sleep(SPLASH_FAILSAFE_DELAY).await;
-                if failsafe_handle.get_webview_window("splash").is_some() {
+                loop {
+                    tokio::time::sleep(SPLASH_FAILSAFE_DELAY).await;
+                    if failsafe_handle.get_webview_window("splash").is_none() {
+                        break;
+                    }
+                    // A long statistics update shows its progress on the splash: wait for it.
+                    if backend::updating_statistics(SPLASH_FAILSAFE_DELAY) {
+                        continue;
+                    }
                     commands::app_ready(failsafe_handle);
+                    break;
                 }
             });
 
@@ -80,6 +93,16 @@ pub fn run() {
             commands::auto_import_get,
             commands::auto_import_set,
             commands::auto_import_pick_folder,
+            commands::hud_settings_get,
+            commands::hud_settings_set,
+            commands::hud_get_state,
+            commands::hud_tables,
+            commands::hud_set_heroes,
+            commands::hud_associate,
+            commands::hud_set_hidden,
+            commands::hud_set_panel_rects,
+            commands::hud_debug_attach,
+            commands::hud_debug_detach,
             commands::open_logs_folder,
             commands::get_app_version,
             commands::frontend_log,

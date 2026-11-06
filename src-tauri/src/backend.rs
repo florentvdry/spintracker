@@ -2,7 +2,9 @@
 
 use std::fs;
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use serde_json::json;
 use spintracker_core::api::Backend;
@@ -12,6 +14,19 @@ const APP_DATA_FOLDER: &str = "SpinTracker";
 const LEGACY_DATA_FOLDER: &str = "poker-tracker-pro";
 const DB_FILE_NAME: &str = "poker_tracker.db";
 pub const BACKFILL_EVENT: &str = "backfill-progress";
+
+/// When the statistics update last reported progress (seconds since the epoch, 0 = never).
+static LAST_PROGRESS: AtomicU64 = AtomicU64::new(0);
+
+fn now_seconds() -> u64 {
+    SystemTime::now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_secs())
+}
+
+/// Whether the statistics update reported progress within `window`: a long update is not a hang.
+pub fn updating_statistics(window: Duration) -> bool {
+    let last = LAST_PROGRESS.load(Ordering::Relaxed);
+    last != 0 && now_seconds().saturating_sub(last) < window.as_secs()
+}
 
 /// The backend once it is ready to answer; an error message when it could not start.
 #[derive(Default)]
@@ -29,7 +44,7 @@ enum Status {
 
 impl BackendState {
     pub fn ready(&self) -> Option<Arc<Backend>> {
-        match &*self.inner.lock().unwrap() {
+        match &*self.inner.lock().unwrap_or_else(std::sync::PoisonError::into_inner) {
             Status::Ready(backend) => Some(backend.clone()),
             _ => None,
         }
@@ -37,14 +52,14 @@ impl BackendState {
 
     /// `Err` with the reason when the backend failed to start.
     pub fn failure(&self) -> Option<String> {
-        match &*self.inner.lock().unwrap() {
+        match &*self.inner.lock().unwrap_or_else(std::sync::PoisonError::into_inner) {
             Status::Failed(reason) => Some(reason.clone()),
             _ => None,
         }
     }
 
     fn set(&self, status: Status) {
-        *self.inner.lock().unwrap() = status;
+        *self.inner.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = status;
     }
 }
 
@@ -112,7 +127,12 @@ pub fn start(app: &AppHandle) {
 pub fn backfill(app: &AppHandle, backend: &Backend) {
     let result = backend.backfill_flags(|done, total| {
         log::info!("Updating statistics: {done}/{total} hands");
+        LAST_PROGRESS.store(now_seconds(), Ordering::Relaxed);
         let _ = app.emit(BACKFILL_EVENT, json!({ "done": done, "total": total }));
+        // The splash page has no access to the application events: it is told directly.
+        if let Some(splash) = app.get_webview_window("splash") {
+            let _ = splash.eval(format!("window.setStatsProgress && window.setStatsProgress({done}, {total})"));
+        }
     });
     if let Err(err) = result {
         log::error!("Failed to update statistics: {err}");

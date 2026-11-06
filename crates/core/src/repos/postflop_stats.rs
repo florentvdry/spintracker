@@ -83,6 +83,9 @@ const FIGURES: &[Figure] = &[
     fig("donk_fold_flop", "Donk/Fold:flop", F(Flag::DonkFoldFlop), F(Flag::DonkFoldOppFlop)),
     fig("donk_fold_turn", "Donk/Fold:turn", F(Flag::DonkFoldTurn), F(Flag::DonkFoldOppTurn)),
     fig("donk_fold_river", "Donk/Fold:river", F(Flag::DonkFoldRiver), F(Flag::DonkFoldOppRiver)),
+    fig("xr_flop", "Check-Raise:flop", F(Flag::XrFlop), F(Flag::XrOppFlop)),
+    fig("xr_turn", "Check-Raise:turn", F(Flag::XrTurn), F(Flag::XrOppTurn)),
+    fig("xr_river", "Check-Raise:river", F(Flag::XrRiver), F(Flag::XrOppRiver)),
     fig("fold_vs_donk_flop", "Fold vs Donk:flop", F(Flag::FoldVsDonkFlop), F(Flag::VsDonkOppFlop)),
     fig("fold_vs_donk_turn", "Fold vs Donk:turn", F(Flag::FoldVsDonkTurn), F(Flag::VsDonkOppTurn)),
     fig("raise_vs_donk_flop", "Raise vs Donk:flop", F(Flag::RaiseVsDonkFlop), F(Flag::VsDonkOppFlop)),
@@ -217,6 +220,12 @@ impl PostflopTally {
 
     fn find(&self, name: &str) -> usize {
         FIGURES.iter().position(|f| f.name == name).unwrap_or_else(|| panic!("unknown postflop figure {name}"))
+    }
+
+    /// `(numerator, denominator)` of a figure, `None` when no figure has this name.
+    pub(super) fn try_counts(&self, name: &str) -> Option<(u64, u64)> {
+        let i = FIGURES.iter().position(|f| f.name == name)?;
+        Some((self.num[i], self.den[i]))
     }
 
     /// `(numerator, denominator)` of a figure.
@@ -366,6 +375,11 @@ impl PostflopTally {
             ("showdown", with_samples(showdown, showdown_samples)),
         ]
     }
+}
+
+/// Names of the figures that can be asked for one by one.
+pub(super) fn figure_names() -> Vec<&'static str> {
+    FIGURES.iter().map(|f| f.name).collect()
 }
 
 fn sample_json(num: u64, den: u64, hands: &[Rc<Sample>]) -> Value {

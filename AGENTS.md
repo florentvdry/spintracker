@@ -44,10 +44,11 @@ npm run setup           # full install + backend build
 npm run dev             # desktop dev (Tauri + Vite + backend)
 npm run frontend:dev    # frontend alone in a browser (no Rust shell)
 npm run build           # Windows build (installer)
-cargo test -p spintracker-core --release
+cargo test -p spintracker-core
+npm run frontend:test   # Vitest, pure frontend modules
 ```
 
-**Before declaring a task done**: `cargo test -p spintracker-core` passes, `npm run frontend:build` passes and `cargo check -p spintracker` passes. If a check could not be run, say so explicitly.
+**Before declaring a task done**: `cargo test -p spintracker-core` passes, `npm run frontend:test` passes, `npm run frontend:build` passes and `cargo check -p spintracker` passes. If a check could not be run, say so explicitly.
 
 ## 3. Commits (STRICT)
 

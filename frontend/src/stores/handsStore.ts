@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { ipcService, type Json } from '@/services/ipcService'
 import { buyInParam, currentDateRange, useFilterStore } from './filterStore'
+import { logError } from '@/utils/log'
 
 export type ViewMode = 'tournaments' | 'hands'
 
@@ -40,6 +41,10 @@ interface HandsState {
   clearSelection: () => void
 }
 
+// Only the answer to the latest request is kept: a slow older one must not overwrite it.
+let tournamentsRequest = 0
+let handsRequest = 0
+
 export const useHandsStore = create<HandsState>((set, get) => ({
   tournaments: [],
   totalTournaments: 0,
@@ -57,6 +62,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
   tournamentHands: [],
 
   loadTournaments: async () => {
+    const request = ++tournamentsRequest
     set({ isLoading: true })
     const { heroName, buyIn } = useFilterStore.getState()
     const { dateFrom, dateTo } = currentDateRange()
@@ -75,17 +81,18 @@ export const useHandsStore = create<HandsState>((set, get) => ({
         minPot: filters.minPot,
         maxPot: filters.maxPot,
       })
-      if (result?.success && result.data) {
+      if (request === tournamentsRequest && result?.success && result.data) {
         set({ tournaments: result.data.tournaments ?? [], totalTournaments: result.data.total ?? 0 })
       }
     } catch (error) {
-      console.error('Failed to load tournaments:', error)
+      logError('Failed to load tournaments:', error)
     } finally {
-      set({ isLoading: false })
+      if (request === tournamentsRequest) set({ isLoading: false })
     }
   },
 
   loadHandsList: async () => {
+    const request = ++handsRequest
     set({ isLoading: true })
     const { heroName } = useFilterStore.getState()
     const { dateFrom, dateTo } = currentDateRange()
@@ -101,13 +108,13 @@ export const useHandsStore = create<HandsState>((set, get) => ({
         result: filters.result,
         sortBy: filters.sortBy,
       })
-      if (result?.success && result.data) {
+      if (request === handsRequest && result?.success && result.data) {
         set({ handsList: result.data.hands ?? [], totalHandsCount: result.data.total ?? 0 })
       }
     } catch (error) {
-      console.error('Failed to load hands list:', error)
+      logError('Failed to load hands list:', error)
     } finally {
-      set({ isLoading: false })
+      if (request === handsRequest) set({ isLoading: false })
     }
   },
 
@@ -119,7 +126,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
       const result = await ipcService.getTournamentHands(gameId, useFilterStore.getState().heroName)
       if (result?.success) set({ tournamentHands: result.data ?? [] })
     } catch (error) {
-      console.error('Failed to load tournament hands:', error)
+      logError('Failed to load tournament hands:', error)
     } finally {
       set({ isLoadingHands: false })
     }
@@ -153,7 +160,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
       const result = await ipcService.getHandDetails(handId, useFilterStore.getState().heroName)
       if (result.success) set({ selectedHand: result.data })
     } catch (error) {
-      console.error('Failed to load hand details:', error)
+      logError('Failed to load hand details:', error)
     } finally {
       set({ isLoadingHand: false })
     }

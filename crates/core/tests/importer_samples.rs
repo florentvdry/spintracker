@@ -131,7 +131,7 @@ fn unibet_import_detects_the_hero_and_reads_summaries() {
         })
         .unwrap();
     assert_eq!((position, prize_pool, multiplier), (3, 30.0, 3));
-    assert!((buy_in - 9.3).abs() < 1e-9);
+    assert!((buy_in - 10.0).abs() < 1e-9, "the entry cost includes the fee");
 
     // The file's most frequently dealt player is the hero: every hand has hero analytics.
     let hero = "AA2Spew2Brok[Unibet_b3081becc3e7563f]";

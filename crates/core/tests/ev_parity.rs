@@ -171,6 +171,10 @@ fn compare(hands: &mut [ParsedHand], expected: &Expected, hero_of: impl Fn(&Pars
     check("3Way Small Blind", expected.sb_3w, contribution("3W SB"), 1);
     check("3Way BigBlinds", expected.bb_3w, contribution("3W BB"), 1);
     check("chips won", expected.chips_won, chips.round_ties_even() as i64, 0);
+    // The expected files were computed with equities kept to 0.01%, which adds up to about one chip
+    // over hundreds of all-ins (Betclic: 25786 expected, 25785.28 exact; Winamax: 4112 expected,
+    // 4114 exact). Rounding each equity the same way would close the gap but make every hand's EV
+    // less exact, so two chips are tolerated.
     check("Net excepted Chips Won", expected.net_expected, net_expected.round_ties_even() as i64, 2);
     check("chips won with showdown", expected.won_showdown, sd.round_ties_even() as i64, 0);
     check("chips won without showdown", expected.won_non_showdown, nsd.round_ties_even() as i64, 0);

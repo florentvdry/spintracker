@@ -28,7 +28,7 @@ npm run dev
 Run the checks before opening a PR:
 
 ```bash
-cargo test -p spintracker-core --release
+cargo test -p spintracker-core
 npm run frontend:build && cargo check -p spintracker
 ```
 

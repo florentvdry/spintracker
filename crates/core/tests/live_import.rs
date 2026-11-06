@@ -205,12 +205,12 @@ fn a_summary_reported_by_the_watcher_finishes_its_tournament_once() {
     let folder = Folder::new(false);
     let (_dir, db, importer) = importer();
     folder.write_prefix(folder.text.len());
-    importer.import_path(&folder.history).unwrap();
+    importer.import_path(&folder.history, true).unwrap();
 
     let summary = folder.dir.path().join(SUMMARY);
     std::fs::copy(fixture_dir().join(SUMMARY), &summary).unwrap();
     assert!(importer.needs_live_import(&summary).unwrap());
-    let finished = importer.import_path(&summary).unwrap().expect("the history file exists");
+    let finished = importer.import_path(&summary, true).unwrap().expect("the history file exists");
     assert!(finished.imported > 0);
     assert!(!importer.needs_live_import(&summary).unwrap(), "the summary is remembered");
     assert_eq!(snapshot(&db), full_import_snapshot());
@@ -247,4 +247,38 @@ fn a_unibet_file_written_in_pieces_gives_the_same_result_as_a_full_import() {
     let last = importer.import_live(&target, LiveMode::Resume).unwrap();
     assert!(!last.pending);
     assert_same(&snapshot(&db), &expected);
+}
+
+#[test]
+fn equity_is_not_computed_while_a_table_is_open_and_is_completed_afterwards() {
+    let folder = Folder::new(true);
+    let (_dir, db, importer) = importer();
+    folder.write_prefix(folder.text.len());
+
+    let equity_rows = |db: &Database| -> i64 {
+        db.conn().unwrap().query_row("SELECT COUNT(*) FROM player_hands WHERE ev_chips IS NOT NULL", [], |r| r.get(0)).unwrap()
+    };
+
+    importer.import_live_with(&folder.history, LiveMode::Resume, false).unwrap();
+    assert_eq!(equity_rows(&db), 0, "no equity while a table is open");
+
+    // Once the tables are closed the file is imported again, with equity.
+    importer.import_live_with(&folder.history, LiveMode::Finish, true).unwrap();
+    assert!(equity_rows(&db) > 0, "the all-in hands of the fixture get their equity");
+    assert_same(&snapshot(&db), &full_import_snapshot());
+}
+
+#[test]
+fn hands_imported_without_equity_stay_listed_until_completed() {
+    let (_dir, _db, importer) = importer();
+    let history = fixture_dir().join(HISTORY);
+    importer.import_path(&history, false).unwrap();
+    assert_eq!(importer.files_missing_equity().unwrap(), vec![history.clone()]);
+
+    // A resumed import with equity does not complete the older hands: the file stays listed.
+    importer.import_path(&history, true).unwrap();
+    assert_eq!(importer.files_missing_equity().unwrap(), vec![history.clone()]);
+
+    importer.reimport_path(&history).unwrap();
+    assert!(importer.files_missing_equity().unwrap().is_empty());
 }

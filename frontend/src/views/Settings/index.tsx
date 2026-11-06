@@ -11,8 +11,11 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useNotificationStore } from '@/stores/notificationStore'
 import { usePlayersStore } from '@/stores/playersStore'
 import { useUpdateStore } from '@/stores/updateStore'
+import { useLocation } from 'react-router-dom'
+import { AUTO_IMPORT_ANCHOR } from './anchors'
 import AutoImportCard from './components/AutoImportCard'
 import SettingRow from './components/SettingRow'
+import { logError } from '@/utils/log'
 
 const STATUS_POLL_MS = 30_000
 const RELOAD_AFTER_DB_SWITCH_MS = 2000
@@ -30,6 +33,13 @@ export default function Settings() {
   const setHeroName = useFilterStore((s) => s.setHeroName)
   const loadPlayers = usePlayersStore((s) => s.loadPlayers)
   const isChecking = useUpdateStore((s) => s.isChecking)
+
+  const focus = (useLocation().state as { focus?: string } | null)?.focus
+
+  // Arriving from a link that targets a card (the import light in the header) scrolls to it.
+  useEffect(() => {
+    if (focus) document.getElementById(focus)?.scrollIntoView({ block: 'start' })
+  }, [focus])
 
   const [serverActive, setServerActive] = useState<boolean | null>(null)
   const [exportLoading, setExportLoading] = useState(false)
@@ -60,7 +70,7 @@ export default function Settings() {
       const result = await ipcService.getDatabases()
       if (result.success) setDatabases(result.data || [])
     } catch (error) {
-      console.error('Failed to load databases:', error)
+      logError('Failed to load databases:', error)
     } finally {
       setLoadingDatabases(false)
     }
@@ -69,7 +79,7 @@ export default function Settings() {
   useEffect(() => {
     void checkStatus()
     void loadDatabases()
-    void ipcService.getAppVersion().then((v) => v && setAppVersion(v)).catch((e) => console.error('Failed to load version:', e))
+    void ipcService.getAppVersion().then((v) => v && setAppVersion(v)).catch((e) => logError('Failed to load version:', e))
     const interval = setInterval(checkStatus, STATUS_POLL_MS)
     return () => clearInterval(interval)
   }, [checkStatus, loadDatabases])
@@ -212,7 +222,9 @@ export default function Settings() {
         </SettingRow>
       </Card>
 
-      <AutoImportCard />
+      <div id={AUTO_IMPORT_ANCHOR}>
+        <AutoImportCard />
+      </div>
 
       <Card title={t('settings.database.multiple.title')} subtitle={t('settings.database.multiple.desc')}>
         <div className="space-y-4">

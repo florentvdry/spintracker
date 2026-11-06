@@ -3,6 +3,7 @@ import clsx from 'clsx'
 const TONES = { h: 'bg-[#ef1f2d]', d: 'bg-[#2563eb]', c: 'bg-profit-positive', s: 'bg-gray-500' } as const
 
 const SIZES = {
+  xs: 'w-[18px] h-[22px] text-[11px] rounded-[3px]',
   sm: 'w-6 h-7 text-[11px] rounded',
   lg: 'w-[31px] h-[34px] text-[15px] rounded-[5px]',
 }

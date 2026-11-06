@@ -3,11 +3,10 @@
 use std::collections::HashMap;
 
 use chrono::NaiveDateTime;
-use uuid::Uuid;
 
 use crate::util::{eq_ic, starts_with_ic};
 use super::{
-    clean_lines, join_lines, parse_f64, parse_i32, regex, split_before_marker, HandParser,
+    clean_lines, content_id, entry_cost, join_lines, parse_f64, parse_i32, regex, split_before_marker, HandParser,
 };
 use crate::models::{BlindsInfo, ParseResult, ParsedHand, PlayerInfo};
 
@@ -228,7 +227,7 @@ impl HandParser for WinamaxParser {
 
         hand.id = match hand.hand_id.as_deref() {
             Some(id) if !id.trim().is_empty() => Some(id.to_string()),
-            _ => Some(Uuid::new_v4().to_string()),
+            _ => Some(content_id(&hand.result)),
         };
         Some(hand)
     }
@@ -241,7 +240,7 @@ fn parse_header_line(line: &str, hand: &mut ParsedHand) {
 
     if let Some(m) = header.captures(line) {
         hand.game_name = Some(m["gameName"].trim().to_string());
-        hand.buy_in = parse_euro(&m["buyIn"]);
+        hand.buy_in = entry_cost(parse_euro(&m["buyIn"]), parse_euro(&m["fee"]));
         hand.rake_per_player = Some(parse_euro(&m["fee"]));
         hand.tournament_level = Some(parse_i32(&m["level"]));
         hand.hand_id = Some(m["handId"].trim().to_string());
@@ -255,7 +254,7 @@ fn parse_header_line(line: &str, hand: &mut ParsedHand) {
             hand.game_name = Some(c[1].trim().to_string());
         }
         if let Some(c) = regex!(r"buyIn:\s*(\d+(?:[.,]\d+)?)\D+\+\s*(\d+(?:[.,]\d+)?)").captures(line) {
-            hand.buy_in = parse_euro(&c[1]);
+            hand.buy_in = entry_cost(parse_euro(&c[1]), parse_euro(&c[2]));
             hand.rake_per_player = Some(parse_euro(&c[2]));
         }
         if let Some(c) = regex!(r"level:\s*(\d+)").captures(line) {
@@ -341,7 +340,8 @@ fn investment_for_player(streets: &StreetLines, player: &str) -> f64 {
     for lines in [&streets.preflop, &streets.flop, &streets.turn, &streets.river] {
         let mut street_investment = 0.0;
         for line in lines {
-            if !starts_with_ic(line, player) {
+            // The name must be followed by a space: "Ann" is not "Anna".
+            if !starts_with_ic(line, &format!("{player} ")) {
                 continue;
             }
             for re in [
@@ -365,4 +365,19 @@ fn investment_for_player(streets: &StreetLines, player: &str) -> f64 {
 
 fn parse_euro(raw: &str) -> f64 {
     parse_f64(&raw.replace(',', "."))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_name_that_starts_another_name_does_not_share_its_investment() {
+        let streets = StreetLines {
+            preflop: vec!["Ann posts small blind 10".into(), "Anna posts big blind 20".into(), "Anna calls 40".into()],
+            ..StreetLines::default()
+        };
+        assert_eq!(investment_for_player(&streets, "Ann"), 10.0);
+        assert_eq!(investment_for_player(&streets, "Anna"), 60.0);
+    }
 }

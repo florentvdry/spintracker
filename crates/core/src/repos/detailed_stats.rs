@@ -16,6 +16,7 @@ use serde_json::{json, Value};
 
 use crate::engines::actions::stack_bucket;
 use super::postflop_stats::PostflopTally;
+use crate::stats::custom::eval::{DEN_BIT, NUM_BIT};
 use crate::stats::flags::{Flag, Flags};
 use crate::stats::postflop::StreetCounts;
 use crate::stats::registry::{Denominator, Section, Segment, StatDef, STATS};
@@ -39,7 +40,7 @@ pub struct DetailedQuery {
 }
 
 /// A hand shown as an example of a figure.
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub(super) struct Sample {
     pub(super) id: String,
@@ -61,12 +62,43 @@ pub(super) struct Sample {
     pub(super) blinds: String,
 }
 
-pub(super) struct Row {
+pub(crate) struct Row {
     pub(super) sample: Sample,
     pub(super) player_count: i32,
     pub(super) stack: i64,
     pub(super) flags: Flags,
     pub(super) street_counts: StreetCounts,
+    /// The stack in big blinds, worked out once (parsing the blinds is slow for a hot loop).
+    stack_bb: Option<f64>,
+    /// Hits of the user's custom stats in this hand: `(stat id, bits)`, see `stats::custom::eval`.
+    custom: Option<Box<[(i64, u8)]>>,
+}
+
+impl Row {
+    /// A row carrying only what the HUD's counters read (no example hands).
+    pub(crate) fn lean(player_count: i32, position: &str, flags: Flags, street_counts: u64, stack: i64, blinds: &str) -> Row {
+        let sample = Sample { position: position.trim().to_uppercase(), blinds: blinds.to_string(), ..Sample::default() };
+        let stack_bb = crate::engines::actions::stack_in_bb(stack as f64, blinds);
+        Row { sample, player_count, stack, flags, street_counts: StreetCounts(street_counts), stack_bb, custom: None }
+    }
+
+    pub(crate) fn with_custom(mut self, custom: Vec<(i64, u8)>) -> Row {
+        self.custom = (!custom.is_empty()).then(|| custom.into_boxed_slice());
+        self
+    }
+
+    /// The player's stack in big blinds, when known.
+    pub(crate) fn stack_bb(&self) -> Option<f64> {
+        self.stack_bb
+    }
+
+    pub(crate) fn position(&self) -> &str {
+        &self.sample.position
+    }
+
+    pub(crate) fn player_count(&self) -> i32 {
+        self.player_count
+    }
 }
 
 /// Table segment of a row: seat plus table size.
@@ -192,32 +224,113 @@ fn position_order(position: &str) -> usize {
 }
 
 /// Everything counted over one set of rows.
-struct Accumulator {
+pub(crate) struct Accumulator {
     players: HashSet<String>,
     all: Tally,
     seats: Vec<Tally>,
     push_fold: Vec<PushFoldTally>,
     postflop: PostflopTally,
+    /// How many rows carry each push/fold flag (the HUD's shove figures).
+    shove: HashMap<Flag, u64>,
+    /// Rows counted by `consume_hud`, whatever they were counted for.
+    rows: u64,
+    /// `(numerator, denominator)` of each custom stat, by stat id.
+    custom: HashMap<i64, (u64, u64)>,
+}
+
+/// What a HUD group needs counted: each part costs, and a group usually needs one.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub(crate) enum HudPart {
+    Preflop,
+    Postflop,
+    Shove,
+    /// The user's custom stats.
+    Custom,
+    /// Only the number of rows.
+    Rows,
 }
 
 impl Accumulator {
-    fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Accumulator {
             players: HashSet::new(),
             all: Tally::new(),
             seats: vec![Tally::new(); SEATS.len()],
             push_fold: Vec::new(),
             postflop: PostflopTally::new(),
+            shove: HashMap::new(),
+            rows: 0,
+            custom: HashMap::new(),
         }
     }
 
     fn consume(&mut self, row: &Row) {
         self.players.insert(row.sample.player_name.to_lowercase());
         let mut shared: Option<Rc<Sample>> = None;
-        self.all.add(&row.flags, &mut shared, row);
+        self.count_preflop(row, &mut shared);
+        self.consume_push_fold(row, &mut shared);
+        self.postflop.consume(row, &mut shared);
+    }
+
+    /// Counts one part of what the HUD can show.
+    pub(crate) fn consume_hud(&mut self, row: &Row, part: HudPart) {
+        self.rows += 1;
+        let mut shared: Option<Rc<Sample>> = None;
+        match part {
+            HudPart::Preflop => self.count_preflop(row, &mut shared),
+            HudPart::Postflop => self.postflop.consume(row, &mut shared),
+            HudPart::Shove => {
+                for flag in PUSH_FOLD_FLAGS {
+                    if row.flags.has(flag) {
+                        *self.shove.entry(flag).or_default() += 1;
+                    }
+                }
+            }
+            HudPart::Custom => {
+                for (id, bits) in row.custom.iter().flat_map(|hits| hits.iter()) {
+                    let entry = self.custom.entry(*id).or_default();
+                    entry.1 += u64::from(bits & DEN_BIT != 0);
+                    entry.0 += u64::from(bits & NUM_BIT != 0);
+                }
+            }
+            HudPart::Rows => {}
+        }
+    }
+
+    /// Rows counted by `consume_hud`.
+    pub(crate) fn row_count(&self) -> u64 {
+        self.rows
+    }
+
+    /// `(numerator, denominator)` of a postflop figure (see `postflop_stats::figure_names`).
+    pub(crate) fn postflop_counts(&self, name: &str) -> Option<(u64, u64)> {
+        self.postflop.try_counts(name)
+    }
+
+    /// `(numerator, denominator)` of a custom stat; `(0, 0)` when no hand counted.
+    pub(crate) fn custom_counts(&self, id: i64) -> (u64, u64) {
+        self.custom.get(&id).copied().unwrap_or((0, 0))
+    }
+
+    /// `(numerator, denominator)` of a shove figure.
+    pub(crate) fn shove_counts(&self, label: &str) -> Option<(u64, u64)> {
+        let count = |flag: Flag| self.shove.get(&flag).copied().unwrap_or(0);
+        let facing = count(Flag::CallShove) + count(Flag::FoldVsShove);
+        match label {
+            "Open Shove" => Some((count(Flag::OpenShove), count(Flag::OpenShoveOpp))),
+            "Iso Shove" => Some((count(Flag::IsoShove), count(Flag::IsoShoveOpp))),
+            "Rejam" => Some((count(Flag::Rejam), count(Flag::RejamOpp))),
+            "Call Shove" => Some((count(Flag::CallShove), facing)),
+            "Fold vs Shove" => Some((count(Flag::FoldVsShove), facing)),
+            _ => None,
+        }
+    }
+
+    fn count_preflop(&mut self, row: &Row, shared: &mut Option<Rc<Sample>>) {
+        self.all.add(&row.flags, shared, row);
 
         if let Some(seat) = Seat::of(&row.sample.position, row.player_count) {
-            self.seats[seat.index()].add(&row.flags, &mut shared, row);
+            self.seats[seat.index()].add(&row.flags, shared, row);
         }
         // Statistics tied to one seat are counted on that seat's rows only.
         for (i, def) in STATS.iter().enumerate() {
@@ -230,11 +343,9 @@ impl Accumulator {
                 Segment::ThreeWayBb => Seat::Bb3w,
             };
             if Seat::of(&row.sample.position, row.player_count) == Some(seat) {
-                self.seats[seat.index()].count(i, def, &row.flags, &mut shared, row);
+                self.seats[seat.index()].count(i, def, &row.flags, shared, row);
             }
         }
-        self.consume_push_fold(row, &mut shared);
-        self.postflop.consume(row, &mut shared);
     }
 
     fn consume_push_fold(&mut self, row: &Row, shared: &mut Option<Rc<Sample>>) {
@@ -268,7 +379,7 @@ impl Accumulator {
 }
 
 /// Percentage rounded to one decimal; 0 without opportunities.
-fn pct(num: u64, den: u64) -> f64 {
+pub(crate) fn pct(num: u64, den: u64) -> f64 {
     if den == 0 {
         0.0
     } else {
@@ -285,6 +396,49 @@ fn empty_sample(num: u64, den: u64) -> Value {
 }
 
 impl Accumulator {
+    /// `(numerator, denominator)` of one registered stat in one table column, using the same
+    /// tallies as the detailed-stats response so both always agree. `None` for an unknown
+    /// stat or column, and for the postflop stats (not counted here).
+    pub(crate) fn counts(&self, section: Section, label: &str, column: Option<&str>) -> Option<(u64, u64)> {
+        let (i, def) = STATS.iter().enumerate().find(|(_, d)| d.section == section && d.label == label)?;
+        let seat = |s: Seat| &self.seats[s.index()];
+        let tally = match (section, def.segment) {
+            (_, Some(segment)) => seat(match segment {
+                Segment::HuSb => Seat::SbHu,
+                Segment::HuBb => Seat::BbHu,
+                Segment::ThreeWayBtn => Seat::Btn,
+                Segment::ThreeWaySb => Seat::Sb3w,
+                Segment::ThreeWayBb => Seat::Bb3w,
+            })
+            .clone(),
+            (Section::Preflop, None) => match column.unwrap_or("tot") {
+                "tot" => self.all.clone(),
+                "hu" => Tally::merge(&[seat(Seat::SbHu), seat(Seat::BbHu)]),
+                "three_way" => Tally::merge(&[seat(Seat::Btn), seat(Seat::Sb3w), seat(Seat::Bb3w)]),
+                "btn" => seat(Seat::Btn).clone(),
+                "sb_hu" => seat(Seat::SbHu).clone(),
+                "sb_3w" => seat(Seat::Sb3w).clone(),
+                "bb_hu" => seat(Seat::BbHu).clone(),
+                "bb_3w" => seat(Seat::Bb3w).clone(),
+                _ => return None,
+            },
+            (Section::Steal, None) => match column.unwrap_or("tot") {
+                "tot" => Tally::merge(&[seat(Seat::Btn), seat(Seat::SbHu), seat(Seat::Sb3w)]),
+                "btn" => seat(Seat::Btn).clone(),
+                "sb" => Tally::merge(&[seat(Seat::SbHu), seat(Seat::Sb3w)]),
+                _ => return None,
+            },
+            (Section::VsSteal, None) => match column.unwrap_or("tot") {
+                "tot" => Tally::merge(&[seat(Seat::SbHu), seat(Seat::Sb3w), seat(Seat::BbHu), seat(Seat::Bb3w)]),
+                "sb" => Tally::merge(&[seat(Seat::SbHu), seat(Seat::Sb3w)]),
+                "bb" => Tally::merge(&[seat(Seat::BbHu), seat(Seat::Bb3w)]),
+                _ => return None,
+            },
+            _ => return None,
+        };
+        Some((tally.num[i], tally.den[i]))
+    }
+
     /// Rows of one section, in registry order.
     fn defs(section: Section) -> impl Iterator<Item = (usize, &'static StatDef)> {
         STATS.iter().enumerate().filter(move |(_, d)| d.section == section)
@@ -414,7 +568,6 @@ impl Accumulator {
             "huBb": fixed_segment(Section::HuBb),
             "threeWayPreflop": fixed_segment(Section::ThreeWayPreflop),
             "pushFold": push_fold,
-            "performance": { "showdown_chips": 0, "non_showdown_chips": 0 },
             "steal": steal,
             "vsSteal": vs_steal,
         });
@@ -514,6 +667,8 @@ pub fn detailed_stats(conn: &Connection, q: &DetailedQuery) -> Result<Value> {
             stack,
             flags: Flags::from_words([word(19)?, word(20)?, word(21)?, word(22)?]),
             street_counts: StreetCounts(word(23)?),
+            stack_bb: None,
+            custom: None,
         };
         if row.sample.player_name.trim().is_empty() {
             continue;
@@ -527,7 +682,11 @@ pub fn detailed_stats(conn: &Connection, q: &DetailedQuery) -> Result<Value> {
     let stack_depths: Vec<Value> =
         buckets.iter().map(|(bucket, acc)| json!({ "stack": bucket, "data": acc.to_response(Value::Null) })).collect();
 
-    Ok(overall.to_response(Value::Array(stack_depths)))
+    let mut response = overall.to_response(Value::Array(stack_depths));
+    if let Some(object) = response.as_object_mut() {
+        object.insert("customStats".into(), crate::stats::custom::store::report(conn, &filters.join(" AND "), &params)?);
+    }
+    Ok(response)
 }
 
 #[cfg(test)]

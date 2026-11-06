@@ -1,5 +1,6 @@
 //! Player statistics: per-hand flags, the stat registry and their storage.
 
+pub mod custom;
 pub mod flags;
 pub mod postflop;
 pub mod preflop;

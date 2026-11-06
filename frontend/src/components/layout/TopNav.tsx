@@ -15,6 +15,7 @@ export default function TopNav() {
     { name: t('navigation.ranges'), href: '/ranges' },
     { name: t('navigation.charts'), href: '/charts' },
     { name: t('navigation.players'), href: '/players' },
+    { name: t('navigation.hud'), href: '/hud' },
   ]
 
   return (

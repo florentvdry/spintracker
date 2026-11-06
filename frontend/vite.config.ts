@@ -20,6 +20,7 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, 'index.html'),
         replayer: path.resolve(__dirname, 'replayer.html'),
+        hud: path.resolve(__dirname, 'hud.html'),
       },
     },
   },

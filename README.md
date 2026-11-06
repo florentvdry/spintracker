@@ -45,9 +45,15 @@ It is a free alternative to paid poker trackers for 3-max Spin & Go, Heads-Up an
 | 🎰 **Multipliers analysis** | Break down your results by Spin multiplier. |
 | 👥 **Player database** | Overview of every opponent you faced and how they play. |
 | 🔄 **Automatic import** | Detects the room and imports hand histories idempotently — re-importing never creates duplicates. Optionally watches your Winamax and Unibet history folders and imports new hands as they are written (off by default; Betclic stays a manual export). |
+| 🖥️ **Table HUD (Windows, opt-in)** | On by default, with a single switch in the HUD page. Shows opponent stats over your Winamax and Unibet tables, computed from your local hand histories. A built-in editor lets you compose your own grids (stats, stack-depth rows, colour bands, popups) or start from seven shipped models. |
+| 🧮 **Custom stats** | Build your own stats from conditions (a situation, an action, positions, stack depth, raise sizes, bet sizes…). They are computed over your whole history, shown on the Statistics page and available in the HUD editor like any built-in stat. Conditions also cover the effective stack, bet and raise sizes on every street and sequences of actions between players; the shipped models include c-bet, fold to c-bet, donk, 3-bet and shove after a limp. |
 | 🌍 **Multilingual UI** | English and French, easy to extend. |
 
-SpinTracker is a post-session analysis tool: it is **not** a real-time HUD overlay.
+Hold the pointer on a stat for one second and a list opens with the hands behind it (newest first): the player's stack, cards, the board and the pot of each street, and the action line (`R6.5`, `X`, `B4`, `AI14.9`…). It shows the hands where the player did it, or all the chances they had to. The list stays open until you click its cross. The panels also shrink and grow with the table window, so a small table is not covered by them (a profile option turns this off, and its size slider goes on top).
+
+The HUD reads the history your room writes at the end of each hand: a table shows figures from the second hand on, and a player who just busted stays shown until the next hand. Pairing a table window with a tournament needs proof (the window title names the tournament, or there is a single candidate); otherwise the HUD asks you to pick.
+
+SpinTracker is first a post-session analysis tool. The optional table HUD only reads your own imported hands: it never reads the poker client's memory or screen, and never clicks or types for you.
 
 ### Supported poker rooms
 
@@ -103,8 +109,9 @@ npm run dev            # Tauri desktop app: Vite + Rust (the backend runs inside
 | `npm run dev` | Full desktop dev mode (frontend on `:3000`) |
 | `npm run frontend:dev` | Frontend only in a browser (Vite; features that need the Rust shell are unavailable) |
 | `npm run frontend:build` | Type-check and build the frontend |
+| `npm run frontend:test` | Run the frontend unit tests (Vitest, pure modules such as the HUD model) |
 | `npm run build` | Build the Windows installer |
-| `cargo test -p spintracker-core --release` | Run backend tests |
+| `cargo test -p spintracker-core` | Run backend tests |
 
 ## Architecture
 
@@ -142,7 +149,7 @@ Please follow our [Code of Conduct](CODE_OF_CONDUCT.md). For vulnerabilities, se
 
 **Is SpinTracker free?** Yes. It is MIT-licensed: free to use, modify and redistribute.
 
-**Is it a HUD?** No. It analyzes your hands after your sessions (stats, leaks, replayer, ranges); it does not overlay the poker table.
+**Is it a HUD?** Mainly an analysis tool (stats, leaks, replayer, ranges), with a table HUD on Windows that you can turn off with one switch. It only follows the table window's position and shows figures from your local database. Check your room's terms regarding HUDs before using it.
 
 **Is it allowed by poker rooms?** SpinTracker only reads the hand history files your room already saves on disk. Always check your room's terms of service regarding tracking software.
 

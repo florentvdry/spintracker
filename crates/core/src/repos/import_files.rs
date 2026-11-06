@@ -29,6 +29,26 @@ pub fn upsert(conn: &Connection, path: &str, state: ImportFileState) -> Result<(
     Ok(())
 }
 
+/// Records whether a file still has hands imported without equity.
+pub fn set_equity_pending(conn: &Connection, path: &str, pending: bool) -> Result<()> {
+    conn.execute("UPDATE import_files SET equity_pending = ?2 WHERE path = ?1", params![path, pending])?;
+    Ok(())
+}
+
+pub fn is_equity_pending(conn: &Connection, path: &str) -> Result<bool> {
+    Ok(conn
+        .query_row("SELECT equity_pending FROM import_files WHERE path = ?1", [path], |r| r.get::<_, bool>(0))
+        .optional()?
+        .unwrap_or(false))
+}
+
+/// The files that still have hands imported without equity.
+pub fn equity_pending_paths(conn: &Connection) -> Result<Vec<String>> {
+    let mut stmt = conn.prepare("SELECT path FROM import_files WHERE equity_pending = 1 ORDER BY path")?;
+    let rows = stmt.query_map([], |r| r.get::<_, String>(0))?;
+    Ok(rows.collect::<std::result::Result<_, _>>()?)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -45,5 +65,21 @@ mod tests {
         upsert(&conn, "a.txt", ImportFileState { size: 20, mtime: 6, hands_done: 3 }).unwrap();
         assert_eq!(get(&conn, "a.txt").unwrap(), Some(ImportFileState { size: 20, mtime: 6, hands_done: 3 }));
         assert_eq!(get(&conn, "b.txt").unwrap(), None);
+    }
+
+    #[test]
+    fn equity_pending_files_are_listed_until_cleared() {
+        let dir = tempfile::tempdir().unwrap();
+        let db = Database::open(dir.path().join("a.db")).unwrap();
+        let conn = db.conn().unwrap();
+        upsert(&conn, "a.txt", ImportFileState { size: 1, mtime: 1, hands_done: 1 }).unwrap();
+        upsert(&conn, "b.txt", ImportFileState { size: 1, mtime: 1, hands_done: 1 }).unwrap();
+        set_equity_pending(&conn, "b.txt", true).unwrap();
+        assert_eq!(equity_pending_paths(&conn).unwrap(), vec!["b.txt".to_string()]);
+        // A later upsert of the progress does not forget the pending flag.
+        upsert(&conn, "b.txt", ImportFileState { size: 2, mtime: 2, hands_done: 2 }).unwrap();
+        assert!(is_equity_pending(&conn, "b.txt").unwrap());
+        set_equity_pending(&conn, "b.txt", false).unwrap();
+        assert!(equity_pending_paths(&conn).unwrap().is_empty());
     }
 }
