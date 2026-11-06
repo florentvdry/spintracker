@@ -8,8 +8,9 @@ import { logError } from '@/utils/log'
 import { figureKey, requestsOf, type CellView, type GridPosition, type HudFigure, type HudFigures, type HudGrid } from './hudGrid'
 import { dragTo, type Rect } from './hudEditor'
 import { GRID_STEP, seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom, type SeatPlacements } from './hudProfile'
-import { figureHandsBody, HOVER_CLOSE_DELAY_MS, HOVER_DELAY_MS, parseFigureHands, prettyLabel, type FigureRef, type HandsOf } from './figureHands'
+import { figureHandsBody, HOVER_DELAY_MS, parseFigureHands, prettyLabel, type FigureRef, type HandsOf } from './figureHands'
 import { placePopup } from './hudPopup'
+import { tableScale } from './hudScale'
 import { previewFigures } from './previewData'
 
 /** One opponent's figures. */
@@ -126,7 +127,7 @@ export default function HudOverlay() {
   const handsRef = useRef<OpenHands | null>(null)
   handsRef.current = hands
   const hoverTimer = useRef<number | null>(null)
-  const closeTimer = useRef<number | null>(null)
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight })
   /** Answers of earlier requests are ignored once a newer one was sent. */
   const handsRequest = useRef(0)
   const [moving, setMoving] = useState<{ key: string; position: GridPosition } | null>(null)
@@ -148,7 +149,15 @@ export default function HudOverlay() {
     }
   }, [load])
 
+  // The panels follow the size of the table window, so that a small table is not covered by them.
+  useEffect(() => {
+    const onResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight })
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
   const profile = settings.profiles.find((p) => p.id === settings.activeProfileId) ?? settings.profiles[0]
+  const scale = profile.fitToTable ? profile.size * tableScale(windowSize.width, windowSize.height, profile.fitMinScale) : profile.size
   // The grids follow the table's size: a table of two players shows the heads-up layout.
   const format = payload?.format ?? DEMO_FORMAT
   const layout = profile.layouts[format]
@@ -174,9 +183,7 @@ export default function HudOverlay() {
 
   const stopTimers = useCallback(() => {
     if (hoverTimer.current !== null) window.clearTimeout(hoverTimer.current)
-    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current)
     hoverTimer.current = null
-    closeTimer.current = null
   }, [])
 
   // The next hand, another layout or leaving the page ends any wait and closes the list.
@@ -212,24 +219,19 @@ export default function HudOverlay() {
     [payload?.room, payload?.hero, payload?.demo, panels],
   )
 
-  // A stat held under the pointer opens its hands after a pause; leaving it closes them, unless the
-  // pointer goes onto the list itself.
-  const scheduleClose = useCallback(() => {
-    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current)
-    closeTimer.current = window.setTimeout(() => {
-      closeTimer.current = null
-      handsRequest.current += 1
-      setHands(null)
-    }, HOVER_CLOSE_DELAY_MS)
-  }, [])
+  const closeHands = useCallback(() => {
+    stopTimers()
+    handsRequest.current += 1
+    setHands(null)
+  }, [stopTimers])
 
+  // A stat held under the pointer opens its hands after a pause. The list stays open, so that it can
+  // be reached and read; its cross, the next hand or another list closes it.
   const hoverFigure = useCallback(
     (seat: string, cell: CellView, event: ReactMouseEvent<HTMLElement>) => {
       const figure = cell.figure
       if (!figure || moving) return
       const target = event.currentTarget
-      if (closeTimer.current !== null) window.clearTimeout(closeTimer.current)
-      closeTimer.current = null
       if (hoverTimer.current !== null) window.clearTimeout(hoverTimer.current)
       const key = `${seat}:${cell.id}`
       if (handsRef.current?.key === key) return
@@ -244,11 +246,8 @@ export default function HudOverlay() {
     [moving, loadHands],
   )
 
-  const leaveFigure = useCallback(() => {
-    if (hoverTimer.current !== null) window.clearTimeout(hoverTimer.current)
-    hoverTimer.current = null
-    if (handsRef.current) scheduleClose()
-  }, [scheduleClose])
+  // Leaving a stat before the pause is over cancels the opening; a list already open stays.
+  const leaveFigure = stopTimers
 
   const chooseHands = (which: HandsOf) => {
     const current = handsRef.current
@@ -321,7 +320,7 @@ export default function HudOverlay() {
     report()
     window.addEventListener('resize', report)
     return () => window.removeEventListener('resize', report)
-  }, [panels, positions, profile.size, loaded, popup, hands, layout, moving])
+  }, [panels, positions, scale, loaded, popup, hands, layout, moving])
 
   // Escape and a click outside also close it, for the day the window can have the focus.
   useEffect(() => {
@@ -367,7 +366,7 @@ export default function HudOverlay() {
               }}
               className={`group absolute origin-top-left ${panel.stale ? 'opacity-40 grayscale' : ''}`}
               title={panel.stale ? t('liveHud.live.figures_error') : undefined}
-              style={{ left: `${position.x * 100}%`, top: `${position.y * 100}%`, transform: `scale(${profile.size})` }}
+              style={{ left: `${position.x * 100}%`, top: `${position.y * 100}%`, transform: `scale(${scale})` }}
             >
               <HudGridView
                 grid={grid}
@@ -402,7 +401,7 @@ export default function HudOverlay() {
             }
           }}
           className="absolute origin-top-left"
-          style={{ left: popup.anchor.left, top: popup.anchor.top + popup.anchor.height, transform: `scale(${profile.size})` }}
+          style={{ left: popup.anchor.left, top: popup.anchor.top + popup.anchor.height, transform: `scale(${scale})` }}
         >
           <HudGridView grid={popupGrid} figures={popupPlayer.figures} player={{ name: popupPlayer.name, tag: popupPlayer.tag }} opacity={1} />
           <button
@@ -432,18 +431,13 @@ export default function HudOverlay() {
           style={{
             left: hands.anchor.left,
             top: hands.anchor.top + hands.anchor.height,
-            transform: `scale(${profile.size})`,
+            transform: `scale(${scale})`,
             width: HANDS_POPUP_WIDTH_PX,
-            maxWidth: Math.floor((window.innerWidth - WINDOW_MARGIN_PX) / profile.size),
-            maxHeight: Math.min(HANDS_POPUP_MAX_HEIGHT_PX, Math.floor((window.innerHeight - WINDOW_MARGIN_PX) / profile.size)),
+            maxWidth: Math.floor((window.innerWidth - WINDOW_MARGIN_PX) / scale),
+            maxHeight: Math.min(HANDS_POPUP_MAX_HEIGHT_PX, Math.floor((window.innerHeight - WINDOW_MARGIN_PX) / scale)),
           }}
-          onPointerEnter={() => {
-            if (closeTimer.current !== null) window.clearTimeout(closeTimer.current)
-            closeTimer.current = null
-          }}
-          onPointerLeave={scheduleClose}
         >
-          <HandsPopup title={handsTitle(hands.figure)} player={handsPlayer.name} which={hands.which} onWhich={chooseHands} state={hands.state} />
+          <HandsPopup title={handsTitle(hands.figure)} player={handsPlayer.name} which={hands.which} onWhich={chooseHands} state={hands.state} onClose={closeHands} />
         </div>
       )}
     </div>

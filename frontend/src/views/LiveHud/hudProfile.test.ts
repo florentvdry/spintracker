@@ -244,3 +244,28 @@ describe('saving from several windows', () => {
     expect(mergeSettings(base, local, remote).enabled).toBe(false)
   })
 })
+
+describe('fitting the panels to the table window', () => {
+  it('is on for a new profile and for settings saved before the option existed', () => {
+    const settings = defaultSettings()
+    expect(settings.profiles[0].fitToTable).toBe(true)
+    const old = JSON.parse(JSON.stringify(settings))
+    delete old.profiles[0].fitToTable
+    expect(sanitizeSettings(old).profiles[0].fitToTable).toBe(true)
+  })
+
+  it('keeps the smallest size at 70 % unless the profile sets another, within its range', () => {
+    const settings = defaultSettings()
+    expect(settings.profiles[0].fitMinScale).toBe(0.7)
+    settings.profiles[0].fitMinScale = 0.5
+    expect(sanitizeSettings(JSON.parse(JSON.stringify(settings))).profiles[0].fitMinScale).toBe(0.5)
+    settings.profiles[0].fitMinScale = 9
+    expect(sanitizeSettings(JSON.parse(JSON.stringify(settings))).profiles[0].fitMinScale).toBe(1)
+  })
+
+  it('stays off once the user turned it off', () => {
+    const settings = defaultSettings()
+    settings.profiles[0].fitToTable = false
+    expect(sanitizeSettings(JSON.parse(JSON.stringify(settings))).profiles[0].fitToTable).toBe(false)
+  })
+})

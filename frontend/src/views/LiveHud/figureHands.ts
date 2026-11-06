@@ -1,10 +1,8 @@
 /** The hands behind a HUD figure: what the backend returns and how the popup reads it. */
 import type { Json } from '@/services/ipcService'
 
-/** A stat held on the pointer this long opens the list of its hands. */
-export const HOVER_DELAY_MS = 2000
-/** Once the pointer leaves, the popup closes after this pause, so it can be reached across the gap. */
-export const HOVER_CLOSE_DELAY_MS = 300
+/** A stat held under the pointer this long opens the list of its hands; the list then stays until its cross is clicked. */
+export const HOVER_DELAY_MS = 1000
 export const FIGURE_HANDS_LIMIT = 30
 
 /** Which stat a cell shows, the way the backend is asked for its hands. */

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import { MAX_OPACITY, MAX_SIZE, MIN_OPACITY, MIN_SIZE } from '../hudProfile'
+import { HIGHEST_MIN_TABLE_SCALE, LOWEST_MIN_TABLE_SCALE } from '../hudScale'
 
 /** What the right-hand panel shows when nothing is selected: the profile itself. */
 export default function ProfileInspector() {
@@ -24,6 +25,25 @@ export default function ProfileInspector() {
           <span className="font-mono text-gray-200">{Math.round(profile.size * 100)} %</span>
         </span>
         <input type="range" min={MIN_SIZE} max={MAX_SIZE} step={0.05} value={profile.size} onChange={(e) => updateProfile(profile.id, (p) => ({ ...p, size: Number(e.target.value) }))} />
+      </label>
+      <label className="flex items-center gap-2 text-xs text-gray-200" title={t('liveHud.profiles.fit_to_table_hint')}>
+        <input type="checkbox" checked={profile.fitToTable} onChange={(e) => updateProfile(profile.id, (p) => ({ ...p, fitToTable: e.target.checked }))} />
+        {t('liveHud.profiles.fit_to_table')}
+      </label>
+      <label className="flex flex-col gap-1 text-xs text-gray-400">
+        <span className="flex justify-between">
+          {t('liveHud.profiles.fit_min')}
+          <span className="font-mono text-gray-200">{Math.round(profile.fitMinScale * 100)} %</span>
+        </span>
+        <input
+          type="range"
+          min={LOWEST_MIN_TABLE_SCALE}
+          max={HIGHEST_MIN_TABLE_SCALE}
+          step={0.05}
+          disabled={!profile.fitToTable}
+          value={profile.fitMinScale}
+          onChange={(e) => updateProfile(profile.id, (p) => ({ ...p, fitMinScale: Number(e.target.value) }))}
+        />
       </label>
       <label className="flex items-center gap-2 text-xs text-gray-200">
         <input type="checkbox" checked={profile.showHero} onChange={(e) => updateProfile(profile.id, (p) => ({ ...p, showHero: e.target.checked }))} />

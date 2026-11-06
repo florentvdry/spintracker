@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import CardTile from '@/components/common/CardTile'
 import { actionLabel, formatBb, type FigureHand, type FigureHands, type HandsOf, type HandStreet } from '@/views/LiveHud/figureHands'
@@ -14,6 +15,7 @@ export interface HandsPopupProps {
   which: HandsOf
   onWhich: (which: HandsOf) => void
   state: HandsPopupState
+  onClose: () => void
 }
 
 const OWN_COLOR = 'text-[#62e08a]'
@@ -94,7 +96,7 @@ function Body({ state, which }: { state: HandsPopupState; which: HandsOf }) {
   )
 }
 
-export default function HandsPopup({ title, player, which, onWhich, state }: HandsPopupProps) {
+export default function HandsPopup({ title, player, which, onWhich, state, onClose }: HandsPopupProps) {
   const { t } = useTranslation()
   const data = state.status === 'ready' ? state.data : null
   const count = data ? (data.total > data.hands.length ? t('liveHud.hands.count_latest', { shown: data.hands.length, total: data.total }) : t('liveHud.hands.count_all', { total: data.total })) : ''
@@ -119,6 +121,9 @@ export default function HandsPopup({ title, player, which, onWhich, state }: Han
             </button>
           ))}
         </div>
+        <button type="button" aria-label={t('common.close')} className="shrink-0 rounded p-1 text-[#aeb6c4] hover:bg-[#2f3646] hover:text-white" onClick={onClose}>
+          <X className="h-4 w-4" />
+        </button>
       </div>
       <div className="min-h-0 overflow-y-auto">
         <Body state={state} which={which} />

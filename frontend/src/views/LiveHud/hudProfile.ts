@@ -7,6 +7,7 @@ import {
   type HudGrid,
   type HudLayout,
 } from './hudGrid'
+import { HIGHEST_MIN_TABLE_SCALE, LOWEST_MIN_TABLE_SCALE, MIN_TABLE_SCALE } from './hudScale'
 import { migrateLayout, parseLegacyLayout } from './hudMigration'
 import { TEMPLATES, templatePositions, type TemplateInstance } from './hudTemplates'
 
@@ -18,7 +19,7 @@ export const DEFAULT_OPACITY = 0.94
 export const MIN_OPACITY = 0.4
 export const MAX_OPACITY = 1
 export const DEFAULT_SIZE = 1
-export const MIN_SIZE = 0.7
+export const MIN_SIZE = 0.4
 export const MAX_SIZE = 1.5
 /** Placement grid, as a fraction of the table width. */
 export const GRID_STEP = 0.02
@@ -44,6 +45,10 @@ export interface HudProfile {
   layouts: Record<HudFormat, HudLayout>
   opacity: number
   size: number
+  /** The panels also shrink and grow with the table window (see `tableScale`); on by default. */
+  fitToTable: boolean
+  /** How small the panels may get when they fit a small table. */
+  fitMinScale: number
   showHero: boolean
 }
 
@@ -90,6 +95,8 @@ export const defaultProfile = (id: string, name: string): HudProfile => ({
   layouts: defaultLayouts(),
   opacity: DEFAULT_OPACITY,
   size: DEFAULT_SIZE,
+  fitToTable: true,
+  fitMinScale: MIN_TABLE_SCALE,
   showHero: false,
 })
 
@@ -171,6 +178,8 @@ function sanitizeProfile(raw: unknown, index: number): SanitizedProfile | null {
       layouts,
       opacity: finiteNumber(raw.opacity, DEFAULT_OPACITY, MIN_OPACITY, MAX_OPACITY),
       size: finiteNumber(raw.size, DEFAULT_SIZE, MIN_SIZE, MAX_SIZE),
+      fitToTable: raw.fitToTable !== false,
+      fitMinScale: finiteNumber(raw.fitMinScale, MIN_TABLE_SCALE, LOWEST_MIN_TABLE_SCALE, HIGHEST_MIN_TABLE_SCALE),
       showHero: raw.showHero === true,
     },
     migrated,

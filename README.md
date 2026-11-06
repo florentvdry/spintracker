@@ -49,7 +49,7 @@ It is a free alternative to paid poker trackers for 3-max Spin & Go, Heads-Up an
 | 🧮 **Custom stats** | Build your own stats from conditions (a situation, an action, positions, stack depth, raise sizes, bet sizes…). They are computed over your whole history, shown on the Statistics page and available in the HUD editor like any built-in stat. Conditions also cover the effective stack, bet and raise sizes on every street and sequences of actions between players; the shipped models include c-bet, fold to c-bet, donk, 3-bet and shove after a limp. |
 | 🌍 **Multilingual UI** | English and French, easy to extend. |
 
-Hold the pointer on a stat for about two seconds and a list opens with the hands behind it (newest first): the player's stack, cards, the board and the pot of each street, and the action line (`R6.5`, `X`, `B4`, `AI14.9`…). It shows the hands where the player did it, or all the chances they had to.
+Hold the pointer on a stat for one second and a list opens with the hands behind it (newest first): the player's stack, cards, the board and the pot of each street, and the action line (`R6.5`, `X`, `B4`, `AI14.9`…). It shows the hands where the player did it, or all the chances they had to. The list stays open until you click its cross. The panels also shrink and grow with the table window, so a small table is not covered by them (a profile option turns this off, and its size slider goes on top).
 
 The HUD reads the history your room writes at the end of each hand: a table shows figures from the second hand on, and a player who just busted stays shown until the next hand. Pairing a table window with a tournament needs proof (the window title names the tournament, or there is a single candidate); otherwise the HUD asks you to pick.
 
