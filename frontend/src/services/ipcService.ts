@@ -145,8 +145,6 @@ export const ipcService = {
 
   // Analysis & ranges
   getRangeHeatmap: (filters: Json = {}) => backend('POST', '/db/range-heatmap', filters),
-  getAnalysisStats: (filters: Json = {}) => backend('POST', '/analysis/stats', filters),
-  getAnalysisHands: (request: Json = {}) => backend('POST', '/analysis/hands', request),
   getRangeBreakdown: (filters: Json = {}) => backend('POST', '/analysis/range-breakdown', filters),
   calculateEquity: (params: Json) => backend('POST', '/equity', params),
 
