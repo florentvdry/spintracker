@@ -10,6 +10,7 @@ use std::sync::OnceLock;
 use windows::core::{BOOL, PWSTR};
 use windows::Win32::Foundation::{CloseHandle, HWND, LPARAM, POINT, RECT};
 use windows::Win32::System::Threading::{OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_FORMAT, PROCESS_QUERY_LIMITED_INFORMATION};
+use windows::Win32::UI::Input::KeyboardAndMouse::{GetAsyncKeyState, VK_RBUTTON};
 use windows::Win32::UI::Accessibility::{SetWinEventHook, HWINEVENTHOOK};
 use windows::Win32::UI::WindowsAndMessaging::{
     DispatchMessageW, EnumWindows, GetCursorPos, GetMessageW, SetLayeredWindowAttributes, GetWindow, GetWindowLongPtrW, GetWindowRect, GetWindowThreadProcessId,
@@ -92,6 +93,13 @@ pub fn process_name(handle: Handle) -> Option<String> {
         let path = String::from_utf16_lossy(&buffer[..length as usize]);
         path.rsplit(['\\', '/']).next().map(str::to_string)
     }
+}
+
+/// Whether the right mouse button is held down, wherever the cursor is. Only the button state is
+/// read: nothing is sent to any window.
+pub fn right_button_down() -> bool {
+    // SAFETY: plain read of the keyboard and mouse state.
+    unsafe { GetAsyncKeyState(VK_RBUTTON.0 as i32) < 0 }
 }
 
 /// The cursor position in physical screen pixels.

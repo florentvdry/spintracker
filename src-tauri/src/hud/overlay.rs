@@ -292,6 +292,7 @@ fn watch_cursor(app: &AppHandle) {
             keep_above_tables(app);
         }
         let Some((cx, cy)) = win32::cursor() else { continue };
+        let right_down = win32::right_button_down();
         let snapshots: Vec<Snapshot> = app
             .state::<OverlayState>()
             .lock()
@@ -318,7 +319,9 @@ fn watch_cursor(app: &AppHandle) {
             let (x, y) = (f64::from(cx - s.rect.x), f64::from(cy - s.rect.y));
             let over_panel = over_table
                 && s.panels.iter().any(|p| x >= p.x * s.scale && x < (p.x + p.width) * s.scale && y >= p.y * s.scale && y < (p.y + p.height) * s.scale);
-            let wanted = !over_panel;
+            // A right click folds at the table: while the button is down the panels let it through
+            // instead of keeping it, as they do for the rest of the table.
+            let wanted = !over_panel || right_down;
             if wanted == s.click_through {
                 continue;
             }
