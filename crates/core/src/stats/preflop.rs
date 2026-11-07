@@ -94,6 +94,8 @@ pub fn compute(input: &PreflopInput) -> Flags {
     let mut raised_level = 0;
     let mut facing_all_in_shove = false;
     let mut raises_seen = 0;
+    // The hero's own raises so far: a raise-reraise ladder counts every raise, not only the others'.
+    let mut hero_raises = 0;
 
     for a in pre {
         if !is_player(a) {
@@ -145,6 +147,10 @@ pub fn compute(input: &PreflopInput) -> Flags {
             }
         }
 
+        // How many raises came before this decision, the hero's included: an opener facing a 3-bet
+        // is at level 2, so his re-raise is a 4-bet and not a second 3-bet.
+        let level = raises_seen + hero_raises;
+
         // An opportunity exists at every decision where the action is possible, so that an action
         // taken later in the hand (a call after limping, a 4-bet without opening...) always has
         // its opportunity and no percentage can exceed 100%.
@@ -155,7 +161,7 @@ pub fn compute(input: &PreflopInput) -> Flags {
             if raises_seen >= 1 {
                 rejam_opp = true;
             }
-            match raises_seen {
+            match level {
                 1 => f.set(Flag::ThreeBetOpp),
                 2 => f.set(Flag::FourBetOpp),
                 n if n >= 3 => {
@@ -175,7 +181,7 @@ pub fn compute(input: &PreflopInput) -> Flags {
                     // Answering the open itself; calling a later raise is another decision.
                     call_open = true;
                 }
-                if raises_seen >= 3 {
+                if level >= 3 {
                     call_4bet = true;
                 }
                 if facing_all_in_shove || a.is_all_in {
@@ -188,17 +194,18 @@ pub fn compute(input: &PreflopInput) -> Flags {
                     open_raise = true;
                     open_raise_size_bb = raise_size_bb(a, input.blinds);
                 }
-                if raises_seen == 1 {
+                if level == 1 {
                     three_bet = true;
                     three_bet_all_in = a.is_all_in;
                 }
-                if raises_seen == 2 {
+                if level == 2 {
                     four_bet = true;
                 }
-                if raises_seen >= 3 {
+                if level >= 3 {
                     five_bet = true;
                 }
-                raised_level = raises_seen + 1;
+                raised_level = level + 1;
+                hero_raises += 1;
                 if a.is_all_in && raises_seen == 0 && limps_before == 0 {
                     open_shove = true;
                 }
@@ -499,6 +506,39 @@ mod tests {
             assert!(f.has(flag), "{} should be set: {:?}", flag.name(), set_of(&f));
         }
         assert!(!f.has(Flag::FoldVsRaise) && !f.has(Flag::VsStealCall) && !f.has(Flag::RfiOpp));
+    }
+
+    #[test]
+    fn opener_re_raising_a_three_bet_makes_a_four_bet_and_not_a_second_three_bet() {
+        let text = "SB posts small blind 10
+BB posts big blind 20
+Hero raises 20 to 50
+SB raises 150 to 200
+BB folds
+Hero raises 200 to 400
+SB folds";
+        let f = flags(text, "Hero", "BTN", 3);
+        for flag in [Flag::Rfi, Flag::FourBetOpp, Flag::FourBet, Flag::FourBetFoldOpp, Flag::StealFold3Opp, Flag::Steal4Bet] {
+            assert!(f.has(flag), "{} should be set: {:?}", flag.name(), set_of(&f));
+        }
+        assert!(!f.has(Flag::ThreeBet) && !f.has(Flag::FourBetFold) && !f.has(Flag::Steal4BetFold) && !f.has(Flag::StealFold3));
+    }
+
+    #[test]
+    fn opener_folding_to_a_five_bet_after_his_four_bet_is_a_four_bet_fold() {
+        let text = "SB posts small blind 10
+BB posts big blind 20
+Hero raises 20 to 50
+SB raises 150 to 200
+BB folds
+Hero raises 200 to 400
+SB raises 600 to 1000
+Hero folds";
+        let f = flags(text, "Hero", "BTN", 3);
+        for flag in [Flag::FourBet, Flag::FourBetFold, Flag::Steal4Bet, Flag::Steal4BetFold] {
+            assert!(f.has(flag), "{} should be set: {:?}", flag.name(), set_of(&f));
+        }
+        assert!(!f.has(Flag::ThreeBet) && !f.has(Flag::FoldTo4Bet));
     }
 
     #[test]

@@ -100,3 +100,15 @@ fn a_tournament_is_never_given_to_two_tables() {
     assert_eq!(pairs.get(&1).map(String::as_str), Some("A"));
     assert_eq!(pairs.get(&2).map(String::as_str), Some("B"));
 }
+
+#[test]
+fn tables_sharing_a_tournament_name_are_paired_by_the_id_in_their_title() {
+    let windows = [
+        window(1, "Winamax", "Winamax Expresso(1216170697)(1)#0"),
+        window(2, "Winamax", "Winamax Expresso(1216171813)(1)#0"),
+    ];
+    let tournaments = [tournament("Winamax", "1216171813", "Expresso"), tournament("Winamax", "1216170697", "Expresso")];
+    let pairs = pair_tables(&windows, &tournaments, &none());
+    assert_eq!(pairs.get(&1).map(String::as_str), Some("1216170697"));
+    assert_eq!(pairs.get(&2).map(String::as_str), Some("1216171813"));
+}

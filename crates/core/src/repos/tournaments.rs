@@ -76,7 +76,7 @@ pub fn get_tournaments(conn: &Connection, q: &HandsQuery) -> Result<TournamentsR
          FROM hands h
          {}
          WHERE {}
-         GROUP BY h.game_id",
+         GROUP BY +h.game_id",
         hero_join(hero),
         clauses.join(" AND ")
     );

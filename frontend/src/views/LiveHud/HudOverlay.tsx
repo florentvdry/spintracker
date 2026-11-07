@@ -149,6 +149,13 @@ export default function HudOverlay() {
     }
   }, [load])
 
+  // A right click over a panel must not open the browser menu on top of the poker table.
+  useEffect(() => {
+    const block = (e: Event) => e.preventDefault()
+    window.addEventListener('contextmenu', block)
+    return () => window.removeEventListener('contextmenu', block)
+  }, [])
+
   // The panels follow the size of the table window, so that a small table is not covered by them.
   useEffect(() => {
     const onResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight })
