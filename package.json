@@ -1,6 +1,6 @@
 {
   "name": "spintracker",
-  "version": "1.1.7",
+  "version": "1.4.1",
   "description": "Free, open-source poker tracker for Spin & Go tournaments: hand history import, leak detection, EV analysis, replayer and range research. 100% local.",
   "scripts": {
     "dev": "tauri dev",
