@@ -7,6 +7,8 @@ import historyImg from "../assets/img/history.png";
 import statsImg from "../assets/img/stats.png";
 import replayerImg from "../assets/img/replayer.png";
 import rangesImg from "../assets/img/ranges.png";
+import hudImg from "../assets/img/hud.png";
+import customStatsImg from "../assets/img/customstats.png";
 import { cn } from "@/lib/utils";
 
 export function Screenshots() {
@@ -16,6 +18,8 @@ export function Screenshots() {
   const shots = [
     { key: "handhistory", image: historyImg, items: ["filters", "tournaments", "export"] },
     { key: "analysis", image: statsImg, items: ["situations", "leaks", "filters"] },
+    { key: "hud", image: hudImg, items: ["editor", "layouts", "hands"] },
+    { key: "custom_stats", image: customStatsImg, items: ["conditions", "examples", "preview"] },
     { key: "replayer", image: replayerImg, items: ["analyze", "export"] },
     { key: "range_research", image: rangesImg, items: ["grid", "compare"] },
   ];

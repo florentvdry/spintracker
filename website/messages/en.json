@@ -8,7 +8,7 @@
     "title": "The open source tracker",
     "subtitle": "for Spins.",
     "description": "Analyze your game, identify your leaks, and improve your performance with SpinTracker.",
-    "compatible_rooms": "Compatible with: Betclic, Winamax, Unibet, and more soon.",
+    "compatible_rooms": "Compatible with: Betclic, Winamax and Unibet (live HUD on Winamax and Unibet).",
     "download_free": "Download for Free",
     "badge": "Open source · Free · 100% local",
     "explore": "Explore features"
@@ -37,9 +37,17 @@
         "title": "Range Research",
         "description": "Study and refine your ranges with our comprehensive tool. Compare against opponent tendencies."
       },
+      "hud": {
+        "title": "Live HUD",
+        "description": "A HUD on your Winamax and Unibet tables, with heads-up and 3-way layouts. Hold the pointer on a stat to list the hands behind it. Build your own panels in the grid editor, and switch it off in one click while you play."
+      },
+      "customstats": {
+        "title": "Custom Stats",
+        "description": "Create your own stats from conditions on position, stack depth, sizing and action sequences. They are computed on your whole history and can go straight into the HUD."
+      },
       "settings": {
         "title": "Settings",
-        "description": "Configure auto-import of hands, room detection, and user preferences."
+        "description": "Hands are imported automatically from your Winamax and Unibet history folders, which SpinTracker finds by itself. Nothing to set up, and everything stays on your computer."
       }
     }
   },
@@ -74,6 +82,26 @@
         "situations": "Stats by situation (3-max, Heads-Up)",
         "leaks": "Leak identification",
         "filters": "Comparison with the population"
+      }
+    },
+    "hud": {
+      "title": "Live HUD",
+      "description": "Lay your stats out on the table the way you want. Pick a layout for heads-up or 3-way, drag the panels where you like, and hold the pointer on a stat to see the hands behind it.",
+      "alt": "HUD editor screenshot",
+      "list": {
+        "editor": "Grid editor for your own panels",
+        "layouts": "Heads-up and 3-way layouts",
+        "hands": "The hands behind each stat"
+      }
+    },
+    "custom_stats": {
+      "title": "Custom Stats",
+      "description": "Build the stat you need: what counts, out of what, and in which spots. See the result on your own hands before you save it.",
+      "alt": "Custom stat builder screenshot",
+      "list": {
+        "conditions": "Conditions on position, stack and actions",
+        "examples": "Ready-made examples to start from",
+        "preview": "Live preview on your history"
       }
     },
     "replayer": {
@@ -118,7 +146,7 @@
       "title": "Windows",
       "requirements": "Windows 10 or later (64-bit)",
       "button": "Download for Windows",
-      "info": "Version 1.0.1 • 825 MB"
+      "info": "Version 1.3.0 · Windows installer · automatic updates"
     },
     "mac": {
       "title": "macOS",
