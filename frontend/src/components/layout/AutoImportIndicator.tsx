@@ -24,11 +24,11 @@ export default function AutoImportIndicator() {
     <Link
       to="/settings"
       state={{ focus: AUTO_IMPORT_ANCHOR }}
-      className="flex items-center gap-2 rounded px-2 py-1 text-xs text-gray-400 hover:bg-dark-200 hover:text-gray-200"
+      className="flex h-8 items-center gap-2 whitespace-nowrap rounded-full border border-dark-200 px-3 text-[13px] text-gray-400 hover:border-dark-100 hover:text-gray-200"
       title={status.message ?? label}
     >
       <span className={clsx('h-2 w-2 rounded-full', DOT_STYLE[status.state])} />
-      <span className="hidden xl:inline">{label}</span>
+      <span>{label}</span>
     </Link>
   )
 }

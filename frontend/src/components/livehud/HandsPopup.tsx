@@ -114,14 +114,14 @@ export default function HandsPopup({ title, player, which, onWhich, state, onClo
               key={choice}
               type="button"
               aria-pressed={which === choice}
-              className={clsx('px-2.5 py-1', which === choice ? 'bg-[#2d5cba] font-semibold text-white' : 'text-[#aeb6c4]')}
+              className={clsx('px-2.5 py-1', which === choice ? 'bg-[#2d5cba] font-semibold text-gray-100' : 'text-[#aeb6c4]')}
               onClick={() => onWhich(choice)}
             >
               {t(`liveHud.hands.which_${choice}`)}
             </button>
           ))}
         </div>
-        <button type="button" aria-label={t('common.close')} className="shrink-0 rounded p-1 text-[#aeb6c4] hover:bg-[#2f3646] hover:text-white" onClick={onClose}>
+        <button type="button" aria-label={t('common.close')} className="shrink-0 rounded p-1 text-[#aeb6c4] hover:bg-[#2f3646] hover:text-gray-100" onClick={onClose}>
           <X className="h-4 w-4" />
         </button>
       </div>

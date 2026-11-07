@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Sigma } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { ipcService, type Json } from '@/services/ipcService'
@@ -134,7 +133,6 @@ export default function Stats() {
     <div className="stats-page">
       <header className="hero-panel">
         <div className="page-title-block">
-          <div className="page-icon"><Sigma className="w-6 h-6" /></div>
           <div>
             <h1>{t('stats.title')}</h1>
             <p className="subtitle">{t('stats.subtitle')}</p>

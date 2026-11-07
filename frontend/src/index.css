@@ -27,21 +27,21 @@
 
 @layer components {
   .card {
-    @apply bg-dark-400 border border-dark-200 rounded-lg p-4;
+    @apply bg-dark-400 border border-dark-200 rounded-[10px] p-5;
   }
 
   .card-flat {
-    @apply bg-dark-400 border border-dark-200 rounded-lg p-4;
+    @apply bg-dark-400 border border-dark-200 rounded-[10px] p-5;
   }
 
   .btn {
-    @apply px-3 py-1.5 rounded-md text-[13px] font-medium transition-colors duration-150;
+    @apply h-8 inline-flex items-center justify-center gap-2 px-3.5 rounded-lg text-[13px] font-semibold transition-colors duration-150;
     @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/60;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-primary {
-    @apply btn bg-primary-500 text-white border border-primary-500;
+    @apply btn bg-primary-500 text-onprimary border border-primary-500;
     @apply hover:bg-primary-400 hover:border-primary-400;
   }
 
@@ -61,16 +61,16 @@
   }
 
   .nav-item {
-    @apply flex items-center h-full px-3 border-b-2 border-transparent transition-colors duration-150;
+    @apply flex items-center h-full px-3.5 whitespace-nowrap border-b-2 border-transparent transition-colors duration-150;
     @apply text-gray-400 hover:text-gray-100 cursor-pointer font-medium;
   }
 
   .nav-item.active {
-    @apply text-gray-100 border-primary-500;
+    @apply text-gray-100 font-semibold border-primary-500;
   }
 
   .input {
-    @apply w-full px-3 py-1.5 bg-dark-500 border border-dark-200 rounded-md;
+    @apply w-full h-8 px-3 bg-dark-400 border border-dark-200 rounded-lg;
     @apply text-gray-100 placeholder-gray-500;
     @apply focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30;
     @apply transition-colors duration-150;
@@ -83,7 +83,7 @@
   }
 
   .table-container {
-    @apply overflow-x-auto rounded-lg border border-dark-200 bg-dark-400;
+    @apply overflow-x-auto rounded-[10px] border border-dark-200 bg-dark-400;
   }
 
   .table {
@@ -91,11 +91,11 @@
   }
 
   .table th {
-    @apply px-3 py-2 text-[11px] font-medium text-gray-500 border-b border-dark-200 whitespace-nowrap;
+    @apply px-3.5 py-2.5 text-[11px] font-medium uppercase tracking-[.06em] text-gray-500 border-b border-dark-200 whitespace-nowrap;
   }
 
   .table td {
-    @apply px-3 py-1.5 border-t border-dark-300;
+    @apply px-3.5 py-2.5 border-t border-[#1f242c];
   }
 
   .table tbody tr {
@@ -107,11 +107,11 @@
   }
 
   .stat-label {
-    @apply text-[11px] text-gray-500;
+    @apply text-[11px] uppercase tracking-[.06em] text-gray-500;
   }
 
   .section-label {
-    @apply text-xs font-semibold uppercase tracking-wider text-gray-500;
+    @apply text-[15px] font-semibold text-gray-100;
   }
 
   .profit-positive {
@@ -123,11 +123,46 @@
   }
 
   .progress-bar {
-    @apply w-full h-1.5 bg-dark-300 rounded-full overflow-hidden;
+    @apply w-full h-1.5 bg-dark-200 rounded-full overflow-hidden;
   }
 
   .progress-fill {
     @apply h-full bg-primary-500 transition-all duration-300;
+  }
+
+  /* Rounded filter and tab chips (redesign): the active one is filled amber. */
+  .pill {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-dark-200 bg-dark-400 px-3 py-1.5 text-[13px] text-gray-400 transition-colors duration-150 cursor-pointer;
+    @apply hover:text-gray-100 hover:border-dark-100;
+  }
+
+  .pill.active {
+    @apply border-primary-500 bg-primary-500 font-semibold text-onprimary;
+  }
+
+  /* Segmented switch, e.g. by tournament / by hand. */
+  .segmented {
+    @apply inline-flex gap-0.5 rounded-lg border border-dark-200 bg-dark-400 p-0.5;
+  }
+
+  .segmented-item {
+    @apply rounded-md px-3 py-1 text-[13px] font-medium text-gray-400 transition-colors duration-150 cursor-pointer hover:text-gray-100;
+  }
+
+  .segmented-item.active {
+    @apply bg-primary-500 font-semibold text-onprimary;
+  }
+
+  .page-title {
+    @apply text-xl font-semibold tracking-[-.01em] text-gray-100;
+  }
+
+  .page-subtitle {
+    @apply mt-1 text-[13px] text-gray-500;
+  }
+
+  .hero-card {
+    @apply rounded-[14px] border border-dark-200 bg-gradient-to-b from-[#171b22] to-dark-400 p-6;
   }
 
   .gradient-text {
@@ -135,7 +170,7 @@
   }
 
   .badge {
-    @apply inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-semibold;
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold;
   }
 
   .badge-success {
@@ -151,7 +186,7 @@
   }
 
   .badge-info {
-    @apply badge bg-primary-500/15 text-primary-300;
+    @apply badge bg-primary-500/15 text-primary-400;
   }
 
   .spinner {

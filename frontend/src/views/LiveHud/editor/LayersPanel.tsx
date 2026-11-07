@@ -12,7 +12,7 @@ interface Props {
   onAdd: (popup: boolean) => void
 }
 
-const row = (active: boolean) => clsx('flex w-full items-center justify-between rounded px-1.5 py-1 text-left', active ? 'bg-dark-200 text-white' : 'text-gray-300 hover:bg-dark-300')
+const row = (active: boolean) => clsx('flex w-full items-center justify-between rounded px-1.5 py-1 text-left', active ? 'bg-dark-200 text-gray-100' : 'text-gray-300 hover:bg-dark-300')
 
 function Heading({ title, addLabel, onAdd }: { title: string; addLabel: string; onAdd: () => void }) {
   return (

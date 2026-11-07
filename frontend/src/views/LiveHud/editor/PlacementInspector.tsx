@@ -35,7 +35,7 @@ export default function PlacementInspector({ doc, placed, seats, size, onPlace, 
     <div className="flex flex-col gap-3.5">
       <div>
         <p className="mb-0.5 text-xs text-gray-400">{t('liveHud.ws.placement')}</p>
-        <h2 className="text-sm font-semibold text-white">{grid && placed ? t('liveHud.ws.placement_title', { grid: grid.name, seat: placed.seat }) : t('liveHud.ws.pick_grid')}</h2>
+        <h2 className="text-sm font-semibold text-gray-100">{grid && placed ? t('liveHud.ws.placement_title', { grid: grid.name, seat: placed.seat }) : t('liveHud.ws.pick_grid')}</h2>
       </div>
       {grid && placed && position && (
         <>

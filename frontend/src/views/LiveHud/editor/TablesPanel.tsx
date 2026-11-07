@@ -8,7 +8,7 @@ const STATE_CLASS: Record<string, string> = {
   shown: 'text-profit-positive',
   hidden: 'text-gray-400',
   waiting: 'text-gray-400',
-  toAssociate: 'text-yellow-400',
+  toAssociate: 'text-primary-400',
 }
 
 export interface TablesState {
@@ -47,8 +47,8 @@ export default function TablesPanel({ view, refresh }: TablesState) {
   }
 
   return (
-    <div className="w-[560px] max-w-[calc(100vw-48px)] overflow-hidden rounded-lg border border-dark-100 bg-dark-300 shadow-2xl shadow-black/50">
-      <h2 className="border-b border-dark-100 px-3 py-2.5 text-[13px] font-semibold text-white">{t('liveHud.live.tables')}</h2>
+    <div className="w-[560px] max-w-[calc(100vw-48px)] overflow-hidden rounded-lg border border-dark-100 bg-dark-300 shadow-xl shadow-black/50">
+      <h2 className="border-b border-dark-100 px-3 py-2.5 text-[13px] font-semibold text-gray-100">{t('liveHud.live.tables')}</h2>
       {tables.length === 0 && <p className="px-3 py-3 text-xs text-gray-400">{view.enabled ? t('liveHud.live.no_table') : t('liveHud.live.not_enabled')}</p>}
       {tables.length > 0 && <p className="border-b border-dark-200 px-3 py-2 text-xs text-gray-400">{t('liveHud.live.read_limit')}</p>}
       {tables.map((table) => (

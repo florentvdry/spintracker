@@ -25,14 +25,14 @@ interface Props {
 
 function Segmented<T extends string>({ label, items, value, onChange }: { label: string; items: { id: T; text: string }[]; value: T; onChange: (id: T) => void }) {
   return (
-    <div role="group" aria-label={label} className="flex rounded-md border border-dark-100 bg-dark-500 p-0.5">
+    <div role="group" aria-label={label} className="flex rounded-md border border-dark-200 bg-dark-500 p-0.5">
       {items.map((item) => (
         <button
           key={item.id}
           type="button"
           aria-pressed={item.id === value}
           onClick={() => onChange(item.id)}
-          className={clsx('rounded px-2.5 py-1 text-xs font-medium', item.id === value ? 'bg-primary-600 text-white' : 'text-gray-400 hover:text-gray-200')}
+          className={clsx('rounded px-2.5 py-1 text-xs font-medium', item.id === value ? 'bg-primary-500 text-onprimary font-semibold' : 'text-gray-400 hover:text-gray-200')}
         >
           {item.text}
         </button>
@@ -61,7 +61,7 @@ export default function CommandBar({ format, onFormat, view, onView, canUndo, ca
         role="switch"
         aria-checked={settings.enabled}
         onClick={() => setEnabled(!settings.enabled)}
-        className="flex items-center gap-2 rounded-2xl border border-dark-100 bg-dark-300 py-1 pl-1.5 pr-3 text-[13px] text-gray-200 hover:border-gray-500"
+        className="flex items-center gap-2 rounded-full border border-dark-200 bg-dark-300 py-1 pl-1.5 pr-3 text-[13px] text-gray-200 hover:border-gray-500"
       >
         <span className={clsx('relative h-4 w-7 rounded-full transition-colors', settings.enabled ? 'bg-profit-positive' : 'bg-dark-50')}>
           <span className={clsx('absolute top-0.5 h-3 w-3 rounded-full bg-white transition-all', settings.enabled ? 'left-3.5' : 'left-0.5')} />
@@ -103,7 +103,7 @@ export default function CommandBar({ format, onFormat, view, onView, canUndo, ca
           trigger={
             <button type="button" aria-haspopup="dialog" aria-expanded={menu === 'tables'} className={buttonClass(menu === 'tables')} onClick={() => setMenu(menu === 'tables' ? null : 'tables')}>
               {t('liveHud.live.show_tables')}
-              {toAssociate > 0 && <span className="rounded-lg bg-yellow-400 px-1.5 text-[11px] font-bold text-dark-400">{t('liveHud.ws.to_associate', { count: toAssociate })}</span>}
+              {toAssociate > 0 && <span className="rounded-lg bg-primary-500 px-1.5 text-[11px] font-bold text-onprimary">{t('liveHud.ws.to_associate', { count: toAssociate })}</span>}
             </button>
           }
         >

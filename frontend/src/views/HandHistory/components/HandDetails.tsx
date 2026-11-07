@@ -35,9 +35,9 @@ export default function HandDetails({ hand, onClose }: HandDetailsProps) {
         <button onClick={onClose} className="btn-icon"><X className="w-4 h-4" /></button>
       </div>
 
-      <div className="p-4 bg-dark-200 rounded-lg text-center">
-        <p className="text-sm text-gray-400 mb-1">{t('common.result')}</p>
-        <p className={clsx('text-2xl font-bold', isPositive ? 'profit-positive' : 'profit-negative')}>
+      <div className="p-4 bg-dark-300 rounded-lg text-center">
+        <p className="stat-label mb-1">{t('common.result')}</p>
+        <p className={clsx('font-mono text-[28px] font-semibold', isPositive ? 'profit-positive' : 'profit-negative')}>
           {isPositive ? '+' : ''}{profit.toFixed(2)} {t('common.chips')}
         </p>
         <p className="text-sm text-gray-400 mt-1">EV: {ev >= 0 ? '+' : ''}{ev.toFixed(2)}</p>
@@ -57,7 +57,7 @@ export default function HandDetails({ hand, onClose }: HandDetailsProps) {
       </div>
 
       {(hand.flop || hand.turn || hand.river) && (
-        <div className="p-4 bg-dark-200 rounded-lg">
+        <div className="p-4 bg-dark-300 rounded-lg">
           <p className="text-sm text-gray-400 mb-2">Board</p>
           <div className="flex gap-[3px] items-center">
             {parseCards(hand.flop).map((c, i) => <CardTile key={`flop-${i}`} card={c} size="lg" />)}

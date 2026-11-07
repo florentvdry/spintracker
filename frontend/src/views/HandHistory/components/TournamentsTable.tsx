@@ -26,7 +26,7 @@ const handProfit = (h: Json): number => h.hero_profit || h.dyn_hero_profit || 0
 const handCev = (h: Json): number => (h.ev_chips !== null && h.ev_chips !== undefined ? h.ev_chips : handProfit(h))
 
 const formatCev = (cev: number | null | undefined) => (cev === null || cev === undefined ? '—' : `${cev > 0 ? '+' : ''}${cev.toFixed(1)}`)
-const signed = (value: number) => (value > 0 ? 'text-profit-positive/80' : value < 0 ? 'text-profit-negative/80' : 'text-gray-500')
+const signed = (value: number) => (value > 0 ? 'text-profit-positive' : value < 0 ? 'text-profit-negative' : 'text-gray-500')
 const formatHandTime = (dateTime: string) =>
   new Date(dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 
@@ -44,7 +44,7 @@ export default function TournamentsTable({
   const sortable = 'cursor-pointer hover:bg-dark-300 transition-colors'
 
   return (
-    <div className="table-container">
+    <div className="overflow-x-auto">
       <table className="table w-full">
         <thead>
           <tr>
@@ -73,13 +73,13 @@ export default function TournamentsTable({
                     {selected ? <ChevronDown className="w-4 h-4 text-primary-400 mx-auto" /> : <ChevronRight className="w-4 h-4 text-gray-500 mx-auto" />}
                   </td>
                   <td className="text-gray-300 text-sm">{formatDate(tourn.dateTime || tourn.DateTime)}</td>
-                  <td><span className="text-gray-400 text-xs uppercase font-bold tracking-wider">{tourn.room || tourn.Room}</span></td>
-                  <td><span className="text-white font-medium">{tourn.buyIn || tourn.BuyIn}€</span></td>
+                  <td><span className="text-gray-200">{tourn.room || tourn.Room}</span></td>
+                  <td><span className="text-gray-100">{tourn.buyIn || tourn.BuyIn}€</span></td>
                   <td className="text-right text-gray-400 text-sm font-mono">{tourn.handCount || tourn.HandCount}</td>
                   <td className={clsx('text-right font-mono text-sm', cev > 0 ? 'text-profit-positive' : cev < 0 ? 'text-profit-negative' : 'text-gray-400')}>
                     {formatCev(cev)}
                   </td>
-                  <td className={clsx('text-right font-semibold', profit >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
+                  <td className={clsx('text-right font-mono text-sm font-medium', profit >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
                     {`${profit >= 0 ? '+' : ''}${profit.toFixed(2)}€`}
                   </td>
                   <td className="px-2">
@@ -95,14 +95,14 @@ export default function TournamentsTable({
 
                 {selected && (
                   <tr>
-                    <td colSpan={8} className="p-0 bg-dark-900/30">
+                    <td colSpan={8} className="p-0 bg-dark-600">
                       <div className="border-l-2 border-primary-500/50 ml-4 my-2">
                         {isLoadingHands ? (
                           <div className="p-4 text-center text-xs text-gray-500 italic">{t('hand_history.loading_hands')}</div>
                         ) : (
                           <div className="overflow-x-auto">
                             <table className="w-full text-xs">
-                              <thead className="text-gray-500 border-b border-dark-100/30">
+                              <thead className="text-gray-500 border-b border-dark-200">
                                 <tr>
                                   <th className="px-4 py-2 text-left">{t('hand_history.time')}</th>
                                   <th className="px-4 py-2 text-left">{t('common.cards')}</th>
@@ -116,7 +116,7 @@ export default function TournamentsTable({
                                 {tournamentHands.map((hand) => (
                                   <tr
                                     key={hand.id}
-                                    className="hover:bg-primary-500/5 cursor-pointer border-b border-dark-100/10 last:border-0"
+                                    className="hover:bg-primary-500/5 cursor-pointer border-b border-dark-200 last:border-0"
                                     onClick={() => onSelectHand(hand.id)}
                                   >
                                     <td className="px-4 py-2 text-gray-500">{formatHandTime(hand.date_time)}</td>
@@ -126,7 +126,7 @@ export default function TournamentsTable({
                                       </div>
                                     </td>
                                     <td className="px-4 py-2">
-                                      <span className="px-1.5 py-0.5 rounded bg-dark-300 text-[10px] text-gray-400">
+                                      <span className="px-2 py-0.5 rounded-md bg-dark-300 text-[11px] text-gray-400">
                                         {hand.hero_position || hand.dyn_hero_position} ({hand.player_count === 2 ? 'HU' : '3W'})
                                       </span>
                                     </td>

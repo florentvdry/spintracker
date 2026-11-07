@@ -34,9 +34,9 @@ export default function HandsTable({ hands, selectedHand, sortBy, onSelectHand, 
   )
 
   return (
-    <div className="table-container">
+    <div className="overflow-x-auto">
       <table className="table w-full text-xs">
-        <thead className="text-gray-500 border-b border-dark-100/30">
+        <thead className="text-gray-500 border-b border-dark-200">
           <tr>
             <th className="px-4 py-2 text-left cursor-pointer hover:bg-dark-300" onClick={() => handleSort('date')}>
               <div className="flex items-center gap-1">{t('common.date')}{sortIcon('date')}</div>
@@ -59,7 +59,7 @@ export default function HandsTable({ hands, selectedHand, sortBy, onSelectHand, 
             return (
               <tr
                 key={hand.id}
-                className={clsx('hover:bg-primary-500/5 cursor-pointer border-b border-dark-100/10 last:border-0', selectedHand?.id === hand.id && 'bg-primary-500/10')}
+                className={clsx('hover:bg-primary-500/5 cursor-pointer border-b border-dark-200 last:border-0', selectedHand?.id === hand.id && 'bg-primary-500/10')}
                 onClick={() => onSelectHand(hand.id)}
               >
                 <td className="px-4 py-2 text-gray-500">{formatHandTime(hand.date_time)}</td>

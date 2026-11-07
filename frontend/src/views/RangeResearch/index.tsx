@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { BarChart3, ChevronRight, Crown, Filter, Fish, Info, Layers, Play, Save, Upload, Users } from 'lucide-react'
+import { BarChart3, ChevronRight, Crown, Fish, Info, Layers, Play, Save, Upload, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import RangeGrid, { type CellStats } from '@/components/charts/RangeGrid'
@@ -64,7 +64,7 @@ function matchesAction(hand: Json, filter: string | null): boolean {
 function actionClass(action: string): string {
   if (action === 'Raise' || action === 'AllIn') return 'text-profit-negative'
   if (action === 'Call') return 'text-profit-positive'
-  return 'text-blue-400'
+  return 'text-info'
 }
 
 export default function RangeResearch() {
@@ -176,66 +176,57 @@ export default function RangeResearch() {
   const selectPrompt = t('range_analysis.select_prompt')
 
   return (
-    <div className="h-full flex flex-col p-6 space-y-6 overflow-hidden bg-dark-400">
-      <div className="flex items-center justify-between bg-dark-300 p-4 rounded-lg border border-white/5 shadow-lg">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-primary-500/10 flex items-center justify-center border border-primary-500/20 shadow-inner">
-            <Layers className="w-6 h-6 text-primary-400" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">{t('range_analysis.title')}</h1>
-            <p className="text-xs text-gray-500">{t('range_analysis.subtitle')}</p>
-          </div>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="page-title">{t('range_analysis.title')}</h1>
+          <p className="page-subtitle">{t('range_analysis.subtitle')}</p>
         </div>
-        <div className="flex gap-3">
-          <button onClick={loadConfig} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-dark-400 border border-white/5 text-gray-400 hover:text-white hover:bg-dark-500 transition-all text-xs font-bold">
+        <div className="flex gap-2.5">
+          <button onClick={loadConfig} className="btn-secondary">
             <Upload className="w-4 h-4" /> {t('range_analysis.load_preset')}
           </button>
-          <button onClick={saveConfig} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-500 text-white hover:bg-primary-600 shadow-lg shadow-primary-500/20 transition-all text-xs font-bold">
+          <button onClick={saveConfig} className="btn-primary">
             <Save className="w-4 h-4" /> {t('range_analysis.save_config')}
           </button>
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col gap-6 min-h-0">
+      <div className="flex-1 flex flex-col gap-4 min-h-0">
         <SituationSelector filters={combinedFilters} onChange={(updates) => setLocalFilters((f: Json) => ({ ...f, ...updates }))} />
 
-        <div className="flex items-center gap-4 bg-dark-300/50 p-3 rounded-lg border border-white/5">
+        <div className="flex items-center gap-4 bg-dark-600 p-3 rounded-[10px] border border-dark-200">
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-gray-400" />
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t('range_analysis.opponent_type')}:</span>
+            <span className="text-[13px] font-semibold text-gray-400">{t('range_analysis.opponent_type')} :</span>
           </div>
           <div className="flex gap-2">
             {opponentTypes.map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
                 onClick={() => setOpponentType(id)}
-                className={clsx(
-                  'flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all',
-                  opponentType === id ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20' : 'bg-dark-400 text-gray-400 hover:text-white hover:bg-dark-500',
-                )}
+                className={clsx('pill !rounded-md', opponentType === id && 'active')}
               >
-                <Icon className={clsx('w-3.5 h-3.5', id === 'reg' && 'text-yellow-400', id === 'fish' && 'text-blue-400')} />
+                <Icon className={clsx('w-3.5 h-3.5', id === 'reg' && 'text-primary-400', id === 'fish' && 'text-info')} />
                 {label}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="flex-1 flex gap-6 min-h-0">
-          <div className="flex-1 bg-dark-200 rounded-lg shadow-2xl border border-white/5 flex flex-col min-h-0 overflow-hidden relative">
+        <div className="flex-1 flex gap-4 min-h-0">
+          <div className="flex-1 bg-dark-400 rounded-[10px] border border-dark-200 flex flex-col min-h-0 overflow-hidden relative">
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none"><BarChart3 className="w-32 h-32" /></div>
 
-            <div className="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-dark-300/30">
+            <div className="px-5 py-4 flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <Filter className="w-4 h-4 text-primary-400" />
-                <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest">{t('range_analysis.matrix_title')}</h2>
+                <h2 className="text-[15px] font-semibold text-gray-100">{t('range_analysis.matrix_title')}</h2>
               </div>
               <div className="flex gap-4">
                 {LEGEND.map(({ color, shadow, label }) => (
                   <div key={label} className="flex items-center gap-1.5">
                     <span className={clsx('w-2.5 h-2.5 rounded-full shadow-sm', shadow)} style={{ backgroundColor: color }} />
-                    <span className="text-[10px] font-bold text-gray-400 uppercase">{label.includes('.') ? t(label) : label}</span>
+                    <span className="text-xs text-gray-400">{label.includes('.') ? t(label) : label}</span>
                   </div>
                 ))}
               </div>
@@ -253,36 +244,36 @@ export default function RangeResearch() {
                   size="lg"
                   selectedHand={selectedHand}
                   onCellClick={(hand, stats) => { setSelectedHand(hand); setSelectedStats(stats); setActionFilter(null) }}
-                  className="shadow-2xl border border-white/10"
+                  className="shadow-xl border border-dark-200"
                 />
               )}
             </div>
           </div>
 
-          <div className="w-[450px] flex flex-col gap-6 min-h-0">
-            <div className="bg-dark-200 rounded-lg shadow-xl border border-white/5 p-6 relative overflow-hidden flex-shrink-0">
+          <div className="w-[450px] flex flex-col gap-4 min-h-0">
+            <div className="bg-dark-400 rounded-[10px] border border-dark-200 p-5 relative overflow-hidden flex-shrink-0">
               {selectedHand ? (
                 <div className="space-y-4">
-                  <div className="flex items-end justify-between border-b border-white/5 pb-4">
+                  <div className="flex items-end justify-between border-b border-dark-200 pb-4">
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-bold text-primary-400 uppercase tracking-widest mb-1">{t('range_analysis.selected_hand')}</span>
-                      <div className="text-6xl font-black font-mono text-white leading-none">{selectedHand}</div>
+                      <span className="stat-label !text-primary-400 mb-1">{t('range_analysis.selected_hand')}</span>
+                      <div className="text-6xl font-semibold font-mono text-gray-100 leading-none">{selectedHand}</div>
                     </div>
                     <div className="text-right">
                       <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{t('range_analysis.occurrences')}</div>
-                      <div className="text-3xl font-black text-white leading-none">{totalCount}</div>
+                      <div className="text-3xl font-black text-gray-100 leading-none">{totalCount}</div>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-dark-300/50 p-4 rounded-lg border border-white/5">
+                    <div className="bg-dark-300/50 p-4 rounded-lg border border-dark-200">
                       <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{t('range_analysis.total_profit')}</div>
                       <div className={clsx('text-xl font-black', (selectedStats?.TotalProfit || 0) >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
                         {(selectedStats?.TotalProfit || 0).toFixed(0)} <span className="text-[10px] opacity-50">{t('common.chips')}</span>
                       </div>
                     </div>
-                    <div className="bg-dark-300/50 p-4 rounded-lg border border-white/5">
+                    <div className="bg-dark-300/50 p-4 rounded-lg border border-dark-200">
                       <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{t('range_analysis.ev_realized')}</div>
-                      <div className={clsx('text-xl font-black', (selectedStats?.TotalEv || 0) >= 0 ? 'text-yellow-400' : 'text-orange-500')}>
+                      <div className={clsx('text-xl font-black', (selectedStats?.TotalEv || 0) >= 0 ? 'text-primary-400' : 'text-profit-negative')}>
                         {(selectedStats?.TotalEv || 0).toFixed(1)}
                       </div>
                     </div>
@@ -296,11 +287,10 @@ export default function RangeResearch() {
               )}
             </div>
 
-            <div className="flex-1 bg-dark-200 rounded-lg shadow-xl border border-white/5 flex flex-col min-h-0 overflow-hidden">
-              <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-dark-300/30">
+            <div className="flex-1 bg-dark-400 rounded-[10px] border border-dark-200 flex flex-col min-h-0 overflow-hidden">
+              <div className="px-5 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-primary-400" />
-                  <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest">{t('range_analysis.distributions')}</h2>
+                  <h2 className="text-[15px] font-semibold text-gray-100">{t('range_analysis.distributions')}</h2>
                 </div>
               </div>
 
@@ -319,14 +309,14 @@ export default function RangeResearch() {
                           >
                             <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: ACTION_COLORS[action] || ACTION_COLORS.None }} />
                             <span className="text-[10px] font-bold uppercase opacity-60 mb-1">{action}</span>
-                            <span className="text-lg font-black text-white leading-none">{actionPercent(count)}%</span>
+                            <span className="text-lg font-black text-gray-100 leading-none">{actionPercent(count)}%</span>
                             <span className="text-[9px] mt-1 opacity-40">{count} {t('common.hands')}</span>
                           </button>
                         ))}
                       </div>
                     </div>
 
-                    <div className="space-y-3 pt-4 border-t border-white/5">
+                    <div className="space-y-3 pt-4 border-t border-dark-200">
                       <div className="flex justify-between items-center">
                         <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t('range_analysis.history')}</span>
                         <button onClick={replayFiltered} className="text-[10px] font-bold text-primary-400 hover:text-primary-300 flex items-center gap-1.5 uppercase transition-colors">
@@ -341,7 +331,7 @@ export default function RangeResearch() {
                             <div
                               key={handId(hand) ?? idx}
                               onClick={() => { const id = handId(hand); if (id) void openSingleHandReplayer(id, heroName) }}
-                              className="flex items-center gap-3 p-3 bg-dark-400/50 rounded-lg border border-white/5 hover:border-white/10 hover:bg-dark-300 transition-all cursor-pointer group"
+                              className="flex items-center gap-3 p-3 bg-dark-400/50 rounded-lg border border-dark-200 hover:border-dark-200 hover:bg-dark-300 transition-all cursor-pointer group"
                             >
                               <div className="w-8 h-8 rounded-lg bg-dark-500 flex items-center justify-center text-[10px] font-bold text-gray-500 group-hover:text-primary-400 transition-colors">{idx + 1}</div>
                               <div className="flex-1 min-w-0">
@@ -356,13 +346,13 @@ export default function RangeResearch() {
                                   <div className="w-1 h-1 rounded-full bg-white/5" />
                                   <div className="flex items-center gap-1">
                                     <span className="text-[9px] text-gray-500 font-bold uppercase">EV</span>
-                                    <span className={clsx('text-[10px] font-bold', ev >= 0 ? 'text-yellow-500/80' : 'text-orange-500/80')}>
+                                    <span className={clsx('text-[10px] font-bold', ev >= 0 ? 'text-primary-400/80' : 'text-profit-negative/80')}>
                                       {hand.ev !== undefined && hand.ev !== null ? (hand.ev || 0).toFixed(1) : '—'}
                                     </span>
                                   </div>
                                 </div>
                               </div>
-                              <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-white transition-all transform group-hover:translate-x-1" />
+                              <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-gray-100 transition-all transform group-hover:translate-x-1" />
                             </div>
                           )
                         })}

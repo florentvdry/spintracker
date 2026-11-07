@@ -371,7 +371,9 @@
     "import_error": "Erreur d'import",
     "data_refreshed": "Données actualisées",
     "no_player_found": "Aucun joueur trouvé",
-    "counting": "Comptage des mains... ({{current}}/{{total}})"
+    "counting": "Comptage des mains... ({{current}}/{{total}})",
+    "buy_in": "Buy-in",
+    "period": "Période"
   },
   "dashboard": {
     "title": "Tableau de bord",

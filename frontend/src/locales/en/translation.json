@@ -371,7 +371,9 @@
     "import_error": "Import error",
     "data_refreshed": "Data refreshed",
     "no_player_found": "No player found",
-    "counting": "Counting hands... ({{current}}/{{total}})"
+    "counting": "Counting hands... ({{current}}/{{total}})",
+    "buy_in": "Buy-in",
+    "period": "Period"
   },
   "dashboard": {
     "title": "Dashboard",

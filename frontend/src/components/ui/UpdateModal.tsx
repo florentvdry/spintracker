@@ -17,17 +17,17 @@ export default function UpdateModal() {
 
   if (!(isAvailable || isDownloaded) || userClosed) return null
 
-  const primary = 'px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold transition-colors'
+  const primary = 'px-6 py-2.5 bg-primary-500 hover:bg-primary-600 text-onprimary rounded-lg font-semibold transition-colors'
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-dark-400 rounded-lg p-8 w-[450px] shadow-2xl border border-dark-100/50 animate-slide-up">
+      <div className="bg-dark-400 rounded-lg p-8 w-[450px] shadow-xl border border-dark-200 animate-slide-up">
         <div className="flex items-center gap-4 mb-6">
           <div className="p-3 bg-primary-500/10 rounded-lg">
             <Download className="w-8 h-8 text-primary-400" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white">{t('update.title')}</h3>
+            <h3 className="text-xl font-bold text-gray-100">{t('update.title')}</h3>
             <p className="text-gray-400 text-sm">{t('update.ready', { version })}</p>
           </div>
         </div>
@@ -65,7 +65,7 @@ export default function UpdateModal() {
             <button disabled className="px-6 py-2.5 bg-dark-200 text-gray-400 rounded-lg font-semibold cursor-not-allowed">{t('update.downloading')}</button>
           ) : (
             <>
-              <button onClick={() => setUserClosed(true)} className="px-6 py-2.5 bg-dark-200 hover:bg-dark-100 text-white rounded-lg font-semibold transition-colors">{t('update.later')}</button>
+              <button onClick={() => setUserClosed(true)} className="px-6 py-2.5 bg-dark-200 hover:bg-dark-100 text-gray-100 rounded-lg font-semibold transition-colors">{t('update.later')}</button>
               <button onClick={() => void downloadUpdate()} className={primary}>{t('update.download')}</button>
             </>
           )}
