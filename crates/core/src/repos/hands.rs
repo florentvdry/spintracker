@@ -188,11 +188,11 @@ fn pascalize(value: Value) -> Value {
     }
 }
 
-/// Removes Winamax rows an old import left without a stable hand id or date: re-importing
-/// rebuilds them consistently. Returns the number of hands removed.
-pub fn cleanup_corrupted_winamax_hands(conn: &mut Connection) -> Result<usize> {
-    const CORRUPTED: &str =
-        "SELECT id FROM hands WHERE room = 'Winamax' AND (hand_id IS NULL OR hand_id = '' OR date_time IS NULL OR date_time = '')";
+/// Removes rows an old import left without a stable hand id or date (for example a PokerTracker
+/// summary file read as a hand history): re-importing rebuilds them consistently. Returns the
+/// number of hands removed.
+pub fn cleanup_corrupted_hands(conn: &mut Connection) -> Result<usize> {
+    const CORRUPTED: &str = "SELECT id FROM hands WHERE hand_id IS NULL OR hand_id = '' OR date_time IS NULL OR date_time = ''";
     let tx = conn.transaction()?;
     tx.execute(&format!("DELETE FROM hand_player_flags WHERE hand_id IN ({CORRUPTED})"), [])?;
     tx.execute(&format!("DELETE FROM player_hands WHERE hand_id IN ({CORRUPTED})"), [])?;

@@ -10,12 +10,15 @@ use std::path::Path;
 use crate::models::ParsedHand;
 use crate::parsers::{entry_cost, regex};
 
-#[derive(Debug, Clone, Copy, Default, PartialEq)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct TournamentSummary {
     /// Final position of the hero (0 when unknown).
     pub position: i32,
     pub prize_pool: f64,
     pub buy_in: f64,
+    /// Final place of every player, for summaries that do not say who the hero is
+    /// (the PokerTracker export): the hero's place is looked up once the hand is parsed.
+    pub places: Vec<(String, i32)>,
 }
 
 pub type Summaries = HashMap<String, TournamentSummary>;
@@ -64,7 +67,38 @@ pub fn parse_winamax(text: &str) -> Option<(String, TournamentSummary)> {
         .captures(text)
         .map_or(0.0, |c| entry_cost(number(&c["buy"]), number(&c["fee"])));
     let pos = position(text, regex!(r"(?i)You finished in\s*(?<pos>\d+)(?:st|nd|rd|th)\s*place"));
-    Some((id, TournamentSummary { position: pos, prize_pool, buy_in }))
+    Some((id, TournamentSummary { position: pos, prize_pool, buy_in, ..Default::default() }))
+}
+
+/// First line of the tournament summaries PokerTracker 4 exports next to the hands.
+const POKER_TRACKER_SUMMARY_HEADER: &str = "PokerTracker 4 Tournament Summary";
+
+/// Whether `text` is a PokerTracker tournament summary. Such a file holds no hand and must never
+/// be imported as a hand history.
+pub fn is_poker_tracker_summary(text: &str) -> bool {
+    text.trim_start_matches('\u{feff}').trim_start().starts_with(POKER_TRACKER_SUMMARY_HEADER)
+}
+
+fn is_poker_tracker_summary_name(file_name: &str) -> bool {
+    let lower = file_name.to_lowercase();
+    lower.starts_with("t#") && lower.ends_with("summary.txt")
+}
+
+/// A PokerTracker export names no room-specific id in the file, so the tournament number, the
+/// prize pool and the cost of entry come from the body, and the places list every player.
+pub fn parse_poker_tracker(text: &str) -> Option<(String, TournamentSummary)> {
+    if !is_poker_tracker_summary(text) {
+        return None;
+    }
+    let id = regex!(r"(?im)^Tournament #:\s*(?<id>[\w-]+)").captures(text)?["id"].trim().to_string();
+    let amount = |pattern: &regex::Regex| pattern.captures(text).map_or(0.0, |c| number(&c["value"]));
+    let prize_pool = amount(regex!(r"(?im)^Prize Pool:\s*\D*(?<value>\d+(?:[.,]\d+)?)"));
+    let buy_in = entry_cost(amount(regex!(r"(?im)^Buyin:\s*\D*(?<value>\d+(?:[.,]\d+)?)")), amount(regex!(r"(?im)^Fee:\s*\D*(?<value>\d+(?:[.,]\d+)?)")));
+    let places = regex!(r"(?im)^Place:\s*(?<place>\d+),\s*Player:\s*(?<name>.*?),\s*Won:")
+        .captures_iter(text)
+        .filter_map(|c| Some((c["name"].trim().to_string(), c["place"].parse().ok()?)))
+        .collect();
+    Some((id, TournamentSummary { prize_pool, buy_in, places, ..Default::default() }))
 }
 
 pub fn parse_unibet(text: &str) -> Option<(String, TournamentSummary)> {
@@ -80,7 +114,7 @@ pub fn parse_unibet(text: &str) -> Option<(String, TournamentSummary)> {
         .captures(text)
         .map_or(0.0, |c| entry_cost(number(&c["buy"]), number(&c["fee"])));
     let pos = position(text, regex!(r"(?i)You finished in (?<pos>\d+)(?:st|nd|rd|th) place"));
-    Some((id, TournamentSummary { position: pos, prize_pool, buy_in }))
+    Some((id, TournamentSummary { position: pos, prize_pool, buy_in, ..Default::default() }))
 }
 
 /// Reads every summary file of the folder holding `imported_file`. Unreadable files are skipped.
@@ -94,12 +128,14 @@ pub fn load_for_file(imported_file: &Path, kind: SummaryKind) -> Summaries {
 
     for path in entries.filter_map(|e| e.ok().map(|e| e.path())).filter(|p| p.is_file()) {
         let name = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
-        if !kind.matches_file_name(&name) {
+        if !kind.matches_file_name(&name) && !is_poker_tracker_summary_name(&name) {
             continue;
         }
         match fs::read(&path) {
             Ok(bytes) => {
-                if let Some((id, summary)) = kind.parse(&String::from_utf8_lossy(&bytes)) {
+                let text = String::from_utf8_lossy(&bytes);
+                let parsed = if is_poker_tracker_summary(&text) { parse_poker_tracker(&text) } else { kind.parse(&text) };
+                if let Some((id, summary)) = parsed {
                     map.insert(id, summary);
                 }
             }
@@ -176,6 +212,10 @@ pub fn apply(hand: &mut ParsedHand, summaries: &Summaries) {
     };
     if summary.position > 0 {
         hand.position = summary.position;
+    } else if let Some(hero) = hand.players.iter().find(|p| p.is_hero) {
+        if let Some((_, place)) = summary.places.iter().find(|(name, _)| name == &hero.name) {
+            hand.position = *place;
+        }
     }
     if summary.prize_pool > 0.0 {
         hand.prize_pool = summary.prize_pool;
@@ -195,24 +235,48 @@ mod tests {
     const WINAMAX: &str = "Winamax Poker - Tournament summary : Expresso(1096047576)\nBuy-In : 0,93€ + 0,07€\nPrizepool : 3€\nYou finished in 2nd place";
     const UNIBET: &str = "Unibet Tournament #83498893, No Limit Holdem\nBuy-In: €9.30 + €0.70\nTotal Prize Pool: €30.00\nYou finished in 3rd place (eliminated at hand #1).";
 
+    const POKER_TRACKER: &str = "﻿PokerTracker 4 Tournament Summary
+Site: Winamax
+Tournament #: 1175922314
+Buyin: €4.65
+Fee: €0.35
+Prize Pool: €15.00
+Players: 3
+
+Place: 1, Player: player one, Won: €15.00,
+Place: 2, Player: hero_name, Won: €0.00,
+Place: 3, Player: player3, Won: €0.00,";
+
+    #[test]
+    fn parses_a_poker_tracker_summary_with_every_place() {
+        let (id, s) = parse_poker_tracker(POKER_TRACKER).unwrap();
+        assert_eq!(id, "1175922314");
+        assert_eq!((s.position, s.prize_pool, s.buy_in), (0, 15.0, 5.0));
+        assert_eq!(s.places[1], ("hero_name".to_string(), 2));
+        assert_eq!(s.places.len(), 3);
+        assert!(is_poker_tracker_summary(POKER_TRACKER));
+        assert!(!is_poker_tracker_summary(WINAMAX));
+        assert!(is_poker_tracker_summary_name("T#1175922314 - €4.65+€0.35 - 20263008 - Summary.txt"));
+    }
+
     #[test]
     fn parses_a_winamax_summary() {
         let (id, s) = parse_winamax(WINAMAX).unwrap();
         assert_eq!(id, "1096047576");
-        assert_eq!(s, TournamentSummary { position: 2, prize_pool: 3.0, buy_in: 1.0 });
+        assert_eq!(s, TournamentSummary { position: 2, prize_pool: 3.0, buy_in: 1.0, ..Default::default() });
     }
 
     #[test]
     fn parses_a_unibet_summary_summing_buy_in_and_fee() {
         let (id, s) = parse_unibet(UNIBET).unwrap();
         assert_eq!(id, "83498893");
-        assert_eq!(s, TournamentSummary { position: 3, prize_pool: 30.0, buy_in: 10.0 });
+        assert_eq!(s, TournamentSummary { position: 3, prize_pool: 30.0, buy_in: 10.0, ..Default::default() });
     }
 
     #[test]
     fn a_big_multiplier_is_derived_from_the_full_entry_cost() {
         let mut summaries = Summaries::new();
-        summaries.insert("g1".into(), TournamentSummary { position: 1, prize_pool: 100.0, buy_in: 10.0 });
+        summaries.insert("g1".into(), TournamentSummary { position: 1, prize_pool: 100.0, buy_in: 10.0, ..Default::default() });
         let mut hand = ParsedHand { game_id: Some("g1".into()), buy_in: 10.0, ..ParsedHand::default() };
         apply(&mut hand, &summaries);
         assert_eq!(hand.multiplier, 10);
@@ -261,7 +325,7 @@ mod tests {
     #[test]
     fn apply_fills_only_known_fields_and_derives_the_multiplier() {
         let mut summaries = Summaries::new();
-        summaries.insert("g1".into(), TournamentSummary { position: 0, prize_pool: 30.0, buy_in: 10.0 });
+        summaries.insert("g1".into(), TournamentSummary { position: 0, prize_pool: 30.0, buy_in: 10.0, ..Default::default() });
         let mut hand = ParsedHand { game_id: Some("g1".into()), position: 2, ..ParsedHand::default() };
         apply(&mut hand, &summaries);
         assert_eq!((hand.position, hand.prize_pool, hand.buy_in, hand.multiplier), (2, 30.0, 10.0, 3));

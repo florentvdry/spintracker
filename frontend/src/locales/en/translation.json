@@ -384,6 +384,7 @@
     "played_tournaments": "Played Tournaments",
     "net_profit": "Net Profit",
     "chips_ev_avg": "ChipsEV (Avg)",
+    "unpriced_note": "{{count}} tournaments without a known prize pool are not counted in this profit (tournament summary missing).",
     "activity": "Activity",
     "sessions_month": "Sessions this month",
     "chip_evolution": "Chip Evolution",

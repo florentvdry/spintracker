@@ -98,6 +98,9 @@ impl Importer {
             return Ok(0);
         }
         let text = read_text_file(path)?;
+        if summaries::is_poker_tracker_summary(&text) {
+            return Ok(0);
+        }
         let Some(parser) = get_parser(&sniff(&text)) else { return Ok(0) };
         // The same split the import uses, so the count always equals what an import will find
         // (counting separator lines alone is one short for Betclic, whose files open without one).
@@ -135,9 +138,9 @@ impl Importer {
     ) -> Result<Vec<Result<ImportSummary>>> {
         {
             let mut conn = self.db.conn()?;
-            let cleaned = hands::cleanup_corrupted_winamax_hands(&mut conn)?;
+            let cleaned = hands::cleanup_corrupted_hands(&mut conn)?;
             if cleaned > 0 {
-                log::info!("[import] cleaned {cleaned} stale Winamax rows before import");
+                log::info!("[import] cleaned {cleaned} stale rows before import");
             }
         }
         let mut cache = SummaryCache::default();
@@ -166,6 +169,10 @@ impl Importer {
         on_progress(ImportProgress { message: "Initializing pipeline...".into(), ..ImportProgress::default() });
 
         let text = read_text_file(path)?;
+        if summaries::is_poker_tracker_summary(&text) {
+            // Read next to the hands of its folder: it holds no hand of its own.
+            return Ok(ImportSummary::default());
+        }
         let parser = get_parser(&sniff(&text))
             .ok_or_else(|| Error::Message("Could not detect hand history format".into()))?;
         log::info!("[import] {} ({} bytes), format {}", path.display(), text.len(), parser.room_name());
@@ -177,10 +184,10 @@ impl Importer {
             _ => None,
         };
         let batched = batch.is_some();
-        if !batched && kind == Some(SummaryKind::Winamax) {
-            let cleaned = hands::cleanup_corrupted_winamax_hands(&mut conn)?;
+        if !batched {
+            let cleaned = hands::cleanup_corrupted_hands(&mut conn)?;
             if cleaned > 0 {
-                log::info!("[import] cleaned {cleaned} stale Winamax rows before import");
+                log::info!("[import] cleaned {cleaned} stale rows before import");
             }
         }
         let owned;
