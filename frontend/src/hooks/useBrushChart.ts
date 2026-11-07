@@ -1,6 +1,8 @@
 import { useEffect, useRef, type RefObject } from 'react'
 import * as echarts from 'echarts'
 
+const BRUSH_OPTION = { brushType: 'lineX', brushMode: 'single' } as const
+
 /**
  * Owns an ECharts instance with horizontal brush-to-zoom (drag to zoom,
  * right click to reset). The chart exists only while `enabled` is true,
@@ -30,6 +32,8 @@ export function useBrushChart(
     const onContextMenu = (e: MouseEvent) => {
       e.preventDefault()
       chart.dispatchAction({ type: 'restore' })
+      // Restoring clears the active brush tool, so it has to be armed again to zoom a second time.
+      chart.dispatchAction({ type: 'takeGlobalCursor', key: 'brush', brushOption: BRUSH_OPTION })
     }
     const onResize = () => chart.resize()
 
@@ -50,6 +54,6 @@ export function useBrushChart(
     const chart = chartRef.current
     if (!chart || !enabled || !option) return
     chart.setOption(option, { notMerge: true })
-    chart.dispatchAction({ type: 'takeGlobalCursor', key: 'brush', brushOption: { brushType: 'lineX', brushMode: 'single' } })
+    chart.dispatchAction({ type: 'takeGlobalCursor', key: 'brush', brushOption: BRUSH_OPTION })
   }, [enabled, option])
 }
