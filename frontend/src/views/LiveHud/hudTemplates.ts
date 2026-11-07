@@ -117,21 +117,46 @@ function matrix(name: string, color: string, column: string, groups: HudStackGro
 
 const STREETS = ['F', 'T', 'R'] as const
 
-/** One postflop box: a few lines, each with its figure on the flop, turn and river. */
-function streetBox(name: string, color: string, column: string, lines: { name: string; stats: [string, string, string | null] }[], fontSize: number): HudGrid {
-  const cells: HudGridCell[] = [cell(0, 0, text(name), { fg: color, bold: true, align: 'left' })]
-  STREETS.forEach((street, i) => cells.push(cell(0, i + 1, text(street), header('reaction'))))
-  lines.forEach((line, r) => {
-    cells.push(cell(r + 1, 0, text(line.name), label()))
-    line.stats.forEach((figure, i) => cells.push(cell(r + 1, i + 1, figure ? stat('postflop', figure) : { kind: 'empty' }, { align: 'center' })))
-  })
-  return grid(name, auto(lines.length + 1), auto(4), cells, { column }, fontSize, true)
+type StreetLine = { name: string; stats: [string | null, string | null, string | null] }
+interface StreetSection {
+  title?: string
+  color?: string
+  /** Table column the lines of the section count in; the block's own column when absent. */
+  column?: string
+  lines: StreetLine[]
 }
 
-const CBET: { name: string; stats: [string, string, string] } = { name: 'CB', stats: ['cbet_flop', 'cbet_turn', 'cbet_river'] }
-const FOLD_TO_CBET: { name: string; stats: [string, string, string] } = { name: 'FvCB', stats: ['fold_to_cbet_flop', 'fold_to_cbet_turn', 'fold_to_cbet_river'] }
-const DONK: { name: string; stats: [string, string, string] } = { name: 'Dk', stats: ['donk_flop', 'donk_turn', 'donk_river'] }
-const CHECK_RAISE: { name: string; stats: [string, string, string] } = { name: 'XR', stats: ['xr_flop', 'xr_turn', 'xr_river'] }
+/** One postflop box: sections of lines, each with its figure on the flop, turn and river. */
+function streetBox(name: string, color: string, column: string, sections: StreetSection[], fontSize: number): HudGrid {
+  const cells: HudGridCell[] = [cell(0, 0, text(name), { fg: color, bold: true, align: 'left' })]
+  STREETS.forEach((street, i) => cells.push(cell(0, i + 1, text(street), header('reaction'))))
+  const rows: HudGrid['rows'] = [{ size: 'auto' }]
+  sections.forEach((section) => {
+    const context = section.column ? { context: { column: section.column } } : {}
+    if (section.title) {
+      cells.push(cell(rows.length, 0, text(section.title), { fg: section.color ?? HUD_COLORS.text, bold: true, align: 'left' }, 1, 4))
+      rows.push({ size: 'auto', ...context })
+    }
+    section.lines.forEach((line) => {
+      const r = rows.length
+      cells.push(cell(r, 0, text(line.name), label()))
+      line.stats.forEach((figure, i) => cells.push(cell(r, i + 1, figure ? stat('postflop', figure) : { kind: 'empty' }, { align: 'center' })))
+      rows.push({ size: 'auto', ...context })
+    })
+  })
+  return grid(name, rows, auto(4), cells, { column }, fontSize, true)
+}
+
+// Only the lines a seat can actually play: the preflop aggressor continuation bets and faces the
+// raise and the donk; the other seat faces the continuation bet, check-raises and donks.
+const CBET: StreetLine = { name: 'CB', stats: ['cbet_flop', 'cbet_turn', 'cbet_river'] }
+const FOLD_TO_RAISE: StreetLine = { name: 'F/R', stats: ['vs_cbet_raised_fold', null, null] }
+const FOLD_VS_DONK: StreetLine = { name: 'F/Dk', stats: ['fold_vs_donk_flop', 'fold_vs_donk_turn', null] }
+const RAISE_VS_DONK: StreetLine = { name: 'R/Dk', stats: ['raise_vs_donk_flop', 'raise_vs_donk_turn', null] }
+const FOLD_TO_CBET: StreetLine = { name: 'F/CB', stats: ['fold_to_cbet_flop', 'fold_to_cbet_turn', 'fold_to_cbet_river'] }
+const CHECK_RAISE: StreetLine = { name: 'XR', stats: ['xr_flop', 'xr_turn', 'xr_river'] }
+const DONK: StreetLine = { name: 'Dk', stats: ['donk_flop', 'donk_turn', 'donk_river'] }
+const DONK_FOLD: StreetLine = { name: 'F/XR', stats: ['donk_fold_flop', 'donk_fold_turn', 'donk_fold_river'] }
 
 /** The player's tag, name, how many hands the figures rest on, and the showdown figures. */
 function playerBlock(opens: string | undefined, fontSize: number): HudGrid {
@@ -200,7 +225,7 @@ function generalPopup(): HudGrid {
     { abbr: 'CB F', section: 'postflop', label: 'cbet_flop' },
     { abbr: 'CB T', section: 'postflop', label: 'cbet_turn' },
     { abbr: 'CB R', section: 'postflop', label: 'cbet_river' },
-    { abbr: 'FvCB', section: 'postflop', label: 'fold_to_cbet_flop' },
+    { abbr: 'F/CB', section: 'postflop', label: 'fold_to_cbet_flop' },
     { abbr: 'Dk F', section: 'postflop', label: 'donk_flop' },
     { abbr: 'WTSD', section: 'postflop', label: 'wtsd' },
     { abbr: 'WWSF', section: 'postflop', label: 'wwsf' },
@@ -321,7 +346,6 @@ const NAME_Y = 0.03
 const POSTFLOP_Y = 0.43
 const PREFLOP_Y = 0.55
 const THREE_WAY_POSTFLOP_Y = 0.36
-const THREE_WAY_BOX_STEP = 0.075
 const THREE_WAY_PREFLOP_Y = 0.6
 
 function headsUpFull(): TemplateInstance {
@@ -331,8 +355,8 @@ function headsUpFull(): TemplateInstance {
   const sb = matrix('SB', POSITION.SB, 'sb_hu', STACK_GROUPS_FULL, sbColumnsFull(), FULL_FONT, heads.id)
   const bb = matrix('BB', POSITION.BB, 'bb_hu', STACK_GROUPS_FULL, bbColumnsFull(), FULL_FONT, heads.id)
   // The small blind is the one who continuation bets and the big blind the one who donks.
-  const sbPost = streetBox('SB', POSITION.SB, 'sb_hu', [CBET, FOLD_TO_CBET, CHECK_RAISE], FULL_FONT)
-  const bbPost = streetBox('BB', POSITION.BB, 'bb_hu', [FOLD_TO_CBET, DONK, CHECK_RAISE], FULL_FONT)
+  const sbPost = streetBox('SB', POSITION.SB, 'sb_hu', [{ lines: [CBET, FOLD_TO_RAISE, FOLD_VS_DONK, RAISE_VS_DONK] }], FULL_FONT)
+  const bbPost = streetBox('BB', POSITION.BB, 'bb_hu', [{ lines: [FOLD_TO_CBET, CHECK_RAISE, DONK, DONK_FOLD] }], FULL_FONT)
   const grids = [player, sb, bb, sbPost, bbPost]
   const absolute = {
     '+1': {
@@ -451,12 +475,16 @@ function threeWayFull(): TemplateInstance {
   const three = threeWayPopup()
   const player = playerBlock(general.id, FULL_FONT)
   const preflop = seatRows('Preflop', threeWaySeats(false), FULL_FONT, three.id)
-  // Three boxes: a box is a title, three streets and its lines.
-  const boxes = [streetBox('CB', FAMILY.raise, 'tot', [CBET], FULL_FONT), streetBox('FvCB', FAMILY.reaction, 'tot', [FOLD_TO_CBET], FULL_FONT), streetBox('Dk', FAMILY.entry, 'tot', [DONK], FULL_FONT)]
-  const grids = [player, preflop, ...boxes]
+  // One postflop block per opponent, with the lines of each position.
+  const postflop = streetBox('Post', HUD_COLORS.textSecondary, 'tot', [
+    { title: 'BTN', color: POSITION.BTN, column: 'btn', lines: [CBET, FOLD_TO_RAISE] },
+    { title: 'SB', color: POSITION.SB, column: 'sb_3w', lines: [CBET, FOLD_TO_CBET, DONK] },
+    { title: 'BB', color: POSITION.BB, column: 'bb_3w', lines: [FOLD_TO_CBET, CHECK_RAISE, DONK] },
+  ], FULL_FONT)
+  const grids = [player, preflop, postflop]
   const side = (nameX: number, preflopX: number) => ({
     [player.id]: { x: nameX, y: NAME_Y },
-    ...Object.fromEntries(boxes.map((box, i) => [box.id, { x: nameX, y: THREE_WAY_POSTFLOP_Y + i * THREE_WAY_BOX_STEP }])),
+    [postflop.id]: { x: nameX, y: THREE_WAY_POSTFLOP_Y },
     [preflop.id]: { x: preflopX, y: THREE_WAY_PREFLOP_Y },
   })
   const absolute = { '+1': side(SIDE_LEFT_X, SIDE_LEFT_X), '+2': side(SIDE_RIGHT_X, MATRIX_RIGHT_X - 0.02) }
@@ -468,7 +496,7 @@ function threeWayFlash(): TemplateInstance {
   const three = threeWayPopup()
   const player = playerBlock(general.id, FLASH_FONT)
   const preflop = seatRows('Preflop', threeWaySeats(true), FLASH_FONT, three.id)
-  const postflop = streetBox('Post', HUD_COLORS.textSecondary, 'tot', [CBET, FOLD_TO_CBET], FLASH_FONT)
+  const postflop = streetBox('Post', HUD_COLORS.textSecondary, 'tot', [{ lines: [CBET, FOLD_TO_RAISE] }], FLASH_FONT)
   const grids = [player, preflop, postflop]
   const side = (nameX: number, preflopX: number) => ({
     [player.id]: { x: nameX, y: NAME_Y },
