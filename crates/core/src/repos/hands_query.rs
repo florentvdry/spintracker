@@ -21,7 +21,7 @@ pub(crate) fn hero_resolution_sql(param: &str) -> String {
 /// Join selecting the hero's row of each hand; without a name, the first player with known cards.
 pub(crate) fn hero_join(hero: Option<&str>) -> String {
     match hero {
-        Some(_) => format!("JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {}", hero_resolution_sql("@heroName")),
+        Some(_) => format!("CROSS JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {}", hero_resolution_sql("@heroName")),
         None => "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)".to_string(),
     }
 }

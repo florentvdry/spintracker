@@ -24,7 +24,7 @@ fn hero_resolution_sql(param: &str) -> String {
 /// Join selecting the hero's row of each hand; without a hero, the first player with known cards.
 fn hero_join(hero: Option<&str>) -> String {
     match hero {
-        Some(_) => format!("JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {}", hero_resolution_sql("@heroName")),
+        Some(_) => format!("CROSS JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {}", hero_resolution_sql("@heroName")),
         None => "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)".to_string(),
     }
 }
@@ -455,6 +455,8 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     )?;
 
     // One row per tournament: its figures decide the euro result and whether it was cashed.
+    // `+h.game_id` keeps SQLite from walking the whole game_id index to avoid a sort, which reads
+    // the entire history even for a one-month filter.
     let mut tournaments_won = 0;
     let mut unpriced_tournaments = 0;
     let mut total_profit_euro = 0.0;
@@ -463,7 +465,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
             "SELECT h.buy_in, h.prize_pool, SUM(ph.net_profit) as chip_profit, MIN(h.player_count) as lowest_players,
                     MAX(h.multiplier) as multiplier, MAX(h.position) as position, h.room
              FROM hands h {join} {filter}
-             GROUP BY h.game_id"
+             GROUP BY +h.game_id"
         ))?;
         let rows = stmt.query_map(&scope.params()[..], |r| {
             Ok(TournamentFigures {
@@ -514,26 +516,28 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     // Three-handed small and big blinds, split by who put chips in before them.
     {
         let mut stmt = conn.prepare(&format!(
-            "SELECT ph.position as hero_pos,
+            "SELECT hero_pos,
                     CASE
-                        WHEN ph.position = 'SB' AND COALESCE(pp.btn_investment, 0) > COALESCE(h.ante, 0) THEN 'vs_BTN'
-                        WHEN ph.position = 'SB' AND COALESCE(pp.btn_investment, 0) <= COALESCE(h.ante, 0) THEN 'vs_BB'
-                        WHEN ph.position = 'BB' AND COALESCE(pp.btn_investment, 0) > COALESCE(h.ante, 0) THEN 'vs_BTN'
-                        WHEN ph.position = 'BB' AND COALESCE(pp.btn_investment, 0) <= COALESCE(h.ante, 0) AND COALESCE(pp.sb_investment, 0) > (COALESCE(h.ante, 0) + CAST(REPLACE(SUBSTR(h.blinds, 1, INSTR(h.blinds, '/') - 1), ',', '.') AS REAL)) THEN 'vs_SB'
+                        WHEN hero_pos = 'SB' AND COALESCE(btn_investment, 0) > COALESCE(ante, 0) THEN 'vs_BTN'
+                        WHEN hero_pos = 'SB' AND COALESCE(btn_investment, 0) <= COALESCE(ante, 0) THEN 'vs_BB'
+                        WHEN hero_pos = 'BB' AND COALESCE(btn_investment, 0) > COALESCE(ante, 0) THEN 'vs_BTN'
+                        WHEN hero_pos = 'BB' AND COALESCE(btn_investment, 0) <= COALESCE(ante, 0) AND COALESCE(sb_investment, 0) > (COALESCE(ante, 0) + CAST(REPLACE(SUBSTR(blinds, 1, INSTR(blinds, '/') - 1), ',', '.') AS REAL)) THEN 'vs_SB'
                         ELSE 'Other'
                     END as situation,
-                    COALESCE(SUM(ph.net_won_adjusted), 0) as sub_ev
-             FROM hands h
-             {join}
-             JOIN (
-                 SELECT hand_id,
-                        MAX(CASE WHEN position = 'BTN' THEN COALESCE(investment, 0) END) as btn_investment,
-                        MAX(CASE WHEN position = 'SB' THEN COALESCE(investment, 0) END) as sb_investment
-                 FROM player_hands
-                 GROUP BY hand_id
-             ) pp ON pp.hand_id = h.id
-             {filter} AND h.player_count = 3 AND ph.position IN ('SB', 'BB')
+                    COALESCE(SUM(net_won_adjusted), 0) as sub_ev
+             FROM (
+                 -- The blinds' investments are read per filtered hand: grouping the whole player_hands
+                 -- table first would scan the entire history for a one-month dashboard. The unary plus keeps
+                 -- SQLite from picking the position index, which holds millions of rows.
+                 SELECT ph.position as hero_pos, ph.net_won_adjusted, h.ante, h.blinds,
+                        (SELECT MAX(COALESCE(p2.investment, 0)) FROM player_hands p2 WHERE p2.hand_id = h.id AND +p2.position = 'BTN') as btn_investment,
+                        (SELECT MAX(COALESCE(p2.investment, 0)) FROM player_hands p2 WHERE p2.hand_id = h.id AND +p2.position = 'SB') as sb_investment
+                 FROM hands h
+                 {join}
+                 {filter} AND h.player_count = 3 AND ph.position IN ('SB', 'BB')
+             )
              GROUP BY hero_pos, situation"
+
         ))?;
         let rows = stmt.query_map(&scope.params()[..], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, f64>(2)?)))?;
         for row in rows {
@@ -746,7 +750,7 @@ pub fn multiplier_stats(conn: &Connection, q: &StatsQuery) -> Result<Vec<Multipl
              SELECT h.game_id, MAX(h.multiplier) as multiplier,
                     (MAX(h.position) = 1 OR (MAX(h.position) = 0 AND SUM(ph.net_profit) > 0)) as is_won
              FROM hands h {} {}
-             GROUP BY h.game_id
+             GROUP BY +h.game_id
          )
          GROUP BY multiplier
          ORDER BY multiplier ASC",
