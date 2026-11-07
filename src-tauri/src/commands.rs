@@ -218,8 +218,10 @@ pub fn app_ready(app: AppHandle) -> Value {
     json!({ "success": true })
 }
 
+// Async on purpose: building a window from a synchronous command deadlocks the webview on Windows,
+// which leaves the new window black.
 #[tauri::command]
-pub fn open_replayer(app: AppHandle, state: tauri::State<ReplayerState>, data: Value) -> Result<(), String> {
+pub async fn open_replayer(app: AppHandle, state: tauri::State<'_, ReplayerState>, data: Value) -> Result<(), String> {
     let label = format!("replayer-{}", state.counter.fetch_add(1, Ordering::Relaxed));
     state.data.lock().unwrap_or_else(std::sync::PoisonError::into_inner).insert(label.clone(), data);
 
