@@ -1,19 +1,16 @@
-import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import clsx from 'clsx'
-import { Users } from 'lucide-react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ipcService } from '@/services/ipcService'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import EditorTab from './editor/EditorTab'
-import LiveStatus from './LiveStatus'
-import ProfilesTab from './ProfilesTab'
 
-/** The HUD page: the switch and tables on top, then the editor; profiles open on demand. */
+const MIN_HEIGHT_PX = 640
+
+/** The HUD page: one workbench that fills the window below the app's header. */
 export default function LiveHud() {
-  const { t } = useTranslation()
   const load = useLiveHudStore((s) => s.load)
   const loaded = useLiveHudStore((s) => s.loaded)
-  const [showProfiles, setShowProfiles] = useState(false)
+  const root = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(MIN_HEIGHT_PX)
 
   useEffect(() => {
     void load()
@@ -21,20 +18,19 @@ export default function LiveHud() {
     return ipcService.onHudSettingsChanged(() => void load())
   }, [load])
 
+  // The page scrolls inside the layout, so the workbench is sized from where it starts to the bottom of the window.
+  useLayoutEffect(() => {
+    const fit = () => {
+      if (root.current) setHeight(Math.max(MIN_HEIGHT_PX, window.innerHeight - root.current.getBoundingClientRect().top))
+    }
+    fit()
+    window.addEventListener('resize', fit)
+    return () => window.removeEventListener('resize', fit)
+  }, [loaded])
+
   if (!loaded) return <div className="spinner mx-auto mt-16" />
   return (
-    <div className="space-y-4">
-      <LiveStatus />
-      <div>
-        <button
-          className={clsx('btn-secondary flex items-center gap-1.5 text-sm', showProfiles && 'border-primary-500')}
-          onClick={() => setShowProfiles((v) => !v)}
-        >
-          <Users className="h-4 w-4" />
-          {t('liveHud.tabs.profiles')}
-        </button>
-      </div>
-      {showProfiles && <ProfilesTab />}
+    <div ref={root} className="-mx-5 -my-4 overflow-hidden" style={{ height }}>
       <EditorTab />
     </div>
   )

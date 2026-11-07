@@ -7,9 +7,9 @@ import {
   type HudGrid,
   type HudLayout,
 } from './hudGrid'
+import { HIGHEST_MIN_TABLE_SCALE, LOWEST_MIN_TABLE_SCALE, MIN_TABLE_SCALE } from './hudScale'
 import { migrateLayout, parseLegacyLayout } from './hudMigration'
-import { MAX_POPUPS } from './hudGrid'
-import { TEMPLATES, templatePositions, type TemplateId, type TemplateInstance } from './hudTemplates'
+import { TEMPLATES, templatePositions, type TemplateInstance } from './hudTemplates'
 
 export { STACK_BUCKETS }
 
@@ -19,7 +19,7 @@ export const DEFAULT_OPACITY = 0.94
 export const MIN_OPACITY = 0.4
 export const MAX_OPACITY = 1
 export const DEFAULT_SIZE = 1
-export const MIN_SIZE = 0.7
+export const MIN_SIZE = 0.4
 export const MAX_SIZE = 1.5
 /** Placement grid, as a fraction of the table width. */
 export const GRID_STEP = 0.02
@@ -45,6 +45,10 @@ export interface HudProfile {
   layouts: Record<HudFormat, HudLayout>
   opacity: number
   size: number
+  /** The panels also shrink and grow with the table window (see `tableScale`); on by default. */
+  fitToTable: boolean
+  /** How small the panels may get when they fit a small table. */
+  fitMinScale: number
   showHero: boolean
 }
 
@@ -91,6 +95,8 @@ export const defaultProfile = (id: string, name: string): HudProfile => ({
   layouts: defaultLayouts(),
   opacity: DEFAULT_OPACITY,
   size: DEFAULT_SIZE,
+  fitToTable: true,
+  fitMinScale: MIN_TABLE_SCALE,
   showHero: false,
 })
 
@@ -102,8 +108,8 @@ export const emptyProfile = (id: string, name: string): HudProfile => ({
 
 /** Where the first grid of a seat sits on a fresh install: out of the way of the cards and the buttons. */
 export const SEAT_ORIGINS: Record<HudFormat, Record<string, GridPosition>> = {
-  threeMax: { '+1': { x: 0.01, y: 0.1 }, '+2': { x: 0.57, y: 0.1 } },
-  headsUp: { '+1': { x: 0.05, y: 0.05 } },
+  threeMax: { '+1': { x: 0.01, y: 0.03 }, '+2': { x: 0.82, y: 0.03 } },
+  headsUp: { '+1': { x: 0.01, y: 0.03 } },
 }
 
 const emptyPlacements = (): Placements => ({ threeMax: { '+1': {}, '+2': {} }, headsUp: { '+1': {} } })
@@ -172,6 +178,8 @@ function sanitizeProfile(raw: unknown, index: number): SanitizedProfile | null {
       layouts,
       opacity: finiteNumber(raw.opacity, DEFAULT_OPACITY, MIN_OPACITY, MAX_OPACITY),
       size: finiteNumber(raw.size, DEFAULT_SIZE, MIN_SIZE, MAX_SIZE),
+      fitToTable: raw.fitToTable !== false,
+      fitMinScale: finiteNumber(raw.fitMinScale, MIN_TABLE_SCALE, LOWEST_MIN_TABLE_SCALE, HIGHEST_MIN_TABLE_SCALE),
       showHero: raw.showHero === true,
     },
     migrated,
@@ -316,36 +324,21 @@ export function duplicateWithPlacements(source: HudProfile, placements: Placemen
   return { profile, placements: next }
 }
 
-/** The table sizes a popup model can serve. */
-const POPUP_FORMATS: Partial<Record<TemplateId, HudFormat[]>> = { popupGeneral: ['headsUp', 'threeMax'], popupHeadsUp: ['headsUp'], popupThreeWay: ['threeMax'] }
+// --- Saving from several windows
+
+const SETTINGS_KEYS = ['enabled', 'activeProfileId', 'profiles', 'placements', 'snapToGrid'] as const
 
 /**
- * A shipped model applied to a profile. A layout model replaces the grids of both table sizes (and
- * where they sit), or only of `onlyFormat` when the editor applies it to the size being edited; a
- * popup model adds its popup to the layouts it serves.
+ * Settings to write when this window changed `local` since it last read `base`, while another window
+ * may have saved `remote` in the meantime: a field this window did not touch keeps the other
+ * window's value, so two windows editing different things do not erase each other.
  */
-export function applyTemplateToSettings(settings: HudSettings, profileId: string, templateId: TemplateId, onlyFormat?: HudFormat): HudSettings {
-  const template = TEMPLATES[templateId]
-  if (template.isLayout) {
-    const placements = structuredClone(settings.placements)
-    const replaced: Partial<Record<HudFormat, HudLayout>> = {}
-    for (const format of onlyFormat ? [onlyFormat] : HUD_FORMATS) {
-      const instance = template.build(format)
-      placements[format] = templatePositions(instance, SEAT_ORIGINS[format])
-      replaced[format] = layoutOf(instance)
+export function mergeSettings(base: HudSettings, local: HudSettings, remote: HudSettings): HudSettings {
+  const merged: HudSettings = { ...remote }
+  for (const key of SETTINGS_KEYS) {
+    if (JSON.stringify(local[key]) !== JSON.stringify(base[key])) {
+      Object.assign(merged, { [key]: local[key] })
     }
-    const profiles = settings.profiles.map((p) => (p.id === profileId ? { ...p, layouts: { ...p.layouts, ...replaced } } : p))
-    return { ...settings, profiles, placements }
   }
-  const instance = template.build('headsUp')
-  const formats = POPUP_FORMATS[templateId] ?? []
-  const profiles = settings.profiles.map((p) => {
-    if (p.id !== profileId) return p
-    const layouts = { ...p.layouts }
-    for (const format of formats) {
-      if (layouts[format].popups.length < MAX_POPUPS) layouts[format] = { ...layouts[format], popups: [...layouts[format].popups, ...instance.popups.map((g) => structuredClone(g))] }
-    }
-    return { ...p, layouts }
-  })
-  return { ...settings, profiles }
+  return merged
 }

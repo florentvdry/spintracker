@@ -223,3 +223,25 @@ describe('dragTo', () => {
     expect(dragTo({ x: 0.1, y: 0.1 }, { x: 13, y: 0 }, { width: 1000, height: 500 }, size, [], null, false).x).toBeCloseTo(0.113)
   })
 })
+
+describe('placing grids on the table', () => {
+  it('moves a grid for one seat only and ignores unknown grids and seats', () => {
+    const doc = docWith(newGrid('g', 1, 1))
+    const id = gridOf(doc).id
+    const moved = applyEdit(doc, { type: 'placeGrid', seat: '+1', gridId: id, position: { x: 0.4, y: 0.5 } })
+    expect(moved.seats['+1'][id]).toEqual({ x: 0.4, y: 0.5 })
+    expect(moved.seats['+2']).toEqual({})
+    expect(applyEdit(doc, { type: 'placeGrid', seat: '+9', gridId: id, position: { x: 0.4, y: 0.5 } })).toBe(doc)
+    expect(applyEdit(doc, { type: 'placeGrid', seat: '+1', gridId: 'nope', position: { x: 0.4, y: 0.5 } })).toBe(doc)
+    expect(applyEdit(doc, { type: 'placeGrid', seat: '+1', gridId: id, position: { x: 0.1, y: 0.1 } })).toBe(doc)
+  })
+
+  it('mirrors a seat onto the other one, flipped by the width of each grid', () => {
+    const doc = docWith(newGrid('g', 1, 1))
+    const id = gridOf(doc).id
+    const mirrored = applyEdit(doc, { type: 'mirrorSeat', from: '+1', to: '+2', widths: { [id]: 0.2 } })
+    expect(mirrored.seats['+2'][id].x).toBeCloseTo(0.7)
+    expect(mirrored.seats['+2'][id].y).toBe(0.1)
+    expect(applyEdit(doc, { type: 'mirrorSeat', from: '+1', to: '+1', widths: {} })).toBe(doc)
+  })
+})

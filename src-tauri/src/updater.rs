@@ -40,7 +40,7 @@ pub async fn check(app: AppHandle) {
                     "releaseNotes": update.body.clone().unwrap_or_default(),
                 }),
             );
-            *app.state::<UpdateState>().pending.lock().unwrap() = Some(update);
+            *app.state::<UpdateState>().pending.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = Some(update);
         }
         Ok(None) => emit(&app, json!({ "status": "not-available" })),
         Err(err) => {
@@ -51,7 +51,7 @@ pub async fn check(app: AppHandle) {
 }
 
 pub async fn download(app: AppHandle) {
-    let update = app.state::<UpdateState>().pending.lock().unwrap().clone();
+    let update = app.state::<UpdateState>().pending.lock().unwrap_or_else(std::sync::PoisonError::into_inner).clone();
     let Some(update) = update else {
         return emit(&app, json!({ "status": "error", "error": "No update available" }));
     };
@@ -77,7 +77,7 @@ pub async fn download(app: AppHandle) {
 
     match result {
         Ok(bytes) => {
-            *app.state::<UpdateState>().downloaded.lock().unwrap() = Some(bytes);
+            *app.state::<UpdateState>().downloaded.lock().unwrap_or_else(std::sync::PoisonError::into_inner) = Some(bytes);
             emit(&app, json!({ "status": "downloaded", "version": update.version }));
         }
         Err(err) => {
@@ -89,8 +89,8 @@ pub async fn download(app: AppHandle) {
 
 pub fn install(app: &AppHandle) -> Result<(), String> {
     let state = app.state::<UpdateState>();
-    let update = state.pending.lock().unwrap().clone().ok_or("No update available")?;
-    let bytes = state.downloaded.lock().unwrap().take().ok_or("Update not downloaded")?;
+    let update = state.pending.lock().unwrap_or_else(std::sync::PoisonError::into_inner).clone().ok_or("No update available")?;
+    let bytes = state.downloaded.lock().unwrap_or_else(std::sync::PoisonError::into_inner).take().ok_or("Update not downloaded")?;
     update.install(bytes).map_err(|e| e.to_string())?;
     app.restart();
 }

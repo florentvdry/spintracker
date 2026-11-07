@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import { ipcService } from '@/services/ipcService'
 import {
-  applyTemplateToSettings,
   defaultSettings,
   duplicateWithPlacements,
+  mergeSettings,
   emptyProfile,
   importProfiles,
   MAX_PROFILES,
@@ -15,7 +15,6 @@ import {
   type HudLayout,
   type SeatPlacements,
 } from '@/views/LiveHud/hudProfile'
-import type { TemplateId } from '@/views/LiveHud/hudTemplates'
 import { logError } from '@/utils/log'
 
 /** Edits made in quick succession (a slider, a drag) are written once. */
@@ -36,22 +35,37 @@ interface LiveHudState {
   removeProfile: (id: string) => void
   /** Adds the profiles of a shared file; `false` when the file is not a valid one. */
   importProfilesFile: (content: string) => boolean
-  /** Applies a shipped model to a profile (see `applyTemplateToSettings`). */
-  applyTemplate: (profileId: string, templateId: TemplateId, onlyFormat?: HudFormat) => void
   setSnapToGrid: (snap: boolean) => void
   /** Sets the layout of a format and where its grids sit, in one save (one undo step for the editor). */
   setEditorDoc: (profileId: string, format: HudFormat, layout: HudLayout, seats: Record<string, SeatPlacements>) => void
 }
 
 export const useLiveHudStore = create<LiveHudState>((set, get) => {
+  /** What this window last read from or wrote to the disk: the reference for what it changed since. */
+  let baseline: HudSettings = defaultSettings()
+
   const commit = (change: (settings: HudSettings) => HudSettings) => {
     set((state) => ({ settings: change(state.settings) }))
     if (saveTimer) clearTimeout(saveTimer)
     saveTimer = setTimeout(() => {
-      void ipcService.setHudSettings(get().settings).then((result) => {
-        if (!result.success) logError('Could not save the HUD settings:', result.message)
-      })
+      saveTimer = null
+      void save()
     }, SAVE_DEBOUNCE_MS)
+  }
+
+  const save = async () => {
+    const local = get().settings
+    // Another window may have saved since: only what this one changed is written over it.
+    const current = await ipcService.getHudSettings()
+    const merged = current.success && current.settings ? mergeSettings(baseline, local, sanitizeSettings(current.settings)) : local
+    const result = await ipcService.setHudSettings(merged)
+    if (!result.success) {
+      logError('Could not save the HUD settings:', result.message)
+      return
+    }
+    baseline = merged
+    // Edits made while saving are newer than the merge.
+    if (!saveTimer && JSON.stringify(get().settings) === JSON.stringify(local)) set({ settings: merged })
   }
 
   return {
@@ -62,7 +76,9 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
       const result = await ipcService.getHudSettings()
       // Edits waiting to be saved are newer than what was just read.
       if (saveTimer) return
-      set({ settings: sanitizeSettings(result.success ? result.settings : null), loaded: true })
+      const loaded = sanitizeSettings(result.success ? result.settings : null)
+      baseline = loaded
+      set({ settings: loaded, loaded: true })
     },
 
     setEnabled: (enabled) => commit((s) => ({ ...s, enabled })),
@@ -102,8 +118,6 @@ export const useLiveHudStore = create<LiveHudState>((set, get) => {
       commit((s) => ({ ...s, profiles: [...s.profiles, ...imported].slice(0, MAX_PROFILES) }))
       return true
     },
-
-    applyTemplate: (profileId, templateId, onlyFormat) => commit((s) => applyTemplateToSettings(s, profileId, templateId, onlyFormat)),
 
     setSnapToGrid: (snapToGrid) => commit((s) => ({ ...s, snapToGrid })),
 

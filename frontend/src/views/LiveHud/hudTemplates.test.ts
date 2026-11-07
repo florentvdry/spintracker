@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { MAX_REQUESTED_STATS, requestsOf, validateLayout } from './hudGrid'
-import { applyTemplateToSettings, defaultSettings, HUD_FORMATS, sanitizeSettings, seatPositions, SEATS_BY_FORMAT } from './hudProfile'
+import { defaultSettings, HUD_FORMATS, seatPositions, SEATS_BY_FORMAT } from './hudProfile'
 import { TEMPLATE_IDS, TEMPLATES } from './hudTemplates'
 
 const source = (path: string) => readFileSync(fileURLToPath(new URL(`../../../../crates/core/src/${path}`, import.meta.url)), 'utf8')
@@ -59,57 +59,28 @@ describe('the shipped models', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  it('splits the heads-up matrix by the seven depths in the full model and by groups in the flash one', () => {
+  it('splits the heads-up matrix by a total and the six depths in the full model, and by groups in the flash one', () => {
     const rowsOf = (id: 'full' | 'flash') => TEMPLATES[id].build('headsUp').grids.find((g) => g.name === 'SB' && g.rows.some((r) => r.context?.stack))?.rows.filter((r) => r.context?.stack)
-    expect(rowsOf('full')).toHaveLength(7)
+    expect(rowsOf('full')).toHaveLength(6)
     const flash = rowsOf('flash')
-    expect(flash?.map((r) => r.context?.stack?.label)).toEqual(['12bb+', '8bb', '4bb', '2bb'])
-    expect(flash?.[0].context?.stack?.buckets).toEqual(['13+', '11-13'])
-  })
-})
-
-describe('applying a model', () => {
-  it('replaces the layouts of both table sizes and places every grid for every seat', () => {
-    const settings = defaultSettings()
-    const profileId = settings.profiles[0].id
-    const next = applyTemplateToSettings(settings, profileId, 'flash')
-    const layout = next.profiles[0].layouts.threeMax
-    expect(layout.grids.map((g) => g.name)).toEqual(['Player', 'Preflop', 'Post'])
-    expect(next.profiles[0].layouts.headsUp.grids).toHaveLength(3)
-    for (const seat of SEATS_BY_FORMAT.threeMax) {
-      const positions = next.placements.threeMax[seat]
-      expect(layout.grids.every((g) => positions[g.id] !== undefined)).toBe(true)
-    }
-    expect(sanitizeSettings(JSON.parse(JSON.stringify(next)))).toEqual(next)
-  })
-
-  it('replaces only the table size being edited when the editor asks for it', () => {
-    const settings = defaultSettings()
-    const next = applyTemplateToSettings(settings, settings.profiles[0].id, 'flash', 'threeMax')
-    expect(next.profiles[0].layouts.threeMax.grids.map((g) => g.name)).toEqual(['Player', 'Preflop', 'Post'])
-    expect(next.profiles[0].layouts.headsUp).toEqual(settings.profiles[0].layouts.headsUp)
-    expect(next.placements.headsUp).toEqual(settings.placements.headsUp)
-  })
-
-  it('adds a popup model to the layouts it serves, without touching the grids', () => {
-    const settings = defaultSettings()
-    const before = settings.profiles[0].layouts
-    const next = applyTemplateToSettings(settings, settings.profiles[0].id, 'popupThreeWay')
-    expect(next.profiles[0].layouts.threeMax.popups).toHaveLength(before.threeMax.popups.length + 1)
-    expect(next.profiles[0].layouts.headsUp.popups).toHaveLength(before.headsUp.popups.length)
-    expect(next.profiles[0].layouts.threeMax.grids).toEqual(before.threeMax.grids)
-  })
-
-  it('leaves the other profiles alone', () => {
-    const settings = defaultSettings()
-    settings.profiles.push({ ...settings.profiles[0], id: 'other' })
-    const next = applyTemplateToSettings(settings, 'other', 'flash')
-    expect(next.profiles[0]).toEqual(settings.profiles[0])
-    expect(next.profiles[1].layouts.headsUp.grids).toHaveLength(3)
+    expect(flash?.map((r) => r.context?.stack?.label)).toEqual(['16+', '10-16', '3-10'])
+    expect(flash?.[0].context?.stack?.buckets).toEqual(['20+', '16-20'])
+    // Above the depth rows, the total row has no stack depth.
+    const sb = TEMPLATES.full.build('headsUp').grids.find((g) => g.name === 'SB' && g.rows.some((r) => r.context?.stack))
+    expect(sb?.rows.filter((r) => !r.context?.stack)).toHaveLength(2)
+    expect(sb?.cells.some((c) => c.content.kind === 'text' && c.content.text === 'Total')).toBe(true)
   })
 })
 
 describe('fresh install', () => {
+  it('puts the heads-up small blind matrix on the left and the big blind one on the right, out of the middle', () => {
+    const settings = defaultSettings()
+    const grids = settings.profiles[0].layouts.headsUp.grids
+    const at = (name: string) => settings.placements.headsUp['+1'][grids.find((g) => g.name === name && g.rows.some((r) => r.context?.stack))!.id]
+    expect(at('SB').x).toBeLessThan(0.2)
+    expect(at('BB').x).toBeGreaterThan(0.7)
+  })
+
   it('lays the heads-up panel and both three-way panels inside the table', () => {
     const settings = defaultSettings()
     const profile = settings.profiles[0]

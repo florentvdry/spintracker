@@ -28,6 +28,8 @@ pub struct Action {
     pub player: String,
     pub kind: ActionKind,
     pub is_all_in: bool,
+    /// A forced post that is an ante: dead money that does not count towards the bet to match.
+    pub is_ante: bool,
     /// First amount found after the verb ("calls 580" -> 580, "raises 30 to 60" -> 30).
     pub amount: Option<f64>,
     /// Total a raise goes to; falls back to `amount` when the line has no "to <n>".
@@ -64,6 +66,7 @@ pub fn parse_actions(text: &str) -> Vec<Action> {
                 player: m["name"].trim().to_string(),
                 kind,
                 is_all_in: raw.to_ascii_lowercase().contains("all-in"),
+                is_ante: kind == ActionKind::Post && raw.to_ascii_lowercase().contains("ante"),
                 amount,
                 amount_to,
             })
@@ -88,8 +91,12 @@ fn first_amount(tail: &str) -> Option<f64> {
         .and_then(|m| parse_amount(m.as_str()))
 }
 
-/// Big blind of a "sb/bb" blinds string: the last integer in it (0 when there is none).
+/// Big blind of a "sb/bb" blinds string, whatever follows it ("15/30 ante 5" -> 30); 0 when
+/// there is none. Without a slash the last integer is taken.
 pub fn big_blind(blinds: &str) -> i64 {
+    if let Some(c) = regex!(r"\d+(?:\.\d+)?\s*/\s*(\d+(?:\.\d+)?)").captures(blinds) {
+        return c[1].parse::<f64>().map_or(0, |bb| bb.round() as i64);
+    }
     regex!(r"\d+").find_iter(blinds).last().and_then(|m| m.as_str().parse().ok()).unwrap_or(0)
 }
 
@@ -158,7 +165,8 @@ mod tests {
     #[test]
     fn blinds_and_stack_buckets() {
         assert_eq!(big_blind("50/100"), 100);
-        assert_eq!(big_blind("15/30 ante 5"), 5, "the last integer wins, like the former backend");
+        assert_eq!(big_blind("15/30 ante 5"), 30, "an ante after the blinds is not the big blind");
+        assert_eq!(big_blind("100"), 100);
         assert_eq!(big_blind(""), 0);
         assert_eq!(stack_bucket(700.0, "50/100"), "0-8bb");
         assert_eq!(stack_bucket(1000.0, "50/100"), "8-12bb");

@@ -47,6 +47,9 @@ export interface HudGridViewProps {
   overlay?: (slot: GridSlot) => ReactNode
   /** A cell with a popup was clicked. */
   onPopup?: (cell: CellView, event: ReactMouseEvent<HTMLElement>) => void
+  /** The pointer came onto, or left, a cell that shows a stat. */
+  onFigureEnter?: (cell: CellView, event: ReactMouseEvent<HTMLElement>) => void
+  onFigureLeave?: () => void
   /** Rendered text of the cell being edited in place, instead of its value. */
   editing?: { cellId: string; node: ReactNode }
 }
@@ -66,6 +69,7 @@ const sameView = (a: CellView, b: CellView) =>
   a.fontSize === b.fontSize &&
   a.align === b.align &&
   a.popupId === b.popupId &&
+  JSON.stringify(a.figure) === JSON.stringify(b.figure) &&
   a.tagColor === b.tagColor &&
   a.numeric === b.numeric &&
   JSON.stringify(a.border) === JSON.stringify(b.border)
@@ -114,11 +118,13 @@ interface CellProps {
   extra: { className?: string; style?: CSSProperties } | undefined
   overlay: ReactNode
   onPopup: HudGridViewProps['onPopup']
+  onFigureEnter: HudGridViewProps['onFigureEnter']
+  onFigureLeave: HudGridViewProps['onFigureLeave']
   editing: ReactNode
 }
 
 const Cell = memo(
-  function Cell({ view, zebra, slot, extra, overlay, onPopup, editing }: CellProps) {
+  function Cell({ view, zebra, slot, extra, overlay, onPopup, onFigureEnter, onFigureLeave, editing }: CellProps) {
     return (
       <div
         data-cell={view.id}
@@ -127,13 +133,15 @@ const Cell = memo(
         className={extra?.className}
         style={{ ...cellStyle(view, zebra), position: 'relative', ...extra?.style }}
         onClick={view.popupId && onPopup ? (e) => onPopup(view, e) : undefined}
+        onMouseEnter={view.figure && onFigureEnter ? (e) => onFigureEnter(view, e) : undefined}
+        onMouseLeave={view.figure && onFigureLeave ? onFigureLeave : undefined}
       >
         {editing ?? <CellContent view={view} />}
         {overlay}
       </div>
     )
   },
-  (a, b) => sameView(a.view, b.view) && a.zebra === b.zebra && a.extra === b.extra && a.overlay === b.overlay && a.onPopup === b.onPopup && a.editing === b.editing && a.slot.id === b.slot.id,
+  (a, b) => sameView(a.view, b.view) && a.zebra === b.zebra && a.extra === b.extra && a.overlay === b.overlay && a.onPopup === b.onPopup && a.onFigureEnter === b.onFigureEnter && a.onFigureLeave === b.onFigureLeave && a.editing === b.editing && a.slot.id === b.slot.id,
 )
 
 const asSlot = (view: CellView): GridSlot => ({ id: view.id, row: view.row, col: view.col, rowSpan: view.rowSpan, colSpan: view.colSpan, empty: false })
@@ -155,7 +163,7 @@ function emptySlots(grid: HudGrid): GridSlot[] {
 
 const EMPTY_VIEW = (slot: GridSlot): CellView => ({ ...slot, kind: 'empty', text: '', sample: null, bold: false, numeric: false })
 
-function HudGridViewBase({ grid, figures, player, opacity = 1, showEmptySlots, decorate, overlay, onPopup, editing }: HudGridViewProps) {
+function HudGridViewBase({ grid, figures, player, opacity = 1, showEmptySlots, decorate, overlay, onPopup, onFigureEnter, onFigureLeave, editing }: HudGridViewProps) {
   const views = useMemo(() => buildCellViews(grid, figures, player, BASELINES), [grid, figures, player.name, player.tag]) // eslint-disable-line react-hooks/exhaustive-deps
   const fontSize = grid.style.fontSize ?? BASE_FONT_SIZE
   const zebra = grid.style.zebra === true
@@ -203,12 +211,14 @@ function HudGridViewBase({ grid, figures, player, opacity = 1, showEmptySlots, d
               extra={decorate?.({ ...slot, empty: view.kind === 'empty' })}
               overlay={overlay?.(slot)}
               onPopup={onPopup}
+              onFigureEnter={onFigureEnter}
+              onFigureLeave={onFigureLeave}
               editing={isEditing ? editing.node : undefined}
             />
           )
         })}
         {slots.map((slot) => (
-          <Cell key={slot.id} view={EMPTY_VIEW(slot)} zebra={zebra} slot={slot} extra={decorate?.(slot)} overlay={overlay?.(slot)} onPopup={undefined} editing={undefined} />
+          <Cell key={slot.id} view={EMPTY_VIEW(slot)} zebra={zebra} slot={slot} extra={decorate?.(slot)} overlay={overlay?.(slot)} onPopup={undefined} onFigureEnter={undefined} onFigureLeave={undefined} editing={undefined} />
         ))}
       </div>
     </div>

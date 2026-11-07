@@ -131,7 +131,7 @@ fn unibet_import_detects_the_hero_and_reads_summaries() {
         })
         .unwrap();
     assert_eq!((position, prize_pool, multiplier), (3, 30.0, 3));
-    assert!((buy_in - 9.3).abs() < 1e-9);
+    assert!((buy_in - 10.0).abs() < 1e-9, "the entry cost includes the fee");
 
     // The file's most frequently dealt player is the hero: every hand has hero analytics.
     let hero = "AA2Spew2Brok[Unibet_b3081becc3e7563f]";
@@ -189,4 +189,57 @@ fn stale_winamax_rows_are_removed_before_an_import() {
         let column = if table == "hands" { "id" } else { "hand_id" };
         assert_eq!(count(&conn, &format!("SELECT COUNT(*) FROM {table} WHERE {column} = 'stale'")), 0, "{table}");
     }
+}
+
+#[test]
+fn importing_a_series_of_files_matches_importing_them_one_by_one() {
+    let files = vec![
+        sample("Winamax", "20260415_Expresso(1096047576)_real_holdem_no-limit.txt"),
+        sample("Winamax", "does-not-exist.txt"),
+    ];
+
+    let single = fixture();
+    let (expected, _) = run(&single, &files[0]);
+
+    let batch = fixture();
+    let progress_files = Mutex::new(Vec::new());
+    let results = batch
+        .importer
+        .import_files(&files, &AtomicBool::new(false), |index, _| progress_files.lock().unwrap().push(index))
+        .unwrap();
+    assert_eq!(results.len(), 2);
+    assert_eq!(results[0].as_ref().unwrap().imported, expected.imported);
+    assert!(results[1].is_err(), "a missing file is reported without stopping the series");
+    assert_eq!(progress_files.into_inner().unwrap().first(), Some(&0));
+
+    let totals = |f: &Fixture| {
+        let conn = f.db.conn().unwrap();
+        (
+            count(&conn, "SELECT COUNT(*) FROM hands"),
+            count(&conn, "SELECT COUNT(*) FROM players"),
+            count(&conn, "SELECT SUM(total_hands) FROM players"),
+            count(&conn, "SELECT COUNT(*) FROM hands WHERE prize_pool > 0"),
+        )
+    };
+    assert_eq!(totals(&batch), totals(&single), "player totals and summaries are the same");
+    assert_eq!(batch.importer.count_hands_in(&files[..1]), expected.total_found as u64);
+}
+
+#[test]
+fn betclic_export_without_dashed_dividers_is_split_into_hands() {
+    let f = fixture();
+    let original = sample("Betclic", "21793509_ExportHH_2026-1-2.txt");
+    let text = std::fs::read_to_string(&original).unwrap();
+    assert!(text.lines().any(|l| l.starts_with("------------")), "the sample uses the dashed layout");
+
+    // The current HandsExport layout: hands follow each other with no dashed line.
+    let stripped: String = text.lines().filter(|l| !l.starts_with("------------")).map(|l| format!("{l}\n")).collect();
+    let path = f._dir.path().join("Betclic_HandsExport_test.txt");
+    std::fs::write(&path, stripped).unwrap();
+
+    let expected = f.importer.count_hands(&original).unwrap();
+    assert!(expected > 1);
+    assert_eq!(f.importer.count_hands(&path).unwrap(), expected);
+    let (summary, _) = run(&f, &path);
+    assert_eq!(summary.imported, expected);
 }

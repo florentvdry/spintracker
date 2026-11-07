@@ -84,9 +84,12 @@ pub fn compute(input: &PostflopInput) -> (Flags, StreetCounts) {
     }
 
     let folded_preflop = input.preflop.iter().any(|a| is_player(a) && a.kind == ActionKind::Fold);
-    let raised_preflop = input.preflop.iter().any(|a| is_player(a) && a.kind.is_aggressive());
-    let was_pfr = raised_preflop && !folded_preflop;
-    let in_position = matches!(input.position, "BTN" | "CO");
+    // The preflop raiser is the last player who bet or raised: opening and then calling a 3-bet
+    // hands the initiative to the 3-bettor.
+    let last_aggressor_is_player = input.preflop.iter().rev().find(|a| a.kind.is_aggressive()).is_some_and(is_player);
+    let was_pfr = last_aggressor_is_player && !folded_preflop;
+    // Heads-up the button is the small blind and acts last after the flop.
+    let in_position = matches!(input.position, "BTN" | "CO") || (input.position == "SB" && input.player_count == 2);
 
     let hero_bets_or_raises = |actions: &[Action]| actions.iter().any(|a| is_player(a) && a.kind.is_aggressive());
 
@@ -153,10 +156,9 @@ pub fn compute(input: &PostflopInput) -> (Flags, StreetCounts) {
         (input.river, Flag::FoldToCbetOppRiver, Flag::FoldToCbetRiver),
     ];
     for (actions, opp, num) in fold_to_cbet {
-        if actions.is_empty() || !actions.iter().any(|a| aggressive(&a) && by_others(&a)) {
-            continue;
-        }
-        if let Some(reaction) = actions.iter().find(by_player) {
+        // The reaction is the first action after the bet: a check made before it is not an answer.
+        let Some(bet) = actions.iter().position(|a| aggressive(&a) && by_others(&a)) else { continue };
+        if let Some(reaction) = actions[bet + 1..].iter().find(by_player) {
             f.set(opp);
             if reaction.kind == ActionKind::Fold {
                 f.set(num);
@@ -191,6 +193,26 @@ pub fn compute(input: &PostflopInput) -> (Flags, StreetCounts) {
             if folded {
                 f.set(num);
             }
+        }
+    }
+
+    // Check-raise: the player checks first, somebody bets, and the player's answer to that bet is a
+    // raise. Calling or folding instead still counts as the chance to check-raise.
+    let check_raise = [
+        (input.flop, Flag::XrOppFlop, Flag::XrFlop),
+        (input.turn, Flag::XrOppTurn, Flag::XrTurn),
+        (input.river, Flag::XrOppRiver, Flag::XrRiver),
+    ];
+    for (actions, opp, num) in check_raise {
+        let Some(first) = actions.iter().position(|a| is_player(a)) else { continue };
+        if actions[first].kind != ActionKind::Check {
+            continue;
+        }
+        let Some(bet) = actions[first + 1..].iter().position(|a| aggressive(&a) && by_others(&a)).map(|i| first + 1 + i) else { continue };
+        let Some(reaction) = actions[bet + 1..].iter().find(by_player) else { continue };
+        f.set(opp);
+        if reaction.kind.is_aggressive() {
+            f.set(num);
         }
     }
 
@@ -395,10 +417,77 @@ mod tests {
     }
 
     #[test]
+    fn checking_then_folding_to_a_bet_is_a_fold_to_that_bet() {
+        let s = Spot { pre: "Villain raises 20 to 50\nHero calls 30", position: "BB", ..spot("Hero checks\nVillain bets 40\nHero folds") };
+        let (f, _) = s.flags();
+        assert!(f.has(Flag::FoldToCbetOppFlop) && f.has(Flag::FoldToCbetFlop));
+    }
+
+    #[test]
+    fn the_small_blind_is_in_position_heads_up_only() {
+        let heads_up = |player_count| {
+            let (pre, flop) = (parse_actions("Hero raises 20 to 50\nVillain calls 30"), parse_actions("Villain checks\nHero checks"));
+            compute(&PostflopInput {
+                preflop: &pre,
+                flop: &flop,
+                turn: &[],
+                river: &[],
+                player: "Hero",
+                position: "SB",
+                player_count,
+                flop_cards: "2c 7d 9h",
+                went_to_showdown: false,
+                net_profit: 0.0,
+            })
+            .0
+        };
+        assert!(heads_up(2).has(Flag::MissedCbetIp));
+        assert!(heads_up(3).has(Flag::MissedCbetOop));
+    }
+
+    #[test]
+    fn calling_a_three_bet_hands_the_initiative_over() {
+        let s = Spot { pre: "Hero raises 20 to 50\nVillain raises 100 to 150\nHero calls 100", ..spot("Hero checks\nVillain bets 80") };
+        let (f, _) = s.flags();
+        assert!(!f.has(Flag::CbetOppFlop), "the three-bettor is the preflop aggressor");
+    }
+
+    #[test]
     fn donk_bets_come_from_non_raisers_and_use_a_plain_bet() {
         let s = Spot { pre: "Villain raises 20 to 50\nHero calls 30", ..spot("Hero bets 20\nVillain raises 60 to 80\nHero folds") };
         let (f, _) = s.flags();
         assert!(f.has(Flag::DonkFlop) && f.has(Flag::DonkFoldOppFlop) && f.has(Flag::DonkFoldFlop));
+    }
+
+    #[test]
+    fn check_raise_needs_a_check_then_a_bet_and_a_raise() {
+        let bb = |flop| Spot { pre: "Villain raises 20 to 50
+Hero calls 30", position: "BB", ..spot(flop) };
+        let (f, _) = bb("Hero checks
+Villain bets 40
+Hero raises 100 to 140").flags();
+        assert!(f.has(Flag::XrOppFlop) && f.has(Flag::XrFlop));
+
+        let (f, _) = bb("Hero checks
+Villain bets 40
+Hero calls 40").flags();
+        assert!(f.has(Flag::XrOppFlop) && !f.has(Flag::XrFlop), "calling is a chance not taken");
+
+        let (f, _) = bb("Hero bets 20
+Villain raises 60 to 80
+Hero raises 200 to 280").flags();
+        assert!(!f.has(Flag::XrOppFlop), "a player who bets first did not check");
+
+        let (f, _) = bb("Hero checks
+Villain checks").flags();
+        assert!(!f.has(Flag::XrOppFlop), "nobody bet");
+
+        let turn = Spot { turn: "Hero checks
+Villain bets 80
+Hero raises 200 to 280", ..bb("Hero checks
+Villain checks") };
+        let (f, _) = turn.flags();
+        assert!(f.has(Flag::XrOppTurn) && f.has(Flag::XrTurn) && !f.has(Flag::XrOppFlop));
     }
 
     #[test]

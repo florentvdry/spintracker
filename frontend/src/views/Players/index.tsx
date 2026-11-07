@@ -332,7 +332,7 @@ export default function Players() {
                   </h2>
                   <p className="text-xs text-gray-400">
                     {playerHands?.total || 0} {t('players.total_hands')}
-                    {heroName ? <span className="ml-2 text-primary-400">• Hero: {heroName}</span> : <span className="ml-2 text-yellow-400">• {t('common.select_hero')}</span>}
+                    {heroName ? <span className="ml-2 text-primary-400">• {t('players.hero_label', { name: heroName })}</span> : <span className="ml-2 text-yellow-400">• {t('common.select_hero')}</span>}
                   </p>
                 </div>
               </div>

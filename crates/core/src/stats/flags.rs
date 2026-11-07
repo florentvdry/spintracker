@@ -9,7 +9,7 @@
 //! meaning changes, bump `FLAGS_VERSION` so the stored rows are recomputed.
 
 /// Version of the stored flag semantics. Rows with another version are recomputed.
-pub const FLAGS_VERSION: i64 = 3;
+pub const FLAGS_VERSION: i64 = 5;
 
 /// Bits stored per integer column (SQLite integers are signed 64-bit; bit 63 is avoided).
 pub const BITS_PER_WORD: usize = 60;
@@ -95,6 +95,8 @@ flags! {
     RiverBetOpp, RiverBet, RiverBetShowdown, RiverBetWonShowdown,
     VsRiverBetOpp, VsRiverBetCall, VsRiverBetFold,
     SawFlop, Wtsd, Wsd, Wwsf,
+    // --- Check-raise (flags version 5)
+    XrOppFlop, XrFlop, XrOppTurn, XrTurn, XrOppRiver, XrRiver,
 }
 
 impl Flag {
@@ -164,7 +166,8 @@ mod tests {
         assert_eq!(Flag::Rfi.index(), 3);
         assert_eq!(Flag::ThreeBet.index(), 14);
         assert_eq!(Flag::FoldVsShove.index(), 97);
-        assert_eq!(Flag::Wwsf.index() + 1, Flag::ALL.len());
+        assert_eq!(Flag::Wwsf.index(), 163);
+        assert_eq!(Flag::XrRiver.index() + 1, Flag::ALL.len());
     }
 
     #[test]

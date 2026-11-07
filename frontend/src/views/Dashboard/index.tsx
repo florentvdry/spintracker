@@ -6,6 +6,7 @@ import Card from '@/components/ui/Card'
 import StatCard from '@/components/ui/StatCard'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
+import MultipliersCard from './components/MultipliersCard'
 import SessionList from './components/SessionList'
 
 interface CevRow {
@@ -108,6 +109,8 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
+
+      <MultipliersCard />
     </div>
   )
 }

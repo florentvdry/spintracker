@@ -121,6 +121,12 @@ impl Importer {
         Ok(Some(result))
     }
 
+    /// The history files that still have hands imported without equity (see [`Importer::import_path`]).
+    pub fn files_missing_equity(&self) -> Result<Vec<PathBuf>> {
+        let conn = self.db.conn()?;
+        Ok(import_files::equity_pending_paths(&conn)?.into_iter().map(PathBuf::from).collect())
+    }
+
     /// Imports a file again from its first hand, with equity: what the automatic import left
     /// without while a table was open.
     pub fn reimport_path(&self, path: &Path) -> Result<()> {
@@ -156,7 +162,7 @@ impl Importer {
         };
         let room = parser.room_name();
 
-        let mut blocks = split_hands(&text, parser.hand_separator());
+        let mut blocks = split_hands(&text, parser.hand_separator_for(&text));
         let pending = match blocks.last() {
             Some(last) if !hand_is_complete(room, last, mode == LiveMode::Resume) => {
                 blocks.pop();
@@ -195,6 +201,13 @@ impl Importer {
         }
 
         import_files::upsert(&conn, &key, ImportFileState { size, mtime, hands_done: blocks.len() })?;
+        // Hands imported without equity stay flagged until the whole file is imported again with it.
+        let pending_equity = if equity && mode == LiveMode::Finish {
+            false
+        } else {
+            (!equity && result.imported > 0) || import_files::is_equity_pending(&conn, &key)?
+        };
+        import_files::set_equity_pending(&conn, &key, pending_equity)?;
         Ok(result)
     }
 }

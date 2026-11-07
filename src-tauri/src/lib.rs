@@ -55,9 +55,17 @@ pub fn run() {
 
             let failsafe_handle = handle.clone();
             tauri::async_runtime::spawn(async move {
-                tokio::time::sleep(SPLASH_FAILSAFE_DELAY).await;
-                if failsafe_handle.get_webview_window("splash").is_some() {
+                loop {
+                    tokio::time::sleep(SPLASH_FAILSAFE_DELAY).await;
+                    if failsafe_handle.get_webview_window("splash").is_none() {
+                        break;
+                    }
+                    // A long statistics update shows its progress on the splash: wait for it.
+                    if backend::updating_statistics(SPLASH_FAILSAFE_DELAY) {
+                        continue;
+                    }
                     commands::app_ready(failsafe_handle);
+                    break;
                 }
             });
 
@@ -89,6 +97,7 @@ pub fn run() {
             commands::hud_settings_set,
             commands::hud_get_state,
             commands::hud_tables,
+            commands::hud_set_heroes,
             commands::hud_associate,
             commands::hud_set_hidden,
             commands::hud_set_panel_rects,

@@ -267,3 +267,18 @@ fn equity_is_not_computed_while_a_table_is_open_and_is_completed_afterwards() {
     assert!(equity_rows(&db) > 0, "the all-in hands of the fixture get their equity");
     assert_same(&snapshot(&db), &full_import_snapshot());
 }
+
+#[test]
+fn hands_imported_without_equity_stay_listed_until_completed() {
+    let (_dir, _db, importer) = importer();
+    let history = fixture_dir().join(HISTORY);
+    importer.import_path(&history, false).unwrap();
+    assert_eq!(importer.files_missing_equity().unwrap(), vec![history.clone()]);
+
+    // A resumed import with equity does not complete the older hands: the file stays listed.
+    importer.import_path(&history, true).unwrap();
+    assert_eq!(importer.files_missing_equity().unwrap(), vec![history.clone()]);
+
+    importer.reimport_path(&history).unwrap();
+    assert!(importer.files_missing_equity().unwrap().is_empty());
+}

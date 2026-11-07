@@ -34,12 +34,15 @@ pub async fn run(app: AppHandle, dialog_title: String) -> Value {
         return json!({ "success": false, "message": "No hands to export" });
     }
 
-    let mut hands_by_day: BTreeMap<String, Vec<String>> = BTreeMap::new();
+    // Betclic files separate their hands with a line of dashes, which an import needs to find them.
+    const BETCLIC_SEPARATOR: &str = "\n------------\n";
+    let mut hands_by_day: BTreeMap<String, Vec<(bool, String)>> = BTreeMap::new();
     for hand in &hands {
         // Hands without raw content cannot be exported.
         let Some(raw) = hand["result"].as_str().filter(|r| !r.is_empty()) else { continue };
         let Some(key) = hand["date_time"].as_str().and_then(day_key) else { continue };
-        hands_by_day.entry(key).or_default().push(raw.to_string());
+        let betclic = hand["room"].as_str().is_some_and(|room| room.trim().eq_ignore_ascii_case("betclic"));
+        hands_by_day.entry(key).or_default().push((betclic, raw.to_string()));
     }
 
     if hands_by_day.is_empty() {
@@ -74,7 +77,14 @@ pub async fn run(app: AppHandle, dialog_title: String) -> Value {
             writer
                 .start_file(format!("ExportHH_{day}.txt"), options)
                 .map_err(|e| e.to_string())?;
-            writer.write_all(contents.join("\n\n").as_bytes()).map_err(|e| e.to_string())?;
+            let mut text = String::new();
+            for (n, (betclic, raw)) in contents.iter().enumerate() {
+                if n > 0 {
+                    text.push_str(if *betclic { BETCLIC_SEPARATOR } else { "\n\n" });
+                }
+                text.push_str(raw);
+            }
+            writer.write_all(text.as_bytes()).map_err(|e| e.to_string())?;
         }
         writer.finish().map_err(|e| e.to_string())?;
         Ok(())

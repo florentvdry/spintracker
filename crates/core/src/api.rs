@@ -7,7 +7,7 @@
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use serde::de::DeserializeOwned;
 use serde_json::{json, Value};
@@ -24,7 +24,9 @@ use crate::repos::player_queries::{self, PlayersQuery};
 use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
-use crate::services::hud::{HudNoteRequest, HudPlayersRequest, HudService};
+use crate::services::custom_stats::CustomStatsService;
+use crate::stats::custom::store::{self as custom_store, SaveError};
+use crate::services::hud::{HudFigureHandsRequest, HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
 use crate::services::Importer;
 use crate::stats::store;
 use crate::{Error, Result};
@@ -69,7 +71,19 @@ pub struct Backend {
     registry: DatabaseRegistry,
     importer: Importer,
     hud: HudService,
+    custom_stats: CustomStatsService,
+    /// Detailed statistics by query, valid for one data version: they read every hand.
+    detailed_cache: Mutex<DetailedCache>,
 }
+
+#[derive(Default)]
+struct DetailedCache {
+    version: u64,
+    entries: HashMap<String, Value>,
+}
+
+/// Queries kept in the detailed statistics cache.
+const DETAILED_CACHE_CAPACITY: usize = 16;
 
 impl Backend {
     /// Opens the active database of the registry kept in `app_dir`, creating both on first run.
@@ -81,7 +95,8 @@ impl Backend {
         let analytics = Arc::new(AnalyticsCalculator::default());
         let importer = Importer::new(db.clone(), analytics.clone());
         let hud = HudService::new(db.clone());
-        Ok(Self { db, registry, importer, hud })
+        let custom_stats = CustomStatsService::new(db.clone());
+        Ok(Self { db, registry, importer, hud, custom_stats, detailed_cache: Mutex::default() })
     }
 
     pub fn importer(&self) -> &Importer {
@@ -100,7 +115,14 @@ impl Backend {
     /// changed). `progress(done, total)` is called after each batch.
     pub fn backfill_flags(&self, progress: impl FnMut(u64, u64)) -> Result<u64> {
         let done = store::backfill(&mut *self.db.conn()?, progress);
+        // Custom stats read the flags: recomputed flags make their figures stale, and they are
+        // computed once the flags are up to date.
+        if matches!(done, Ok(processed) if processed > 0) {
+            custom_store::invalidate_all(&*self.db.conn()?)?;
+        }
+        let custom = self.custom_stats.recompute();
         self.db.bump_data_version();
+        custom?;
         done
     }
 
@@ -120,9 +142,12 @@ impl Backend {
         }
     }
 
+    fn custom_stats_body(&self, r: &Request) -> Value {
+        r.body.clone().unwrap_or(Value::Null)
+    }
+
     fn route(&self, r: &Request, segments: &[&str]) -> Result<Option<Response>> {
         let conn = || self.db.conn();
-        let get = r.method == "GET";
         let post = r.method == "POST";
 
         let response = match (r.method, segments) {
@@ -204,7 +229,7 @@ impl Backend {
                         stats_scope: r.query_str("statsScope"),
                         opponent_name: opponent,
                     };
-                    Response::data(detailed_stats(&*conn()?, &q)?)
+                    Response::data(self.detailed_stats_cached(&q)?)
                 }
             }
             ("GET" | "POST", ["db", "winrate-chart"]) => {
@@ -231,12 +256,17 @@ impl Backend {
             }
             ("POST", ["db", "players", "sync"]) => {
                 players::update_player_stats(&*conn()?)?;
+                self.db.bump_data_version();
                 Response::ok(json!({ "success": true }))
             }
             ("POST", ["db", "players", id, "reg-status"]) => {
                 let is_reg = r.body_field::<bool>("isReg").unwrap_or(false);
                 match id.parse::<i64>() {
-                    Ok(id) if player_queries::set_reg_status(&*conn()?, id, is_reg)? => Response::ok(json!({ "success": true })),
+                    Ok(id) if player_queries::set_reg_status(&*conn()?, id, is_reg)? => {
+                        // The regular/fish scope of the detailed statistics depends on it.
+                        self.db.bump_data_version();
+                        Response::ok(json!({ "success": true }))
+                    }
                     _ => Response::failure(404, "Player not found"),
                 }
             }
@@ -267,7 +297,36 @@ impl Backend {
             }
 
             // --- Table HUD
-            ("GET", ["hud", "catalog"]) => Response::data(hud_stats::catalog()),
+            ("GET", ["hud", "catalog"]) => Response::data(hud_stats::catalog_with_custom(&*conn()?)?),
+
+            // --- Custom stats
+            ("GET", ["custom-stats"]) => Response::data(self.custom_stats.list()?),
+            ("POST", ["custom-stats"]) => match self.custom_stats.create(&r.body.clone().unwrap_or(Value::Null)) {
+                Ok(created) => Response::data(created),
+                Err(e) => save_failure(e)?,
+            },
+            ("POST", ["custom-stats", "preview"]) => {
+                let definition = r.body_field::<Value>("definition")?;
+                match self.custom_stats.preview(&definition, r.body_str("heroName").as_deref()) {
+                    Ok(figure) => Response::data(figure),
+                    Err(e) => save_failure(e)?,
+                }
+            }
+            ("POST", ["custom-stats", "recompute"]) => Response::data(json!({ "processed": self.custom_stats.recompute()? })),
+            ("GET", ["custom-stats", "status"]) => Response::data(self.custom_stats.status()?),
+            ("GET", ["custom-stats", "options"]) => Response::data(crate::stats::custom::model::options()),
+            ("PUT", ["custom-stats", id]) => match (id.parse::<i64>(), self.custom_stats_body(r)) {
+                (Ok(id), body) => match self.custom_stats.update(id, &body) {
+                    Ok(true) => Response::data(json!({ "id": id })),
+                    Ok(false) => Response::failure(404, "Custom stat not found"),
+                    Err(e) => save_failure(e)?,
+                },
+                _ => Response::failure(404, "Custom stat not found"),
+            },
+            ("DELETE", ["custom-stats", id]) => match id.parse::<i64>() {
+                Ok(id) if self.custom_stats.delete(id)? => Response::data(json!({ "id": id })),
+                _ => Response::failure(404, "Custom stat not found"),
+            },
             ("POST", ["hud", "players"]) => {
                 let request: HudPlayersRequest = r.body_as()?;
                 match request.validate() {
@@ -275,10 +334,25 @@ impl Backend {
                     Err(message) => Response::message(400, &message),
                 }
             }
+            ("POST", ["hud", "figure-hands"]) => {
+                let request: HudFigureHandsRequest = r.body_as()?;
+                match request.validate() {
+                    Ok(()) => Response::data(self.hud.figure_hands(&request)?),
+                    Err(message) => Response::message(400, &message),
+                }
+            }
             ("GET", ["hud", "tables"]) => match (r.query_str("room"), r.query_str("since")) {
-                (Some(room), Some(since)) => Response::data(self.hud.active_tables(&room, &since)?),
+                (Some(room), Some(since)) => Response::data(self.hud.active_tables(&room, &since, &[])?),
                 _ => Response::message(400, "room and since are required"),
             },
+            ("POST", ["hud", "tables"]) => {
+                let request: HudTablesRequest = r.body_as()?;
+                if request.room.trim().is_empty() || request.since.trim().is_empty() {
+                    Response::message(400, "room and since are required")
+                } else {
+                    Response::data(self.hud.active_tables(&request.room, &request.since, &request.hero_names)?)
+                }
+            }
             ("PUT", ["hud", "notes"]) => {
                 let request: HudNoteRequest = r.body_as()?;
                 match request.validate() {
@@ -291,13 +365,9 @@ impl Backend {
             }
 
             // --- Analysis and equity
-            ("POST", ["analysis", "stats"]) => Response::data(analysis::analysis_stats(&*conn()?, &r.body_as::<AnalysisFilters>()?)?),
-            ("POST", ["analysis", "hands"]) => Response::data(analysis::analysis_hands(&*conn()?, &r.body_as::<AnalysisHandsRequest>()?)?),
-            ("POST", ["analysis", "range-breakdown"]) => Response::data(analysis::range_breakdown(&*conn()?, &r.body_as::<AnalysisFilters>()?)?),
-            ("POST", ["analyze", "range"]) => {
-                let stack = r.body_field::<i64>("stack").unwrap_or(20);
-                Response::data(analysis::analyze_range(r.body_str("position").as_deref(), r.body_str("action").as_deref(), stack))
-            }
+            ("POST", ["analysis", "stats"]) => Response::data(analysis::analysis_stats(&*conn()?, &r.body_as_camel::<AnalysisFilters>()?)?),
+            ("POST", ["analysis", "hands"]) => Response::data(analysis::analysis_hands(&*conn()?, &r.body_as_camel::<AnalysisHandsRequest>()?)?),
+            ("POST", ["analysis", "range-breakdown"]) => Response::data(analysis::range_breakdown(&*conn()?, &r.body_as_camel::<AnalysisFilters>()?)?),
             ("GET", ["analysis", "replayer", id]) => match analysis::hand_replay(&*conn()?, id, r.query_str("heroName").as_deref())? {
                 Some(replay) => Response::data(replay),
                 None => Response::failure(404, "Hand not found"),
@@ -308,12 +378,34 @@ impl Backend {
             // --- Databases
             (_, ["api", "databases", rest @ ..]) => return self.databases(r, rest),
 
-            _ => {
-                let _ = get;
-                return Ok(None);
-            }
+            _ => return Ok(None),
         };
         Ok(Some(response))
+    }
+
+    fn detailed_stats_cached(&self, q: &DetailedQuery) -> Result<Value> {
+        let version = self.db.data_version();
+        let key = format!("{q:?}");
+        {
+            let mut cache = self.detailed_cache.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+            if cache.version != version {
+                cache.entries.clear();
+                cache.version = version;
+            }
+            if let Some(value) = cache.entries.get(&key) {
+                return Ok(value.clone());
+            }
+        }
+        let value = detailed_stats(&*self.db.conn()?, q)?;
+        let mut cache = self.detailed_cache.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
+        // Data written while the statistics were computed makes them stale: do not keep them.
+        if cache.version == version {
+            if cache.entries.len() >= DETAILED_CACHE_CAPACITY {
+                cache.entries.clear();
+            }
+            cache.entries.insert(key, value.clone());
+        }
+        Ok(value)
     }
 
     fn parse_file(&self, r: &Request) -> Result<Response> {
@@ -366,7 +458,7 @@ impl Backend {
             ("GET", []) => Response::data(Value::Array(self.registry.get_all().iter().map(database_json).collect())),
             ("GET", ["active"]) => Response::data(self.registry.get_active().map_or(Value::Null, |d| database_json(&d))),
             ("POST", []) => {
-                let name = r.body_str("name").unwrap_or_else(|| "Nouvelle base de données".into());
+                let name = r.body_str("name").unwrap_or_else(|| "New database".into());
                 Response::data(database_json(&self.registry.create(&name)?))
             }
             ("POST", [id, "set-active"]) => {
@@ -442,6 +534,13 @@ impl Request<'_> {
         Ok(serde_json::from_value(self.body.clone().unwrap_or_else(|| json!({})))?)
     }
 
+    /// Like [`Request::body_as`], accepting PascalCase keys too: the analysis screens saved their
+    /// filters that way (the former backend read JSON keys case-insensitively).
+    fn body_as_camel<T: DeserializeOwned>(&self) -> Result<T> {
+        let body = self.body.clone().unwrap_or_else(|| json!({}));
+        Ok(serde_json::from_value(camelize_keys(body))?)
+    }
+
     /// The body as `T`, or `T::default()` without one.
     fn body_or_default<T: DeserializeOwned + Default>(&self) -> Result<T> {
         match &self.body {
@@ -468,6 +567,20 @@ impl Request<'_> {
         let limit = self.query_i64("limit").map_or(DEFAULT_SESSION_LIMIT, |l| l.max(0) as usize);
         (limit, stats_query_from_query(self.query))
     }
+}
+
+/// Lower-cases the first letter of every top-level key ("HeroName" -> "heroName"). A key that is
+/// already camelCase wins over its PascalCase twin.
+fn camelize_keys(value: Value) -> Value {
+    let Value::Object(map) = value else { return value };
+    let (camel, pascal): (Vec<_>, Vec<_>) = map.into_iter().partition(|(k, _)| !k.chars().next().is_some_and(char::is_uppercase));
+    let mut out: serde_json::Map<String, Value> = camel.into_iter().collect();
+    for (key, v) in pascal {
+        let mut chars = key.chars();
+        let first = chars.next().map(|c| c.to_lowercase().collect::<String>()).unwrap_or_default();
+        out.entry(first + chars.as_str()).or_insert(v);
+    }
+    Value::Object(out)
 }
 
 fn q(query: &HashMap<String, String>, key: &str) -> Option<String> {
@@ -574,6 +687,16 @@ mod tests {
         assert_eq!(percent_decode("%e2%82%ac"), "€");
     }
 
+    #[test]
+    fn pascal_case_filters_are_read_like_camel_case_ones() {
+        let body = json!({ "HeroName": "Hero", "PlayerCount": 3, "MinStackBB": 5.0, "heroName": "Kept", "Positions": ["SB"] });
+        let filters: AnalysisFilters = serde_json::from_value(camelize_keys(body)).unwrap();
+        assert_eq!(filters.hero_name.as_deref(), Some("Kept"), "camelCase wins over its PascalCase twin");
+        assert_eq!(filters.player_count, Some(3));
+        assert_eq!(filters.min_stack_bb, Some(5.0));
+        assert_eq!(filters.positions, Some(vec!["SB".to_string()]));
+    }
+
     fn backend() -> (tempfile::TempDir, Backend) {
         let dir = tempfile::tempdir().unwrap();
         let backend = Backend::open(dir.path(), None).unwrap();
@@ -637,5 +760,13 @@ mod tests {
         assert_eq!(b.handle("DELETE", &format!("/api/databases/{}", old.id), None).status, 200);
         assert_eq!(b.handle("DELETE", &format!("/api/databases/{id}"), None).status, 400);
         assert_eq!(b.handle("POST", "/api/databases/unknown/set-active", Some(json!({}))).status, 400);
+    }
+}
+
+/// The response for a failed save: the user's mistake is a 400, a database failure bubbles up.
+fn save_failure(error: SaveError) -> Result<Response> {
+    match error {
+        SaveError::Invalid(message) => Ok(Response::message(400, &message)),
+        SaveError::Internal(e) => Err(e),
     }
 }

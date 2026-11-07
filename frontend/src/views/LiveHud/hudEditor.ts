@@ -50,6 +50,9 @@ export interface CellPatch {
 export type EditAction =
   | { type: 'addGrid'; grid: HudGrid; popup?: boolean; positions?: Record<string, GridPosition> }
   | { type: 'removeGrid'; gridId: string }
+  | { type: 'placeGrid'; seat: string; gridId: string; position: GridPosition }
+  /** Copies the placement of one seat onto another, flipped left to right (the seats face each other). */
+  | { type: 'mirrorSeat'; from: string; to: string; widths: Record<string, number> }
   | { type: 'duplicateGrid'; gridId: string }
   | { type: 'patchGrid'; gridId: string; patch: Partial<Pick<HudGrid, 'name' | 'locked' | 'context' | 'style'>> }
   | { type: 'replaceGrids'; grids: HudGrid[]; popups: HudGrid[]; positions: Record<string, SeatPlacements> }
@@ -375,6 +378,19 @@ export function applyEdit(doc: EditorDoc, action: EditAction): EditorDoc {
     }
     case 'removeGrid':
       return gridsOf(doc).some((g) => g.id === action.gridId) ? withoutGrid(doc, action.gridId) : doc
+    case 'placeGrid': {
+      if (!doc.layout.grids.some((g) => g.id === action.gridId) || !(action.seat in doc.seats)) return doc
+      const current = doc.seats[action.seat][action.gridId]
+      if (current && current.x === action.position.x && current.y === action.position.y) return doc
+      return { ...doc, seats: { ...doc.seats, [action.seat]: { ...doc.seats[action.seat], [action.gridId]: { x: CLAMP(action.position.x), y: CLAMP(action.position.y) } } } }
+    }
+    case 'mirrorSeat': {
+      if (action.from === action.to || !(action.from in doc.seats) || !(action.to in doc.seats)) return doc
+      const mirrored = Object.fromEntries(
+        Object.entries(doc.seats[action.from]).map(([id, p]) => [id, { x: CLAMP(1 - p.x - (action.widths[id] ?? 0)), y: p.y }]),
+      )
+      return { ...doc, seats: { ...doc.seats, [action.to]: mirrored } }
+    }
     case 'duplicateGrid': {
       const source = findGrid(doc.layout, action.gridId)
       if (!source) return doc

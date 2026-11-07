@@ -193,10 +193,10 @@ function GridFrame({
     ) : null
 
   return (
-    <div ref={root} data-frame={grid.id} className="relative" style={{ outline: selected ? '1px solid rgba(108,159,255,0.6)' : undefined, outlineOffset: 2 }}>
+    <div ref={root} data-frame={grid.id} className="relative" style={{ outline: selected ? '1px solid #6c9fff' : undefined, outlineOffset: 2 }}>
       {title !== undefined && (
         <div
-          className="absolute left-0 flex items-center gap-1 whitespace-nowrap rounded-t bg-dark-200/90 px-1 text-[9px] leading-[14px] text-gray-300"
+          className={clsx('absolute left-0 flex items-center gap-1 whitespace-nowrap rounded-t px-1.5 text-[10px] font-medium leading-[14px]', selected ? 'bg-primary-600 text-white' : 'bg-dark-300 text-gray-300')}
           style={{ top: -(HANDLE_PX + 16), cursor: 'pointer' }}
           onPointerDown={onTitlePointerDown}
         >
@@ -295,23 +295,18 @@ export default function Canvas(props: CanvasProps) {
   }
 
   return (
-    <div className="space-y-4">
-      <div
-        className="min-h-[300px] overflow-auto rounded-lg border border-dark-100 bg-dark-500"
-        onPointerDown={(e) => e.target === e.currentTarget && onSelect({ gridIds: [], cellIds: [], track: null })}
-      >
-        {doc.layout.grids.length === 0 && <p className="p-6 text-sm text-gray-500">{t('liveHud.profiles.empty_layout')}</p>}
-        <div className="flex flex-wrap items-start gap-x-10 gap-y-16 px-10 pb-10 pt-16" style={{ zoom }} onPointerDown={(e) => e.target === e.currentTarget && onSelect({ gridIds: [], cellIds: [], track: null })}>
-          {doc.layout.grids.map((grid) => (
-            <div key={grid.id}>{frameFor(grid, { title: grid.name, onTitlePointerDown: select(grid) })}</div>
-          ))}
-        </div>
+    <div className="space-y-6 p-6" onPointerDown={(e) => e.target === e.currentTarget && onSelect({ gridIds: [], cellIds: [], track: null })}>
+      {doc.layout.grids.length === 0 && <p className="text-sm text-gray-500">{t('liveHud.profiles.empty_layout')}</p>}
+      <div className="flex flex-wrap items-start gap-x-10 gap-y-14 px-4 pb-4 pt-10" style={{ zoom }} onPointerDown={(e) => e.target === e.currentTarget && onSelect({ gridIds: [], cellIds: [], track: null })}>
+        {doc.layout.grids.map((grid) => (
+          <div key={grid.id}>{frameFor(grid, { title: grid.name, onTitlePointerDown: select(grid) })}</div>
+        ))}
       </div>
 
       {popup && (
-        <div ref={popupPanel} className="overflow-auto rounded-lg border border-primary-500/50 bg-dark-500">
+        <div ref={popupPanel} className="overflow-auto rounded-lg border border-primary-500/50 bg-dark-600">
           <p className="border-b border-dark-100 px-3 py-1.5 text-xs text-gray-300">{t('liveHud.editor.popup_editing', { name: popup.name })}</p>
-          <div className="px-10 pb-6 pt-16" style={{ zoom }}>
+          <div className="px-10 pb-6 pt-14" style={{ zoom }}>
             {frameFor(popup, { title: `${t('liveHud.editor.popup')}: ${popup.name}`, onTitlePointerDown: select(popup) })}
           </div>
         </div>

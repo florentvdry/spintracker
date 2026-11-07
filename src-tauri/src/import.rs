@@ -4,6 +4,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
+use std::time::{Duration, Instant};
 
 use serde_json::{json, Value};
 use spintracker_core::api::Backend;
@@ -17,6 +18,8 @@ const PROGRESS_EVENT: &str = "import-progress";
 // The counting phase fills the first 10% of the global progress bar.
 const COUNTING_SHARE: f64 = 10.0;
 const IMPORT_SHARE: f64 = 90.0;
+/// Minimum delay between two progress events sent to the webview.
+const EMIT_INTERVAL: Duration = Duration::from_millis(100);
 
 fn collect_hand_files(dir: &Path, out: &mut Vec<PathBuf>) {
     let Ok(entries) = fs::read_dir(dir) else { return };
@@ -91,6 +94,7 @@ pub async fn run(app: AppHandle) -> Value {
 
 fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], temp_dir: &Path) -> Value {
     let mut files: Vec<PathBuf> = Vec::new();
+    let mut errors: Vec<Value> = Vec::new();
     for path in selected {
         let is_zip = path.extension().map(|e| e.eq_ignore_ascii_case("zip")).unwrap_or(false);
         if !is_zip {
@@ -100,74 +104,95 @@ fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], t
         let stem = path.file_stem().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default();
         match extract_zip(path, &temp_dir.join(stem)) {
             Ok(extracted) => files.extend(extracted),
-            Err(err) => log::error!("Failed to extract {}: {err}", path.display()),
+            Err(err) => {
+                log::error!("Failed to extract {}: {err}", path.display());
+                errors.push(json!({ "file": file_name(path), "error": err }));
+            }
         }
     }
 
     if files.is_empty() {
-        return json!({ "success": false, "message": "No valid hand history files found to import." });
+        return json!({ "success": false, "message": "No valid hand history files found to import.", "errors": errors });
     }
 
     let total_files = files.len();
 
     // Phase 1: count hands so the progress bar has a known total.
-    let mut total_hands_expected: u64 = 0;
-    for (index, path) in files.iter().enumerate() {
+    let _ = app.emit(
+        PROGRESS_EVENT,
+        json!({
+            "stage": "counting",
+            "filesProcessed": 0,
+            "totalFiles": total_files,
+            "percent": 0,
+            "handsImported": 0,
+            "totalHands": Value::Null,
+        }),
+    );
+    // Counting reads every file, so it runs on all cores. A file that cannot be counted only
+    // leaves the total a little short.
+    let total_hands_expected = backend.importer().count_hands_in(&files);
+
+    // Phase 2: import the files and relay their progress.
+    let file_share = IMPORT_SHARE / total_files as f64;
+    let cancel = AtomicBool::new(false);
+    // Totals of the files already finished, and progress of the one being imported.
+    let mut done_imported: u64 = 0;
+    let mut done_skipped: u64 = 0;
+    let mut current_file = 0usize;
+    let mut current = ImportProgress::default();
+    let mut last_emit: Option<Instant> = None;
+
+    let outcomes = backend.importer().import_files(&files, &cancel, |index, progress| {
+        if index != current_file {
+            // The previous file is finished: fold its counts into the totals.
+            if current.success {
+                done_imported += current.hands_imported as u64;
+                done_skipped += current.hands_skipped as u64;
+            }
+            current_file = index;
+        }
+        let finished = progress.success;
+        current = progress;
+        // Thousands of small files would flood the webview with events.
+        if !finished && last_emit.is_some_and(|t| t.elapsed() < EMIT_INTERVAL) {
+            return;
+        }
+        last_emit = Some(Instant::now());
+        let step = (f64::from(current.percent) * file_share / 100.0).round();
+        let global = (COUNTING_SHARE + (index as f64 * file_share).round() + step).round();
         let _ = app.emit(
             PROGRESS_EVENT,
             json!({
-                "stage": "counting",
+                "stage": "importing",
                 "filesProcessed": index,
                 "totalFiles": total_files,
-                "percent": ((index as f64 / total_files as f64) * COUNTING_SHARE).round(),
-                "handsImported": 0,
-                "totalHands": Value::Null,
+                "percent": global.min(100.0),
+                "handsImported": done_imported + current.hands_imported as u64,
+                "handsSkipped": done_skipped + current.hands_skipped as u64,
+                "totalHands": if total_hands_expected > 0 { json!(total_hands_expected) } else { Value::Null },
             }),
         );
-        // A failed count is not fatal: the total is simply unknown.
-        if let Ok(count) = backend.importer().count_hands(path) {
-            total_hands_expected += count as u64;
-        }
-    }
+    });
 
-    // Phase 2: import each file and relay its progress.
+    let outcomes = match outcomes {
+        Ok(outcomes) => outcomes,
+        Err(err) => {
+            log::error!("[Import] failed: {err}");
+            return json!({ "success": false, "message": err.to_string(), "errors": errors });
+        }
+    };
     let mut total_imported: u64 = 0;
     let mut total_skipped: u64 = 0;
-    let mut errors: Vec<Value> = Vec::new();
-    let file_share = IMPORT_SHARE / total_files as f64;
-    let cancel = AtomicBool::new(false);
-
-    for (files_processed, path) in files.iter().enumerate() {
-        let name = file_name(path);
-        let mut last = ImportProgress::default();
-        let outcome = backend.importer().import_file(path, &cancel, |progress| {
-            let current = (f64::from(progress.percent) * file_share / 100.0).round();
-            let global = (COUNTING_SHARE + (files_processed as f64 * file_share).round() + current).round();
-            let _ = app.emit(
-                PROGRESS_EVENT,
-                json!({
-                    "stage": "importing",
-                    "filesProcessed": files_processed,
-                    "totalFiles": total_files,
-                    "percent": global.min(100.0),
-                    "handsImported": total_imported + progress.hands_imported as u64,
-                    "handsSkipped": total_skipped + progress.hands_skipped as u64,
-                    "totalHands": if total_hands_expected > 0 { json!(total_hands_expected) } else { Value::Null },
-                }),
-            );
-            last = progress;
-        });
-
+    for (path, outcome) in files.iter().zip(outcomes) {
         match outcome {
             Ok(summary) => {
-                if last.success {
-                    total_imported += summary.imported as u64;
-                    total_skipped += summary.skipped as u64;
-                }
+                total_imported += summary.imported as u64;
+                total_skipped += summary.skipped as u64;
             }
             Err(err) => {
                 log::error!("[Import] Error processing {}: {err}", path.display());
-                errors.push(json!({ "file": name, "error": err.to_string() }));
+                errors.push(json!({ "file": file_name(path), "error": err.to_string() }));
             }
         }
     }

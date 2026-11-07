@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import clsx from 'clsx'
-import { Plus, Redo2, Undo2 } from 'lucide-react'
-import Card from '@/components/ui/Card'
 import { ipcService } from '@/services/ipcService'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import {
@@ -16,19 +13,30 @@ import {
   type EditorDoc,
   type EditorHistory,
 } from '../hudEditor'
-import { newGrid, validateLayout, type CellContent, type HudGrid, type HudIssue } from '../hudGrid'
-import { HUD_FORMATS, SEATS_BY_FORMAT, seatPositions, type HudFormat } from '../hudProfile'
-import { TEMPLATE_IDS, TEMPLATES, type TemplateId } from '../hudTemplates'
+import { newGrid, REFERENCE_TABLE, validateLayout, type CellContent, type GridPosition, type HudGrid, type HudIssue } from '../hudGrid'
+import { SEATS_BY_FORMAT, seatPositions, type HudFormat } from '../hudProfile'
 import { previewFigures } from '../previewData'
+import { tableScale } from '../hudScale'
 import Canvas from './Canvas'
+import CommandBar, { type EditorView } from './CommandBar'
 import Inspector from './Inspector'
+import LayersPanel from './LayersPanel'
 import Palette, { type CatalogStat } from './Palette'
+import PlacementInspector, { type Placed } from './PlacementInspector'
+import ProfileInspector from './ProfileInspector'
+import StatusBar from './StatusBar'
+import TableStage from './TableStage'
+import StatBuilder from '../../CustomStats/StatBuilder'
+import { useCustomStatsStore } from '@/stores/customStatsStore'
+import type { CustomStat } from '../../CustomStats/customStatModel'
 import { NO_SELECTION, type EditingCell, type Selection } from './types'
 import { useDrag, type DragPayload, type DropTarget } from './useDrag'
 
 const MIN_ZOOM = 0.6
 const MAX_ZOOM = 1.6
 const DEFAULT_ZOOM = 1
+/** The reference table is 1000 px wide: at this zoom it fits next to the side panels. */
+const DEFAULT_TABLE_ZOOM = 0.8
 const NEW_GRID_ROWS = 3
 const NEW_GRID_COLS = 3
 
@@ -56,16 +64,28 @@ function cleanSelection(selection: Selection, doc: EditorDoc): Selection {
 
 export default function EditorTab() {
   const { t } = useTranslation()
-  const { settings, setActiveProfile } = useLiveHudStore()
+  const { settings } = useLiveHudStore()
   const profile = settings.profiles.find((p) => p.id === settings.activeProfileId) ?? settings.profiles[0]
+  // The stage is a table of the reference size: the grids are drawn at the size they would have on it.
+  const stageSize = profile.size * (profile.fitToTable ? tableScale(REFERENCE_TABLE.width, REFERENCE_TABLE.height, profile.fitMinScale) : 1)
   const [format, setFormat] = useState<HudFormat>('threeMax')
   const seats = SEATS_BY_FORMAT[format]
 
   const [catalog, setCatalog] = useState<CatalogStat[]>([])
   const [catalogLoading, setCatalogLoading] = useState(true)
+  const customStats = useCustomStatsStore((s) => s.stats)
+  const customComputing = useCustomStatsStore((s) => s.computing)
+  const loadCustomStats = useCustomStatsStore((s) => s.load)
+  const removeCustomStat = useCustomStatsStore((s) => s.remove)
+  const [builder, setBuilder] = useState<{ stat: CustomStat | null; template?: CustomStat['definition'] } | null>(null)
   const [selectionRaw, setSelection] = useState<Selection>(NO_SELECTION)
   const [editing, setEditing] = useState<EditingCell | null>(null)
-  const [zoom, setZoom] = useState(DEFAULT_ZOOM)
+  const [view, setView] = useState<EditorView>('grids')
+  const [gridsZoom, setGridsZoom] = useState(DEFAULT_ZOOM)
+  const [tableZoom, setTableZoom] = useState(DEFAULT_TABLE_ZOOM)
+  const [placed, setPlaced] = useState<Placed | null>(null)
+  const zoom = view === 'table' ? tableZoom : gridsZoom
+  const setZoom = view === 'table' ? setTableZoom : setGridsZoom
   const [activePopupId, setActivePopupId] = useState<string | null>(null)
   const [history, setHistory] = useState<EditorHistory>(emptyHistory)
 
@@ -79,7 +99,12 @@ export default function EditorTab() {
     return () => {
       cancelled = true
     }
-  }, [])
+    // The catalog lists the custom stats, so it is read again when they change.
+  }, [customStats])
+
+  useEffect(() => {
+    void loadCustomStats()
+  }, [loadCustomStats])
 
   // The one source of truth is the store; the editor only turns actions into its next value.
   const doc = useMemo<EditorDoc>(
@@ -102,6 +127,7 @@ export default function EditorTab() {
     setSelection(NO_SELECTION)
     setEditing(null)
     setActivePopupId(null)
+    setPlaced(null)
   }, [profile.id, format])
 
   const commit = useCallback((next: EditorDoc) => {
@@ -207,16 +233,22 @@ export default function EditorTab() {
     setActivePopupId(popup.id)
   }
 
-  // --- Shipped models
+  // --- Placement on the table
 
-  const applyModel = (id: TemplateId) => {
-    const template = TEMPLATES[id]
-    // A layout model replaces the grids of the table size being edited: ask first, and keep a step to undo it.
-    if (template.isLayout && !window.confirm(t('liveHud.templates.confirm', { name: t(`liveHud.templates.${id}`) }))) return
-    setHistory((h) => record(h, docRef.current))
-    useLiveHudStore.getState().applyTemplate(profile.id, id, template.isLayout ? format : undefined)
-    setSelection(NO_SELECTION)
-    setActivePopupId(null)
+  const place = useCallback((seat: string, gridId: string, position: GridPosition) => dispatch({ type: 'placeGrid', seat, gridId, position }), [dispatch])
+  const mirror = useCallback((from: string, to: string, widths: Record<string, number>) => dispatch({ type: 'mirrorSeat', from, to, widths }), [dispatch])
+
+  // --- Layers
+
+  const pickLayer = (grid: HudGrid, popup: boolean) => {
+    if (popup) {
+      const closing = grid.id === activePopupId
+      setActivePopupId(closing ? null : grid.id)
+      setSelection(closing ? NO_SELECTION : { gridIds: [grid.id], cellIds: [], track: null })
+      return
+    }
+    setSelection({ gridIds: [grid.id], cellIds: [], track: null })
+    setPlaced({ seat: seats[0], gridId: grid.id })
   }
 
   // --- In-place text editing
@@ -279,7 +311,7 @@ export default function EditorTab() {
       const sel = cleanSelection(selectionRaw, current)
       const gridId = sel.gridIds[0]
       if (key === 'escape') return setSelection(NO_SELECTION)
-      if (!gridId) return
+      if (!gridId || view === 'table') return
       if (key === 'delete' || key === 'backspace') {
         event.preventDefault()
         if (sel.track) return dispatch({ type: 'removeTrack', gridId, axis: sel.track.axis, index: sel.track.index })
@@ -295,7 +327,7 @@ export default function EditorTab() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [selectionRaw, dispatch, doUndo, doRedo])
+  }, [selectionRaw, view, dispatch, doUndo, doRedo])
 
   // --- Live validation
 
@@ -310,123 +342,109 @@ export default function EditorTab() {
   }, [issues])
 
   const figures = useMemo(() => previewFigures(doc.layout), [doc.layout])
-  const chip = (active: boolean) => clsx('rounded-md border px-2.5 py-1 text-xs', active ? 'border-primary-500 bg-primary-500 text-white' : 'border-dark-100 text-gray-300 hover:border-gray-500')
+  const hint = view === 'table' ? t('liveHud.ws.hint_table') : selection.cellIds.length > 0 ? t('liveHud.ws.hint_cell') : t('liveHud.ws.hint_idle')
+  const playerName = t('liveHud.preview.player', { n: 1 })
 
   return (
-    <div className="space-y-3">
-      <Card>
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-          <label className="flex items-center gap-2 text-xs text-gray-400">
-            {t('liveHud.editor.profile')}
-            <select className="rounded border border-dark-100 bg-dark-300 px-2 py-1 text-xs text-gray-200" value={profile.id} onChange={(e) => setActiveProfile(e.target.value)}>
-              {settings.profiles.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="flex items-center gap-1">
-            <span className="mr-1 text-xs text-gray-500">{t('liveHud.placement.format')}</span>
-            {HUD_FORMATS.map((f) => (
-              <button key={f} className={chip(f === format)} onClick={() => setFormat(f)}>
-                {t(`liveHud.format.${f}`)}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-1">
-            <button className="btn-icon" title={`${t('liveHud.editor.undo')} (Ctrl+Z)`} disabled={history.past.length === 0} onClick={doUndo}>
-              <Undo2 className="h-4 w-4" />
-            </button>
-            <button className="btn-icon" title={`${t('liveHud.editor.redo')} (Ctrl+Y)`} disabled={history.future.length === 0} onClick={doRedo}>
-              <Redo2 className="h-4 w-4" />
-            </button>
-          </div>
-          <label className="flex items-center gap-2 text-xs text-gray-400">
-            {t('liveHud.editor.zoom')}
-            <input type="range" min={MIN_ZOOM} max={MAX_ZOOM} step={0.05} value={zoom} onChange={(e) => setZoom(Number(e.target.value))} />
-          </label>
-          <div className="ml-auto flex items-center gap-1">
-            <select
-              className="rounded border border-dark-100 bg-dark-300 px-2 py-1 text-xs text-gray-200"
-              value=""
-              aria-label={t('liveHud.templates.models')}
-              onChange={(e) => e.target.value && applyModel(e.target.value as TemplateId)}
-            >
-              <option value="">{t('liveHud.templates.models')}</option>
-              {TEMPLATE_IDS.map((id) => (
-                <option key={id} value={id}>
-                  {t(`liveHud.templates.${id}`)}
-                </option>
-              ))}
-            </select>
-            <button className="btn-secondary flex items-center gap-1 text-xs" onClick={() => addGrid(false)}>
-              <Plus className="h-3.5 w-3.5" />
-              {t('liveHud.editor.add_grid')}
-            </button>
-            <button className="btn-secondary flex items-center gap-1 text-xs" onClick={() => addGrid(true)}>
-              <Plus className="h-3.5 w-3.5" />
-              {t('liveHud.editor.add_popup')}
-            </button>
-          </div>
-        </div>
-        {popups.length > 0 && (
-          <div className="mt-2 flex flex-wrap items-center gap-1">
-            <span className="mr-1 text-xs text-gray-500">{t('liveHud.editor.popups')}</span>
-            {popups.map((p) => (
-              <button
-                key={p.id}
-                className={chip(p.id === activePopupId)}
-                onClick={() => {
-                  setActivePopupId(p.id === activePopupId ? null : p.id)
-                  setSelection(p.id === activePopupId ? NO_SELECTION : { gridIds: [p.id], cellIds: [], track: null })
-                }}
-              >
-                {p.name}
-              </button>
-            ))}
-          </div>
-        )}
-      </Card>
+    <div className="flex h-full min-h-0 flex-col bg-dark-500 text-[13px]">
+      <CommandBar
+        format={format}
+        onFormat={setFormat}
+        view={view}
+        onView={setView}
+        canUndo={history.past.length > 0}
+        canRedo={history.future.length > 0}
+        onUndo={doUndo}
+        onRedo={doRedo}
+      />
 
-      <div className="grid items-start gap-3 lg:grid-cols-[220px_minmax(0,1fr)_300px]">
-        <Card className="lg:sticky lg:top-2 lg:h-[calc(100vh-260px)]">
-          <Palette catalog={catalog} loading={catalogLoading} onStart={startDrag} onPick={onPick} />
-        </Card>
+      <div className="flex min-h-0 flex-1">
+        <aside className="flex w-64 shrink-0 flex-col border-r border-dark-200 bg-dark-400">
+          <div className="max-h-[45%] shrink-0 overflow-y-auto">
+            <LayersPanel grids={doc.layout.grids} popups={popups} selectedIds={selection.gridIds} activePopupId={activePopupId} onPick={pickLayer} onAdd={addGrid} />
+          </div>
+          <div className="min-h-0 flex-1">
+            <Palette
+              catalog={catalog}
+              loading={catalogLoading}
+              onStart={startDrag}
+              onPick={onPick}
+              computing={customComputing}
+              onCreateCustom={() => setBuilder({ stat: null })}
+              onEditCustom={(id) => setBuilder({ stat: customStats.find((s) => s.id === id) ?? null })}
+              onDuplicateCustom={(id) => setBuilder({ stat: null, template: customStats.find((s) => s.id === id)?.definition })}
+              onDeleteCustom={(id) => {
+                if (window.confirm(t('customStats.delete_confirm'))) void removeCustomStat(id)
+              }}
+            />
+          </div>
+        </aside>
 
-        <div className="min-w-0">
-          <Canvas
-            doc={doc}
-            figures={figures}
-            opacity={profile.opacity}
+        <section className="flex min-w-0 flex-1 flex-col bg-dark-600 bg-[radial-gradient(#242936_1px,transparent_1px)] [background-size:16px_16px]">
+          <div className="min-h-0 flex-1 overflow-auto">
+            {view === 'grids' ? (
+              <Canvas
+                doc={doc}
+                figures={figures}
+                opacity={profile.opacity}
+                zoom={zoom}
+                playerName={playerName}
+                selection={selection}
+                hover={hover}
+                editing={editing}
+                editorNode={editorNode}
+                badCells={badCells}
+                popup={activePopup}
+                dispatch={dispatch}
+                onSelect={setSelection}
+                onStartDrag={startDrag}
+                onEdit={startEditing}
+              />
+            ) : (
+              <div className="flex min-h-full items-start p-6">
+                {/* `mx-auto` rather than `justify-center`: a centred overflow could not be scrolled to on the left. */}
+                <div className="mx-auto shrink-0">
+                <TableStage
+                  doc={doc}
+                  seats={seats}
+                  figures={figures}
+                  playerName={playerName}
+                  opacity={profile.opacity}
+                  size={stageSize}
+                  zoom={zoom}
+                  snap={settings.snapToGrid}
+                  placed={placed}
+                  onSelect={setPlaced}
+                  onPlace={place}
+                />
+                </div>
+              </div>
+            )}
+          </div>
+          <StatusBar
+            issueCount={issues.length}
+            hint={hint}
             zoom={zoom}
-            playerName={t('liveHud.preview.player', { n: 1 })}
-            selection={selection}
-            hover={hover}
-            editing={editing}
-            editorNode={editorNode}
-            badCells={badCells}
-            popup={activePopup}
-            dispatch={dispatch}
-            onSelect={setSelection}
-            onStartDrag={startDrag}
-            onEdit={startEditing}
+            minZoom={MIN_ZOOM}
+            maxZoom={MAX_ZOOM}
+            onZoom={setZoom}
+            onIssues={() => {
+              setView('grids')
+              setSelection(NO_SELECTION)
+            }}
           />
-          <p className="mt-2 text-xs text-gray-500">{t('liveHud.editor.help')}</p>
-        </div>
+        </section>
 
-        <Card className="lg:sticky lg:top-2 lg:max-h-[calc(100vh-260px)] lg:overflow-y-auto">
-          <Inspector
-            doc={doc}
-            selection={selection}
-            catalog={catalog}
-            issues={issues}
-            dispatch={dispatch}
-            onSelect={setSelection}
-            onNewPopup={newPopupFor}
-          />
-        </Card>
+        <aside className="w-[296px] shrink-0 overflow-y-auto border-l border-dark-200 bg-dark-400 p-3.5">
+          {view === 'table' ? (
+            <PlacementInspector doc={doc} placed={placed} seats={seats} size={stageSize} onPlace={place} onMirror={mirror} />
+          ) : (
+            <Inspector whenEmpty={<ProfileInspector />} doc={doc} selection={selection} catalog={catalog} issues={issues} dispatch={dispatch} onSelect={setSelection} onNewPopup={newPopupFor} />
+          )}
+        </aside>
       </div>
+
+      {builder && <StatBuilder stat={builder.stat} template={builder.template} onClose={() => setBuilder(null)} />}
 
       {drag && (
         <div className="pointer-events-none fixed z-50 rounded border border-primary-500 bg-dark-200 px-2 py-1 text-xs text-white shadow-lg" style={{ left: drag.x + 12, top: drag.y + 12 }}>

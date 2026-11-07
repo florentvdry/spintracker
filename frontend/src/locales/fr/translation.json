@@ -7,8 +7,7 @@
     "hud": "HUD",
     "players": "Joueurs",
     "settings": "Paramètres",
-    "stats": "Statistiques",
-    "multipliers": "Multiplicateurs"
+    "stats": "Statistiques"
   },
   "sidebar": {
     "sqlite_local": "SQLite Local"
@@ -87,11 +86,12 @@
     "subtitle": "Importe les nouvelles mains dès que la salle de poker les écrit",
     "enable": "Importer les mains automatiquement",
     "choose_folder": "Choisir un dossier",
-    "use_detected": "Utiliser ce dossier",
+    "detected": "Trouvé automatiquement",
     "unibet_hint": "Sélectionnez le dossier où Unibet enregistre ses exports automatiques (Documents\\Unibet Poker\\History\\Exports\\Automatic).",
     "manual_rooms": "Betclic n'écrit plus les historiques de mains sur votre ordinateur : ils ne peuvent pas être importés automatiquement. Exportez-les depuis le client Betclic puis utilisez le bouton Importer.",
     "state": {
       "off": "Import auto désactivé",
+      "nofolder": "Aucun dossier à surveiller",
       "watching": "En surveillance",
       "importing": "Import en cours...",
       "paused": "En pause",
@@ -142,7 +142,29 @@
       "tables_shown": "{{count}} table(s) avec le HUD",
       "show_tables": "Tables",
       "hide_tables": "Masquer les tables",
-      "move_hint": "Placez les grilles sur la table elle-même : survolez une grille et glissez la barre de son bord supérieur. Alt pour déplacer librement."
+      "move_hint": "Placez les grilles sur la table elle-même : survolez une grille et glissez la barre de son bord supérieur. Alt pour déplacer librement.",
+      "read_limit": "Le HUD lit l'historique que la salle écrit en fin de main : il est vide pendant la 1re main, et un joueur tout juste éliminé reste affiché jusqu'à la main suivante.",
+      "demo_player": "Joueur {{n}}",
+      "figures_error": "Impossible de mettre à jour les chiffres"
+    },
+    "hands": {
+      "which": "Mains à afficher",
+      "which_done": "Réalisées",
+      "which_chances": "Toutes",
+      "count_all": "{{total}} mains",
+      "count_latest": "{{shown}} dernières sur {{total}}",
+      "loading": "Chargement des mains…",
+      "empty": "Aucune main à afficher.",
+      "error": "Impossible de lire les mains.",
+      "hidden_cards": "cartes non montrées",
+      "bb": "{{value}} bb",
+      "pot": "pot {{value}}",
+      "street_preflop": "Préflop",
+      "street_flop": "Flop",
+      "street_turn": "Turn",
+      "street_river": "River",
+      "custom_stat": "Stat perso",
+      "all_hands": "Mains"
     },
     "profiles": {
       "mine": "Mes profils",
@@ -156,6 +178,9 @@
       "preview": "Aperçu",
       "opacity": "Opacité",
       "size": "Taille",
+      "fit_to_table": "Adapter la taille à la fenêtre de la table",
+      "fit_min": "Taille minimale sur une petite table",
+      "fit_to_table_hint": "Les panneaux rétrécissent sur une petite table et grandissent sur une grande. La taille ci-dessus s'applique en plus.",
       "show_hero": "Afficher mon panneau",
       "import_ok": "Profils importés.",
       "layout_note": "Le panneau change de disposition avec la table : trois joueurs affichent les tableaux 3-way, deux joueurs les tableaux heads-up. Le changement se fait entre deux mains.",
@@ -204,7 +229,8 @@
         "vsSteal": "Face à un steal",
         "postflop": "Postflop",
         "shove": "Tapis",
-        "meta": "Compteurs"
+        "meta": "Compteurs",
+        "custom": "Perso"
       },
       "help": "Glissez une stat sur une cellule, ou sur un numéro de colonne pour remplir toute la colonne. Alt + glisser copie une cellule. Double-clic pour éditer un texte. Maj ou Ctrl + clic sélectionne plusieurs cellules. Suppr efface, Ctrl+Z / Ctrl+Y annulent et rétablissent. Les chiffres sont inventés. Pour placer les grilles, déplacez-les par la barre de leur bord supérieur directement sur la table de poker.",
       "nothing_selected": "Sélectionnez une grille, une ligne, une colonne ou une cellule.",
@@ -295,14 +321,38 @@
       },
       "popup_editing": "Édition du popup : {{name}} (s'ouvre au clic sur la cellule qui y renvoie, dans le HUD)"
     },
-    "templates": {
-      "models": "Modèles…",
-      "confirm": "Remplacer les grilles de cette taille de table par le modèle « {{name}} » ? Ctrl+Z l'annule.",
-      "full": "Full",
-      "flash": "Flash",
-      "popupGeneral": "Popup Général",
-      "popupHeadsUp": "Popup Heads-Up",
-      "popupThreeWay": "Popup 3-Way"
+    "ws": {
+      "view": "Vue",
+      "view_grids": "Grilles",
+      "view_table": "Sur la table",
+      "to_associate_one": "{{count}} à associer",
+      "to_associate_other": "{{count}} à associer",
+      "import_file": "Importer un fichier",
+      "grids": "Grilles",
+      "popups": "Popups",
+      "add_grid": "Ajouter une grille",
+      "add_popup": "Ajouter un popup",
+      "popup_links_one": "{{count}} cellule y renvoie",
+      "popup_links_other": "{{count}} cellules y renvoient",
+      "all_good": "Rien à signaler",
+      "issues_one": "{{count}} problème",
+      "issues_other": "{{count}} problèmes",
+      "sample_figures": "Chiffres d’exemple",
+      "zoom_out": "Dézoomer",
+      "zoom_in": "Zoomer",
+      "zoom_reset": "Réinitialiser le zoom",
+      "hint_idle": "Glissez une stat sur une cellule, ou sur un numéro de colonne pour remplir toute la colonne.",
+      "hint_cell": "Ctrl + clic ajoute à la sélection. Suppr efface. Alt + glisser copie.",
+      "hint_table": "Glissez une grille pour la placer. Alt : placement libre.",
+      "profile_help": "Cliquez sur une grille ou une cellule pour la modifier. Ce profil passe seul de la disposition 3 joueurs à la disposition heads-up, entre deux mains.",
+      "placement": "Placement sur la table",
+      "placement_title": "{{grid}}, siège {{seat}}",
+      "pick_grid": "Choisissez une grille sur la table",
+      "left": "Gauche",
+      "top": "Haut",
+      "mirror": "Copier en miroir sur le siège {{seat}}",
+      "placement_help": "Glissez une grille sur la table. Alt pour la placer librement. Les positions sont partagées par toutes les rooms.",
+      "hero": "Vous"
     }
   },
   "header": {
@@ -440,8 +490,10 @@
       "linked": "Joueur lié à l'alias",
       "link_failed": "Échec de la liaison du joueur",
       "unlinked": "Joueur délié",
-      "unlink_failed": "Échec de la déliaison du joueur"
-    }
+      "unlink_failed": "Échec de la déliaison du joueur",
+      "syncing": "Synchronisation..."
+    },
+    "hero_label": "Héros : {{name}}"
   },
   "analysis": {
     "title": "Analyse",
@@ -648,7 +700,10 @@
     "percentage": "% Total",
     "won": "Gagnés",
     "lost": "Perdus",
-    "win_rate": "% Victoire"
+    "win_rate": "% Victoire",
+    "total_games": "Parties totales",
+    "global_win_rate": "Taux de victoire global",
+    "success_rate": "Taux de réussite"
   },
   "update": {
     "title": "Mise à jour disponible",
@@ -682,5 +737,122 @@
     "display_mode": "Mode d'affichage",
     "speed": "Vitesse",
     "options": "Options"
+  },
+  "customStats": {
+    "new": "Nouvelle stat perso",
+    "title_new": "Nouvelle stat perso",
+    "title_edit": "Modifier la stat perso",
+    "name": "Nom",
+    "numerator": "Ce qui compte (numérateur)",
+    "numerator_hint": "La décision que vous voulez mesurer.",
+    "denominator": "Sur (dénominateur)",
+    "denominator_hint": "La situation dans laquelle la décision est mesurée. Sans restriction, toutes les mains passant les filtres comptent.",
+    "restrict_denominator": "Restreindre à une situation",
+    "all_hands": "Utiliser toutes les mains",
+    "filters": "Filtres",
+    "positions": "Positions (aucune : toutes)",
+    "table_sizes": "Tailles de table (aucune : toutes)",
+    "table_size_one": "{{count}} joueur",
+    "table_size_other": "{{count}} joueurs",
+    "stack_bb": "Tapis (big blinds)",
+    "min": "min",
+    "max": "max",
+    "add_condition": "Ajouter une condition",
+    "add_group": "Ajouter un groupe",
+    "remove": "Retirer",
+    "not": "non",
+    "negate": "inverser",
+    "unnegate": "ne plus inverser",
+    "group": {
+      "and": "Toutes ces conditions",
+      "or": "Une de ces conditions"
+    },
+    "street": {
+      "preflop": "Préflop",
+      "flop": "Flop",
+      "turn": "Turn",
+      "river": "River"
+    },
+    "action": {
+      "bet": "mise",
+      "raise": "relance",
+      "call": "suit",
+      "check": "check",
+      "fold": "se couche"
+    },
+    "all_in": {
+      "any": "all-in ou non",
+      "yes": "all-in",
+      "no": "pas all-in"
+    },
+    "leaf": {
+      "flag": "Situation ou action prédéfinie",
+      "action": "Action du joueur sur une street",
+      "facingAggression": "Fait face à une mise ou relance",
+      "raiseSizeBb": "Taille de sa relance préflop (bb)",
+      "facingRaiseSizeBb": "Taille de la relance préflop affrontée (bb)",
+      "limpersBefore": "Limpers avant le joueur",
+      "raisesBefore": "Relances avant le joueur",
+      "playersSeeingFlop": "Joueurs voyant le flop",
+      "betSizePercentPot": "Taille de sa mise (% du pot)",
+      "inPosition": "Parle en dernier après le flop (en position)",
+      "stackBb": "Stack en big blinds",
+      "sizing": "Taille de mise ou de relance",
+      "sequence": "Séquence d'actions"
+    },
+    "limits": "{{leaves}} conditions utilisées sur {{max}}",
+    "preview": "{{num}} / {{den}} = {{pct}} % sur les {{hands}} dernières mains",
+    "preview_empty": "Aucune main concernée parmi les {{hands}} dernières mains",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "delete_confirm": "Supprimer cette stat perso ?",
+    "computing": "Calcul des chiffres sur votre historique…",
+    "computing_progress": "Calcul des chiffres… {{done}} / {{total}} mains",
+    "pending": "calcul",
+    "table_title": "Stats perso",
+    "empty": "Vous n'avez pas encore créé de stat perso.",
+    "sample": "Échantillon",
+    "error": {
+      "name": "Donnez un nom à la stat (40 caractères maximum).",
+      "depth": "Les conditions sont imbriquées trop profondément.",
+      "leaves": "Il y a trop de conditions.",
+      "empty_group": "Un groupe doit contenir au moins une condition.",
+      "unknown_flag": "Cette situation n'existe pas.",
+      "preflop_check": "Personne ne check préflop.",
+      "preflop_bet_size": "La taille de mise demande le flop, le turn ou la river.",
+      "range_bounds": "Une borne est hors limites.",
+      "range_order": "Un minimum dépasse son maximum.",
+      "too_many": "Le nombre maximal de stats perso est atteint."
+    },
+    "example": "Partir d’un exemple",
+    "example_none": "Stat vide",
+    "preset": {
+      "btn_open": "Open au bouton",
+      "big_open": "Open à 3 bb ou plus",
+      "short_stack_3bet": "3-bet avec 10 bb ou moins",
+      "bb_defend": "BB défend contre une relance",
+      "iso_two_limpers": "Isolation contre 2+ limpers",
+      "small_cbet": "Petite c-bet flop (50 % pot max)",
+      "btn_fold_to_cbet": "Fold à la c-bet flop au bouton",
+      "preflop_all_in": "Relance all-in préflop",
+      "showdown_after_flop": "Abattage après avoir vu le flop",
+      "seq_cbet": "C-bet au flop",
+      "seq_fold_to_cbet": "Fold au c-bet du flop",
+      "seq_raise_cbet": "Relance d'un c-bet du flop",
+      "seq_donk": "Donk bet au flop",
+      "seq_stab": "Mise après un c-bet manqué au flop",
+      "seq_three_bet": "3-bet contre une ouverture",
+      "seq_fold_to_three_bet": "Fold à un 3-bet après ouverture",
+      "seq_shove_after_limp": "Shove après un limp"
+    },
+    "search": "Rechercher",
+    "flag_situations": "Situations (le joueur pouvait agir)",
+    "flag_actions": "Actions effectuées",
+    "duplicate": "Dupliquer",
+    "copy_suffix": "(copie)",
+    "low_sample": "Moins de {{count}} occurrences : prenez ce chiffre avec prudence.",
+    "advanced_condition": "Condition avancée (stack, taille ou séquence) : partez d'un modèle pour la modifier"
   }
 }

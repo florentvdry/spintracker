@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import HudGridView from '@/components/livehud/HudGridView'
+import HandsPopup, { type HandsPopupState } from '@/components/livehud/HandsPopup'
 import { ipcService, type Json } from '@/services/ipcService'
+import { useTranslation } from 'react-i18next'
 import { useLiveHudStore } from '@/stores/liveHudStore'
+import { logError } from '@/utils/log'
 import { figureKey, requestsOf, type CellView, type GridPosition, type HudFigure, type HudFigures, type HudGrid } from './hudGrid'
 import { dragTo, type Rect } from './hudEditor'
 import { GRID_STEP, seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom, type SeatPlacements } from './hudProfile'
+import { figureHandsBody, HOVER_DELAY_MS, parseFigureHands, prettyLabel, type FigureRef, type HandsOf } from './figureHands'
 import { placePopup } from './hudPopup'
+import { tableScale } from './hudScale'
 import { previewFigures } from './previewData'
 
 /** One opponent's figures. */
@@ -15,6 +20,8 @@ export interface LivePanel {
   name: string
   figures: HudFigures
   tag?: string
+  /** The last refresh failed: the figures are the previous ones, shown greyed out. */
+  stale?: boolean
 }
 
 /** What the shell tells a HUD window about its table. `demo` fills it with example panels (development aid). */
@@ -44,22 +51,35 @@ function useLivePanels(payload: HudPayload | null, layoutKey: string, requests: 
       return
     }
     let cancelled = false
+    const markStale = (reason: unknown) => {
+      logError('Could not read the HUD figures:', reason)
+      setPanels((previous) => previous.map((panel) => ({ ...panel, stale: true })))
+    }
     void ipcService
       .getHudPlayers({ room, heroName: hero, players: seats.map((p) => p.name), stats: requests })
       .then((result) => {
-        if (cancelled || !result.success) return
+        if (cancelled) return
+        if (!result.success) {
+          markStale(result.message)
+          return
+        }
         const answers: Json[] = result.data?.players ?? []
         setPanels(
           seats.map((seat) => {
             const answer = answers.find((a) => a.name === seat.name)
             const figures: HudFigures = {}
             for (const stat of (answer?.stats ?? []) as Json[]) {
-              const figure: HudFigure = { pct: stat.pct ?? null, num: stat.num ?? 0, den: stat.den ?? 0 }
+              // A figure the backend did not count stays absent (no data), it is not a zero.
+              if (typeof stat.num !== 'number' || typeof stat.den !== 'number') continue
+              const figure: HudFigure = { pct: stat.pct ?? null, num: stat.num, den: stat.den }
               figures[figureKey(stat.section, stat.label, stat.column ?? null, stat.bucket ?? null)] = figure
             }
             return { seat: seat.seat, name: seat.name, figures, tag: answer?.tag || undefined }
           }),
         )
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) markStale(error)
       })
     return () => {
       cancelled = true
@@ -79,13 +99,37 @@ interface OpenPopup {
   anchor: { left: number; top: number; width: number; height: number }
 }
 
+/** The list of hands behind a stat that has been held under the pointer. */
+interface OpenHands {
+  /** The cell it belongs to, so that staying on the same cell does not open it again. */
+  key: string
+  seat: string
+  figure: FigureRef
+  which: HandsOf
+  anchor: { left: number; top: number; width: number; height: number }
+  state: HandsPopupState
+}
+
+/** Margin kept between a popup and the border of the window, in pixels. */
+const WINDOW_MARGIN_PX = 8
+const HANDS_POPUP_MAX_HEIGHT_PX = 590
+const HANDS_POPUP_WIDTH_PX = 504
+
 /** The page of a HUD window: the grids of one table, at their saved positions. */
 export default function HudOverlay() {
+  const { t } = useTranslation()
   const settings = useLiveHudStore((s) => s.settings)
   const load = useLiveHudStore((s) => s.load)
   const loaded = useLiveHudStore((s) => s.loaded)
   const [payload, setPayload] = useState<HudPayload | null>(null)
   const [popup, setPopup] = useState<OpenPopup | null>(null)
+  const [hands, setHands] = useState<OpenHands | null>(null)
+  const handsRef = useRef<OpenHands | null>(null)
+  handsRef.current = hands
+  const hoverTimer = useRef<number | null>(null)
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight })
+  /** Answers of earlier requests are ignored once a newer one was sent. */
+  const handsRequest = useRef(0)
   const [moving, setMoving] = useState<{ key: string; position: GridPosition } | null>(null)
   const refs = useRef<Record<string, HTMLDivElement | null>>({})
 
@@ -105,7 +149,15 @@ export default function HudOverlay() {
     }
   }, [load])
 
+  // The panels follow the size of the table window, so that a small table is not covered by them.
+  useEffect(() => {
+    const onResize = () => setWindowSize({ width: window.innerWidth, height: window.innerHeight })
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
   const profile = settings.profiles.find((p) => p.id === settings.activeProfileId) ?? settings.profiles[0]
+  const scale = profile.fitToTable ? profile.size * tableScale(windowSize.width, windowSize.height, profile.fitMinScale) : profile.size
   // The grids follow the table's size: a table of two players shows the heads-up layout.
   const format = payload?.format ?? DEMO_FORMAT
   const layout = profile.layouts[format]
@@ -115,10 +167,10 @@ export default function HudOverlay() {
   const panels = useMemo<LivePanel[]>(() => {
     if (payload?.demo) {
       const figures = previewFigures(layout)
-      return SEATS_BY_FORMAT[format].map((seat, i) => ({ seat, name: `Player ${i + 1}`, figures }))
+      return SEATS_BY_FORMAT[format].map((seat, i) => ({ seat, name: t('liveHud.live.demo_player', { n: i + 1 }), figures }))
     }
     return live
-  }, [payload, layout, format, live])
+  }, [payload, layout, format, live, t])
 
   const positions = useMemo(
     () => Object.fromEntries(SEATS_BY_FORMAT[format].map((seat) => [seat, seatPositions(settings.placements, format, seat, layout.grids)])),
@@ -129,8 +181,85 @@ export default function HudOverlay() {
   // keyboard focus (it must not take it from the poker client), so there is no key to close it.
   useEffect(() => setPopup(null), [payload?.lastHandAt, profile.id, format])
 
+  const stopTimers = useCallback(() => {
+    if (hoverTimer.current !== null) window.clearTimeout(hoverTimer.current)
+    hoverTimer.current = null
+  }, [])
+
+  // The next hand, another layout or leaving the page ends any wait and closes the list.
+  useEffect(() => {
+    stopTimers()
+    handsRequest.current += 1
+    setHands(null)
+    return stopTimers
+  }, [payload?.lastHandAt, profile.id, format, stopTimers])
+
+  const loadHands = useCallback(
+    (seat: string, figure: FigureRef, which: HandsOf) => {
+      const room = payload?.room
+      const hero = payload?.hero
+      const player = panels.find((p) => p.seat === seat)?.name
+      if (payload?.demo || !room || !hero || !player) return
+      const request = ++handsRequest.current
+      const settle = (state: HandsPopupState) => {
+        if (request === handsRequest.current) setHands((current) => (current ? { ...current, state } : current))
+      }
+      ipcService
+        .getHudFigureHands(figureHandsBody(room, hero, player, figure, which))
+        .then((result) => {
+          const data = result.success ? parseFigureHands(result.data) : null
+          if (!data) logError('Could not read the hands behind a figure:', result.success ? 'unexpected answer' : result.message)
+          settle(data ? { status: 'ready', data } : { status: 'error' })
+        })
+        .catch((error: unknown) => {
+          logError('Could not read the hands behind a figure:', error)
+          settle({ status: 'error' })
+        })
+    },
+    [payload?.room, payload?.hero, payload?.demo, panels],
+  )
+
+  const closeHands = useCallback(() => {
+    stopTimers()
+    handsRequest.current += 1
+    setHands(null)
+  }, [stopTimers])
+
+  // A stat held under the pointer opens its hands after a pause. The list stays open, so that it can
+  // be reached and read; its cross, the next hand or another list closes it.
+  const hoverFigure = useCallback(
+    (seat: string, cell: CellView, event: ReactMouseEvent<HTMLElement>) => {
+      const figure = cell.figure
+      if (!figure || moving) return
+      const target = event.currentTarget
+      if (hoverTimer.current !== null) window.clearTimeout(hoverTimer.current)
+      const key = `${seat}:${cell.id}`
+      if (handsRef.current?.key === key) return
+      hoverTimer.current = window.setTimeout(() => {
+        hoverTimer.current = null
+        const rect = target.getBoundingClientRect()
+        setPopup(null)
+        setHands({ key, seat, figure, which: 'done', anchor: { left: rect.left, top: rect.top, width: rect.width, height: rect.height }, state: { status: 'loading' } })
+        loadHands(seat, figure, 'done')
+      }, HOVER_DELAY_MS)
+    },
+    [moving, loadHands],
+  )
+
+  // Leaving a stat before the pause is over cancels the opening; a list already open stays.
+  const leaveFigure = stopTimers
+
+  const chooseHands = (which: HandsOf) => {
+    const current = handsRef.current
+    if (!current || current.which === which) return
+    setHands({ ...current, which, state: { status: 'loading' } })
+    loadHands(current.seat, current.figure, which)
+  }
+
   const openPopup = useCallback((seat: string, grid: string, cell: CellView, event: ReactMouseEvent<HTMLElement>) => {
     if (!cell.popupId) return
+    stopTimers()
+    setHands(null)
     const rect = event.currentTarget.getBoundingClientRect()
     const key = `${seat}:${grid}:${cell.id}`
     setPopup((current) => (current?.key === key ? null : { key, seat, popupId: cell.popupId as string, anchor: { left: rect.left, top: rect.top, width: rect.width, height: rect.height } }))
@@ -191,7 +320,7 @@ export default function HudOverlay() {
     report()
     window.addEventListener('resize', report)
     return () => window.removeEventListener('resize', report)
-  }, [panels, positions, profile.size, loaded, popup, layout, moving])
+  }, [panels, positions, scale, loaded, popup, hands, layout, moving])
 
   // Escape and a click outside also close it, for the day the window can have the focus.
   useEffect(() => {
@@ -207,8 +336,20 @@ export default function HudOverlay() {
     }
   }, [popup])
 
+  // A click anywhere else closes the list of hands too.
+  useEffect(() => {
+    if (!hands) return
+    const close = (event: PointerEvent) => {
+      if (!(event.target as HTMLElement).closest('[data-hands-popup]')) setHands(null)
+    }
+    window.addEventListener('pointerdown', close)
+    return () => window.removeEventListener('pointerdown', close)
+  }, [hands])
+
   if (!loaded) return null
   const popupPlayer = popup ? panels.find((p) => p.seat === popup.seat) : undefined
+  const handsPlayer = hands ? panels.find((p) => p.seat === hands.seat) : undefined
+  const handsTitle = (figure: FigureRef) => (figure.section === 'custom' ? t('liveHud.hands.custom_stat') : figure.section === 'meta' ? t('liveHud.hands.all_hands') : prettyLabel(figure.label))
   return (
     <div className="relative h-screen w-screen overflow-hidden">
       {panels.flatMap((panel) =>
@@ -223,8 +364,9 @@ export default function HudOverlay() {
               ref={(el) => {
                 refs.current[key] = el
               }}
-              className="group absolute origin-top-left"
-              style={{ left: `${position.x * 100}%`, top: `${position.y * 100}%`, transform: `scale(${profile.size})` }}
+              className={`group absolute origin-top-left ${panel.stale ? 'opacity-40 grayscale' : ''}`}
+              title={panel.stale ? t('liveHud.live.figures_error') : undefined}
+              style={{ left: `${position.x * 100}%`, top: `${position.y * 100}%`, transform: `scale(${scale})` }}
             >
               <HudGridView
                 grid={grid}
@@ -232,6 +374,8 @@ export default function HudOverlay() {
                 player={{ name: panel.name, tag: panel.tag }}
                 opacity={profile.opacity}
                 onPopup={(cell, event) => openPopup(panel.seat, grid.id, cell, event)}
+                onFigureEnter={(cell, event) => hoverFigure(panel.seat, cell, event)}
+                onFigureLeave={leaveFigure}
               />
               {!grid.locked && (
                 <div
@@ -257,7 +401,7 @@ export default function HudOverlay() {
             }
           }}
           className="absolute origin-top-left"
-          style={{ left: popup.anchor.left, top: popup.anchor.top + popup.anchor.height, transform: `scale(${profile.size})` }}
+          style={{ left: popup.anchor.left, top: popup.anchor.top + popup.anchor.height, transform: `scale(${scale})` }}
         >
           <HudGridView grid={popupGrid} figures={popupPlayer.figures} player={{ name: popupPlayer.name, tag: popupPlayer.tag }} opacity={1} />
           <button
@@ -268,6 +412,32 @@ export default function HudOverlay() {
           >
             ×
           </button>
+        </div>
+      )}
+      {hands && handsPlayer && (
+        <div
+          data-hands-popup
+          ref={(el) => {
+            refs.current.handsPopup = el
+            // Kept inside the window, whatever the scale and the size of the list.
+            if (el) {
+              const box = el.getBoundingClientRect()
+              const spot = placePopup(hands.anchor, { width: box.width, height: box.height }, { width: window.innerWidth, height: window.innerHeight })
+              el.style.left = `${spot.left}px`
+              el.style.top = `${spot.top}px`
+            }
+          }}
+          className="absolute origin-top-left"
+          style={{
+            left: hands.anchor.left,
+            top: hands.anchor.top + hands.anchor.height,
+            transform: `scale(${scale})`,
+            width: HANDS_POPUP_WIDTH_PX,
+            maxWidth: Math.floor((window.innerWidth - WINDOW_MARGIN_PX) / scale),
+            maxHeight: Math.min(HANDS_POPUP_MAX_HEIGHT_PX, Math.floor((window.innerHeight - WINDOW_MARGIN_PX) / scale)),
+          }}
+        >
+          <HandsPopup title={handsTitle(hands.figure)} player={handsPlayer.name} which={hands.which} onWhich={chooseHands} state={hands.state} onClose={closeHands} />
         </div>
       )}
     </div>

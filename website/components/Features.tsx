@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BarChart2, Users, Target, History, Settings, PlayCircle } from "lucide-react";
+import { BarChart2, Users, Target, History, Settings, PlayCircle, PanelsTopLeft, SlidersHorizontal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +15,9 @@ export function Features() {
     { icon: Target, key: "analysis", tint: "brand" },
     { icon: PlayCircle, key: "replayer", tint: "blue" },
     { icon: Users, key: "range", tint: "brand" },
-    { icon: Settings, key: "settings", full: true, tint: "blue" },
+    { icon: PanelsTopLeft, key: "hud", wide: true, tint: "blue" },
+    { icon: SlidersHorizontal, key: "customstats", tint: "brand" },
+    { icon: Settings, key: "settings", full: true, tint: "brand" },
   ];
 
   return (

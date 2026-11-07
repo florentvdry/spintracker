@@ -7,8 +7,7 @@
     "hud": "HUD",
     "players": "Players",
     "settings": "Settings",
-    "stats": "Statistics",
-    "multipliers": "Multipliers"
+    "stats": "Statistics"
   },
   "sidebar": {
     "sqlite_local": "SQLite Local"
@@ -87,11 +86,12 @@
     "subtitle": "Import new hands as soon as the poker room writes them",
     "enable": "Import hands automatically",
     "choose_folder": "Choose folder",
-    "use_detected": "Use this folder",
+    "detected": "Found automatically",
     "unibet_hint": "Select the folder where Unibet saves its automatic exports (Documents\\Unibet Poker\\History\\Exports\\Automatic).",
     "manual_rooms": "Betclic no longer writes hand histories to your computer, so they cannot be imported automatically. Export them from the Betclic client and use the Import button.",
     "state": {
       "off": "Auto-import off",
+      "nofolder": "No folder to watch",
       "watching": "Watching",
       "importing": "Importing...",
       "paused": "Paused",
@@ -142,7 +142,29 @@
       "tables_shown": "{{count}} table(s) with the HUD",
       "show_tables": "Tables",
       "hide_tables": "Hide tables",
-      "move_hint": "Place the grids on the table itself: hover a grid and drag the bar at its top edge. Hold Alt to move freely."
+      "move_hint": "Place the grids on the table itself: hover a grid and drag the bar at its top edge. Hold Alt to move freely.",
+      "read_limit": "The HUD reads the history the room writes at the end of each hand: it is empty during the first hand, and a player who just busted stays until the next hand.",
+      "demo_player": "Player {{n}}",
+      "figures_error": "Could not refresh the figures"
+    },
+    "hands": {
+      "which": "Hands to show",
+      "which_done": "Done",
+      "which_chances": "All chances",
+      "count_all": "{{total}} hands",
+      "count_latest": "latest {{shown}} of {{total}}",
+      "loading": "Loading the hands…",
+      "empty": "No hand to show.",
+      "error": "Could not read the hands.",
+      "hidden_cards": "cards not shown",
+      "bb": "{{value}} bb",
+      "pot": "pot {{value}}",
+      "street_preflop": "Preflop",
+      "street_flop": "Flop",
+      "street_turn": "Turn",
+      "street_river": "River",
+      "custom_stat": "Custom stat",
+      "all_hands": "Hands"
     },
     "profiles": {
       "mine": "My profiles",
@@ -156,6 +178,9 @@
       "preview": "Preview",
       "opacity": "Opacity",
       "size": "Size",
+      "fit_to_table": "Adapt the size to the table window",
+      "fit_min": "Smallest size on a small table",
+      "fit_to_table_hint": "The panels shrink on a small table and grow on a big one. The size above applies on top of it.",
       "show_hero": "Show my own panel",
       "import_ok": "Profiles imported.",
       "layout_note": "The panel switches layout with the table: three players show the 3-way tables, two players the heads-up ones. The switch happens between hands.",
@@ -204,7 +229,8 @@
         "vsSteal": "Vs steal",
         "postflop": "Postflop",
         "shove": "Shoves",
-        "meta": "Counts"
+        "meta": "Counts",
+        "custom": "Custom"
       },
       "help": "Drag a stat onto a cell, or onto a column number to fill the whole column. Alt + drag copies a cell. Double-click edits text. Shift or Ctrl + click selects several cells. Delete clears, Ctrl+Z / Ctrl+Y undo and redo. The figures are made up. To place the grids, drag them by the bar at their top edge directly on the poker table.",
       "nothing_selected": "Select a grid, a row, a column or a cell.",
@@ -295,14 +321,38 @@
       },
       "popup_editing": "Editing popup: {{name}} (opens when the cell that links to it is clicked in the HUD)"
     },
-    "templates": {
-      "models": "Models…",
-      "confirm": "Replace the grids of this table size with the model \"{{name}}\"? You can undo it with Ctrl+Z.",
-      "full": "Full",
-      "flash": "Flash",
-      "popupGeneral": "Popup General",
-      "popupHeadsUp": "Popup Heads-Up",
-      "popupThreeWay": "Popup 3-Way"
+    "ws": {
+      "view": "View",
+      "view_grids": "Grids",
+      "view_table": "On the table",
+      "to_associate_one": "{{count}} to associate",
+      "to_associate_other": "{{count}} to associate",
+      "import_file": "Import a file",
+      "grids": "Grids",
+      "popups": "Popups",
+      "add_grid": "Add a grid",
+      "add_popup": "Add a popup",
+      "popup_links_one": "{{count}} cell links here",
+      "popup_links_other": "{{count}} cells link here",
+      "all_good": "Nothing to report",
+      "issues_one": "{{count}} issue",
+      "issues_other": "{{count}} issues",
+      "sample_figures": "Sample figures",
+      "zoom_out": "Zoom out",
+      "zoom_in": "Zoom in",
+      "zoom_reset": "Reset the zoom",
+      "hint_idle": "Drag a stat onto a cell, or onto a column number to fill the whole column.",
+      "hint_cell": "Ctrl + click adds to the selection. Delete clears. Alt + drag copies.",
+      "hint_table": "Drag a grid to place it. Alt: free placement.",
+      "profile_help": "Click a grid or a cell to edit it. This profile switches by itself from the 3-player layout to the heads-up one, between two hands.",
+      "placement": "Placement on the table",
+      "placement_title": "{{grid}}, seat {{seat}}",
+      "pick_grid": "Pick a grid on the table",
+      "left": "Left",
+      "top": "Top",
+      "mirror": "Copy mirrored to seat {{seat}}",
+      "placement_help": "Drag a grid onto the table. Hold Alt to place it freely. Positions are shared by all rooms.",
+      "hero": "You"
     }
   },
   "header": {
@@ -369,7 +419,10 @@
     "table": {
       "ev_chips": "EV Chips",
       "pot": "Pot"
-    }
+    },
+    "by_tournaments": "By tournaments",
+    "by_hands": "By hands",
+    "total_hands": "{{total}} hands found"
   },
   "players": {
     "title": "Players",
@@ -435,8 +488,12 @@
       "linked": "Player linked to alias",
       "link_failed": "Failed to link player",
       "unlinked": "Player unlinked",
-      "unlink_failed": "Failed to unlink player"
-    }
+      "unlink_failed": "Failed to unlink player",
+      "sync": "Sync players",
+      "sync_hint": "Rebuild the player list from the hand history",
+      "syncing": "Syncing..."
+    },
+    "hero_label": "Hero: {{name}}"
   },
   "analysis": {
     "title": "Analysis",
@@ -643,7 +700,10 @@
     "percentage": "% Total",
     "won": "Won",
     "lost": "Lost",
-    "win_rate": "Win Rate"
+    "win_rate": "Win Rate",
+    "total_games": "Total games",
+    "global_win_rate": "Global win rate",
+    "success_rate": "Success rate"
   },
   "update": {
     "title": "Update available",
@@ -677,5 +737,122 @@
     "display_mode": "Display mode",
     "speed": "Speed",
     "options": "Options"
+  },
+  "customStats": {
+    "new": "New custom stat",
+    "title_new": "New custom stat",
+    "title_edit": "Edit custom stat",
+    "name": "Name",
+    "numerator": "What counts (numerator)",
+    "numerator_hint": "The decision you want to measure.",
+    "denominator": "Out of (denominator)",
+    "denominator_hint": "The situation the decision is measured in. Without a restriction, every hand that passes the filters counts.",
+    "restrict_denominator": "Restrict to a situation",
+    "all_hands": "Use every hand instead",
+    "filters": "Filters",
+    "positions": "Positions (none selected: all)",
+    "table_sizes": "Table sizes (none selected: all)",
+    "table_size_one": "{{count}} player",
+    "table_size_other": "{{count}} players",
+    "stack_bb": "Stack (big blinds)",
+    "min": "min",
+    "max": "max",
+    "add_condition": "Add condition",
+    "add_group": "Add group",
+    "remove": "Remove",
+    "not": "not",
+    "negate": "negate",
+    "unnegate": "un-negate",
+    "group": {
+      "and": "All of these",
+      "or": "Any of these"
+    },
+    "street": {
+      "preflop": "Preflop",
+      "flop": "Flop",
+      "turn": "Turn",
+      "river": "River"
+    },
+    "action": {
+      "bet": "bets",
+      "raise": "raises",
+      "call": "calls",
+      "check": "checks",
+      "fold": "folds"
+    },
+    "all_in": {
+      "any": "all-in or not",
+      "yes": "all-in",
+      "no": "not all-in"
+    },
+    "leaf": {
+      "flag": "Built-in situation or action",
+      "action": "Player action on a street",
+      "facingAggression": "Faces a bet or raise",
+      "raiseSizeBb": "Own preflop raise size (bb)",
+      "facingRaiseSizeBb": "Faced preflop raise size (bb)",
+      "limpersBefore": "Limpers before the player",
+      "raisesBefore": "Raises before the player",
+      "playersSeeingFlop": "Players seeing the flop",
+      "betSizePercentPot": "Own bet size (% of pot)",
+      "inPosition": "Acts last after the flop (in position)",
+      "stackBb": "Stack in big blinds",
+      "sizing": "Bet or raise size",
+      "sequence": "Sequence of actions"
+    },
+    "limits": "{{leaves}} of {{max}} conditions used",
+    "preview": "{{num}} / {{den}} = {{pct}}% over the latest {{hands}} hands",
+    "preview_empty": "No matching hand among the latest {{hands}} hands",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "delete_confirm": "Delete this custom stat?",
+    "computing": "Computing figures over your history…",
+    "computing_progress": "Computing figures… {{done}} / {{total}} hands",
+    "pending": "computing",
+    "table_title": "Custom stats",
+    "empty": "You have not created any custom stat yet.",
+    "sample": "Sample",
+    "error": {
+      "name": "Give the stat a name (up to 40 characters).",
+      "depth": "Conditions are nested too deeply.",
+      "leaves": "There are too many conditions.",
+      "empty_group": "A group needs at least one condition.",
+      "unknown_flag": "This situation does not exist.",
+      "preflop_check": "Nobody checks preflop.",
+      "preflop_bet_size": "Bet size needs a flop, turn or river.",
+      "range_bounds": "A range bound is out of limits.",
+      "range_order": "A minimum is above its maximum.",
+      "too_many": "The maximum number of custom stats is reached."
+    },
+    "example": "Start from an example",
+    "example_none": "Empty stat",
+    "preset": {
+      "btn_open": "BTN open",
+      "big_open": "Open 3 bb or more",
+      "short_stack_3bet": "3-bet with 10 bb or less",
+      "bb_defend": "BB defends vs a raise",
+      "iso_two_limpers": "Isolate against 2+ limpers",
+      "small_cbet": "Small flop c-bet (50% pot or less)",
+      "btn_fold_to_cbet": "Fold to flop c-bet on the button",
+      "preflop_all_in": "Preflop all-in raise",
+      "showdown_after_flop": "Showdown after seeing the flop",
+      "seq_cbet": "Flop c-bet",
+      "seq_fold_to_cbet": "Fold to flop c-bet",
+      "seq_raise_cbet": "Raise a flop c-bet",
+      "seq_donk": "Donk bet on the flop",
+      "seq_stab": "Bet after a missed flop c-bet",
+      "seq_three_bet": "3-bet over an open",
+      "seq_fold_to_three_bet": "Fold to a 3-bet after opening",
+      "seq_shove_after_limp": "Shove after a limp"
+    },
+    "search": "Search",
+    "flag_situations": "Situations (the player could act)",
+    "flag_actions": "Actions taken",
+    "duplicate": "Duplicate",
+    "copy_suffix": "(copy)",
+    "low_sample": "Fewer than {{count}} occurrences: take this figure with caution.",
+    "advanced_condition": "Advanced condition (stack, size or sequence): start from a model to change it"
   }
 }

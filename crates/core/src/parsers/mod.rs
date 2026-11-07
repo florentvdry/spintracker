@@ -17,6 +17,10 @@ pub trait HandParser: Sync {
     fn room_name(&self) -> &'static str;
     fn parser_version(&self) -> u32;
     fn hand_separator(&self) -> &'static str;
+    /// The separator to split `content` with, for rooms whose exports come in several layouts.
+    fn hand_separator_for(&self, _content: &str) -> &'static str {
+        self.hand_separator()
+    }
     fn detect_format(&self, content: &str) -> bool;
     fn parse_file(&self, content: &str) -> ParseResult;
     fn parse_hand(&self, hand_text: &str) -> Option<ParsedHand>;
@@ -59,6 +63,19 @@ pub(crate) fn parse_f64(s: &str) -> f64 {
     s.parse().unwrap_or(0.0)
 }
 
+/// Identifier of a hand whose history carries none: derived from its text, so that importing the
+/// same file again replaces the hand instead of duplicating it (FNV-1a, stable across runs).
+pub(crate) fn content_id(text: &str) -> String {
+    let hash = text.bytes().fold(0xcbf2_9ce4_8422_2325_u64, |h, b| (h ^ u64::from(b)).wrapping_mul(0x0100_0000_01b3));
+    format!("hash-{hash:016x}")
+}
+
+/// What a player pays to enter a tournament: buy-in plus fee, so that every room stores the same
+/// figure ("1.00" for a 0.93 + 0.07 Winamax Expresso) and float noise (0.93 + 0.07) is rounded away.
+pub(crate) fn entry_cost(buy_in: f64, fee: f64) -> f64 {
+    ((buy_in + fee) * 100.0).round() / 100.0
+}
+
 pub(crate) fn parse_i32(s: &str) -> i32 {
     s.parse().unwrap_or(0)
 }
@@ -86,4 +103,21 @@ pub(crate) fn split_before_marker<'a>(content: &'a str, marker: &str) -> Vec<&'a
 /// Joins action lines the way the legacy text columns store them.
 pub(crate) fn join_lines(lines: &[String]) -> String {
     lines.join("\n")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_hand_without_an_id_gets_the_same_one_every_time() {
+        assert_eq!(content_id("Winamax Poker - Tournament"), content_id("Winamax Poker - Tournament"));
+        assert_ne!(content_id("a"), content_id("b"));
+    }
+
+    #[test]
+    fn entry_cost_sums_buy_in_and_fee_without_float_noise() {
+        assert_eq!(entry_cost(0.93, 0.07), 1.0);
+        assert_eq!(entry_cost(9.3, 0.7), 10.0);
+    }
 }

@@ -36,7 +36,8 @@ export default function AutoImportCard() {
   const removeFolder = (folder: AutoImportFolder) =>
     persist(enabled, folders.filter((f) => !(f.room === folder.room && f.path === folder.path)))
 
-  const suggestions = detected.filter((d) => !folders.some((f) => f.room === d.room && f.path === d.path))
+  // Folders found on this computer are always watched; only the ones added by hand can be removed.
+  const added = folders.filter((f) => !detected.some((d) => d.room === f.room && d.path === f.path))
 
   return (
     <Card title={t('auto_import.title')} subtitle={t('auto_import.subtitle')}>
@@ -61,7 +62,7 @@ export default function AutoImportCard() {
                 {t('auto_import.choose_folder')}
               </button>
             </div>
-            {folders.filter((f) => f.room === room).map((folder) => (
+            {added.filter((f) => f.room === room).map((folder) => (
               <div key={folder.path} className="mt-2 flex items-center gap-2 text-sm text-gray-300">
                 <span className="flex-1 truncate font-mono text-xs" title={folder.path}>{folder.path}</span>
                 <button className="p-1 text-gray-400 hover:text-profit-negative" title={t('common.delete')} onClick={() => void removeFolder(folder)}>
@@ -69,15 +70,13 @@ export default function AutoImportCard() {
                 </button>
               </div>
             ))}
-            {room === 'Unibet' && folders.every((f) => f.room !== 'Unibet') && suggestions.every((s) => s.room !== 'Unibet') && (
+            {room === 'Unibet' && added.every((f) => f.room !== 'Unibet') && detected.every((d) => d.room !== 'Unibet') && (
               <p className="mt-2 text-xs text-gray-500">{t('auto_import.unibet_hint')}</p>
             )}
-            {suggestions.filter((s) => s.room === room).map((folder) => (
-              <div key={folder.path} className="mt-2 flex items-center gap-2 text-sm text-gray-400">
+            {detected.filter((d) => d.room === room).map((folder) => (
+              <div key={folder.path} className="mt-2 flex items-center gap-2 text-sm text-gray-300">
                 <span className="flex-1 truncate font-mono text-xs" title={folder.path}>{folder.path}</span>
-                <button className="text-xs text-primary-400 hover:text-primary-300" disabled={busy} onClick={() => void persist(enabled, [...folders, folder])}>
-                  {t('auto_import.use_detected')}
-                </button>
+                <span className="text-xs text-gray-500">{t('auto_import.detected')}</span>
               </div>
             ))}
           </div>

@@ -2,6 +2,40 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Permissions for the main and replayer windows",
-  "windows": ["main", "replayer-*"],
-  "permissions": ["core:default", "core:window:allow-set-title"]
+  "windows": [
+    "main",
+    "replayer-*"
+  ],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-title",
+    "allow-backend-request",
+    "allow-check-server-status",
+    "allow-import-hand-history",
+    "allow-export-data",
+    "allow-delete-all-hands",
+    "allow-set-active-database",
+    "allow-auto-import-get",
+    "allow-auto-import-set",
+    "allow-auto-import-pick-folder",
+    "allow-hud-settings-get",
+    "allow-hud-settings-set",
+    "allow-hud-get-state",
+    "allow-hud-tables",
+    "allow-hud-set-heroes",
+    "allow-hud-associate",
+    "allow-hud-set-hidden",
+    "allow-hud-set-panel-rects",
+    "allow-hud-debug-attach",
+    "allow-hud-debug-detach",
+    "allow-open-logs-folder",
+    "allow-get-app-version",
+    "allow-frontend-log",
+    "allow-app-ready",
+    "allow-open-replayer",
+    "allow-replayer-get-data",
+    "allow-check-for-updates",
+    "allow-download-update",
+    "allow-quit-and-install"
+  ]
 }

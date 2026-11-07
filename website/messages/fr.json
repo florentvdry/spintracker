@@ -8,7 +8,7 @@
     "title": "Le tracker open source",
     "subtitle": "pour les Spins.",
     "description": "Analysez votre jeu, identifiez vos leaks et améliorez vos performances avec SpinTracker.",
-    "compatible_rooms": "Compatible avec : Betclic, Winamax, Unibet — d'autres rooms bientôt.",
+    "compatible_rooms": "Compatible avec : Betclic, Winamax et Unibet (HUD en direct sur Winamax et Unibet).",
     "download_free": "Télécharger",
     "badge": "Open source · Gratuit · 100 % local",
     "explore": "Découvrir les fonctionnalités"
@@ -37,9 +37,17 @@
         "title": "Recherche de Range",
         "description": "Étudiez et affinez vos ranges avec notre outil complet. Comparez-les aux tendances de vos adversaires."
       },
+      "hud": {
+        "title": "HUD en direct",
+        "description": "Un HUD sur vos tables Winamax et Unibet, avec des dispositions heads-up et 3-way. Laissez le curseur sur une stat pour lister les mains qui la composent. Construisez vos panneaux dans l'éditeur de grilles, et coupez-le en un clic pendant que vous jouez."
+      },
+      "customstats": {
+        "title": "Stats personnalisées",
+        "description": "Créez vos propres stats à partir de conditions sur la position, la profondeur de stack, les tailles de mise et les séquences d'actions. Elles sont calculées sur tout votre historique et peuvent aller directement dans le HUD."
+      },
       "settings": {
         "title": "Paramètres",
-        "description": "Configurez import automatique des mains, détection de la room, et préférences utilisateur."
+        "description": "Les mains sont importées automatiquement depuis vos dossiers d'historique Winamax et Unibet, que SpinTracker trouve tout seul. Rien à configurer, et tout reste sur votre ordinateur."
       }
     }
   },
@@ -74,6 +82,26 @@
         "situations": "Stats par situation (3-max, Heads-Up)",
         "leaks": "Identification des leaks",
         "filters": "Comparaison à la population"
+      }
+    },
+    "hud": {
+      "title": "HUD en direct",
+      "description": "Placez vos stats sur la table comme vous le voulez. Choisissez une disposition heads-up ou 3-way, déplacez les panneaux où vous voulez, et laissez le curseur sur une stat pour voir les mains qui la composent.",
+      "alt": "Capture de l'éditeur de HUD",
+      "list": {
+        "editor": "Éditeur de grilles pour vos propres panneaux",
+        "layouts": "Dispositions heads-up et 3-way",
+        "hands": "Les mains derrière chaque stat"
+      }
+    },
+    "custom_stats": {
+      "title": "Stats personnalisées",
+      "description": "Construisez la stat dont vous avez besoin : ce qui compte, sur quoi, et dans quels spots. Voyez le résultat sur vos propres mains avant de l'enregistrer.",
+      "alt": "Capture du créateur de stats personnalisées",
+      "list": {
+        "conditions": "Conditions sur la position, le stack et les actions",
+        "examples": "Exemples prêts à l'emploi pour démarrer",
+        "preview": "Aperçu en direct sur votre historique"
       }
     },
     "replayer": {
@@ -118,7 +146,7 @@
       "title": "Windows",
       "requirements": "Windows 10 ou ultérieur (64-bit)",
       "button": "Télécharger pour Windows",
-      "info": "Version 1.0.1 • 825 Mo"
+      "info": "Version 1.3.0 · Installateur Windows · mises à jour automatiques"
     },
     "mac": {
       "title": "macOS",

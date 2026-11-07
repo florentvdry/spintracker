@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { hudBaselines } from '@/views/Stats/hudText'
 import { buildCellView, figureKey, pickColor, requestsOf, type HudFigures } from './hudGrid'
-import { defaultSettings, exportProfiles, importProfiles, sanitizeSettings, seatPositions } from './hudProfile'
+import { defaultSettings, exportProfiles, importProfiles, mergeSettings, sanitizeSettings, seatPositions } from './hudProfile'
 import type { LegacyCell, LegacyFamily, LegacyLayout, LegacyTable } from './hudMigration'
 
 // --- The layouts version 2 shipped with, to build files as that version wrote them
@@ -117,10 +117,10 @@ describe('migration from version 2', () => {
     expect(migrated.snapToGrid).toBe(false)
 
     const asked = new Set(requestsOf(migrated.profiles[0].layouts.headsUp).map((r) => figureKey(r.section, r.label, r.column, r.bucket)))
-    // The SB table: each figure for each of the seven stack depths, counted in the table's column.
-    expect(asked.has(figureKey('huSb', 'Raise First In', 'sb_hu', '13+'))).toBe(true)
-    expect(asked.has(figureKey('shove', 'Open Shove', 'sb_hu', '0-3'))).toBe(true)
-    expect(asked.has(figureKey('meta', 'hands', 'sb_hu', '5-7'))).toBe(true)
+    // The SB table: each figure for each of the six stack depths, counted in the table's column.
+    expect(asked.has(figureKey('huSb', 'Raise First In', 'sb_hu', '20+'))).toBe(true)
+    expect(asked.has(figureKey('shove', 'Open Shove', 'sb_hu', '3-8'))).toBe(true)
+    expect(asked.has(figureKey('meta', 'hands', 'sb_hu', '8-10'))).toBe(true)
     expect(asked.has(figureKey('meta', 'hands', 'hu', null))).toBe(true)
     expect(asked.has(figureKey('postflop', 'cbet_flop', 'bb_hu', null))).toBe(true)
   })
@@ -141,16 +141,16 @@ describe('migration from version 2', () => {
 
   it('shows the figures of a stack row', () => {
     const migrated = sanitizeSettings(v2Settings())
-    const grid = migrated.profiles[0].layouts.headsUp.grids.find((g) => g.rows.length === 8 && g.name === 'SB')
+    const grid = migrated.profiles[0].layouts.headsUp.grids.find((g) => g.rows.length === 7 && g.name === 'SB')
     expect(grid).toBeDefined()
     if (!grid) return
     const figures: HudFigures = {
-      [figureKey('huSb', 'Raise First In', 'sb_hu', '11-13')]: { pct: 50, num: 5, den: 10 },
-      [figureKey('meta', 'hands', 'sb_hu', '11-13')]: { pct: null, num: 12, den: 12 },
+      [figureKey('huSb', 'Raise First In', 'sb_hu', '13-16')]: { pct: 50, num: 5, den: 10 },
+      [figureKey('meta', 'hands', 'sb_hu', '13-16')]: { pct: null, num: 12, den: 12 },
     }
-    const row = grid.rows.findIndex((r) => r.context?.stack?.buckets[0] === '11-13')
+    const row = grid.rows.findIndex((r) => r.context?.stack?.buckets[0] === '13-16')
     const views = grid.cells.filter((c) => c.row === row).map((c) => buildCellView(grid, c, figures, { name: 'p' }, {}))
-    expect(views.map((v) => v.text).slice(0, 3)).toEqual(['11-13', '12', '50'])
+    expect(views.map((v) => v.text).slice(0, 3)).toEqual(['13-16', '12', '50'])
   })
 
   it('stacks the grids of a panel from its old position', () => {
@@ -224,5 +224,48 @@ describe('placements without rooms', () => {
     saved.placements = { Winamax: { threeMax: { '+1': { [grid]: { x: 0.3, y: 0.4 } } } }, Unibet: {} }
     expect(sanitizeSettings(saved).placements.threeMax['+1'][grid]).toEqual({ x: 0.3, y: 0.4 })
     expect(sanitizeSettings(saved).placements).not.toHaveProperty('Winamax')
+  })
+})
+
+describe('saving from several windows', () => {
+  it('keeps the other window\'s change to a field this window did not touch', () => {
+    const base = defaultSettings()
+    const local = { ...base, snapToGrid: !base.snapToGrid }
+    const remote = { ...base, enabled: !base.enabled }
+    const merged = mergeSettings(base, local, remote)
+    expect(merged.snapToGrid).toBe(local.snapToGrid)
+    expect(merged.enabled).toBe(remote.enabled)
+  })
+
+  it('lets this window win on the fields it changed', () => {
+    const base = defaultSettings()
+    const local = { ...base, enabled: false }
+    const remote = { ...base, enabled: true }
+    expect(mergeSettings(base, local, remote).enabled).toBe(false)
+  })
+})
+
+describe('fitting the panels to the table window', () => {
+  it('is on for a new profile and for settings saved before the option existed', () => {
+    const settings = defaultSettings()
+    expect(settings.profiles[0].fitToTable).toBe(true)
+    const old = JSON.parse(JSON.stringify(settings))
+    delete old.profiles[0].fitToTable
+    expect(sanitizeSettings(old).profiles[0].fitToTable).toBe(true)
+  })
+
+  it('keeps the smallest size at 70 % unless the profile sets another, within its range', () => {
+    const settings = defaultSettings()
+    expect(settings.profiles[0].fitMinScale).toBe(0.7)
+    settings.profiles[0].fitMinScale = 0.5
+    expect(sanitizeSettings(JSON.parse(JSON.stringify(settings))).profiles[0].fitMinScale).toBe(0.5)
+    settings.profiles[0].fitMinScale = 9
+    expect(sanitizeSettings(JSON.parse(JSON.stringify(settings))).profiles[0].fitMinScale).toBe(1)
+  })
+
+  it('stays off once the user turned it off', () => {
+    const settings = defaultSettings()
+    settings.profiles[0].fitToTable = false
+    expect(sanitizeSettings(JSON.parse(JSON.stringify(settings))).profiles[0].fitToTable).toBe(false)
   })
 })
