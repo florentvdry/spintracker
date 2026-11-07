@@ -191,9 +191,14 @@ fn prize_shares(room: Room, multiplier: i32) -> Option<Shares> {
     }
 }
 
+/// Smallest multiplier a real Spin can have. The importers store 1 when the prize is unknown
+/// (a Winamax hand history without its summary file), so 1 means "not recorded", not "x1".
+const MIN_REAL_MULTIPLIER: i32 = 2;
+
 impl TournamentFigures {
-    fn is_prized(&self) -> bool {
-        self.prize_pool > 0.0 || self.multiplier > 0
+    /// Whether the prize is known. Without it the result in euros cannot be computed.
+    pub(crate) fn is_prized(&self) -> bool {
+        self.prize_pool > 0.0 || self.multiplier >= MIN_REAL_MULTIPLIER
     }
 
     /// What the player paid to enter: `buy_in` already includes the fee in every room.
@@ -244,12 +249,13 @@ impl TournamentFigures {
         }
     }
 
-    /// Result in euros; tournaments with no prize information fall back to the chips result.
+    /// Result in euros. A tournament whose prize is unknown counts for 0: guessing a multiplier
+    /// would turn every win into a loss (x1) or invent money, and the chips are not euros.
     pub(crate) fn euro_profit(&self) -> f64 {
         if self.is_prized() {
             self.win_amount() - self.total_cost()
         } else {
-            self.chip_profit
+            0.0
         }
     }
 
@@ -450,6 +456,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
 
     // One row per tournament: its figures decide the euro result and whether it was cashed.
     let mut tournaments_won = 0;
+    let mut unpriced_tournaments = 0;
     let mut total_profit_euro = 0.0;
     {
         let mut stmt = conn.prepare(&format!(
@@ -473,6 +480,9 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
             let figures = figures?;
             if figures.is_in_the_money() {
                 tournaments_won += 1;
+            }
+            if !figures.is_prized() {
+                unpriced_tournaments += 1;
             }
             total_profit_euro += figures.euro_profit();
         }
@@ -544,6 +554,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         "total_hands": total_hands,
         "hands_won": hands_won,
         "tournaments_won": tournaments_won,
+        "unpriced_tournaments": unpriced_tournaments,
         "total_profit": total_profit_euro,
         "total_ev": total_ev,
         "total_tournaments": total_tournaments,
@@ -727,8 +738,7 @@ pub struct MultiplierStats {
 
 pub fn multiplier_stats(conn: &Connection, q: &StatsQuery) -> Result<Vec<MultiplierStats>> {
     let hero = resolve_hero(conn, q.hero_name.as_deref())?;
-    // This statistic never filters on the buy-in.
-    let scope = scope(hero.as_deref(), non_empty(&q.date_from), non_empty(&q.date_to), None, true, &[]);
+    let scope = scope(hero.as_deref(), non_empty(&q.date_from), non_empty(&q.date_to), q.buy_in, true, &[]);
 
     let mut stmt = conn.prepare(&format!(
         "SELECT multiplier, COUNT(*) as total, SUM(CASE WHEN is_won THEN 1 ELSE 0 END) as wins
@@ -817,6 +827,16 @@ mod tests {
     }
 
     #[test]
+    fn an_unknown_prize_counts_for_nothing_instead_of_a_x1_result() {
+        // A Winamax hand history imported without its summary: multiplier 1, no prize pool.
+        let won = in_room(Room::Winamax, figures(5.0, 0.0, 1, 0, 1000.0, 3));
+        let lost = in_room(Room::Winamax, figures(5.0, 0.0, 1, 0, -500.0, 3));
+        assert!(!won.is_prized() && !lost.is_prized());
+        assert_eq!((won.euro_profit(), lost.euro_profit()), (0.0, 0.0));
+        assert!(won.is_in_the_money());
+    }
+
+    #[test]
     fn losing_costs_the_buy_in() {
         let t = figures(2.0, 4.0, 2, 2, -500.0, 2);
         assert_eq!(t.euro_profit(), -2.0);
@@ -843,9 +863,9 @@ mod tests {
     }
 
     #[test]
-    fn no_prize_information_falls_back_to_chips() {
+    fn no_prize_information_has_no_euro_result_but_still_counts_as_won_or_lost() {
         let t = figures(0.0, 0.0, 0, 0, 120.0, 2);
-        assert_eq!(t.euro_profit(), 120.0);
+        assert_eq!(t.euro_profit(), 0.0);
         assert!(t.is_in_the_money());
         assert!(!figures(0.0, 0.0, 0, 0, -1.0, 2).is_in_the_money());
     }

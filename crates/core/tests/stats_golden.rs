@@ -101,6 +101,8 @@ fn dashboard(q: StatsQuery) -> Value {
     let mut v = stats::dashboard_stats(&database().conn().unwrap(), &q).unwrap();
     // Depends on today's date.
     v.as_object_mut().unwrap().remove("sessions_this_month");
+    // Added after the former backend: it has no counterpart in the golden files.
+    v.as_object_mut().unwrap().remove("unpriced_tournaments");
     v
 }
 

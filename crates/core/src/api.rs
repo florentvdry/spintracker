@@ -237,7 +237,7 @@ impl Backend {
                 Response::data(Value::Array(stats::winrate_chart(&*conn()?, &q)?))
             }
             ("GET" | "POST", ["db", "multiplier-stats"]) => {
-                let q: StatsQuery = r.options(|q| StatsQuery { buy_in: None, ..stats_query_from_query(q) })?;
+                let q: StatsQuery = r.options(stats_query_from_query)?;
                 Response::data(serde_json::to_value(stats::multiplier_stats(&*conn()?, &q)?)?)
             }
             ("GET" | "POST", ["db", "range-heatmap"]) => {

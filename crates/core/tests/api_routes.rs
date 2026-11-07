@@ -55,6 +55,7 @@ fn get_routes_read_their_query_string() {
     let mut expected = golden("dashboard_hero.json");
     for v in [&mut dashboard, &mut expected] {
         v["data"].as_object_mut().unwrap().remove("sessions_this_month");
+        v["data"].as_object_mut().unwrap().remove("unpriced_tournaments");
     }
     assert!(same(&dashboard, &expected));
 
