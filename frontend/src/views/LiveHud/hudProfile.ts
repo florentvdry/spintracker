@@ -108,8 +108,8 @@ export const emptyProfile = (id: string, name: string): HudProfile => ({
 
 /** Where the first grid of a seat sits on a fresh install: out of the way of the cards and the buttons. */
 export const SEAT_ORIGINS: Record<HudFormat, Record<string, GridPosition>> = {
-  threeMax: { '+1': { x: 0.01, y: 0.1 }, '+2': { x: 0.57, y: 0.1 } },
-  headsUp: { '+1': { x: 0.05, y: 0.05 } },
+  threeMax: { '+1': { x: 0.01, y: 0.03 }, '+2': { x: 0.82, y: 0.03 } },
+  headsUp: { '+1': { x: 0.01, y: 0.03 } },
 }
 
 const emptyPlacements = (): Placements => ({ threeMax: { '+1': {}, '+2': {} }, headsUp: { '+1': {} } })

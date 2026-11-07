@@ -73,6 +73,14 @@ describe('the shipped models', () => {
 })
 
 describe('fresh install', () => {
+  it('puts the heads-up small blind matrix on the left and the big blind one on the right, out of the middle', () => {
+    const settings = defaultSettings()
+    const grids = settings.profiles[0].layouts.headsUp.grids
+    const at = (name: string) => settings.placements.headsUp['+1'][grids.find((g) => g.name === name && g.rows.some((r) => r.context?.stack))!.id]
+    expect(at('SB').x).toBeLessThan(0.2)
+    expect(at('BB').x).toBeGreaterThan(0.7)
+  })
+
   it('lays the heads-up panel and both three-way panels inside the table', () => {
     const settings = defaultSettings()
     const profile = settings.profiles[0]

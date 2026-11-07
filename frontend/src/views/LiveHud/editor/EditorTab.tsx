@@ -13,9 +13,10 @@ import {
   type EditorDoc,
   type EditorHistory,
 } from '../hudEditor'
-import { newGrid, validateLayout, type CellContent, type GridPosition, type HudGrid, type HudIssue } from '../hudGrid'
+import { newGrid, REFERENCE_TABLE, validateLayout, type CellContent, type GridPosition, type HudGrid, type HudIssue } from '../hudGrid'
 import { SEATS_BY_FORMAT, seatPositions, type HudFormat } from '../hudProfile'
 import { previewFigures } from '../previewData'
+import { tableScale } from '../hudScale'
 import Canvas from './Canvas'
 import CommandBar, { type EditorView } from './CommandBar'
 import Inspector from './Inspector'
@@ -65,6 +66,8 @@ export default function EditorTab() {
   const { t } = useTranslation()
   const { settings } = useLiveHudStore()
   const profile = settings.profiles.find((p) => p.id === settings.activeProfileId) ?? settings.profiles[0]
+  // The stage is a table of the reference size: the grids are drawn at the size they would have on it.
+  const stageSize = profile.size * (profile.fitToTable ? tableScale(REFERENCE_TABLE.width, REFERENCE_TABLE.height, profile.fitMinScale) : 1)
   const [format, setFormat] = useState<HudFormat>('threeMax')
   const seats = SEATS_BY_FORMAT[format]
 
@@ -407,7 +410,7 @@ export default function EditorTab() {
                   figures={figures}
                   playerName={playerName}
                   opacity={profile.opacity}
-                  size={profile.size}
+                  size={stageSize}
                   zoom={zoom}
                   snap={settings.snapToGrid}
                   placed={placed}
@@ -434,7 +437,7 @@ export default function EditorTab() {
 
         <aside className="w-[296px] shrink-0 overflow-y-auto border-l border-dark-200 bg-dark-400 p-3.5">
           {view === 'table' ? (
-            <PlacementInspector doc={doc} placed={placed} seats={seats} size={profile.size} onPlace={place} onMirror={mirror} />
+            <PlacementInspector doc={doc} placed={placed} seats={seats} size={stageSize} onPlace={place} onMirror={mirror} />
           ) : (
             <Inspector whenEmpty={<ProfileInspector />} doc={doc} selection={selection} catalog={catalog} issues={issues} dispatch={dispatch} onSelect={setSelection} onNewPopup={newPopupFor} />
           )}

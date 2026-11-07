@@ -32,6 +32,8 @@ export interface TemplateInstance {
   popups: HudGrid[]
   /** Offset of each grid, in pixels, from the first grid of the seat's panel. */
   offsets: Record<string, { dx: number; dy: number }>
+  /** Where each grid sits for a seat, as fractions of the table; it wins over the offsets. */
+  absolute?: Record<string, Record<string, GridPosition>>
 }
 
 // --- Look (the colours of the design)
@@ -308,6 +310,20 @@ function flow(grids: HudGrid[], maxWidth: number): Record<string, { dx: number; 
 const HU_PANEL_WIDTH = 640
 const THREE_WAY_PANEL_WIDTH = 380
 
+// Where the panels sit on a fresh install: down the two sides of the table, out of the way of the
+// board, the pot and the buttons. The small blind is on the left and the big blind on the right in
+// heads-up; in 3-way each opponent has the side of their seat. All are fractions of the table window.
+const SIDE_LEFT_X = 0.01
+const SIDE_RIGHT_X = 0.92
+/** Where a right-hand matrix starts, so that its right edge is next to the border of the window. */
+const MATRIX_RIGHT_X = 0.84
+const NAME_Y = 0.03
+const POSTFLOP_Y = 0.43
+const PREFLOP_Y = 0.55
+const THREE_WAY_POSTFLOP_Y = 0.36
+const THREE_WAY_BOX_STEP = 0.075
+const THREE_WAY_PREFLOP_Y = 0.6
+
 function headsUpFull(): TemplateInstance {
   const general = generalPopup()
   const heads = headsUpPopup()
@@ -318,7 +334,16 @@ function headsUpFull(): TemplateInstance {
   const sbPost = streetBox('SB', POSITION.SB, 'sb_hu', [CBET, FOLD_TO_CBET, CHECK_RAISE], FULL_FONT)
   const bbPost = streetBox('BB', POSITION.BB, 'bb_hu', [FOLD_TO_CBET, DONK, CHECK_RAISE], FULL_FONT)
   const grids = [player, sb, bb, sbPost, bbPost]
-  return { grids, popups: [general, heads], offsets: flow(grids, HU_PANEL_WIDTH) }
+  const absolute = {
+    '+1': {
+      [player.id]: { x: SIDE_LEFT_X, y: NAME_Y },
+      [sbPost.id]: { x: SIDE_LEFT_X, y: POSTFLOP_Y },
+      [sb.id]: { x: SIDE_LEFT_X, y: PREFLOP_Y },
+      [bbPost.id]: { x: SIDE_RIGHT_X, y: POSTFLOP_Y },
+      [bb.id]: { x: MATRIX_RIGHT_X, y: PREFLOP_Y },
+    },
+  }
+  return { grids, popups: [general, heads], offsets: flow(grids, HU_PANEL_WIDTH), absolute }
 }
 
 function headsUpFlash(): TemplateInstance {
@@ -355,7 +380,14 @@ function headsUpFlash(): TemplateInstance {
     heads.id,
   )
   const grids = [player, sb, bb]
-  return { grids, popups: [general, heads], offsets: flow(grids, HU_PANEL_WIDTH) }
+  const absolute = {
+    '+1': {
+      [player.id]: { x: SIDE_LEFT_X, y: NAME_Y },
+      [sb.id]: { x: SIDE_LEFT_X, y: PREFLOP_Y },
+      [bb.id]: { x: MATRIX_RIGHT_X, y: PREFLOP_Y },
+    },
+  }
+  return { grids, popups: [general, heads], offsets: flow(grids, HU_PANEL_WIDTH), absolute }
 }
 
 const threeWaySeats = (flash: boolean): Parameters<typeof seatRows>[1] => [
@@ -422,7 +454,13 @@ function threeWayFull(): TemplateInstance {
   // Three boxes: a box is a title, three streets and its lines.
   const boxes = [streetBox('CB', FAMILY.raise, 'tot', [CBET], FULL_FONT), streetBox('FvCB', FAMILY.reaction, 'tot', [FOLD_TO_CBET], FULL_FONT), streetBox('Dk', FAMILY.entry, 'tot', [DONK], FULL_FONT)]
   const grids = [player, preflop, ...boxes]
-  return { grids, popups: [general, three], offsets: flow(grids, THREE_WAY_PANEL_WIDTH) }
+  const side = (nameX: number, preflopX: number) => ({
+    [player.id]: { x: nameX, y: NAME_Y },
+    ...Object.fromEntries(boxes.map((box, i) => [box.id, { x: nameX, y: THREE_WAY_POSTFLOP_Y + i * THREE_WAY_BOX_STEP }])),
+    [preflop.id]: { x: preflopX, y: THREE_WAY_PREFLOP_Y },
+  })
+  const absolute = { '+1': side(SIDE_LEFT_X, SIDE_LEFT_X), '+2': side(SIDE_RIGHT_X, MATRIX_RIGHT_X - 0.02) }
+  return { grids, popups: [general, three], offsets: flow(grids, THREE_WAY_PANEL_WIDTH), absolute }
 }
 
 function threeWayFlash(): TemplateInstance {
@@ -432,7 +470,13 @@ function threeWayFlash(): TemplateInstance {
   const preflop = seatRows('Preflop', threeWaySeats(true), FLASH_FONT, three.id)
   const postflop = streetBox('Post', HUD_COLORS.textSecondary, 'tot', [CBET, FOLD_TO_CBET], FLASH_FONT)
   const grids = [player, preflop, postflop]
-  return { grids, popups: [general, three], offsets: flow(grids, THREE_WAY_PANEL_WIDTH) }
+  const side = (nameX: number, preflopX: number) => ({
+    [player.id]: { x: nameX, y: NAME_Y },
+    [postflop.id]: { x: nameX, y: THREE_WAY_POSTFLOP_Y },
+    [preflop.id]: { x: preflopX, y: THREE_WAY_PREFLOP_Y },
+  })
+  const absolute = { '+1': side(SIDE_LEFT_X, SIDE_LEFT_X), '+2': side(SIDE_RIGHT_X, MATRIX_RIGHT_X - 0.02) }
+  return { grids, popups: [general, three], offsets: flow(grids, THREE_WAY_PANEL_WIDTH), absolute }
 }
 
 export interface TemplateInfo {
@@ -456,6 +500,8 @@ export function templatePositions(instance: TemplateInstance, origins: Record<st
   for (const [seat, origin] of Object.entries(origins)) {
     out[seat] = Object.fromEntries(
       instance.grids.map((g) => {
+        const fixed = instance.absolute?.[seat]?.[g.id]
+        if (fixed) return [g.id, fixed]
         const offset = instance.offsets[g.id] ?? { dx: 0, dy: 0 }
         return [g.id, { x: Math.min(1, origin.x + offset.dx / REFERENCE_TABLE.width), y: Math.min(1, origin.y + offset.dy / REFERENCE_TABLE.height) }]
       }),
