@@ -15,7 +15,6 @@ export default function TopNav({ children }: { children?: ReactNode }) {
     { name: t('navigation.history'), href: '/hands' },
     { name: t('navigation.stats'), href: '/stats' },
     { name: t('navigation.ranges'), href: '/ranges' },
-    { name: t('navigation.charts'), href: '/charts' },
     { name: t('navigation.players'), href: '/players' },
     { name: t('navigation.hud'), href: '/hud' },
   ]
