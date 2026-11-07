@@ -10,6 +10,10 @@ use crate::models::{
 };
 
 const HAND_SEPARATOR: &str = "------------";
+/// The current `HandsExport` files have no dashed line between hands: every hand just opens with
+/// this one. Splitting them on the dashes would turn a whole file into one huge "hand" (minutes
+/// of parsing, and all but one hand lost).
+const HAND_HEADER: &str = "*** HEADER ***";
 
 pub struct BetclicParser;
 
@@ -89,6 +93,15 @@ impl HandParser for BetclicParser {
 
     fn hand_separator(&self) -> &'static str {
         HAND_SEPARATOR
+    }
+
+    fn hand_separator_for(&self, content: &str) -> &'static str {
+        // Older exports keep their dashed lines (the stored hand text starts with one).
+        if content.lines().any(|l| l.trim().starts_with(HAND_SEPARATOR)) {
+            HAND_SEPARATOR
+        } else {
+            HAND_HEADER
+        }
     }
 
     fn detect_format(&self, content: &str) -> bool {

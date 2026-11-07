@@ -162,7 +162,7 @@ impl Importer {
         };
         let room = parser.room_name();
 
-        let mut blocks = split_hands(&text, parser.hand_separator());
+        let mut blocks = split_hands(&text, parser.hand_separator_for(&text));
         let pending = match blocks.last() {
             Some(last) if !hand_is_complete(room, last, mode == LiveMode::Resume) => {
                 blocks.pop();

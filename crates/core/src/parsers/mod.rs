@@ -17,6 +17,10 @@ pub trait HandParser: Sync {
     fn room_name(&self) -> &'static str;
     fn parser_version(&self) -> u32;
     fn hand_separator(&self) -> &'static str;
+    /// The separator to split `content` with, for rooms whose exports come in several layouts.
+    fn hand_separator_for(&self, _content: &str) -> &'static str {
+        self.hand_separator()
+    }
     fn detect_format(&self, content: &str) -> bool;
     fn parse_file(&self, content: &str) -> ParseResult;
     fn parse_hand(&self, hand_text: &str) -> Option<ParsedHand>;
