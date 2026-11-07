@@ -243,3 +243,32 @@ fn betclic_export_without_dashed_dividers_is_split_into_hands() {
     let (summary, _) = run(&f, &path);
     assert_eq!(summary.imported, expected);
 }
+
+const POKER_TRACKER_SUMMARY: &str = "PokerTracker 4 Tournament Summary\nSite: Winamax\nGame: Holdem\nTournament #: 1096047576\nStarted: 2026/04/15 13:49:33\nFinished: 2026/04/15 13:57:11\nBuyin: €0.93\nFee: €0.07\nPrize Pool: €3.00\nInitial Stack: 0\nTable Type: STT (3 max) Hyper-Turbo SNG LOTTERY\nTourney Type: No Limit\nPlayers: 3\n\nPlace: 1, Player: riickyy777, Won: €3.00,\nPlace: 2, Player: Nelfrot-YT, Won: €0.00,\nPlace: 3, Player: CG_Boss2336, Won: €0.00,\n";
+
+#[test]
+fn poker_tracker_summaries_give_the_prize_and_are_never_imported_as_hands() {
+    let f = fixture();
+    let folder = tempfile::tempdir().unwrap();
+    let hands = folder.path().join("Winamax_HandsExport_tourney_00001.txt");
+    std::fs::copy(sample("Winamax", "20260415_Expresso(1096047576)_real_holdem_no-limit.txt"), &hands).unwrap();
+    let summary = folder.path().join("T#1096047576 - €0.93+€0.07 - 20260415 - Summary.txt");
+    std::fs::write(&summary, POKER_TRACKER_SUMMARY).unwrap();
+
+    // The summary alone holds no hand.
+    let (alone, _) = run(&f, &summary);
+    assert_eq!((alone.imported, alone.total_found), (0, 0));
+    assert_eq!(f.importer.count_hands(&summary).unwrap(), 0);
+    assert_eq!(count(&f.db.conn().unwrap(), "SELECT COUNT(*) FROM hands"), 0);
+
+    // The hands take their prize pool, entry cost, multiplier and the hero's place from it.
+    let (imported, _) = run(&f, &hands);
+    assert!(imported.imported > 5);
+    let conn = f.db.conn().unwrap();
+    let (position, prize_pool, buy_in, multiplier): (i64, f64, f64, i64) = conn
+        .query_row("SELECT position, prize_pool, buy_in, multiplier FROM hands LIMIT 1", [], |r| {
+            Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?))
+        })
+        .unwrap();
+    assert_eq!((position, prize_pool, buy_in, multiplier), (2, 3.0, 1.0, 3));
+}
