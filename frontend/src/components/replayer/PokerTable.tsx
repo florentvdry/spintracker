@@ -34,6 +34,7 @@ export default function PokerTable() {
   const players = useReplayerStore((s) => s.players)
   const board = useReplayerStore((s) => s.board)
   const pot = useReplayerStore((s) => s.pot)
+  const street = useReplayerStore((s) => s.street)
   const viewMode = useReplayerStore((s) => s.viewMode)
   const blinds = useReplayerStore((s) => s.handData?.blinds)
   const action = useReplayerStore(selectCurrentAction)
@@ -85,7 +86,7 @@ export default function PokerTable() {
                 </div>
               )}
 
-              {action?.street && <div className="street-pill">{action.street}</div>}
+              <div className="street-pill">{street}</div>
             </div>
           </div>
         </div>
