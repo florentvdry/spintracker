@@ -11,6 +11,8 @@ use spintracker_core::api::Backend;
 use tauri::{AppHandle, Emitter, Manager};
 
 const APP_DATA_FOLDER: &str = "SpinTracker";
+const DEV_DATA_FOLDER: &str = "SpinTracker-dev";
+const DATA_DIR_ENV: &str = "SPINTRACKER_DATA_DIR";
 const LEGACY_DATA_FOLDER: &str = "poker-tracker-pro";
 const DB_FILE_NAME: &str = "poker_tracker.db";
 pub const BACKFILL_EVENT: &str = "backfill-progress";
@@ -65,9 +67,16 @@ impl BackendState {
 
 /// Same folder as the former Electron `userData`, so existing databases and
 /// settings are picked up without any migration.
+///
+/// Development builds use their own folder so that tests never touch the data of the
+/// installed app; `DATA_DIR_ENV` overrides the location entirely.
 pub fn data_dir(app: &AppHandle) -> PathBuf {
+    if let Some(custom) = std::env::var_os(DATA_DIR_ENV).filter(|value| !value.is_empty()) {
+        return PathBuf::from(custom);
+    }
     let base = app.path().config_dir().unwrap_or_else(|_| std::env::temp_dir());
-    base.join(APP_DATA_FOLDER)
+    let folder = if cfg!(debug_assertions) { DEV_DATA_FOLDER } else { APP_DATA_FOLDER };
+    base.join(folder)
 }
 
 pub fn logs_dir(app: &AppHandle) -> PathBuf {
