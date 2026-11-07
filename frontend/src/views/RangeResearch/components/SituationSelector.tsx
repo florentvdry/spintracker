@@ -281,7 +281,11 @@ export default function SituationSelector({ filters, onChange }: SituationSelect
 
           <div className="mt-2 flex items-center gap-2 text-[11px] text-gray-500 bg-blue-500/5 border border-primary-500/10 p-3 rounded-lg">
             <Info className="w-4 h-4 text-info shrink-0" />
-            <div>{t('range_analysis.filters.info_tip', { position: selectedPosition, player: filters.HeroName || populationLabel })}</div>
+            <div>
+              {selectedPosition
+                ? t('range_analysis.filters.info_tip', { position: selectedPosition, player: filters.HeroName || populationLabel })
+                : t('range_analysis.filters.info_tip_empty')}
+            </div>
           </div>
         </div>
       </div>

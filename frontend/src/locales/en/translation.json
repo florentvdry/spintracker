@@ -2,11 +2,10 @@
   "navigation": {
     "dashboard": "Dashboard",
     "history": "Tournament History",
-    "ranges": "Range Analyzer",
+    "analysis": "Analysis",
     "hud": "HUD",
     "players": "Players",
-    "settings": "Settings",
-    "stats": "Statistics"
+    "settings": "Settings"
   },
   "sidebar": {
     "sqlite_local": "SQLite Local"
@@ -497,6 +496,77 @@
     },
     "hero_label": "Hero: {{name}}"
   },
+  "variance": {
+    "title": "Variance Simulator",
+    "subtitle": "Simulate thousands of Spin runs from your chip EV and the room's multiplier distribution: what does \"normal\" bad luck look like?",
+    "parameters": "Parameters",
+    "spins": "Tournaments to simulate",
+    "buy_in": "Buy-in",
+    "simulations": "Simulations",
+    "bankroll": "Starting bankroll",
+    "bankroll_placeholder": "Optional",
+    "use_history": "Use my history",
+    "rerun": "Run the simulation again",
+    "history_loaded": "Loaded from your {{count}} tournaments: chip EV, buy-in and real curve (dashboard period and filters).",
+    "no_history": "No Spin results found for the current filters.",
+    "distribution": "Multiplier distribution",
+    "distribution_hint": "Theoretical table of the room (third-party source, 1 € buy-in). Editable.",
+    "multiplier": "Multiplier",
+    "frequency": "Frequency",
+    "add_row": "Add a multiplier",
+    "tile_roi": "Expected ROI",
+    "tile_roi_hint": "per tournament",
+    "tile_losing": "Chance of losing",
+    "tile_losing_hint": "after {{count}} tournaments",
+    "tile_downswing": "Worst downswing (95%)",
+    "tile_downswing_hint": "maximum drawdown",
+    "tile_ruin": "Risk of ruin",
+    "tile_ruin_hint": "with a {{amount}} € bankroll",
+    "tile_ruin_none": "enter a starting bankroll",
+    "chart_title": "Simulated profit over time",
+    "chart_subtitle": "Median, 25-75% and 10-90% of the runs · {{formatted}} simulations",
+    "axis_tournaments": "Tournaments",
+    "median": "Median",
+    "band_50": "25 – 75%",
+    "band_80": "10 – 90%",
+    "real": "My real results",
+    "real_legend": "My real results ({{count}} tournaments)",
+    "sample_path": "Run {{index}}",
+    "reading": "Reading",
+    "reading_text": "With these parameters, 10% of the runs end above <good>{{high}}</good> and 10% below <bad>{{low}}</bad> after {{count}} tournaments.",
+    "verdict_inside": "Your real curve is inside the normal zone; a gap is not proof of a leak.",
+    "verdict_above": "Your real curve is above the normal zone: either a lucky run or a win rate higher than the one entered.",
+    "verdict_below": "Your real curve is below the normal zone: a very bad run can explain it, but check the win rate you entered too.",
+    "footnote": "Random draw simulation: the chip EV gives the win probability (chips share out of the 3 stacks), a won tournament pays multiplier × buy-in, a lost one costs the buy-in. Everything is computed locally.",
+    "error": {
+      "buyIn": "The buy-in must be greater than 0.",
+      "spins": "The number of tournaments must be a whole number between 1 and {{maxSpins}}.",
+      "simulations": "The number of simulations must be a whole number between 1 and {{maxSimulations}}.",
+      "work": "Tournaments times simulations cannot exceed {{maxWork}}.",
+      "winRate": "The chip EV must be a number.",
+      "multipliers": "Add at least one multiplier with a positive frequency.",
+      "bankroll": "The bankroll must be greater than 0, or left empty."
+    },
+    "chip_ev": "Chip EV (per tournament)",
+    "tip_after": "After {{count}} tournaments",
+    "tip_top": "Top {{pct}}%",
+    "tip_bottom": "Bottom {{pct}}%",
+    "rank_top": "top {{pct}}%",
+    "rank_bottom": "bottom {{pct}}%",
+    "rank_above": "above the top 10%",
+    "rank_below": "below the bottom 10%",
+    "mean_line": "Average multiplier ×{{mean}} · implied rake {{rake}}% · breakeven ≈ {{breakeven}} cEV",
+    "mean_warning": "Average multiplier ×{{mean}}: impossible, the prize pool is below 3 buy-ins once the rake is out. The ROI is overstated.",
+    "preset": {
+      "winamax": "Winamax Expresso",
+      "betclic": "Betclic Spin & Rush",
+      "custom": "Custom"
+    },
+    "expected": "Expected (mean)",
+    "expected_legend": "Expected profit",
+    "lucky_run": "Lucky run (top 10%)",
+    "unlucky_run": "Unlucky run (bottom 10%)"
+  },
   "analysis": {
     "title": "Analysis",
     "subtitle": "Analyze your performance",
@@ -504,7 +574,10 @@
     "config_loaded": "Configuration loaded",
     "coming_soon": "Coming soon",
     "tabs": {
-      "hands": "Hands List"
+      "hands": "Hands List",
+      "stats": "Statistics",
+      "ranges": "Range Analyzer",
+      "variance": "Variance Simulator"
     },
     "filters": {
       "situation": "Situation",
@@ -659,7 +732,8 @@
       "first_to_act": "First to act",
       "active": "Active",
       "reset": "Reset",
-      "info_tip": "Range of {{player}} in {{position}}"
+      "info_tip": "Range of {{player}} in {{position}}",
+      "info_tip_empty": "Select a spot"
     },
     "situations": {
       "rfi": "Open (RFI)",
