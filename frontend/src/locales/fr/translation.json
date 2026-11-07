@@ -2,11 +2,10 @@
   "navigation": {
     "dashboard": "Tableau de bord",
     "history": "Historique",
-    "ranges": "Analyseur de ranges",
+    "analysis": "Analyse",
     "hud": "HUD",
     "players": "Joueurs",
-    "settings": "Paramètres",
-    "stats": "Statistiques"
+    "settings": "Paramètres"
   },
   "sidebar": {
     "sqlite_local": "SQLite Local"
@@ -497,6 +496,77 @@
     },
     "hero_label": "Héros : {{name}}"
   },
+  "variance": {
+    "title": "Simulateur de variance",
+    "subtitle": "Simulez des milliers de séries de Spin à partir de votre CEV et de la distribution des multiplicateurs de la salle : à quoi ressemble la malchance « normale » ?",
+    "parameters": "Paramètres",
+    "spins": "Tournois à simuler",
+    "buy_in": "Buy-in",
+    "simulations": "Simulations",
+    "bankroll": "Bankroll de départ",
+    "bankroll_placeholder": "Optionnel",
+    "use_history": "Utiliser mon historique",
+    "rerun": "Relancer la simulation",
+    "history_loaded": "Chargé depuis vos {{count}} tournois : CEV, buy-in et courbe réelle (période et filtres du dashboard).",
+    "no_history": "Aucun résultat de Spin pour les filtres actuels.",
+    "distribution": "Distribution des multiplicateurs",
+    "distribution_hint": "Table théorique de la salle (source tierce, buy-in 1 €). Modifiable.",
+    "multiplier": "Multiplicateur",
+    "frequency": "Fréquence",
+    "add_row": "Ajouter un multiplicateur",
+    "tile_roi": "ROI attendu",
+    "tile_roi_hint": "par tournoi",
+    "tile_losing": "Probabilité d'être perdant",
+    "tile_losing_hint": "après {{count}} tournois",
+    "tile_downswing": "Pire downswing (95 %)",
+    "tile_downswing_hint": "drawdown maximal",
+    "tile_ruin": "Risque de ruine",
+    "tile_ruin_hint": "bankroll de {{amount}} €",
+    "tile_ruin_none": "indiquez une bankroll de départ",
+    "chart_title": "Évolution simulée du profit",
+    "chart_subtitle": "Médiane, 25-75 % et 10-90 % des séries · {{formatted}} simulations",
+    "axis_tournaments": "Tournois",
+    "median": "Médiane",
+    "band_50": "25 – 75 %",
+    "band_80": "10 – 90 %",
+    "real": "Mes résultats réels",
+    "real_legend": "Mes résultats réels ({{count}} tournois)",
+    "sample_path": "Série {{index}}",
+    "reading": "Lecture",
+    "reading_text": "Avec ces paramètres, 10 % des séries finissent au-dessus de <good>{{high}}</good> et 10 % en dessous de <bad>{{low}}</bad> après {{count}} tournois.",
+    "verdict_inside": "Votre courbe réelle est dans la zone normale ; un écart n'est pas une preuve de leak.",
+    "verdict_above": "Votre courbe réelle est au-dessus de la zone normale : soit une série chanceuse, soit un taux de victoire supérieur à celui saisi.",
+    "verdict_below": "Votre courbe réelle est en dessous de la zone normale : une très mauvaise série peut l'expliquer, mais vérifiez aussi le taux de victoire saisi.",
+    "footnote": "Simulation par tirage aléatoire : le CEV donne la probabilité de victoire (part de jetons parmi les 3 stacks), un tournoi gagné rapporte multiplicateur × buy-in, perdu coûte le buy-in. Tout est calculé en local.",
+    "error": {
+      "buyIn": "Le buy-in doit être supérieur à 0.",
+      "spins": "Le nombre de tournois doit être un entier entre 1 et {{maxSpins}}.",
+      "simulations": "Le nombre de simulations doit être un entier entre 1 et {{maxSimulations}}.",
+      "work": "Tournois multipliés par simulations ne peut pas dépasser {{maxWork}}.",
+      "winRate": "Le CEV doit être un nombre.",
+      "multipliers": "Ajoutez au moins un multiplicateur avec une fréquence positive.",
+      "bankroll": "La bankroll doit être supérieure à 0, ou laissée vide."
+    },
+    "chip_ev": "CEV (par tournoi)",
+    "tip_after": "Après {{count}} tournois",
+    "tip_top": "Top {{pct}} %",
+    "tip_bottom": "Bottom {{pct}} %",
+    "rank_top": "top {{pct}} %",
+    "rank_bottom": "bottom {{pct}} %",
+    "rank_above": "au-dessus du top 10 %",
+    "rank_below": "sous le bottom 10 %",
+    "mean_line": "Multiplicateur moyen ×{{mean}} · rake implicite {{rake}} % · seuil de rentabilité ≈ {{breakeven}} CEV",
+    "mean_warning": "Multiplicateur moyen ×{{mean}} : impossible, le prize pool est inférieur à 3 buy-ins une fois le rake retiré. Le ROI est surestimé.",
+    "preset": {
+      "winamax": "Winamax Expresso",
+      "betclic": "Betclic Spin & Rush",
+      "custom": "Personnalisée"
+    },
+    "expected": "Espéré (moyenne)",
+    "expected_legend": "Profit espéré",
+    "lucky_run": "Série chanceuse (top 10 %)",
+    "unlucky_run": "Série malchanceuse (bottom 10 %)"
+  },
   "analysis": {
     "title": "Analyse",
     "subtitle": "Analysez vos performances",
@@ -504,7 +574,10 @@
     "config_loaded": "Configuration chargée",
     "coming_soon": "Bientôt disponible",
     "tabs": {
-      "hands": "Liste des mains"
+      "hands": "Liste des mains",
+      "stats": "Statistiques",
+      "ranges": "Analyseur de ranges",
+      "variance": "Simulateur de variance"
     },
     "filters": {
       "situation": "Situation",

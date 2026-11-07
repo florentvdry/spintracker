@@ -14,9 +14,8 @@ import { heroNamesOf } from '@/utils/heroNames'
 
 const Dashboard = lazy(() => import('@/views/Dashboard'))
 const HandHistory = lazy(() => import('@/views/HandHistory'))
-const RangeResearch = lazy(() => import('@/views/RangeResearch'))
+const Analysis = lazy(() => import('@/views/Analysis'))
 const Players = lazy(() => import('@/views/Players'))
-const Stats = lazy(() => import('@/views/Stats'))
 const LiveHud = lazy(() => import('@/views/LiveHud'))
 const Settings = lazy(() => import('@/views/Settings'))
 
@@ -56,9 +55,8 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/hands" element={<HandHistory />} />
-              <Route path="/ranges" element={<RangeResearch />} />
+              <Route path="/analysis" element={<Analysis />} />
               <Route path="/players" element={<Players />} />
-              <Route path="/stats" element={<Stats />} />
               <Route path="/hud" element={<LiveHud />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>

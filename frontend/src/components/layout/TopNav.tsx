@@ -13,8 +13,7 @@ export default function TopNav({ children }: { children?: ReactNode }) {
   const navigation = [
     { name: t('navigation.dashboard'), href: '/' },
     { name: t('navigation.history'), href: '/hands' },
-    { name: t('navigation.stats'), href: '/stats' },
-    { name: t('navigation.ranges'), href: '/ranges' },
+    { name: t('navigation.analysis'), href: '/analysis' },
     { name: t('navigation.players'), href: '/players' },
     { name: t('navigation.hud'), href: '/hud' },
   ]
