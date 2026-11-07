@@ -133,7 +133,7 @@ pub const STATS: &[StatDef] = &[
     // --- Steals (total, BTN and SB columns are separated by the row's position)
     stat(Steal, "Steal", Flag::Steal, Over(Flag::StealOpp)),
     stat(Steal, "Fold to 3Bet", Flag::StealFold3, Over(Flag::StealFold3Opp)),
-    stat(Steal, "4-Bet", Flag::Steal4Bet, Over(Flag::Steal4Bet)),
+    stat(Steal, "4-Bet", Flag::Steal4Bet, Over(Flag::StealFold3Opp)),
     stat(Steal, "4-Bet-Fold", Flag::Steal4BetFold, Over(Flag::Steal4Bet)),
     // --- Small blind and big blind facing a steal (SB and BB columns)
     stat(VsSteal, "Fold", Flag::VsStealFold, Over(Flag::VsStealOpp)),
@@ -214,6 +214,17 @@ mod tests {
             ["VPIP", "PFR", "Raise First In", "Open Raise 2x", "Open Raise 2x+", "Open Raise 2x Exact", "Open Raise 2.5x", "Open Raise 3x"]
         );
         assert_eq!(stats_in(Preflop).filter(|s| s.label != "5-Bet" && s.label != "Call 4-Bet" && s.label != "4-Bet-Fold" && s.label != "Squeeze").count(), 41);
+    }
+
+    #[test]
+    fn a_percentage_is_never_taken_over_its_own_numerator() {
+        // Over itself a stat is always 100%: the denominator must be an opportunity flag.
+        for s in STATS {
+            if s.label.starts_with("Hands vs") {
+                continue;
+            }
+            assert!(s.denominator != Denominator::Flag(s.numerator), "{:?} {} is taken over itself", s.section, s.label);
+        }
     }
 
     #[test]
