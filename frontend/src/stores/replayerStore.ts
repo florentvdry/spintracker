@@ -3,10 +3,8 @@ import { persist } from 'zustand/middleware'
 import { ipcService, type Json } from '@/services/ipcService'
 import { logError } from '@/utils/log'
 
-/** Actions that only set up the table; they are replayed instantly, not stepped through. */
-const SETUP_ACTION_TYPES = ['PostSB', 'PostBB']
-/** Actions excluded from the playback progress counters. */
-const NON_PLAYBACK_TYPES = ['PostSB', 'PostBB', 'DealCards']
+/** Blinds only set up the table; they are replayed instantly, not stepped through. */
+const BLIND_ACTION_TYPES = ['PostSB', 'PostBB']
 
 export type ReplayerViewMode = 'chips' | 'bb'
 
@@ -18,7 +16,18 @@ export interface TableSnapshot {
   actionLog: Json[]
 }
 
-export const isRealAction = (action: Json): boolean => !SETUP_ACTION_TYPES.includes(action.type)
+/** Blinds and the hole-card deal: the table is already in that state when the replay starts. */
+const isSetupAction = (action: Json): boolean =>
+  BLIND_ACTION_TYPES.includes(action.type) || (action.type === 'DealCards' && action.street === 'Preflop')
+
+export const isRealAction = (action: Json): boolean => !isSetupAction(action)
+
+/** Chips the action moved in front of its player. The backend reports "raise to" and "call" amounts
+ * differently, but the pot always grows by exactly what the player put in. */
+function chipsAdded(action: Json): number {
+  const added = Number(action.potAfter) - Number(action.potBefore)
+  return Number.isFinite(added) && added > 0 ? added : Number(action.amount) || 0
+}
 
 function handActions(handData: Json | null): Json[] {
   return handData?.actions || handData?.Actions || []
@@ -62,18 +71,12 @@ function applyAction(snap: TableSnapshot, action: Json): void {
     case 'Bet':
     case 'Raise':
     case 'Call':
-      if (player) {
-        player.currentStack -= action.amount - player.bet
-        player.bet = action.amount
-        if (action.potAfter) snap.pot = action.potAfter
-      }
-      break
-
     case 'AllIn':
       if (player) {
-        player.bet += player.currentStack
-        player.currentStack = 0
-        player.isAllIn = true
+        const added = chipsAdded(action)
+        player.bet += added
+        player.currentStack = action.type === 'AllIn' ? 0 : Math.max(0, player.currentStack - added)
+        if (action.type === 'AllIn') player.isAllIn = true
         if (action.potAfter) snap.pot = action.potAfter
       }
       break
@@ -128,12 +131,22 @@ function findNextRealActionIndex(actions: Json[], fromIndex: number): number {
   return actions.length
 }
 
-/** Selectors for components: derived values without calling store methods in render. */
-export const selectCurrentAction = (s: Pick<ReplayerState, 'handData' | 'currentIndex'>): Json | null =>
-  handActions(s.handData)[s.currentIndex] ?? null
+function countRealActions(actions: Json[], endIndex = actions.length): number {
+  let count = 0
+  for (let i = 0; i < endIndex && i < actions.length; i++) if (isRealAction(actions[i])) count++
+  return count
+}
 
-export const selectTotalActions = (s: Pick<ReplayerState, 'handData'>): number =>
-  handActions(s.handData).filter((a) => !NON_PLAYBACK_TYPES.includes(a.type)).length
+/** The last action applied to the table (`currentIndex` is the number of actions applied). */
+export const selectCurrentAction = (s: Pick<ReplayerState, 'handData' | 'currentIndex'>): Json | null =>
+  handActions(s.handData)[s.currentIndex - 1] ?? null
+
+/** Selectors for components: derived values without calling store methods in render. */
+export const selectTotalActions = (s: Pick<ReplayerState, 'handData'>): number => countRealActions(handActions(s.handData))
+
+/** Playback progress: how many of the steppable actions are applied. */
+export const selectDoneActions = (s: Pick<ReplayerState, 'handData' | 'currentIndex'>): number =>
+  countRealActions(handActions(s.handData), s.currentIndex)
 
 interface ReplayerState extends TableSnapshot {
   handId: string | number | null
@@ -157,8 +170,10 @@ interface ReplayerState extends TableSnapshot {
   resetTable: () => void
   nextStep: () => void
   prevStep: () => void
-  jumpTo: (index: number) => void
-  jumpToRealAction: (realActionIndex: number) => void
+  /** Shows the table after `count` steppable actions (0 = start of the hand). */
+  jumpToProgress: (count: number) => void
+  /** Shows the table right after the action at `index` of the action list. */
+  jumpToAction: (index: number) => void
   getTotalRealActions: () => number
   play: () => void
   stop: () => void
@@ -205,9 +220,9 @@ export const useReplayerStore = create<ReplayerState>()(
         viewMode: 'chips',
         showFoldedPlayers: true,
 
-        totalActions: () => handActions(get().handData).filter((a) => !NON_PLAYBACK_TYPES.includes(a.type)).length,
-        currentAction: () => handActions(get().handData)[get().currentIndex] ?? null,
-        getTotalRealActions: () => handActions(get().handData).filter(isRealAction).length,
+        totalActions: () => countRealActions(handActions(get().handData)),
+        currentAction: () => handActions(get().handData)[get().currentIndex - 1] ?? null,
+        getTotalRealActions: () => countRealActions(handActions(get().handData)),
 
         loadHand: async (handId, heroName = null) => {
           get().stop()
@@ -252,7 +267,7 @@ export const useReplayerStore = create<ReplayerState>()(
           const actions = handActions(handData)
           const snap = emptySnapshot(handData)
 
-          // Replay the setup actions (blinds, first deal) instantly.
+          // Replay the setup actions (blinds, hole-card deal) instantly, whatever order the room lists them in.
           const firstReal = findNextRealActionIndex(actions, 0)
           for (let i = 0; i < firstReal; i++) applyAction(snap, actions[i])
           set({ ...snap, currentIndex: firstReal })
@@ -262,8 +277,6 @@ export const useReplayerStore = create<ReplayerState>()(
           const { handData, currentIndex } = get()
           if (!handData) return
           const actions = handActions(handData)
-          if (currentIndex >= actions.length) return get().stop()
-
           const nextReal = findNextRealActionIndex(actions, currentIndex)
           if (nextReal >= actions.length) return get().stop()
 
@@ -275,7 +288,8 @@ export const useReplayerStore = create<ReplayerState>()(
             street,
             actionLog: [...actionLog],
           }
-          applyAction(snap, actions[nextReal])
+          // Setup actions skipped on the way (a blind listed after the deal) still reach the table.
+          for (let i = currentIndex; i <= nextReal; i++) applyAction(snap, actions[i])
           set({ ...snap, currentIndex: nextReal + 1 })
         },
 
@@ -283,33 +297,34 @@ export const useReplayerStore = create<ReplayerState>()(
           const { handData, currentIndex } = get()
           if (!handData) return
           const actions = handActions(handData)
-          const firstReal = findNextRealActionIndex(actions, 0)
-          if (currentIndex <= firstReal + 1) return get().resetTable()
-
-          let target = currentIndex - 1
-          while (target > firstReal + 1 && !isRealAction(actions[target - 1])) target--
-          rebuildTo(target)
+          let lastReal = currentIndex - 1
+          while (lastReal >= 0 && !isRealAction(actions[lastReal])) lastReal--
+          if (lastReal < 0) return get().resetTable()
+          // Rebuilding up to (excluding) the last real action undoes exactly that step.
+          if (countRealActions(actions, lastReal) === 0) return get().resetTable()
+          rebuildTo(lastReal)
         },
 
-        jumpTo: (index) => rebuildTo(index),
-
-        jumpToRealAction: (realActionIndex) => {
+        jumpToProgress: (count) => {
           const actions = handActions(get().handData)
-          let count = 0
+          if (count <= 0) return get().resetTable()
+          let seen = 0
           for (let i = 0; i < actions.length; i++) {
-            if (!isRealAction(actions[i])) continue
-            if (count === realActionIndex) return rebuildTo(i)
-            count++
+            if (isRealAction(actions[i]) && ++seen === count) return rebuildTo(i + 1)
           }
+          rebuildTo(actions.length)
         },
+
+        jumpToAction: (index) => rebuildTo(index + 1),
 
         play: () => {
           if (get().isPlaying) return
+          // Playing from the end starts the hand over.
+          const { handData, currentIndex } = get()
+          const actions = handActions(handData)
+          if (handData && findNextRealActionIndex(actions, currentIndex) >= actions.length) get().resetTable()
           set({ isPlaying: true })
-          playbackTimer = setInterval(() => {
-            if (get().currentIndex >= get().totalActions()) get().stop()
-            else get().nextStep()
-          }, get().playbackSpeed)
+          playbackTimer = setInterval(() => get().nextStep(), get().playbackSpeed)
         },
 
         stop: () => {

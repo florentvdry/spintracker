@@ -186,6 +186,7 @@ impl Backend {
                 }
             }
             ("GET" | "POST", ["db", "hands"]) => Response::data(hands_query::get_hands(&*conn()?, &r.options(hands_query_from_query)?)?),
+            ("GET", ["db", "export-summary"]) => Response::data(hands_query::export_summary(&*conn()?)?),
             ("GET" | "POST", ["db", "tournaments"]) => {
                 let result = tournaments::get_tournaments(&*conn()?, &r.options(tournaments_query_from_query)?)?;
                 Response::data(serde_json::to_value(result)?)

@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, FastForward, List, Pause, Play, Rewind, Skip
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
-import { isRealAction, selectCurrentAction, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
+import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
 import './replayer.css'
 
@@ -30,6 +30,7 @@ export default function Replayer() {
   const store = useReplayerStore()
   const currentAction = useReplayerStore(selectCurrentAction)
   const totalActions = useReplayerStore(selectTotalActions)
+  const doneActions = useReplayerStore(selectDoneActions)
   const [showLogs, setShowLogs] = useState(() => window.innerWidth >= LOG_DEFAULT_MIN_WIDTH)
 
   const { handData, currentIndex, isPlaying, nextStep, prevStep, play, stop } = store
@@ -37,16 +38,8 @@ export default function Replayer() {
   const actions: Json[] = handData?.actions ?? []
   const realActions = actions.map((action, index) => ({ action, index })).filter((entry) => isRealAction(entry.action))
 
-  // Position of the current action among the "real" actions, or -1 when it is a setup action.
-  const currentRealIndex = (() => {
-    let count = 0
-    for (let i = 0; i < actions.length; i++) {
-      if (!isRealAction(actions[i])) continue
-      if (i === currentIndex) return count
-      count++
-    }
-    return -1
-  })()
+  // `currentIndex` is the number of actions applied, so the last one played sits right before it.
+  const lastPlayedIndex = currentIndex - 1
 
   const togglePlay = () => (isPlaying ? stop() : play())
 
@@ -135,8 +128,8 @@ export default function Replayer() {
               {realActions.map(({ action, index }) => (
                 <button
                   key={`${index}-${action.description}`}
-                  className={clsx('action-row', index < currentRealIndex && 'played', index === currentRealIndex && 'current')}
-                  onClick={() => store.jumpToRealAction(index)}
+                  className={clsx('action-row', index < lastPlayedIndex && 'played', index === lastPlayedIndex && 'current')}
+                  onClick={() => store.jumpToAction(index)}
                 >
                   <span className="action-street">{action.street || '-'}</span>
                   <span className={clsx('action-description', ACTION_TYPE_COLOR[action.type] ?? 'text-gray-400')}>{action.description}</span>
@@ -151,18 +144,18 @@ export default function Replayer() {
       <footer className="control-panel">
         <div className="current-action">
           <span className="current-label">{t('replayer.current_action')}</span>
-          <strong>{currentAction?.description || t('replayer.ready')}</strong>
+          <strong>{currentAction && isRealAction(currentAction) ? currentAction.description : t('replayer.ready')}</strong>
         </div>
 
         <div className="progress-row">
-          <span>{currentIndex}</span>
+          <span>{doneActions}</span>
           <input
             type="range"
             min={0}
             max={totalActions}
-            value={currentIndex}
+            value={doneActions}
             className="progress-slider"
-            onChange={(e) => store.jumpTo(Number(e.target.value))}
+            onChange={(e) => store.jumpToProgress(Number(e.target.value))}
           />
           <span>{totalActions}</span>
         </div>
@@ -173,7 +166,7 @@ export default function Replayer() {
             <button className="control-button" onClick={prevStep}><SkipBack size={20} /></button>
             <button className="play-button" onClick={togglePlay}>{isPlaying ? <Pause size={26} /> : <Play size={26} className="ml-0.5" />}</button>
             <button className="control-button" onClick={nextStep}><SkipForward size={20} /></button>
-            <button className="control-button" onClick={() => store.jumpTo(totalActions)}><FastForward size={20} /></button>
+            <button className="control-button" onClick={() => store.jumpToProgress(totalActions)}><FastForward size={20} /></button>
           </div>
 
           <div className="toggle-group" aria-label={t('replayer.display_mode')}>

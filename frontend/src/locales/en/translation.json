@@ -634,8 +634,8 @@
       },
       "export": {
         "title": "Export data",
-        "desc": "Download all your hands as ZIP (grouped by date)",
-        "button": "Export"
+        "desc": "Download your hands as a ZIP, filtered by period, room and buy-in",
+        "button": "Export…"
       },
       "delete": {
         "title": "Delete all data",
@@ -799,7 +799,32 @@
   },
   "export": {
     "dialog_title": "Export hands",
-    "success": "Export successful: {{count}} files created"
+    "success": "Export successful: {{count}} files created",
+    "dialog": {
+      "title": "Export your hands",
+      "subtitle": "Choose what goes into the archive. The format can be imported back into SpinTracker.",
+      "period": "Period",
+      "period_all": "Whole history",
+      "period_last_12_months": "Last 12 months",
+      "period_last_30_days": "Last 30 days",
+      "rooms": "Rooms",
+      "rooms_hint": "Hands in the period",
+      "buy_ins": "Buy-ins",
+      "grouping": "File layout",
+      "grouping_day": "One per day",
+      "grouping_month": "One per month",
+      "grouping_single": "Single file",
+      "grouping_day_hint": "One text file per day, like the exports of the rooms.",
+      "grouping_month_hint": "Fewer files for a long period. Can be imported back as is.",
+      "grouping_single_hint": "Everything in one file. Handy to share, heavy beyond a few thousand hands.",
+      "stat_hands": "hands",
+      "stat_files": "files",
+      "stat_size": "approx.",
+      "export_button": "Export {{amount}} hands",
+      "export_none": "No hand to export",
+      "no_data": "There are no hands to export yet.",
+      "load_error": "The hands available for export could not be read."
+    }
   },
   "replayer": {
     "title": "Replayer",

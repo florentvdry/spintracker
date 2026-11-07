@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
+import type { ExportBucket, ExportFilter } from '@/utils/exportFilter'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Json = any
@@ -190,7 +191,8 @@ export const ipcService = {
     const path = await command<unknown>('auto_import_pick_folder')
     return typeof path === 'string' ? path : null
   },
-  exportData: (dialogTitle: string) => command<ApiResult>('export_data', { dialogTitle }),
+  getExportSummary: () => backend<ExportBucket[]>('GET', '/db/export-summary'),
+  exportData: (dialogTitle: string, filter: ExportFilter) => command<ApiResult>('export_data', { dialogTitle, filter }),
   checkServerStatus: () => command<ApiResult>('check_server_status'),
   openLogsFolder: () => command<ApiResult>('open_logs_folder'),
   getAppVersion: async (): Promise<string | null> => {

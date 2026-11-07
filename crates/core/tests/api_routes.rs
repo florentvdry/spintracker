@@ -95,3 +95,14 @@ fn the_players_routes_and_the_detailed_stats_answer() {
     assert_eq!(detailed.body["data"]["meta"]["players"], 503);
     assert_eq!(b.handle("POST", "/db/players/sync", Some(json!({}))).body["success"], true);
 }
+
+#[test]
+fn export_summary_counts_the_hands_the_list_returns() {
+    let b = backend();
+    let listed = b.handle("GET", "/db/hands?limit=100000", None).body["data"]["total"].as_i64().unwrap();
+    let summary = b.handle("GET", "/db/export-summary", None).body;
+    let buckets = summary["data"].as_array().unwrap();
+    assert!(!buckets.is_empty());
+    assert_eq!(buckets.iter().map(|x| x["hands"].as_i64().unwrap()).sum::<i64>(), listed);
+    assert!(buckets.iter().all(|x| x["day"].as_str().is_some_and(|d| d.len() == 10) && x["bytes"].as_i64().unwrap() > 0));
+}

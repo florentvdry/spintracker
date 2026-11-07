@@ -688,8 +688,8 @@
       },
       "export": {
         "title": "Exporter les données",
-        "desc": "Télécharger toutes vos mains au format ZIP (groupées par date)",
-        "button": "Exporter"
+        "desc": "Télécharger vos mains au format ZIP, filtrées par période, salle et buy-in",
+        "button": "Exporter…"
       },
       "delete": {
         "title": "Supprimer toutes les données",
@@ -799,7 +799,32 @@
   },
   "export": {
     "dialog_title": "Exporter les mains",
-    "success": "Export réussi : {{count}} fichiers créés"
+    "success": "Export réussi : {{count}} fichiers créés",
+    "dialog": {
+      "title": "Exporter vos mains",
+      "subtitle": "Choisissez ce qui part dans l'archive. Le format peut être réimporté dans SpinTracker.",
+      "period": "Période",
+      "period_all": "Tout l'historique",
+      "period_last_12_months": "12 derniers mois",
+      "period_last_30_days": "30 derniers jours",
+      "rooms": "Salles",
+      "rooms_hint": "Mains sur la période",
+      "buy_ins": "Buy-ins",
+      "grouping": "Découpage des fichiers",
+      "grouping_day": "Un par jour",
+      "grouping_month": "Un par mois",
+      "grouping_single": "Un seul fichier",
+      "grouping_day_hint": "Un fichier texte par jour, comme les exports des salles.",
+      "grouping_month_hint": "Moins de fichiers pour une longue période. Réimportable tel quel.",
+      "grouping_single_hint": "Tout dans un fichier. Pratique pour partager, lourd au-delà de quelques milliers de mains.",
+      "stat_hands": "mains",
+      "stat_files": "fichiers",
+      "stat_size": "environ",
+      "export_button": "Exporter {{amount}} mains",
+      "export_none": "Aucune main à exporter",
+      "no_data": "Il n'y a pas encore de mains à exporter.",
+      "load_error": "Impossible de lire les mains disponibles pour l'export."
+    }
   },
   "replayer": {
     "title": "Replayer",

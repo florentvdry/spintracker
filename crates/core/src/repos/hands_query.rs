@@ -256,6 +256,31 @@ pub fn get_hands(conn: &Connection, q: &HandsQuery) -> Result<Value> {
     Ok(json!({ "hands": hands, "total": total, "page": q.page, "limit": q.limit, "pages": pages(total, q.limit) }))
 }
 
+/// Exportable hands grouped by room, buy-in and day, so the export dialog can size any filter
+/// without fetching the hands themselves. Counts the same hands as `get_hands`.
+pub fn export_summary(conn: &Connection) -> Result<Value> {
+    let mut stmt = conn.prepare(&format!(
+        "SELECT h.room, h.buy_in, substr(h.date_time, 1, 10) AS day, COUNT(*), COALESCE(SUM(LENGTH(h.result)), 0)
+         FROM hands h {join}
+         WHERE h.player_count <= 3 AND h.result IS NOT NULL AND h.result != '' AND h.date_time IS NOT NULL
+         GROUP BY h.room, h.buy_in, day
+         ORDER BY day",
+        join = hero_join(None)
+    ))?;
+    let buckets: Vec<Value> = stmt
+        .query_map([], |r| {
+            Ok(json!({
+                "room": r.get::<_, Option<String>>(0)?,
+                "buyIn": r.get::<_, Option<f64>>(1)?,
+                "day": r.get::<_, String>(2)?,
+                "hands": r.get::<_, i64>(3)?,
+                "bytes": r.get::<_, i64>(4)?,
+            }))
+        })?
+        .collect::<std::result::Result<_, _>>()?;
+    Ok(Value::Array(buckets))
+}
+
 /// One hand with every player's figures; `None` when it does not exist (or has more than 3 players).
 pub fn get_hand_by_id(conn: &Connection, hand_id: &str, hero_name: Option<&str>) -> Result<Option<Value>> {
     let hero = hero_name.filter(|n| !n.is_empty());

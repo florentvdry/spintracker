@@ -114,7 +114,9 @@ pub fn delete_all(conn: &Connection) -> Result<()> {
     Ok(())
 }
 
-const PENDING: &str = "FROM hands h WHERE NOT EXISTS (SELECT 1 FROM hand_player_flags f WHERE f.hand_id = h.id AND f.flags_version = ?1)";
+// A hand without any seated player has no row to store: counting it would make it pending forever.
+const PENDING: &str = "FROM hands h WHERE EXISTS (SELECT 1 FROM player_hands p WHERE p.hand_id = h.id)
+    AND NOT EXISTS (SELECT 1 FROM hand_player_flags f WHERE f.hand_id = h.id AND f.flags_version = ?1)";
 
 fn pending_hand_ids(conn: &Connection) -> Result<Vec<String>> {
     let mut stmt = conn.prepare(&format!("SELECT h.id {PENDING}"))?;
@@ -256,12 +258,13 @@ mod tests {
     }
 
     #[test]
-    fn hands_without_players_do_not_loop_forever() {
+    fn hands_without_players_are_never_pending() {
         let dir = tempfile::tempdir().unwrap();
         let db = Database::open(dir.path().join("a.db")).unwrap();
         let mut conn = db.conn().unwrap();
         conn.execute("INSERT INTO hands (id) VALUES ('empty')", []).unwrap();
-        assert_eq!(backfill(&mut conn, |_, _| {}).unwrap(), 1);
+        assert_eq!(pending_count(&conn).unwrap(), 0);
+        assert_eq!(backfill(&mut conn, |_, _| {}).unwrap(), 0);
     }
 
     #[test]
