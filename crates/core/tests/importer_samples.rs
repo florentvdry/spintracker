@@ -190,3 +190,22 @@ fn stale_winamax_rows_are_removed_before_an_import() {
         assert_eq!(count(&conn, &format!("SELECT COUNT(*) FROM {table} WHERE {column} = 'stale'")), 0, "{table}");
     }
 }
+
+#[test]
+fn betclic_export_without_dashed_dividers_is_split_into_hands() {
+    let f = fixture();
+    let original = sample("Betclic", "21793509_ExportHH_2026-1-2.txt");
+    let text = std::fs::read_to_string(&original).unwrap();
+    assert!(text.lines().any(|l| l.starts_with("------------")), "the sample uses the dashed layout");
+
+    // The current HandsExport layout: hands follow each other with no dashed line.
+    let stripped: String = text.lines().filter(|l| !l.starts_with("------------")).map(|l| format!("{l}\n")).collect();
+    let path = f._dir.path().join("Betclic_HandsExport_test.txt");
+    std::fs::write(&path, stripped).unwrap();
+
+    let expected = f.importer.count_hands(&original).unwrap();
+    assert!(expected > 1);
+    assert_eq!(f.importer.count_hands(&path).unwrap(), expected);
+    let (summary, _) = run(&f, &path);
+    assert_eq!(summary.imported, expected);
+}

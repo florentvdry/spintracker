@@ -84,7 +84,7 @@ impl Importer {
         let Some(parser) = get_parser(&sniff(&text)) else { return Ok(0) };
         // The same split the import uses, so the count always equals what an import will find
         // (counting separator lines alone is one short for Betclic, whose files open without one).
-        Ok(split_hands(&text, parser.hand_separator()).len())
+        Ok(split_hands(&text, parser.hand_separator_for(&text)).len())
     }
 
     /// Imports `path`, reporting progress through `on_progress` (at most every 200 ms, and a
@@ -121,7 +121,7 @@ impl Importer {
         // Unibet files never say which player is the hero: it is whoever is dealt cards most often.
         let detected_hero = (parser.room_name() == "Unibet").then(|| detect_hero_name(&text)).flatten();
 
-        let blocks = split_hands(&text, parser.hand_separator());
+        let blocks = split_hands(&text, parser.hand_separator_for(&text));
         let run = self.run_pipeline(
             &mut conn,
             PipelineInput { parser, summaries: &summaries, detected_hero: detected_hero.as_deref(), cancel, equity: true },
