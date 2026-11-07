@@ -61,6 +61,7 @@ export default function Dashboard() {
   ]
 
   const totalProfit = stats.total_profit || 0
+  const unpriced: number = stats.unpriced_tournaments || 0
   const maxAbsCev = Math.max(1, ...positionGroups.flatMap((g) => g.rows.map((r) => Math.abs(r.cev.value))))
 
   return (
@@ -78,6 +79,7 @@ export default function Dashboard() {
               <div className={clsx('mt-1 font-mono text-5xl font-semibold leading-[1.1]', totalProfit >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
                 {formatProfit(totalProfit)}
               </div>
+              {unpriced > 0 && <p className="mt-2 max-w-md text-xs text-gray-500">{t('dashboard.unpriced_note', { count: unpriced })}</p>}
             </div>
             <div className="flex gap-9">
               <HeroStat label={t('dashboard.win_rate') + rangeLabel} value={`${winRate.toFixed(2)} %`} />

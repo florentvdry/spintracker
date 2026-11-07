@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import Card from '@/components/ui/Card'
 import { ipcService, type Json } from '@/services/ipcService'
-import { currentDateRange, useFilterStore } from '@/stores/filterStore'
+import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterStore'
 import { logError } from '@/utils/log'
 
 const FETCH_DEBOUNCE_MS = 300
@@ -32,6 +32,7 @@ export default function MultipliersCard() {
   const heroName = useFilterStore((s) => s.heroName)
   const dateRange = useFilterStore((s) => s.dateRange)
   const selectedSession = useFilterStore((s) => s.selectedSession)
+  const buyIn = useFilterStore((s) => s.buyIn)
   const customDateFrom = useFilterStore((s) => s.customDateFrom)
   const customDateTo = useFilterStore((s) => s.customDateTo)
   const [stats, setStats] = useState<Json[]>([])
@@ -41,7 +42,7 @@ export default function MultipliersCard() {
     const timer = setTimeout(async () => {
       try {
         const { dateFrom, dateTo } = currentDateRange()
-        const res = await ipcService.getMultiplierStats({ heroName, dateFrom, dateTo })
+        const res = await ipcService.getMultiplierStats({ heroName, dateFrom, dateTo, buyIn: buyInParam(buyIn) })
         if (!cancelled && res.success) setStats(res.data ?? [])
       } catch (error) {
         logError('Failed to fetch multiplier stats:', error)
@@ -51,7 +52,7 @@ export default function MultipliersCard() {
       cancelled = true
       clearTimeout(timer)
     }
-  }, [heroName, dateRange, selectedSession, customDateFrom, customDateTo])
+  }, [heroName, dateRange, selectedSession, customDateFrom, customDateTo, buyIn])
 
   const totalGames = stats.reduce((sum, s) => sum + s.totalCount, 0)
   const totalWins = stats.reduce((sum, s) => sum + s.winCount, 0)

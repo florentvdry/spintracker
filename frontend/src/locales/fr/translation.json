@@ -384,6 +384,7 @@
     "played_tournaments": "Tournois Joués",
     "net_profit": "Profit Net",
     "chips_ev_avg": "ChipsEV (Moy)",
+    "unpriced_note": "{{count}} tournois sans prize pool connu ne sont pas comptés dans ce profit (résumé du tournoi manquant).",
     "activity": "Activité",
     "sessions_month": "Sessions ce mois",
     "chip_evolution": "Evolution des jetons",
