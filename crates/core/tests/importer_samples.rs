@@ -192,6 +192,40 @@ fn stale_winamax_rows_are_removed_before_an_import() {
 }
 
 #[test]
+fn importing_a_series_of_files_matches_importing_them_one_by_one() {
+    let files = vec![
+        sample("Winamax", "20260415_Expresso(1096047576)_real_holdem_no-limit.txt"),
+        sample("Winamax", "does-not-exist.txt"),
+    ];
+
+    let single = fixture();
+    let (expected, _) = run(&single, &files[0]);
+
+    let batch = fixture();
+    let progress_files = Mutex::new(Vec::new());
+    let results = batch
+        .importer
+        .import_files(&files, &AtomicBool::new(false), |index, _| progress_files.lock().unwrap().push(index))
+        .unwrap();
+    assert_eq!(results.len(), 2);
+    assert_eq!(results[0].as_ref().unwrap().imported, expected.imported);
+    assert!(results[1].is_err(), "a missing file is reported without stopping the series");
+    assert_eq!(progress_files.into_inner().unwrap().first(), Some(&0));
+
+    let totals = |f: &Fixture| {
+        let conn = f.db.conn().unwrap();
+        (
+            count(&conn, "SELECT COUNT(*) FROM hands"),
+            count(&conn, "SELECT COUNT(*) FROM players"),
+            count(&conn, "SELECT SUM(total_hands) FROM players"),
+            count(&conn, "SELECT COUNT(*) FROM hands WHERE prize_pool > 0"),
+        )
+    };
+    assert_eq!(totals(&batch), totals(&single), "player totals and summaries are the same");
+    assert_eq!(batch.importer.count_hands_in(&files[..1]), expected.total_found as u64);
+}
+
+#[test]
 fn betclic_export_without_dashed_dividers_is_split_into_hands() {
     let f = fixture();
     let original = sample("Betclic", "21793509_ExportHH_2026-1-2.txt");

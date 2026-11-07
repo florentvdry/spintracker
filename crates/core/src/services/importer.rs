@@ -4,8 +4,8 @@
 //! stores them in batches. Importing the same file again replaces the hands instead of
 //! duplicating them.
 
-use std::collections::HashSet;
-use std::path::Path;
+use std::collections::{HashMap, HashSet};
+use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::mpsc::sync_channel;
 use std::sync::Arc;
@@ -65,6 +65,23 @@ pub(super) struct PipelineRun {
     pub write_error: Option<Error>,
 }
 
+/// Tournament summaries already read, per room and folder: every file of a folder shares them.
+#[derive(Default)]
+struct SummaryCache {
+    by_folder: HashMap<(PathBuf, &'static str), Summaries>,
+}
+
+impl SummaryCache {
+    fn get(&mut self, file: &Path, kind: SummaryKind) -> &Summaries {
+        let folder = file.parent().map(Path::to_path_buf).unwrap_or_default();
+        let room = match kind {
+            SummaryKind::Winamax => "Winamax",
+            SummaryKind::Unibet => "Unibet",
+        };
+        self.by_folder.entry((folder, room)).or_insert_with(|| summaries::load_for_file(file, kind))
+    }
+}
+
 pub struct Importer {
     pub(super) db: Arc<Database>,
     analytics: Arc<AnalyticsCalculator>,
@@ -87,6 +104,11 @@ impl Importer {
         Ok(split_hands(&text, parser.hand_separator_for(&text)).len())
     }
 
+    /// Total number of hands in `paths`, counted in parallel; files that cannot be read count as 0.
+    pub fn count_hands_in(&self, paths: &[PathBuf]) -> u64 {
+        paths.par_iter().map(|path| self.count_hands(path).unwrap_or(0) as u64).sum()
+    }
+
     /// Imports `path`, reporting progress through `on_progress` (at most every 200 ms, and a
     /// final report with `success` set). `cancel` stops the import early: what was already
     /// written stays.
@@ -95,6 +117,48 @@ impl Importer {
         path: &Path,
         cancel: &AtomicBool,
         mut on_progress: impl FnMut(ImportProgress),
+    ) -> Result<ImportSummary> {
+        self.import_one(path, cancel, &mut on_progress, None)
+    }
+
+    /// Imports many files in a row. The work that does not depend on the file is done once for the
+    /// whole run instead of once per file: the cleanup of stale rows, the tournament summaries of
+    /// each folder (which means listing and parsing every summary of the folder) and the recount
+    /// of the player totals (which reads the whole database). `on_progress` receives the index of
+    /// the file being imported with its progress. A file that fails does not stop the others: its
+    /// error is returned in its slot.
+    pub fn import_files(
+        &self,
+        paths: &[PathBuf],
+        cancel: &AtomicBool,
+        mut on_progress: impl FnMut(usize, ImportProgress),
+    ) -> Result<Vec<Result<ImportSummary>>> {
+        {
+            let mut conn = self.db.conn()?;
+            let cleaned = hands::cleanup_corrupted_winamax_hands(&mut conn)?;
+            if cleaned > 0 {
+                log::info!("[import] cleaned {cleaned} stale Winamax rows before import");
+            }
+        }
+        let mut cache = SummaryCache::default();
+        let mut results = Vec::with_capacity(paths.len());
+        for (index, path) in paths.iter().enumerate() {
+            results.push(self.import_one(path, cancel, &mut |progress| on_progress(index, progress), Some(&mut cache)));
+        }
+        if results.iter().any(|r| r.as_ref().is_ok_and(|s| s.imported > 0)) {
+            players::update_player_stats(&*self.db.conn()?)?;
+        }
+        Ok(results)
+    }
+
+    /// `batch` is set when the caller imports a series of files and takes care of the work they
+    /// share (see [`Importer::import_files`]).
+    fn import_one(
+        &self,
+        path: &Path,
+        cancel: &AtomicBool,
+        on_progress: &mut impl FnMut(ImportProgress),
+        batch: Option<&mut SummaryCache>,
     ) -> Result<ImportSummary> {
         if !path.is_file() {
             return Err(Error::Message(format!("File not found: {}", path.display())));
@@ -107,16 +171,29 @@ impl Importer {
         log::info!("[import] {} ({} bytes), format {}", path.display(), text.len(), parser.room_name());
 
         let mut conn = self.db.conn()?;
-        let summaries = match parser.room_name() {
-            "Winamax" => {
-                let cleaned = hands::cleanup_corrupted_winamax_hands(&mut conn)?;
-                if cleaned > 0 {
-                    log::info!("[import] cleaned {cleaned} stale Winamax rows before import");
-                }
-                summaries::load_for_file(path, SummaryKind::Winamax)
+        let kind = match parser.room_name() {
+            "Winamax" => Some(SummaryKind::Winamax),
+            "Unibet" => Some(SummaryKind::Unibet),
+            _ => None,
+        };
+        let batched = batch.is_some();
+        if !batched && kind == Some(SummaryKind::Winamax) {
+            let cleaned = hands::cleanup_corrupted_winamax_hands(&mut conn)?;
+            if cleaned > 0 {
+                log::info!("[import] cleaned {cleaned} stale Winamax rows before import");
             }
-            "Unibet" => summaries::load_for_file(path, SummaryKind::Unibet),
-            _ => Summaries::new(),
+        }
+        let owned;
+        let summaries: &Summaries = match (kind, batch) {
+            (Some(kind), Some(cache)) => cache.get(path, kind),
+            (Some(kind), None) => {
+                owned = summaries::load_for_file(path, kind);
+                &owned
+            }
+            (None, _) => {
+                owned = Summaries::new();
+                &owned
+            }
         };
         // Unibet files never say which player is the hero: it is whoever is dealt cards most often.
         let detected_hero = (parser.room_name() == "Unibet").then(|| detect_hero_name(&text)).flatten();
@@ -124,9 +201,9 @@ impl Importer {
         let blocks = split_hands(&text, parser.hand_separator_for(&text));
         let run = self.run_pipeline(
             &mut conn,
-            PipelineInput { parser, summaries: &summaries, detected_hero: detected_hero.as_deref(), cancel, equity: true },
+            PipelineInput { parser, summaries, detected_hero: detected_hero.as_deref(), cancel, equity: true },
             &blocks,
-            &mut on_progress,
+            on_progress,
         );
         let (imported, skipped, write_error) = (run.imported, run.skipped, run.write_error);
         let total = blocks.len();
@@ -136,7 +213,7 @@ impl Importer {
             return Err(e);
         }
 
-        if imported > 0 {
+        if imported > 0 && !batched {
             players::update_player_stats(&conn)?;
         }
 
