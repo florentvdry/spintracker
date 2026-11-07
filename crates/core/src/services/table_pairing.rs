@@ -27,12 +27,23 @@ pub struct PairTournament {
 /// A tournament name shorter than this is too generic to prove anything about a window title.
 const MIN_NAME_LEN_IN_TITLE: usize = 6;
 
-/// Whether a window title names a tournament (its id, or its name when long enough to mean something).
-fn title_names(title: &str, tournament: &PairTournament) -> bool {
+/// The tournaments a window title names. An id in the title is proof; a name is only used when no id
+/// matches, because every table of the same format shares the same name and would be ambiguous.
+fn named_by_title<'a>(title: &str, tournaments: &[&'a PairTournament]) -> Vec<&'a str> {
     let title = title.to_lowercase();
-    let id = tournament.game_id.to_lowercase();
-    let name = tournament.name.to_lowercase();
-    (!id.is_empty() && title.contains(&id)) || (name.len() >= MIN_NAME_LEN_IN_TITLE && title.contains(&name))
+    let by_id: Vec<&str> = tournaments
+        .iter()
+        .filter(|t| !t.game_id.is_empty() && title.contains(&t.game_id.to_lowercase()))
+        .map(|t| t.game_id.as_str())
+        .collect();
+    if !by_id.is_empty() {
+        return by_id;
+    }
+    tournaments
+        .iter()
+        .filter(|t| t.name.len() >= MIN_NAME_LEN_IN_TITLE && title.contains(&t.name.to_lowercase()))
+        .map(|t| t.game_id.as_str())
+        .collect()
 }
 
 /// The pairings after one look at the screen.
@@ -71,10 +82,7 @@ pub fn pair_tables(
             // Each window must name exactly one tournament, and no other window may name the same one.
             let named: Vec<(isize, Vec<&str>)> = free_windows
                 .iter()
-                .map(|w| {
-                    let games = free_tournaments.iter().filter(|t| title_names(&w.title, t)).map(|t| t.game_id.as_str());
-                    (w.id, games.collect())
-                })
+                .map(|w| (w.id, named_by_title(&w.title, &free_tournaments)))
                 .collect();
             for (id, games) in &named {
                 if let [game] = games.as_slice() {
