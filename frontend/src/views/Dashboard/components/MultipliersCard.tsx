@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import Card from '@/components/ui/Card'
 import { ipcService, type Json } from '@/services/ipcService'
 import { currentDateRange, useFilterStore } from '@/stores/filterStore'
+import { logError } from '@/utils/log'
 
 const FETCH_DEBOUNCE_MS = 300
 // Win rates (%) separating good / average / losing results over a Spin sample.
@@ -43,7 +44,7 @@ export default function MultipliersCard() {
         const res = await ipcService.getMultiplierStats({ heroName, dateFrom, dateTo })
         if (!cancelled && res.success) setStats(res.data ?? [])
       } catch (error) {
-        console.error('Failed to fetch multiplier stats:', error)
+        logError('Failed to fetch multiplier stats:', error)
       }
     }, FETCH_DEBOUNCE_MS)
     return () => {
