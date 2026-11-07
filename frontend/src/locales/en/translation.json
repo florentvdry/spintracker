@@ -659,7 +659,8 @@
       "first_to_act": "First to act",
       "active": "Active",
       "reset": "Reset",
-      "info_tip": "Range of {{player}} in {{position}}"
+      "info_tip": "Range of {{player}} in {{position}}",
+      "info_tip_empty": "Select a spot"
     },
     "situations": {
       "rfi": "Open (RFI)",

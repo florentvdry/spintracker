@@ -566,7 +566,8 @@
       "first_to_act": "Premier à parler",
       "active": "Actif",
       "reset": "Réinitialiser",
-      "info_tip": "Range de {{player}} en {{position}}"
+      "info_tip": "Range de {{player}} en {{position}}",
+      "info_tip_empty": "Sélectionner un spot"
     },
     "situations": {
       "rfi": "Open (RFI)",
