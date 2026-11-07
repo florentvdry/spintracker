@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import Card from '@/components/ui/Card'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import ExportDialog from '@/components/ui/ExportDialog'
 import { setLanguage } from '@/i18n'
 import { ipcService, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
@@ -42,7 +43,8 @@ export default function Settings() {
   }, [focus])
 
   const [serverActive, setServerActive] = useState<boolean | null>(null)
-  const [exportLoading, setExportLoading] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
+  const closeExport = useCallback(() => setExportOpen(false), [])
   const [appVersion, setAppVersion] = useState('1.0.0')
   const [databases, setDatabases] = useState<Json[]>([])
   const [loadingDatabases, setLoadingDatabases] = useState(true)
@@ -183,20 +185,6 @@ export default function Settings() {
     }
   }
 
-  const handleExport = async () => {
-    setExportLoading(true)
-    try {
-      const result = await ipcService.exportData(t('export.dialog_title'))
-      if (result.success) {
-        notify.success(t('export.success', { count: result.fileCount }), t('settings.messages.export_success_title'))
-      } else if (result.message !== 'Export cancelled') {
-        reportError(result.message ?? t('settings.messages.error_unknown'))
-      }
-    } finally {
-      setExportLoading(false)
-    }
-  }
-
   const languageButton = (code: string, label: string) => (
     <button
       onClick={() => setLanguage(code)}
@@ -304,9 +292,9 @@ export default function Settings() {
       <Card title={t('settings.database.title')} subtitle={t('settings.database.subtitle')}>
         <div className="space-y-4">
           <SettingRow icon={Download} title={t('settings.database.export.title')} description={t('settings.database.export.desc')}>
-            <button onClick={() => void handleExport()} disabled={exportLoading} className="btn-secondary flex items-center gap-2">
-              {exportLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-              {exportLoading ? t('common.loading') : t('settings.database.export.button')}
+            <button onClick={() => setExportOpen(true)} className="btn-secondary flex items-center gap-2">
+              <Download className="w-4 h-4" />
+              {t('settings.database.export.button')}
             </button>
           </SettingRow>
           <SettingRow icon={Trash2} title={t('settings.database.delete.title')} description={t('settings.database.delete.desc')}>
@@ -347,6 +335,8 @@ export default function Settings() {
           </button>
         </div>
       </Card>
+
+      <ExportDialog open={exportOpen} onClose={closeExport} />
 
       <ConfirmDialog
         open={confirmDeleteAll}

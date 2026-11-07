@@ -54,11 +54,11 @@ pub async fn import_hand_history(app: AppHandle, window: WebviewWindow) -> Value
 }
 
 #[tauri::command]
-pub async fn export_data(app: AppHandle, window: WebviewWindow, dialog_title: String) -> Value {
+pub async fn export_data(app: AppHandle, window: WebviewWindow, dialog_title: String, filter: export::ExportFilter) -> Value {
     if let Some(denied) = main_window_only(&window) {
         return denied;
     }
-    export::run(app, dialog_title).await
+    export::run(app, dialog_title, filter).await
 }
 
 /// The caller is responsible for asking the user to confirm first.
