@@ -51,7 +51,7 @@ export default function Analysis() {
       onClick={() => setActiveTab(tab)}
       className={clsx(
         'px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-all',
-        activeTab === tab ? 'bg-primary-500 text-white shadow' : 'text-gray-400 hover:text-white',
+        activeTab === tab ? 'bg-primary-500 text-onprimary shadow' : 'text-gray-400 hover:text-onprimary',
       )}
     >
       {icon}
@@ -62,7 +62,7 @@ export default function Analysis() {
   return (
     <div className="h-full flex flex-col p-6 space-y-6 overflow-hidden">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-gray-100">{t('analysis.title')}</h1>
+        <h1 className="page-title">{t('analysis.title')}</h1>
         <div className="flex gap-2">
           <div className="flex bg-dark-300 rounded-lg p-1 mr-4 border border-dark-100">
             {tabButton('stats', <Grid className="w-4 h-4" />, 'Stats')}

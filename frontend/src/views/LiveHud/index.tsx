@@ -30,7 +30,7 @@ export default function LiveHud() {
 
   if (!loaded) return <div className="spinner mx-auto mt-16" />
   return (
-    <div ref={root} className="-mx-5 -my-4 overflow-hidden" style={{ height }}>
+    <div ref={root} className="-mx-5 -mt-5 -mb-10 overflow-hidden" style={{ height }}>
       <EditorTab />
     </div>
   )

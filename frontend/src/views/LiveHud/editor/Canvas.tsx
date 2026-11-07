@@ -172,7 +172,7 @@ function GridFrame({
                 style={{ position: 'absolute', ...style }}
                 data-col-handle={axis === 'col' ? index : undefined}
                 data-grid-id={grid.id}
-                className={clsx('cursor-pointer select-none border text-center font-mono text-[8px] leading-[10px]', active ? 'border-primary-500 bg-primary-500/40 text-white' : hover?.type === 'column' && hover.gridId === grid.id && axis === 'col' && hover.col === index ? 'border-teal-400 bg-teal-400/40 text-white' : 'border-dark-100 bg-dark-300/90 text-gray-400')}
+                className={clsx('cursor-pointer select-none border text-center font-mono text-[8px] leading-[10px]', active ? 'border-primary-500 bg-primary-500/40 text-gray-100' : hover?.type === 'column' && hover.gridId === grid.id && axis === 'col' && hover.col === index ? 'border-teal-400 bg-teal-400/40 text-gray-100' : 'border-dark-100 bg-dark-300/90 text-gray-400')}
                 onPointerDown={(e) => {
                   e.stopPropagation()
                   onSelect({ gridIds: [grid.id], cellIds: [], track: { axis, index } })
@@ -196,7 +196,7 @@ function GridFrame({
     <div ref={root} data-frame={grid.id} className="relative" style={{ outline: selected ? '1px solid #6c9fff' : undefined, outlineOffset: 2 }}>
       {title !== undefined && (
         <div
-          className={clsx('absolute left-0 flex items-center gap-1 whitespace-nowrap rounded-t px-1.5 text-[10px] font-medium leading-[14px]', selected ? 'bg-primary-600 text-white' : 'bg-dark-300 text-gray-300')}
+          className={clsx('absolute left-0 flex items-center gap-1 whitespace-nowrap rounded-t px-1.5 text-[10px] font-medium leading-[14px]', selected ? 'bg-primary-600 text-onprimary' : 'bg-dark-300 text-gray-300')}
           style={{ top: -(HANDLE_PX + 16), cursor: 'pointer' }}
           onPointerDown={onTitlePointerDown}
         >

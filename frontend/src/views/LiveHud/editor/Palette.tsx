@@ -102,7 +102,7 @@ function PaletteBase({ catalog, loading, onStart, onPick, onCreateCustom, onEdit
             <div key={section}>
               <button
                 type="button"
-                className="mb-0.5 flex w-full items-center gap-1 px-0.5 py-1 text-left text-xs font-semibold text-gray-300 hover:text-white"
+                className="mb-0.5 flex w-full items-center gap-1 px-0.5 py-1 text-left text-xs font-semibold text-gray-300 hover:text-gray-100"
                 onClick={() => setClosed((c) => ({ ...c, [section]: !c[section] }))}
               >
                 {isClosed ? <ChevronRight className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -130,8 +130,8 @@ function PaletteBase({ catalog, loading, onStart, onPick, onCreateCustom, onEdit
                         {customId !== null && (
                           <span className="ml-1 flex shrink-0 gap-1" onPointerDown={(e) => e.stopPropagation()}>
                             {stat.ready === false && <span className="text-[10px] text-amber-300">{t('customStats.pending')}</span>}
-                            <button type="button" className="text-gray-500 hover:text-white" aria-label={t('customStats.duplicate')} onClick={() => onDuplicateCustom(customId)}><Copy className="h-3 w-3" /></button>
-                            <button type="button" className="text-gray-500 hover:text-white" aria-label={t('customStats.edit')} onClick={() => onEditCustom(customId)}><Pencil className="h-3 w-3" /></button>
+                            <button type="button" className="text-gray-500 hover:text-gray-100" aria-label={t('customStats.duplicate')} onClick={() => onDuplicateCustom(customId)}><Copy className="h-3 w-3" /></button>
+                            <button type="button" className="text-gray-500 hover:text-gray-100" aria-label={t('customStats.edit')} onClick={() => onEditCustom(customId)}><Pencil className="h-3 w-3" /></button>
                             <button type="button" className="text-gray-500 hover:text-red-400" aria-label={t('customStats.delete')} onClick={() => onDeleteCustom(customId)}><Trash2 className="h-3 w-3" /></button>
                           </span>
                         )}

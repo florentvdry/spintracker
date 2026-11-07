@@ -27,7 +27,7 @@ export default function StatusBar({ issueCount, hint, zoom, minZoom, maxZoom, on
           {t('liveHud.ws.all_good')}
         </span>
       ) : (
-        <button type="button" className="flex items-center gap-1.5 text-yellow-400 hover:text-yellow-300" onClick={onIssues}>
+        <button type="button" className="flex items-center gap-1.5 text-primary-400 hover:text-yellow-300" onClick={onIssues}>
           <TriangleAlert className="h-3.5 w-3.5" />
           {t('liveHud.ws.issues', { count: issueCount })}
         </button>

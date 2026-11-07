@@ -18,8 +18,8 @@ export default function ActionBlock({ title, content }: ActionBlockProps) {
   if (!visible.trim()) return null
 
   return (
-    <div className="p-3 bg-dark-200 rounded-lg">
-      <p className="text-xs text-gray-500 mb-1">{title}</p>
+    <div className="p-3 bg-dark-300 rounded-lg">
+      <p className="text-[11px] uppercase tracking-[.06em] text-gray-500 mb-1">{title}</p>
       <p className="text-sm text-gray-300 whitespace-pre-line">{visible}</p>
     </div>
   )

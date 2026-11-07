@@ -129,17 +129,17 @@ export default function AliasManagement() {
     <div className="flex-1 flex flex-col min-h-0">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full p-6 overflow-hidden">
         {/* Alias list */}
-        <div className="flex flex-col bg-dark-200 rounded-lg border border-white/5 overflow-hidden shadow-2xl">
-          <div className="p-4 border-b border-white/5 bg-dark-300/30 flex items-center justify-between">
+        <div className="flex flex-col bg-dark-400 rounded-[10px] border border-dark-200 overflow-hidden shadow-xl">
+          <div className="p-4 border-b border-dark-200 bg-dark-600/50 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-primary-400" />
-              <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest">{t('players.aliases.title')}</h2>
+              <h2 className="text-[15px] font-semibold text-gray-100">{t('players.aliases.title')}</h2>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => void syncPlayers()}
                 disabled={syncing}
-                className="px-3 py-1 bg-dark-400 hover:bg-dark-100 text-gray-400 rounded-lg text-xs font-medium transition-all border border-white/5 flex items-center gap-2"
+                className="px-3 py-1 bg-dark-400 hover:bg-dark-100 text-gray-400 rounded-lg text-xs font-medium transition-all border border-dark-200 flex items-center gap-2"
                 title={t('players.aliases.sync_hint', 'Repopulate player list from hands')}
               >
                 <RefreshCw className={clsx('w-3 h-3', syncing && 'animate-spin')} />
@@ -147,7 +147,7 @@ export default function AliasManagement() {
               </button>
               <button
                 onClick={() => setShowCreate(true)}
-                className="px-3 py-1 bg-primary-600 hover:bg-primary-500 text-white rounded-lg text-xs font-medium transition-all shadow-lg shadow-primary-500/20"
+                className="px-3 py-1 bg-primary-600 hover:bg-primary-500 text-onprimary rounded-lg text-xs font-medium transition-all"
               >
                 + {t('players.aliases.create')}
               </button>
@@ -166,10 +166,10 @@ export default function AliasManagement() {
             )}
 
             {aliases.map((alias) => (
-              <div key={alias.id} className="bg-dark-300 rounded-lg border border-white/5 p-4 space-y-3 hover:border-primary-500/30 transition-all group">
+              <div key={alias.id} className="bg-dark-300 rounded-lg border border-dark-200 p-4 space-y-3 hover:border-primary-500/30 transition-all group">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-white tracking-tight">{alias.name}</span>
+                    <span className="text-lg font-bold text-gray-100 tracking-tight">{alias.name}</span>
                     <span className="px-2 py-0.5 rounded-full bg-primary-500/10 text-primary-400 text-[10px] font-bold uppercase">
                       {alias.players.length} {t('common.players')}
                     </span>
@@ -185,7 +185,7 @@ export default function AliasManagement() {
 
                 <div className="flex flex-wrap gap-2">
                   {alias.players.map((p: Json) => (
-                    <div key={p.id} className="flex items-center gap-2 bg-dark-400 border border-white/5 rounded-lg px-2 py-1">
+                    <div key={p.id} className="flex items-center gap-2 bg-dark-400 border border-dark-200 rounded-lg px-2 py-1">
                       <RoomLogo room={p.room} />
                       <span className="text-xs text-gray-300">{p.name}</span>
                       <button
@@ -204,11 +204,11 @@ export default function AliasManagement() {
         </div>
 
         {/* Link players */}
-        <div className="flex flex-col bg-dark-200 rounded-lg border border-white/5 overflow-hidden shadow-2xl">
-          <div className="p-4 border-b border-white/5 bg-dark-300/30">
+        <div className="flex flex-col bg-dark-400 rounded-[10px] border border-dark-200 overflow-hidden shadow-xl">
+          <div className="p-4 border-b border-dark-200 bg-dark-600/50">
             <div className="flex items-center gap-2 mb-3">
               <LinkIcon className="w-4 h-4 text-primary-400" />
-              <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest">{t('players.aliases.link_players')}</h2>
+              <h2 className="text-[15px] font-semibold text-gray-100">{t('players.aliases.link_players')}</h2>
             </div>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
@@ -241,12 +241,12 @@ export default function AliasManagement() {
                 </div>
                 <div className="flex items-center gap-2">
                   {p.alias_id && (
-                    <div className="px-2 py-0.5 rounded-lg bg-dark-400 text-[10px] text-gray-500 border border-white/5">
+                    <div className="px-2 py-0.5 rounded-lg bg-dark-400 text-[10px] text-gray-500 border border-dark-200">
                       {t('players.aliases.linked_to', { name: aliasName(p.alias_id) })}
                     </div>
                   )}
                   <button
-                    className="px-3 py-1 rounded-lg bg-primary-600/10 text-primary-400 text-xs font-medium hover:bg-primary-600 hover:text-white transition-all"
+                    className="px-3 py-1 rounded-lg bg-primary-600/10 text-primary-400 text-xs font-medium hover:bg-primary-600 hover:text-onprimary transition-all"
                     onClick={(e) => { e.stopPropagation(); toggleMenu(p, e.currentTarget) }}
                   >
                     {p.alias_id ? t('players.aliases.change_alias') : t('players.aliases.link')}
@@ -262,13 +262,13 @@ export default function AliasManagement() {
       {menu && (
         <>
           <div className="fixed inset-0 z-[998]" onClick={() => setMenu(null)} />
-          <div className="fixed w-48 bg-dark-300 border border-white/10 rounded-lg shadow-2xl z-[999] p-1 flex flex-col" style={menuStyle}>
+          <div className="fixed w-48 bg-dark-300 border border-dark-200 rounded-lg shadow-xl z-[999] p-1 flex flex-col" style={menuStyle}>
             <div className="px-3 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider">{t('players.aliases.select_alias')}</div>
             <div className="max-h-48 overflow-y-auto">
               {aliases.map((alias) => (
                 <div
                   key={alias.id}
-                  className="px-3 py-2 text-xs text-gray-300 hover:bg-primary-500 hover:text-white rounded-lg cursor-pointer transition-colors flex items-center justify-between"
+                  className="px-3 py-2 text-xs text-gray-300 hover:bg-primary-500 hover:text-onprimary rounded-lg cursor-pointer transition-colors flex items-center justify-between"
                   onClick={() =>
                     void mutate(
                       () => ipcService.linkPlayerToAlias(menu.player.id, { aliasId: alias.id }),
@@ -284,7 +284,7 @@ export default function AliasManagement() {
               ))}
             </div>
             {aliases.length === 0 && <div className="px-3 py-4 text-center text-[10px] text-gray-600">{t('players.aliases.no_aliases')}</div>}
-            <div className="border-t border-white/5 mt-1 pt-1">
+            <div className="border-t border-dark-200 mt-1 pt-1">
               <button onClick={() => setMenu(null)} className="w-full px-3 py-2 text-left text-xs text-gray-500 hover:bg-dark-400 rounded-lg">
                 {t('common.cancel')}
               </button>
@@ -295,8 +295,8 @@ export default function AliasManagement() {
 
       {showCreate && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4" onClick={() => setShowCreate(false)}>
-          <div className="bg-dark-200 rounded-lg shadow-2xl border border-white/10 w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-xl font-bold text-white mb-4">{t('players.aliases.create_title')}</h3>
+          <div className="bg-dark-600 rounded-[10px] shadow-xl border border-dark-200 w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-xl font-bold text-gray-100 mb-4">{t('players.aliases.create_title')}</h3>
             <div className="space-y-4">
               <div>
                 <label className="text-xs text-gray-400 block mb-1">{t('players.aliases.name_label')}</label>
@@ -317,7 +317,7 @@ export default function AliasManagement() {
                 <button
                   onClick={() => void createAlias()}
                   disabled={!newAliasName.trim() || creating}
-                  className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all shadow-lg shadow-primary-500/20"
+                  className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-500 disabled:opacity-50 text-onprimary rounded-lg text-sm font-medium transition-all"
                 >
                   {creating ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : t('players.aliases.create_button')}
                 </button>

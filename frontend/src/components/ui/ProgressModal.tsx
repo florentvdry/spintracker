@@ -7,8 +7,8 @@ export default function ProgressModal() {
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-dark-300 rounded-lg p-6 w-96 shadow-2xl border border-dark-100/30">
-        <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
+      <div className="bg-dark-300 rounded-lg p-6 w-96 shadow-xl border border-dark-200">
+        <h3 className="text-lg font-semibold text-gray-100 mb-4">{title}</h3>
         <div className="mb-4 progress-bar">
           <div className="progress-fill" style={{ width: `${progress}%` }} />
         </div>

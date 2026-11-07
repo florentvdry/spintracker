@@ -43,7 +43,7 @@ export default function AutoImportCard() {
     <Card title={t('auto_import.title')} subtitle={t('auto_import.subtitle')}>
       <div className="space-y-4">
         <label className="flex items-center justify-between gap-4 py-2">
-          <span className="text-white font-medium">{t('auto_import.enable')}</span>
+          <span className="text-gray-100 font-medium">{t('auto_import.enable')}</span>
           <input
             type="checkbox"
             className="h-4 w-4"
@@ -54,7 +54,7 @@ export default function AutoImportCard() {
         </label>
 
         {WATCHABLE_ROOMS.map((room) => (
-          <div key={room} className="border-t border-dark-100/30 pt-3">
+          <div key={room} className="border-t border-dark-200 pt-3">
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium text-gray-200">{room}</p>
               <button className="btn-secondary flex items-center gap-2" disabled={busy} onClick={() => void addFolder(room)}>
@@ -82,7 +82,7 @@ export default function AutoImportCard() {
           </div>
         ))}
 
-        <div className="flex gap-3 rounded-lg bg-dark-200 p-3 text-sm text-gray-400">
+        <div className="flex gap-3 rounded-lg bg-dark-300 p-3 text-sm text-gray-400">
           <Info className="w-4 h-4 mt-0.5 shrink-0" />
           <p>{t('auto_import.manual_rooms')}</p>
         </div>

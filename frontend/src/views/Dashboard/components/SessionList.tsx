@@ -5,8 +5,11 @@ import type { Json } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
 import { formatCurrency, formatDate } from '@/utils/formatters'
 
+const RECENT_SESSIONS_SHOWN = 5
+
 export default function SessionList({ sessions }: { sessions: Json[] }) {
   const { t } = useTranslation()
+  const recent = sessions?.slice(0, RECENT_SESSIONS_SHOWN) ?? []
   const dateRange = useFilterStore((s) => s.dateRange)
   const selectedSession = useFilterStore((s) => s.selectedSession)
   const setSelectedSession = useFilterStore((s) => s.setSelectedSession)
@@ -19,15 +22,15 @@ export default function SessionList({ sessions }: { sessions: Json[] }) {
 
   return (
     <div className="flex-1 overflow-y-auto pr-2 space-y-3">
-      {sessions.map((session) => {
+      {recent.map((session) => {
         const selected = isSelected(session)
         return (
           <div
             key={session.session_date}
             onClick={() => setSelectedSession(selected ? null : session)}
             className={clsx(
-              'p-3 rounded-lg border transition-all cursor-pointer',
-              selected ? 'bg-blue-600/20 border-blue-500 shadow-lg' : 'bg-dark-300/50 border-dark-200 hover:border-dark-100',
+              'p-3 rounded-lg border transition-colors cursor-pointer',
+              selected ? 'bg-primary-500/10 border-primary-500' : 'bg-dark-300 border-dark-200 hover:border-dark-100',
             )}
           >
             <div className="flex items-center justify-between mb-2">

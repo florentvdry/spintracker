@@ -380,7 +380,7 @@ export default function EditorTab() {
           </div>
         </aside>
 
-        <section className="flex min-w-0 flex-1 flex-col bg-dark-600 bg-[radial-gradient(#242936_1px,transparent_1px)] [background-size:16px_16px]">
+        <section className="flex min-w-0 flex-1 flex-col bg-dark-600 bg-[radial-gradient(#262b34_1px,transparent_1px)] [background-size:16px_16px]">
           <div className="min-h-0 flex-1 overflow-auto">
             {view === 'grids' ? (
               <Canvas
@@ -447,7 +447,7 @@ export default function EditorTab() {
       {builder && <StatBuilder stat={builder.stat} template={builder.template} onClose={() => setBuilder(null)} />}
 
       {drag && (
-        <div className="pointer-events-none fixed z-50 rounded border border-primary-500 bg-dark-200 px-2 py-1 text-xs text-white shadow-lg" style={{ left: drag.x + 12, top: drag.y + 12 }}>
+        <div className="pointer-events-none fixed z-50 rounded border border-primary-500 bg-dark-200 px-2 py-1 text-xs text-gray-100 shadow-lg" style={{ left: drag.x + 12, top: drag.y + 12 }}>
           {drag.payload.label}
         </div>
       )}

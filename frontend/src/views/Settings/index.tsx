@@ -200,22 +200,22 @@ export default function Settings() {
   const languageButton = (code: string, label: string) => (
     <button
       onClick={() => setLanguage(code)}
-      className={clsx('px-3 py-1.5 rounded-md text-sm font-medium transition-all', i18n.language.startsWith(code) ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white')}
+      className={clsx('segmented-item', i18n.language.startsWith(code) && 'active')}
     >
       {label}
     </button>
   )
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-4 max-w-4xl">
       <div>
-        <h1 className="text-lg font-semibold text-gray-100">{t('settings.title')}</h1>
-        <p className="text-gray-400 mt-1">{t('settings.subtitle')}</p>
+        <h1 className="page-title">{t('settings.title')}</h1>
+        <p className="page-subtitle">{t('settings.subtitle')}</p>
       </div>
 
       <Card title={t('settings.general.title')}>
         <SettingRow icon={Globe} title={t('settings.general.language')} description={t('settings.general.language_desc')}>
-          <div className="flex bg-dark-200 rounded-lg p-1 border border-dark-100/50">
+          <div className="segmented">
             {languageButton('en', 'English')}
             {languageButton('fr', 'Français')}
           </div>
@@ -228,8 +228,8 @@ export default function Settings() {
 
       <Card title={t('settings.database.multiple.title')} subtitle={t('settings.database.multiple.desc')}>
         <div className="space-y-4">
-          <div className="flex items-center gap-3 py-3 border-b border-dark-100/30">
-            <div className="w-10 h-10 rounded-lg bg-dark-200 flex items-center justify-center"><Plus className="w-5 h-5 text-gray-400" /></div>
+          <div className="flex items-center gap-3 py-3 border-b border-dark-200">
+            <div className="w-10 h-10 rounded-lg bg-dark-300 flex items-center justify-center"><Plus className="w-5 h-5 text-gray-400" /></div>
             <div className="flex-1">
               <input
                 type="text"
@@ -237,7 +237,7 @@ export default function Settings() {
                 onChange={(e) => setNewDbName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && void handleCreateDatabase()}
                 placeholder={t('settings.database.multiple.name')}
-                className="w-full bg-dark-200 border border-dark-100/50 rounded-lg px-3 py-2 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-blue-500"
+                className="w-full bg-dark-300 border border-dark-200 rounded-lg px-3 py-2 text-gray-100 text-sm placeholder-gray-500 focus:outline-none focus:border-primary-500"
               />
             </div>
             <button onClick={() => void handleCreateDatabase()} disabled={!newDbName.trim() || creatingDb} className="btn-primary flex items-center gap-2">
@@ -250,8 +250,8 @@ export default function Settings() {
             <div className="flex items-center justify-center py-8"><Loader className="w-6 h-6 animate-spin text-gray-400" /></div>
           ) : (
             databases.map((db) => (
-              <div key={db.id} className="flex items-center gap-3 py-3 border-b border-dark-100/30 last:border-b-0">
-                <div className="w-10 h-10 rounded-lg bg-dark-200 flex items-center justify-center">
+              <div key={db.id} className="flex items-center gap-3 py-3 border-b border-dark-200 last:border-b-0">
+                <div className="w-10 h-10 rounded-lg bg-dark-300 flex items-center justify-center">
                   <Database className={clsx('w-5 h-5', db.isActive ? 'text-profit-positive' : 'text-gray-400')} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -266,7 +266,7 @@ export default function Settings() {
                           if (e.key === 'Enter') void handleRenameDatabase(db)
                           if (e.key === 'Escape') setEditingDbId(null)
                         }}
-                        className="flex-1 bg-dark-200 border border-dark-100/50 rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500"
+                        className="flex-1 bg-dark-300 border border-dark-200 rounded-lg px-3 py-1.5 text-gray-100 text-sm focus:outline-none focus:border-primary-500"
                       />
                       <button onClick={() => void handleRenameDatabase(db)} className="p-1.5 text-profit-positive hover:text-green-300"><Check className="w-4 h-4" /></button>
                       <button onClick={() => setEditingDbId(null)} className="p-1.5 text-gray-400 hover:text-gray-300"><X className="w-4 h-4" /></button>
@@ -274,7 +274,7 @@ export default function Settings() {
                   ) : (
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="text-white font-medium truncate">{db.name}</p>
+                        <p className="text-gray-100 font-medium truncate">{db.name}</p>
                         {db.isActive && <span className="badge badge-success text-xs">{t('settings.database.multiple.active')}</span>}
                       </div>
                       <p className="text-sm text-gray-400">{t('settings.database.multiple.created', { date: formatDbDate(db.createdAt) })}</p>
@@ -283,7 +283,7 @@ export default function Settings() {
                 </div>
                 {!db.isActive && (
                   <div className="flex items-center gap-2">
-                    <button onClick={() => { setEditingDbId(db.id); setEditingDbName(db.name) }} className="p-2 text-gray-400 hover:text-white transition-colors" title={t('common.edit')}>
+                    <button onClick={() => { setEditingDbId(db.id); setEditingDbName(db.name) }} className="p-2 text-gray-400 hover:text-gray-100 transition-colors" title={t('common.edit')}>
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button onClick={() => void handleSetActiveDatabase(db.id)} className="btn-secondary flex items-center gap-2 text-sm">
@@ -338,7 +338,7 @@ export default function Settings() {
       <Card title={t('settings.about.title')}>
         <div className="space-y-4">
           <div className="text-sm text-gray-400">
-            <p><span className="text-white">SpinTracker</span> v{appVersion}</p>
+            <p><span className="text-gray-100">SpinTracker</span> v{appVersion}</p>
             <p>{t('settings.about.description')}</p>
           </div>
           <button onClick={() => void ipcService.checkForUpdates()} className="btn-secondary flex items-center gap-2 text-sm">

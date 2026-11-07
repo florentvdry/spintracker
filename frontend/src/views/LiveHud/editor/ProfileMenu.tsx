@@ -36,14 +36,14 @@ export default function ProfileMenu({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="w-[300px] rounded-lg border border-dark-100 bg-dark-300 shadow-2xl shadow-black/50">
+    <div className="w-[300px] rounded-lg border border-dark-100 bg-dark-300 shadow-xl shadow-black/50">
       <div className="max-h-56 overflow-y-auto p-1.5">
         {settings.profiles.map((p) => (
           <button
             key={p.id}
             type="button"
             onClick={() => setActiveProfile(p.id)}
-            className={clsx('flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-[13px]', p.id === profile.id ? 'bg-dark-200 font-semibold text-white' : 'text-gray-300 hover:bg-dark-200')}
+            className={clsx('flex w-full items-center justify-between rounded px-2 py-1.5 text-left text-[13px]', p.id === profile.id ? 'bg-dark-200 font-semibold text-gray-100' : 'text-gray-300 hover:bg-dark-200')}
           >
             <span className="truncate">{p.name}</span>
             {p.id === profile.id && <Check className="h-3.5 w-3.5 shrink-0 text-primary-400" />}

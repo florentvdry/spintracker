@@ -24,10 +24,10 @@ const POSITION_LABELS: Record<string, string> = {
   all: 'All Positions', HU_SB: 'HU SB', HU_BB: 'HU BB', '3W_BTN': '3W BTN', '3W_SB': '3W SB', '3W_BB': '3W BB',
 }
 const LINE_COLORS: Record<LineKey, string> = {
-  chipsWon: '#34c27a',
+  chipsWon: '#3fd49a',
   netExpected: '#eab308',
-  wonWithShowdown: '#3b82f6',
-  wonWithoutShowdown: '#e5594f',
+  wonWithShowdown: '#7aa7ff',
+  wonWithoutShowdown: '#ff7a6b',
 }
 const LINE_KEYS = Object.keys(LINE_COLORS) as LineKey[]
 const STATS_BOX_MIN_WIDTH = 250
@@ -118,7 +118,7 @@ export default function Charts() {
     return {
       backgroundColor: 'transparent',
       animation: false,
-      tooltip: { trigger: 'axis', backgroundColor: '#1f2937', borderColor: '#374151', textStyle: { color: '#9ca3af' } },
+      tooltip: { trigger: 'axis', backgroundColor: '#1b1f26', borderColor: '#262b34', textStyle: { color: '#a7aab3' } },
       brush: { xAxisIndex: 0, brushLink: 'all', outOfBrush: { colorAlpha: 0.1 } },
       dataZoom: [
         { type: 'slider', show: false, xAxisIndex: 0 },
@@ -129,16 +129,16 @@ export default function Charts() {
         type: 'category',
         data: data.map((d) => d.label),
         boundaryGap: false,
-        axisLine: { lineStyle: { color: '#4b5563' } },
-        axisLabel: { color: '#9ca3af', showMaxLabel: true },
+        axisLine: { lineStyle: { color: '#3a4150' } },
+        axisLabel: { color: '#a7aab3', showMaxLabel: true },
         splitLine: { show: false },
       },
       yAxis: {
         type: 'value',
         axisLine: { show: false },
         axisTick: { show: false },
-        axisLabel: { color: '#9ca3af' },
-        splitLine: { show: true, lineStyle: { color: '#242936' } },
+        axisLabel: { color: '#a7aab3' },
+        splitLine: { show: true, lineStyle: { color: '#262b34' } },
       },
       series: LINE_KEYS.filter((key) => visible[key]).map((key) => ({
         name: labels[key],
@@ -186,16 +186,16 @@ export default function Charts() {
   }
 
   return (
-    <div className="h-[calc(100vh-180px)] flex flex-col">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+    <div className="h-[calc(100vh-200px)] flex flex-col">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4">
         <div>
-          <h1 className="text-lg font-semibold text-gray-100">{t('charts.title')}</h1>
-          <p className="text-gray-400 mt-1">{t('charts.subtitle')}</p>
+          <h1 className="page-title">{t('charts.title')}</h1>
+          <p className="page-subtitle">{t('charts.subtitle')}</p>
         </div>
         <select
           value={position}
           onChange={(e) => setPosition(e.target.value)}
-          className="bg-dark-400 text-white px-4 py-2 rounded-lg border border-dark-100 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+          className="select w-48"
         >
           {POSITIONS.map((pos) => (
             <option key={pos} value={pos}>{t(`charts.positions.${pos}`, POSITION_LABELS[pos])}</option>
@@ -203,23 +203,23 @@ export default function Charts() {
         </select>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 mb-4">
+      <div className="flex flex-wrap items-center gap-5 mb-3">
         {LINE_KEYS.map((key) => (
           <button
             key={key}
             onClick={() => setVisible((v) => ({ ...v, [key]: !v[key] }))}
-            className={clsx('flex items-center gap-1.5 text-xs transition-opacity', !visible[key] && 'opacity-40')}
+            className={clsx('flex items-center gap-2 text-[13px] transition-opacity', !visible[key] && 'opacity-40')}
           >
             <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: LINE_COLORS[key] }} />
-            <span className="text-gray-300">{labels[key]}</span>
+            <span className="text-gray-400">{labels[key]}</span>
           </button>
         ))}
       </div>
 
-      <div ref={containerRef} className="flex-1 w-full relative min-h-0">
+      <div ref={containerRef} className="flex-1 w-full relative min-h-0 rounded-[10px] border border-dark-200 bg-dark-400 p-3">
         {isLoading && (
           <div className="flex items-center justify-center h-full">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
           </div>
         )}
 
@@ -243,7 +243,7 @@ export default function Charts() {
 
         {stats && (
           <div
-            className="absolute bg-dark-400/95 backdrop-blur-sm border border-dark-100 rounded-lg p-3 shadow-xl select-none"
+            className="absolute bg-dark-600/95 backdrop-blur-sm border border-dark-200 rounded-lg p-3 shadow-xl select-none"
             style={{ left: boxPosition.x, top: boxPosition.y, cursor: dragging ? 'grabbing' : 'grab', minWidth: 200 }}
             onMouseDown={(e) => {
               const rect = e.currentTarget.getBoundingClientRect()
@@ -251,14 +251,14 @@ export default function Charts() {
               setDragging(true)
             }}
           >
-            <div className="flex items-center justify-between mb-2 border-b border-dark-100 pb-2">
-              <span className="text-xs font-medium text-gray-400 uppercase">Stats</span>
+            <div className="flex items-center justify-between mb-2 border-b border-dark-200 pb-2">
+              <span className="text-[11px] font-medium text-gray-500 uppercase tracking-[.06em]">Stats</span>
               <GripHorizontal className="w-4 h-4 text-gray-500" />
             </div>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-xs text-gray-400">Tournaments</span>
-                <span className="text-sm font-mono font-medium text-white">{stats.total_tournaments}</span>
+                <span className="text-sm font-mono font-medium text-gray-100">{stats.total_tournaments}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-gray-400">CEV</span>
@@ -267,7 +267,7 @@ export default function Charts() {
                 </span>
               </div>
               {stats.cev_by_position && (
-                <div className="mt-3 pt-2 border-t border-dark-100">
+                <div className="mt-3 pt-2 border-t border-dark-200">
                   <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                     <div>
                       <p className="text-[9px] text-gray-500">Heads-Up</p>

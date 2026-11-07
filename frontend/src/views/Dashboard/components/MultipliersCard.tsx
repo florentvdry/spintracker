@@ -13,18 +13,18 @@ const GOOD_WIN_RATE = 38
 const AVERAGE_WIN_RATE = 35
 // Multipliers from which a badge gets a stronger colour.
 const MULTIPLIER_TIERS: { from: number; className: string }[] = [
-  { from: 100, className: 'bg-yellow-500 text-black' },
-  { from: 25, className: 'bg-purple-600 text-white' },
-  { from: 10, className: 'bg-blue-600 text-white' },
+  { from: 100, className: 'bg-primary-500 text-onprimary' },
+  { from: 25, className: 'bg-purple-600 text-gray-100' },
+  { from: 10, className: 'bg-primary-500 text-onprimary' },
   { from: 4, className: 'bg-green-600 text-white' },
 ]
-const DEFAULT_BADGE = 'bg-dark-500 text-dark-50 border border-dark-100/20'
+const DEFAULT_BADGE = 'bg-dark-300 text-gray-400'
 
 const badgeClass = (multiplier: number) => MULTIPLIER_TIERS.find((tier) => multiplier >= tier.from)?.className ?? DEFAULT_BADGE
 
-const winRateClass = (winRate: number) => (winRate >= GOOD_WIN_RATE ? 'text-profit-positive' : winRate >= AVERAGE_WIN_RATE ? 'text-yellow-400' : 'text-profit-negative')
+const winRateClass = (winRate: number) => (winRate >= GOOD_WIN_RATE ? 'text-profit-positive' : winRate >= AVERAGE_WIN_RATE ? 'text-primary-400' : 'text-profit-negative')
 
-const headerCell = 'px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-gray-500'
+const headerCell = 'px-3.5 py-2.5 text-[11px] font-medium uppercase tracking-[.06em] text-gray-500'
 
 /** Results by Spin multiplier, for the hero and the period selected in the filters. */
 export default function MultipliersCard() {
@@ -65,7 +65,7 @@ export default function MultipliersCard() {
         totalGames > 0 ? (
           <div className="flex items-center gap-4 text-right text-xs text-gray-400">
             <span>
-              {t('multipliers.total')} <span className="font-mono text-sm font-bold text-white">{totalGames}</span>
+              {t('multipliers.total')} <span className="font-mono text-sm font-semibold text-gray-100">{totalGames}</span>
             </span>
             <span>
               {t('multipliers.win_rate')} <span className={clsx('font-mono text-sm font-bold', winRateClass(globalWinRate))}>{globalWinRate.toFixed(2)}%</span>
@@ -91,11 +91,11 @@ export default function MultipliersCard() {
             </thead>
             <tbody>
               {stats.map((s) => (
-                <tr key={s.multiplier} className="border-t border-dark-300 hover:bg-white/5">
+                <tr key={s.multiplier} className="border-t border-[#1f242c] hover:bg-white/5">
                   <td className="px-4 py-2">
-                    <span className={clsx('inline-flex min-w-[2.5rem] items-center justify-center rounded-md px-2 py-1 text-sm font-black', badgeClass(s.multiplier))}>x{s.multiplier}</span>
+                    <span className={clsx('inline-flex min-w-[54px] items-center justify-center rounded-md px-2.5 py-0.5 font-mono text-xs font-semibold', badgeClass(s.multiplier))}>x{s.multiplier}</span>
                   </td>
-                  <td className="px-4 py-2 text-center font-mono text-white">{s.totalCount}</td>
+                  <td className="px-4 py-2 text-center font-mono text-gray-100">{s.totalCount}</td>
                   <td className="px-4 py-2">
                     <div className="mx-auto flex w-24 flex-col items-center gap-1">
                       <span className="font-mono text-xs text-gray-300">{s.percentageOfTotal}%</span>
@@ -116,7 +116,7 @@ export default function MultipliersCard() {
                       {s.lossCount}
                     </span>
                   </td>
-                  <td className={clsx('px-4 py-2 text-right font-mono font-bold', winRateClass(s.winPercentage))}>{s.winPercentage.toFixed(2)}%</td>
+                  <td className={clsx('px-4 py-2 text-right font-mono font-semibold', winRateClass(s.winPercentage))}>{s.winPercentage.toFixed(2)}%</td>
                 </tr>
               ))}
             </tbody>

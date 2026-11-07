@@ -21,11 +21,11 @@ interface Point {
 }
 
 const LINE_COLORS: Record<LineKey, string> = {
-  chipsWon: '#34c27a',
+  chipsWon: '#3fd49a',
   netExpected: '#eab308',
-  wonWithShowdown: '#3b82f6',
-  wonWithoutShowdown: '#e5594f',
-  euroProfit: '#34c27a',
+  wonWithShowdown: '#7aa7ff',
+  wonWithoutShowdown: '#ff7a6b',
+  euroProfit: '#3fd49a',
 }
 const CHIP_LINES: LineKey[] = ['chipsWon', 'netExpected', 'wonWithShowdown', 'wonWithoutShowdown']
 const CHART_HEIGHT = 500
@@ -135,9 +135,9 @@ export default function WinrateChart() {
       animation: false,
       tooltip: {
         trigger: 'axis',
-        backgroundColor: '#1f2937',
-        borderColor: '#374151',
-        textStyle: { color: '#9ca3af' },
+        backgroundColor: '#1b1f26',
+        borderColor: '#262b34',
+        textStyle: { color: '#a7aab3' },
         formatter: (params) => {
           const items = Array.isArray(params) ? params : [params]
           let html = `<div class="font-mono text-xs text-gray-300 mb-1">${(items[0] as unknown as { axisValueLabel: string }).axisValueLabel}</div>`
@@ -152,7 +152,7 @@ export default function WinrateChart() {
           }
           return html
         },
-        axisPointer: { type: 'cross', label: { backgroundColor: '#374151' } },
+        axisPointer: { type: 'cross', label: { backgroundColor: '#262b34' } },
       },
       brush: {
         xAxisIndex: 0,
@@ -170,16 +170,16 @@ export default function WinrateChart() {
         type: 'category',
         data: data.map((d) => d.label),
         boundaryGap: false,
-        axisLine: { lineStyle: { color: '#4b5563' } },
-        axisLabel: { color: '#9ca3af', showMaxLabel: true },
+        axisLine: { lineStyle: { color: '#3a4150' } },
+        axisLabel: { color: '#a7aab3', showMaxLabel: true },
         splitLine: { show: false },
       },
       yAxis: {
         type: 'value',
         axisLine: { show: false },
         axisTick: { show: false },
-        axisLabel: { color: '#9ca3af', formatter: (value: number) => (chartMode === 'euro' ? `${value}€` : String(value)) },
-        splitLine: { show: true, lineStyle: { color: '#242936' } },
+        axisLabel: { color: '#a7aab3', formatter: (value: number) => (chartMode === 'euro' ? `${value}€` : String(value)) },
+        splitLine: { show: true, lineStyle: { color: '#262b34' } },
       },
       series,
     }
@@ -193,7 +193,7 @@ export default function WinrateChart() {
   const modeButton = (mode: ChartMode, label: string) => (
     <button
       onClick={() => setChartMode(mode)}
-      className={clsx('px-4 py-1.5 text-xs font-medium rounded-md transition-all', chartMode === mode ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white')}
+      className={clsx('px-3 py-1 text-[13px] font-medium rounded-md transition-colors', chartMode === mode ? 'bg-primary-500 text-onprimary font-semibold' : 'text-gray-400 hover:text-gray-100')}
     >
       {label}
     </button>
@@ -202,7 +202,7 @@ export default function WinrateChart() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-        <div className="flex bg-dark-400 p-1 rounded-lg">
+        <div className="segmented">
           {modeButton('chips', 'CEV (Chips)')}
           {modeButton('euro', 'Euros (€)')}
         </div>
@@ -218,7 +218,7 @@ export default function WinrateChart() {
 
       {isLoading && (
         <div className="flex items-center justify-center" style={{ height: CHART_HEIGHT }}>
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
         </div>
       )}
       {!isLoading && data.length === 0 && (

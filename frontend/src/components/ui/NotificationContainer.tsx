@@ -3,8 +3,8 @@ import { X } from 'lucide-react'
 import clsx from 'clsx'
 import { useNotificationStore } from '@/stores/notificationStore'
 
-const BORDER = { success: 'border-green-500/30', error: 'border-red-500/30', warning: 'border-yellow-500/30', info: 'border-blue-500/30' }
-const DOT = { success: 'bg-green-500', error: 'bg-red-500', warning: 'bg-yellow-500', info: 'bg-blue-500' }
+const BORDER = { success: 'border-green-500/30', error: 'border-red-500/30', warning: 'border-yellow-500/30', info: 'border-primary-500/30' }
+const DOT = { success: 'bg-green-500', error: 'bg-red-500', warning: 'bg-yellow-500', info: 'bg-primary-500' }
 
 export default function NotificationContainer() {
   const notifications = useNotificationStore((s) => s.notifications)
@@ -19,7 +19,7 @@ export default function NotificationContainer() {
             {n.title && <p className="text-sm font-medium text-gray-100">{n.title}</p>}
             <p className={clsx('text-sm text-gray-300', n.title && 'mt-1')}>{n.message}</p>
           </div>
-          <button onClick={() => remove(n.id)} className="text-gray-400 hover:text-white flex-shrink-0">
+          <button onClick={() => remove(n.id)} className="text-gray-400 hover:text-gray-100 flex-shrink-0">
             <X className="w-4 h-4" />
           </button>
         </div>

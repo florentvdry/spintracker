@@ -23,7 +23,7 @@ interface Props {
 
 const lowSample = (figure: CustomStatFigure) => figure.ready && (figure.den ?? 0) < LOW_SAMPLE
 
-const iconButton = 'text-gray-500 hover:text-white'
+const iconButton = 'text-gray-500 hover:text-gray-100'
 
 /** The user's own stats over the hands the Statistics page currently selects. */
 export default function CustomStatsPanel({ figures, onCreate, onEdit, onDuplicate }: Props) {
@@ -37,7 +37,7 @@ export default function CustomStatsPanel({ figures, onCreate, onEdit, onDuplicat
     <section className="mt-4 rounded-lg border border-dark-100 bg-dark-400 p-4">
       <div className="mb-3 flex items-center justify-between gap-2">
         <div>
-          <h2 className="text-sm font-semibold text-white">{t('customStats.table_title')}</h2>
+          <h2 className="text-sm font-semibold text-gray-100">{t('customStats.table_title')}</h2>
           {computing && (
             <p className="text-xs text-gray-400">
               {progress ? t('customStats.computing_progress', { done: progress.done, total: progress.total }) : t('customStats.computing')}

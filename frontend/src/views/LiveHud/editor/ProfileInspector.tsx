@@ -11,7 +11,7 @@ export default function ProfileInspector() {
 
   return (
     <div className="flex flex-col gap-3.5">
-      <h2 className="text-sm font-semibold text-white">{profile.name}</h2>
+      <h2 className="text-sm font-semibold text-gray-100">{profile.name}</h2>
       <label className="flex flex-col gap-1 text-xs text-gray-400">
         <span className="flex justify-between">
           {t('liveHud.profiles.opacity')}

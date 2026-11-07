@@ -90,7 +90,7 @@ function ContextEditor({ value, onChange }: { value: StatContext | undefined; on
             <button
               key={bucket}
               type="button"
-              className={clsx('rounded border px-1.5 py-0.5 font-mono text-[10px]', stack?.buckets.includes(bucket) ? 'border-primary-500 bg-primary-500/30 text-white' : 'border-dark-100 text-gray-400')}
+              className={clsx('rounded border px-1.5 py-0.5 font-mono text-[10px]', stack?.buckets.includes(bucket) ? 'border-primary-500 bg-primary-500/30 text-gray-100' : 'border-dark-100 text-gray-400')}
               onClick={() => toggle(bucket)}
             >
               {bucket}
@@ -172,7 +172,7 @@ export default function Inspector({ whenEmpty, doc, selection, catalog, issues, 
     <div className="space-y-4">
       <div>
         {heading !== grid.name && <p className="mb-0.5 text-xs text-gray-400">{grid.name}</p>}
-        <h2 className="truncate text-sm font-semibold text-white">{heading}</h2>
+        <h2 className="truncate text-sm font-semibold text-gray-100">{heading}</h2>
       </div>
       {body}
       {issueList}
@@ -424,17 +424,17 @@ function CellPanel({
           />
         </Field>
         <div className="flex flex-wrap items-center gap-1">
-          <button type="button" className={clsx(smallButton, primary.style.bold && 'border-primary-500 text-white')} onClick={() => style({ bold: primary.style.bold ? null : true })}>
+          <button type="button" className={clsx(smallButton, primary.style.bold && 'border-primary-500 text-gray-100')} onClick={() => style({ bold: primary.style.bold ? null : true })}>
             <b>B</b>
           </button>
           {([['left', AlignLeft], ['center', AlignCenter], ['right', AlignRight]] as const).map(([value, Icon]) => (
-            <button key={value} type="button" className={clsx(smallButton, primary.style.align === value && 'border-primary-500 text-white')} onClick={() => align(primary.style.align === value ? undefined : value)}>
+            <button key={value} type="button" className={clsx(smallButton, primary.style.align === value && 'border-primary-500 text-gray-100')} onClick={() => align(primary.style.align === value ? undefined : value)}>
               <Icon className="h-3 w-3" />
             </button>
           ))}
           <span className="mx-1 text-[10px] text-gray-500">{t('liveHud.editor.borders')}</span>
           {(['top', 'right', 'bottom', 'left'] as const).map((side) => (
-            <button key={side} type="button" className={clsx(smallButton, primary.style.border?.[side] && 'border-primary-500 text-white')} onClick={() => border(side)}>
+            <button key={side} type="button" className={clsx(smallButton, primary.style.border?.[side] && 'border-primary-500 text-gray-100')} onClick={() => border(side)}>
               {t(`liveHud.editor.side.${side}`)}
             </button>
           ))}

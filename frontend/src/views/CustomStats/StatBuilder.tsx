@@ -201,7 +201,7 @@ function ToggleList<T extends string | number>({ values, selected, label, onChan
           <button
             key={value}
             type="button"
-            className={clsx('rounded border px-2 py-0.5 text-xs', on ? 'border-primary-500 bg-primary-500/20 text-white' : 'border-dark-100 bg-dark-300 text-gray-300')}
+            className={clsx('rounded border px-2 py-0.5 text-xs', on ? 'border-primary-500 bg-primary-500/20 text-gray-100' : 'border-dark-100 bg-dark-300 text-gray-300')}
             onClick={() => onChange(on ? selected.filter((v) => v !== value) : [...selected, value])}
           >
             {label(value)}
@@ -270,8 +270,8 @@ export default function StatBuilder({ stat, template, onClose }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true">
       <div className="flex max-h-full w-full max-w-2xl flex-col rounded-lg border border-dark-100 bg-dark-400 shadow-xl">
         <div className="flex items-center justify-between border-b border-dark-100 px-4 py-3">
-          <h2 className="text-sm font-semibold text-white">{t(stat ? 'customStats.title_edit' : 'customStats.title_new')}</h2>
-          <button type="button" className="text-gray-400 hover:text-white" onClick={onClose} aria-label={t('common.close', { defaultValue: 'Close' })}>
+          <h2 className="text-sm font-semibold text-gray-100">{t(stat ? 'customStats.title_edit' : 'customStats.title_new')}</h2>
+          <button type="button" className="text-gray-400 hover:text-gray-100" onClick={onClose} aria-label={t('common.close', { defaultValue: 'Close' })}>
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -353,7 +353,7 @@ export default function StatBuilder({ stat, template, onClose }: Props) {
           {atLimit && <p className="text-xs text-amber-300">{t('customStats.error.too_many')}</p>}
           <div className="flex justify-end gap-2">
             <button type="button" className={smallButton} onClick={onClose}>{t('customStats.cancel')}</button>
-            <button type="button" className={clsx(smallButton, 'border-primary-500 bg-primary-500/20 text-white')} disabled={problem !== null || saving || atLimit} onClick={() => void submit()}>
+            <button type="button" className={clsx(smallButton, 'border-primary-500 bg-primary-500/20 text-gray-100')} disabled={problem !== null || saving || atLimit} onClick={() => void submit()}>
               {t('customStats.save')}
             </button>
           </div>

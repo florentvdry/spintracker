@@ -1,18 +1,18 @@
-import { DollarSign, Hash, Target, TrendingUp, Trophy, Zap } from 'lucide-react'
+import { TrendingUp, Zap } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import WinrateChart from '@/components/charts/WinrateChart'
 import Card from '@/components/ui/Card'
-import StatCard from '@/components/ui/StatCard'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
+import { formatProfit } from '@/utils/formatters'
 import MultipliersCard from './components/MultipliersCard'
 import SessionList from './components/SessionList'
 
 interface CevRow {
   key: string
   label: string
-  cev: { formatted: string; isPositive: boolean }
+  cev: { formatted: string; isPositive: boolean; value: number }
   sub?: boolean
 }
 
@@ -31,7 +31,7 @@ export default function Dashboard() {
   const formatCev = (value: number | undefined) => {
     const cev = stats.total_tournaments > 0 ? ((value ?? 0) / stats.total_tournaments).toFixed(1) : '0'
     const numeric = parseFloat(cev)
-    return { formatted: numeric > 0 ? `+${cev}` : cev, isPositive: numeric >= 0 }
+    return { formatted: numeric > 0 ? `+${cev}` : cev, isPositive: numeric >= 0, value: numeric }
   }
 
   const byPosition = stats.cev_by_position ?? {}
@@ -60,40 +60,64 @@ export default function Dashboard() {
     },
   ]
 
+  const totalProfit = stats.total_profit || 0
+  const maxAbsCev = Math.max(1, ...positionGroups.flatMap((g) => g.rows.map((r) => Math.abs(r.cev.value))))
+
   return (
-    <div className="space-y-3">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-dark-200 border border-dark-200 rounded-lg overflow-hidden">
-        <StatCard label={t('dashboard.total_profit') + rangeLabel} value={stats.total_profit || 0} format="profit" icon={DollarSign} />
-        <StatCard label={t('dashboard.win_rate') + rangeLabel} value={winRate} format="percent" icon={Trophy} />
-        <StatCard label={t('common.tournaments')} value={stats.total_tournaments || 0} format="number" icon={Hash} />
-        <StatCard label={t('dashboard.chips_ev_avg')} value={stats.avg_chips_ev || 0} format="number" icon={Target} />
+    <div className="space-y-4">
+      <div>
+        <h1 className="page-title">{t('dashboard.title')}</h1>
+        <p className="page-subtitle">{t('dashboard.subtitle')}</p>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
-        <Card title={t('dashboard.chip_evolution')} subtitle={t('dashboard.profit_ev')} className="xl:col-span-2">
-          {heroName && stats.total_hands > 0 ? (
-            <WinrateChart />
-          ) : (
-            <div className="flex flex-col items-center justify-center h-[420px] text-gray-500">
-              <TrendingUp className="w-8 h-8 mb-3 opacity-50" />
-              <p className="font-medium mb-1">{heroName ? t('dashboard.no_data') : t('dashboard.no_hero')}</p>
-              <p className="text-xs">{heroName ? t('dashboard.no_data_chart') : t('dashboard.select_hero_prompt')}</p>
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4 items-stretch">
+        <section className="hero-card flex flex-col min-w-0">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <div className="stat-label">{t('dashboard.total_profit') + rangeLabel}</div>
+              <div className={clsx('mt-1 font-mono text-5xl font-semibold leading-[1.1]', totalProfit >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
+                {formatProfit(totalProfit)}
+              </div>
             </div>
-          )}
-        </Card>
+            <div className="flex gap-9">
+              <HeroStat label={t('dashboard.win_rate') + rangeLabel} value={`${winRate.toFixed(2)} %`} />
+              <HeroStat label={t('common.tournaments')} value={(stats.total_tournaments || 0).toLocaleString()} />
+              <HeroStat
+                label={t('dashboard.chips_ev_avg')}
+                value={(stats.avg_chips_ev || 0).toLocaleString()}
+                tone={(stats.avg_chips_ev || 0) >= 0 ? 'positive' : 'negative'}
+              />
+            </div>
+          </div>
 
-        <div className="flex flex-col gap-3 min-w-0">
-          <Card padding="none" className="!p-0 overflow-hidden">
-            <div className="px-4 pt-4">
-              <p className="section-label">{t('dashboard.cev_per_positions')}</p>
-            </div>
-            <table className="w-full mt-2 text-sm">
-              <tbody>
-                {positionGroups.map((group) => (
-                  <GroupRows key={group.title} title={group.title} rows={group.rows} />
+          <div className="mt-5">
+            <h2 className="text-[15px] font-semibold text-gray-100">
+              {t('dashboard.chip_evolution')} <span className="font-normal text-gray-500">· {t('dashboard.profit_ev')}</span>
+            </h2>
+          </div>
+          <div className="mt-3 flex-1">
+            {heroName && stats.total_hands > 0 ? (
+              <WinrateChart />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-[420px] text-gray-500">
+                <TrendingUp className="w-8 h-8 mb-3 opacity-50" />
+                <p className="font-medium mb-1">{heroName ? t('dashboard.no_data') : t('dashboard.no_hero')}</p>
+                <p className="text-xs">{heroName ? t('dashboard.no_data_chart') : t('dashboard.select_hero_prompt')}</p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <div className="flex flex-col gap-4 min-w-0">
+          <Card title={t('dashboard.cev_per_positions')}>
+            {positionGroups.map((group) => (
+              <div key={group.title}>
+                <div className="mt-3 mb-0.5 text-[11px] uppercase tracking-[.06em] text-gray-500">{group.title}</div>
+                {group.rows.map((row) => (
+                  <CevBarRow key={row.key} row={row} maxAbs={maxAbsCev} />
                 ))}
-              </tbody>
-            </table>
+              </div>
+            ))}
           </Card>
 
           <Card title={t('dashboard.recent_sessions')} subtitle={t('dashboard.latest_games')} className="flex-1 flex flex-col min-h-[240px]">
@@ -115,20 +139,33 @@ export default function Dashboard() {
   )
 }
 
-function GroupRows({ title, rows }: { title: string; rows: CevRow[] }) {
+function HeroStat({ label, value, tone }: { label: string; value: string; tone?: 'positive' | 'negative' }) {
   return (
-    <>
-      <tr className="bg-dark-300/50">
-        <td colSpan={2} className="px-4 py-1 text-[11px] uppercase tracking-wider text-gray-500">{title}</td>
-      </tr>
-      {rows.map((row) => (
-        <tr key={row.key} className="border-t border-dark-300">
-          <td className={clsx('px-4 py-1.5', row.sub ? 'pl-8 text-gray-500 text-xs' : 'text-gray-300')}>{row.label}</td>
-          <td className={clsx('px-4 py-1.5 text-right font-mono', row.cev.isPositive ? 'text-profit-positive' : 'text-profit-negative')}>
-            {row.cev.formatted}
-          </td>
-        </tr>
-      ))}
-    </>
+    <div>
+      <div className="stat-label">{label}</div>
+      <div className={clsx('mt-1 font-mono text-[22px] font-semibold', tone === 'positive' && 'text-profit-positive', tone === 'negative' && 'text-profit-negative', !tone && 'text-gray-100')}>
+        {value}
+      </div>
+    </div>
+  )
+}
+
+/** One position: a bar growing right (profit) or left (loss) from a centre line. */
+function CevBarRow({ row, maxAbs }: { row: CevRow; maxAbs: number }) {
+  const widthPercent = Math.min(50, (Math.abs(row.cev.value) / maxAbs) * 50)
+  return (
+    <div className={clsx('flex items-center gap-2.5 py-1', row.sub && 'pl-4')}>
+      <span className={clsx('w-14', row.sub ? 'text-xs text-gray-500' : 'text-[13px] text-gray-100')}>{row.label}</span>
+      <span className="relative h-2 flex-1 rounded bg-dark-300">
+        <span
+          className={clsx('absolute inset-y-0 rounded', row.cev.isPositive ? 'bg-profit-positive' : 'bg-profit-negative')}
+          style={row.cev.isPositive ? { left: '50%', width: `${widthPercent}%` } : { right: '50%', width: `${widthPercent}%` }}
+        />
+        <span className="absolute -inset-y-[3px] left-1/2 w-px bg-dark-100" />
+      </span>
+      <span className={clsx('w-14 text-right font-mono text-xs font-medium', row.cev.isPositive ? 'text-profit-positive' : 'text-profit-negative')}>
+        {row.cev.formatted}
+      </span>
+    </div>
   )
 }

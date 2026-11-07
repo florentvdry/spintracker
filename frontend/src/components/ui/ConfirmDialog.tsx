@@ -17,8 +17,8 @@ export default function ConfirmDialog({ open, title, detail, confirmLabel, onCon
 
   return createPortal(
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60" onClick={onCancel}>
-      <div className="bg-dark-300 rounded-lg p-6 w-[420px] shadow-2xl border border-dark-100/30" role="alertdialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-        <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
+      <div className="bg-dark-300 rounded-lg p-6 w-[420px] shadow-xl border border-dark-200" role="alertdialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+        <h3 className="text-lg font-semibold text-gray-100 mb-2">{title}</h3>
         {detail && <p className="text-sm text-gray-400 mb-6">{detail}</p>}
         <div className="flex justify-end gap-3">
           <button className="btn-secondary" autoFocus onClick={onCancel}>{t('common.cancel')}</button>

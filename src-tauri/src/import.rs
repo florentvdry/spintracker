@@ -159,8 +159,15 @@ fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], t
             return;
         }
         last_emit = Some(Instant::now());
-        let step = (f64::from(current.percent) * file_share / 100.0).round();
-        let global = (COUNTING_SHARE + (index as f64 * file_share).round() + step).round();
+        let handled = done_imported + done_skipped + current.hands_imported as u64 + current.hands_skipped as u64;
+        // Weighting by hands keeps the bar honest when files differ a lot in size; the per-file
+        // share is only a fallback when the total could not be counted.
+        let global = if total_hands_expected > 0 {
+            (COUNTING_SHARE + IMPORT_SHARE * handled as f64 / total_hands_expected as f64).round()
+        } else {
+            let step = (f64::from(current.percent) * file_share / 100.0).round();
+            (COUNTING_SHARE + (index as f64 * file_share).round() + step).round()
+        };
         let _ = app.emit(
             PROGRESS_EVENT,
             json!({

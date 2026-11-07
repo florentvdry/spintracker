@@ -12,10 +12,10 @@ import TournamentsTable from './components/TournamentsTable'
 
 function Pagination({ page, totalPages, onPage }: { page: number; totalPages: number; onPage: (page: number) => void }) {
   const { t } = useTranslation()
-  const button = 'p-2 rounded-lg bg-dark-200 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed'
+  const button = 'h-8 w-8 flex items-center justify-center rounded-lg bg-dark-300 text-gray-100 hover:bg-dark-200 disabled:opacity-50 disabled:cursor-not-allowed'
   return (
-    <div className="flex items-center justify-between p-4 border-t border-dark-100/30">
-      <p className="text-sm text-gray-400">{t('hand_history.page_info', { current: page, total: totalPages || 1 })}</p>
+    <div className="flex items-center justify-between px-4 py-3 border-t border-dark-200">
+      <p className="text-[13px] text-gray-400">{t('hand_history.page_info', { current: page, total: totalPages || 1 })}</p>
       <div className="flex items-center gap-2">
         <button onClick={() => onPage(page - 1)} disabled={page === 1} className={button}><ChevronLeft className="w-4 h-4" /></button>
         <button onClick={() => onPage(page + 1)} disabled={page >= totalPages} className={button}><ChevronRight className="w-4 h-4" /></button>
@@ -27,7 +27,7 @@ function Pagination({ page, totalPages, onPage }: { page: number; totalPages: nu
 function Spinner() {
   return (
     <div className="flex items-center justify-center py-20">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
     </div>
   )
 }
@@ -58,37 +58,38 @@ export default function HandHistory() {
   }
 
   const modeButton = (mode: 'tournaments' | 'hands', label: string) => (
-    <button className={clsx('px-4 py-2 rounded-md', viewMode === mode ? 'bg-blue-600 text-white' : 'text-gray-400')} onClick={() => hands.setViewMode(mode)}>
+    <button className={clsx('segmented-item', viewMode === mode && 'active')} onClick={() => hands.setViewMode(mode)}>
       {label}
     </button>
   )
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-lg font-semibold text-gray-100">{t('hand_history.title')}</h1>
-        <p className="text-gray-400 mt-1">
-          {isTournaments
-            ? t('hand_history.total_tournaments', { total: hands.totalTournaments.toLocaleString() })
-            : t('hand_history.total_hands', { total: hands.totalHandsCount.toLocaleString() })}
-        </p>
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="page-title">{t('hand_history.title')}</h1>
+          <p className="page-subtitle">
+            {isTournaments
+              ? t('hand_history.total_tournaments', { total: hands.totalTournaments.toLocaleString() })
+              : t('hand_history.total_hands', { total: hands.totalHandsCount.toLocaleString() })}
+          </p>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <div className="segmented">
+            {modeButton('tournaments', t('hand_history.by_tournaments'))}
+            {modeButton('hands', t('hand_history.by_hands'))}
+          </div>
+          <select className="select w-36" value={filters.result || ''} onChange={(e) => hands.setFilters({ result: e.target.value || null })}>
+            <option value="">{t('common.result')}</option>
+            <option value="won">{t('common.won')}</option>
+            <option value="lost">{t('common.lost')}</option>
+          </select>
+        </div>
       </div>
 
-      <Card flat className="relative z-20 flex flex-wrap items-center gap-4">
-        <div className="flex bg-dark-200 rounded-lg p-1">
-          {modeButton('tournaments', t('hand_history.by_tournaments'))}
-          {modeButton('hands', t('hand_history.by_hands'))}
-        </div>
-        <select className="select w-36" value={filters.result || ''} onChange={(e) => hands.setFilters({ result: e.target.value || null })}>
-          <option value="">{t('common.result')}</option>
-          <option value="won">{t('common.won')}</option>
-          <option value="lost">{t('common.lost')}</option>
-        </select>
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <Card padding="none">
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 items-start">
+        <div>
+          <Card padding="none" className="overflow-hidden">
             {hands.isLoading ? (
               <Spinner />
             ) : isTournaments && hands.tournaments.length > 0 ? (
