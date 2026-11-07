@@ -16,7 +16,6 @@ const Dashboard = lazy(() => import('@/views/Dashboard'))
 const HandHistory = lazy(() => import('@/views/HandHistory'))
 const Analysis = lazy(() => import('@/views/Analysis'))
 const RangeResearch = lazy(() => import('@/views/RangeResearch'))
-const Charts = lazy(() => import('@/views/Charts'))
 const Players = lazy(() => import('@/views/Players'))
 const Stats = lazy(() => import('@/views/Stats'))
 const LiveHud = lazy(() => import('@/views/LiveHud'))
@@ -60,7 +59,6 @@ export default function App() {
               <Route path="/hands" element={<HandHistory />} />
               <Route path="/analysis" element={<Analysis />} />
               <Route path="/ranges" element={<RangeResearch />} />
-              <Route path="/charts" element={<Charts />} />
               <Route path="/players" element={<Players />} />
               <Route path="/stats" element={<Stats />} />
               <Route path="/hud" element={<LiveHud />} />

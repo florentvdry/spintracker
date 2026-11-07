@@ -3,7 +3,6 @@
     "dashboard": "Dashboard",
     "history": "Tournament History",
     "ranges": "Range Analyzer",
-    "charts": "Charts",
     "hud": "HUD",
     "players": "Players",
     "settings": "Settings",
@@ -521,8 +520,10 @@
     "subtitle": "Study your opening ranges"
   },
   "charts": {
-    "title": "Charts",
-    "subtitle": "Visualize your statistics",
+    "stats_title": "Stats",
+    "cev": "CEV",
+    "heads_up": "Heads-Up",
+    "three_way": "3-Way",
     "positions": {
       "all": "All positions",
       "HU_SB": "HU SB",

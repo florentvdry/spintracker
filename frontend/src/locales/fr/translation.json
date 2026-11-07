@@ -3,7 +3,6 @@
     "dashboard": "Tableau de bord",
     "history": "Historique",
     "ranges": "Analyseur de ranges",
-    "charts": "Graphiques",
     "hud": "HUD",
     "players": "Joueurs",
     "settings": "Paramètres",
@@ -521,8 +520,10 @@
     "subtitle": "Étudiez vos ranges d'ouverture"
   },
   "charts": {
-    "title": "Graphiques",
-    "subtitle": "Visualisez vos statistiques",
+    "stats_title": "Stats",
+    "cev": "CEV",
+    "heads_up": "Heads-Up",
+    "three_way": "3-Way",
     "positions": {
       "all": "Toutes les positions",
       "HU_SB": "HU SB",
