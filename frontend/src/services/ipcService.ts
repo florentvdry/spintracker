@@ -102,9 +102,9 @@ function subscribe<T>(event: string, callback: (payload: T) => void): () => void
 export const ipcService = {
   // Dashboard & stats
   getDashboardStats: (heroName?: string | null, dateFrom?: string | null, dateTo?: string | null, buyIn?: number | null) =>
-    backend('GET', `/db/dashboard-stats${query({ heroName, dateFrom, dateTo, buyIn })}`),
+    backend('GET', `/db/dashboard-stats${query({ heroName, dateFrom, dateTo, buyIn, supersede: true })}`),
   getSessionHistory: (limit = 50, heroName?: string | null, dateFrom?: string | null, dateTo?: string | null, buyIn?: number | null) =>
-    backend('POST', '/db/session-history', { limit, heroName, dateFrom, dateTo, buyIn }),
+    backend('POST', '/db/session-history?supersede=true', { limit, heroName, dateFrom, dateTo, buyIn }),
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),
   getMultiplierStats: (options: Json = {}) => backend('POST', '/db/multiplier-stats', options),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),

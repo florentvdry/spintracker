@@ -7,7 +7,10 @@
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
+
+use rusqlite::InterruptHandle;
 
 use serde::de::DeserializeOwned;
 use serde_json::{json, Value};
@@ -74,12 +77,57 @@ pub struct Backend {
     custom_stats: CustomStatsService,
     /// Detailed statistics by query, valid for one data version: they read every hand.
     detailed_cache: Mutex<DetailedCache>,
+    superseded: Supersedable,
 }
 
 #[derive(Default)]
 struct DetailedCache {
     version: u64,
     entries: HashMap<String, Value>,
+}
+
+/// Requests of the same kind where only the latest matters (the filters changed again; the caller
+/// opts in with `supersede` in the query, since other callers may run the same route in parallel): starting
+/// one interrupts the previous one's SQLite query instead of letting it run to the end.
+#[derive(Default)]
+struct Supersedable {
+    next_id: AtomicU64,
+    running: Mutex<HashMap<&'static str, (u64, InterruptHandle)>>,
+}
+
+impl Supersedable {
+    fn begin(&self, kind: &'static str, conn: &rusqlite::Connection) -> SupersedableGuard<'_> {
+        let id = self.next_id.fetch_add(1, Ordering::Relaxed);
+        let previous = {
+            let mut running = self.running.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+            running.insert(kind, (id, conn.get_interrupt_handle()))
+        };
+        if let Some((_, handle)) = previous {
+            handle.interrupt();
+        }
+        SupersedableGuard { owner: self, kind, id }
+    }
+}
+
+/// Forgets the request when it ends. It must be dropped before the connection returns to the
+/// pool, otherwise a late interrupt would hit whichever query reuses that connection.
+struct SupersedableGuard<'a> {
+    owner: &'a Supersedable,
+    kind: &'static str,
+    id: u64,
+}
+
+impl Drop for SupersedableGuard<'_> {
+    fn drop(&mut self) {
+        let mut running = self.owner.running.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+        if running.get(self.kind).is_some_and(|(id, _)| *id == self.id) {
+            running.remove(self.kind);
+        }
+    }
+}
+
+fn is_interrupted(error: &Error) -> bool {
+    matches!(error, Error::Sqlite(rusqlite::Error::SqliteFailure(e, _)) if e.code == rusqlite::ErrorCode::OperationInterrupted)
 }
 
 /// Queries kept in the detailed statistics cache.
@@ -96,7 +144,7 @@ impl Backend {
         let importer = Importer::new(db.clone(), analytics.clone());
         let hud = HudService::new(db.clone());
         let custom_stats = CustomStatsService::new(db.clone());
-        Ok(Self { db, registry, importer, hud, custom_stats, detailed_cache: Mutex::default() })
+        Ok(Self { db, registry, importer, hud, custom_stats, detailed_cache: Mutex::default(), superseded: Supersedable::default() })
     }
 
     pub fn importer(&self) -> &Importer {
@@ -135,6 +183,7 @@ impl Backend {
         match self.route(&request, &segments) {
             Ok(Some(response)) => response,
             Ok(None) => Response::failure(404, "Not found"),
+            Err(e) if is_interrupted(&e) => Response::failure(409, "Superseded by a newer request"),
             Err(e) => {
                 log::error!("{method} {path}: {e}");
                 Response::problem(&e)
@@ -211,10 +260,16 @@ impl Backend {
             }
 
             // --- Statistics
-            ("GET", ["db", "dashboard-stats"]) => Response::data(stats::dashboard_stats(&*conn()?, &stats_query_from_query(&r.query))?),
+            ("GET", ["db", "dashboard-stats"]) => {
+                let conn = conn()?;
+                let _running = r.query.contains_key("supersede").then(|| self.superseded.begin("dashboard-stats", &conn));
+                Response::data(stats::dashboard_stats(&conn, &stats_query_from_query(&r.query))?)
+            }
             ("GET" | "POST", ["db", "session-history"]) => {
                 let (limit, q) = r.session_options();
-                Response::data(Value::Array(stats::session_history(&*conn()?, limit, &q)?))
+                let conn = conn()?;
+                let _running = r.query.contains_key("supersede").then(|| self.superseded.begin("session-history", &conn));
+                Response::data(Value::Array(stats::session_history(&conn, limit, &q)?))
             }
             ("GET", ["db", "buyins"]) => Response::data(json!(stats::unique_buy_ins(&*conn()?)?)),
             ("GET", ["db", "detailed-stats"]) => {
@@ -675,6 +730,40 @@ fn percent_decode(raw: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_newer_request_interrupts_the_running_one_of_the_same_kind() {
+        let supersedable = Supersedable::default();
+        let old = rusqlite::Connection::open_in_memory().unwrap();
+        let new = rusqlite::Connection::open_in_memory().unwrap();
+        let _old_guard = supersedable.begin("kind", &old);
+
+        let result = std::thread::scope(|scope| {
+            let running = scope.spawn(move || {
+                old.query_row::<i64, _, _>(
+                    "WITH RECURSIVE n(i) AS (SELECT 1 UNION ALL SELECT i + 1 FROM n WHERE i < 1000000000) SELECT COUNT(*) FROM n",
+                    [],
+                    |r| r.get(0),
+                )
+            });
+            // SQLite ignores an interrupt that arrives before the statement starts.
+            std::thread::sleep(std::time::Duration::from_millis(300));
+            let _new_guard = supersedable.begin("kind", &new);
+            running.join().unwrap()
+        });
+        assert!(is_interrupted(&Error::Sqlite(result.unwrap_err())));
+        assert_eq!(new.query_row("SELECT 1", [], |r| r.get::<_, i64>(0)).unwrap(), 1, "the newer request is untouched");
+    }
+
+    #[test]
+    fn a_finished_request_is_not_interrupted_by_the_next_one() {
+        let supersedable = Supersedable::default();
+        let first = rusqlite::Connection::open_in_memory().unwrap();
+        let second = rusqlite::Connection::open_in_memory().unwrap();
+        drop(supersedable.begin("kind", &first));
+        let _guard = supersedable.begin("kind", &second);
+        assert_eq!(first.query_row("SELECT 1", [], |r| r.get::<_, i64>(0)).unwrap(), 1);
+    }
 
     #[test]
     fn targets_are_split_and_decoded() {
