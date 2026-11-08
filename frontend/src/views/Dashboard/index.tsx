@@ -22,6 +22,7 @@ export default function Dashboard() {
   const sessions = useAppStore((s) => s.sessions)
   const heroName = useFilterStore((s) => s.heroName)
   const dateRange = useFilterStore((s) => s.dateRange)
+  const isLoading = useAppStore((s) => s.isLoading)
 
   const rangeLabel =
     dateRange === 'all' ? '' : ` (${dateRange === 'custom' ? t('common.date') : t(`dashboard.filters.${dateRange}`)})`
@@ -69,6 +70,12 @@ export default function Dashboard() {
       <div>
         <h1 className="page-title">{t('dashboard.title')}</h1>
         <p className="page-subtitle">{t('dashboard.subtitle')}</p>
+        {isLoading && (
+          <div role="status" className="mt-2 flex items-center gap-2 text-sm text-slate-400">
+            <div className="spinner h-4 w-4" />
+            {t('common.loading')}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4 items-stretch">

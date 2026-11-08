@@ -213,7 +213,8 @@ pub fn app_ready(app: AppHandle) -> Value {
         let _ = main.set_focus();
     }
     if let Some(splash) = app.get_webview_window("splash") {
-        let _ = splash.close();
+        // `destroy` skips the close request, which quits the app when the user closes the splash.
+        let _ = splash.destroy();
     }
     json!({ "success": true })
 }

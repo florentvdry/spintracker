@@ -1,13 +1,11 @@
 import { create } from 'zustand'
-import { ipcService, type Json } from '@/services/ipcService'
+import { ipcService, type BackfillProgress, type Json } from '@/services/ipcService'
 import { buyInParam, currentDateRange, useFilterStore } from './filterStore'
-import { logError, logWarn } from '@/utils/log'
+import { logError } from '@/utils/log'
 
 const HYDRATION_POLL_MS = 50
 const HYDRATION_MAX_CHECKS = 40
 const BACKEND_POLL_MS = 500
-// The backend is given up on when it neither answers nor reports progress for this long.
-const BACKEND_STALL_MS = 60_000
 const SESSION_LIMIT = 50
 
 // React StrictMode mounts twice in development; share one in-flight initialization.
@@ -20,6 +18,8 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 interface AppState {
   isLoading: boolean
   isInitialized: boolean
+  /** Progress of the statistics update while the backend starts; null otherwise. */
+  backfill: BackfillProgress | null
   dashboardStats: Json | null
   sessions: Json[]
   availableBuyIns: number[]
@@ -36,6 +36,7 @@ interface AppState {
 export const useAppStore = create<AppState>((set, get) => ({
   isLoading: true,
   isInitialized: false,
+  backfill: null,
   dashboardStats: null,
   sessions: [],
   availableBuyIns: [],
@@ -58,29 +59,31 @@ export const useAppStore = create<AppState>((set, get) => ({
         await sleep(HYDRATION_POLL_MS)
       }
 
-      // A long statistics update (after an application update) is progress, not a hang.
-      let lastSign = Date.now()
-      const stopListening = ipcService.onBackfillProgress(() => {
-        lastSign = Date.now()
-      })
-      let backendReady = false
-      while (!backendReady && Date.now() - lastSign < BACKEND_STALL_MS) {
-        const res = await ipcService.checkServerStatus()
-        if (res?.success) backendReady = true
-        else await sleep(BACKEND_POLL_MS)
-      }
-      stopListening()
-      if (!backendReady) logWarn('[Init] Backend not responding for 60s')
-
-      await get().loadBuyIns()
-      await Promise.all([get().loadDashboardStats(), get().loadSessions(SESSION_LIMIT)])
-      set({ lastUpdate: Date.now(), isInitialized: true, isLoading: false })
-
+      // The window opens now: opening the database can take long (migration, statistics update
+      // after an application update), and the main window explains it instead of the splash.
       await ipcService.appReady()
+
+      const stopListening = ipcService.onBackfillProgress((progress) => set({ backfill: progress }))
+      try {
+        for (;;) {
+          const res = await ipcService.checkServerStatus()
+          if (res?.success) break
+          if (res?.status === 'error') throw new Error(String(res.message ?? 'The backend failed to start'))
+          await sleep(BACKEND_POLL_MS)
+        }
+      } finally {
+        stopListening()
+      }
+
+      // The dashboard queries can take long on a large history: the window opens first and the
+      // data loads behind a loading state (the filter effect in App calls refreshAll).
+      const noHero = !useFilterStore.getState().heroName
+      set({ lastUpdate: Date.now(), isInitialized: true, isLoading: !noHero, backfill: null })
+      if (noHero) void get().loadBuyIns()
     } catch (err) {
       logError('[Init] Critical failure:', err)
       set({ error: err instanceof Error ? err.message : 'Initialization failed', isLoading: false })
-      // Never leave the user stuck on the splash screen.
+      // Also covers a failure before the window opened: never leave the user on the splash screen.
       await ipcService.appReady()
     }
   },

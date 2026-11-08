@@ -4,6 +4,7 @@ import Layout from '@/components/layout/Layout'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import NotificationContainer from '@/components/ui/NotificationContainer'
 import ProgressModal from '@/components/ui/ProgressModal'
+import StartupNotice from '@/components/ui/StartupNotice'
 import UpdateModal from '@/components/ui/UpdateModal'
 import { ipcService } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
@@ -51,16 +52,20 @@ export default function App() {
     <>
       <Layout>
         <ErrorBoundary resetKey={pathname}>
-          <Suspense fallback={<div className="spinner mx-auto mt-24" />}>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/hands" element={<HandHistory />} />
-              <Route path="/analysis" element={<Analysis />} />
-              <Route path="/players" element={<Players />} />
-              <Route path="/hud" element={<LiveHud />} />
-              <Route path="/settings" element={<Settings />} />
-            </Routes>
-          </Suspense>
+          {isInitialized ? (
+            <Suspense fallback={<div className="spinner mx-auto mt-24" />}>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/hands" element={<HandHistory />} />
+                <Route path="/analysis" element={<Analysis />} />
+                <Route path="/players" element={<Players />} />
+                <Route path="/hud" element={<LiveHud />} />
+                <Route path="/settings" element={<Settings />} />
+              </Routes>
+            </Suspense>
+          ) : (
+            <StartupNotice />
+          )}
         </ErrorBoundary>
       </Layout>
       <NotificationContainer />

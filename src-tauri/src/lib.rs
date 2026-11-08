@@ -14,7 +14,7 @@ use tauri::{Manager, WindowEvent};
 use tauri_plugin_log::{Target, TargetKind};
 
 const STARTUP_UPDATE_CHECK_DELAY: Duration = Duration::from_secs(3);
-// The UI normally signals readiness once the backend answers (up to ~60s). If it never does,
+// The UI signals readiness as soon as it has loaded (the backend may still be opening). If it never does,
 // show the main window anyway so the splash screen cannot stay on top forever.
 const SPLASH_FAILSAFE_DELAY: Duration = Duration::from_secs(90);
 
@@ -79,7 +79,13 @@ pub fn run() {
             Ok(())
         })
         .on_window_event(|window, event| {
-            if window.label() == "main" && matches!(event, WindowEvent::Destroyed) {
+            let quits = match window.label() {
+                "main" => matches!(event, WindowEvent::Destroyed),
+                // The main window is still hidden: closing the splash must not leave an invisible process.
+                "splash" => matches!(event, WindowEvent::CloseRequested { .. }),
+                _ => false,
+            };
+            if quits {
                 window.app_handle().exit(0);
             }
         })

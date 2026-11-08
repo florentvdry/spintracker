@@ -957,5 +957,11 @@
     "copy_suffix": "(copy)",
     "low_sample": "Fewer than {{count}} occurrences: take this figure with caution.",
     "advanced_condition": "Advanced condition (stack, size or sequence): start from a model to change it"
+  },
+  "startup": {
+    "title": "Preparing your database…",
+    "hint": "After an update, the database may be upgraded or its statistics recomputed. This can take a few minutes on a large history and only happens once.",
+    "statistics": "Updating statistics: {{done}} / {{total}} ({{percent}}%)",
+    "failed_title": "The database could not be opened"
   }
 }

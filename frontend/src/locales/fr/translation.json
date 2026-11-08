@@ -957,5 +957,11 @@
     "copy_suffix": "(copie)",
     "low_sample": "Moins de {{count}} occurrences : prenez ce chiffre avec prudence.",
     "advanced_condition": "Condition avancée (stack, taille ou séquence) : partez d'un modèle pour la modifier"
+  },
+  "startup": {
+    "title": "Préparation de la base de données…",
+    "hint": "Après une mise à jour, la base peut être migrée ou ses statistiques recalculées. Cela peut prendre quelques minutes sur un gros historique et n'arrive qu'une fois.",
+    "statistics": "Mise à jour des statistiques : {{done}} / {{total}} ({{percent}}%)",
+    "failed_title": "Impossible d'ouvrir la base de données"
   }
 }
