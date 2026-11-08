@@ -44,6 +44,8 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611080001, "AddCustomStats", "202611080001_add_custom_stats.sql"),
     migration!(202611090001, "AddImportEquityPending", "202611090001_add_import_equity_pending.sql"),
     migration!(202611100001, "RecomputeInPositionStats", "202611100001_recompute_in_position_stats.sql"),
+    migration!(202611110001, "AddBuyInIndex", "202611110001_add_buy_in_index.sql"),
+    migration!(202611120001, "AddHandsCoveringIndex", "202611120001_add_hands_covering_index.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -186,7 +188,8 @@ mod tests {
         let mut conn = Connection::open_in_memory().unwrap();
         run(&mut conn).unwrap();
         conn.execute_batch(
-            "DELETE FROM VersionInfo WHERE Version >= 202603151932;
+            "DROP INDEX IF EXISTS idx_hands_cover;
+             DELETE FROM VersionInfo WHERE Version >= 202603151932;
              DROP TABLE aliases;
              DROP TABLE hand_player_flags;
              DROP TABLE import_files;
@@ -213,7 +216,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 12);
+        assert_eq!(run(&mut conn).unwrap(), 14);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))

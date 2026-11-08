@@ -142,7 +142,7 @@ mod tests {
         let mode: String = conn.query_row("PRAGMA journal_mode", [], |r| r.get(0)).unwrap();
         assert_eq!(mode, "wal");
         let n: i64 = conn.query_row("SELECT COUNT(*) FROM VersionInfo", [], |r| r.get(0)).unwrap();
-        assert_eq!(n, 17);
+        assert_eq!(n, 19);
     }
 
     #[test]
