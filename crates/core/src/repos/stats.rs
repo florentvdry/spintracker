@@ -22,9 +22,11 @@ fn hero_resolution_sql(param: &str) -> String {
 }
 
 /// Join selecting the hero's row of each hand; without a hero, the first player with known cards.
+/// A plain `JOIN` (not `CROSS JOIN`) lets SQLite start from the hero's rows for a wide period and
+/// from the date index for a narrow one. Do not run `ANALYZE`: its statistics flip the narrow case.
 fn hero_join(hero: Option<&str>) -> String {
     match hero {
-        Some(_) => format!("CROSS JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {}", hero_resolution_sql("@heroName")),
+        Some(_) => format!("JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {}", hero_resolution_sql("@heroName")),
         None => "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)".to_string(),
     }
 }
@@ -74,8 +76,16 @@ pub struct ChartQuery {
     pub position: Option<String>,
 }
 
+/// SQLite never picks `idx_hands_cover` by itself, and it cannot seek a date range (which the
+/// date index can): it is forced only for scans over the whole history. A query using it may only
+/// read the columns of that index.
+const HANDS_COVERED: &str = "hands h INDEXED BY idx_hands_cover";
+
 /// SQL pieces and bound values of a hero-scoped query.
 struct Scope {
+    /// The `hands` table with its alias, read through the covering index when no date range
+    /// narrows the scan (see `idx_hands_cover`).
+    hands: &'static str,
     join: String,
     where_clause: String,
     binds: Vec<(&'static str, SqlValue)>,
@@ -120,7 +130,8 @@ fn scope(
         binds.push(("@buyIn", SqlValue::Real(b)));
     }
     clauses.extend(extra.iter().map(|c| c.to_string()));
-    Scope { join: hero_join(hero), where_clause: format!("WHERE {}", clauses.join(" AND ")), binds }
+    let hands = if date_from.is_none() && date_to.is_none() { HANDS_COVERED } else { "hands h" };
+    Scope { hands, join: hero_join(hero), where_clause: format!("WHERE {}", clauses.join(" AND ")), binds }
 }
 
 /// Rounds to `digits` decimals, ties to even (the former `Math.Round`).
@@ -310,11 +321,11 @@ fn sessions(conn: &Connection, q: &StatsQuery) -> Result<Vec<Session>> {
 
     let sql = format!(
         "SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, ph.net_profit, h.player_count, h.multiplier, h.position
-         FROM hands h
+         FROM {}
          {}
          {}
          ORDER BY h.date_time ASC",
-        scope.join, scope.where_clause
+        scope.hands, scope.join, scope.where_clause
     );
     let mut stmt = conn.prepare(&sql)?;
     let rows = stmt.query_map(&scope.params()[..], |r| {
@@ -352,6 +363,11 @@ fn sessions(conn: &Connection, q: &StatsQuery) -> Result<Vec<Session>> {
             },
         });
     }
+    Ok(group_sessions(hands))
+}
+
+/// Cuts the hands into sessions at every gap longer than `SESSION_GAP_HOURS`.
+fn group_sessions(mut hands: Vec<SessionHand>) -> Vec<Session> {
     // Stable, like the former LINQ ordering: equal times keep the query order.
     hands.sort_by_key(|h| h.time);
 
@@ -371,7 +387,7 @@ fn sessions(conn: &Connection, q: &StatsQuery) -> Result<Vec<Session>> {
     if !current.is_empty() {
         out.push(session_of(&current));
     }
-    Ok(out)
+    out
 }
 
 fn session_of(hands: &[&SessionHand]) -> Session {
@@ -438,117 +454,154 @@ pub fn unique_buy_ins(conn: &Connection) -> Result<Vec<f64>> {
 // Dashboard
 // ---------------------------------------------------------------------------------------------
 
+/// What the hero's hands at one seat and table size add up to.
+#[derive(Default)]
+struct PositionTotals {
+    hands: i64,
+    won: i64,
+    ev: f64,
+    tournaments: std::collections::HashSet<String>,
+}
+
 pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let hero = resolve_hero(conn, q.hero_name.as_deref())?;
     let scope = scope(hero.as_deref(), non_empty(&q.date_from), non_empty(&q.date_to), q.buy_in, false, &[]);
-    let (join, filter) = (&scope.join, &scope.where_clause);
 
-    let (total_hands, hands_won, total_ev): (i64, i64, f64) = conn.query_row(
-        &format!(
-            "SELECT COUNT(*) as total_hands,
-                    SUM(CASE WHEN ph.net_profit > 0 THEN 1 ELSE 0 END) as hands_won,
-                    COALESCE(SUM(ph.net_won_adjusted), 0) as total_ev
-             FROM hands h {join} {filter}"
-        ),
-        &scope.params()[..],
-        |r| Ok((r.get(0)?, r.get::<_, Option<i64>>(1)?.unwrap_or(0), r.get::<_, Option<f64>>(2)?.unwrap_or(0.0))),
-    )?;
-
-    // One row per tournament: its figures decide the euro result and whether it was cashed.
-    // `+h.game_id` keeps SQLite from walking the whole game_id index to avoid a sort, which reads
-    // the entire history even for a one-month filter.
-    let mut tournaments_won = 0;
-    let mut unpriced_tournaments = 0;
-    let mut total_profit_euro = 0.0;
-    {
-        let mut stmt = conn.prepare(&format!(
-            "SELECT h.buy_in, h.prize_pool, SUM(ph.net_profit) as chip_profit, MIN(h.player_count) as lowest_players,
-                    MAX(h.multiplier) as multiplier, MAX(h.position) as position, h.room
-             FROM hands h {join} {filter}
-             GROUP BY +h.game_id"
-        ))?;
-        let rows = stmt.query_map(&scope.params()[..], |r| {
-            Ok(TournamentFigures {
-                room: Room::from_name(&r.get::<_, Option<String>>(6)?.unwrap_or_default()),
-                buy_in: r.get::<_, Option<f64>>(0)?.unwrap_or(0.0),
-                prize_pool: r.get::<_, Option<f64>>(1)?.unwrap_or(0.0),
-                chip_profit: r.get::<_, Option<f64>>(2)?.unwrap_or(0.0),
-                lowest_player_count: r.get::<_, Option<i32>>(3)?.unwrap_or(3),
-                multiplier: r.get::<_, Option<i32>>(4)?.unwrap_or(0),
-                position: r.get::<_, Option<i32>>(5)?.unwrap_or(0),
-            })
-        })?;
-        for figures in rows {
-            let figures = figures?;
-            if figures.is_in_the_money() {
-                tournaments_won += 1;
-            }
-            if !figures.is_prized() {
-                unpriced_tournaments += 1;
-            }
-            total_profit_euro += figures.euro_profit();
-        }
-    }
-
-    // Chips EV by table size and seat.
-    let mut cev_by_position = BTreeMap::new();
-    let mut count_by_position = BTreeMap::new();
-    let mut tournaments_by_position = BTreeMap::new();
-    {
-        let mut stmt = conn.prepare(&format!(
-            "SELECT ph.position, COALESCE(SUM(ph.net_won_adjusted), 0) as pos_ev, h.player_count,
-                    COUNT(*) as hand_count, COUNT(DISTINCT h.game_id) as tour_count
-             FROM hands h {join} {filter}
-             GROUP BY ph.position, h.player_count"
-        ))?;
-        let rows = stmt.query_map(&scope.params()[..], |r| {
-            Ok((r.get::<_, Option<String>>(0)?, r.get::<_, f64>(1)?, r.get::<_, i32>(2)?, r.get::<_, i64>(3)?, r.get::<_, i64>(4)?))
-        })?;
-        for row in rows {
-            let (position, ev, player_count, hands, tournaments) = row?;
-            let key = format!("{}{}", if player_count == 2 { "HU_" } else { "3W_" }, position.unwrap_or_else(|| "Unknown".into()));
-            cev_by_position.insert(key.clone(), ev);
-            count_by_position.insert(key.clone(), hands);
-            tournaments_by_position.insert(key, tournaments);
-        }
-    }
-
-    // Three-handed small and big blinds, split by who put chips in before them.
-    {
-        let mut stmt = conn.prepare(&format!(
-            "SELECT hero_pos,
+    // One pass over the hero's hands feeds every figure: each extra query would read the whole
+    // history again (several seconds on a large one). The blinds' investments are read only for the
+    // three-handed small and big blinds that need them.
+    let mut stmt = conn.prepare(&format!(
+        "SELECT date_time, room, game_id, buy_in, prize_pool, net_profit, player_count, multiplier, hand_position,
+                hero_pos, net_won_adjusted,
+                CASE WHEN is_blind THEN
                     CASE
                         WHEN hero_pos = 'SB' AND COALESCE(btn_investment, 0) > COALESCE(ante, 0) THEN 'vs_BTN'
                         WHEN hero_pos = 'SB' AND COALESCE(btn_investment, 0) <= COALESCE(ante, 0) THEN 'vs_BB'
                         WHEN hero_pos = 'BB' AND COALESCE(btn_investment, 0) > COALESCE(ante, 0) THEN 'vs_BTN'
                         WHEN hero_pos = 'BB' AND COALESCE(btn_investment, 0) <= COALESCE(ante, 0) AND COALESCE(sb_investment, 0) > (COALESCE(ante, 0) + CAST(REPLACE(SUBSTR(blinds, 1, INSTR(blinds, '/') - 1), ',', '.') AS REAL)) THEN 'vs_SB'
                         ELSE 'Other'
-                    END as situation,
-                    COALESCE(SUM(net_won_adjusted), 0) as sub_ev
-             FROM (
-                 -- The blinds' investments are read per filtered hand: grouping the whole player_hands
-                 -- table first would scan the entire history for a one-month dashboard. The unary plus keeps
-                 -- SQLite from picking the position index, which holds millions of rows.
-                 SELECT ph.position as hero_pos, ph.net_won_adjusted, h.ante, h.blinds,
-                        (SELECT MAX(COALESCE(p2.investment, 0)) FROM player_hands p2 WHERE p2.hand_id = h.id AND +p2.position = 'BTN') as btn_investment,
-                        (SELECT MAX(COALESCE(p2.investment, 0)) FROM player_hands p2 WHERE p2.hand_id = h.id AND +p2.position = 'SB') as sb_investment
-                 FROM hands h
-                 {join}
-                 {filter} AND h.player_count = 3 AND ph.position IN ('SB', 'BB')
-             )
-             GROUP BY hero_pos, situation"
+                    END
+                END AS situation
+         FROM (
+             SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, ph.net_profit, h.player_count, h.multiplier,
+                    h.position AS hand_position, ph.position AS hero_pos, ph.net_won_adjusted, h.ante, h.blinds,
+                    (h.player_count = 3 AND ph.position IN ('SB', 'BB')) AS is_blind,
+                    CASE WHEN h.player_count = 3 AND ph.position IN ('SB', 'BB') THEN
+                        (SELECT MAX(COALESCE(p2.investment, 0)) FROM player_hands p2 WHERE p2.hand_id = h.id AND +p2.position = 'BTN') END AS btn_investment,
+                    CASE WHEN h.player_count = 3 AND ph.position IN ('SB', 'BB') THEN
+                        (SELECT MAX(COALESCE(p2.investment, 0)) FROM player_hands p2 WHERE p2.hand_id = h.id AND +p2.position = 'SB') END AS sb_investment
+             FROM {} {} {}
+         )
+         ORDER BY date_time ASC",
+        scope.hands, scope.join, scope.where_clause
+    ))?;
+    let mut rows = stmt.query(&scope.params()[..])?;
 
-        ))?;
-        let rows = stmt.query_map(&scope.params()[..], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, f64>(2)?)))?;
-        for row in rows {
-            let (position, situation, ev) = row?;
-            if situation != "Other" {
-                cev_by_position.insert(format!("3W_{position}_{situation}"), ev);
-            }
+    // One entry per tournament: its figures decide the euro result and whether it was cashed.
+    let mut games: HashMap<Option<String>, TournamentFigures> = HashMap::new();
+    let mut by_position: BTreeMap<(Option<String>, i32), PositionTotals> = BTreeMap::new();
+    let mut blind_ev: BTreeMap<(String, String), f64> = BTreeMap::new();
+    let mut session_hands = Vec::new();
+    while let Some(r) = rows.next()? {
+        let date: Option<String> = r.get(0)?;
+        let room: Option<String> = r.get(1)?;
+        let game_id: Option<String> = r.get(2)?;
+        let buy_in = r.get::<_, Option<f64>>(3)?.unwrap_or(0.0);
+        let prize_pool = r.get::<_, Option<f64>>(4)?.unwrap_or(0.0);
+        let hand_profit = r.get::<_, Option<f64>>(5)?.unwrap_or(0.0);
+        let player_count = r.get::<_, Option<i32>>(6)?;
+        let multiplier = r.get::<_, Option<i32>>(7)?.unwrap_or(0);
+        let hand_position = r.get::<_, Option<i32>>(8)?.unwrap_or(0);
+        let hero_position: Option<String> = r.get(9)?;
+        let net_won_adjusted: Option<f64> = r.get(10)?;
+        let situation: Option<String> = r.get(11)?;
+
+        let lowest_player_count = player_count.unwrap_or(3);
+        let tournament = games.entry(game_id.clone()).or_insert_with(|| TournamentFigures {
+            room: Room::from_name(room.as_deref().unwrap_or_default()),
+            buy_in,
+            prize_pool,
+            multiplier,
+            position: hand_position,
+            lowest_player_count,
+            chip_profit: 0.0,
+        });
+        tournament.chip_profit += hand_profit;
+        tournament.multiplier = tournament.multiplier.max(multiplier);
+        tournament.position = tournament.position.max(hand_position);
+        tournament.lowest_player_count = tournament.lowest_player_count.min(lowest_player_count);
+
+        let totals = by_position.entry((hero_position.clone(), player_count.unwrap_or(0))).or_default();
+        totals.hands += 1;
+        totals.won += i64::from(hand_profit > 0.0);
+        if let Some(ev) = net_won_adjusted {
+            totals.ev += ev;
+        }
+        if let Some(id) = &game_id {
+            totals.tournaments.insert(id.clone());
+        }
+
+        if let (Some(situation), Some(position)) = (situation, hero_position) {
+            *blind_ev.entry((position, situation)).or_default() += net_won_adjusted.unwrap_or(0.0);
+        }
+
+        // A hand whose date cannot be read is counted above but belongs to no session.
+        if let Some(time) = date.as_deref().and_then(parse_date_time) {
+            let room = room.unwrap_or_else(|| "Unknown".into());
+            session_hands.push(SessionHand {
+                time,
+                game_id: game_id.unwrap_or_default(),
+                hand_profit,
+                figures: TournamentFigures {
+                    room: Room::from_name(&room),
+                    buy_in,
+                    prize_pool,
+                    multiplier,
+                    position: hand_position,
+                    lowest_player_count,
+                    chip_profit: 0.0,
+                },
+                room,
+            });
         }
     }
 
-    let sessions = sessions(conn, q)?;
+    let mut tournaments_won = 0;
+    let mut unpriced_tournaments = 0;
+    let mut total_profit_euro = 0.0;
+    for figures in games.values() {
+        if figures.is_in_the_money() {
+            tournaments_won += 1;
+        }
+        if !figures.is_prized() {
+            unpriced_tournaments += 1;
+        }
+        total_profit_euro += figures.euro_profit();
+    }
+
+    // Chips EV by table size and seat; the overall totals come from the same groups.
+    let (mut total_hands, mut hands_won, mut total_ev) = (0i64, 0i64, 0.0f64);
+    let mut cev_by_position = BTreeMap::new();
+    let mut count_by_position = BTreeMap::new();
+    let mut tournaments_by_position = BTreeMap::new();
+    for ((position, player_count), totals) in by_position {
+        total_hands += totals.hands;
+        hands_won += totals.won;
+        total_ev += totals.ev;
+        let key = format!("{}{}", if player_count == 2 { "HU_" } else { "3W_" }, position.unwrap_or_else(|| "Unknown".into()));
+        cev_by_position.insert(key.clone(), totals.ev);
+        count_by_position.insert(key.clone(), totals.hands);
+        tournaments_by_position.insert(key, totals.tournaments.len() as i64);
+    }
+
+    // Three-handed small and big blinds, split by who put chips in before them.
+    for ((position, situation), ev) in blind_ev {
+        if situation != "Other" {
+            cev_by_position.insert(format!("3W_{position}_{situation}"), ev);
+        }
+    }
+
+    let sessions = group_sessions(session_hands);
     let total_tournaments: i64 = sessions.iter().map(|s| s.tournaments).sum();
     let avg_chips_ev = if total_tournaments > 0 { round_to(total_ev / total_tournaments as f64, 2) } else { 0.0 };
 
@@ -647,11 +700,11 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
             SUM(COALESCE(ph.net_won_adjusted, ph.net_profit)) OVER (ORDER BY h.date_time, h.id) as cumulative_ev,
             h.game_id, h.buy_in, h.prize_pool, h.player_count,
             ph.net_profit as hand_profit, h.multiplier, h.position, h.room
-         FROM hands h
+         FROM {}
          {}
          {}
          ORDER BY h.date_time ASC, h.id ASC",
-        scope.join, scope.where_clause
+        scope.hands, scope.join, scope.where_clause
     );
     let mut stmt = conn.prepare(&sql)?;
     let hands: Vec<ChartHand> = stmt
@@ -688,10 +741,17 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
             }
         }
     }
+    // Grouped in one pass: filtering every hand for each tournament is quadratic on a long history.
+    let mut hands_by_game: HashMap<&str, Vec<&ChartHand>> = HashMap::new();
+    for h in &hands {
+        if let Some(id) = h.game_id.as_deref().filter(|id| !id.is_empty()) {
+            hands_by_game.entry(id).or_default().push(h);
+        }
+    }
     let euro_of_game: HashMap<&str, f64> = games
         .iter()
         .map(|&game| {
-            let hands_of_game: Vec<&ChartHand> = hands.iter().filter(|h| h.game_id.as_deref() == Some(game)).collect();
+            let hands_of_game = &hands_by_game[game];
             let figures = TournamentFigures {
                 multiplier: hands_of_game.iter().map(|h| h.figures.multiplier).max().unwrap_or(0),
                 position: hands_of_game.iter().map(|h| h.figures.position).max().unwrap_or(0),
@@ -749,12 +809,12 @@ pub fn multiplier_stats(conn: &Connection, q: &StatsQuery) -> Result<Vec<Multipl
          FROM (
              SELECT h.game_id, MAX(h.multiplier) as multiplier,
                     (MAX(h.position) = 1 OR (MAX(h.position) = 0 AND SUM(ph.net_profit) > 0)) as is_won
-             FROM hands h {} {}
+             FROM {} {} {}
              GROUP BY +h.game_id
          )
          GROUP BY multiplier
          ORDER BY multiplier ASC",
-        scope.join, scope.where_clause
+        scope.hands, scope.join, scope.where_clause
     ))?;
     let mut stats: Vec<MultiplierStats> = stmt
         .query_map(&scope.params()[..], |r| {

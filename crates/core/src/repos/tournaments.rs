@@ -5,7 +5,7 @@ use rusqlite::types::Value as SqlValue;
 use rusqlite::{Connection, ToSql};
 use serde::Serialize;
 
-use super::hands_query::{hero_join, hero_resolution_sql, HandsQuery};
+use super::hands_query::{hero_join, HandsQuery};
 use super::stats::{Room, TournamentFigures};
 use crate::Result;
 
@@ -52,10 +52,7 @@ pub fn get_tournaments(conn: &Connection, q: &HandsQuery) -> Result<TournamentsR
     let mut binds: Vec<(&'static str, SqlValue)> = Vec::new();
     let hero = q.hero_name.as_deref().filter(|h| !h.is_empty());
     if let Some(name) = hero {
-        clauses.push(format!(
-            "EXISTS (SELECT 1 FROM player_hands ph WHERE ph.hand_id = h.id AND ph.player_name IN {})",
-            hero_resolution_sql("@heroName")
-        ));
+        // The hero's rows are joined below: a second EXISTS check per hand would add nothing.
         binds.push(("@heroName", SqlValue::Text(name.into())));
     }
     if let Some(d) = q.date_from.as_deref().filter(|d| !d.is_empty()) {
@@ -73,10 +70,16 @@ pub fn get_tournaments(conn: &Connection, q: &HandsQuery) -> Result<TournamentsR
         "SELECT h.game_id, h.room, MIN(h.date_time) as start_time, h.buy_in, h.prize_pool, COUNT(*) as hand_count,
                 SUM(ph.net_profit) as chip_profit, AVG(ph.ev_chips) as avg_cev, MIN(h.player_count) as lowest_players,
                 MAX(h.multiplier) as multiplier, MAX(h.position) as position
-         FROM hands h
+         FROM {}
          {}
          WHERE {}
          GROUP BY +h.game_id",
+        // The covering index cannot seek a date range: it only serves scans of the whole history.
+        if q.date_from.as_deref().is_none_or(str::is_empty) && q.date_to.as_deref().is_none_or(str::is_empty) {
+            "hands h INDEXED BY idx_hands_cover"
+        } else {
+            "hands h"
+        },
         hero_join(hero),
         clauses.join(" AND ")
     );

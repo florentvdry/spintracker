@@ -21,7 +21,7 @@ pub(crate) fn hero_resolution_sql(param: &str) -> String {
 /// Join selecting the hero's row of each hand; without a name, the first player with known cards.
 pub(crate) fn hero_join(hero: Option<&str>) -> String {
     match hero {
-        Some(_) => format!("CROSS JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {}", hero_resolution_sql("@heroName")),
+        Some(_) => format!("JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name IN {}", hero_resolution_sql("@heroName")),
         None => "JOIN player_hands ph ON h.id = ph.hand_id AND ph.player_name = (SELECT player_name FROM player_hands ph2 WHERE ph2.hand_id = h.id AND ph2.cards IS NOT NULL AND ph2.cards != '' LIMIT 1)".to_string(),
     }
 }
@@ -233,7 +233,15 @@ pub fn get_hands(conn: &Connection, q: &HandsQuery) -> Result<Value> {
     }
     let where_clause = format!("WHERE {}", clauses.join(" AND "));
 
-    let total: i64 = conn.query_row(&format!("SELECT COUNT(*) FROM hands h {join} {where_clause}"), &params(&binds)[..], |r| r.get(0))?;
+    // Counting only needs `player_count`: read it from the covering index unless a filter needs a
+    // column outside it or a date range could be seeked (see `idx_hands_cover`).
+    let count_source = if [&q.date_from, &q.date_to, &q.game_type].iter().all(|f| non_empty(f).is_none()) && q.min_pot.is_none() && q.max_pot.is_none() {
+        "hands h INDEXED BY idx_hands_cover"
+    } else {
+        "hands h"
+    };
+    let total: i64 =
+        conn.query_row(&format!("SELECT COUNT(*) FROM {count_source} {join} {where_clause}"), &params(&binds)[..], |r| r.get(0))?;
 
     let order_by = match q.sort_by.as_deref().filter(|s| !s.is_empty()) {
         Some("date_asc") => "h.date_time ASC",

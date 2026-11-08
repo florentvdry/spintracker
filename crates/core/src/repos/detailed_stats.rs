@@ -617,6 +617,8 @@ pub fn detailed_stats(conn: &Connection, q: &DetailedQuery) -> Result<Value> {
         _ => {}
     }
 
+    // `CROSS JOIN` walks the hands by date, which already delivers the ORDER BY: the other join order
+    // sorts every player row of the history (about three times slower).
     let sql = format!(
         "SELECT h.id, h.hand_id, h.room, h.buy_in, h.date_time, h.flop, h.turn, h.river,
                 h.player_count, ph.player_name, ph.position, ph.stack, h.blinds,
@@ -624,7 +626,7 @@ pub fn detailed_stats(conn: &Connection, q: &DetailedQuery) -> Result<Value> {
                 ph.net_profit, ph.cards,
                 f.flags_0, f.flags_1, f.flags_2, f.flags_3, f.street_counts
          FROM hands h
-         JOIN player_hands ph ON ph.hand_id = h.id
+         CROSS JOIN player_hands ph ON ph.hand_id = h.id
          LEFT JOIN players p ON p.name = ph.player_name
          LEFT JOIN hand_player_flags f ON f.hand_id = h.id AND f.player_name = ph.player_name
          WHERE {}
