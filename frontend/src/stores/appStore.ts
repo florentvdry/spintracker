@@ -12,6 +12,9 @@ const SESSION_LIMIT = 50
 let initialization: Promise<void> | null = null
 // Only the answer to the latest dashboard request is kept.
 let dashboardRequest = 0
+let sessionsRequest = 0
+// Only the latest refresh may end the loading state, or an older one would hide a pending reload.
+let refreshRequest = 0
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -114,11 +117,12 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   loadSessions: async (limit = SESSION_LIMIT) => {
     const { heroName, buyIn } = useFilterStore.getState()
+    const request = ++sessionsRequest
     if (!heroName) return set({ sessions: [] })
 
     try {
       const result = await ipcService.getSessionHistory(limit, heroName, null, null, buyInParam(buyIn))
-      if (result.success) set({ sessions: result.data })
+      if (request === sessionsRequest && result.success) set({ sessions: result.data })
     } catch (err) {
       logError('Failed to load sessions:', err)
     }
@@ -134,12 +138,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   refreshAll: async () => {
+    const request = ++refreshRequest
     set({ isLoading: true })
     try {
       await Promise.all([get().loadDashboardStats(), get().loadSessions(SESSION_LIMIT), get().loadBuyIns()])
-      set({ lastUpdate: Date.now() })
+      if (request === refreshRequest) set({ lastUpdate: Date.now() })
     } finally {
-      set({ isLoading: false })
+      if (request === refreshRequest) set({ isLoading: false })
     }
   },
 }))
