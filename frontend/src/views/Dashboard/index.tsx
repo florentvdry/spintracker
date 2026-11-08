@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import WinrateChart from '@/components/charts/WinrateChart'
 import Card from '@/components/ui/Card'
+import LoadingOverlay from '@/components/ui/LoadingOverlay'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { formatProfit } from '@/utils/formatters'
@@ -70,16 +71,11 @@ export default function Dashboard() {
       <div>
         <h1 className="page-title">{t('dashboard.title')}</h1>
         <p className="page-subtitle">{t('dashboard.subtitle')}</p>
-        {isLoading && (
-          <div role="status" className="mt-2 flex items-center gap-2 text-sm text-slate-400">
-            <div className="spinner h-4 w-4" />
-            {t('common.loading')}
-          </div>
-        )}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4 items-stretch">
         <section className="hero-card flex flex-col min-w-0">
+          <LoadingOverlay loading={isLoading}>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <div className="stat-label">{t('dashboard.total_profit') + rangeLabel}</div>
@@ -98,6 +94,7 @@ export default function Dashboard() {
               />
             </div>
           </div>
+          </LoadingOverlay>
 
           <div className="mt-5">
             <h2 className="text-[15px] font-semibold text-gray-100">
@@ -119,19 +116,23 @@ export default function Dashboard() {
 
         <div className="flex flex-col gap-4 min-w-0">
           <Card title={t('dashboard.cev_per_positions')}>
-            {positionGroups.map((group) => (
-              <div key={group.title}>
-                <div className="mt-3 mb-0.5 text-[11px] uppercase tracking-[.06em] text-gray-500">{group.title}</div>
-                {group.rows.map((row) => (
-                  <CevBarRow key={row.key} row={row} maxAbs={maxAbsCev} />
-                ))}
-              </div>
-            ))}
+            <LoadingOverlay loading={isLoading}>
+              {positionGroups.map((group) => (
+                <div key={group.title}>
+                  <div className="mt-3 mb-0.5 text-[11px] uppercase tracking-[.06em] text-gray-500">{group.title}</div>
+                  {group.rows.map((row) => (
+                    <CevBarRow key={row.key} row={row} maxAbs={maxAbsCev} />
+                  ))}
+                </div>
+              ))}
+            </LoadingOverlay>
           </Card>
 
           <Card title={t('dashboard.recent_sessions')} subtitle={t('dashboard.latest_games')} className="flex-1 flex flex-col min-h-[240px]">
             {heroName ? (
-              <SessionList sessions={sessions} />
+              <LoadingOverlay loading={isLoading} className="flex flex-1 flex-col">
+                <SessionList sessions={sessions} />
+              </LoadingOverlay>
             ) : (
               <div className="flex flex-col items-center justify-center flex-1 text-gray-500 py-8">
                 <Zap className="w-8 h-8 mb-3 opacity-50" />

@@ -3,6 +3,7 @@ import { TrendingDown, TrendingUp } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import Card from '@/components/ui/Card'
+import LoadingOverlay from '@/components/ui/LoadingOverlay'
 import { ipcService, type Json } from '@/services/ipcService'
 import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterStore'
 import { logError } from '@/utils/log'
@@ -36,9 +37,12 @@ export default function MultipliersCard() {
   const customDateFrom = useFilterStore((s) => s.customDateFrom)
   const customDateTo = useFilterStore((s) => s.customDateTo)
   const [stats, setStats] = useState<Json[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     let cancelled = false
+    // Loading starts with the filter change, not after the debounce, so stale rows are never shown as current.
+    setIsLoading(true)
     const timer = setTimeout(async () => {
       try {
         const { dateFrom, dateTo } = currentDateRange()
@@ -46,6 +50,8 @@ export default function MultipliersCard() {
         if (!cancelled && res.success) setStats(res.data ?? [])
       } catch (error) {
         logError('Failed to fetch multiplier stats:', error)
+      } finally {
+        if (!cancelled) setIsLoading(false)
       }
     }, FETCH_DEBOUNCE_MS)
     return () => {
@@ -75,6 +81,7 @@ export default function MultipliersCard() {
         ) : undefined
       }
     >
+      <LoadingOverlay loading={isLoading}>
       {stats.length === 0 ? (
         <p className="py-6 text-center text-sm text-gray-500">{t('common.no_data')}</p>
       ) : (
@@ -124,6 +131,7 @@ export default function MultipliersCard() {
           </table>
         </div>
       )}
+      </LoadingOverlay>
     </Card>
   )
 }

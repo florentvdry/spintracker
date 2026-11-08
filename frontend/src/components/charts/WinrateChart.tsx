@@ -8,6 +8,7 @@ import { ipcService, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterStore'
 import { logError } from '@/utils/log'
+import LoadingOverlay from '@/components/ui/LoadingOverlay'
 import PositionStat from './PositionStat'
 
 type ChartMode = 'chips' | 'euro'
@@ -66,6 +67,9 @@ export default function WinrateChart() {
   const heroName = useFilterStore((s) => s.heroName)
   const buyIn = useFilterStore((s) => s.buyIn)
   const dateRange = useFilterStore((s) => s.dateRange)
+  const customDateFrom = useFilterStore((s) => s.customDateFrom)
+  const customDateTo = useFilterStore((s) => s.customDateTo)
+  const selectedSession = useFilterStore((s) => s.selectedSession)
   const lastUpdate = useAppStore((s) => s.lastUpdate)
   const stats = useAppStore((s) => s.dashboardStats)
 
@@ -119,7 +123,7 @@ export default function WinrateChart() {
     return () => {
       cancelled = true
     }
-  }, [heroName, buyIn, dateRange, lastUpdate, position])
+  }, [heroName, buyIn, dateRange, customDateFrom, customDateTo, selectedSession, lastUpdate, position])
 
   const option = useMemo((): echarts.EChartsOption => {
     const keys: LineKey[] = chartMode === 'chips' ? CHIP_LINES : ['euroProfit']
@@ -268,9 +272,9 @@ export default function WinrateChart() {
 
       <div ref={frameRef} className="relative">
         {isLoading && (
-          <div className="flex items-center justify-center" style={{ height: CHART_HEIGHT }}>
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
-          </div>
+          <LoadingOverlay loading>
+            <div style={{ height: CHART_HEIGHT }} />
+          </LoadingOverlay>
         )}
         {!isLoading && data.length === 0 && (
           <div className="flex flex-col items-center justify-center text-gray-400" style={{ height: CHART_HEIGHT }}>
