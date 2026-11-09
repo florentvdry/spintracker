@@ -382,6 +382,9 @@
     "played_tournaments": "Played Tournaments",
     "net_profit": "Net Profit",
     "chips_ev_avg": "ChipsEV (Avg)",
+    "ev_profit": "EV Profit",
+    "ev_profit_hint": "What your chip EV is worth, without luck",
+    "luck_gap": "Luck gap",
     "unpriced_note": "{{count}} tournaments without a known prize pool are not counted in this profit (tournament summary missing).",
     "activity": "Activity",
     "sessions_month": "Sessions this month",
@@ -537,7 +540,7 @@
     "verdict_inside": "Your real curve is inside the normal zone; a gap is not proof of a leak.",
     "verdict_above": "Your real curve is above the normal zone: either a lucky run or a win rate higher than the one entered.",
     "verdict_below": "Your real curve is below the normal zone: a very bad run can explain it, but check the win rate you entered too.",
-    "footnote": "Random draw simulation: the chip EV gives the win probability (chips share out of the 3 stacks), a won tournament pays multiplier × buy-in, a lost one costs the buy-in. Everything is computed locally.",
+    "footnote": "Random draw simulation: the chip EV gives the win probability (chips share out of the 3 stacks), a won tournament pays its share of the prize pool (multiplier × buy-in), the 2nd and 3rd places too when the room shares large prizes, and a lost one costs the buy-in. Everything is computed locally.",
     "error": {
       "buyIn": "The buy-in must be greater than 0.",
       "spins": "The number of tournaments must be a whole number between 1 and {{maxSpins}}.",
@@ -557,6 +560,12 @@
     "rank_below": "below the bottom 10%",
     "mean_line": "Average multiplier ×{{mean}} · implied rake {{rake}}% · breakeven ≈ {{breakeven}} cEV",
     "mean_warning": "Average multiplier ×{{mean}}: impossible, the prize pool is below 3 buy-ins once the rake is out. The ROI is overstated.",
+    "sharing_note": "High prizes are shared between the top 3 places as {{room}} does it.",
+    "room": {
+      "winamax": "Winamax",
+      "unibet": "Unibet",
+      "betclic": "Betclic"
+    },
     "preset": {
       "winamax": "Winamax Expresso",
       "betclic": "Betclic Spin & Rush",

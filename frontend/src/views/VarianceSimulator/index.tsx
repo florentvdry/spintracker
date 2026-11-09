@@ -10,8 +10,8 @@ import { MULTIPLIER_PRESETS, type DistributionChoice, type PresetKey } from './m
 import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterStore'
 import { logError } from '@/utils/log'
 import {
-  expectedMultiplier, MAX_SIMULATIONS, MAX_SPINS, MAX_WORK, runSimulation, breakevenChipEv, estimateRank, sampleCurve, tournamentCurve, validateInput, winRateFromChipEv,
-  type SimulationInput, type SimulationResult,
+  expectedMultiplier, expectedProfitPerSpin, MAX_SIMULATIONS, MAX_SPINS, MAX_WORK, runSimulation, breakevenChipEvForTable, estimateRank, sampleCurve, tournamentCurve, validateInput, winRateFromChipEv,
+  type SharingRoom, type SimulationInput, type SimulationResult,
 } from '@/utils/varianceSimulator'
 
 const DEFAULT_BUY_IN = 5
@@ -39,6 +39,14 @@ const PLAYERS_PER_SPIN = 3
 interface TableRow {
   multiplier: string
   weight: string
+}
+
+/** Rooms the simulator knows the prize sharing of; any other room falls back to Winamax. */
+const KNOWN_ROOMS: SharingRoom[] = ['winamax', 'unibet', 'betclic']
+const DEFAULT_ROOM: SharingRoom = 'winamax'
+
+function roomOf(mainRoom: unknown): SharingRoom {
+  return KNOWN_ROOMS.find((room) => room === mainRoom) ?? DEFAULT_ROOM
 }
 
 const toNumber = (value: string): number => (value.trim() === '' ? Number.NaN : Number(value.replace(',', '.')))
@@ -84,6 +92,7 @@ export default function VarianceSimulator() {
   const heroName = useFilterStore((s) => s.heroName)
   const buyInFilter = useFilterStore((s) => s.buyIn)
   const dashboardStats = useAppStore((s) => s.dashboardStats)
+  const room = roomOf(dashboardStats?.main_room)
 
   const [buyIn, setBuyIn] = useState(String(DEFAULT_BUY_IN))
   const [spins, setSpins] = useState(String(DEFAULT_SPINS))
@@ -109,6 +118,7 @@ export default function VarianceSimulator() {
       simulations: toNumber(simulations),
       winRate: winRateFromChipEv(toNumber(chipEv)),
       multipliers: table.map((row) => ({ multiplier: toNumber(row.multiplier), weight: toNumber(row.weight) })),
+      room,
       bankroll: bankrollEuros === null ? null : bankrollEuros / stake,
       seed: Math.floor(Math.random() * SEED_RANGE),
     }
@@ -120,7 +130,7 @@ export default function VarianceSimulator() {
     setError(null)
     const result = runSimulation(input)
     setOutcome(result ? { result, buyIn: stake, bankroll: bankrollEuros, simulations: input.simulations } : null)
-  }, [buyIn, bankroll, spins, simulations, chipEv, table])
+  }, [buyIn, bankroll, spins, simulations, chipEv, table, room])
 
   // The effects below always call the latest `run` without re-running when an input changes.
   const runRef = useRef(run)
@@ -172,12 +182,11 @@ export default function VarianceSimulator() {
     })
   }, [heroName, dashboardStats, loadHistory])
 
-  const mean = useMemo(
-    () => expectedMultiplier(table.map((row) => ({ multiplier: toNumber(row.multiplier), weight: toNumber(row.weight) }))),
-    [table],
-  )
+  const weights = useMemo(() => table.map((row) => ({ multiplier: toNumber(row.multiplier), weight: toNumber(row.weight) })), [table])
+  const mean = useMemo(() => expectedMultiplier(weights), [weights])
+  const breakeven = useMemo(() => breakevenChipEvForTable(weights, room), [weights, room])
   const impliedWinRate = winRateFromChipEv(toNumber(chipEv))
-  const theoreticalRoi = mean === null || Number.isNaN(impliedWinRate) ? null : impliedWinRate * mean - 1
+  const theoreticalRoi = Number.isNaN(impliedWinRate) ? null : expectedProfitPerSpin(impliedWinRate, weights, room)
 
   // Any manual change makes the table a custom one.
   const editTable = (change: (rows: TableRow[]) => TableRow[]) => {
@@ -398,9 +407,14 @@ export default function VarianceSimulator() {
                 <p className={clsx('mt-1 text-xs', mean >= PLAYERS_PER_SPIN ? 'text-profit-negative' : 'text-gray-500')}>
                   {mean >= PLAYERS_PER_SPIN
                     ? t('variance.mean_warning', { mean: mean.toFixed(2) })
-                    : t('variance.mean_line', { mean: mean.toFixed(2), rake: ((1 - mean / PLAYERS_PER_SPIN) * PERCENT).toFixed(1), breakeven: Math.round(breakevenChipEv(mean)) })}
+                    : t('variance.mean_line', {
+                        mean: mean.toFixed(2),
+                        rake: ((1 - mean / PLAYERS_PER_SPIN) * PERCENT).toFixed(1),
+                        breakeven: breakeven === null ? '—' : Math.round(breakeven),
+                      })}
                 </p>
               )}
+              <p className="text-xs text-gray-500">{t('variance.sharing_note', { room: t(`variance.room.${room}`) })}</p>
               <button className="btn-secondary mt-1 self-start" onClick={() => editTable((rows) => [...rows, { multiplier: '', weight: '' }])}>
                 <Plus className="mr-1.5 h-3.5 w-3.5" />
                 {t('variance.add_row')}

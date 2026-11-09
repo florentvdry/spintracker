@@ -2,10 +2,45 @@
  * Monte Carlo variance simulator for Spin & Go style lotteries.
  *
  * Every amount is expressed in buy-ins so the result does not depend on the stake.
- * A spin costs one buy-in. The hero wins it with probability `winRate` and then
- * collects `multiplier` buy-ins, the multiplier being drawn from the prize pool
- * distribution independently of who wins (the draw happens before the cards).
+ * A spin costs one buy-in. The hero wins it with probability `winRate`; the multiplier is drawn
+ * from the prize pool distribution independently of who wins (the draw happens before the cards).
+ * From a high enough multiplier the rooms share the pool between the three places, so the second
+ * and third places can pay too (see `prizeShares`).
  */
+
+/** Rooms whose prize sharing is known, or `none` for a winner-takes-all pool. */
+export type SharingRoom = 'none' | 'winamax' | 'unibet' | 'betclic'
+
+/** Shares of the prize pool paid to the first, second and third place. */
+export type PrizeShares = [number, number, number]
+
+const WINNER_TAKES_ALL: PrizeShares = [1, 0, 0]
+const SHARES_75_15_10: PrizeShares = [0.75, 0.15, 0.1]
+const SHARES_80_12_8: PrizeShares = [0.8, 0.12, 0.08]
+const SHARES_80_10_10: PrizeShares = [0.8, 0.1, 0.1]
+/** Smallest multipliers from which each room shares the pool; below them the winner takes it all. */
+const WINAMAX_SHARING_MULTIPLIER = 100
+const UNIBET_SHARING_MULTIPLIER = 100
+const UNIBET_SMALL_SHARING_MULTIPLIER = 10
+const BETCLIC_SHARING_MULTIPLIER = 20
+
+/** How a room splits a prize pool of the given multiplier. Mirrors `prize_shares` in the Rust backend. */
+export function prizeShares(room: SharingRoom, multiplier: number): PrizeShares {
+  if (room === 'winamax' && multiplier >= WINAMAX_SHARING_MULTIPLIER) return SHARES_80_12_8
+  if (room === 'unibet' && multiplier >= UNIBET_SHARING_MULTIPLIER) return SHARES_80_12_8
+  if (room === 'unibet' && multiplier >= UNIBET_SMALL_SHARING_MULTIPLIER) return SHARES_80_10_10
+  if (room === 'betclic' && multiplier >= BETCLIC_SHARING_MULTIPLIER) return SHARES_75_15_10
+  return WINNER_TAKES_ALL
+}
+
+/**
+ * Chances of finishing first, second and third given the chance of winning.
+ * The two opponents are taken as equally strong (Harville), as in the Rust backend.
+ */
+export function placeProbabilities(winRate: number): PrizeShares {
+  const second = (2 * winRate * (1 - winRate)) / (1 + winRate)
+  return [winRate, second, Math.max(0, 1 - winRate - second)]
+}
 
 export interface MultiplierWeight {
   multiplier: number
@@ -19,6 +54,8 @@ export interface SimulationInput {
   /** Probability (0..1) of finishing first. */
   winRate: number
   multipliers: MultiplierWeight[]
+  /** How the prize pool is shared; defaults to winner takes all. */
+  room?: SharingRoom
   /** Starting bankroll in buy-ins, or null to skip the risk of ruin. */
   bankroll: number | null
   seed: number
@@ -99,19 +136,38 @@ export function expectedMultiplier(table: MultiplierWeight[]): number | null {
   return normalized.multipliers.reduce((sum, m, i) => sum + m * normalized.probabilities[i], 0)
 }
 
+/** Profit in buy-ins of finishing first, second and third in a pool of the given multiplier. */
+function placePayoffs(room: SharingRoom, multiplier: number): PrizeShares {
+  const [first, second, third] = prizeShares(room, multiplier)
+  return [multiplier * first - 1, multiplier * second - 1, multiplier * third - 1]
+}
+
+/** First two moments of the profit of one spin, in buy-ins. */
+function spinMoments(winRate: number, normalized: NormalizedTable, room: SharingRoom): { mean: number; secondMoment: number } {
+  const odds = placeProbabilities(winRate)
+  let mean = 0
+  let secondMoment = 0
+  normalized.multipliers.forEach((multiplier, row) => {
+    placePayoffs(room, multiplier).forEach((payoff, place) => {
+      const weight = normalized.probabilities[row] * odds[place]
+      mean += weight * payoff
+      secondMoment += weight * payoff * payoff
+    })
+  })
+  return { mean, secondMoment }
+}
+
 /** Expected profit per spin, in buy-ins. */
-export function expectedProfitPerSpin(winRate: number, table: MultiplierWeight[]): number | null {
-  const mean = expectedMultiplier(table)
-  return mean === null ? null : winRate * mean - 1
+export function expectedProfitPerSpin(winRate: number, table: MultiplierWeight[], room: SharingRoom = 'none'): number | null {
+  const normalized = normalize(table)
+  return normalized ? spinMoments(winRate, normalized, room).mean : null
 }
 
 /** Theoretical standard deviation of one spin, in buy-ins. */
-export function stdDevPerSpin(winRate: number, table: MultiplierWeight[]): number | null {
+export function stdDevPerSpin(winRate: number, table: MultiplierWeight[], room: SharingRoom = 'none'): number | null {
   const normalized = normalize(table)
   if (!normalized) return null
-  const mean = winRate * normalized.multipliers.reduce((sum, m, i) => sum + m * normalized.probabilities[i], 0) - 1
-  const secondMoment =
-    1 - winRate + winRate * normalized.multipliers.reduce((sum, m, i) => sum + (m - 1) ** 2 * normalized.probabilities[i], 0)
+  const { mean, secondMoment } = spinMoments(winRate, normalized, room)
   return Math.sqrt(Math.max(0, secondMoment - mean * mean))
 }
 
@@ -138,6 +194,10 @@ export function runSimulation(input: SimulationInput): SimulationResult | null {
   const { spins, simulations, winRate, bankroll } = input
   const random = createRandom(input.seed)
   const tableSize = table.multipliers.length
+  const room = input.room ?? 'none'
+  const shares = room !== 'none'
+  const odds = placeProbabilities(winRate)
+  const payoffs = table.multipliers.map((multiplier) => placePayoffs(room, multiplier))
 
   const checkpointCount = Math.min(spins, CHECKPOINT_COUNT)
   const checkpoints = Array.from({ length: checkpointCount + 1 }, (_, k) => Math.round((spins * k) / checkpointCount))
@@ -154,17 +214,20 @@ export function runSimulation(input: SimulationInput): SimulationResult | null {
     let lowest = 0
     let next = 1
     for (let spin = 1; spin <= spins; spin++) {
-      if (random() < winRate) {
-        const draw = random()
+      const draw = random()
+      const place = draw < odds[0] ? 0 : draw < odds[0] + odds[1] ? 1 : 2
+      // Without sharing only the winner is paid, so the multiplier is only needed then.
+      if (place === 0 || shares) {
+        const multiplierDraw = random()
         let index = 0
-        while (index < tableSize - 1 && draw >= table.cumulative[index]) index++
-        profit += table.multipliers[index] - 1
-        if (profit > peak) peak = profit
+        while (index < tableSize - 1 && multiplierDraw >= table.cumulative[index]) index++
+        profit += payoffs[index][place]
       } else {
         profit -= 1
-        if (peak - profit > maxDrawdown) maxDrawdown = peak - profit
-        if (profit < lowest) lowest = profit
       }
+      if (profit > peak) peak = profit
+      if (peak - profit > maxDrawdown) maxDrawdown = peak - profit
+      if (profit < lowest) lowest = profit
       if (spin === checkpoints[next]) {
         values[next * simulations + s] = profit
         next++
@@ -196,8 +259,8 @@ export function runSimulation(input: SimulationInput): SimulationResult | null {
     return checkpoints.map((_, k) => values[k * simulations + best])
   }
 
-  const perSpin = expectedProfitPerSpin(winRate, input.multipliers) ?? 0
-  const perSpinDeviation = stdDevPerSpin(winRate, input.multipliers) ?? 0
+  const perSpin = expectedProfitPerSpin(winRate, input.multipliers, room) ?? 0
+  const perSpinDeviation = stdDevPerSpin(winRate, input.multipliers, room) ?? 0
 
   return {
     checkpoints,
@@ -283,4 +346,24 @@ export function estimateRank(value: number, band: Record<BandKey, number>): RunR
  */
 export function breakevenChipEv(averageMultiplier: number, startingStack = STARTING_STACK_CHIPS): number {
   return (startingStack * PLAYERS_PER_SPIN) / averageMultiplier - startingStack
+}
+
+const BREAKEVEN_ITERATIONS = 60
+
+/**
+ * Same break-even for a whole table and a sharing room. The profit only grows with the chance of
+ * winning, so it is found by bisection. Null when even a certain win would not break even.
+ */
+export function breakevenChipEvForTable(table: MultiplierWeight[], room: SharingRoom, startingStack = STARTING_STACK_CHIPS): number | null {
+  const profitAt = (winRate: number) => expectedProfitPerSpin(winRate, table, room)
+  const best = profitAt(1)
+  if (best === null || best < 0) return null
+  let low = 0
+  let high = 1
+  for (let i = 0; i < BREAKEVEN_ITERATIONS; i++) {
+    const middle = (low + high) / 2
+    if ((profitAt(middle) ?? 0) < 0) low = middle
+    else high = middle
+  }
+  return high * startingStack * PLAYERS_PER_SPIN - startingStack
 }

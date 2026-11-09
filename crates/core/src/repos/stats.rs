@@ -176,6 +176,32 @@ impl Room {
             _ => Room::Other,
         }
     }
+
+    /// Identifier the frontend knows the room by, none for a room it has no rules for.
+    fn key(self) -> Option<&'static str> {
+        match self {
+            Room::Winamax => Some("winamax"),
+            Room::Unibet => Some("unibet"),
+            Room::Betclic => Some("betclic"),
+            Room::Other => None,
+        }
+    }
+}
+
+const KNOWN_ROOMS: [Room; 3] = [Room::Winamax, Room::Unibet, Room::Betclic];
+
+/// Chips each player starts a Spin with, and the number of players: a player's chance of winning
+/// is the share of the chips in play they are expected to end with.
+const STARTING_STACK_CHIPS: f64 = 500.0;
+const PLAYERS_PER_SPIN: f64 = 3.0;
+
+/// Probabilities of finishing first, second and third for a given chip EV.
+/// The chip EV only fixes the chance of winning; the two opponents are taken as equally strong
+/// (Harville) to split the rest between the other places. The simulator uses the same model.
+fn place_probabilities(chip_ev: f64) -> [f64; 3] {
+    let first = ((STARTING_STACK_CHIPS + chip_ev) / (STARTING_STACK_CHIPS * PLAYERS_PER_SPIN)).clamp(0.0, 1.0);
+    let second = 2.0 * first * (1.0 - first) / (1.0 + first);
+    [first, second, 1.0 - first - second]
 }
 
 /// Shares of the prize pool going to the first, second and third place.
@@ -247,17 +273,38 @@ impl TournamentFigures {
         }
     }
 
-    fn win_amount(&self) -> f64 {
+    /// The whole prize pool: the recorded one, else the one the multiplier implies.
+    fn total_prize(&self) -> f64 {
         let cost = self.total_cost();
         let m = self.multiplier as f64;
-        let total_prize = if self.prize_pool > m * cost * 0.5 { self.prize_pool } else { cost * m };
-        match (self.finish_position(), self.shares()) {
+        if self.prize_pool > m * cost * 0.5 { self.prize_pool } else { cost * m }
+    }
+
+    /// What finishing at `place` (1 to 3) pays, sharing included.
+    fn prize_for_place(&self, place: i32) -> f64 {
+        let total_prize = self.total_prize();
+        match (place, self.shares()) {
             (1, Some((first, _, _))) => total_prize * first,
             (1, None) => total_prize,
             (2, Some((_, second, _))) => total_prize * second,
             (3, Some((_, _, third))) => total_prize * third,
             _ => 0.0,
         }
+    }
+
+    fn win_amount(&self) -> f64 {
+        self.prize_for_place(self.finish_position())
+    }
+
+    /// Result in euros the hero's chip EV is worth: each place is paid with the probability the
+    /// chip EV gives it. The prize pool is drawn before the cards, so the actual one is used.
+    pub(crate) fn expected_euro_profit(&self, chip_ev: f64) -> f64 {
+        if !self.is_prized() {
+            return 0.0;
+        }
+        let odds = place_probabilities(chip_ev);
+        let expected_prize: f64 = odds.iter().zip(1..).map(|(probability, place)| probability * self.prize_for_place(place)).sum();
+        expected_prize - self.total_cost()
     }
 
     /// Result in euros. A tournament whose prize is unknown counts for 0: guessing a multiplier
@@ -501,6 +548,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let mut games: HashMap<Option<String>, TournamentFigures> = HashMap::new();
     let mut by_position: BTreeMap<(Option<String>, i32), PositionTotals> = BTreeMap::new();
     let mut blind_ev: BTreeMap<(String, String), f64> = BTreeMap::new();
+    let mut chip_ev_by_game: HashMap<Option<String>, f64> = HashMap::new();
     let mut session_hands = Vec::new();
     while let Some(r) = rows.next()? {
         let date: Option<String> = r.get(0)?;
@@ -537,6 +585,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         if let Some(ev) = net_won_adjusted {
             totals.ev += ev;
         }
+        *chip_ev_by_game.entry(game_id.clone()).or_default() += net_won_adjusted.unwrap_or(0.0);
         if let Some(id) = &game_id {
             totals.tournaments.insert(id.clone());
         }
@@ -569,7 +618,9 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let mut tournaments_won = 0;
     let mut unpriced_tournaments = 0;
     let mut total_profit_euro = 0.0;
-    for figures in games.values() {
+    let mut total_ev_profit_euro = 0.0;
+    let mut tournaments_by_room = [0usize; KNOWN_ROOMS.len()];
+    for (game_id, figures) in &games {
         if figures.is_in_the_money() {
             tournaments_won += 1;
         }
@@ -577,7 +628,18 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
             unpriced_tournaments += 1;
         }
         total_profit_euro += figures.euro_profit();
+        total_ev_profit_euro += figures.expected_euro_profit(chip_ev_by_game.get(game_id).copied().unwrap_or(0.0));
+        if let Some(index) = KNOWN_ROOMS.iter().position(|room| *room == figures.room) {
+            tournaments_by_room[index] += 1;
+        }
     }
+    // The room the hero played most, which decides how the simulator shares the prizes.
+    let main_room = tournaments_by_room
+        .iter()
+        .enumerate()
+        .filter(|(_, count)| **count > 0)
+        .max_by_key(|(index, count)| (**count, std::cmp::Reverse(*index)))
+        .and_then(|(index, _)| KNOWN_ROOMS[index].key());
 
     // Chips EV by table size and seat; the overall totals come from the same groups.
     let (mut total_hands, mut hands_won, mut total_ev) = (0i64, 0i64, 0.0f64);
@@ -613,6 +675,9 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         "tournaments_won": tournaments_won,
         "unpriced_tournaments": unpriced_tournaments,
         "total_profit": total_profit_euro,
+        "total_ev_profit": round_to(total_ev_profit_euro, 2),
+        "luck_profit": round_to(total_profit_euro - total_ev_profit_euro, 2),
+        "main_room": main_room,
         "total_ev": total_ev,
         "total_tournaments": total_tournaments,
         "avg_chips_ev": avg_chips_ev,
@@ -917,6 +982,41 @@ mod tests {
         assert!(second.is_in_the_money());
         let third = figures(1.0, 100.0, 100, 3, 0.0, 3);
         assert_eq!(third.euro_profit(), 100.0 * 0.10 - 1.0);
+    }
+
+    #[test]
+    fn place_probabilities_add_up_to_one_and_follow_the_chip_ev() {
+        let even = place_probabilities(0.0);
+        assert!((even[0] - 1.0 / 3.0).abs() < 1e-12 && (even[1] - 1.0 / 3.0).abs() < 1e-12);
+        let strong = place_probabilities(150.0);
+        assert!((strong.iter().sum::<f64>() - 1.0).abs() < 1e-12);
+        assert!(strong[0] > even[0] && strong[2] < even[2]);
+        assert_eq!(place_probabilities(10_000.0), [1.0, 0.0, 0.0]);
+        assert_eq!(place_probabilities(-10_000.0), [0.0, 0.0, 1.0]);
+    }
+
+    #[test]
+    fn expected_profit_without_edge_is_the_average_prize_minus_the_buy_in() {
+        // x100 on Winamax pays 80 / 12 / 8: a third of the pool on average, whoever finishes where.
+        let t = in_room(Room::Winamax, figures(1.0, 100.0, 100, 1, 500.0, 3));
+        assert!((t.expected_euro_profit(0.0) - (100.0 * (0.80 + 0.12 + 0.08) / 3.0 - 1.0)).abs() < 1e-9);
+        // Without sharing the winner takes everything, so a third of the pool.
+        let plain = figures(2.0, 6.0, 3, 1, 500.0, 3);
+        assert!((plain.expected_euro_profit(0.0) - (6.0 / 3.0 - 2.0)).abs() < 1e-9);
+    }
+
+    #[test]
+    fn expected_profit_grows_with_the_chip_ev_and_ignores_the_actual_result() {
+        let won = in_room(Room::Winamax, figures(1.0, 100.0, 100, 1, 500.0, 3));
+        let lost = in_room(Room::Winamax, figures(1.0, 100.0, 100, 3, -500.0, 3));
+        assert_eq!(won.expected_euro_profit(80.0), lost.expected_euro_profit(80.0));
+        assert!(won.expected_euro_profit(80.0) > won.expected_euro_profit(0.0));
+    }
+
+    #[test]
+    fn expected_profit_is_zero_when_the_prize_is_unknown() {
+        let unknown = in_room(Room::Winamax, figures(5.0, 0.0, 1, 0, 1000.0, 3));
+        assert_eq!(unknown.expected_euro_profit(100.0), 0.0);
     }
 
     #[test]

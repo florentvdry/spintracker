@@ -382,6 +382,9 @@
     "played_tournaments": "Tournois Joués",
     "net_profit": "Profit Net",
     "chips_ev_avg": "ChipsEV (Moy)",
+    "ev_profit": "Profit EV",
+    "ev_profit_hint": "Ce que vaut ton EV en jetons, sans la chance",
+    "luck_gap": "Écart de chance",
     "unpriced_note": "{{count}} tournois sans prize pool connu ne sont pas comptés dans ce profit (résumé du tournoi manquant).",
     "activity": "Activité",
     "sessions_month": "Sessions ce mois",
@@ -537,7 +540,7 @@
     "verdict_inside": "Votre courbe réelle est dans la zone normale ; un écart n'est pas une preuve de leak.",
     "verdict_above": "Votre courbe réelle est au-dessus de la zone normale : soit une série chanceuse, soit un taux de victoire supérieur à celui saisi.",
     "verdict_below": "Votre courbe réelle est en dessous de la zone normale : une très mauvaise série peut l'expliquer, mais vérifiez aussi le taux de victoire saisi.",
-    "footnote": "Simulation par tirage aléatoire : le CEV donne la probabilité de victoire (part de jetons parmi les 3 stacks), un tournoi gagné rapporte multiplicateur × buy-in, perdu coûte le buy-in. Tout est calculé en local.",
+    "footnote": "Simulation par tirage aléatoire : le CEV donne la probabilité de victoire (part de jetons parmi les 3 stacks), un tournoi gagné rapporte sa part du prize pool (multiplicateur × buy-in), les 2e et 3e places aussi quand la salle partage les gros prix, et un tournoi perdu coûte le buy-in. Tout est calculé en local.",
     "error": {
       "buyIn": "Le buy-in doit être supérieur à 0.",
       "spins": "Le nombre de tournois doit être un entier entre 1 et {{maxSpins}}.",
@@ -557,6 +560,12 @@
     "rank_below": "sous le bottom 10 %",
     "mean_line": "Multiplicateur moyen ×{{mean}} · rake implicite {{rake}} % · seuil de rentabilité ≈ {{breakeven}} CEV",
     "mean_warning": "Multiplicateur moyen ×{{mean}} : impossible, le prize pool est inférieur à 3 buy-ins une fois le rake retiré. Le ROI est surestimé.",
+    "sharing_note": "Les gros prix sont partagés entre les 3 premières places comme le fait {{room}}.",
+    "room": {
+      "winamax": "Winamax",
+      "unibet": "Unibet",
+      "betclic": "Betclic"
+    },
     "preset": {
       "winamax": "Winamax Expresso",
       "betclic": "Betclic Spin & Rush",

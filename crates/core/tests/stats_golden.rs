@@ -102,7 +102,9 @@ fn dashboard(q: StatsQuery) -> Value {
     // Depends on today's date.
     v.as_object_mut().unwrap().remove("sessions_this_month");
     // Added after the former backend: it has no counterpart in the golden files.
-    v.as_object_mut().unwrap().remove("unpriced_tournaments");
+    for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room"] {
+        v.as_object_mut().unwrap().remove(added);
+    }
     v
 }
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   expectedMultiplier, expectedProfitPerSpin, MAX_SPINS, runSimulation, sampleCurve, stdDevPerSpin, tournamentCurve, validateInput, winRateFromChipEv, estimateRank, breakevenChipEv,
+  breakevenChipEvForTable, placeProbabilities, prizeShares,
   type MultiplierWeight, type SimulationInput,
 } from './varianceSimulator'
 
@@ -24,6 +25,53 @@ describe('theoretical moments', () => {
 
   it('ignores invalid rows and rejects an empty table', () => {
     expect(expectedMultiplier([{ multiplier: 2, weight: 0 }, { multiplier: -1, weight: 5 }])).toBeNull()
+  })
+})
+
+describe('prize sharing', () => {
+  const BIG_TABLE: MultiplierWeight[] = [
+    { multiplier: 2, weight: 90 },
+    { multiplier: 100, weight: 10 },
+  ]
+
+  it('follows each room rules and pays the winner everything below the thresholds', () => {
+    expect(prizeShares('winamax', 100)).toEqual([0.8, 0.12, 0.08])
+    expect(prizeShares('winamax', 50)).toEqual([1, 0, 0])
+    expect(prizeShares('unibet', 10)).toEqual([0.8, 0.1, 0.1])
+    expect(prizeShares('betclic', 20)).toEqual([0.75, 0.15, 0.1])
+    expect(prizeShares('none', 1000)).toEqual([1, 0, 0])
+  })
+
+  it('splits the places so that they always add up to one', () => {
+    for (const winRate of [0, 0.2, 1 / 3, 0.5, 1]) {
+      expect(placeProbabilities(winRate).reduce((a, b) => a + b, 0)).toBeCloseTo(1, 10)
+    }
+    expect(placeProbabilities(1 / 3)[1]).toBeCloseTo(1 / 3, 10)
+  })
+
+  it('pays a third of the pool on average to a player with no edge, shared or not', () => {
+    const mean = expectedMultiplier(BIG_TABLE)!
+    expect(expectedProfitPerSpin(1 / 3, BIG_TABLE, 'winamax')).toBeCloseTo(mean / 3 - 1, 10)
+    expect(expectedProfitPerSpin(1 / 3, BIG_TABLE)).toBeCloseTo(mean / 3 - 1, 10)
+  })
+
+  it('makes a strong player earn less than winner takes all would say', () => {
+    expect(expectedProfitPerSpin(0.4, BIG_TABLE, 'winamax')!).toBeLessThan(expectedProfitPerSpin(0.4, BIG_TABLE)!)
+  })
+
+  it('keeps the simulated mean in line with the shared expectation', () => {
+    const result = runSimulation({ ...baseInput, winRate: 0.4, multipliers: BIG_TABLE, room: 'winamax', spins: 2000, simulations: 3000 })!
+    expect(result.expectedProfit).toBeCloseTo(2000 * expectedProfitPerSpin(0.4, BIG_TABLE, 'winamax')!, 6)
+    // The median of a run sits within one standard deviation of its expectation.
+    expect(Math.abs(result.bands.p50.at(-1)! - result.expectedProfit)).toBeLessThan(result.stdDevProfit)
+  })
+
+  it('finds the chip EV at which the shared pool breaks even', () => {
+    const plain = breakevenChipEvForTable(BIG_TABLE, 'none')!
+    const shared = breakevenChipEvForTable(BIG_TABLE, 'winamax')!
+    expect(plain).toBeCloseTo(breakevenChipEv(expectedMultiplier(BIG_TABLE)!), 6)
+    expect(expectedProfitPerSpin(winRateFromChipEv(shared), BIG_TABLE, 'winamax')!).toBeCloseTo(0, 6)
+    expect(breakevenChipEvForTable([{ multiplier: 0.5, weight: 1 }], 'none')).toBeNull()
   })
 })
 
@@ -62,7 +110,7 @@ describe('runSimulation', () => {
     const lose = runSimulation({ ...baseInput, winRate: 0, bankroll: 10, simulations: 50, spins: 20 })!
     expect(lose.ruinShare).toBe(1)
     expect(lose.losingShare).toBe(1)
-    expect(lose.roi).toBe(-1)
+    expect(lose.roi).toBeCloseTo(-1, 10)
     const win = runSimulation({ ...baseInput, winRate: 1, bankroll: 10, simulations: 50, spins: 20 })!
     expect(win.ruinShare).toBe(0)
     expect(win.losingShare).toBe(0)
