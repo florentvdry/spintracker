@@ -164,6 +164,9 @@ export const ipcService = {
   deleteRangeProgram: (id: number) => backend('DELETE', `/ranges/programs/${id}`),
   getRangeSettings: () => backend('GET', '/ranges/settings'),
   saveRangeSettings: (patch: Json) => backend('POST', '/ranges/settings', patch),
+  getRangeAdherence: (heroName: string, from?: string | null, to?: string | null) => backend('GET', `/ranges/adherence${query({ heroName, from, to })}`),
+  getRangeAdherenceScenario: (scenarioId: number, heroName: string, from?: string | null, to?: string | null) =>
+    backend('GET', `/ranges/adherence/${scenarioId}${query({ heroName, from, to })}`),
   exportRanges: () => backend('GET', '/ranges/export'),
   importRanges: (content: string, mode: 'replace' | 'merge', dryRun = false) => backend('POST', '/ranges/import', { content, mode, dryRun }),
   calculateEquity: (params: Json) => backend('POST', '/equity', params),

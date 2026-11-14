@@ -3,9 +3,10 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { useUserRangesStore } from '@/stores/userRangesStore'
+import Adherence from './Adherence'
 import Editor from './Editor'
 
-const TABS = ['editor'] as const
+const TABS = ['editor', 'adherence'] as const
 type RangesTab = (typeof TABS)[number]
 
 const isTab = (value: string | null): value is RangesTab => TABS.some((tab) => tab === value)
@@ -41,7 +42,10 @@ export default function Ranges() {
           </button>
         ))}
       </div>
-      {loaded ? <>{active === 'editor' && <Editor />}</> : <div className="spinner mx-auto mt-24" />}
+      {loaded ? <>
+          {active === 'editor' && <Editor />}
+          {active === 'adherence' && <Adherence />}
+        </> : <div className="spinner mx-auto mt-24" />}
     </div>
   )
 }

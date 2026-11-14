@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import Card from '@/components/ui/Card'
+import { ipcService } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
 import { useHandsStore } from '@/stores/handsStore'
 import { useReplayerStore } from '@/stores/replayerStore'
@@ -49,7 +50,23 @@ export default function HandHistory() {
 
   useEffect(() => {
     loadData()
-  }, [heroName, dateRange, buyIn, selectedSession, filters.result, filters.sortBy, loadData])
+  }, [heroName, dateRange, buyIn, selectedSession, filters.result, filters.sortBy, filters.rangeDeviation, loadData])
+
+  // The "left my range" filter only exists for players who built ranges; its count is for all time.
+  const [deviationCount, setDeviationCount] = useState<number | null>(null)
+  useEffect(() => {
+    let stale = false
+    setDeviationCount(null)
+    if (!heroName) return undefined
+    void ipcService.getRangeAdherence(heroName).then((result) => {
+      if (stale || !result.success) return
+      const { compared, noRange, deviations } = result.data
+      setDeviationCount(compared + noRange > 0 ? deviations : null)
+    })
+    return () => {
+      stale = true
+    }
+  }, [heroName])
 
   const handleReplayTournament = async (gameId: string | number) => {
     await hands.loadTournamentHands(gameId)
@@ -79,6 +96,15 @@ export default function HandHistory() {
             {modeButton('tournaments', t('hand_history.by_tournaments'))}
             {modeButton('hands', t('hand_history.by_hands'))}
           </div>
+          {!isTournaments && deviationCount !== null && (
+            <button
+              className={clsx('pill', filters.rangeDeviation && '!border-deviation !bg-deviation/15 !text-deviation')}
+              aria-pressed={filters.rangeDeviation}
+              onClick={() => hands.setFilters({ rangeDeviation: !filters.rangeDeviation })}
+            >
+              {t('hand_history.range_deviation', { count: deviationCount })}
+            </button>
+          )}
           <select className="select w-36" value={filters.result || ''} onChange={(e) => hands.setFilters({ result: e.target.value || null })}>
             <option value="">{t('common.result')}</option>
             <option value="won">{t('common.won')}</option>

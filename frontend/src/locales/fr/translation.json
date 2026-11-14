@@ -410,6 +410,7 @@
     }
   },
   "hand_history": {
+    "range_deviation": "Écart à ma range · {{count}}",
     "title": "Historique",
     "subtitle": "Parcourez vos tournois et mains",
     "by_tournaments": "Par tournois",
@@ -976,7 +977,8 @@
   },
   "ranges": {
     "tabs": {
-      "editor": "Éditeur"
+      "editor": "Éditeur",
+      "adherence": "Respect de ta range"
     },
     "colors": {
       "hex": "Couleur hexadécimale"
@@ -1174,6 +1176,57 @@
       "deleteTitle": "Supprimer {{label}} ?",
       "deleteUsed": "{{count}} mains de tes ranges utilisent cette action.",
       "replaceBy": "Remplacer par :"
+    },
+    "deviation": {
+      "yourRange": "Ta range :",
+      "played": "joué :",
+      "response": "· réponse {{response}}"
+    },
+    "adherence": {
+      "noHero": "Choisis un héros pour comparer tes mains à tes ranges.",
+      "noRanges": "Construis au moins un scénario dans l’éditeur pour le comparer à tes mains.",
+      "noHands": "Aucune main avec une décision connue sur cette période.",
+      "periods": {
+        "7": "7 jours",
+        "30": "30 jours",
+        "all": "Tout"
+      },
+      "betweenDepths": "Entre deux profondeurs :",
+      "note": "Un écart = « pas ce que tu avais prévu », pas une erreur.",
+      "tiles": {
+        "respect": "Respect de ta range",
+        "respectHint": "sur les décisions couvertes par une range",
+        "compared": "Décisions comparées",
+        "comparedHint": "préflop, héros",
+        "deviations": "Écarts",
+        "deviationsHint": "dont {{count}} sur la réponse prévue",
+        "noRange": "Sans range",
+        "noRangeHint": "aucun scénario proche · {{count}} lignes fréquentes"
+      },
+      "noUncovered": "Toutes les décisions sont couvertes par un scénario.",
+      "createScenario": "Créer ce scénario",
+      "byScenario": "Par scénario",
+      "columns": {
+        "scenario": "Scénario",
+        "decisions": "Décisions",
+        "respect": "Respect",
+        "topDeviation": "Écart le plus fréquent (prévu → joué)",
+        "evMatch": "Chip EV conforme",
+        "evDeviation": "Chip EV écart"
+      },
+      "playedBetween": "mains jouées entre {{min}} et {{max}} bb",
+      "gridLabel": "Écarts par rapport à {{name}}",
+      "legendDeviation": "écart (nombre)",
+      "latest": "Derniers écarts",
+      "latestCount": "{{count}} sur {{period}}",
+      "noDeviation": "Aucun écart sur cette période.",
+      "replay": "Replayer →"
+    },
+    "replayer": {
+      "match": "Conforme à ta range",
+      "deviation": "Écart à ta range",
+      "noRange": "Pas de range pour cette situation",
+      "scenario": "Scénario « {{name}} · {{depth}} bb », utilisé pour {{stack}} bb."
     }
   }
 }

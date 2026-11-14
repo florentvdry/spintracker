@@ -410,6 +410,7 @@
     }
   },
   "hand_history": {
+    "range_deviation": "Deviation from my range · {{count}}",
     "title": "Tournament History",
     "subtitle": "Browse your tournaments and hands",
     "sessions": "Sessions",
@@ -976,7 +977,8 @@
   },
   "ranges": {
     "tabs": {
-      "editor": "Editor"
+      "editor": "Editor",
+      "adherence": "Range adherence"
     },
     "colors": {
       "hex": "Hex colour"
@@ -1174,6 +1176,57 @@
       "deleteTitle": "Delete {{label}}?",
       "deleteUsed": "{{count}} hands in your ranges use this action.",
       "replaceBy": "Replace by:"
+    },
+    "deviation": {
+      "yourRange": "Your range:",
+      "played": "played:",
+      "response": "· answer {{response}}"
+    },
+    "adherence": {
+      "noHero": "Pick a hero to compare your hands with your ranges.",
+      "noRanges": "Build at least one scenario in the editor to compare it with your hands.",
+      "noHands": "No hand with a known decision in this period.",
+      "periods": {
+        "7": "7 days",
+        "30": "30 days",
+        "all": "All"
+      },
+      "betweenDepths": "Between two depths:",
+      "note": "A deviation means \"not what you planned\", not an error.",
+      "tiles": {
+        "respect": "Range adherence",
+        "respectHint": "of the decisions covered by a range",
+        "compared": "Decisions compared",
+        "comparedHint": "preflop, hero",
+        "deviations": "Deviations",
+        "deviationsHint": "including {{count}} on the planned answer",
+        "noRange": "No range",
+        "noRangeHint": "no close scenario · {{count}} frequent lines"
+      },
+      "noUncovered": "Every decision is covered by a scenario.",
+      "createScenario": "Create this scenario",
+      "byScenario": "By scenario",
+      "columns": {
+        "scenario": "Scenario",
+        "decisions": "Decisions",
+        "respect": "Adherence",
+        "topDeviation": "Most frequent deviation (planned → played)",
+        "evMatch": "Chip EV followed",
+        "evDeviation": "Chip EV deviation"
+      },
+      "playedBetween": "hands played between {{min}} and {{max}} bb",
+      "gridLabel": "Deviations from {{name}}",
+      "legendDeviation": "deviation (count)",
+      "latest": "Latest deviations",
+      "latestCount": "{{count}} over {{period}}",
+      "noDeviation": "No deviation over this period.",
+      "replay": "Replay →"
+    },
+    "replayer": {
+      "match": "Follows your range",
+      "deviation": "Deviation from your range",
+      "noRange": "No range for this situation",
+      "scenario": "Scenario \"{{name}} · {{depth}} bb\", used for {{stack}} bb."
     }
   }
 }
