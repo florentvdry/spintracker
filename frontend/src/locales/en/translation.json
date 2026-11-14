@@ -4,6 +4,7 @@
     "history": "Tournament History",
     "analysis": "Analysis",
     "hud": "HUD",
+    "ranges": "Ranges",
     "players": "Players",
     "settings": "Settings"
   },
@@ -972,5 +973,207 @@
     "hint": "After an update, the database may be upgraded or its statistics recomputed. This can take a few minutes on a large history and only happens once.",
     "statistics": "Updating statistics: {{done}} / {{total}} ({{percent}}%)",
     "failed_title": "The database could not be opened"
+  },
+  "ranges": {
+    "tabs": {
+      "editor": "Editor"
+    },
+    "colors": {
+      "hex": "Hex colour"
+    },
+    "actions": {
+      "label": "Label",
+      "color": "Action colour",
+      "immediate": "Immediate action",
+      "size": "Size",
+      "unit": "Size unit",
+      "response": "If raised",
+      "newTitle": "New action"
+    },
+    "immediate": {
+      "fold": "Fold",
+      "check": "Check",
+      "call": "Call",
+      "limp": "Limp",
+      "raise": "Raise",
+      "iso": "Iso-raise",
+      "threebet": "3-bet",
+      "allin": "All-in"
+    },
+    "units": {
+      "bb": "bb",
+      "x": "x bet",
+      "pct_stack": "% stack"
+    },
+    "responses": {
+      "none": "No plan",
+      "fold": "Fold",
+      "call": "Call",
+      "allin": "All-in"
+    },
+    "responsesIf": {
+      "fold": "fold if raised",
+      "call": "call if raised",
+      "allin": "all-in if raised"
+    },
+    "verbs": {
+      "fold": "Fold",
+      "call": "Limp / Call",
+      "raise": "Raise",
+      "all-in": "All-in"
+    },
+    "format": {
+      "3max": "3 players",
+      "hu": "Heads-up",
+      "3maxShort": "3 players",
+      "huShort": "heads-up"
+    },
+    "opponent": {
+      "any": "Anyone",
+      "reg": "Reg only",
+      "anyLower": "any opponent",
+      "regLower": "reg opponent"
+    },
+    "wizard": {
+      "title": "New scenario",
+      "editTitle": "Edit scenario",
+      "create": "Create ({{count}} ranges)",
+      "format": "Format",
+      "position": "Your position",
+      "inFront": "In front of you",
+      "firstToAct": "You act first",
+      "raiseSize": "{{seat}} raise size in bb",
+      "exists": "This scenario already exists:",
+      "open": "Open",
+      "opponent": "Opponent",
+      "opponentHelp": "Used when the opponent is marked reg in Players. Otherwise the \"Anyone\" version is used.",
+      "depths": "Depths (bb) · one range per depth",
+      "otherDepth": "+ other",
+      "depthRequired": "Pick at least one depth.",
+      "start": "Starting point",
+      "startEmpty": "Empty (everything in the first action)",
+      "startCopy": "Copy an existing scenario:",
+      "name": "Name",
+      "quiz": "Include in the quiz and the review"
+    },
+    "tree": {
+      "program": "Program",
+      "allRanges": "All my ranges · {{count}} scenarios",
+      "newProgram": "+ New program",
+      "editProgram": "Edit program",
+      "empty": "No scenario",
+      "studyOnly": "to study",
+      "newScenario": "+ New scenario",
+      "menu": {
+        "open": "Scenario menu",
+        "edit": "Edit",
+        "duplicate": "Duplicate (other opponent)",
+        "addDepth": "Add a depth",
+        "addToProgram": "Add to a program",
+        "delete": "Delete"
+      }
+    },
+    "actionsCard": {
+      "title": "Your actions",
+      "combos": "combos · % of {{total}}",
+      "manage": "Manage my actions and colours →",
+      "newAction": "New action"
+    },
+    "scenarioCard": {
+      "title": "Scenario",
+      "format": "Format",
+      "position": "Your position",
+      "inFront": "In front of you",
+      "opponent": "Opponent",
+      "regFallback": "falls back to \"Anyone\" if none",
+      "depths": "Depths",
+      "addDepth": "Add a depth",
+      "quiz": "Quiz",
+      "included": "included",
+      "modify": "Edit",
+      "removeDepth": "Remove this depth"
+    },
+    "fileCard": {
+      "title": "File",
+      "help": "Save or share your ranges (SpinTracker .json format).",
+      "import": "Import",
+      "export": "Export"
+    },
+    "import": {
+      "title": "Import ranges",
+      "actions": "Actions",
+      "spots": "Scenarios",
+      "scenarios": "Ranges",
+      "programs": "Programs",
+      "warnings": "{{count}} things were ignored or repaired",
+      "choose": "Replace drops your current ranges first. Merge keeps them: actions with the same label are reused and scenarios with the same name are replaced.",
+      "merge": "Merge",
+      "replace": "Replace my ranges"
+    },
+    "program": {
+      "newTitle": "New program",
+      "editTitle": "Edit program",
+      "name": "Program name",
+      "scenarios": "Scenarios in this program",
+      "up": "Move up",
+      "down": "Move down"
+    },
+    "depth": {
+      "title": "Add a depth (bb)",
+      "add": "Add",
+      "copy": "Copy the range of"
+    },
+    "editor": {
+      "saved": "Range saved",
+      "unsavedTitle": "Unsaved changes",
+      "unsavedDetail": "The painted hands of this range have not been saved. Leave without saving?",
+      "discard": "Discard changes",
+      "deleteTitle": "Delete {{name}}?",
+      "deleteDetail": "{{count}} depths and their ranges will be deleted. This cannot be undone.",
+      "removeDepthTitle": "Remove {{depth}} bb?",
+      "removeDepthDetail": "The range of this depth will be deleted. This cannot be undone.",
+      "complete": "{{count}} / {{count}} hands · 0 duplicates",
+      "missing": "{{known}} / {{total}} hands · {{missing}} missing",
+      "modes": {
+        "brush": "Brush",
+        "rect": "Rectangle",
+        "picker": "Picker"
+      },
+      "activeColor": "Active colour:",
+      "copyFrom": "Copy from…",
+      "undo": "Undo",
+      "redo": "Redo",
+      "gridLabel": "Range {{name}} at {{depth}} bb",
+      "note": "Click and drag to paint · Shift + click: whole row · hands outlined in white changed since the last save.",
+      "save": "Save",
+      "revert": "Discard changes"
+    },
+    "empty": {
+      "title": "Build your ranges",
+      "body": "Pick a situation, your depths and paint your hands with your own actions.",
+      "create": "Create my first scenario",
+      "import": "Import a SpinTracker file"
+    },
+    "settings": {
+      "title": "My ranges",
+      "saved": "Actions saved",
+      "actionsTitle": "My actions and colours",
+      "actionsHelp": "These actions are used by all your ranges.",
+      "drag": "Drag to reorder",
+      "addAction": "Add an action",
+      "depthsTitle": "Suggested depths",
+      "depthsHelp": "They only prefill the choices; a scenario can have any depth.",
+      "removeDepth": "Remove {{depth}} bb",
+      "addDepth": "Add a depth",
+      "depthRule": "Between two defined depths:",
+      "rules": {
+        "nearest": "The closest",
+        "below": "The one below"
+      },
+      "regNote": "\"Reg\" variants use the players marked reg in Players.",
+      "deleteTitle": "Delete {{label}}?",
+      "deleteUsed": "{{count}} hands in your ranges use this action.",
+      "replaceBy": "Replace by:"
+    }
   }
 }

@@ -13,8 +13,9 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { usePlayersStore } from '@/stores/playersStore'
 import { useUpdateStore } from '@/stores/updateStore'
 import { useLocation } from 'react-router-dom'
-import { AUTO_IMPORT_ANCHOR } from './anchors'
+import { AUTO_IMPORT_ANCHOR, RANGES_ANCHOR } from './anchors'
 import AutoImportCard from './components/AutoImportCard'
+import RangesSettings from './components/RangesSettings'
 import SettingRow from './components/SettingRow'
 import { logError } from '@/utils/log'
 
@@ -212,6 +213,11 @@ export default function Settings() {
 
       <div id={AUTO_IMPORT_ANCHOR}>
         <AutoImportCard />
+      </div>
+
+      <div id={RANGES_ANCHOR}>
+        <h2 className="section-label mb-3">{t('ranges.settings.title')}</h2>
+        <RangesSettings />
       </div>
 
       <Card title={t('settings.database.multiple.title')} subtitle={t('settings.database.multiple.desc')}>

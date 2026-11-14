@@ -4,6 +4,7 @@
     "history": "Historique",
     "analysis": "Analyse",
     "hud": "HUD",
+    "ranges": "Mes ranges",
     "players": "Joueurs",
     "settings": "Paramètres"
   },
@@ -972,5 +973,207 @@
     "hint": "Après une mise à jour, la base peut être migrée ou ses statistiques recalculées. Cela peut prendre quelques minutes sur un gros historique et n'arrive qu'une fois.",
     "statistics": "Mise à jour des statistiques : {{done}} / {{total}} ({{percent}}%)",
     "failed_title": "Impossible d'ouvrir la base de données"
+  },
+  "ranges": {
+    "tabs": {
+      "editor": "Éditeur"
+    },
+    "colors": {
+      "hex": "Couleur hexadécimale"
+    },
+    "actions": {
+      "label": "Libellé",
+      "color": "Couleur de l'action",
+      "immediate": "Action immédiate",
+      "size": "Taille",
+      "unit": "Unité de taille",
+      "response": "Si relance",
+      "newTitle": "Nouvelle action"
+    },
+    "immediate": {
+      "fold": "Fold",
+      "check": "Check",
+      "call": "Call",
+      "limp": "Limp",
+      "raise": "Raise",
+      "iso": "Iso",
+      "threebet": "3-bet",
+      "allin": "All-in"
+    },
+    "units": {
+      "bb": "bb",
+      "x": "x la mise",
+      "pct_stack": "% du stack"
+    },
+    "responses": {
+      "none": "Pas de suite",
+      "fold": "Fold",
+      "call": "Call",
+      "allin": "All-in"
+    },
+    "responsesIf": {
+      "fold": "fold si relance",
+      "call": "call si relance",
+      "allin": "all-in si relance"
+    },
+    "verbs": {
+      "fold": "Fold",
+      "call": "Limp / Call",
+      "raise": "Raise",
+      "all-in": "All-in"
+    },
+    "format": {
+      "3max": "3 joueurs",
+      "hu": "Heads-up",
+      "3maxShort": "3 joueurs",
+      "huShort": "heads-up"
+    },
+    "opponent": {
+      "any": "Tous",
+      "reg": "Reg seulement",
+      "anyLower": "adversaire quelconque",
+      "regLower": "adversaire reg"
+    },
+    "wizard": {
+      "title": "Nouveau scénario",
+      "editTitle": "Modifier le scénario",
+      "create": "Créer ({{count}} ranges)",
+      "format": "Format",
+      "position": "Ta position",
+      "inFront": "Devant toi",
+      "firstToAct": "Tu parles en premier",
+      "raiseSize": "Taille de la relance de {{seat}} en bb",
+      "exists": "Ce scénario existe déjà :",
+      "open": "Ouvrir",
+      "opponent": "Adversaire",
+      "opponentHelp": "Utilisé quand l'adversaire est marqué reg dans Joueurs. Sinon, la version « Tous » sert.",
+      "depths": "Profondeurs (bb) · une range par profondeur",
+      "otherDepth": "+ autre",
+      "depthRequired": "Choisis au moins une profondeur.",
+      "start": "Point de départ",
+      "startEmpty": "Vide (tout dans la première action)",
+      "startCopy": "Copier un scénario existant :",
+      "name": "Nom",
+      "quiz": "Inclure dans le quiz et la révision"
+    },
+    "tree": {
+      "program": "Programme",
+      "allRanges": "Toutes mes ranges · {{count}} scénarios",
+      "newProgram": "+ Nouveau programme",
+      "editProgram": "Modifier le programme",
+      "empty": "Aucun scénario",
+      "studyOnly": "à regarder",
+      "newScenario": "+ Nouveau scénario",
+      "menu": {
+        "open": "Menu du scénario",
+        "edit": "Modifier",
+        "duplicate": "Dupliquer (autre adversaire)",
+        "addDepth": "Ajouter une profondeur",
+        "addToProgram": "Ajouter à un programme",
+        "delete": "Supprimer"
+      }
+    },
+    "actionsCard": {
+      "title": "Tes actions",
+      "combos": "combos · % des {{total}}",
+      "manage": "Gérer mes actions et couleurs →",
+      "newAction": "Nouvelle action"
+    },
+    "scenarioCard": {
+      "title": "Scénario",
+      "format": "Format",
+      "position": "Ta position",
+      "inFront": "Devant toi",
+      "opponent": "Adversaire",
+      "regFallback": "repli : « Tous » si aucun",
+      "depths": "Profondeurs",
+      "addDepth": "Ajouter une profondeur",
+      "quiz": "Quiz",
+      "included": "inclus",
+      "modify": "Modifier",
+      "removeDepth": "Retirer cette profondeur"
+    },
+    "fileCard": {
+      "title": "Fichier",
+      "help": "Sauvegarde ou partage tes ranges (format SpinTracker .json).",
+      "import": "Importer",
+      "export": "Exporter"
+    },
+    "import": {
+      "title": "Importer des ranges",
+      "actions": "Actions",
+      "spots": "Scénarios",
+      "scenarios": "Ranges",
+      "programs": "Programmes",
+      "warnings": "{{count}} éléments ignorés ou réparés",
+      "choose": "Remplacer supprime d’abord tes ranges actuelles. Fusionner les garde : les actions de même libellé sont réutilisées et les scénarios de même nom sont remplacés.",
+      "merge": "Fusionner",
+      "replace": "Remplacer mes ranges"
+    },
+    "program": {
+      "newTitle": "Nouveau programme",
+      "editTitle": "Modifier le programme",
+      "name": "Nom du programme",
+      "scenarios": "Scénarios du programme",
+      "up": "Monter",
+      "down": "Descendre"
+    },
+    "depth": {
+      "title": "Ajouter une profondeur (bb)",
+      "add": "Ajouter",
+      "copy": "Copier la range de"
+    },
+    "editor": {
+      "saved": "Range enregistrée",
+      "unsavedTitle": "Changements non enregistrés",
+      "unsavedDetail": "Les mains peintes de cette range ne sont pas enregistrées. Quitter sans enregistrer ?",
+      "discard": "Abandonner les changements",
+      "deleteTitle": "Supprimer {{name}} ?",
+      "deleteDetail": "{{count}} profondeurs et leurs ranges seront supprimées. Action irréversible.",
+      "removeDepthTitle": "Retirer {{depth}} bb ?",
+      "removeDepthDetail": "La range de cette profondeur sera supprimée. Action irréversible.",
+      "complete": "{{count}} / {{count}} mains · 0 en double",
+      "missing": "{{known}} / {{total}} mains · {{missing}} oubliées",
+      "modes": {
+        "brush": "Pinceau",
+        "rect": "Rectangle",
+        "picker": "Pipette"
+      },
+      "activeColor": "Couleur active :",
+      "copyFrom": "Copier depuis…",
+      "undo": "Annuler",
+      "redo": "Rétablir",
+      "gridLabel": "Range {{name}} à {{depth}} bb",
+      "note": "Clic-glisser pour peindre · Maj + clic : toute la ligne · les mains entourées de blanc ont été modifiées depuis la dernière sauvegarde.",
+      "save": "Enregistrer",
+      "revert": "Annuler les changements"
+    },
+    "empty": {
+      "title": "Construis tes ranges",
+      "body": "Choisis une situation, tes profondeurs et peins tes mains avec tes propres actions.",
+      "create": "Créer mon premier scénario",
+      "import": "Importer un fichier SpinTracker"
+    },
+    "settings": {
+      "title": "Mes ranges",
+      "saved": "Actions enregistrées",
+      "actionsTitle": "Mes actions et couleurs",
+      "actionsHelp": "Ces actions servent à toutes tes ranges.",
+      "drag": "Glisser pour réordonner",
+      "addAction": "Ajouter une action",
+      "depthsTitle": "Profondeurs proposées",
+      "depthsHelp": "Elles préremplissent seulement les choix ; un scénario peut avoir n’importe quelle profondeur.",
+      "removeDepth": "Retirer {{depth}} bb",
+      "addDepth": "Ajouter une profondeur",
+      "depthRule": "Entre deux profondeurs définies :",
+      "rules": {
+        "nearest": "La plus proche",
+        "below": "Celle en dessous"
+      },
+      "regNote": "Les variantes « Reg » utilisent les joueurs marqués reg dans Joueurs.",
+      "deleteTitle": "Supprimer {{label}} ?",
+      "deleteUsed": "{{count}} mains de tes ranges utilisent cette action.",
+      "replaceBy": "Remplacer par :"
+    }
   }
 }

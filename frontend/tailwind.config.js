@@ -8,6 +8,8 @@ export default {
     extend: {
       colors: {
         // Green accent from the redesign mockups (replaces the former blue primary).
+        // Deviation from the player's own range: amber, never red (red is for money lost).
+        deviation: '#f5c06b',
         primary: {
           50: '#e9fbf2',
           100: '#c6f4de',

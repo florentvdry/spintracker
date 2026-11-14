@@ -16,6 +16,7 @@ export default function TopNav({ children }: { children?: ReactNode }) {
     { name: t('navigation.analysis'), href: '/analysis' },
     { name: t('navigation.players'), href: '/players' },
     { name: t('navigation.hud'), href: '/hud' },
+    { name: t('navigation.ranges'), href: '/ranges' },
   ]
 
   return (

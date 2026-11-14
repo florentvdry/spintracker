@@ -147,6 +147,25 @@ export const ipcService = {
   // Analysis & ranges
   getRangeHeatmap: (filters: Json = {}) => backend('POST', '/db/range-heatmap', filters),
   getRangeBreakdown: (filters: Json = {}) => backend('POST', '/analysis/range-breakdown', filters),
+
+  // The player's own ranges
+  getRangesTree: () => backend('GET', '/ranges/tree'),
+  saveRangeSpot: (spot: Json) => backend('POST', '/ranges/spot', spot),
+  deleteRangeSpot: (id: number) => backend('DELETE', `/ranges/spot/${id}`),
+  duplicateRangeSpot: (id: number, opponent?: string) => backend('POST', `/ranges/spot/${id}/duplicate`, { opponent }),
+  addRangeDepth: (spotId: number, stackBb: number, start: Json) => backend('POST', `/ranges/spot/${spotId}/depth`, { stackBb, start }),
+  getRangeScenario: (id: number) => backend('GET', `/ranges/scenario/${id}`),
+  removeRangeDepth: (scenarioId: number) => backend('DELETE', `/ranges/scenario/${scenarioId}`),
+  saveRangeHands: (scenarioId: number, hands: Record<string, number>) => backend('POST', `/ranges/scenario/${scenarioId}/hands`, { hands }),
+  getRangeActions: () => backend('GET', '/ranges/actions'),
+  saveRangeActions: (actions: Json[]) => backend('POST', '/ranges/actions', { actions }),
+  deleteRangeAction: (id: number, replaceWith?: number | null) => backend('POST', `/ranges/actions/${id}/delete`, { replaceWith: replaceWith ?? null }),
+  saveRangeProgram: (program: Json) => backend('POST', '/ranges/programs', program),
+  deleteRangeProgram: (id: number) => backend('DELETE', `/ranges/programs/${id}`),
+  getRangeSettings: () => backend('GET', '/ranges/settings'),
+  saveRangeSettings: (patch: Json) => backend('POST', '/ranges/settings', patch),
+  exportRanges: () => backend('GET', '/ranges/export'),
+  importRanges: (content: string, mode: 'replace' | 'merge', dryRun = false) => backend('POST', '/ranges/import', { content, mode, dryRun }),
   calculateEquity: (params: Json) => backend('POST', '/equity', params),
 
   // Databases
