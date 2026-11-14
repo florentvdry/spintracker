@@ -61,7 +61,7 @@ fn load_book(conn: &Connection) -> Result<RangeBook> {
 }
 
 /// Stacks of every player in the given hands: hand id -> (player, stack).
-fn stacks_of(conn: &Connection, ids: &[&str]) -> Result<HashMap<String, Vec<(String, f64)>>> {
+pub(crate) fn stacks_of(conn: &Connection, ids: &[&str]) -> Result<HashMap<String, Vec<(String, f64)>>> {
     let mut out: HashMap<String, Vec<(String, f64)>> = HashMap::new();
     for chunk in ids.chunks(STACK_CHUNK) {
         let marks = vec!["?"; chunk.len()].join(",");

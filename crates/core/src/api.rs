@@ -30,6 +30,7 @@ use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
+use crate::services::training;
 use crate::services::ranges_io;
 use crate::services::user_ranges::{self as ranges, RangeError};
 use crate::services::hud::{HudFigureHandsRequest, HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
@@ -602,6 +603,22 @@ impl Backend {
                         Some(detail) => Response::data(detail),
                         None => return Ok(None),
                     }
+                }
+                ("POST", ["training", "question"]) => {
+                    let mut request: training::QuestionRequest = r.body_as()?;
+                    // The seed only varies the draw; tests pass their own.
+                    request.seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(1, |d| d.as_nanos() as u64);
+                    if request.source == "deviation" {
+                        if let Some(hero) = request.hero_name.as_deref() {
+                            range_adherence::ensure_computed(&mut conn, hero)?;
+                        }
+                    }
+                    Response::data(training::next_question(&conn, &request)?.unwrap_or(Value::Null))
+                }
+                ("POST", ["training", "answer"]) => {
+                    let request: training::AnswerRequest = r.body_as()?;
+                    let now = chrono::Utc::now().format("%Y-%m-%dT%H:%M:%S").to_string();
+                    Response::data(training::check_answer(&conn, &request, &now)?)
                 }
                 ("GET", ["export"]) => Response::data(ranges_io::export(&conn)?),
                 ("POST", ["import"]) => {

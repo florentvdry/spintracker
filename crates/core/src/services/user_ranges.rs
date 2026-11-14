@@ -381,6 +381,7 @@ pub fn save_spot(conn: &mut Connection, input: &SpotInput) -> Res<i64> {
 pub(crate) fn purge_scenarios(tx: &Transaction, scenario_ids: &[i64]) -> Res<()> {
     for id in scenario_ids {
         tx.execute("DELETE FROM range_hands WHERE scenario_id = ?1", [id])?;
+        tx.execute("DELETE FROM training_attempts WHERE scenario_id = ?1", [id])?;
         tx.execute("DELETE FROM range_scenarios WHERE id = ?1", [id])?;
     }
     Ok(())
