@@ -29,6 +29,7 @@ use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
+use crate::services::user_ranges::{self as ranges, RangeError};
 use crate::services::hud::{HudFigureHandsRequest, HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
 use crate::services::Importer;
 use crate::stats::store;
@@ -431,6 +432,9 @@ impl Backend {
             ("POST", ["equity"]) => self.equity(r),
             ("POST", ["equity", "batch"]) => self.equity_batch(r),
 
+            // --- The player's own ranges
+            (_, ["ranges", rest @ ..]) => return self.ranges(r, rest),
+
             // --- Databases
             (_, ["api", "databases", rest @ ..]) => return self.databases(r, rest),
 
@@ -507,6 +511,88 @@ impl Backend {
             .collect();
         let processed = results.len();
         Response::ok(json!({ "success": true, "data": results, "processed": processed }))
+    }
+
+    /// Routes of the player's own ranges (`ranges/...`).
+    fn ranges(&self, r: &Request, rest: &[&str]) -> Result<Option<Response>> {
+        use std::collections::BTreeMap;
+        let result: ranges::Res<Option<Response>> = (|| {
+            let mut conn = self.db.conn()?;
+            let id = |s: &str| s.parse::<i64>().map_err(|_| RangeError::Invalid(format!("bad id: {s}")));
+            let body = |name: &str| -> ranges::Res<Value> { Ok(r.body.as_ref().and_then(|b| b.get(name)).cloned().unwrap_or(Value::Null)) };
+            let response = match (r.method, rest) {
+                ("GET", ["tree"]) => Response::data(ranges::tree(&conn)?),
+                ("POST", ["spot"]) => {
+                    let input: ranges::SpotInput = r.body_as()?;
+                    let spot = ranges::save_spot(&mut conn, &input)?;
+                    self.db.bump_data_version();
+                    Response::data(json!({ "id": spot }))
+                }
+                ("DELETE", ["spot", spot]) => {
+                    ranges::delete_spot(&mut conn, id(spot)?)?;
+                    self.db.bump_data_version();
+                    Response::ok(json!({ "success": true }))
+                }
+                ("POST", ["spot", spot, "duplicate"]) => {
+                    let copy = ranges::duplicate_spot(&mut conn, id(spot)?, r.body_str("opponent").as_deref())?;
+                    Response::data(json!({ "id": copy }))
+                }
+                ("POST", ["spot", spot, "depth"]) => {
+                    let stack = body("stackBb")?.as_f64().ok_or_else(|| RangeError::Invalid("stackBb is required".into()))?;
+                    let start: ranges::StartPoint = serde_json::from_value(body("start")?).unwrap_or_default();
+                    let scenario = ranges::add_depth(&mut conn, id(spot)?, stack, &start)?;
+                    Response::data(json!({ "id": scenario }))
+                }
+                ("GET", ["scenario", scenario]) => Response::data(ranges::scenario(&conn, id(scenario)?)?),
+                ("DELETE", ["scenario", scenario]) => {
+                    ranges::remove_depth(&mut conn, id(scenario)?)?;
+                    self.db.bump_data_version();
+                    Response::ok(json!({ "success": true }))
+                }
+                ("POST", ["scenario", scenario, "hands"]) => {
+                    let hands: BTreeMap<String, i64> = serde_json::from_value(body("hands")?)?;
+                    ranges::save_hands(&mut conn, id(scenario)?, &hands)?;
+                    self.db.bump_data_version();
+                    Response::ok(json!({ "success": true }))
+                }
+                ("GET", ["actions"]) => Response::data(ranges::list_actions(&conn)?),
+                ("POST", ["actions"]) => {
+                    let actions: Vec<ranges::ActionInput> = serde_json::from_value(body("actions")?)?;
+                    Response::data(ranges::save_actions(&mut conn, &actions)?)
+                }
+                ("POST", ["actions", action, "delete"]) => {
+                    ranges::delete_action(&mut conn, id(action)?, body("replaceWith")?.as_i64())?;
+                    self.db.bump_data_version();
+                    Response::ok(json!({ "success": true }))
+                }
+                ("GET", ["programs"]) => Response::data(ranges::programs(&conn)?),
+                ("POST", ["programs"]) => {
+                    let input: ranges::ProgramInput = r.body_as()?;
+                    Response::data(json!({ "id": ranges::save_program(&mut conn, &input)? }))
+                }
+                ("DELETE", ["programs", program]) => {
+                    ranges::delete_program(&mut conn, id(program)?)?;
+                    Response::ok(json!({ "success": true }))
+                }
+                ("GET", ["settings"]) => Response::data(ranges::settings(&conn)?),
+                ("POST", ["settings"]) => {
+                    let updated = ranges::update_settings(&mut conn, r.body.as_ref().unwrap_or(&Value::Null))?;
+                    self.db.bump_data_version();
+                    Response::data(updated)
+                }
+                _ => return Ok(None),
+            };
+            Ok(Some(response))
+        })();
+        match result {
+            Ok(response) => Ok(response),
+            Err(RangeError::Invalid(message)) => Ok(Some(Response::failure(400, &message))),
+            Err(RangeError::NotFound) => Ok(Some(Response::failure(404, "Not found"))),
+            Err(RangeError::Conflict { message, existing_id }) => {
+                Ok(Some(Response { status: 409, body: json!({ "success": false, "error": message, "existingId": existing_id }) }))
+            }
+            Err(RangeError::Other(e)) => Err(e),
+        }
     }
 
     fn databases(&self, r: &Request, rest: &[&str]) -> Result<Option<Response>> {

@@ -46,6 +46,7 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611100001, "RecomputeInPositionStats", "202611100001_recompute_in_position_stats.sql"),
     migration!(202611110001, "AddBuyInIndex", "202611110001_add_buy_in_index.sql"),
     migration!(202611120001, "AddHandsCoveringIndex", "202611120001_add_hands_covering_index.sql"),
+    migration!(202611200001, "AddUserRanges", "202611200001_user_ranges.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -144,7 +145,7 @@ mod tests {
         assert_eq!(run(&mut conn).unwrap(), MIGRATIONS.len());
 
         let t = names(&conn, "table");
-        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes", "custom_stats", "custom_stat_hits"] {
+        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes", "custom_stats", "custom_stat_hits", "range_actions", "range_spots", "range_scenarios", "range_hands", "range_programs", "range_program_spots", "range_settings"] {
             assert!(t.iter().any(|n| n == expected), "table {expected} missing");
         }
         assert!(!t.iter().any(|n| n == "config"), "config must be dropped");
@@ -196,6 +197,13 @@ mod tests {
              DROP TABLE player_notes;
              DROP TABLE custom_stats;
              DROP TABLE custom_stat_hits;
+             DROP TABLE range_actions;
+             DROP TABLE range_spots;
+             DROP TABLE range_scenarios;
+             DROP TABLE range_hands;
+             DROP TABLE range_programs;
+             DROP TABLE range_program_spots;
+             DROP TABLE range_settings;
              ALTER TABLE players DROP COLUMN alias_id;
              ALTER TABLE players DROP COLUMN room;
              ALTER TABLE hands DROP COLUMN position;
@@ -216,7 +224,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 14);
+        assert_eq!(run(&mut conn).unwrap(), 15);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))

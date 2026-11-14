@@ -9,3 +9,4 @@ pub mod evaluator;
 pub mod hand_state;
 pub mod hand_summary;
 pub mod preflop_line;
+pub mod range_scenarios;
