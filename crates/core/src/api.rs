@@ -30,6 +30,7 @@ use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
+use crate::services::review;
 use crate::services::training;
 use crate::services::ranges_io;
 use crate::services::user_ranges::{self as ranges, RangeError};
@@ -607,6 +608,7 @@ impl Backend {
                 ("POST", ["training", "question"]) => {
                     let mut request: training::QuestionRequest = r.body_as()?;
                     // The seed only varies the draw; tests pass their own.
+                    request.today = chrono::Local::now().format("%Y-%m-%d").to_string();
                     request.seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(1, |d| d.as_nanos() as u64);
                     if request.source == "deviation" {
                         if let Some(hero) = request.hero_name.as_deref() {
@@ -617,8 +619,18 @@ impl Backend {
                 }
                 ("POST", ["training", "answer"]) => {
                     let request: training::AnswerRequest = r.body_as()?;
-                    let now = chrono::Utc::now().format("%Y-%m-%dT%H:%M:%S").to_string();
-                    Response::data(training::check_answer(&conn, &request, &now)?)
+                    let now = chrono::Local::now().naive_local();
+                    Response::data(training::check_answer(&conn, &request, now.date(), &now.format("%Y-%m-%dT%H:%M:%S").to_string())?)
+                }
+                ("GET", ["review"]) => {
+                    let today = chrono::Local::now().date_naive();
+                    Response::data(review::overview(&conn, today, r.query_str("heroName").as_deref())?)
+                }
+                ("POST", ["review", "answer"]) => {
+                    let (scenario, hand, correct) = (r.body_field::<i64>("scenarioId")?, r.body_str("handClass").unwrap_or_default(), r.body_field::<bool>("correct")?);
+                    let now = chrono::Local::now().naive_local();
+                    let (box_number, due) = review::record(&conn, scenario, &hand, correct, now.date(), &now.format("%Y-%m-%dT%H:%M:%S").to_string())?;
+                    Response::data(json!({ "box": box_number, "dueOn": due.format("%Y-%m-%d").to_string() }))
                 }
                 ("GET", ["export"]) => Response::data(ranges_io::export(&conn)?),
                 ("POST", ["import"]) => {

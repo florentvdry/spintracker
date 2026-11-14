@@ -49,6 +49,7 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611200001, "AddUserRanges", "202611200001_user_ranges.sql"),
     migration!(202611200002, "AddHandRangeChecks", "202611200002_hand_range_checks.sql"),
     migration!(202611200003, "AddTraining", "202611200003_training.sql"),
+    migration!(202611200004, "AddTrainingCards", "202611200004_training_cards.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -147,7 +148,7 @@ mod tests {
         assert_eq!(run(&mut conn).unwrap(), MIGRATIONS.len());
 
         let t = names(&conn, "table");
-        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes", "custom_stats", "custom_stat_hits", "range_actions", "range_spots", "range_scenarios", "range_hands", "range_programs", "range_program_spots", "range_settings", "hand_range_checks", "training_attempts"] {
+        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes", "custom_stats", "custom_stat_hits", "range_actions", "range_spots", "range_scenarios", "range_hands", "range_programs", "range_program_spots", "range_settings", "hand_range_checks", "training_attempts", "training_cards"] {
             assert!(t.iter().any(|n| n == expected), "table {expected} missing");
         }
         assert!(!t.iter().any(|n| n == "config"), "config must be dropped");
@@ -208,6 +209,7 @@ mod tests {
              DROP TABLE range_settings;
              DROP TABLE hand_range_checks;
              DROP TABLE training_attempts;
+             DROP TABLE training_cards;
              ALTER TABLE players DROP COLUMN alias_id;
              ALTER TABLE players DROP COLUMN room;
              ALTER TABLE hands DROP COLUMN position;
@@ -228,7 +230,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 17);
+        assert_eq!(run(&mut conn).unwrap(), 18);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))

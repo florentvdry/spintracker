@@ -15,12 +15,15 @@ use crate::engines::range_scenarios::hand_classes;
 use crate::repos::hands_query::hero_resolution_sql;
 use crate::services::analysis::{hands_for_analysis, AnalysisFilters, AnalysisHand};
 use crate::services::range_adherence::stacks_of;
+use crate::services::review;
 use crate::services::user_ranges::{self, RangeError, Res};
 use crate::util::eq_ic;
 
 const SUITS: [char; 4] = ['s', 'h', 'd', 'c'];
 /// With the borderline priority on, one draw in this many is a borderline hand.
 const BORDERLINE_ONE_IN: usize = 2;
+/// How many of the most-missed hands the "missed" source draws from.
+const HARDEST_POOL: i64 = 5;
 
 /// A small deterministic generator: the caller owns the seed, so a draw can be replayed in tests.
 pub struct Rng(u64);
@@ -46,13 +49,15 @@ impl Rng {
 #[derive(Debug, Clone, Default, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct QuestionRequest {
-    /// "scenario", "program" or "deviation".
+    /// "scenario", "program", "deviation", "review" (the cards due today, then new ones) or "missed".
     pub source: String,
     pub spot_id: Option<i64>,
     pub program_id: Option<i64>,
     /// Restricts the deviation source to one range.
     pub scenario_id: Option<i64>,
     pub hero_name: Option<String>,
+    /// Today as "YYYY-MM-DD", for the review sources.
+    pub today: String,
     /// Overrides the stored setting.
     pub prioritize_borderline: Option<bool>,
     pub seed: u64,
@@ -226,6 +231,19 @@ pub fn next_question(conn: &Connection, request: &QuestionRequest) -> Res<Option
     if request.source == "deviation" {
         return deviation_question(conn, request, &palette, &mut rng);
     }
+    if request.source == "review" {
+        let today = review::parse_day(&request.today).ok_or_else(|| RangeError::Invalid("today is required".into()))?;
+        let Some((scenario_id, hand)) = review::next_card(conn, today)? else { return Ok(None) };
+        return question_for(conn, &palette, scenario_id, Some(&hand), false, "review", &mut rng).map(Some);
+    }
+    if request.source == "missed" {
+        let missed = review::hardest_hands(conn, HARDEST_POOL)?;
+        if missed.is_empty() {
+            return Ok(None);
+        }
+        let (scenario_id, hand, _, _) = &missed[rng.below(missed.len())];
+        return question_for(conn, &palette, *scenario_id, Some(hand), false, "missed", &mut rng).map(Some);
+    }
 
     let spots: Vec<i64> = match request.source.as_str() {
         "scenario" => request.spot_id.into_iter().collect(),
@@ -238,12 +256,18 @@ pub fn next_question(conn: &Connection, request: &QuestionRequest) -> Res<Option
         other => return Err(RangeError::Invalid(format!("unknown source: {other}"))),
     };
     let Some(scenario_id) = pick_scenario(conn, &spots, &mut rng)? else { return Ok(None) };
+    let borderline = prioritize(conn, request)?;
+    question_for(conn, &palette, scenario_id, None, borderline, &request.source, &mut rng).map(Some)
+}
+
+/// A question about one hand of a scenario; without a hand one is drawn.
+fn question_for(conn: &Connection, palette: &Palette, scenario_id: i64, hand: Option<&str>, borderline_first: bool, source: &str, rng: &mut Rng) -> Res<Value> {
     let info = scenario_info(conn, scenario_id)?.ok_or(RangeError::NotFound)?;
     let hands = range_of(conn, scenario_id)?;
-    let hand = pick_hand(&hands, prioritize(conn, request)?, &mut rng);
+    let hand = hand.map_or_else(|| pick_hand(&hands, borderline_first, rng), str::to_string);
     let table = build_table(&info.format, &info.hero_position, &actions_of_line(&info.line, &info.line_sizes), &HashMap::new(), info.stack_bb);
-    let cards = cards_of(&hand, &mut rng);
-    Ok(Some(question_json(&info, &hands, &palette, &hand, cards, &table, &request.source, None)))
+    let cards = cards_of(&hand, rng);
+    Ok(question_json(&info, &hands, palette, &hand, cards, &table, source, None))
 }
 
 /// A hand where the hero left their range, on the real table.
@@ -299,7 +323,7 @@ fn deviation_question(conn: &Connection, request: &QuestionRequest, palette: &Pa
 
 /// Checks an answer against the range and records the attempt. A compound answer (action, then
 /// answer to a raise) is right only when both parts are.
-pub fn check_answer(conn: &Connection, request: &AnswerRequest, now: &str) -> Res<Value> {
+pub fn check_answer(conn: &Connection, request: &AnswerRequest, today: chrono::NaiveDate, now: &str) -> Res<Value> {
     let hands = range_of(conn, request.scenario_id)?;
     let Some(expected_id) = hands.get(&request.hand_class).copied() else { return Err(RangeError::NotFound) };
     let palette = load_palette(conn)?;
@@ -318,7 +342,10 @@ pub fn check_answer(conn: &Connection, request: &AnswerRequest, now: &str) -> Re
         "INSERT INTO training_attempts (scenario_id, hand_class, source, hand_id, answer_immediate, answer_response, correct, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
         params![request.scenario_id, request.hand_class, request.source, request.hand_id, request.answer_action_id.to_string(), request.answer_response, correct, now],
     )?;
+    // The answer also moves the hand's review card.
+    let (box_number, due) = review::record(conn, request.scenario_id, &request.hand_class, correct, today, now)?;
     Ok(json!({
+        "box": box_number, "dueOn": due.format("%Y-%m-%d").to_string(),
         "correct": correct, "immediateCorrect": immediate_correct, "responseCorrect": response_correct,
         "expectedActionId": expected_id, "expectedResponse": planned, "answeredActionId": request.answer_action_id,
         "handClass": request.hand_class, "scenarioId": request.scenario_id, "hands": hands,
@@ -428,6 +455,7 @@ mod tests {
         let (_, scenario) = spot(&mut conn, false, "btn:fold,sb:call", "BB");
         let (iso, check) = iso_and_check(&mut conn);
         save_hands(&mut conn, scenario, &BTreeMap::from([("AKo".to_string(), iso)])).unwrap();
+        let date = chrono::NaiveDate::from_ymd_opt(2026, 11, 14).unwrap();
         let answer = |action: i64, response: Option<&str>| AnswerRequest {
             scenario_id: scenario,
             hand_class: "AKo".into(),
@@ -436,13 +464,16 @@ mod tests {
             answer_response: response.map(str::to_string),
             ..Default::default()
         };
-        let right = check_answer(&conn, &answer(iso, Some("fold")), "2026-11-14T10:00:00").unwrap();
+        let right = check_answer(&conn, &answer(iso, Some("fold")), date, "2026-11-14T10:00:00").unwrap();
         assert_eq!(right["correct"], true);
-        let half = check_answer(&conn, &answer(iso, Some("call")), "2026-11-14T10:00:01").unwrap();
+        let half = check_answer(&conn, &answer(iso, Some("call")), date, "2026-11-14T10:00:01").unwrap();
         assert_eq!((half["correct"].clone(), half["immediateCorrect"].clone(), half["responseCorrect"].clone()), (json!(false), json!(true), json!(false)));
-        let wrong = check_answer(&conn, &answer(check, None), "2026-11-14T10:00:02").unwrap();
+        let wrong = check_answer(&conn, &answer(check, None), date, "2026-11-14T10:00:02").unwrap();
         assert_eq!((wrong["correct"].clone(), wrong["immediateCorrect"].clone(), wrong["responseCorrect"].clone()), (json!(false), json!(false), Value::Null));
         assert_eq!(wrong["expectedActionId"], iso);
+        assert_eq!((wrong["box"].clone(), wrong["dueOn"].clone()), (json!(1), json!("2026-11-15")), "a miss goes back to box 1 for tomorrow");
+        let review = next_question(&conn, &QuestionRequest { source: "review".into(), today: "2026-11-15".into(), seed: 1, ..Default::default() }).unwrap().unwrap();
+        assert_eq!((review["handClass"].clone(), review["source"].clone()), (json!("AKo"), json!("review")), "the missed hand is the first card due tomorrow");
         assert_eq!(conn.query_row("SELECT COUNT(*) FROM training_attempts WHERE correct = 0", [], |r| r.get::<_, i64>(0)).unwrap(), 2);
         assert!(right["borderline"].as_bool().unwrap(), "AKo has neighbours on another action");
     }
