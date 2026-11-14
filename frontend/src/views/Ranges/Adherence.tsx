@@ -7,6 +7,7 @@ import DeviationBadge from '@/components/ranges/DeviationBadge'
 import RangeMatrix from '@/components/ranges/RangeMatrix'
 import { useFilterStore } from '@/stores/filterStore'
 import { useRangeAdherenceStore } from '@/stores/rangeAdherenceStore'
+import { useTrainingStore } from '@/stores/trainingStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import { useUserRangesStore } from '@/stores/userRangesStore'
 import {
@@ -248,6 +249,17 @@ export default function Adherence() {
               <span className="text-xs text-gray-400">{t('ranges.adherence.latestCount', { count: detail.deviationTotal, period: t(`ranges.adherence.periods.${period}`) })}</span>
             </div>
             {detail.deviations.length === 0 ? <p className="text-sm text-gray-400">{t('ranges.adherence.noDeviation')}</p> : <ul className="flex flex-col gap-2">{detail.deviations.map(deviationCard)}</ul>}
+            {detail.deviationTotal > 0 && (
+              <button
+                className="btn-primary w-full"
+                onClick={() => {
+                  useTrainingStore.getState().setSource('deviation', { scenarioId: detail.scenarioId })
+                  navigate('/ranges?tab=training')
+                }}
+              >
+                {t('ranges.adherence.train', { count: detail.deviationTotal })}
+              </button>
+            )}
           </section>
         </div>
       )}

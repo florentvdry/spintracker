@@ -978,7 +978,8 @@
   "ranges": {
     "tabs": {
       "editor": "Editor",
-      "adherence": "Range adherence"
+      "adherence": "Range adherence",
+      "training": "Training"
     },
     "colors": {
       "hex": "Hex colour"
@@ -1220,13 +1221,58 @@
       "latest": "Latest deviations",
       "latestCount": "{{count}} over {{period}}",
       "noDeviation": "No deviation over this period.",
-      "replay": "Replay →"
+      "replay": "Replay →",
+      "train": "Train on these {{count}} deviations"
     },
     "replayer": {
       "match": "Follows your range",
       "deviation": "Deviation from your range",
       "noRange": "No range for this situation",
       "scenario": "Scenario \"{{name}} · {{depth}} bb\", used for {{stack}} bb."
+    },
+    "training": {
+      "sources": {
+        "scenario": "One scenario",
+        "program": "Program",
+        "deviation": "My deviations · {{count}}"
+      },
+      "scenario": "Scenario",
+      "program": "Program",
+      "borderline": "Prioritise borderline hands",
+      "question": "Question {{current}} / {{total}}",
+      "score": "Score {{right}} / {{total}}",
+      "nothing": "Nothing to ask here: pick a scenario or a program that is not marked \"to study\".",
+      "noDeviation": "No deviation to practise on. Play some hands against your ranges first.",
+      "whatDoYouDo": "What do you do?",
+      "yourAction": "1. Your action",
+      "ifRaised": "2. If {{seat}} raises",
+      "noFollowUp": "no follow-up planned for this action",
+      "yourAnswer": "· your answer",
+      "yourRangeTag": "· your range",
+      "shortcuts": "Shortcuts: 1 to 9 for the action, C / F / A for the answer, Space for the next question.",
+      "right": "Right",
+      "wrong": "Missed",
+      "rightShort": "right",
+      "wrongShort": "missed",
+      "rangeSays": "Your range says",
+      "youAnswered": ", you answered",
+      "responseWrong": "The action was right, but your range answers a raise with {{response}}.",
+      "borderlineNote": "Borderline hand, next to another action: {{neighbor}}.",
+      "gridLabel": "Your range, hand {{hand}} highlighted",
+      "openRange": "Open the range",
+      "nextQuestion": "Next",
+      "waiting": "Pick an action. The correction appears here.",
+      "thisSession": "This session",
+      "table": {
+        "fold": "Fold",
+        "limp": "Limp",
+        "call": "Call",
+        "raise": "Raise",
+        "allin": "All-in",
+        "pot": "Pot",
+        "you": "You",
+        "label": "Table of {{name}}"
+      }
     }
   }
 }

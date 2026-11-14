@@ -5,8 +5,9 @@ import clsx from 'clsx'
 import { useUserRangesStore } from '@/stores/userRangesStore'
 import Adherence from './Adherence'
 import Editor from './Editor'
+import Training from './Training'
 
-const TABS = ['editor', 'adherence'] as const
+const TABS = ['editor', 'adherence', 'training'] as const
 type RangesTab = (typeof TABS)[number]
 
 const isTab = (value: string | null): value is RangesTab => TABS.some((tab) => tab === value)
@@ -17,6 +18,7 @@ export default function Ranges() {
   const [params, setParams] = useSearchParams()
   const load = useUserRangesStore((s) => s.load)
   const loaded = useUserRangesStore((s) => s.loaded)
+  const select = useUserRangesStore((s) => s.select)
   const requested = params.get('tab')
   const active: RangesTab = isTab(requested) ? requested : 'editor'
 
@@ -45,6 +47,14 @@ export default function Ranges() {
       {loaded ? <>
           {active === 'editor' && <Editor />}
           {active === 'adherence' && <Adherence />}
+          {active === 'training' && (
+            <Training
+              onOpenRange={(spotId, scenarioId) => {
+                select(spotId, scenarioId)
+                setParams({ tab: 'editor' }, { replace: true })
+              }}
+            />
+          )}
         </> : <div className="spinner mx-auto mt-24" />}
     </div>
   )

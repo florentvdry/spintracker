@@ -978,7 +978,8 @@
   "ranges": {
     "tabs": {
       "editor": "Éditeur",
-      "adherence": "Respect de ta range"
+      "adherence": "Respect de ta range",
+      "training": "Training"
     },
     "colors": {
       "hex": "Couleur hexadécimale"
@@ -1220,13 +1221,58 @@
       "latest": "Derniers écarts",
       "latestCount": "{{count}} sur {{period}}",
       "noDeviation": "Aucun écart sur cette période.",
-      "replay": "Replayer →"
+      "replay": "Replayer →",
+      "train": "S’entraîner sur ces {{count}} écarts"
     },
     "replayer": {
       "match": "Conforme à ta range",
       "deviation": "Écart à ta range",
       "noRange": "Pas de range pour cette situation",
       "scenario": "Scénario « {{name}} · {{depth}} bb », utilisé pour {{stack}} bb."
+    },
+    "training": {
+      "sources": {
+        "scenario": "Un scénario",
+        "program": "Programme",
+        "deviation": "Mes écarts · {{count}}"
+      },
+      "scenario": "Scénario",
+      "program": "Programme",
+      "borderline": "Priorité aux mains limites",
+      "question": "Question {{current}} / {{total}}",
+      "score": "Score {{right}} / {{total}}",
+      "nothing": "Rien à demander ici : choisis un scénario ou un programme qui n’est pas « à regarder ».",
+      "noDeviation": "Aucun écart sur lequel t’entraîner. Joue d’abord des mains face à tes ranges.",
+      "whatDoYouDo": "Que fais-tu ?",
+      "yourAction": "1. Ton action",
+      "ifRaised": "2. Si {{seat}} relance",
+      "noFollowUp": "pas de suite prévue pour cette action",
+      "yourAnswer": "· ta réponse",
+      "yourRangeTag": "· ta range",
+      "shortcuts": "Raccourcis : 1 à 9 pour l’action, C / F / A pour la réponse, Espace pour la suivante.",
+      "right": "Juste",
+      "wrong": "Raté",
+      "rightShort": "juste",
+      "wrongShort": "raté",
+      "rangeSays": "Ta range dit",
+      "youAnswered": ", tu as répondu",
+      "responseWrong": "L’action était bonne, mais ta range répond à une relance par {{response}}.",
+      "borderlineNote": "Main limite, voisine avec une autre action : {{neighbor}}.",
+      "gridLabel": "Ta range, main {{hand}} en évidence",
+      "openRange": "Ouvrir la range",
+      "nextQuestion": "Suivante",
+      "waiting": "Choisis une action. La correction s’affiche ici.",
+      "thisSession": "Cette session",
+      "table": {
+        "fold": "Fold",
+        "limp": "Limp",
+        "call": "Call",
+        "raise": "Raise",
+        "allin": "All-in",
+        "pot": "Pot",
+        "you": "Toi",
+        "label": "Table de {{name}}"
+      }
     }
   }
 }
