@@ -167,6 +167,7 @@ export const ipcService = {
   getRangeAdherence: (heroName: string, from?: string | null, to?: string | null) => backend('GET', `/ranges/adherence${query({ heroName, from, to })}`),
   getRangeAdherenceScenario: (scenarioId: number, heroName: string, from?: string | null, to?: string | null) =>
     backend('GET', `/ranges/adherence/${scenarioId}${query({ heroName, from, to })}`),
+  getReview: (heroName?: string | null) => backend('GET', `/ranges/review${query({ heroName })}`),
   getQuizQuestion: (body: Json) => backend('POST', '/ranges/training/question', body),
   checkQuizAnswer: (body: Json) => backend('POST', '/ranges/training/answer', body),
   exportRanges: () => backend('GET', '/ranges/export'),

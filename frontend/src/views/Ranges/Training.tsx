@@ -12,6 +12,7 @@ import { formatDepth, textColor } from '@/utils/ranges'
 import { choiceForKey, needsResponse, responseForKey, responseOptions, score, SESSION_LENGTH, wrongPart, type QuizSource } from '@/utils/training'
 
 const SOURCES: QuizSource[] = ['scenario', 'program', 'deviation']
+const REVIEW_SOURCES: QuizSource[] = ['review', 'missed']
 
 interface TrainingProps {
   /** Opens a range in the editor. */
@@ -21,10 +22,16 @@ interface TrainingProps {
 export default function Training({ onOpenRange }: TrainingProps) {
   const { t } = useTranslation()
   const heroName = useFilterStore((s) => s.heroName)
-  const { spots, programs, actions } = useUserRangesStore()
+  const { spots, programs, actions, settings, saveSettings } = useUserRangesStore()
   const store = useTrainingStore()
   const { source, spotId, programId, deviationScenarioId, question, verdict, pickedActionId, pickedResponse, session, answered, loading, empty } = store
   const [deviationCount, setDeviationCount] = useState<number | null>(null)
+
+  // The checkbox starts from the stored setting.
+  useEffect(() => {
+    store.setPrioritizeBorderline(settings.prioritizeBorderline)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.prioritizeBorderline])
 
   const quizSpots = useMemo(() => spots.filter((s) => !s.studyOnly), [spots])
 
@@ -119,6 +126,7 @@ export default function Training({ onOpenRange }: TrainingProps) {
             </button>
           ))}
         </div>
+        {REVIEW_SOURCES.includes(source) && <span className="rounded-full bg-primary-500/15 px-3 py-1 text-xs font-medium text-primary-400">{t(`ranges.training.sources.${source}`)}</span>}
         {source === 'scenario' && (
           <select className="select w-64" aria-label={t('ranges.training.scenario')} value={spotId ?? ''} onChange={(e) => store.setSource('scenario', { spotId: Number(e.target.value) })}>
             {quizSpots.map((s) => (
@@ -134,7 +142,10 @@ export default function Training({ onOpenRange }: TrainingProps) {
           </select>
         )}
         <label className="flex items-center gap-2 text-[13px] text-gray-100">
-          <input type="checkbox" checked={store.prioritizeBorderline} onChange={(e) => store.setPrioritizeBorderline(e.target.checked)} />
+          <input type="checkbox" checked={store.prioritizeBorderline} onChange={(e) => {
+              store.setPrioritizeBorderline(e.target.checked)
+              void saveSettings({ prioritizeBorderline: e.target.checked })
+            }} />
           {t('ranges.training.borderline')}
         </label>
         <div className="ml-auto flex items-center gap-3 text-[13px] text-gray-400">
@@ -235,6 +246,7 @@ export default function Training({ onOpenRange }: TrainingProps) {
                     {t('ranges.training.rangeSays')} {<ActionChip action={expected} />}.
                   </p>
                 )}
+                {!verdict.correct && <p className="text-sm text-gray-400">{t('ranges.training.backTomorrow')}</p>}
                 {verdict.borderline && verdict.neighbor && <p className="text-sm text-gray-400">{t('ranges.training.borderlineNote', { neighbor: verdict.neighbor })}</p>}
                 <RangeMatrix size="sm" cells={matrix} label={t('ranges.training.gridLabel', { hand: verdict.handClass })} />
                 <div className="flex gap-2">
@@ -263,6 +275,7 @@ export default function Training({ onOpenRange }: TrainingProps) {
                   </li>
                 ))}
               </ul>
+              <p className="mt-3 text-xs text-gray-500">{t('ranges.training.sessionNote')}</p>
             </div>
           </div>
         </div>

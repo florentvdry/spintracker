@@ -42,6 +42,7 @@ It is a free alternative to paid poker trackers for 3-max Spin & Go, Heads-Up an
 | 📈 **Detailed statistics** | Stats by spot, stack depth and player profile, compared with a baseline to highlight your **leaks**. |
 | 🎬 **Interactive hand replayer** | Replay hands street by street, check equities, take notes on opponents. |
 | 🧮 **Range research** | Interactive 13×13 range grid to study your ranges and compare them with opponent tendencies. |
+| 🎯 **My ranges and training** | Build your own preflop ranges (your scenarios, depths, actions and colours; SpinTracker ships none), see how often you follow them on your real hands, then practise with a quiz, your own deviations and a spaced review. A deviation means "not what you planned", never "a mistake". Ranges export and import as a versioned `.json` file. |
 | 🎰 **Multipliers analysis** | Break down your results by Spin multiplier. |
 | 👥 **Player database** | Overview of every opponent you faced and how they play. |
 | 🔄 **Automatic import** | Detects the room and imports hand histories idempotently — re-importing never creates duplicates. Optionally watches your Winamax and Unibet history folders and imports new hands as they are written (on by default, it starts watching as soon as a history folder is set; Betclic stays a manual export). |

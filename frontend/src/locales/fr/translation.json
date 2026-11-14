@@ -979,7 +979,8 @@
     "tabs": {
       "editor": "Éditeur",
       "adherence": "Respect de ta range",
-      "training": "Training"
+      "training": "Training",
+      "review": "Révision"
     },
     "colors": {
       "hex": "Couleur hexadécimale"
@@ -1176,7 +1177,9 @@
       "regNote": "Les variantes « Reg » utilisent les joueurs marqués reg dans Joueurs.",
       "deleteTitle": "Supprimer {{label}} ?",
       "deleteUsed": "{{count}} mains de tes ranges utilisent cette action.",
-      "replaceBy": "Remplacer par :"
+      "replaceBy": "Remplacer par :",
+      "trainingTitle": "Training",
+      "newCardsPerDay": "Nouvelles cartes par jour"
     },
     "deviation": {
       "yourRange": "Ta range :",
@@ -1234,7 +1237,9 @@
       "sources": {
         "scenario": "Un scénario",
         "program": "Programme",
-        "deviation": "Mes écarts · {{count}}"
+        "deviation": "Mes écarts · {{count}}",
+        "review": "Révision du jour",
+        "missed": "Mains les plus ratées"
       },
       "scenario": "Scénario",
       "program": "Programme",
@@ -1272,6 +1277,46 @@
         "pot": "Pot",
         "you": "Toi",
         "label": "Table de {{name}}"
+      },
+      "backTomorrow": "Elle revient demain en révision (boîte 1).",
+      "sessionNote": "Les mains ratées passent en boîte 1 de la révision."
+    },
+    "review": {
+      "today": "Aujourd’hui",
+      "cardsToReview": "cartes à revoir",
+      "newAndTime": "+ {{count}} nouvelles · ≈ {{minutes}} min",
+      "start": "Commencer la révision",
+      "realDeviations": "Mes écarts réels · {{count}} nouveaux",
+      "success7": "Réussite sur 7 jours",
+      "answers": "{{count}} réponses",
+      "mastered": "Cartes maîtrisées",
+      "masteredHint": "boîtes 4 et 5",
+      "byBox": "Tes cartes par boîte",
+      "boxHelp": "Une carte = une main dans un scénario. Juste → boîte suivante, raté → boîte 1.",
+      "box": "Boîte {{number}}",
+      "boxBar": "Boîte {{number}} : {{count}} cartes",
+      "interval": {
+        "0": "chaque jour",
+        "1": "après 1 jour",
+        "3": "après 3 jours",
+        "7": "après 7 jours",
+        "21": "après 21 jours"
+      },
+      "newCardsNote": "Nouvelles cartes : d’abord les mains limites de tes ranges, puis les mains que tu reçois le plus souvent en vrai. Ranges « à regarder » exclues.",
+      "byProgram": "Par programme · cartes maîtrisées",
+      "scenarios": "{{count}} scénarios",
+      "noProgram": "Pas encore de programme. Crées-en un dans l’éditeur pour le suivre ici.",
+      "hardest": "Mains les plus ratées",
+      "noMisses": "Aucune main ratée pour l’instant.",
+      "missedOf": "{{missed}} / {{attempts}} ratées",
+      "quizOnThese": "Quiz sur ces mains",
+      "byScenario": "Par scénario · {{program}}",
+      "allRanges": "toutes mes ranges",
+      "columns": {
+        "cards": "Cartes",
+        "mastered": "Maîtrisées",
+        "due": "À revoir aujourd’hui",
+        "last": "Dernière session"
       }
     }
   }

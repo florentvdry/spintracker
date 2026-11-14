@@ -5,7 +5,8 @@ import type { HandMap, Response } from '@/utils/ranges'
 /** Questions in one session. */
 export const SESSION_LENGTH = 30
 
-export type QuizSource = 'scenario' | 'program' | 'deviation'
+/** `review` draws the cards due today, `missed` the hands missed most often. */
+export type QuizSource = 'scenario' | 'program' | 'deviation' | 'review' | 'missed'
 
 export interface QuizChoice {
   actionId: number
@@ -53,6 +54,9 @@ export interface QuizVerdict {
   hands: HandMap
   borderline: boolean
   neighbor: string | null
+  /** The review card after this answer. */
+  box: number
+  dueOn: string
 }
 
 export interface SessionEntry {

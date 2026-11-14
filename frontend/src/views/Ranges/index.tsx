@@ -5,9 +5,10 @@ import clsx from 'clsx'
 import { useUserRangesStore } from '@/stores/userRangesStore'
 import Adherence from './Adherence'
 import Editor from './Editor'
+import Review from './Review'
 import Training from './Training'
 
-const TABS = ['editor', 'adherence', 'training'] as const
+const TABS = ['editor', 'adherence', 'training', 'review'] as const
 type RangesTab = (typeof TABS)[number]
 
 const isTab = (value: string | null): value is RangesTab => TABS.some((tab) => tab === value)
@@ -47,6 +48,7 @@ export default function Ranges() {
       {loaded ? <>
           {active === 'editor' && <Editor />}
           {active === 'adherence' && <Adherence />}
+          {active === 'review' && <Review onStart={() => setParams({ tab: 'training' }, { replace: true })} />}
           {active === 'training' && (
             <Training
               onOpenRange={(spotId, scenarioId) => {

@@ -11,6 +11,7 @@ import { useUserRangesStore } from '@/stores/userRangesStore'
 import { formatDepth } from '@/utils/ranges'
 
 const MAX_DEPTH_BB = 200
+const NEW_CARDS_STEP = 5
 
 /** A draft with a key of its own, so unsaved rows keep their place while the list is reordered. */
 interface Row {
@@ -182,6 +183,27 @@ export default function RangesSettings() {
               </button>
             ))}
           </div>
+        </div>
+      </Card>
+
+      <Card title={t('ranges.settings.trainingTitle')}>
+        <div className="flex flex-wrap items-center gap-6">
+          <label className="flex items-center gap-3 text-sm text-gray-100">
+            {t('ranges.settings.newCardsPerDay')}
+            <input
+              type="number"
+              min={0}
+              max={500}
+              step={NEW_CARDS_STEP}
+              className="input w-24 font-mono text-right"
+              value={settings.newCardsPerDay}
+              onChange={(e) => void saveSettings({ newCardsPerDay: Math.max(0, Math.min(500, Number(e.target.value) || 0)) })}
+            />
+          </label>
+          <label className="flex items-center gap-2 text-sm text-gray-100">
+            <input type="checkbox" checked={settings.prioritizeBorderline} onChange={(e) => void saveSettings({ prioritizeBorderline: e.target.checked })} />
+            {t('ranges.training.borderline')}
+          </label>
         </div>
       </Card>
 

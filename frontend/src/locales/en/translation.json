@@ -979,7 +979,8 @@
     "tabs": {
       "editor": "Editor",
       "adherence": "Range adherence",
-      "training": "Training"
+      "training": "Training",
+      "review": "Review"
     },
     "colors": {
       "hex": "Hex colour"
@@ -1176,7 +1177,9 @@
       "regNote": "\"Reg\" variants use the players marked reg in Players.",
       "deleteTitle": "Delete {{label}}?",
       "deleteUsed": "{{count}} hands in your ranges use this action.",
-      "replaceBy": "Replace by:"
+      "replaceBy": "Replace by:",
+      "trainingTitle": "Training",
+      "newCardsPerDay": "New cards per day"
     },
     "deviation": {
       "yourRange": "Your range:",
@@ -1234,7 +1237,9 @@
       "sources": {
         "scenario": "One scenario",
         "program": "Program",
-        "deviation": "My deviations · {{count}}"
+        "deviation": "My deviations · {{count}}",
+        "review": "Review of the day",
+        "missed": "Most missed hands"
       },
       "scenario": "Scenario",
       "program": "Program",
@@ -1272,6 +1277,46 @@
         "pot": "Pot",
         "you": "You",
         "label": "Table of {{name}}"
+      },
+      "backTomorrow": "It comes back tomorrow in review (box 1).",
+      "sessionNote": "Missed hands go back to box 1 of the review."
+    },
+    "review": {
+      "today": "Today",
+      "cardsToReview": "cards to review",
+      "newAndTime": "+ {{count}} new · ≈ {{minutes}} min",
+      "start": "Start the review",
+      "realDeviations": "My real deviations · {{count}} new",
+      "success7": "Success over 7 days",
+      "answers": "{{count}} answers",
+      "mastered": "Mastered cards",
+      "masteredHint": "boxes 4 and 5",
+      "byBox": "Your cards by box",
+      "boxHelp": "A card = a hand in a scenario. Right → next box, missed → box 1.",
+      "box": "Box {{number}}",
+      "boxBar": "Box {{number}}: {{count}} cards",
+      "interval": {
+        "0": "every day",
+        "1": "after 1 day",
+        "3": "after 3 days",
+        "7": "after 7 days",
+        "21": "after 21 days"
+      },
+      "newCardsNote": "New cards: borderline hands of your ranges first, then the hands you are dealt most often in real games. Ranges \"to study\" are left out.",
+      "byProgram": "By program · mastered cards",
+      "scenarios": "{{count}} scenarios",
+      "noProgram": "No program yet. Create one in the editor to follow it here.",
+      "hardest": "Most missed hands",
+      "noMisses": "No missed hand yet.",
+      "missedOf": "{{missed}} / {{attempts}} missed",
+      "quizOnThese": "Quiz on these hands",
+      "byScenario": "By scenario · {{program}}",
+      "allRanges": "all my ranges",
+      "columns": {
+        "cards": "Cards",
+        "mastered": "Mastered",
+        "due": "Due today",
+        "last": "Last session"
       }
     }
   }

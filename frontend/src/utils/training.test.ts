@@ -15,6 +15,8 @@ const verdict = (over: Partial<QuizVerdict>): QuizVerdict => ({
   hands: {},
   borderline: false,
   neighbor: null,
+  box: 1,
+  dueOn: '2026-11-15',
   ...over,
 })
 
