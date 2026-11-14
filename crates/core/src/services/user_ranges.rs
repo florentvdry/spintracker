@@ -61,7 +61,7 @@ fn invalid<T>(message: impl Into<String>) -> Res<T> {
     Err(RangeError::Invalid(message.into()))
 }
 
-fn now() -> String {
+pub(crate) fn now() -> String {
     chrono::Utc::now().format("%Y-%m-%dT%H:%M:%S").to_string()
 }
 
@@ -89,7 +89,7 @@ fn default_response() -> String {
     "none".into()
 }
 
-fn validate_action(a: &ActionInput) -> Res<()> {
+pub(crate) fn validate_action(a: &ActionInput) -> Res<()> {
     let label = a.label.trim();
     if label.is_empty() || label.chars().count() > MAX_LABEL_CHARS {
         return invalid(format!("an action label has 1 to {MAX_LABEL_CHARS} characters"));
@@ -190,7 +190,7 @@ pub fn delete_action(conn: &mut Connection, id: i64, replace_with: Option<i64>) 
     Ok(())
 }
 
-fn first_action(tx: &Transaction) -> Res<i64> {
+pub(crate) fn first_action(tx: &Transaction) -> Res<i64> {
     let id: Option<i64> = tx.query_row("SELECT id FROM range_actions ORDER BY sort_order, id LIMIT 1", [], |r| r.get(0)).optional()?;
     id.ok_or_else(|| RangeError::Invalid("the action palette is empty".into()))
 }
@@ -228,7 +228,7 @@ pub struct SpotInput {
 
 /// The line normalised to the form `engines::range_scenarios::canonical_line` produces
 /// ("btn:fold,sb:call"), checked against the seats that speak before the hero.
-fn normalize_line(format: &str, hero: &str, line: &str) -> Res<String> {
+pub(crate) fn normalize_line(format: &str, hero: &str, line: &str) -> Res<String> {
     let seats: &[&str] = if format == "hu" { &POSITIONS_HU } else { &POSITIONS_3MAX };
     let Some(hero_index) = seats.iter().position(|p| *p == hero) else {
         return invalid(format!("{hero} does not play {format}"));
@@ -249,7 +249,7 @@ fn normalize_line(format: &str, hero: &str, line: &str) -> Res<String> {
     Ok(out.join(","))
 }
 
-fn validate_depth(stack: f64) -> Res<()> {
+pub(crate) fn validate_depth(stack: f64) -> Res<()> {
     if stack.is_finite() && stack > 0.0 && stack <= MAX_STACK_BB {
         Ok(())
     } else {
@@ -375,7 +375,7 @@ pub fn save_spot(conn: &mut Connection, input: &SpotInput) -> Res<i64> {
 }
 
 /// Removes ranges and everything that hangs off them.
-fn purge_scenarios(tx: &Transaction, scenario_ids: &[i64]) -> Res<()> {
+pub(crate) fn purge_scenarios(tx: &Transaction, scenario_ids: &[i64]) -> Res<()> {
     for id in scenario_ids {
         tx.execute("DELETE FROM range_hands WHERE scenario_id = ?1", [id])?;
         tx.execute("DELETE FROM range_scenarios WHERE id = ?1", [id])?;

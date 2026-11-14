@@ -29,6 +29,7 @@ use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
+use crate::services::ranges_io;
 use crate::services::user_ranges::{self as ranges, RangeError};
 use crate::services::hud::{HudFigureHandsRequest, HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
 use crate::services::Importer;
@@ -573,6 +574,15 @@ impl Backend {
                 ("DELETE", ["programs", program]) => {
                     ranges::delete_program(&mut conn, id(program)?)?;
                     Response::ok(json!({ "success": true }))
+                }
+                ("GET", ["export"]) => Response::data(ranges_io::export(&conn)?),
+                ("POST", ["import"]) => {
+                    let content = r.body_str("content").unwrap_or_default();
+                    let mode = r.body_str("mode").as_deref().and_then(ranges_io::ImportMode::parse).ok_or_else(|| RangeError::Invalid("mode is replace or merge".into()))?;
+                    let dry_run = r.body.as_ref().and_then(|b| b.get("dryRun")).and_then(Value::as_bool).unwrap_or(false);
+                    let report = ranges_io::import(&mut conn, &content, mode, dry_run)?;
+                    self.db.bump_data_version();
+                    Response::data(report)
                 }
                 ("GET", ["settings"]) => Response::data(ranges::settings(&conn)?),
                 ("POST", ["settings"]) => {
