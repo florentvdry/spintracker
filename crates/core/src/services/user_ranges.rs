@@ -162,6 +162,7 @@ pub fn save_actions(conn: &mut Connection, actions: &[ActionInput]) -> Res<Value
             }
         }
     }
+    crate::services::range_adherence::invalidate(&tx)?;
     tx.commit()?;
     list_actions(conn)
 }
@@ -186,6 +187,7 @@ pub fn delete_action(conn: &mut Connection, id: i64, replace_with: Option<i64>) 
         tx.execute("UPDATE range_hands SET action_id = ?1 WHERE action_id = ?2", params![target, id])?;
     }
     tx.execute("DELETE FROM range_actions WHERE id = ?1", [id])?;
+    crate::services::range_adherence::invalidate(&tx)?;
     tx.commit()?;
     Ok(())
 }
@@ -370,6 +372,7 @@ pub fn save_spot(conn: &mut Connection, input: &SpotInput) -> Res<i64> {
             id
         }
     };
+    crate::services::range_adherence::invalidate(&tx)?;
     tx.commit()?;
     Ok(id)
 }
@@ -399,6 +402,7 @@ pub fn delete_spot(conn: &mut Connection, id: i64) -> Res<()> {
     purge_scenarios(&tx, &scenarios)?;
     tx.execute("DELETE FROM range_program_spots WHERE spot_id = ?1", [id])?;
     tx.execute("DELETE FROM range_spots WHERE id = ?1", [id])?;
+    crate::services::range_adherence::invalidate(&tx)?;
     tx.commit()?;
     Ok(())
 }
@@ -463,6 +467,7 @@ pub fn add_depth(conn: &mut Connection, spot_id: i64, stack: f64, start: &StartP
         return Err(RangeError::NotFound);
     }
     let id = insert_scenario(&tx, spot_id, stack, start, spot_id)?;
+    crate::services::range_adherence::invalidate(&tx)?;
     tx.commit()?;
     Ok(id)
 }
@@ -477,6 +482,7 @@ pub fn remove_depth(conn: &mut Connection, scenario_id: i64) -> Res<()> {
         return invalid("a scenario keeps at least one depth: delete the scenario instead");
     }
     purge_scenarios(&tx, &[scenario_id])?;
+    crate::services::range_adherence::invalidate(&tx)?;
     tx.commit()?;
     Ok(())
 }
@@ -522,6 +528,7 @@ pub fn save_hands(conn: &mut Connection, scenario_id: i64, hands: &BTreeMap<Stri
         )?;
     }
     tx.execute("UPDATE range_scenarios SET updated_at = ?1 WHERE id = ?2", params![now(), scenario_id])?;
+    crate::services::range_adherence::invalidate(&tx)?;
     tx.commit()?;
     Ok(())
 }
@@ -692,6 +699,7 @@ pub fn update_settings(conn: &mut Connection, patch: &Value) -> Res<Value> {
             None => return invalid("prioritizeBorderline is a boolean"),
         }
     }
+    crate::services::range_adherence::invalidate(&tx)?;
     tx.commit()?;
     settings(conn)
 }

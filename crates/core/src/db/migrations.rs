@@ -47,6 +47,7 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611110001, "AddBuyInIndex", "202611110001_add_buy_in_index.sql"),
     migration!(202611120001, "AddHandsCoveringIndex", "202611120001_add_hands_covering_index.sql"),
     migration!(202611200001, "AddUserRanges", "202611200001_user_ranges.sql"),
+    migration!(202611200002, "AddHandRangeChecks", "202611200002_hand_range_checks.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -145,7 +146,7 @@ mod tests {
         assert_eq!(run(&mut conn).unwrap(), MIGRATIONS.len());
 
         let t = names(&conn, "table");
-        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes", "custom_stats", "custom_stat_hits", "range_actions", "range_spots", "range_scenarios", "range_hands", "range_programs", "range_program_spots", "range_settings"] {
+        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes", "custom_stats", "custom_stat_hits", "range_actions", "range_spots", "range_scenarios", "range_hands", "range_programs", "range_program_spots", "range_settings", "hand_range_checks"] {
             assert!(t.iter().any(|n| n == expected), "table {expected} missing");
         }
         assert!(!t.iter().any(|n| n == "config"), "config must be dropped");
@@ -204,6 +205,7 @@ mod tests {
              DROP TABLE range_programs;
              DROP TABLE range_program_spots;
              DROP TABLE range_settings;
+             DROP TABLE hand_range_checks;
              ALTER TABLE players DROP COLUMN alias_id;
              ALTER TABLE players DROP COLUMN room;
              ALTER TABLE hands DROP COLUMN position;
@@ -224,7 +226,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 15);
+        assert_eq!(run(&mut conn).unwrap(), 16);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))

@@ -6,6 +6,7 @@ pub mod hud;
 pub mod importer;
 pub mod live_import;
 pub mod summaries;
+pub mod range_adherence;
 pub mod ranges_io;
 pub mod table_pairing;
 pub mod user_ranges;

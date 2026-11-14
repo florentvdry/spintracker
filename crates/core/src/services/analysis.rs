@@ -56,6 +56,8 @@ pub struct AnalysisFilters {
     pub date_to: Option<String>,
     /// "all", "reg" or "fish".
     pub opponent_type: Option<String>,
+    /// Restricts the read to one hand.
+    pub hand_id: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -130,6 +132,10 @@ pub fn hands_for_analysis(conn: &Connection, f: &AnalysisFilters) -> Result<Vec<
     } else {
         // Field analysis: every player whose cards are known.
         clauses.push("(ph.cards IS NOT NULL AND ph.cards != '')".into());
+    }
+    if let Some(id) = non_empty(&f.hand_id) {
+        clauses.push("h.id = @handId".into());
+        binds.push(("@handId".into(), SqlValue::Text(id.into())));
     }
     if let Some(d) = non_empty(&f.date_from) {
         clauses.push("h.date_time >= @dateFrom".into());

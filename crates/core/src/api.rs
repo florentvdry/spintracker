@@ -29,6 +29,7 @@ use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
+use crate::services::range_adherence;
 use crate::services::ranges_io;
 use crate::services::user_ranges::{self as ranges, RangeError};
 use crate::services::hud::{HudFigureHandsRequest, HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
@@ -236,7 +237,14 @@ impl Backend {
                     Response::ok(json!({ "success": true, "inserted": inserted, "total": total, "analytics_calculated": total }))
                 }
             }
-            ("GET" | "POST", ["db", "hands"]) => Response::data(hands_query::get_hands(&*conn()?, &r.options(hands_query_from_query)?)?),
+            ("GET" | "POST", ["db", "hands"]) => {
+                let query = r.options(hands_query_from_query)?;
+                if let (true, Some(hero)) = (query.range_deviation, query.hero_name.as_deref()) {
+                    // The filter reads the stored range checks: bring them up to date first.
+                    range_adherence::ensure_computed(&mut *conn()?, hero)?;
+                }
+                Response::data(hands_query::get_hands(&*conn()?, &query)?)
+            }
             ("GET", ["db", "export-summary"]) => Response::data(hands_query::export_summary(&*conn()?)?),
             ("GET" | "POST", ["db", "tournaments"]) => {
                 let result = tournaments::get_tournaments(&*conn()?, &r.options(tournaments_query_from_query)?)?;
@@ -427,7 +435,14 @@ impl Backend {
             ("POST", ["analysis", "hands"]) => Response::data(analysis::analysis_hands(&*conn()?, &r.body_as_camel::<AnalysisHandsRequest>()?)?),
             ("POST", ["analysis", "range-breakdown"]) => Response::data(analysis::range_breakdown(&*conn()?, &r.body_as_camel::<AnalysisFilters>()?)?),
             ("GET", ["analysis", "replayer", id]) => match analysis::hand_replay(&*conn()?, id, r.query_str("heroName").as_deref())? {
-                Some(replay) => Response::data(replay),
+                Some(mut replay) => {
+                    let hero = r.query_str("heroName").unwrap_or_default();
+                    // Players who built no range get no card: the field is left out.
+                    if let Some(check) = range_adherence::hand_check(&*conn()?, &hero, id)? {
+                        replay["rangeCheck"] = check;
+                    }
+                    Response::data(replay)
+                }
                 None => Response::failure(404, "Hand not found"),
             },
             ("POST", ["equity"]) => self.equity(r),
@@ -574,6 +589,19 @@ impl Backend {
                 ("DELETE", ["programs", program]) => {
                     ranges::delete_program(&mut conn, id(program)?)?;
                     Response::ok(json!({ "success": true }))
+                }
+                ("GET", ["adherence"]) => {
+                    let hero = r.query_str("heroName").ok_or_else(|| RangeError::Invalid("heroName is required".into()))?;
+                    range_adherence::ensure_computed(&mut conn, &hero)?;
+                    Response::data(range_adherence::adherence(&conn, &hero, r.query_str("from").as_deref(), r.query_str("to").as_deref())?)
+                }
+                ("GET", ["adherence", scenario]) => {
+                    let hero = r.query_str("heroName").ok_or_else(|| RangeError::Invalid("heroName is required".into()))?;
+                    range_adherence::ensure_computed(&mut conn, &hero)?;
+                    match range_adherence::scenario_detail(&conn, id(scenario)?, &hero, r.query_str("from").as_deref(), r.query_str("to").as_deref())? {
+                        Some(detail) => Response::data(detail),
+                        None => return Ok(None),
+                    }
                 }
                 ("GET", ["export"]) => Response::data(ranges_io::export(&conn)?),
                 ("POST", ["import"]) => {

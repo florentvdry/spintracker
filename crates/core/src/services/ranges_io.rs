@@ -357,6 +357,7 @@ pub fn import(conn: &mut Connection, content: &str, mode: ImportMode, dry_run: b
     if dry_run {
         tx.rollback()?;
     } else {
+        crate::services::range_adherence::invalidate(&tx)?;
         tx.commit()?;
     }
     Ok(json!({ "actions": created_actions, "spots": spot_count, "scenarios": scenario_count, "programs": program_count, "warnings": warnings }))
