@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::engines::actions::{parse_actions, ActionKind};
+use crate::engines::preflop_line::{matches_action_sequence, player_positions, split_player_and_content, strip_timestamp};
 use crate::parsers::regex;
 use crate::repos::hands_query::{self, hero_resolution_sql};
 use crate::repos::heatmap::normalize_cards;
@@ -55,6 +56,8 @@ pub struct AnalysisFilters {
     pub date_to: Option<String>,
     /// "all", "reg" or "fish".
     pub opponent_type: Option<String>,
+    /// Restricts the read to one hand.
+    pub hand_id: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -130,6 +133,10 @@ pub fn hands_for_analysis(conn: &Connection, f: &AnalysisFilters) -> Result<Vec<
         // Field analysis: every player whose cards are known.
         clauses.push("(ph.cards IS NOT NULL AND ph.cards != '')".into());
     }
+    if let Some(id) = non_empty(&f.hand_id) {
+        clauses.push("h.id = @handId".into());
+        binds.push(("@handId".into(), SqlValue::Text(id.into())));
+    }
     if let Some(d) = non_empty(&f.date_from) {
         clauses.push("h.date_time >= @dateFrom".into());
         binds.push(("@dateFrom".into(), SqlValue::Text(d.into())));
@@ -202,25 +209,6 @@ pub fn hands_for_analysis(conn: &Connection, f: &AnalysisFilters) -> Result<Vec<
 // Reading action lines
 // ---------------------------------------------------------------------------------------------
 
-/// The line without its "HH:MM:SS - " prefix.
-fn strip_timestamp(line: &str) -> String {
-    let line = line.trim();
-    match line.split_once(" - ") {
-        Some((_, rest)) => rest.trim().to_string(),
-        None => line.to_string(),
-    }
-}
-
-/// Splits "Name: action" or "Name action" into the name and the lower-cased action text.
-fn split_player_and_content(line: &str) -> Option<(String, String)> {
-    let line = strip_timestamp(line);
-    if let Some(colon) = line.find(':') {
-        return Some((line[..colon].trim().to_string(), line[colon + 1..].trim().to_lowercase()));
-    }
-    let space = line.find(' ')?;
-    Some((line[..space].trim().to_string(), line[space..].trim().to_lowercase()))
-}
-
 /// The action text when `line` is an action of `player`.
 fn action_of_player(line: &str, player: &str) -> Option<String> {
     if line.trim().is_empty() {
@@ -238,17 +226,6 @@ fn action_of_player(line: &str, player: &str) -> Option<String> {
         }
     }
     None
-}
-
-fn player_positions(map: &str) -> HashMap<String, String> {
-    let mut out = HashMap::new();
-    for pair in map.split('|') {
-        let parts: Vec<&str> = pair.split(':').collect();
-        if let [name, position] = parts[..] {
-            out.insert(name.to_lowercase(), position.to_string());
-        }
-    }
-    out
 }
 
 fn big_blind(blinds: &str) -> f64 {
@@ -296,45 +273,6 @@ fn matches_street_by_position(text: &str, btn: &Option<String>, sb: &Option<Stri
         }
     }
     btn_ok && sb_ok && bb_ok
-}
-
-/// The preflop actions as "POSITION:verb" in order, posts excluded.
-fn preflop_sequence(hand: &AnalysisHand) -> Vec<String> {
-    let seats = player_positions(&hand.player_positions);
-    let mut out = Vec::new();
-    for line in hand.preflop.split('\n').filter(|l| !l.is_empty()) {
-        let Some((player, content)) = split_player_and_content(line) else { continue };
-        let Some(position) = seats.get(&player.to_lowercase()) else { continue };
-        let verb = if content.contains("all-in") {
-            "all-in"
-        } else if content.contains("raises") {
-            "raise"
-        } else if content.contains("bets") {
-            "bet"
-        } else if content.contains("calls") {
-            "call"
-        } else if content.contains("checks") {
-            "check"
-        } else if content.contains("folds") {
-            "fold"
-        } else {
-            // Posts, antes and anything unknown are skipped.
-            continue;
-        };
-        out.push(format!("{position}:{verb}"));
-    }
-    out
-}
-
-fn matches_action_sequence(hand: &AnalysisHand, sequence: &[String]) -> bool {
-    if sequence.is_empty() {
-        return true;
-    }
-    if hand.preflop.is_empty() {
-        return false;
-    }
-    let actual = preflop_sequence(hand);
-    actual.len() >= sequence.len() && sequence.iter().zip(&actual).all(|(wanted, got)| wanted.eq_ignore_ascii_case(got))
 }
 
 fn matches_situation(hand: &AnalysisHand, situation: &str) -> bool {
@@ -441,14 +379,14 @@ fn matches_situation_id(hand: &AnalysisHand, situation_id: &str, positions: Opti
 }
 
 /// Lower-cased names of the regulars, read once for a whole analysis.
-fn regular_players(conn: &Connection) -> Result<HashSet<String>> {
+pub(crate) fn regular_players(conn: &Connection) -> Result<HashSet<String>> {
     let mut stmt = conn.prepare("SELECT name FROM players WHERE is_reg = 1")?;
     let names = stmt.query_map([], |r| r.get::<_, String>(0))?.collect::<std::result::Result<Vec<_>, _>>()?;
     Ok(names.into_iter().map(|n| n.to_lowercase()).collect())
 }
 
 /// Whether at least one opponent of the hero in this hand is a regular.
-fn opponent_is_reg(regulars: &HashSet<String>, hand: &AnalysisHand, hero: Option<&str>) -> bool {
+pub(crate) fn opponent_is_reg(regulars: &HashSet<String>, hand: &AnalysisHand, hero: Option<&str>) -> bool {
     let Some(hero) = hero.or(hand.hero_name.as_deref()).filter(|h| !h.is_empty()) else { return false };
     hand.player_positions
         .split('|')
@@ -492,7 +430,7 @@ fn filter_hands(conn: &Connection, hands: Vec<AnalysisHand>, f: &AnalysisFilters
         }
         match f.action_sequence.as_ref().filter(|s| !s.is_empty()) {
             Some(sequence) => {
-                if !matches_action_sequence(&hand, sequence) {
+                if !matches_action_sequence(&hand.preflop, &hand.player_positions, sequence) {
                     continue;
                 }
             }
@@ -1005,15 +943,6 @@ mod tests {
         let mut counts = [0u32; 5];
         count_aggression("Hero: Checks\nHero: Bets 40\nVillain: Folds", "Hero", &mut counts);
         assert_eq!(counts, [1, 0, 0, 0, 1]);
-    }
-
-    #[test]
-    fn action_sequences_match_in_order() {
-        let h = hand("SB: Posts SB 10\nBB: Posts BB 20\nHero: Raises to 50\nSB: Calls 40\nBB: Folds", "Hero:BTN|SB:SB|BB:BB");
-        assert!(matches_action_sequence(&h, &["BTN:raise".into(), "SB:call".into()]));
-        assert!(matches_action_sequence(&h, &["btn:Raise".into()]));
-        assert!(!matches_action_sequence(&h, &["BTN:call".into()]));
-        assert!(!matches_action_sequence(&h, &["BTN:raise".into(), "SB:call".into(), "BB:fold".into(), "BTN:check".into()]));
     }
 
     #[test]

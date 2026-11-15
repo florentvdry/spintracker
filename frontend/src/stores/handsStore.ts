@@ -11,6 +11,8 @@ interface HandsFilters {
   minPot: number | null
   maxPot: number | null
   sortBy: string
+  /** Only the hands where the hero left their own range. */
+  rangeDeviation: boolean
 }
 
 interface HandsState {
@@ -55,7 +57,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
   isLoadingHand: false,
   currentPage: 1,
   pageSize: 50,
-  filters: { position: null, result: null, minPot: null, maxPot: null, sortBy: 'date_desc' },
+  filters: { position: null, result: null, minPot: null, maxPot: null, sortBy: 'date_desc', rangeDeviation: false },
   viewMode: 'tournaments',
   selectedHand: null,
   selectedTournament: null,
@@ -107,6 +109,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
         dateTo,
         result: filters.result,
         sortBy: filters.sortBy,
+        rangeDeviation: filters.rangeDeviation,
       })
       if (request === handsRequest && result?.success && result.data) {
         set({ handsList: result.data.hands ?? [], totalHandsCount: result.data.total ?? 0 })

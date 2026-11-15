@@ -18,6 +18,7 @@ const HandHistory = lazy(() => import('@/views/HandHistory'))
 const Analysis = lazy(() => import('@/views/Analysis'))
 const Players = lazy(() => import('@/views/Players'))
 const LiveHud = lazy(() => import('@/views/LiveHud'))
+const Ranges = lazy(() => import('@/views/Ranges'))
 const Settings = lazy(() => import('@/views/Settings'))
 
 export default function App() {
@@ -60,6 +61,7 @@ export default function App() {
                 <Route path="/analysis" element={<Analysis />} />
                 <Route path="/players" element={<Players />} />
                 <Route path="/hud" element={<LiveHud />} />
+                <Route path="/ranges" element={<Ranges />} />
                 <Route path="/settings" element={<Settings />} />
               </Routes>
             </Suspense>

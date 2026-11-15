@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
+import RangeCheckCard from './RangeCheckCard'
 import './replayer.css'
 
 const SPEEDS = [
@@ -116,6 +117,11 @@ export default function Replayer() {
 
         {showLogs && (
           <aside className="action-panel">
+            {handData?.rangeCheck && (
+              <div className="p-3 pb-0">
+                <RangeCheckCard check={handData.rangeCheck} />
+              </div>
+            )}
             <div className="panel-header">
               <div>
                 <span className="eyebrow">{t('replayer.timeline')}</span>

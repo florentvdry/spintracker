@@ -29,6 +29,11 @@ use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
+use crate::services::range_adherence;
+use crate::services::review;
+use crate::services::training;
+use crate::services::ranges_io;
+use crate::services::user_ranges::{self as ranges, RangeError};
 use crate::services::hud::{HudFigureHandsRequest, HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
 use crate::services::Importer;
 use crate::stats::store;
@@ -234,7 +239,14 @@ impl Backend {
                     Response::ok(json!({ "success": true, "inserted": inserted, "total": total, "analytics_calculated": total }))
                 }
             }
-            ("GET" | "POST", ["db", "hands"]) => Response::data(hands_query::get_hands(&*conn()?, &r.options(hands_query_from_query)?)?),
+            ("GET" | "POST", ["db", "hands"]) => {
+                let query = r.options(hands_query_from_query)?;
+                if let (true, Some(hero)) = (query.range_deviation, query.hero_name.as_deref()) {
+                    // The filter reads the stored range checks: bring them up to date first.
+                    range_adherence::ensure_computed(&mut *conn()?, hero)?;
+                }
+                Response::data(hands_query::get_hands(&*conn()?, &query)?)
+            }
             ("GET", ["db", "export-summary"]) => Response::data(hands_query::export_summary(&*conn()?)?),
             ("GET" | "POST", ["db", "tournaments"]) => {
                 let result = tournaments::get_tournaments(&*conn()?, &r.options(tournaments_query_from_query)?)?;
@@ -425,11 +437,21 @@ impl Backend {
             ("POST", ["analysis", "hands"]) => Response::data(analysis::analysis_hands(&*conn()?, &r.body_as_camel::<AnalysisHandsRequest>()?)?),
             ("POST", ["analysis", "range-breakdown"]) => Response::data(analysis::range_breakdown(&*conn()?, &r.body_as_camel::<AnalysisFilters>()?)?),
             ("GET", ["analysis", "replayer", id]) => match analysis::hand_replay(&*conn()?, id, r.query_str("heroName").as_deref())? {
-                Some(replay) => Response::data(replay),
+                Some(mut replay) => {
+                    let hero = r.query_str("heroName").unwrap_or_default();
+                    // Players who built no range get no card: the field is left out.
+                    if let Some(check) = range_adherence::hand_check(&*conn()?, &hero, id)? {
+                        replay["rangeCheck"] = check;
+                    }
+                    Response::data(replay)
+                }
                 None => Response::failure(404, "Hand not found"),
             },
             ("POST", ["equity"]) => self.equity(r),
             ("POST", ["equity", "batch"]) => self.equity_batch(r),
+
+            // --- The player's own ranges
+            (_, ["ranges", rest @ ..]) => return self.ranges(r, rest),
 
             // --- Databases
             (_, ["api", "databases", rest @ ..]) => return self.databases(r, rest),
@@ -507,6 +529,141 @@ impl Backend {
             .collect();
         let processed = results.len();
         Response::ok(json!({ "success": true, "data": results, "processed": processed }))
+    }
+
+    /// Routes of the player's own ranges (`ranges/...`).
+    fn ranges(&self, r: &Request, rest: &[&str]) -> Result<Option<Response>> {
+        use std::collections::BTreeMap;
+        let result: ranges::Res<Option<Response>> = (|| {
+            let mut conn = self.db.conn()?;
+            let id = |s: &str| s.parse::<i64>().map_err(|_| RangeError::Invalid(format!("bad id: {s}")));
+            let body = |name: &str| -> ranges::Res<Value> { Ok(r.body.as_ref().and_then(|b| b.get(name)).cloned().unwrap_or(Value::Null)) };
+            let response = match (r.method, rest) {
+                ("GET", ["tree"]) => Response::data(ranges::tree(&conn)?),
+                ("POST", ["spot"]) => {
+                    let input: ranges::SpotInput = r.body_as()?;
+                    let spot = ranges::save_spot(&mut conn, &input)?;
+                    self.db.bump_data_version();
+                    Response::data(json!({ "id": spot }))
+                }
+                ("DELETE", ["spot", spot]) => {
+                    ranges::delete_spot(&mut conn, id(spot)?)?;
+                    self.db.bump_data_version();
+                    Response::ok(json!({ "success": true }))
+                }
+                ("POST", ["spot", spot, "duplicate"]) => {
+                    let copy = ranges::duplicate_spot(&mut conn, id(spot)?, r.body_str("opponent").as_deref())?;
+                    Response::data(json!({ "id": copy }))
+                }
+                ("POST", ["spot", spot, "depth"]) => {
+                    let stack = body("stackBb")?.as_f64().ok_or_else(|| RangeError::Invalid("stackBb is required".into()))?;
+                    let start: ranges::StartPoint = serde_json::from_value(body("start")?).unwrap_or_default();
+                    let scenario = ranges::add_depth(&mut conn, id(spot)?, stack, &start)?;
+                    Response::data(json!({ "id": scenario }))
+                }
+                ("GET", ["scenario", scenario]) => Response::data(ranges::scenario(&conn, id(scenario)?)?),
+                ("DELETE", ["scenario", scenario]) => {
+                    ranges::remove_depth(&mut conn, id(scenario)?)?;
+                    self.db.bump_data_version();
+                    Response::ok(json!({ "success": true }))
+                }
+                ("POST", ["scenario", scenario, "hands"]) => {
+                    let hands: BTreeMap<String, i64> = serde_json::from_value(body("hands")?)?;
+                    ranges::save_hands(&mut conn, id(scenario)?, &hands)?;
+                    self.db.bump_data_version();
+                    Response::ok(json!({ "success": true }))
+                }
+                ("GET", ["actions"]) => Response::data(ranges::list_actions(&conn)?),
+                ("POST", ["actions"]) => {
+                    let actions: Vec<ranges::ActionInput> = serde_json::from_value(body("actions")?)?;
+                    Response::data(ranges::save_actions(&mut conn, &actions)?)
+                }
+                ("POST", ["actions", action, "delete"]) => {
+                    ranges::delete_action(&mut conn, id(action)?, body("replaceWith")?.as_i64())?;
+                    self.db.bump_data_version();
+                    Response::ok(json!({ "success": true }))
+                }
+                ("GET", ["programs"]) => Response::data(ranges::programs(&conn)?),
+                ("POST", ["programs"]) => {
+                    let input: ranges::ProgramInput = r.body_as()?;
+                    Response::data(json!({ "id": ranges::save_program(&mut conn, &input)? }))
+                }
+                ("DELETE", ["programs", program]) => {
+                    ranges::delete_program(&mut conn, id(program)?)?;
+                    Response::ok(json!({ "success": true }))
+                }
+                ("GET", ["adherence"]) => {
+                    let hero = r.query_str("heroName").ok_or_else(|| RangeError::Invalid("heroName is required".into()))?;
+                    range_adherence::ensure_computed(&mut conn, &hero)?;
+                    Response::data(range_adherence::adherence(&conn, &hero, r.query_str("from").as_deref(), r.query_str("to").as_deref(), r.query_str("opponent").as_deref())?)
+                }
+                ("GET", ["adherence", scenario]) => {
+                    let hero = r.query_str("heroName").ok_or_else(|| RangeError::Invalid("heroName is required".into()))?;
+                    range_adherence::ensure_computed(&mut conn, &hero)?;
+                    match range_adherence::scenario_detail(&conn, id(scenario)?, &hero, r.query_str("from").as_deref(), r.query_str("to").as_deref())? {
+                        Some(detail) => Response::data(detail),
+                        None => return Ok(None),
+                    }
+                }
+                ("POST", ["training", "question"]) => {
+                    let mut request: training::QuestionRequest = r.body_as()?;
+                    // The seed only varies the draw; tests pass their own.
+                    request.today = chrono::Local::now().format("%Y-%m-%d").to_string();
+                    request.seed = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(1, |d| d.as_nanos() as u64);
+                    if request.source == "deviation" {
+                        if let Some(hero) = request.hero_name.as_deref() {
+                            range_adherence::ensure_computed(&mut conn, hero)?;
+                        }
+                    }
+                    Response::data(training::next_question(&conn, &request)?.unwrap_or(Value::Null))
+                }
+                ("POST", ["training", "answer"]) => {
+                    let request: training::AnswerRequest = r.body_as()?;
+                    let now = chrono::Local::now().naive_local();
+                    Response::data(training::check_answer(&conn, &request, now.date(), &now.format("%Y-%m-%dT%H:%M:%S").to_string())?)
+                }
+                ("GET", ["review"]) => {
+                    let today = chrono::Local::now().date_naive();
+                    Response::data(review::overview(&conn, today, r.query_str("heroName").as_deref())?)
+                }
+                ("POST", ["review", "answer"]) => {
+                    let (scenario, hand, correct) = (r.body_field::<i64>("scenarioId")?, r.body_str("handClass").unwrap_or_default(), r.body_field::<bool>("correct")?);
+                    let now = chrono::Local::now().naive_local();
+                    let (box_number, due) = review::record(&conn, scenario, &hand, correct, now.date(), &now.format("%Y-%m-%dT%H:%M:%S").to_string())?;
+                    Response::data(json!({ "box": box_number, "dueOn": due.format("%Y-%m-%d").to_string() }))
+                }
+                ("GET", ["export"]) => {
+                    // `scenarioIds=1,2,3` limits the file to those depths; without it everything is exported.
+                    let chosen: Option<std::collections::HashSet<i64>> = r.query_str("scenarioIds").map(|list| list.split(',').filter_map(|id| id.trim().parse().ok()).collect());
+                    Response::data(ranges_io::export(&conn, chosen.as_ref())?)
+                }
+                ("POST", ["import"]) => {
+                    let content = r.body_str("content").unwrap_or_default();
+                    let mode = r.body_str("mode").as_deref().and_then(ranges_io::ImportMode::parse).ok_or_else(|| RangeError::Invalid("mode is replace or merge".into()))?;
+                    let dry_run = r.body.as_ref().and_then(|b| b.get("dryRun")).and_then(Value::as_bool).unwrap_or(false);
+                    let report = ranges_io::import(&mut conn, &content, mode, dry_run)?;
+                    self.db.bump_data_version();
+                    Response::data(report)
+                }
+                ("GET", ["settings"]) => Response::data(ranges::settings(&conn)?),
+                ("POST", ["settings"]) => {
+                    let updated = ranges::update_settings(&mut conn, r.body.as_ref().unwrap_or(&Value::Null))?;
+                    self.db.bump_data_version();
+                    Response::data(updated)
+                }
+                _ => return Ok(None),
+            };
+            Ok(Some(response))
+        })();
+        match result {
+            Ok(response) => Ok(response),
+            Err(RangeError::Invalid(message)) => Ok(Some(Response::failure(400, &message))),
+            Err(RangeError::NotFound) => Ok(Some(Response::failure(404, "Not found"))),
+            Err(RangeError::Conflict { message, existing_id }) => {
+                Ok(Some(Response { status: 409, body: json!({ "success": false, "error": message, "existingId": existing_id }) }))
+            }
+            Err(RangeError::Other(e)) => Err(e),
+        }
     }
 
     fn databases(&self, r: &Request, rest: &[&str]) -> Result<Option<Response>> {

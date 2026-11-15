@@ -46,6 +46,8 @@ pub struct HandsQuery {
     pub max_pot: Option<f64>,
     pub hero_name: Option<String>,
     pub sort_by: Option<String>,
+    /// Only the hands where the hero left their own range (needs the stored range checks).
+    pub range_deviation: bool,
 }
 
 impl Default for HandsQuery {
@@ -62,6 +64,7 @@ impl Default for HandsQuery {
             max_pot: None,
             hero_name: None,
             sort_by: None,
+            range_deviation: false,
         }
     }
 }
@@ -225,6 +228,9 @@ pub fn get_hands(conn: &Connection, q: &HandsQuery) -> Result<Value> {
     if let Some(p) = q.max_pot {
         clauses.push("total_pot <= @maxPot".into());
         binds.push(("@maxPot", SqlValue::Real(p)));
+    }
+    if q.range_deviation {
+        clauses.push("h.id IN (SELECT hand_id FROM hand_range_checks WHERE status = 'deviation')".into());
     }
     match non_empty(&q.result).map(str::to_lowercase).as_deref() {
         Some("won") => clauses.push("ph.net_profit > 0".into()),

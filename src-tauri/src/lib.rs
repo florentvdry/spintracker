@@ -94,6 +94,7 @@ pub fn run() {
             commands::check_server_status,
             commands::import_hand_history,
             commands::export_data,
+            commands::save_text_file,
             commands::delete_all_hands,
             commands::set_active_database,
             commands::auto_import_get,

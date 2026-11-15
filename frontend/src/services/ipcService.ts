@@ -147,6 +147,31 @@ export const ipcService = {
   // Analysis & ranges
   getRangeHeatmap: (filters: Json = {}) => backend('POST', '/db/range-heatmap', filters),
   getRangeBreakdown: (filters: Json = {}) => backend('POST', '/analysis/range-breakdown', filters),
+
+  // The player's own ranges
+  getRangesTree: () => backend('GET', '/ranges/tree'),
+  saveRangeSpot: (spot: Json) => backend('POST', '/ranges/spot', spot),
+  deleteRangeSpot: (id: number) => backend('DELETE', `/ranges/spot/${id}`),
+  duplicateRangeSpot: (id: number, opponent?: string) => backend('POST', `/ranges/spot/${id}/duplicate`, { opponent }),
+  addRangeDepth: (spotId: number, stackBb: number, start: Json) => backend('POST', `/ranges/spot/${spotId}/depth`, { stackBb, start }),
+  getRangeScenario: (id: number) => backend('GET', `/ranges/scenario/${id}`),
+  removeRangeDepth: (scenarioId: number) => backend('DELETE', `/ranges/scenario/${scenarioId}`),
+  saveRangeHands: (scenarioId: number, hands: Record<string, number>) => backend('POST', `/ranges/scenario/${scenarioId}/hands`, { hands }),
+  getRangeActions: () => backend('GET', '/ranges/actions'),
+  saveRangeActions: (actions: Json[]) => backend('POST', '/ranges/actions', { actions }),
+  deleteRangeAction: (id: number, replaceWith?: number | null) => backend('POST', `/ranges/actions/${id}/delete`, { replaceWith: replaceWith ?? null }),
+  saveRangeProgram: (program: Json) => backend('POST', '/ranges/programs', program),
+  deleteRangeProgram: (id: number) => backend('DELETE', `/ranges/programs/${id}`),
+  getRangeSettings: () => backend('GET', '/ranges/settings'),
+  saveRangeSettings: (patch: Json) => backend('POST', '/ranges/settings', patch),
+  getRangeAdherence: (heroName: string, from?: string | null, to?: string | null, opponent?: string | null) => backend('GET', `/ranges/adherence${query({ heroName, from, to, opponent })}`),
+  getRangeAdherenceScenario: (scenarioId: number, heroName: string, from?: string | null, to?: string | null) =>
+    backend('GET', `/ranges/adherence/${scenarioId}${query({ heroName, from, to })}`),
+  getReview: (heroName?: string | null) => backend('GET', `/ranges/review${query({ heroName })}`),
+  getQuizQuestion: (body: Json) => backend('POST', '/ranges/training/question', body),
+  checkQuizAnswer: (body: Json) => backend('POST', '/ranges/training/answer', body),
+  exportRanges: (scenarioIds?: readonly number[]) => backend('GET', '/ranges/export' + query({ scenarioIds: scenarioIds?.join(',') })),
+  importRanges: (content: string, mode: 'replace' | 'merge', dryRun = false) => backend('POST', '/ranges/import', { content, mode, dryRun }),
   calculateEquity: (params: Json) => backend('POST', '/equity', params),
 
   // Databases
@@ -193,6 +218,7 @@ export const ipcService = {
   },
   getExportSummary: () => backend<ExportBucket[]>('GET', '/db/export-summary'),
   exportData: (dialogTitle: string, filter: ExportFilter) => command<ApiResult>('export_data', { dialogTitle, filter }),
+  saveTextFile: (dialogTitle: string, defaultName: string, content: string) => command<ApiResult>('save_text_file', { dialogTitle, defaultName, content }),
   checkServerStatus: () => command<ApiResult>('check_server_status'),
   openLogsFolder: () => command<ApiResult>('open_logs_folder'),
   getAppVersion: async (): Promise<string | null> => {
