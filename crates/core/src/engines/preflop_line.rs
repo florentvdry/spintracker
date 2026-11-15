@@ -37,8 +37,10 @@ pub fn player_positions(map: &str) -> HashMap<String, String> {
 }
 
 /// The verb of an action text, when it is a betting action.
-fn verb_of(content: &str) -> Option<&'static str> {
-    if content.contains("all-in") {
+fn verb_of(content: &str, calls_stay_calls: bool) -> Option<&'static str> {
+    if calls_stay_calls && content.contains("calls") {
+        Some("call")
+    } else if content.contains("all-in") {
         Some("all-in")
     } else if content.contains("raises") {
         Some("raise")
@@ -58,12 +60,22 @@ fn verb_of(content: &str) -> Option<&'static str> {
 
 /// The preflop actions as "POSITION:verb" in order, posts excluded.
 pub fn preflop_sequence(preflop: &str, positions: &str) -> Vec<String> {
+    sequence_of(preflop, positions, false)
+}
+
+/// Like `preflop_sequence`, but a call that puts the whole stack in stays a call: a range compares
+/// what was done (call or shove), not whether the caller had enough chips left.
+pub fn betting_sequence(preflop: &str, positions: &str) -> Vec<String> {
+    sequence_of(preflop, positions, true)
+}
+
+fn sequence_of(preflop: &str, positions: &str, calls_stay_calls: bool) -> Vec<String> {
     let seats = player_positions(positions);
     let mut out = Vec::new();
     for line in preflop.split('\n').filter(|l| !l.is_empty()) {
         let Some((player, content)) = split_player_and_content(line) else { continue };
         let Some(position) = seats.get(&player.to_lowercase()) else { continue };
-        let Some(verb) = verb_of(&content) else { continue };
+        let Some(verb) = verb_of(&content, calls_stay_calls) else { continue };
         out.push(format!("{position}:{verb}"));
     }
     out
@@ -100,5 +112,12 @@ mod tests {
     fn the_sequence_skips_posts() {
         let preflop = "SB: Posts SB 10\nBB: Posts BB 20\nHero: Folds\nSB: Calls 10";
         assert_eq!(preflop_sequence(preflop, SEATS), vec!["BTN:fold", "SB:call"]);
+    }
+
+    #[test]
+    fn a_call_for_the_whole_stack_is_a_call_in_the_betting_sequence_only() {
+        let preflop = "Hero: Raises to 500 and is all-in\nSB: Calls 300 and is all-in";
+        assert_eq!(preflop_sequence(preflop, SEATS), vec!["BTN:all-in", "SB:all-in"]);
+        assert_eq!(betting_sequence(preflop, SEATS), vec!["BTN:all-in", "SB:call"]);
     }
 }

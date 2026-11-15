@@ -6,7 +6,7 @@
 use std::collections::HashMap;
 
 use crate::engines::actions::{parse_actions, raise_size_bb, ActionKind};
-use crate::engines::preflop_line::{player_positions, preflop_sequence};
+use crate::engines::preflop_line::{betting_sequence, player_positions};
 use crate::engines::range_scenarios::{canonical_line, pick_scenario, Candidate, DepthRule};
 use crate::repos::heatmap::normalize_cards;
 use crate::util::eq_ic;
@@ -155,8 +155,22 @@ fn response_of(verb: &str) -> &'static str {
     }
 }
 
+/// Whether the last raise before the hero's second action was an all-in.
+fn answered_raise_is_all_in(seq: &[String], first: usize, seat: &str) -> bool {
+    let own = |entry: &String| entry.split(':').next().is_some_and(|pos| pos.eq_ignore_ascii_case(seat));
+    let Some(answer) = seq.iter().skip(first + 1).position(own).map(|i| first + 1 + i) else { return false };
+    seq[first + 1..answer].iter().rev().find(|e| is_raise_like(verb_of(e))).is_some_and(|e| verb_of(e) == "all-in")
+}
+
+/// Below this stack (in big blinds) the hero has no real choice.
+const MIN_DECISION_STACK_BB: f64 = 1.0;
+
 /// Compares the hero's first preflop action (and the answer to a raise) with the range.
 pub fn evaluate(input: &DecisionInput, book: &RangeBook) -> Check {
+    // Without a full big blind behind, the blinds already put the hero all-in: nothing to decide.
+    if input.stack_bb < MIN_DECISION_STACK_BB {
+        return Check::skipped();
+    }
     let (Some(seat), Some(cards)) = (seat_of(input.hero_position), input.cards) else { return Check::skipped() };
     let Some(hand_class) = normalize_cards(cards) else { return Check::skipped() };
     let format = match player_positions(input.positions).len() {
@@ -165,7 +179,7 @@ pub fn evaluate(input: &DecisionInput, book: &RangeBook) -> Check {
         _ => return Check::skipped(),
     };
 
-    let seq = preflop_sequence(input.preflop, input.positions);
+    let seq = betting_sequence(input.preflop, input.positions);
     let own = |entry: &String| entry.split(':').next().is_some_and(|pos| pos.eq_ignore_ascii_case(seat));
     let Some(first) = seq.iter().position(own) else { return Check::skipped() };
     let first_verb = verb_of(&seq[first]).to_string();
@@ -207,8 +221,17 @@ pub fn evaluate(input: &DecisionInput, book: &RangeBook) -> Check {
     check.expected_action_id = Some(action.id);
     check.depth_used_bb = Some(candidate.stack_bb);
 
+    // A call that uses the whole stack is a shove in everything but name.
+    let hero_stacks_off: Vec<bool> = parse_actions(input.preflop)
+        .iter()
+        .filter(|a| eq_ic(&a.player, input.hero_name) && a.kind != ActionKind::Post)
+        .map(|a| a.kind == ActionKind::Call && a.is_all_in)
+        .collect();
+    let stacks_off_at = |n: usize| hero_stacks_off.get(n).copied().unwrap_or(false);
+
     let mut kind = None;
-    if !immediate_matches(&action.immediate, played_immediate) {
+    let calls_all_in_as_planned = action.immediate == "allin" && matches!(played_immediate, "call" | "limp") && stacks_off_at(0);
+    if !immediate_matches(&action.immediate, played_immediate) && !calls_all_in_as_planned {
         kind = Some("immediate");
     } else if played_immediate == "raise" {
         let played_size = parse_actions(input.preflop)
@@ -223,7 +246,9 @@ pub fn evaluate(input: &DecisionInput, book: &RangeBook) -> Check {
     }
     if kind.is_none() && action.response != "none" {
         if let Some(answer) = &played_response {
-            if *answer != action.response {
+            // Calling a raise that is already all-in, or with the whole stack, is the planned all-in.
+            let calls_a_shove = answer == "call" && action.response == "allin" && (answered_raise_is_all_in(&seq, first, seat) || stacks_off_at(1));
+            if *answer != action.response && !calls_a_shove {
                 kind = Some("response");
             }
         }
@@ -314,6 +339,82 @@ Sb: Folds"), "Ah Kc"), &book());
         assert_eq!((call.played_immediate.as_str(), call.played_response.as_deref()), ("raise", Some("call")));
         let fold = evaluate(&input(&format!("{LIMP}\nHero: Raises 40 to 60\nSb: Raises 80 to 140\nHero: Folds"), "Ah Kc"), &book());
         assert_eq!(fold.status, Status::Match);
+    }
+
+    fn book_planning_to_stack_off() -> RangeBook {
+        let mut b = book();
+        b.actions.insert(4, action(4, "ISO/BROKE", "iso", "allin"));
+        b.hands.get_mut(&7).expect("scenario 7 exists").insert("AKo".into(), 4);
+        b
+    }
+
+    #[test]
+    fn calling_a_shove_follows_a_planned_all_in_answer() {
+        let preflop = format!("{LIMP}\nHero: Raises 40 to 60\nSb: Raises 400 to 460 and is all-in\nHero: Calls 400");
+        let check = evaluate(&input(&preflop, "Ah Kc"), &book_planning_to_stack_off());
+        assert_eq!((check.status, check.played_response.as_deref()), (Status::Match, Some("call")));
+    }
+
+    #[test]
+    fn calling_a_raise_that_is_not_all_in_still_deviates_from_a_planned_all_in_answer() {
+        let preflop = format!("{LIMP}\nHero: Raises 40 to 60\nSb: Raises 80 to 140\nHero: Calls 80");
+        let check = evaluate(&input(&preflop, "Ah Kc"), &book_planning_to_stack_off());
+        assert_eq!((check.status, check.deviation_kind), (Status::Deviation, Some("response")));
+    }
+
+    /// Hero in the BB at 10 bb: everything = Call, AKo = Shove (a re-raise all-in), 72o = Fold.
+    fn book_against_an_open(line: &str) -> RangeBook {
+        let mut range: HashMap<String, i64> = HashMap::new();
+        for hand in crate::engines::range_scenarios::hand_classes() {
+            range.insert(hand, 1);
+        }
+        range.insert("AKo".into(), 3);
+        range.insert("72o".into(), 4);
+        RangeBook {
+            candidates: vec![Candidate { scenario_id: 9, spot_id: 1, format: "3max".into(), line: line.into(), opponent: "any".into(), stack_bb: 10.0 }],
+            actions: HashMap::from([(1, action(1, "CALL", "call", "none")), (3, action(3, "SHOVE", "allin", "none")), (4, action(4, "FOLD", "fold", "none"))]),
+            hands: HashMap::from([(9, range)]),
+            rule: Some(DepthRule::Nearest),
+        }
+    }
+
+    #[test]
+    fn calling_an_open_with_the_whole_stack_is_still_a_call() {
+        let preflop = "Btn: Raises 40 to 60\nSb: Folds\nHero: Calls 140 and is all-in";
+        let check = evaluate(&input(preflop, "7h 2c"), &book_against_an_open("btn:raise,sb:fold"));
+        assert_eq!((check.status, check.played_immediate.as_str()), (Status::Deviation, "call"), "the plan is Fold");
+        let calling = evaluate(&input(preflop, "9h 9c"), &book_against_an_open("btn:raise,sb:fold"));
+        assert_eq!((calling.status, calling.played_immediate.as_str()), (Status::Match, "call"));
+    }
+
+    #[test]
+    fn calling_all_in_for_less_follows_a_planned_shove() {
+        let preflop = "Btn: Raises 40 to 60\nSb: Folds\nHero: Calls 140 and is all-in";
+        let check = evaluate(&input(preflop, "Ah Kc"), &book_against_an_open("btn:raise,sb:fold"));
+        assert_eq!(check.status, Status::Match);
+    }
+
+    #[test]
+    fn an_opponent_calling_all_in_is_read_as_a_call_in_the_line() {
+        let preflop = "Btn: Raises 40 to 60\nSb: Calls 30 and is all-in\nHero: Folds";
+        let check = evaluate(&input(preflop, "7h 2c"), &book_against_an_open("btn:raise,sb:call"));
+        assert_eq!((check.status, check.line.as_str()), (Status::Match, "btn:raise,sb:call"));
+    }
+
+    #[test]
+    fn a_hero_left_with_less_than_a_big_blind_has_no_decision() {
+        let preflop = "Hero: Posts BB 20\nSb: Calls 10 and is all-in";
+        let check = evaluate(&DecisionInput { stack_bb: 0.5, ..input(preflop, "3h 3c") }, &book());
+        assert_eq!(check.status, Status::Skipped);
+    }
+
+    #[test]
+    fn limping_all_in_follows_a_planned_shove() {
+        let mut b = book();
+        b.actions.insert(5, action(5, "SHOVE", "allin", "none"));
+        b.hands.get_mut(&7).expect("scenario 7 exists").insert("33".into(), 5);
+        let check = evaluate(&input(&format!("{LIMP}\nHero: Calls 10 and is all-in"), "3h 3c"), &b);
+        assert_eq!(check.status, Status::Match);
     }
 
     #[test]
