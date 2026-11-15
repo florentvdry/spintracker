@@ -978,6 +978,7 @@
   "ranges": {
     "tabs": {
       "editor": "Éditeur",
+      "overview": "Visualiser",
       "adherence": "Respect de ta range",
       "training": "Training",
       "review": "Révision"
@@ -1062,10 +1063,12 @@
     },
     "tree": {
       "program": "Programme",
+      "format": "Format",
       "allRanges": "Toutes mes ranges · {{count}} scénarios",
       "newProgram": "+ Nouveau programme",
       "editProgram": "Modifier le programme",
       "empty": "Aucun scénario",
+      "emptyFormat": { "3max": "Aucun scénario à 3 joueurs pour l’instant", "hu": "Aucun scénario heads-up pour l’instant" },
       "studyOnly": "à regarder",
       "newScenario": "+ Nouveau scénario",
       "menu": {
@@ -1097,8 +1100,27 @@
       "modify": "Modifier",
       "removeDepth": "Retirer cette profondeur"
     },
+    "overview": {
+      "title": "Tes ranges en un coup d'œil",
+      "open": "Afficher {{name}} à {{depth}} bb",
+      "edit": "Modifier",
+      "pick": "Choisis une range dans le tableau.",
+      "empty": "Crée ou importe d'abord des ranges : elles apparaîtront toutes ici."
+    },
+    "exportDialog": {
+      "title": "Exporter des ranges",
+      "help": "Choisis les situations et les stacks à mettre dans le fichier. Seules les actions et les programmes qu'elles utilisent sont gardés.",
+      "all": "Tout cocher",
+      "none": "Tout décocher",
+      "count": "{{selected}} stacks sur {{total}}",
+      "confirm": "Exporter",
+      "selectGroup": "Cocher toutes les ranges {{name}}",
+      "selectSpot": "Cocher {{name}}",
+      "selectDepth": "{{name}} à {{depth}} bb"
+    },
     "fileCard": {
-      "title": "Fichier",
+      "dialogTitle": "Exporter mes ranges",
+      "exported": "Ranges exportées",
       "help": "Sauvegarde ou partage tes ranges (format SpinTracker .json).",
       "import": "Importer",
       "export": "Exporter"
@@ -1155,8 +1177,7 @@
     "empty": {
       "title": "Construis tes ranges",
       "body": "Choisis une situation, tes profondeurs et peins tes mains avec tes propres actions.",
-      "create": "Créer mon premier scénario",
-      "import": "Importer un fichier SpinTracker"
+      "create": "Créer mon premier scénario"
     },
     "settings": {
       "title": "Mes ranges",
@@ -1189,24 +1210,41 @@
     "adherence": {
       "noHero": "Choisis un héros pour comparer tes mains à tes ranges.",
       "noRanges": "Construis au moins un scénario dans l’éditeur pour le comparer à tes mains.",
-      "noHands": "Aucune main avec une décision connue sur cette période.",
-      "periods": {
-        "7": "7 jours",
-        "30": "30 jours",
-        "all": "Tout"
+      "loading": {
+        "title": "Comparaison de tes mains avec tes ranges…",
+        "hint": "La première analyse d’un gros historique peut prendre un moment. Elle n’est refaite que lorsque tu modifies tes ranges.",
+        "detail": "Lecture de ce scénario…"
       },
+      "failed": "La comparaison n’a pas pu être lue.",
+      "retry": "Réessayer",
+      "report": {
+        "respect": "Respect de tes ranges",
+        "respectHint": "des décisions comparées suivent ta range",
+        "lowSample": "Sous 300 décisions : une tendance, pas une note",
+        "compared": "Décisions comparées",
+        "comparedHint": "celles qui ont une range",
+        "deviations": "Écarts",
+        "deviationsHint": "pas ce que tu avais prévu, dont {{count}} sur la réponse à une relance",
+        "noRange": "Sans range",
+        "noRangeHint": "{{count}} décisions, clique pour voir où",
+        "opponentLabel": "Adversaires",
+        "opponents": {
+          "all": "Tous",
+          "any": "Fish",
+          "reg": "Réguliers"
+        },
+        "tableTitle": "Par position et par range",
+        "seat": {
+          "BTN": "Bouton",
+          "SB": "Petite blinde",
+          "BB": "Grosse blinde"
+        },
+        "groupLabel": "{{position}} : {{value}} % de ta range respectée",
+        "uncoveredInGroup": "{{count}} décisions sans range"
+      },
+      "noHands": "Aucune main avec une décision connue sur cette période.",
       "betweenDepths": "Entre deux profondeurs :",
       "note": "Un écart = « pas ce que tu avais prévu », pas une erreur.",
-      "tiles": {
-        "respect": "Respect de ta range",
-        "respectHint": "sur les décisions couvertes par une range",
-        "compared": "Décisions comparées",
-        "comparedHint": "préflop, héros",
-        "deviations": "Écarts",
-        "deviationsHint": "dont {{count}} sur la réponse prévue",
-        "noRange": "Sans range",
-        "noRangeHint": "aucun scénario proche · {{count}} lignes fréquentes"
-      },
       "noUncovered": "Toutes les décisions sont couvertes par un scénario.",
       "createScenario": "Créer ce scénario",
       "byScenario": "Par scénario",
@@ -1220,9 +1258,15 @@
       },
       "playedBetween": "mains jouées entre {{min}} et {{max}} bb",
       "gridLabel": "Écarts par rapport à {{name}}",
+      "tip": {
+        "planned": "Prévu",
+        "played": "Joué à la place",
+        "followed": "Respecté",
+        "never": "Pas jouée sur cette période"
+      },
       "legendDeviation": "écart (nombre)",
       "latest": "Derniers écarts",
-      "latestCount": "{{count}} sur {{period}}",
+      "latestCount": "{{count}} sur la période choisie",
       "noDeviation": "Aucun écart sur cette période.",
       "replay": "Replayer →",
       "train": "S’entraîner sur ces {{count}} écarts"
@@ -1317,6 +1361,108 @@
         "mastered": "Maîtrisées",
         "due": "À revoir aujourd’hui",
         "last": "Dernière session"
+      }
+    },
+    "tour": {
+      "title": "Mes ranges : visite rapide",
+      "open": "Visite rapide",
+      "progress": "{{current}} / {{total}}",
+      "next": "Suivant",
+      "back": "Retour",
+      "skip": "Passer",
+      "gridLabel": "Grille d’entraînement",
+      "painted": "{{count}} mains peintes (essaie d’en peindre {{target}} ou plus)",
+      "actions": {
+        "shove": "Shove",
+        "fold": "Fold"
+      },
+      "fromScratch": "Partir de zéro",
+      "loadExamples": "Charger des ranges d’exemple",
+      "examplesLoaded": "Ranges d’exemple ajoutées. Modifie-les selon ta propre stratégie.",
+      "examplesNote": "Ça ajoute {{spots}} spots ({{scenarios}} scénarios, 3-max, de 8 à 20 bb) typiques du Spin & Go. Ce sont des illustrations approximatives pour démarrer, pas une recommandation : modifie-les ou supprime-les quand tu veux.",
+      "steps": {
+        "layout": {
+          "title": "Quatre onglets, un seul parcours",
+          "body": "L’app ne fournit aucune range : tout ici est ton propre plan, et le reste de l’onglet te mesure par rapport à lui.",
+          "points": [
+            "Éditeur : construis tes ranges. Les scénarios à gauche, la grille au centre, le scénario et les actions à droite. L'import et l'export sont en haut, à côté de l'aide.",
+            "Respect de ta range : compare tes vraies mains à tes ranges.",
+            "Training : te quizze sur tes propres ranges.",
+            "Révision : te repose les mains ratées, à intervalles espacés."
+          ]
+        },
+        "palette": {
+          "title": "Tes actions forment la palette",
+          "body": "Chaque case d’une range prend une de tes actions. La carte à droite les liste avec le nombre de mains de chacune.",
+          "points": [
+            "Une action a un nom, une couleur, un premier geste (fold, call, raise, all-in…) et, pour une relance, une taille.",
+            "Pour une relance, tu peux aussi prévoir la réponse à une re-relance : fold, call ou all-in. Elle est vérifiée dans le suivi et dans le quiz.",
+            "« Nouvelle action » en ajoute une. Dans Réglages > Mes ranges, tu peux réordonner, modifier et supprimer les actions, et régler les profondeurs proposées."
+          ]
+        },
+        "paint": {
+          "title": "Peindre une range",
+          "body": "Choisis une action, puis peins. Essaie sur cette grille d’entraînement : rien n’est enregistré.",
+          "points": [
+            "Pinceau : clic ou glisser. Maj + clic peint toute une ligne.",
+            "Rectangle : clique deux coins. Pipette : reprend l’action d’une case.",
+            "Ctrl+Z / Ctrl+Maj+Z annulent et rétablissent. Les cases modifiées ont un contour blanc jusqu’à l’enregistrement.",
+            "La pastille au-dessus de la grille indique combien des 169 mains sont renseignées ; clique dessus pour repérer les manquantes."
+          ]
+        },
+        "scenarios": {
+          "title": "Spots et profondeurs",
+          "body": "« Nouveau scénario » ouvre un assistant. Un spot est une situation ; chaque spot a une range par profondeur de tapis.",
+          "points": [
+            "Un spot = format (3-max ou heads-up), ta position et ce qui s’est passé avant toi (fold, limp, relance, tapis).",
+            "Adversaire : n’importe lequel, ou une variante reg utilisée en priorité quand l’adversaire est un reg.",
+            "« À regarder seulement » garde une range hors du suivi et de la révision.",
+            "Ajoute des profondeurs à un spot, et copie une autre profondeur pour partir de celle-ci. Une main jouée à une profondeur intermédiaire suit la règle des Réglages (la plus proche ou en dessous)."
+          ]
+        },
+        "organize": {
+          "title": "Programmes et fichiers",
+          "body": "Regroupe des spots en programmes pour les travailler ensemble, et déplace ton travail avec des fichiers.",
+          "points": [
+            "Un programme est une liste ordonnée de spots, par exemple tout ce que tu joues à 10 bb. Le quiz et la révision peuvent se concentrer sur un seul.",
+            "Duplique un spot pour essayer une variante sans toucher à l’original.",
+            "Exporter écrit toutes tes ranges dans un fichier JSON ; importer fusionne un fichier ou remplace tout, en t’indiquant d’abord ce qui va se passer."
+          ]
+        },
+        "adherence": {
+          "title": "Respect de ta range",
+          "body": "Chaque décision préflop réelle est comparée à la range de sa situation et de sa profondeur.",
+          "points": [
+            "Conforme, ou écart : « pas ce que tu avais prévu », jamais une erreur. Une autre action, une autre taille ou une autre réponse à une relance comptent.",
+            "Les mains sans range sont listées, pour savoir quel scénario créer ensuite.",
+            "Un badge d’écart apparaît dans le replayer et dans l’historique, où tu peux aussi filtrer dessus.",
+            "Un écart est une bonne raison de remettre la range en question, ou de t’entraîner sur cette main."
+          ]
+        },
+        "training": {
+          "title": "Training",
+          "body": "Le quiz montre une main dans un spot et demande l’action de ta range.",
+          "points": [
+            "Sources : un scénario, un programme, ou tes écarts réels.",
+            "Les touches chiffres choisissent l’action ; pour une relance, tu réponds aussi à la re-relance (C call, F fold, A all-in).",
+            "Une main en bord de range (une voisine sur la grille a une autre action) tombe plus souvent.",
+            "Après chaque réponse, tu vois la bonne action et toute la range."
+          ]
+        },
+        "review": {
+          "title": "Révision",
+          "body": "Répétition espacée, avec une carte par main et par scénario, en 5 boîtes.",
+          "points": [
+            "Une bonne réponse fait passer la carte à la boîte suivante (retour après 1, 3, 7 puis 21 jours) ; un raté la renvoie en boîte 1.",
+            "Chaque jour tu reçois les cartes à revoir, plus quelques nouvelles (réglage dans Réglages > Mes ranges).",
+            "Les nouvelles cartes commencent par les mains limites, puis les mains que tu reçois le plus souvent.",
+            "La page affiche aussi ton taux de réussite, les cartes maîtrisées et les mains les plus ratées."
+          ]
+        },
+        "start": {
+          "title": "Prêt à commencer ?",
+          "body": "Pars d’une page vide, ou charge des ranges d’exemple pour voir chaque écran rempli."
+        }
       }
     }
   }

@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -137,43 +136,6 @@ export function ScenarioCard({ spot, scenarioId, onEdit, onAddDepth, onRemoveDep
           {t('ranges.scenarioCard.removeDepth')}
         </button>
       )}
-    </div>
-  )
-}
-
-interface FileCardProps {
-  onImportText: (content: string) => void
-  onExport: () => void
-}
-
-/** "Fichier": save or share the ranges as a SpinTracker .json file. */
-export function FileCard({ onImportText, onExport }: FileCardProps) {
-  const { t } = useTranslation()
-  const input = useRef<HTMLInputElement>(null)
-  return (
-    <div className="card p-4">
-      <h3 className="text-[15px] font-semibold text-gray-100 mb-2">{t('ranges.fileCard.title')}</h3>
-      <p className="text-[13px] text-gray-400 mb-3">{t('ranges.fileCard.help')}</p>
-      <div className="grid grid-cols-2 gap-2">
-        <button className="btn-secondary" onClick={() => input.current?.click()}>
-          {t('ranges.fileCard.import')}
-        </button>
-        <button className="btn-secondary" onClick={onExport}>
-          {t('ranges.fileCard.export')}
-        </button>
-      </div>
-      <input
-        ref={input}
-        type="file"
-        accept=".json,application/json"
-        className="hidden"
-        aria-label={t('ranges.fileCard.import')}
-        onChange={(e) => {
-          const file = e.target.files?.[0]
-          e.target.value = ''
-          if (file) void file.text().then(onImportText)
-        }}
-      />
     </div>
   )
 }

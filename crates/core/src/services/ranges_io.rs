@@ -44,8 +44,9 @@ fn ids_of(tx: &rusqlite::Transaction, sql: &str, id: i64) -> Res<Vec<i64>> {
 
 type SpotRow = (i64, String, String, String, String, Option<String>, String, bool);
 
-/// The whole range data as the JSON file format.
-pub fn export(conn: &Connection) -> Res<Value> {
+/// The range data as the JSON file format. With `only`, just those scenarios (depths) are written,
+/// with the spots, actions and programs they need.
+pub fn export(conn: &Connection, only: Option<&HashSet<i64>>) -> Res<Value> {
     let mut labels: HashMap<i64, String> = HashMap::new();
     let mut actions = Vec::new();
     {
@@ -60,6 +61,7 @@ pub fn export(conn: &Connection) -> Res<Value> {
     }
 
     let mut spot_names: HashMap<i64, String> = HashMap::new();
+    let mut used_labels: HashSet<String> = HashSet::new();
     let mut spots = Vec::new();
     let spot_rows: Vec<SpotRow> = {
         let mut stmt = conn.prepare("SELECT id, name, format, hero_position, line, line_sizes, opponent, study_only FROM range_spots ORDER BY id")?;
@@ -75,14 +77,19 @@ pub fn export(conn: &Connection) -> Res<Value> {
             rows
         };
         let mut scenarios = Vec::new();
-        for (scenario_id, stack) in depth_rows {
+        for (scenario_id, stack) in depth_rows.into_iter().filter(|(id, _)| only.map_or(true, |chosen| chosen.contains(id))) {
             let mut hands = BTreeMap::new();
             let mut hand_stmt = conn.prepare("SELECT hand, action_id FROM range_hands WHERE scenario_id = ?1")?;
             for row in hand_stmt.query_map([scenario_id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?)))? {
                 let (hand, action) = row?;
-                hands.insert(hand, labels.get(&action).cloned().unwrap_or_default());
+                let label = labels.get(&action).cloned().unwrap_or_default();
+                used_labels.insert(label.clone());
+                hands.insert(hand, label);
             }
             scenarios.push(json!({ "stackBb": stack, "hands": hands }));
+        }
+        if only.is_some() && scenarios.is_empty() {
+            continue;
         }
         spots.push(json!({
             "name": name, "format": format, "heroPosition": hero, "line": line,
@@ -96,14 +103,17 @@ pub fn export(conn: &Connection) -> Res<Value> {
         .map(|items| {
             items
                 .iter()
-                .map(|p| {
+                .filter_map(|p| {
                     let names: Vec<Value> = p["spotIds"].as_array().into_iter().flatten().filter_map(Value::as_i64).filter_map(|id| spot_names.get(&id)).map(|n| json!(n)).collect();
-                    json!({ "name": p["name"], "spots": names })
+                    (only.is_none() || !names.is_empty()).then(|| json!({ "name": p["name"], "spots": names }))
                 })
                 .collect()
         })
         .unwrap_or_default();
 
+    if only.is_some() {
+        actions.retain(|a| a["label"].as_str().is_some_and(|label| used_labels.contains(label)));
+    }
     Ok(json!({ "format": FORMAT, "version": VERSION, "actions": actions, "spots": spots, "programs": programs }))
 }
 
@@ -386,13 +396,44 @@ mod tests {
         let report = import(&mut conn, FIXTURE, ImportMode::Replace, false).unwrap();
         assert_eq!(report["warnings"], json!([]), "the fixture is a complete, valid file");
         assert_eq!((report["spots"].as_i64(), report["scenarios"].as_i64(), report["programs"].as_i64()), (Some(3), Some(4), Some(1)));
-        let first = export(&conn).unwrap();
+        let first = export(&conn, None).unwrap();
 
         let mut other = db();
         import(&mut other, &first.to_string(), ImportMode::Replace, false).unwrap();
-        assert_eq!(export(&other).unwrap(), first);
+        assert_eq!(export(&other, None).unwrap(), first);
         assert_eq!(first["actions"].as_array().unwrap().len(), 4);
         assert_eq!(count(&conn, "range_hands"), 4 * 169);
+    }
+
+    #[test]
+    fn exporting_chosen_depths_keeps_only_what_they_need() {
+        let mut conn = db();
+        import(&mut conn, FIXTURE, ImportMode::Replace, false).unwrap();
+        let first: i64 = conn.query_row("SELECT id FROM range_scenarios ORDER BY id LIMIT 1", [], |r| r.get(0)).unwrap();
+        let chosen = HashSet::from([first]);
+        let file = export(&conn, Some(&chosen)).unwrap();
+
+        let spots = file["spots"].as_array().unwrap();
+        assert_eq!(spots.len(), 1, "only the spot of the chosen depth");
+        assert_eq!(spots[0]["scenarios"].as_array().unwrap().len(), 1);
+        let kept = file["actions"].as_array().unwrap().len();
+        assert!(kept >= 1 && kept < 4, "only the actions the chosen hands use, got {kept}");
+        for program in file["programs"].as_array().unwrap() {
+            assert_eq!(program["spots"].as_array().unwrap().len(), 1, "a program lists only exported spots");
+        }
+
+        let mut other = db();
+        let report = import(&mut other, &file.to_string(), ImportMode::Replace, false).unwrap();
+        assert_eq!(report["warnings"], json!([]));
+        assert_eq!(export(&other, None).unwrap(), file);
+    }
+
+    #[test]
+    fn exporting_no_depth_at_all_gives_an_empty_file() {
+        let mut conn = db();
+        import(&mut conn, FIXTURE, ImportMode::Replace, false).unwrap();
+        let file = export(&conn, Some(&HashSet::new())).unwrap();
+        assert_eq!((file["spots"].as_array().unwrap().len(), file["programs"].as_array().unwrap().len()), (0, 0));
     }
 
     #[test]

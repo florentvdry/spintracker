@@ -164,13 +164,13 @@ export const ipcService = {
   deleteRangeProgram: (id: number) => backend('DELETE', `/ranges/programs/${id}`),
   getRangeSettings: () => backend('GET', '/ranges/settings'),
   saveRangeSettings: (patch: Json) => backend('POST', '/ranges/settings', patch),
-  getRangeAdherence: (heroName: string, from?: string | null, to?: string | null) => backend('GET', `/ranges/adherence${query({ heroName, from, to })}`),
+  getRangeAdherence: (heroName: string, from?: string | null, to?: string | null, opponent?: string | null) => backend('GET', `/ranges/adherence${query({ heroName, from, to, opponent })}`),
   getRangeAdherenceScenario: (scenarioId: number, heroName: string, from?: string | null, to?: string | null) =>
     backend('GET', `/ranges/adherence/${scenarioId}${query({ heroName, from, to })}`),
   getReview: (heroName?: string | null) => backend('GET', `/ranges/review${query({ heroName })}`),
   getQuizQuestion: (body: Json) => backend('POST', '/ranges/training/question', body),
   checkQuizAnswer: (body: Json) => backend('POST', '/ranges/training/answer', body),
-  exportRanges: () => backend('GET', '/ranges/export'),
+  exportRanges: (scenarioIds?: readonly number[]) => backend('GET', '/ranges/export' + query({ scenarioIds: scenarioIds?.join(',') })),
   importRanges: (content: string, mode: 'replace' | 'merge', dryRun = false) => backend('POST', '/ranges/import', { content, mode, dryRun }),
   calculateEquity: (params: Json) => backend('POST', '/equity', params),
 
@@ -218,6 +218,7 @@ export const ipcService = {
   },
   getExportSummary: () => backend<ExportBucket[]>('GET', '/db/export-summary'),
   exportData: (dialogTitle: string, filter: ExportFilter) => command<ApiResult>('export_data', { dialogTitle, filter }),
+  saveTextFile: (dialogTitle: string, defaultName: string, content: string) => command<ApiResult>('save_text_file', { dialogTitle, defaultName, content }),
   checkServerStatus: () => command<ApiResult>('check_server_status'),
   openLogsFolder: () => command<ApiResult>('open_logs_folder'),
   getAppVersion: async (): Promise<string | null> => {

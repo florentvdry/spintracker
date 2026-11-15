@@ -138,8 +138,8 @@ pub fn ensure_computed(conn: &mut Connection, hero: &str) -> Result<usize> {
         let mut insert = tx.prepare(
             "INSERT OR REPLACE INTO hand_range_checks
                (hand_id, hero_name, played_at, scenario_id, hand_class, cards, format, hero_position, line, expected_action_id,
-                played_immediate, played_response, status, deviation_kind, depth_used_bb, stack_bb, ev_bb, computed_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18)",
+                played_immediate, played_response, status, deviation_kind, depth_used_bb, stack_bb, ev_bb, computed_at, vs_reg)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19)",
         )?;
         let now = user_ranges::now();
         for hand in &missing {
@@ -167,7 +167,8 @@ pub fn ensure_computed(conn: &mut Connection, hero: &str) -> Result<usize> {
                 check.depth_used_bb,
                 stack_bb,
                 ev_bb(hand),
-                now
+                now,
+                opponent_is_reg(&regulars, hand, hand.hero_name.as_deref())
             ])?;
         }
     }
@@ -184,6 +185,12 @@ fn skipped_check() -> Check {
 // Reading
 // ---------------------------------------------------------------------------------------------
 
+/// A date bound as the stored rows write it: the app's filters send "2026-11-01 00:00:00" while
+/// `played_at` keeps the ISO "T", and the two only compare correctly in one format.
+fn stored_bound(bound: &str) -> String {
+    bound.replacen(' ', "T", 1)
+}
+
 /// Period and hero of a read: the SQL conditions on the stored rows and their parameters.
 struct Scope {
     clauses: Vec<String>,
@@ -196,10 +203,10 @@ impl Scope {
         let mut binds = vec![("@hero".to_string(), SqlValue::Text(hero.to_string()))];
         if let Some(from) = from.filter(|f| !f.is_empty()) {
             clauses.push("c.played_at >= @from".into());
-            binds.push(("@from".into(), SqlValue::Text(from.to_string())));
+            binds.push(("@from".into(), SqlValue::Text(stored_bound(from))));
         }
         if let Some(to) = to.filter(|t| !t.is_empty()) {
-            let to = if to.len() == 10 { format!("{to}T23:59:59") } else { to.to_string() };
+            let to = if to.len() == 10 { format!("{to}T23:59:59") } else { stored_bound(to) };
             clauses.push("c.played_at <= @to".into());
             binds.push(("@to".into(), SqlValue::Text(to)));
         }
@@ -226,8 +233,46 @@ impl Scope {
     }
 }
 
+/// The opponent filter of a read: "any" (fish), "reg", or none for both.
+fn opponent_clause(opponent: Option<&str>) -> Option<&'static str> {
+    match opponent {
+        Some("any") => Some("c.vs_reg = 0"),
+        Some("reg") => Some("c.vs_reg = 1"),
+        _ => None,
+    }
+}
+
+/// Counts of the stored rows by status.
+#[derive(Default, Clone, Copy)]
+struct Tally {
+    matches: i64,
+    deviations: i64,
+    no_range: i64,
+}
+
+impl Tally {
+    fn add(&mut self, status: &str, n: i64) {
+        match status {
+            "match" => self.matches += n,
+            "deviation" => self.deviations += n,
+            _ => self.no_range += n,
+        }
+    }
+
+    fn json(self) -> Value {
+        json!({ "compared": self.matches + self.deviations, "matches": self.matches, "deviations": self.deviations, "noRange": self.no_range })
+    }
+}
+
+/// Seat order of the report: 3-handed first, then heads-up.
+fn position_rank(format: &str, position: &str) -> usize {
+    let seats = ["BTN", "SB", "BB"];
+    let seat = seats.iter().position(|s| *s == position).unwrap_or(seats.len());
+    (usize::from(format == "hu") * seats.len()) + seat
+}
+
 /// The palette action that stands for what was played, if the player has one.
-fn played_action_id(book: &RangeBook, played: &str) -> Option<i64> {
+fn played_action_id(book: &RangeBook, played: &str, response: Option<&str>) -> Option<i64> {
     let families: &[&str] = match played {
         "fold" => &["fold"],
         "check" => &["check"],
@@ -239,7 +284,12 @@ fn played_action_id(book: &RangeBook, played: &str) -> Option<i64> {
     };
     let mut actions: Vec<&ActionDef> = book.actions.values().collect();
     actions.sort_by_key(|a| a.id);
-    families.iter().find_map(|family| actions.iter().find(|a| a.immediate == *family).map(|a| a.id))
+    // Several actions can share an immediate play (LIMP/FOLD, LIMP/CALL...): the answer tells them apart.
+    families.iter().find_map(|family| {
+        let same_play = || actions.iter().filter(|a| a.immediate == *family);
+        let by_answer = response.and_then(|answer| same_play().find(|a| a.response == answer));
+        by_answer.or_else(|| same_play().next()).map(|a| a.id)
+    })
 }
 
 fn action_json(book: &RangeBook, conn: &Connection, id: i64) -> Value {
@@ -251,9 +301,46 @@ fn action_json(book: &RangeBook, conn: &Connection, id: i64) -> Value {
 }
 
 /// Totals, "without a range" lines and the table by scenario.
-pub fn adherence(conn: &Connection, hero: &str, from: Option<&str>, to: Option<&str>) -> Result<Value> {
+pub fn adherence(conn: &Connection, hero: &str, from: Option<&str>, to: Option<&str>, opponent: Option<&str>) -> Result<Value> {
     let book = load_book(conn)?;
-    let scope = Scope::new(hero, from, to);
+    let mut scope = Scope::new(hero, from, to);
+    if let Some(clause) = opponent_clause(opponent) {
+        scope = scope.and_clause(clause);
+    }
+    let period = Scope::new(hero, from, to);
+
+    // Fish and regulars, whatever the opponent filter: they are the switch of the report.
+    let mut by_kind = [Tally::default(), Tally::default()];
+    {
+        let mut stmt = conn.prepare(&format!("SELECT c.vs_reg, c.status, COUNT(*) FROM hand_range_checks c WHERE {} GROUP BY c.vs_reg, c.status", period.where_sql()))?;
+        for row in stmt.query_map(&period.params()[..], |r| Ok((r.get::<_, i64>(0)?, r.get::<_, String>(1)?, r.get::<_, i64>(2)?)))? {
+            let (vs_reg, status, n) = row?;
+            by_kind[usize::from(vs_reg != 0)].add(&status, n);
+        }
+    }
+
+    let mut by_position: Vec<(String, String, Tally)> = Vec::new();
+    {
+        let mut stmt = conn.prepare(&format!(
+            "SELECT COALESCE(c.format, ''), COALESCE(c.hero_position, ''), c.status, COUNT(*) FROM hand_range_checks c WHERE {} GROUP BY c.format, c.hero_position, c.status",
+            scope.where_sql()
+        ))?;
+        for row in stmt.query_map(&scope.params()[..], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?, r.get::<_, i64>(3)?)))? {
+            let (format, position, status, n) = row?;
+            if format.is_empty() || position.is_empty() {
+                continue;
+            }
+            match by_position.iter_mut().find(|(f, p, _)| *f == format && *p == position) {
+                Some((_, _, tally)) => tally.add(&status, n),
+                None => {
+                    let mut tally = Tally::default();
+                    tally.add(&status, n);
+                    by_position.push((format, position, tally));
+                }
+            }
+        }
+    }
+    by_position.sort_by_key(|(format, position, _)| position_rank(format, position));
 
     let (mut matches, mut deviations, mut response_deviations, mut no_range) = (0_i64, 0_i64, 0_i64, 0_i64);
     {
@@ -303,7 +390,7 @@ pub fn adherence(conn: &Connection, hero: &str, from: Option<&str>, to: Option<&
             if top.get(&scenario).map_or(true, |(best, _)| n > *best) {
                 top.insert(
                     scenario,
-                    (n, json!({ "expectedActionId": expected, "playedImmediate": played, "playedActionId": played_action_id(&book, &played), "playedResponse": response, "kind": kind, "count": n })),
+                    (n, json!({ "expectedActionId": expected, "playedImmediate": played, "playedActionId": played_action_id(&book, &played, response.as_deref()), "playedResponse": response, "kind": kind, "count": n })),
                 );
             }
         }
@@ -346,6 +433,13 @@ pub fn adherence(conn: &Connection, hero: &str, from: Option<&str>, to: Option<&
         "respect": if compared > 0 { Some(matches as f64 / compared as f64) } else { None },
         "noRangeShare": if compared + no_range > 0 { Some(no_range as f64 / (compared + no_range) as f64) } else { None },
         "frequentLines": frequent_lines, "scenarios": scenarios,
+        "byOpponent": { "any": by_kind[0].json(), "reg": by_kind[1].json() },
+        "byPosition": by_position.into_iter().map(|(format, position, tally)| {
+            let mut entry = tally.json();
+            entry["format"] = json!(format);
+            entry["heroPosition"] = json!(position);
+            entry
+        }).collect::<Vec<_>>(),
     }))
 }
 
@@ -380,7 +474,27 @@ pub fn scenario_detail(conn: &Connection, scenario_id: i64, hero: &str, from: Op
             max_stack = max_stack.max(hi.unwrap_or(f64::MIN));
         }
     }
-    let stats: serde_json::Map<String, Value> = hand_stats.into_iter().map(|(hand, (m, d))| (hand, json!({ "matches": m, "deviations": d }))).collect();
+    // What was played instead of the plan, per hand: the most frequent first.
+    let mut played_by_hand: HashMap<String, Vec<Value>> = HashMap::new();
+    {
+        let mut stmt = conn.prepare(&format!(
+            "SELECT c.hand_class, c.played_immediate, c.played_response, c.deviation_kind, COUNT(*) AS n FROM hand_range_checks c WHERE {} AND c.status = 'deviation' GROUP BY c.hand_class, c.played_immediate, c.played_response, c.deviation_kind ORDER BY n DESC",
+            scope.where_sql()
+        ))?;
+        for row in stmt.query_map(&scope.params()[..], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, Option<String>>(2)?, r.get::<_, Option<String>>(3)?, r.get::<_, i64>(4)?)))? {
+            let (hand, played, response, kind, count) = row?;
+            played_by_hand.entry(hand).or_default().push(json!({
+                "playedImmediate": played, "playedActionId": played_action_id(&book, &played, response.as_deref()), "playedResponse": response, "kind": kind, "count": count,
+            }));
+        }
+    }
+    let stats: serde_json::Map<String, Value> = hand_stats
+        .into_iter()
+        .map(|(hand, (m, d))| {
+            let played = played_by_hand.remove(&hand).unwrap_or_default();
+            (hand, json!({ "matches": m, "deviations": d, "played": played }))
+        })
+        .collect();
 
     let range: HashMap<String, i64> = book.hands.get(&scenario_id).cloned().unwrap_or_default();
     let deviation_scope = Scope::new(hero, from, to).and("c.scenario_id = @scenario", "@scenario", SqlValue::Integer(scenario_id)).and_clause("c.status = 'deviation'");
@@ -394,10 +508,11 @@ pub fn scenario_detail(conn: &Connection, scenario_id: i64, hero: &str, from: Op
         let rows = stmt
             .query_map(&deviation_scope.params()[..], |r| {
                 let played: String = r.get(5)?;
+                let response: Option<String> = r.get(6)?;
                 Ok(json!({
                     "handId": r.get::<_, String>(0)?, "playedAt": r.get::<_, Option<String>>(1)?, "cards": r.get::<_, Option<String>>(2)?, "handClass": r.get::<_, String>(3)?,
-                    "expectedActionId": r.get::<_, Option<i64>>(4)?, "playedImmediate": played, "playedActionId": played_action_id(&book, &played),
-                    "playedResponse": r.get::<_, Option<String>>(6)?, "kind": r.get::<_, Option<String>>(7)?,
+                    "expectedActionId": r.get::<_, Option<i64>>(4)?, "playedImmediate": played, "playedActionId": played_action_id(&book, &played, response.as_deref()),
+                    "playedResponse": response, "kind": r.get::<_, Option<String>>(7)?,
                 }))
             })?
             .collect::<std::result::Result<Vec<_>, _>>()?;
@@ -433,7 +548,7 @@ pub fn hand_check(conn: &Connection, hero: &str, hand_id: &str) -> Result<Option
         Some(id) => conn.query_row("SELECT sp.id, sp.name FROM range_scenarios sc JOIN range_spots sp ON sp.id = sc.spot_id WHERE sc.id = ?1", [id], |r| Ok((r.get(0)?, r.get(1)?))).optional()?,
         None => None,
     };
-    let played_id = played_action_id(&book, &check.played_immediate);
+    let played_id = played_action_id(&book, &check.played_immediate, check.played_response.as_deref());
     Ok(Some(json!({
         "status": check.status.as_str(), "scenarioId": check.scenario_id, "spotId": spot.as_ref().map(|s| s.0), "scenarioName": spot.map(|s| s.1),
         "expectedAction": check.expected_action_id.map_or(Value::Null, |id| action_json(&book, conn, id)),
@@ -518,7 +633,7 @@ mod tests {
         assert_eq!(status("h_dev"), ("deviation".to_string(), Some("immediate".to_string())));
         assert_eq!(status("h_none").0, "no_range");
 
-        let summary = adherence(&conn, "Hero", None, None).unwrap();
+        let summary = adherence(&conn, "Hero", None, None, None).unwrap();
         assert_eq!((summary["compared"].as_i64(), summary["matches"].as_i64(), summary["deviations"].as_i64(), summary["noRange"].as_i64()), (Some(2), Some(1), Some(1), Some(1)));
         assert_eq!(summary["respect"], 0.5);
         assert_eq!(summary["scenarios"][0]["topDeviation"]["playedImmediate"], "check");
@@ -527,7 +642,24 @@ mod tests {
         let detail = scenario_detail(&conn, scenario, "Hero", None, None).unwrap().unwrap();
         assert_eq!(detail["deviationTotal"], 1);
         assert_eq!(detail["handStats"]["AKo"]["deviations"], 1);
+        let played = &detail["handStats"]["AKo"]["played"][0];
+        assert_eq!((played["playedImmediate"].as_str(), played["kind"].as_str(), played["count"].as_i64()), (Some("check"), Some("immediate"), Some(1)));
+        assert_eq!(detail["handStats"]["72o"]["played"], json!([]), "a followed hand lists nothing played instead");
         assert_eq!(detail["deviations"][0]["handId"], "h_dev");
+    }
+
+    #[test]
+    fn a_period_given_as_the_app_filters_write_it_selects_the_same_day() {
+        let mut conn = db();
+        range_with(&mut conn, "any", &[("72o", "Check")]);
+        insert_hand(&conn, "h1", "7h 2c", "Hero: Checks", "Sb");
+        ensure_computed(&mut conn, "Hero").unwrap();
+        let compared = |from: Option<&str>, to: Option<&str>| adherence(&conn, "Hero", from, to, None).unwrap()["compared"].as_i64();
+        // The hand was played on 2026-11-10 at 20:00.
+        assert_eq!(compared(Some("2026-11-10 00:00:00"), Some("2026-11-10 23:59:59")), Some(1));
+        assert_eq!(compared(Some("2026-11-10 20:30:00"), None), Some(0));
+        assert_eq!(compared(None, Some("2026-11-10 19:00:00")), Some(0));
+        assert_eq!(compared(Some("2026-11-10"), Some("2026-11-10")), Some(1));
     }
 
     #[test]
@@ -558,6 +690,32 @@ mod tests {
         let scenario_of = |id: &str| -> i64 { conn.query_row("SELECT scenario_id FROM hand_range_checks WHERE hand_id = ?1", [id], |r| r.get(0)).unwrap() };
         assert_eq!(scenario_of("vs_reg"), reg_scenario);
         assert_ne!(scenario_of("vs_fish"), reg_scenario);
+    }
+
+    #[test]
+    fn the_report_splits_fish_and_regulars_and_positions() {
+        let mut conn = db();
+        range_with(&mut conn, "any", &[("72o", "Check")]);
+        insert_hand(&conn, "vs_fish", "7h 2c", "Hero: Checks", "Fish");
+        insert_hand(&conn, "vs_fish_dev", "9h 3c", "Hero: Raises 40 to 60", "Fish");
+        insert_hand(&conn, "vs_reg", "7h 2c", "Hero: Checks", "Villain");
+        conn.execute("INSERT INTO players (name, is_reg) VALUES ('Villain', 1)", []).unwrap();
+        ensure_computed(&mut conn, "Hero").unwrap();
+
+        let all = adherence(&conn, "Hero", None, None, None).unwrap();
+        assert_eq!(all["byOpponent"]["any"]["compared"], 2);
+        assert_eq!(all["byOpponent"]["reg"]["compared"], 1, "a hand against a regular counts on its side only");
+        assert_eq!(all["byOpponent"]["any"]["matches"], 1);
+        assert_eq!(all["byPosition"][0]["format"], "3max");
+        assert_eq!(all["byPosition"][0]["heroPosition"], "BB");
+        assert_eq!(all["byPosition"][0]["compared"], all["compared"]);
+
+        // The switch keeps both sides visible while the rest follows the filter.
+        let fish = adherence(&conn, "Hero", None, None, Some("any")).unwrap();
+        assert_eq!(fish["compared"], 2);
+        assert_eq!(fish["byOpponent"]["reg"]["compared"], 1);
+        let reg = adherence(&conn, "Hero", None, None, Some("reg")).unwrap();
+        assert_eq!(reg["compared"], 1);
     }
 
     #[test]

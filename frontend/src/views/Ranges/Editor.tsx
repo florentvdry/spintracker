@@ -27,8 +27,8 @@ import {
   type RangeFormat,
   type SpotSummary,
 } from '@/utils/ranges'
-import { ActionModal, AddDepthDialog, ImportDialog, ProgramDialog } from './components/RangeDialogs'
-import { ActionsCard, FileCard, ScenarioCard } from './components/SidePanel'
+import { ActionModal, AddDepthDialog, ProgramDialog } from './components/RangeDialogs'
+import { ActionsCard, ScenarioCard } from './components/SidePanel'
 import ScenarioTree from './components/ScenarioTree'
 import ScenarioWizard from './components/ScenarioWizard'
 
@@ -40,17 +40,6 @@ interface Prefill {
 }
 
 const MODES: PaintMode[] = ['brush', 'rect', 'picker']
-const EXPORT_FILE_NAME = 'spintracker-ranges.json'
-
-/** Downloads text as a file through the webview. */
-function download(name: string, text: string) {
-  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }))
-  const link = document.createElement('a')
-  link.href = url
-  link.download = name
-  link.click()
-  URL.revokeObjectURL(url)
-}
 
 export default function Editor() {
   const { t } = useTranslation()
@@ -74,7 +63,6 @@ export default function Editor() {
   const [actionModal, setActionModal] = useState(false)
   const [deleteSpot, setDeleteSpot] = useState<SpotSummary | null>(null)
   const [removeDepth, setRemoveDepth] = useState(false)
-  const [importContent, setImportContent] = useState<string | null>(null)
 
   const hands = history.present
   const dirtyHands = useMemo(() => changedHands(hands, saved), [hands, saved])
@@ -174,12 +162,6 @@ export default function Editor() {
     setHistory((h) => ({ ...beginStroke(h), present: { ...source } }))
   }
 
-  const exportFile = async () => {
-    const result = await store.exportRanges()
-    if (result.error || result.value === undefined) notify.error(result.error ?? 'error')
-    else download(EXPORT_FILE_NAME, result.value)
-  }
-
   const duplicateSpot = async (target: SpotSummary) => {
     const result = await store.duplicateSpot(target.id)
     if (result.error) notify.error(result.error)
@@ -224,7 +206,6 @@ export default function Editor() {
       <AddDepthDialog spot={depthFor} onClose={() => setDepthFor(null)} />
       <ProgramDialog open={program.open} programId={program.id} initialSpotIds={program.spotIds} onClose={() => setProgram((p) => ({ ...p, open: false }))} />
       <ActionModal open={actionModal} onClose={() => setActionModal(false)} />
-      <ImportDialog content={importContent} onClose={() => setImportContent(null)} />
       <ConfirmDialog
         open={pendingSelect !== null}
         title={t('ranges.editor.unsavedTitle')}
@@ -262,12 +243,9 @@ export default function Editor() {
         <div className="card p-10 flex flex-col items-center justify-center text-center gap-3 min-h-[360px]">
           <h2 className="text-xl font-bold text-gray-100">{t('ranges.empty.title')}</h2>
           <p className="text-sm text-gray-400 max-w-md">{t('ranges.empty.body')}</p>
-          <div className="flex gap-2 mt-2">
-            <button className="btn-primary" onClick={() => openWizard()}>
-              {t('ranges.empty.create')}
-            </button>
-            <FileImportButton onText={setImportContent} label={t('ranges.empty.import')} />
-          </div>
+          <button className="btn-primary mt-2" onClick={() => openWizard()}>
+            {t('ranges.empty.create')}
+          </button>
         </div>
         {dialogs}
       </div>
@@ -338,7 +316,7 @@ export default function Editor() {
           </div>
         </div>
 
-        <div className={clsx(loading && 'opacity-60')}>
+        <div className={clsx('mx-auto w-full max-w-[540px]', loading && 'opacity-60')}>
           <RangeMatrix
             cells={cells}
             label={t('ranges.editor.gridLabel', { name: spot.name, depth: formatDepth(scenario.stackBb) })}
@@ -362,7 +340,6 @@ export default function Editor() {
       </section>
 
       <div className="flex flex-col gap-[18px] lg:col-span-2 xl:col-span-1 xl:col-start-3 xl:row-start-1 min-w-0">
-        <ActionsCard hands={hands} activeActionId={activeActionId} onActivate={setActiveActionId} onNewAction={() => setActionModal(true)} />
         <ScenarioCard
           spot={spot}
           scenarioId={scenario.id}
@@ -371,27 +348,9 @@ export default function Editor() {
           onRemoveDepth={() => setRemoveDepth(true)}
           onSelectDepth={(id) => requestSelect(spot.id, id)}
         />
-        <FileCard onImportText={setImportContent} onExport={() => void exportFile()} />
+        <ActionsCard hands={hands} activeActionId={activeActionId} onActivate={setActiveActionId} onNewAction={() => setActionModal(true)} />
       </div>
       {dialogs}
     </div>
-  )
-}
-
-function FileImportButton({ onText, label }: { onText: (content: string) => void; label: string }) {
-  return (
-    <label className="btn-secondary cursor-pointer">
-      {label}
-      <input
-        type="file"
-        accept=".json,application/json"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0]
-          e.target.value = ''
-          if (file) void file.text().then(onText)
-        }}
-      />
-    </label>
   )
 }

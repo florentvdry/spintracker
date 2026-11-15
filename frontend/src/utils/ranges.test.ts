@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   actionStats,
+  allScenarioIds,
+  checkState,
   buildLine,
   changedHands,
   COLOR_SHADES,
@@ -8,9 +10,12 @@ import {
   comboCount,
   defaultName,
   groupSpots,
+  groupsOfFormat,
+  countByFormat,
   handAt,
   HAND_CLASSES,
   lineSummary,
+  overviewColumns,
   paint,
   beginStroke,
   strokePaint,
@@ -20,6 +25,7 @@ import {
   shortName,
   startHistory,
   textColor,
+  toggleScenarios,
   TOTAL_COMBOS,
   undo,
   type HandMap,
@@ -124,5 +130,67 @@ describe('scenarios', () => {
     expect(groups.map((g) => g.key)).toEqual(['3max-BTN', '3max-BB', 'hu-BB'])
     expect(shortName({ format: '3max', heroPosition: 'BB', line: 'btn:fold,sb:call', opponent: 'reg' })).toBe('vs SB limp (Reg)')
     expect(shortName({ format: '3max', heroPosition: 'BTN', line: '', opponent: 'any' })).toBe('first in')
+  })
+})
+
+
+describe('format switch', () => {
+  const spot = (id: number, format: SpotSummary['format'], hero: SpotSummary['heroPosition'], line: string): SpotSummary => ({
+    id, name: `s${id}`, format, heroPosition: hero, line, lineSizes: null, opponent: 'any', studyOnly: false, scenarios: [],
+  })
+  const spots = [spot(1, 'hu', 'BB', 'sb:raise'), spot(2, '3max', 'BB', 'btn:fold,sb:call'), spot(3, '3max', 'BTN', ''), spot(4, '3max', 'BB', 'btn:raise')]
+
+  it('keeps only the groups of the chosen format, in table order', () => {
+    expect(groupsOfFormat(groupSpots(spots), '3max').map((g) => g.key)).toEqual(['3max-BTN', '3max-BB'])
+    expect(groupsOfFormat(groupSpots(spots), 'hu').map((g) => g.key)).toEqual(['hu-BB'])
+  })
+
+  it('counts the spots of each format', () => {
+    expect(countByFormat(spots)).toEqual({ '3max': 3, hu: 1 })
+    expect(countByFormat([])).toEqual({ '3max': 0, hu: 0 })
+  })
+})
+
+describe('choosing ranges to export', () => {
+  const withDepths = (id: number, format: SpotSummary['format'], hero: SpotSummary['heroPosition'], line: string, depths: number[]): SpotSummary => ({
+    id, name: `s${id}`, format, heroPosition: hero, line, lineSizes: null, opponent: 'any', studyOnly: false,
+    scenarios: depths.map((stackBb, i) => ({ id: id * 10 + i, stackBb })),
+  })
+  const spots = [withDepths(1, '3max', 'BTN', '', [25, 20]), withDepths(2, '3max', 'SB', 'btn:fold', [20, 10]), withDepths(3, 'hu', 'SB', '', [6])]
+
+  it('selects every depth by default', () => {
+    expect([...allScenarioIds(spots)].sort((a, b) => a - b)).toEqual([10, 11, 20, 21, 30])
+  })
+
+  it('reports none, some or all of a set of depths', () => {
+    expect(checkState(new Set([10]), [10, 11])).toBe('some')
+    expect(checkState(new Set([10, 11]), [10, 11])).toBe('all')
+    expect(checkState(new Set(), [10, 11])).toBe('none')
+  })
+
+  it('toggling selects a partial set and clears a complete one', () => {
+    expect([...toggleScenarios(new Set([10]), [10, 11])].sort()).toEqual([10, 11])
+    expect(toggleScenarios(new Set([10, 11, 20]), [10, 11])).toEqual(new Set([20]))
+  })
+
+  it('does not change the set it is given', () => {
+    const selected = new Set([10])
+    toggleScenarios(selected, [10, 11])
+    expect(selected).toEqual(new Set([10]))
+  })
+
+  describe('the overview columns', () => {
+    it('has a column per spot of the format, in the order of the tree', () => {
+      expect(overviewColumns(spots, '3max').map((c) => c.spot.id)).toEqual([1, 2])
+    })
+
+    it('lists the depths of each spot on its own, deepest first, without padding', () => {
+      const columns = overviewColumns([withDepths(1, '3max', 'BTN', '', [10, 25, 20]), withDepths(2, '3max', 'SB', 'btn:fold', [8])], '3max')
+      expect(columns.map((c) => c.depths.map((d) => d.stackBb))).toEqual([[25, 20, 10], [8]])
+    })
+
+    it('is empty for a format with no spot', () => {
+      expect(overviewColumns([spots[0]], 'hu')).toEqual([])
+    })
   })
 })

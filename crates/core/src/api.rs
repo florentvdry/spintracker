@@ -595,7 +595,7 @@ impl Backend {
                 ("GET", ["adherence"]) => {
                     let hero = r.query_str("heroName").ok_or_else(|| RangeError::Invalid("heroName is required".into()))?;
                     range_adherence::ensure_computed(&mut conn, &hero)?;
-                    Response::data(range_adherence::adherence(&conn, &hero, r.query_str("from").as_deref(), r.query_str("to").as_deref())?)
+                    Response::data(range_adherence::adherence(&conn, &hero, r.query_str("from").as_deref(), r.query_str("to").as_deref(), r.query_str("opponent").as_deref())?)
                 }
                 ("GET", ["adherence", scenario]) => {
                     let hero = r.query_str("heroName").ok_or_else(|| RangeError::Invalid("heroName is required".into()))?;
@@ -632,7 +632,11 @@ impl Backend {
                     let (box_number, due) = review::record(&conn, scenario, &hand, correct, now.date(), &now.format("%Y-%m-%dT%H:%M:%S").to_string())?;
                     Response::data(json!({ "box": box_number, "dueOn": due.format("%Y-%m-%d").to_string() }))
                 }
-                ("GET", ["export"]) => Response::data(ranges_io::export(&conn)?),
+                ("GET", ["export"]) => {
+                    // `scenarioIds=1,2,3` limits the file to those depths; without it everything is exported.
+                    let chosen: Option<std::collections::HashSet<i64>> = r.query_str("scenarioIds").map(|list| list.split(',').filter_map(|id| id.trim().parse().ok()).collect());
+                    Response::data(ranges_io::export(&conn, chosen.as_ref())?)
+                }
                 ("POST", ["import"]) => {
                     let content = r.body_str("content").unwrap_or_default();
                     let mode = r.body_str("mode").as_deref().and_then(ranges_io::ImportMode::parse).ok_or_else(|| RangeError::Invalid("mode is replace or merge".into()))?;

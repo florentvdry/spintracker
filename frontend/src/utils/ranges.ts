@@ -316,6 +316,15 @@ export function groupSpots(spots: readonly SpotSummary[]): SpotGroup[] {
   })).filter((g) => g.spots.length > 0)
 }
 
+/** The groups of one format, and how many spots each format holds (for the format switch). */
+export function groupsOfFormat(groups: readonly SpotGroup[], format: RangeFormat): SpotGroup[] {
+  return groups.filter((g) => g.format === format)
+}
+
+export function countByFormat(spots: readonly SpotSummary[]): Record<RangeFormat, number> {
+  return { '3max': spots.filter((s) => s.format === '3max').length, hu: spots.filter((s) => s.format === 'hu').length }
+}
+
 /** The name without its "BB vs " lead: "vs SB limp (Reg)" in the tree. */
 export function shortName(spot: Pick<SpotSummary, 'format' | 'heroPosition' | 'line' | 'opponent'>): string {
   const base = defaultName(spot.format, spot.heroPosition, spot.line, 'any')
@@ -331,4 +340,40 @@ export function formatNumber(value: number, language: string, digits = 1): strin
 /** A depth without a useless decimal: 22, 12.5. */
 export function formatDepth(stack: number): string {
   return Number.isInteger(stack) ? String(stack) : String(Math.round(stack * 10) / 10)
+}
+
+/** Every depth of the given spots: the default choice of the export dialog. */
+export function allScenarioIds(spots: readonly SpotSummary[]): Set<number> {
+  return new Set(spots.flatMap((s) => s.scenarios.map((sc) => sc.id)))
+}
+
+/** Whether none, some or all of the ids are selected (a checkbox that can be half checked). */
+export function checkState(selected: ReadonlySet<number>, ids: readonly number[]): 'none' | 'some' | 'all' {
+  const count = ids.filter((id) => selected.has(id)).length
+  return count === 0 ? 'none' : count === ids.length ? 'all' : 'some'
+}
+
+/** Checking selects every id; unchecking an entirely selected set clears them. */
+export function toggleScenarios(selected: ReadonlySet<number>, ids: readonly number[]): Set<number> {
+  const next = new Set(selected)
+  const clear = checkState(selected, ids) === 'all'
+  for (const id of ids) {
+    if (clear) next.delete(id)
+    else next.add(id)
+  }
+  return next
+}
+
+export interface OverviewColumn {
+  spot: SpotSummary
+  /** The depths this spot has, deepest first. */
+  depths: { id: number; stackBb: number }[]
+}
+
+/** The summary of one format: a column per spot listing its own depths, with no blank cell. */
+export function overviewColumns(spots: readonly SpotSummary[], format: RangeFormat): OverviewColumn[] {
+  return groupSpots(spots)
+    .filter((g) => g.format === format)
+    .flatMap((g) => g.spots)
+    .map((spot) => ({ spot, depths: [...spot.scenarios].sort((a, b) => b.stackBb - a.stackBb) }))
 }

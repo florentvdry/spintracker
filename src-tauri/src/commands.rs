@@ -61,6 +61,38 @@ pub async fn export_data(app: AppHandle, window: WebviewWindow, dialog_title: St
     export::run(app, dialog_title, filter).await
 }
 
+/// Largest text the webview may ask to save (an exported ranges file is far smaller).
+const MAX_SAVED_TEXT_BYTES: usize = 16 * 1024 * 1024;
+
+/// Asks where to save a text file, then writes it. The webview cannot download blobs by itself.
+#[tauri::command]
+pub async fn save_text_file(app: AppHandle, window: WebviewWindow, dialog_title: String, default_name: String, content: String) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
+    if content.len() > MAX_SAVED_TEXT_BYTES {
+        return json!({ "success": false, "message": "The file is too large to save." });
+    }
+    // Only a file name is accepted as the suggestion: the folder is the user's choice in the dialog.
+    let default_name: String = default_name.chars().filter(|c| !matches!(c, '/' | '\\' | ':')).collect();
+
+    let picker = app.clone();
+    let target = tauri::async_runtime::spawn_blocking(move || {
+        picker.dialog().file().set_title(dialog_title).set_file_name(default_name).add_filter("JSON", &["json"]).blocking_save_file()
+    })
+    .await
+    .ok()
+    .flatten()
+    .and_then(|p| p.into_path().ok());
+    let Some(target) = target else {
+        return json!({ "success": false, "cancelled": true });
+    };
+    match std::fs::write(&target, content) {
+        Ok(()) => json!({ "success": true, "path": target.to_string_lossy() }),
+        Err(err) => json!({ "success": false, "message": err.to_string() }),
+    }
+}
+
 /// The caller is responsible for asking the user to confirm first.
 #[tauri::command]
 pub async fn delete_all_hands(app: AppHandle, window: WebviewWindow) -> Value {

@@ -61,7 +61,8 @@ interface UserRangesState {
   saveProgram: (program: Json) => Promise<Outcome<number>>
   deleteProgram: (id: number) => Promise<Outcome>
   saveSettings: (patch: Partial<RangeSettings>) => Promise<Outcome>
-  exportRanges: () => Promise<Outcome<string>>
+  /** Without ids every depth is exported. */
+  exportRanges: (scenarioIds?: readonly number[]) => Promise<Outcome<string>>
   /** A dry run only reports what the import would do. */
   importRanges: (content: string, mode: 'replace' | 'merge', dryRun?: boolean) => Promise<Outcome<ImportReport>>
 }
@@ -142,7 +143,7 @@ export const useUserRangesStore = create<UserRangesState>((set, get) => {
     deleteProgram: (id) => change(() => ipcService.deleteRangeProgram(id)),
     saveSettings: (patch) => change(() => ipcService.saveRangeSettings(patch)),
 
-    exportRanges: async () => outcome(await ipcService.exportRanges(), (data) => JSON.stringify(data, null, 2)),
+    exportRanges: async (scenarioIds) => outcome(await ipcService.exportRanges(scenarioIds), (data) => JSON.stringify(data, null, 2)),
     importRanges: async (content, mode, dryRun = false) => {
       if (dryRun) return outcome(await ipcService.importRanges(content, mode, true), (data) => data as ImportReport)
       return change(() => ipcService.importRanges(content, mode), (data) => data as ImportReport)
