@@ -386,6 +386,11 @@
     "ev_profit": "EV Profit",
     "ev_profit_hint": "What your chip EV is worth, without luck",
     "luck_gap": "Luck gap",
+    "pool_ev": "PoolEV",
+    "pool_ev_hint": "Expected profit with the prize pool replaced by the average of your multiplier table: jackpots no longer hide your results",
+    "ev_roi": "evROI",
+    "pool_ev_covered": "{{count}} tournaments counted",
+    "pool_ev_missing": "Add a multiplier table in the settings to see PoolEV",
     "unpriced_note": "{{count}} tournaments without a known prize pool are not counted in this profit (tournament summary missing).",
     "activity": "Activity",
     "sessions_month": "Sessions this month",
@@ -606,6 +611,7 @@
   "charts": {
     "stats_title": "Stats",
     "cev": "CEV",
+    "pool_ev": "PoolEV (€)",
     "heads_up": "Heads-Up",
     "three_way": "3-Way",
     "positions": {
@@ -619,6 +625,19 @@
   },
   "settings": {
     "title": "Settings",
+    "pool_ev": {
+      "title": "PoolEV multiplier tables",
+      "subtitle": "Expected prize pool by room. PoolEV and evROI use the average of each table.",
+      "multiplier": "Multiplier",
+      "weight": "Frequency (%)",
+      "mean": "Average multiplier",
+      "empty": "No table: PoolEV is not computed for this room.",
+      "add_row": "Add a line",
+      "reset": "Restore presets",
+      "save": "Save",
+      "saved": "Tables saved",
+      "save_failed": "The tables could not be saved"
+    },
     "subtitle": "Configure the application",
     "general": {
       "title": "General",

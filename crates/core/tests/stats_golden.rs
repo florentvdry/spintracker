@@ -97,12 +97,24 @@ fn assert_same(name: &str, actual: Value) {
     }
 }
 
+/// Chart points without the series added after the former backend (PoolEV).
+fn without_added_series(points: Vec<Value>) -> Value {
+    let stripped = points
+        .into_iter()
+        .map(|mut point| {
+            point.as_object_mut().unwrap().remove("pool_ev_profit");
+            point
+        })
+        .collect();
+    Value::Array(stripped)
+}
+
 fn dashboard(q: StatsQuery) -> Value {
     let mut v = stats::dashboard_stats(&database().conn().unwrap(), &q).unwrap();
     // Depends on today's date.
     v.as_object_mut().unwrap().remove("sessions_this_month");
     // Added after the former backend: it has no counterpart in the golden files.
-    for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room"] {
+    for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room", "pool_ev_profit", "pool_ev_tournaments", "pool_ev_buy_ins", "pool_ev_roi"] {
         v.as_object_mut().unwrap().remove(added);
     }
     v
@@ -176,9 +188,9 @@ fn winrate_chart_matches_the_former_backend() {
         },
     )
     .unwrap();
-    assert_same("chart_husb_day3.json", Value::Array(heads_up));
+    assert_same("chart_husb_day3.json", without_added_series(heads_up));
     let big_blind = stats::winrate_chart(&conn, &ChartQuery { position: Some("3W_BB".into()), ..Default::default() }).unwrap();
-    assert_same("chart_3wbb.json", Value::Array(big_blind));
+    assert_same("chart_3wbb.json", without_added_series(big_blind));
 }
 
 /// Same reduction as the golden file: sample hands become "id|player" (top level) or a count.

@@ -108,6 +108,9 @@ export const ipcService = {
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),
   getMultiplierStats: (options: Json = {}) => backend('POST', '/db/multiplier-stats', options),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),
+  // User preferences the backend computes with
+  getSetting: (key: string) => backend('GET', `/settings/${enc(key)}`),
+  saveSetting: (key: string, value: unknown) => backend('PUT', `/settings/${enc(key)}`, value),
   getDetailedStats: (
     heroName?: string | null,
     dateFrom?: string | null,

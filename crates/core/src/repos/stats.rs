@@ -12,6 +12,8 @@ use rusqlite::{Connection, ToSql};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+use crate::engines::pool_ev::{self, PoolEvTables};
+use crate::repos::app_settings;
 use crate::Result;
 
 /// Players resolved from a name: the player itself, or every player linked to the alias of that name.
@@ -168,12 +170,17 @@ pub(crate) enum Room {
 }
 
 impl Room {
+    /// The rooms store their site too (`Betclic.fr`), so the name is matched by its start.
     pub(crate) fn from_name(name: &str) -> Room {
-        match name.trim().to_ascii_lowercase().as_str() {
-            "winamax" => Room::Winamax,
-            "unibet" => Room::Unibet,
-            "betclic" => Room::Betclic,
-            _ => Room::Other,
+        let name = name.trim().to_ascii_lowercase();
+        if name.starts_with("winamax") {
+            Room::Winamax
+        } else if name.starts_with("unibet") {
+            Room::Unibet
+        } else if name.starts_with("betclic") {
+            Room::Betclic
+        } else {
+            Room::Other
         }
     }
 
@@ -549,6 +556,8 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let mut by_position: BTreeMap<(Option<String>, i32), PositionTotals> = BTreeMap::new();
     let mut blind_ev: BTreeMap<(String, String), f64> = BTreeMap::new();
     let mut chip_ev_by_game: HashMap<Option<String>, f64> = HashMap::new();
+    // Same EV as the chart: a hand without computed EV counts at its actual result.
+    let mut pool_chips_by_game: HashMap<Option<String>, f64> = HashMap::new();
     let mut session_hands = Vec::new();
     while let Some(r) = rows.next()? {
         let date: Option<String> = r.get(0)?;
@@ -586,6 +595,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
             totals.ev += ev;
         }
         *chip_ev_by_game.entry(game_id.clone()).or_default() += net_won_adjusted.unwrap_or(0.0);
+        *pool_chips_by_game.entry(game_id.clone()).or_default() += net_won_adjusted.unwrap_or(hand_profit);
         if let Some(id) = &game_id {
             totals.tournaments.insert(id.clone());
         }
@@ -619,6 +629,8 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let mut unpriced_tournaments = 0;
     let mut total_profit_euro = 0.0;
     let mut total_ev_profit_euro = 0.0;
+    let pool_tables = load_pool_ev_tables(conn)?;
+    let mut pool_ev = PoolEvTotals::default();
     let mut tournaments_by_room = [0usize; KNOWN_ROOMS.len()];
     for (game_id, figures) in &games {
         if figures.is_in_the_money() {
@@ -629,6 +641,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         }
         total_profit_euro += figures.euro_profit();
         total_ev_profit_euro += figures.expected_euro_profit(chip_ev_by_game.get(game_id).copied().unwrap_or(0.0));
+        pool_ev.add(&pool_tables, figures, pool_chips_by_game.get(game_id).copied().unwrap_or(0.0));
         if let Some(index) = KNOWN_ROOMS.iter().position(|room| *room == figures.room) {
             tournaments_by_room[index] += 1;
         }
@@ -677,6 +690,10 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         "total_profit": total_profit_euro,
         "total_ev_profit": round_to(total_ev_profit_euro, 2),
         "luck_profit": round_to(total_profit_euro - total_ev_profit_euro, 2),
+        "pool_ev_profit": round_to(pool_ev.profit, 2),
+        "pool_ev_tournaments": pool_ev.tournaments,
+        "pool_ev_buy_ins": round_to(pool_ev.cost, 2),
+        "pool_ev_roi": if pool_ev.cost > 0.0 { round_to(pool_ev.profit / pool_ev.cost * 100.0, 2) } else { 0.0 },
         "main_room": main_room,
         "total_ev": total_ev,
         "total_tournaments": total_tournaments,
@@ -687,6 +704,38 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         "sessions_this_month": sessions_this_month,
         "total_sessions": sessions.len(),
     }))
+}
+
+/// The PoolEV multiplier tables saved in the settings; empty until the UI has seeded them.
+fn load_pool_ev_tables(conn: &Connection) -> Result<PoolEvTables> {
+    Ok(app_settings::get(conn, "pool_ev_tables")?.map(|v| PoolEvTables::from_json(&v)).unwrap_or_default())
+}
+
+/// Running PoolEV of the tournaments whose room has a multiplier table.
+#[derive(Default)]
+struct PoolEvTotals {
+    profit: f64,
+    cost: f64,
+    tournaments: i64,
+}
+
+impl PoolEvTotals {
+    fn add(&mut self, tables: &PoolEvTables, figures: &TournamentFigures, chip_ev: f64) {
+        if let Some(profit) = pool_ev_of(tables, figures, chip_ev) {
+            self.profit += profit;
+            self.cost += figures.buy_in;
+            self.tournaments += 1;
+        }
+    }
+}
+
+/// PoolEV of one tournament; `None` without a buy-in or a table for its room.
+fn pool_ev_of(tables: &PoolEvTables, figures: &TournamentFigures, chip_ev: f64) -> Option<f64> {
+    if figures.buy_in <= 0.0 {
+        return None;
+    }
+    let mean = tables.mean_for(figures.room.key()?, figures.buy_in)?;
+    Some(pool_ev::pool_ev_profit(chip_ev, figures.buy_in, mean))
 }
 
 /// How many of the `starts` fall on or after the first day of `now`'s month.
@@ -732,6 +781,7 @@ struct ChartHand {
     game_id: Option<String>,
     figures: TournamentFigures,
     hand_profit: f64,
+    hand_ev: f64,
 }
 
 pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
@@ -764,7 +814,8 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
             SUM(COALESCE(CASE WHEN NOT (ph.went_to_showdown = 1) THEN ph.net_profit ELSE 0 END, 0)) OVER (ORDER BY h.date_time, h.id) as cumulative_no_showdown,
             SUM(COALESCE(ph.net_won_adjusted, ph.net_profit)) OVER (ORDER BY h.date_time, h.id) as cumulative_ev,
             h.game_id, h.buy_in, h.prize_pool, h.player_count,
-            ph.net_profit as hand_profit, h.multiplier, h.position, h.room
+            ph.net_profit as hand_profit, h.multiplier, h.position, h.room,
+            COALESCE(ph.net_won_adjusted, ph.net_profit) as hand_ev
          FROM {}
          {}
          {}
@@ -783,6 +834,7 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
                 cumulative_ev: r.get(4)?,
                 game_id: r.get(5)?,
                 hand_profit,
+                hand_ev: r.get(13)?,
                 figures: TournamentFigures {
                     room: Room::from_name(&r.get::<_, Option<String>>(12)?.unwrap_or_default()),
                     buy_in: r.get::<_, Option<f64>>(6)?.unwrap_or(0.0),
@@ -827,8 +879,18 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
             (game, figures.euro_profit())
         })
         .collect();
+    let pool_tables = load_pool_ev_tables(conn)?;
+    let pool_ev_of_game: HashMap<&str, f64> = games
+        .iter()
+        .filter_map(|&game| {
+            let hands_of_game = &hands_by_game[game];
+            let chip_ev: f64 = hands_of_game.iter().map(|h| h.hand_ev).sum();
+            Some((game, pool_ev_of(&pool_tables, &hands_of_game[0].figures, chip_ev)?))
+        })
+        .collect();
 
     let mut cumulative_euro = 0.0;
+    let mut cumulative_pool_ev = 0.0;
     Ok(hands
         .iter()
         .enumerate()
@@ -836,6 +898,7 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
             if let Some(id) = h.game_id.as_deref().filter(|id| !id.is_empty()) {
                 if last_hand_of.get(id) == Some(&i) {
                     cumulative_euro += euro_of_game[id];
+                    cumulative_pool_ev += pool_ev_of_game.get(id).copied().unwrap_or(0.0);
                 }
             }
             json!({
@@ -845,6 +908,7 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
                 "chips_won_showdown": h.cumulative_showdown,
                 "chips_won_no_showdown": h.cumulative_no_showdown,
                 "euro_profit": cumulative_euro,
+                "pool_ev_profit": cumulative_pool_ev,
             })
         })
         .collect())

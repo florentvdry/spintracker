@@ -56,7 +56,7 @@ fn get_routes_read_their_query_string() {
     for v in [&mut dashboard, &mut expected] {
         v["data"].as_object_mut().unwrap().remove("sessions_this_month");
         // Added after the former backend: they have no counterpart in the golden files.
-        for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room"] {
+        for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room", "pool_ev_profit", "pool_ev_tournaments", "pool_ev_buy_ins", "pool_ev_roi"] {
             v["data"].as_object_mut().unwrap().remove(added);
         }
     }
@@ -108,4 +108,29 @@ fn export_summary_counts_the_hands_the_list_returns() {
     assert!(!buckets.is_empty());
     assert_eq!(buckets.iter().map(|x| x["hands"].as_i64().unwrap()).sum::<i64>(), listed);
     assert!(buckets.iter().all(|x| x["day"].as_str().is_some_and(|d| d.len() == 10) && x["bytes"].as_i64().unwrap() > 0));
+}
+
+#[test]
+fn pool_ev_follows_the_saved_multiplier_tables() {
+    use serde_json::json;
+    let b = backend();
+    // The settings route only accepts known keys.
+    assert_eq!(b.handle("PUT", "/settings/not_a_setting", Some(json!({}))).status, 404);
+
+    let table = json!({ "betclic": [{ "multiplier": 2, "weight": 50 }, { "multiplier": 4, "weight": 50 }] });
+    assert_eq!(b.handle("PUT", "/settings/pool_ev_tables", Some(table.clone())).status, 200);
+    assert_eq!(b.handle("GET", "/settings/pool_ev_tables", None).body["data"], table);
+
+    let data = b.handle("GET", "/db/dashboard-stats?heroName=jmenfouu", None).body["data"].clone();
+    let covered = data["pool_ev_tournaments"].as_i64().unwrap();
+    assert!(covered > 0, "the Betclic tournaments use the saved table");
+    // Mean x3 and a win chance of about one third: the buy-ins come back almost exactly.
+    let roi = data["pool_ev_roi"].as_f64().unwrap();
+    assert!(roi.abs() < 100.0, "evROI stays a plausible percentage, got {roi}");
+
+    let chart = b.handle("POST", "/db/winrate-chart", Some(json!({ "heroName": "jmenfouu" }))).body["data"].clone();
+    let last = chart.as_array().unwrap().last().unwrap();
+    let chart_total = last["pool_ev_profit"].as_f64().unwrap();
+    let dashboard_total = data["pool_ev_profit"].as_f64().unwrap();
+    assert!((chart_total - dashboard_total).abs() < 0.05, "chart {chart_total} and dashboard {dashboard_total} agree");
 }

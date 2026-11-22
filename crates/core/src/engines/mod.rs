@@ -3,6 +3,7 @@
 pub mod actions;
 pub mod cards;
 pub mod analytics;
+pub mod pool_ev;
 pub mod equity;
 pub mod equity_cache;
 pub mod evaluator;

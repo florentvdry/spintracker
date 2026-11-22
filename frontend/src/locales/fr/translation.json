@@ -386,6 +386,11 @@
     "ev_profit": "Profit EV",
     "ev_profit_hint": "Ce que vaut ton EV en jetons, sans la chance",
     "luck_gap": "Écart de chance",
+    "pool_ev": "PoolEV",
+    "pool_ev_hint": "Profit attendu avec le prize pool remplacé par la moyenne de ta table de multiplicateurs : les jackpots ne masquent plus tes résultats",
+    "ev_roi": "evROI",
+    "pool_ev_covered": "{{count}} tournois comptés",
+    "pool_ev_missing": "Ajoute une table de multiplicateurs dans les réglages pour voir la PoolEV",
     "unpriced_note": "{{count}} tournois sans prize pool connu ne sont pas comptés dans ce profit (résumé du tournoi manquant).",
     "activity": "Activité",
     "sessions_month": "Sessions ce mois",
@@ -606,6 +611,7 @@
   "charts": {
     "stats_title": "Stats",
     "cev": "CEV",
+    "pool_ev": "PoolEV (€)",
     "heads_up": "Heads-Up",
     "three_way": "3-Way",
     "positions": {
@@ -673,6 +679,19 @@
   },
   "settings": {
     "title": "Paramètres",
+    "pool_ev": {
+      "title": "Tables de multiplicateurs PoolEV",
+      "subtitle": "Prize pool attendu par room. La PoolEV et l'evROI utilisent la moyenne de chaque table.",
+      "multiplier": "Multiplicateur",
+      "weight": "Fréquence (%)",
+      "mean": "Multiplicateur moyen",
+      "empty": "Aucune table : la PoolEV n'est pas calculée pour cette room.",
+      "add_row": "Ajouter une ligne",
+      "reset": "Restaurer les presets",
+      "save": "Enregistrer",
+      "saved": "Tables enregistrées",
+      "save_failed": "Impossible d'enregistrer les tables"
+    },
     "subtitle": "Configuration de l'application",
     "general": {
       "title": "Général",

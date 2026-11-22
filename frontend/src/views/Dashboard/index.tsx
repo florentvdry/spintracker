@@ -66,6 +66,9 @@ export default function Dashboard() {
   const evProfit = stats.total_ev_profit || 0
   const luckProfit = stats.luck_profit || 0
   const unpriced: number =stats.unpriced_tournaments || 0
+  const poolEvProfit: number = stats.pool_ev_profit || 0
+  const poolEvRoi: number = stats.pool_ev_roi || 0
+  const poolEvTournaments: number = stats.pool_ev_tournaments || 0
   const maxAbsCev = Math.max(1, ...positionGroups.flatMap((g) => g.rows.map((r) => Math.abs(r.cev.value))))
 
   return (
@@ -92,6 +95,21 @@ export default function Dashboard() {
                 <span className="text-xs text-gray-500">
                   {t('dashboard.luck_gap')} <span className="font-mono">{formatProfit(luckProfit)}</span>
                 </span>
+              </div>
+              <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1" title={t('dashboard.pool_ev_hint')}>
+                <span className="stat-label">{t('dashboard.pool_ev')}</span>
+                {poolEvTournaments > 0 ? (
+                  <>
+                    <span className={clsx('font-mono text-xl font-semibold', poolEvProfit >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
+                      {formatProfit(poolEvProfit)}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {t('dashboard.ev_roi')} <span className="font-mono">{poolEvRoi.toFixed(2)} %</span> · {t('dashboard.pool_ev_covered', { count: poolEvTournaments })}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-xs text-gray-500">{t('dashboard.pool_ev_missing')}</span>
+                )}
               </div>
               {unpriced > 0 && <p className="mt-2 max-w-md text-xs text-gray-500">{t('dashboard.unpriced_note', { count: unpriced })}</p>}
             </div>

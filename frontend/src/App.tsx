@@ -10,6 +10,7 @@ import { ipcService } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useAutoImportStore } from '@/stores/autoImportStore'
 import { useFilterStore } from '@/stores/filterStore'
+import { usePoolEvStore } from '@/stores/poolEvStore'
 import { useUpdateStore } from '@/stores/updateStore'
 import { heroNamesOf } from '@/utils/heroNames'
 
@@ -37,6 +38,12 @@ export default function App() {
   }, [initialize, initializeUpdates])
 
   useEffect(() => listenAutoImport(), [listenAutoImport])
+
+  // Seeds the PoolEV multiplier tables on first launch, then reloads the figures that use them.
+  const loadPoolEv = usePoolEvStore((s) => s.load)
+  useEffect(() => {
+    if (isInitialized) void loadPoolEv().then(() => useAppStore.getState().refreshAll())
+  }, [isInitialized, loadPoolEv])
 
   // The HUD finds the hero at a table from the names the user plays under.
   const aliases = useFilterStore((s) => s.aliases)
