@@ -419,6 +419,26 @@ export interface HudPlayerInfo {
   tag?: string
 }
 
+/** Where a figure stands against the pool: above or below the average of the player's own base. */
+export type PoolTone = 'above' | 'below'
+
+/** Fewest opportunities behind a figure before it is compared with the pool. */
+export const MIN_POOL_SAMPLE = 10
+
+/** The pool the figures are compared with, and how far (in points) a figure must be from its average to be marked. */
+export interface PoolColoring {
+  figures: HudFigures
+  threshold: number
+}
+
+/** `null` when the figure is within `threshold` points of the pool average, or has too little behind it. */
+export function poolTone(pct: number | null, sample: number, poolPct: number | null, threshold: number): PoolTone | null {
+  if (pct === null || poolPct === null || sample < MIN_POOL_SAMPLE) return null
+  const gap = pct - poolPct
+  if (gap > threshold) return 'above'
+  return gap < -threshold ? 'below' : null
+}
+
 export interface CellView {
   id: string
   row: number
@@ -440,6 +460,8 @@ export interface CellView {
   figure?: FigureRef
   /** Colour of the player's tag, for `tag` cells. */
   tagColor?: string
+  /** Set when the figure sits away from the pool average (the profile's option). */
+  poolTone?: PoolTone
   numeric: boolean
 }
 
@@ -448,7 +470,7 @@ function figureRef(section: string, label: string, context: { column?: string | 
   return { section, label, column: context.column ?? null, buckets: context.stack?.buckets ?? [] }
 }
 
-export function buildCellView(grid: HudGrid, cell: HudGridCell, figures: HudFigures, player: HudPlayerInfo, baselines: Record<string, Baseline>): CellView {
+export function buildCellView(grid: HudGrid, cell: HudGridCell, figures: HudFigures, player: HudPlayerInfo, baselines: Record<string, Baseline>, pool?: PoolColoring): CellView {
   const { content } = cell
   const view: CellView = {
     id: cell.id,
@@ -497,6 +519,10 @@ export function buildCellView(grid: HudGrid, cell: HudGridCell, figures: HudFigu
       view.numeric = true
       view.figure = figureRef(content.section, content.label, context)
       const { showSample } = content.display
+      if (pool && !shown.hidden && content.section !== META) {
+        const average = readFigure(pool.figures, content.section, content.label, context)
+        view.poolTone = poolTone(figure.pct, figure.den, average.pct, pool.threshold) ?? undefined
+      }
       if (!shown.hidden && figure.den > 0 && (showSample === 'always' || (showSample === 'lowOnly' && shown.low))) view.sample = String(figure.den)
       if (!shown.hidden) {
         const source = content.colors.mode !== 'none' ? content.colors.sourceStat : undefined
@@ -515,8 +541,8 @@ export function buildCellView(grid: HudGrid, cell: HudGridCell, figures: HudFigu
   return view
 }
 
-export function buildCellViews(grid: HudGrid, figures: HudFigures, player: HudPlayerInfo, baselines: Record<string, Baseline>): CellView[] {
-  return grid.cells.filter((c) => c.content.kind !== 'empty' || hasVisibleStyle(c)).map((c) => buildCellView(grid, c, figures, player, baselines))
+export function buildCellViews(grid: HudGrid, figures: HudFigures, player: HudPlayerInfo, baselines: Record<string, Baseline>, pool?: PoolColoring): CellView[] {
+  return grid.cells.filter((c) => c.content.kind !== 'empty' || hasVisibleStyle(c)).map((c) => buildCellView(grid, c, figures, player, baselines, pool))
 }
 
 const hasVisibleStyle = (cell: HudGridCell) => cell.style.bg !== undefined || cell.style.border !== undefined

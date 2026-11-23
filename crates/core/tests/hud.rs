@@ -542,3 +542,27 @@ fn among_all_the_chances_the_hands_where_the_player_did_it_are_marked() {
     let done = figure_hands(&backend, "riickyy777", vpip, &[], "done", 50);
     assert!(done["hands"].as_array().unwrap().iter().all(|h| h["done"] == true));
 }
+
+#[test]
+fn the_pool_figures_add_up_the_opponents_of_the_hero() {
+    let (_dir, backend) = backend_with_hands();
+    let body = json!({ "room": "Winamax", "heroName": HERO, "players": [], "stats": [stat("preflop", "VPIP", Some("tot"))] });
+    let pool = backend.handle("POST", "/hud/pool", Some(body)).body["data"].clone();
+    let vpip = counts(&pool["stats"][0]);
+    // The pool holds every opponent of the hero, so it is at least the two listed ones added together
+    // (the second imported file has other opponents).
+    let each = hud(&backend, "Winamax", HERO, &OPPONENTS, &[stat("preflop", "VPIP", Some("tot"))]);
+    let (num, den) = each["players"].as_array().unwrap().iter().fold((0, 0), |(n, d), p| {
+        let (pn, pd) = counts(&p["stats"][0]);
+        (n + pn, d + pd)
+    });
+    assert!(vpip.0 >= num && vpip.1 > den, "pool {vpip:?} against the two listed opponents ({num}, {den})");
+
+    // A format filter keeps the classic Expresso fixtures and drops the (absent) Nitro ones.
+    let classic = json!({ "room": "Winamax", "heroName": HERO, "players": [], "stats": [stat("preflop", "VPIP", Some("tot"))], "spinFormat": "classic" });
+    assert_eq!(counts(&backend.handle("POST", "/hud/pool", Some(classic)).body["data"]["stats"][0]), vpip);
+    let nitro = json!({ "room": "Winamax", "heroName": HERO, "players": [], "stats": [stat("preflop", "VPIP", Some("tot"))], "spinFormat": "nitro" });
+    assert_eq!(counts(&backend.handle("POST", "/hud/pool", Some(nitro)).body["data"]["stats"][0]).1, 0);
+    let unknown = json!({ "room": "Winamax", "heroName": HERO, "players": [], "stats": [], "spinFormat": "turbo" });
+    assert_eq!(backend.handle("POST", "/hud/pool", Some(unknown)).status, 400);
+}

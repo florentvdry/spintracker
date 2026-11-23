@@ -5,6 +5,7 @@
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
 
 use rusqlite::Connection;
 use serde::Deserialize;
@@ -171,14 +172,21 @@ struct Cache {
     rows: HashMap<CacheKey, CachedRows>,
 }
 
+/// How long the rows of a pool are kept: the average of a whole base moves slowly, and reading
+/// it takes a pass over every hand.
+const POOL_TTL: Duration = Duration::from_secs(300);
+
+type PoolKey = (String, String, Option<SpinFormat>);
+
 pub struct HudService {
     db: Arc<Database>,
     cache: Mutex<Cache>,
+    pools: Mutex<HashMap<PoolKey, (Instant, Arc<Vec<Row>>)>>,
 }
 
 impl HudService {
     pub fn new(db: Arc<Database>) -> Self {
-        Self { db, cache: Mutex::new(Cache::default()) }
+        Self { db, cache: Mutex::new(Cache::default()), pools: Mutex::new(HashMap::new()) }
     }
 
     /// `conn` is the caller's connection: asking the pool for a second one while holding the first
@@ -223,6 +231,28 @@ impl HudService {
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));
         }
         Ok(json!({ "players": players }))
+    }
+
+    /// The figures of the whole pool (every opponent of the hero in the room): what a player is
+    /// compared with. Same shape as one player of [`HudService::players`].
+    pub fn pool(&self, request: &HudPlayersRequest) -> Result<Value> {
+        let conn = self.db.conn()?;
+        let format = parse_format(request.spin_format.as_deref()).ok().flatten();
+        let key: PoolKey = (request.room.clone(), request.hero_name.clone(), format);
+        let cached = {
+            let pools = self.pools.lock().expect("the HUD pool lock is never held across a panic");
+            pools.get(&key).filter(|(at, _)| at.elapsed() < POOL_TTL).map(|(_, rows)| rows.clone())
+        };
+        let rows = match cached {
+            Some(rows) => rows,
+            None => {
+                let rows = Arc::new(hud_stats::load_pool_rows(&conn, &request.room, &request.hero_name, format)?);
+                self.pools.lock().expect("the HUD pool lock is never held across a panic").insert(key, (Instant::now(), rows.clone()));
+                rows
+            }
+        };
+        let (hands, stats) = hud_stats::compute(&rows, &request.stats, &Default::default());
+        Ok(json!({ "room": request.room, "hands": hands, "stats": stats }))
     }
 
     /// The newest hands behind a figure, summarised, with how many there are in all.

@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  MIN_POOL_SAMPLE,
+  poolTone,
   buildCellView,
   buildCellViews,
   cellRequests,
@@ -232,5 +234,20 @@ describe('the stat behind a cell', () => {
     expect(of(stat.id)?.figure).toEqual({ section: 'huSb', label: 'Raise First In', column: 'sb_hu', buckets: ['20+', '16-20'] })
     expect(of(hands.id)?.figure).toEqual({ section: 'meta', label: 'hands', column: null, buckets: ['20+', '16-20'] })
     expect(of(label.id)?.figure).toBeUndefined()
+  })
+})
+
+describe('poolTone', () => {
+  it('marks a figure beyond the threshold, above or below the pool average', () => {
+    expect(poolTone(40, 50, 30, 5)).toBe('above')
+    expect(poolTone(20, 50, 30, 5)).toBe('below')
+    expect(poolTone(33, 50, 30, 5)).toBeNull()
+    expect(poolTone(35, 50, 30, 5)).toBeNull()
+  })
+
+  it('says nothing without an average, a figure or enough behind it', () => {
+    expect(poolTone(null, 50, 30, 5)).toBeNull()
+    expect(poolTone(40, 50, null, 5)).toBeNull()
+    expect(poolTone(80, MIN_POOL_SAMPLE - 1, 30, 5)).toBeNull()
   })
 })

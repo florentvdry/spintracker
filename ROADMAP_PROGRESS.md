@@ -37,7 +37,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 ## Phase 3 - HUD
 
 - [x] 28. Nitro / classic Expresso HUD split
-- [ ] 29. Colors vs pool average
+- [x] 29. Colors vs pool average
 - [ ] 30. Last-hands hover popup
 - [ ] 31. Colour-blind palette
 
@@ -126,6 +126,8 @@ Items 8-19 delivered on `roadmap/phase-1-results-metrics`. Migrations: 202611230
 - Items 24-27 (Adherence screen of My ranges): the editor already listed combos and % per action (ActionsCard); the adherence detail legend now shows the % of combos of each action too (All-in, Raise, Limp, Fold are the user own actions). Ring "Adhérence xx %" for the shown scenario (`AdherenceRing`). Item 26 already existed (amber `#f5c06b` ring and count badge on deviating cells with a hover card); kept. Item 27: new list `hand · planned → played · n hands`, a click opens a modal listing the hands (new route `GET /ranges/adherence/{scenario}/hands`) with a replay link per hand; the old "latest hands" list is folded in a details block. The modal is a stopgap: item 42 will send the same filter to the Hand History.
 
 - Item 28: the format is already stored (Winamax tournament name, e.g. "Expresso Nitro", in `tournament_name`/`game_name`), so no migration or backfill: it is derived in SQL (`LIKE %nitro%`). `POST /hud/players` and `/hud/figure-hands` accept `spinFormat` (`nitro`/`classic`), the active-table list returns `spinFormat`, the Tauri HUD engine forwards it and the overlay sends it: figures of one format never include the other. Not verified against a real Nitro history (none in the repo fixtures: only classic Expresso); the Nitro detection rests on the tournament name containing "Nitro".
+
+- Item 29: new route `POST /hud/pool` (same body as `/hud/players`) returns the figures of every opponent of the hero in the room, added together, filtered by `spinFormat`, cached 5 minutes in memory (the average of a whole base moves slowly; reading it is a pass over all hands). Profile options `poolColors` (off by default) and `poolThreshold` (points, 1-30, default 5): a figure with at least 10 opportunities more than the threshold above the pool average gets a red underline, below it a blue one; the underline sits next to the existing colour bands, which keep their text colour. Figures of custom stats and counts are not compared. Not looked at in the real HUD window.
 
 ## Blockers / missing real data
 
