@@ -77,7 +77,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] P8-2. (synthetic samples only) iPoker + PMU parsers
 - [x] P8-3. PT4 / H2N exports import
 - [x] P8-4. First-run wizard
-- [ ] P8-5. Backup / restore
+- [x] P8-5. Backup / restore
 - [ ] P8-6. macOS build without HUD
 - [ ] P8-7. ES / IT / PT locales
 - [ ] P8-8. History anonymizer
@@ -100,6 +100,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 - P8-3: no dedicated reader for the databases of PokerTracker 4 or Hold'em Manager 3 (as asked: exports only). A new button next to Import picks a folder; every `.txt` and `.xml` under it, subfolders included, goes through the normal import (format detected file by file, other files reported as errors without stopping the run, re-import creates no duplicates). A PT4 export in the original room format or in the PokerStars layout is read by the matching parser; no real PT4 or H2N export sample was available to check, so a layout of their own would not be recognised.
 - P8-4: first-run wizard (modal, once, only on a database with no hand): detects the history folders of Winamax and Unibet (already detected for the automatic import: Documents and Application Support paths, which covers Windows and macOS) and now Betclic (any `Documents` folder named like Betclic with hand files, plus its `Hand*`\/`History*` subfolders; Betclic only offers manual exports, so it is imported but not watched). The user ticks folders, optionally keeps the automatic import on for the watchable ones, and the import runs through the normal progress dialog (`import_detected_folders`, which only accepts folders the application itself detected). Detection logic is tested on temporary folders. The Betclic default location is a GUESS (name-based): no real Betclic install was available. No macOS machine was available either: macOS paths rely on Tauri's `document_dir`\/`config_dir`.
+- P8-5: backup = `VACUUM INTO` a file the user picks (a consistent copy, safe while the app runs), then the copy is opened read-only and checked (`PRAGMA integrity_check`, the tables, the schema version). Restore = pick a file, same checks (a damaged file, a foreign file or one from a NEWER version is refused with a message), then it is added as a new database next to the others (a copy, named "Restored <date>", never active by itself): nothing is overwritten, the user switches with the existing databases list. The paths never go through the web side: both commands (`backup_database`, `restore_database`) are Tauri commands of the main window with native dialogs. Logic in `db/backup.rs`, tested (copy holds data, checks, refusals, registry).
 
 - Commit style follows AGENTS.md (`type(scope): description`); the item number goes in the commit body.
 - Everything written in the repo is English (AGENTS.md section 0); UI strings exist in the fr and en locales.

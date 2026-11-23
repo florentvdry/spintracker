@@ -99,6 +99,8 @@ pub fn run() {
             commands::export_data,
             commands::save_text_file,
             commands::save_binary_file,
+            commands::backup_database,
+            commands::restore_database,
             commands::delete_all_hands,
             commands::set_active_database,
             commands::auto_import_get,

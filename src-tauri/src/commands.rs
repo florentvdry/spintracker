@@ -140,6 +140,64 @@ pub async fn save_text_file(app: AppHandle, window: WebviewWindow, dialog_title:
     }
 }
 
+/// Writes a backup of the active database to a file the user picks.
+#[tauri::command]
+pub async fn backup_database(app: AppHandle, window: WebviewWindow, dialog_title: String) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
+    let Some(backend) = app.state::<BackendState>().ready() else {
+        return json!({ "success": false, "message": "The backend is not ready yet." });
+    };
+    let name = format!("spintracker-backup-{}.db", chrono::Local::now().format("%Y-%m-%d"));
+    let picker = app.clone();
+    let target = tauri::async_runtime::spawn_blocking(move || picker.dialog().file().set_title(dialog_title).set_file_name(name).add_filter("SpinTracker backup", &["db"]).blocking_save_file())
+        .await
+        .ok()
+        .flatten()
+        .and_then(|p| p.into_path().ok());
+    let Some(target) = target else {
+        return json!({ "success": false, "cancelled": true });
+    };
+    let result = tauri::async_runtime::spawn_blocking(move || -> Result<spintracker_core::db::backup::BackupInfo, String> {
+        let conn = backend.database().conn().map_err(|e| e.to_string())?;
+        spintracker_core::db::backup::create_backup(&conn, &target).map_err(|e| e.to_string())
+    })
+    .await;
+    match result {
+        Ok(Ok(info)) => json!({ "success": true, "hands": info.hands, "players": info.players }),
+        Ok(Err(message)) => json!({ "success": false, "message": message }),
+        Err(error) => json!({ "success": false, "message": error.to_string() }),
+    }
+}
+
+/// Checks a backup file the user picks and adds it as a new database; nothing is overwritten.
+#[tauri::command]
+pub async fn restore_database(app: AppHandle, window: WebviewWindow, dialog_title: String) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
+    let Some(backend) = app.state::<BackendState>().ready() else {
+        return json!({ "success": false, "message": "The backend is not ready yet." });
+    };
+    let picker = app.clone();
+    let source = tauri::async_runtime::spawn_blocking(move || picker.dialog().file().set_title(dialog_title).add_filter("SpinTracker backup", &["db"]).blocking_pick_file())
+        .await
+        .ok()
+        .flatten()
+        .and_then(|p| p.into_path().ok());
+    let Some(source) = source else {
+        return json!({ "success": false, "cancelled": true });
+    };
+    let name = format!("Restored {}", chrono::Local::now().format("%Y-%m-%d"));
+    let result = tauri::async_runtime::spawn_blocking(move || spintracker_core::db::backup::restore_as_new(backend.registry(), &source, &name).map_err(|e| e.to_string())).await;
+    match result {
+        Ok(Ok((database, info))) => json!({ "success": true, "name": database.name, "id": database.id, "hands": info.hands }),
+        Ok(Err(message)) => json!({ "success": false, "message": message }),
+        Err(error) => json!({ "success": false, "message": error.to_string() }),
+    }
+}
+
 /// Largest video or GIF the replayer may write.
 const MAX_SAVED_BINARY_BYTES: usize = 256 * 1024 * 1024;
 /// File types a binary save accepts.

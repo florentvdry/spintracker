@@ -817,6 +817,18 @@
       "url": "Address for OBS",
       "privacy": "Off by default. It only listens on this computer (127.0.0.1): nothing is sent over the internet."
     },
+    "backup": {
+      "title": "Backup and restore",
+      "subtitle": "One file holding the whole database, checked after it is written.",
+      "backup": "Back up the database",
+      "restore": "Restore from a backup",
+      "dialog_backup": "Save the backup",
+      "dialog_restore": "Choose a backup",
+      "backup_done": "Backup saved and checked ({{hands}} hands).",
+      "restore_done": "{{name}} added ({{hands}} hands). Switch to it in the databases list above.",
+      "failed": "It did not work.",
+      "hint": "A restore adds the file as a new database next to yours: nothing is overwritten."
+    },
     "palette": {
       "title": "Colour palette",
       "subtitle": "Applies to the HUD, the ranges and the charts. The colour-blind palette tells gains (blue) from losses (orange).",

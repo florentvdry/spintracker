@@ -165,6 +165,30 @@ impl DatabaseRegistry {
         Ok(info)
     }
 
+    /// Registers a COPY of an existing database file under `name`, without making it active.
+    pub fn adopt(&self, name: &str, source: &Path) -> Result<DatabaseInfo> {
+        let folder = self.databases_folder()?;
+        let id = Uuid::new_v4().to_string();
+        let file_name = format!("spintracker_{}.db", &id[..8]);
+        let target = folder.join(&file_name);
+        std::fs::copy(source, &target)?;
+        let now = Utc::now();
+        let info = DatabaseInfo {
+            id,
+            name: name.to_string(),
+            file_path: target.to_string_lossy().into_owned(),
+            file_name,
+            created_at: now,
+            last_used_at: now,
+            is_active: false,
+            hands_count: 0,
+        };
+        let mut dbs = self.databases.lock().unwrap();
+        dbs.push(info.clone());
+        self.save(&dbs);
+        Ok(info)
+    }
+
     pub fn set_active(&self, id: &str) -> bool {
         let mut dbs = self.databases.lock().unwrap();
         if !dbs.iter().any(|d| d.id == id) {

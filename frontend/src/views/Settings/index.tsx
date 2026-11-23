@@ -15,6 +15,7 @@ import { useUpdateStore } from '@/stores/updateStore'
 import { useLocation } from 'react-router-dom'
 import { AUTO_IMPORT_ANCHOR, RANGES_ANCHOR } from './anchors'
 import AutoImportCard from './components/AutoImportCard'
+import BackupSettings from './components/BackupSettings'
 import AutoTagSettings from './components/AutoTagSettings'
 import OverlaySettings from './components/OverlaySettings'
 import PaletteSettings from './components/PaletteSettings'
@@ -317,6 +318,8 @@ export default function Settings() {
           </SettingRow>
         </div>
       </Card>
+
+      <BackupSettings onRestored={() => void loadDatabases()} />
 
       <PaletteSettings />
 

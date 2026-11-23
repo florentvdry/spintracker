@@ -871,6 +871,18 @@
       "url": "Adresse pour OBS",
       "privacy": "Désactivé par défaut. Il n'écoute que sur cet ordinateur (127.0.0.1) : rien n'est envoyé sur internet."
     },
+    "backup": {
+      "title": "Sauvegarde et restauration",
+      "subtitle": "Un seul fichier avec toute la base, vérifié après son écriture.",
+      "backup": "Sauvegarder la base",
+      "restore": "Restaurer une sauvegarde",
+      "dialog_backup": "Enregistrer la sauvegarde",
+      "dialog_restore": "Choisir une sauvegarde",
+      "backup_done": "Sauvegarde enregistrée et vérifiée ({{hands}} mains).",
+      "restore_done": "{{name}} ajoutée ({{hands}} mains). Passe dessus dans la liste des bases ci-dessus.",
+      "failed": "Ça n'a pas marché.",
+      "hint": "Une restauration ajoute le fichier comme une nouvelle base à côté des tiennes : rien n'est écrasé."
+    },
     "palette": {
       "title": "Palette de couleurs",
       "subtitle": "S'applique au HUD, aux ranges et aux graphes. La palette daltoniens distingue les gains (bleu) des pertes (orange).",

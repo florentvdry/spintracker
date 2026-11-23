@@ -10,6 +10,8 @@ const COMMANDS: &[&str] = &[
     "export_data",
     "save_text_file",
     "save_binary_file",
+    "backup_database",
+    "restore_database",
     "delete_all_hands",
     "set_active_database",
     "auto_import_get",

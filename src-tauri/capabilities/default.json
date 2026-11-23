@@ -17,6 +17,8 @@
     "allow-export-data",
     "allow-save-text-file",
     "allow-save-binary-file",
+    "allow-backup-database",
+    "allow-restore-database",
     "allow-delete-all-hands",
     "allow-set-active-database",
     "allow-auto-import-get",
