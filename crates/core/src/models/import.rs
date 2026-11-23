@@ -10,6 +10,8 @@ pub struct ImportProgress {
     pub hands_imported: usize,
     pub hands_skipped: usize,
     pub total_hands: usize,
+    /// Distinct tournaments among the hands imported so far.
+    pub tournaments: usize,
     pub success: bool,
     pub error: Option<String>,
 }

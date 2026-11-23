@@ -62,6 +62,8 @@ pub(super) struct PipelineRun {
     pub skipped: usize,
     /// Every player seen in the stored hands, for a partial recount of the player totals.
     pub touched_players: HashSet<String>,
+    /// Distinct tournaments among the stored hands.
+    pub tournaments: usize,
     pub write_error: Option<Error>,
 }
 
@@ -105,6 +107,24 @@ impl Importer {
         // The same split the import uses, so the count always equals what an import will find
         // (counting separator lines alone is one short for Betclic, whose files open without one).
         Ok(split_hands(&text, parser.hand_separator_for(&text)).len())
+    }
+
+    /// Room and hand count of a file, `None` when it is missing, a summary or of an unknown format.
+    pub fn inspect_file(&self, path: &Path) -> Option<(String, usize)> {
+        if !path.is_file() {
+            return None;
+        }
+        let text = read_text_file(path).ok()?;
+        if summaries::is_poker_tracker_summary(&text) {
+            return None;
+        }
+        let parser = get_parser(&sniff(&text))?;
+        Some((parser.room_name().to_string(), split_hands(&text, parser.hand_separator_for(&text)).len()))
+    }
+
+    /// Room and hand count of each file, in the order of `paths`, inspected in parallel.
+    pub fn inspect_files(&self, paths: &[PathBuf]) -> Vec<Option<(String, usize)>> {
+        paths.par_iter().map(|path| self.inspect_file(path)).collect()
     }
 
     /// Total number of hands in `paths`, counted in parallel; files that cannot be read count as 0.
@@ -241,6 +261,7 @@ impl Importer {
             hands_imported: summary.imported,
             hands_skipped: summary.skipped,
             total_hands: summary.imported + summary.skipped,
+            tournaments: run.tournaments,
             success: true,
             error: None,
         });
@@ -263,6 +284,7 @@ impl Importer {
         let mut imported = 0usize;
         let mut write_error: Option<Error> = None;
         let mut touched_players = HashSet::new();
+        let mut tournaments: HashSet<String> = HashSet::new();
         let mut last_report = Instant::now();
 
         std::thread::scope(|scope| {
@@ -306,6 +328,7 @@ impl Importer {
                 if batch.len() < BATCH_SIZE {
                     continue;
                 }
+                tournaments.extend(batch.iter().filter_map(|item| item.hand.game_id.clone()));
                 match flush(&mut batch) {
                     Ok(written) => imported += written,
                     Err(e) => {
@@ -322,12 +345,14 @@ impl Importer {
                         hands_imported: imported,
                         hands_skipped: skipped.load(Ordering::Relaxed),
                         total_hands: total,
+                        tournaments: tournaments.len(),
                         ..ImportProgress::default()
                     });
                     last_report = Instant::now();
                 }
             }
             if write_error.is_none() && !batch.is_empty() {
+                tournaments.extend(batch.iter().filter_map(|item| item.hand.game_id.clone()));
                 match flush(&mut batch) {
                     Ok(written) => imported += written,
                     Err(e) => write_error = Some(e),
@@ -339,7 +364,7 @@ impl Importer {
         if imported > 0 || write_error.is_some() {
             self.db.bump_players(&touched_players);
         }
-        PipelineRun { imported, skipped: skipped.load(Ordering::Relaxed), touched_players, write_error }
+        PipelineRun { imported, skipped: skipped.load(Ordering::Relaxed), touched_players, tournaments: tournaments.len(), write_error }
     }
 
     /// Stores hands that were parsed elsewhere (the hero is the player marked as such), with their

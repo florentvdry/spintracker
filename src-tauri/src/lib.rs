@@ -6,6 +6,7 @@ mod export;
 mod hud;
 mod hud_settings;
 mod import;
+mod import_rooms;
 mod updater;
 
 use std::time::Duration;

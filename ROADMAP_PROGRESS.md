@@ -25,7 +25,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 ## Phase 2 - Dashboard & My ranges
 
-- [ ] 20. Import screen progress per room
+- [x] 20. Import screen progress per room
 - [ ] 21. Dashboard KPIs
 - [ ] 22. 3-curve main chart
 - [ ] 23. Multipliers histogram card
@@ -115,6 +115,11 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 - Item 18: summary modal composed from existing endpoints (dashboard-stats, time-stats, multiplier-stats on the session range); opens automatically when the last session ended at least N minutes ago (default 30, 0 = off, editable in settings), at most 24 h ago and once per session (persisted in localStorage); reopen from the "Summary" link of each session in the dashboard list.
 - Item 19: bankroll = deposits - withdrawals + cumulative euro result; new table `bankroll_transactions` (migration 202611230002). Buy-in recommendation uses the existing variance simulator (1000 Spins, 1500 simulations, fixed seed) with the average chip EV of the current filters and the main room table; limits 1 % (comfortable) and 5 % (acceptable).
+
+## Phase 1 summary (done)
+Items 8-19 delivered on `roadmap/phase-1-results-metrics`. Migrations: 202611230001 `app_settings`, 202611230002 `bankroll_transactions`. New routes: `GET/PUT /settings/{key}`, `POST /db/cev-breakdown`, `POST /db/time-stats`, `/bankroll/transactions`. To test by hand: Settings (PoolEV tables, rakeback, session summary), Dashboard (PoolEV line, CEV rows, breakdown card), Analysis > Time and Bankroll, session summary modal.
+
+- Item 20: `ImportProgress` gains `tournaments`; the importer gets `inspect_files` (room + hand count per file); Tauri import emits `rooms[]` (per-room totals, hands, tournaments) and the progress dialog draws one bar per room. Tournament counts are per file (a tournament split across files would count twice). Not exercised in the real desktop app (needs a manual import).
 
 ## Blockers / missing real data
 

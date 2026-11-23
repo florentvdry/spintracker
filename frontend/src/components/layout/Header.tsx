@@ -103,7 +103,7 @@ export default function Header() {
       let message = `${p.handsImported} ${t('common.hands')}`
       if (p.handsSkipped) message += ` (+${p.handsSkipped} ${t('common.skipped')})`
       if (p.totalHands) message += ` / ${p.totalHands}`
-      progress.update({ progress: p.percent, message })
+      progress.update({ progress: p.percent, message, details: { rooms: p.rooms ?? [], hands: p.handsImported, tournaments: p.tournaments ?? 0 } })
     })
 
     progress.start({ title: t('header.import_hands'), message: t('header.calculating') })

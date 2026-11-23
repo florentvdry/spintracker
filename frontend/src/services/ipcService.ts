@@ -21,6 +21,8 @@ export interface ImportProgress {
   handsImported: number
   handsSkipped?: number
   totalHands: number | null
+  tournaments?: number
+  rooms?: { room: string; totalHands: number; handsImported: number; handsSkipped: number; tournaments: number }[]
 }
 
 export type AutoImportState = 'off' | 'nofolder' | 'watching' | 'importing' | 'paused' | 'error'
