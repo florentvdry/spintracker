@@ -579,7 +579,8 @@
       "work": "Tournaments times simulations cannot exceed {{maxWork}}.",
       "winRate": "The chip EV must be a number.",
       "multipliers": "Add at least one multiplier with a positive frequency.",
-      "bankroll": "The bankroll must be greater than 0, or left empty."
+      "bankroll": "The bankroll must be greater than 0, or left empty.",
+      "review": "Review"
     },
     "chip_ev": "Chip EV (per tournament)",
     "tip_after": "After {{count}} tournaments",
@@ -712,6 +713,24 @@
     "save": "Save",
     "refused": "Enter a name, or delete a preset (20 at most).",
     "hint": "Saves the buy-in, period, position and result filters now selected."
+  },
+  "hand_review": {
+    "title": "Hands to review",
+    "subtitle": "{{due}} due today, {{total}} marked",
+    "empty": "No hand marked yet. Mark a hand from the replayer, the hand history or with the M key.",
+    "nothing_due": "Nothing to review today. The next hand comes back on its due date.",
+    "no_note": "No note",
+    "open_replayer": "Replay this hand",
+    "handled": "I handled it well",
+    "again": "Look at it again tomorrow",
+    "hint": "A hand handled well comes back later (1, 3, 7, then 21 days); one to look at again comes back tomorrow.",
+    "queue": "Next hands",
+    "box": "box {{box}}",
+    "due_now": "due now",
+    "remove": "Remove from the review",
+    "mark": "To review",
+    "marked": "Marked",
+    "mark_hint": "Mark this hand for review (M)"
   },
   "charts": {
     "stats_title": "Stats",

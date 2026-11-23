@@ -54,6 +54,7 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611230001, "AddAppSettings", "202611230001_add_app_settings.sql"),
     migration!(202611230002, "AddBankrollTransactions", "202611230002_add_bankroll_transactions.sql"),
     migration!(202611230003, "AddPlayerAutoTags", "202611230003_add_player_auto_tags.sql"),
+    migration!(202611230004, "AddReviewHands", "202611230004_add_review_hands.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -217,6 +218,7 @@ mod tests {
              DROP TABLE app_settings;
              DROP TABLE bankroll_transactions;
              DROP TABLE player_auto_tags;
+             DROP TABLE review_hands;
              ALTER TABLE players DROP COLUMN alias_id;
              ALTER TABLE players DROP COLUMN room;
              ALTER TABLE hands DROP COLUMN position;
@@ -237,7 +239,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 22);
+        assert_eq!(run(&mut conn).unwrap(), 23);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))

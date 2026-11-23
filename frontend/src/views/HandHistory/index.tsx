@@ -1,3 +1,4 @@
+import { useReviewQueueStore } from '@/stores/reviewQueueStore'
 import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -52,6 +53,11 @@ export default function HandHistory() {
     loadData()
   }, [heroName, dateRange, buyIn, selectedSession, filters.result, filters.sortBy, filters.rangeDeviation, loadData])
   const selection = hands.handSelection
+
+  // Which hands are marked for review, so the mark of the hand on screen is right.
+  useEffect(() => {
+    void useReviewQueueStore.getState().load(heroName)
+  }, [heroName])
 
   // The "left my range" filter only exists for players who built ranges; its count is for all time.
   const [deviationCount, setDeviationCount] = useState<number | null>(null)

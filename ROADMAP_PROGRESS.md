@@ -62,7 +62,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 - [x] 43. Automatic player tags
 - [x] 44. History against a player
-- [ ] 45. Review queue
+- [x] 45. Review queue
 - [ ] 46. Keyboard shortcuts + help
 
 ## Phase 7 - Content & streaming
@@ -156,6 +156,8 @@ Items 38-42 on `roadmap/phase-5-custom-stats`. No migration. New: scope `me` on 
 
 - Item 43: tags put on players from their figures (new `services/auto_tags.rs`, table `player_auto_tags`, migration 202611230003). Rules are a list `{tag, stat, atLeast|atMost, threshold %, minSample}` saved under the setting `auto_tag_rules`, editable in Settings > Automatic player tags (default rules, my choice: Shover = Open Shove at least 60 % over 30 chances; Loose VPIP >= 75, Tight VPIP <= 45, Aggressive PFR >= 60, Passive PFR <= 20, each over 50 chances). Recomputed at the end of every manual import (not after each live-import hand: it reads every candidate player) and when the rules are saved. Tags are shown in the player list. They describe a style, never a verdict.
 - Item 44: what the Players page had: the hands against a player with the CEV column, reg/fish toggle. Added `GET /players/summary`: games and hands in common, the hero CEV against them (total and per game), first and last game, automatic tags and an editable note (the HUD per-room note, same storage), shown at the top of the hands-against window.
+
+- Item 45: queue of marked hands: table `review_hands` (migration 202611230004), `services/hand_review.rs` on the SAME boxes and intervals as the range cards (`review::next_state`: 0, 1, 3, 7, 21 days; a hand to look at again comes back tomorrow). Routes `/review-queue` (GET, POST, DELETE, `/answer`). Marking: bookmark button in the replayer and in the hand detail of the history (the M key arrives with item 46). Session: Analysis > Review tab: the hand due first is put forward with "I handled it well" / "Look at it again tomorrow" and a replay button; the rest of the queue is listed. The hand is replayed in the replayer window, the answer is given in the tab.
 
 ## Blockers / missing real data
 

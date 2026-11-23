@@ -3,6 +3,7 @@
 pub mod analysis;
 pub mod auto_tags;
 pub mod custom_stats;
+pub mod hand_review;
 pub mod hud;
 pub mod importer;
 pub mod live_import;

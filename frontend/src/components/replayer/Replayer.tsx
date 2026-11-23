@@ -7,6 +7,7 @@ import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalAction
 import PokerTable from './PokerTable'
 import { formatAllInEv } from '@/utils/replayEquity'
 import HandExportMenu from './HandExportMenu'
+import ReviewMarkButton from './ReviewMarkButton'
 import RangeCheckCard from './RangeCheckCard'
 import './replayer.css'
 
@@ -102,6 +103,7 @@ export default function Replayer() {
           </div>
         )}
 
+        {handData && <ReviewMarkButton handId={String(handData.handId)} heroName={((handData.players ?? []) as Json[]).find((p) => p.isHero)?.name ?? null} />}
         {handData && <HandExportMenu handData={handData} />}
 
         <button className={clsx('log-toggle', showLogs && 'active')} onClick={() => setShowLogs(!showLogs)}>
