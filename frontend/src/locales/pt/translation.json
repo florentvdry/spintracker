@@ -1492,7 +1492,8 @@
         "hudProfile": "O perfil de HUD deste pack não é válido.",
         "customStats": "As estatísticas personalizadas deste pack não são válidas.",
         "empty": "Este pack não contém nada.",
-        "kindContent": "Este pack não contém o que o seu tipo indica."
+        "kindContent": "Este pack não contém o que o seu tipo indica.",
+        "manifest": "A descrição deste plugin não é válida."
       },
       "report": "Relatório",
       "report_hint": "Um relatório só contém contagens por cenário: nenhum nome de jogador, nenhuma mão, nenhuma data de uma mão.",
@@ -1511,6 +1512,23 @@
         "json": "O ficheiro não é legível.",
         "format": "Isto não é um relatório do SpinTracker.",
         "version": "Este relatório vem de uma versão mais recente."
+      },
+      "gallery": "Galeria",
+      "gallery_hint": "Uma galeria é um ficheiro que lista vários plugins. Nada é descarregado: é lida a partir do seu computador.",
+      "gallery_open": "Abrir um ficheiro de galeria",
+      "gallery_choose": "Ver",
+      "gallery_skipped": "{{count}} entradas não eram válidas e foram deixadas de fora.",
+      "kind": {
+        "pack": "Pack",
+        "stat-pack": "Pack de estatísticas",
+        "hud-template": "Modelo de HUD",
+        "range-pack": "Pack de ranges"
+      },
+      "gallery_error": {
+        "size": "O ficheiro é demasiado grande.",
+        "json": "O ficheiro não é legível.",
+        "format": "Isto não é uma galeria do SpinTracker.",
+        "version": "Esta galeria vem de uma versão mais recente."
       }
     }
   },

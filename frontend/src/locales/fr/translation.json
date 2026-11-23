@@ -1546,7 +1546,8 @@
         "hudProfile": "Le profil de HUD de ce pack n'est pas valide.",
         "customStats": "Les stats personnalisées de ce pack ne sont pas valides.",
         "empty": "Ce pack ne contient rien.",
-        "kindContent": "Ce pack ne contient pas ce que son type annonce."
+        "kindContent": "Ce pack ne contient pas ce que son type annonce.",
+        "manifest": "La description de ce plugin n'est pas valide."
       },
       "report": "Rapport",
       "report_hint": "Un rapport ne contient que des comptes par scénario : ni pseudo, ni main, ni date de main.",
@@ -1565,6 +1566,23 @@
         "json": "Le fichier est illisible.",
         "format": "Ce n'est pas un rapport SpinTracker.",
         "version": "Ce rapport vient d'une version plus récente."
+      },
+      "gallery": "Galerie",
+      "gallery_hint": "Une galerie est un fichier qui liste plusieurs plugins. Rien n'est téléchargé : elle est lue depuis votre ordinateur.",
+      "gallery_open": "Ouvrir un fichier de galerie",
+      "gallery_choose": "Voir",
+      "gallery_skipped": "{{count}} entrées n'étaient pas valides et ont été ignorées.",
+      "kind": {
+        "pack": "Pack",
+        "stat-pack": "Pack de stats",
+        "hud-template": "Modèle de HUD",
+        "range-pack": "Pack de ranges"
+      },
+      "gallery_error": {
+        "size": "Le fichier est trop gros.",
+        "json": "Le fichier est illisible.",
+        "format": "Ce n'est pas une galerie SpinTracker.",
+        "version": "Cette galerie vient d'une version plus récente."
       }
     }
   },

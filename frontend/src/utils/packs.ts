@@ -16,6 +16,11 @@ export const MAX_FILE_CHARS = 8 * 1024 * 1024
 export const MAX_NAME_CHARS = 80
 export const MAX_CUSTOM_STATS = 50
 export const MAX_REPORT_SCENARIOS = 500
+export const GALLERY_FORMAT = 'spingallery'
+export const MAX_GALLERY_PLUGINS = 100
+export const MAX_DESCRIPTION_CHARS = 400
+const PLUGIN_ID = /^[a-z0-9][a-z0-9._-]{1,63}$/
+const PLUGIN_VERSION = /^\d{1,4}\.\d{1,4}\.\d{1,4}$/
 
 export interface Pack {
   format: typeof PACK_FORMAT
@@ -27,6 +32,10 @@ export interface Pack {
   ranges?: Json
   hudProfile?: Json
   customStats?: Json[]
+  /** Manifest of a shared plugin: all optional, a plain pack has none. */
+  id?: string
+  description?: string
+  pluginVersion?: string
 }
 
 export interface PackSummary {
@@ -36,9 +45,10 @@ export interface PackSummary {
   hasRanges: boolean
   hasHudProfile: boolean
   customStats: number
+  description?: string
 }
 
-export type PackError = 'size' | 'json' | 'format' | 'version' | 'kind' | 'name' | 'ranges' | 'hudProfile' | 'customStats' | 'empty' | 'kindContent'
+export type PackError = 'size' | 'json' | 'format' | 'version' | 'kind' | 'name' | 'ranges' | 'hudProfile' | 'customStats' | 'empty' | 'kindContent' | 'manifest'
 
 export type PackResult = { ok: true; pack: Pack; summary: PackSummary } | { ok: false; error: PackError }
 
@@ -93,6 +103,11 @@ export function parsePack(text: string): PackResult {
   } catch {
     return { ok: false, error: 'json' }
   }
+  return parsePackValue(raw)
+}
+
+/** The same checks on a pack already read from JSON (a plugin inside a gallery). */
+export function parsePackValue(raw: unknown): PackResult {
   if (!isRecord(raw) || raw.format !== PACK_FORMAT) return { ok: false, error: 'format' }
   if (raw.version !== PACK_VERSION) return { ok: false, error: 'version' }
   if (!isKind(raw.kind)) return { ok: false, error: 'kind' }
@@ -115,6 +130,19 @@ export function parsePack(text: string): PackResult {
     pack.customStats = raw.customStats
   }
 
+  if (raw.id !== undefined) {
+    if (typeof raw.id !== 'string' || !PLUGIN_ID.test(raw.id)) return { ok: false, error: 'manifest' }
+    pack.id = raw.id
+  }
+  if (raw.description !== undefined) {
+    if (typeof raw.description !== 'string' || raw.description.length > MAX_DESCRIPTION_CHARS) return { ok: false, error: 'manifest' }
+    pack.description = raw.description
+  }
+  if (raw.pluginVersion !== undefined) {
+    if (typeof raw.pluginVersion !== 'string' || !PLUGIN_VERSION.test(raw.pluginVersion)) return { ok: false, error: 'manifest' }
+    pack.pluginVersion = raw.pluginVersion
+  }
+
   const customStats = pack.customStats?.length ?? 0
   const hasRanges = pack.ranges !== undefined
   const hasHudProfile = pack.hudProfile !== undefined
@@ -126,7 +154,7 @@ export function parsePack(text: string): PackResult {
     (pack.kind === 'hud-template' && hasHudProfile && !hasRanges && customStats === 0) ||
     (pack.kind === 'stat-pack' && customStats > 0 && !hasRanges && !hasHudProfile)
   if (!fits) return { ok: false, error: 'kindContent' }
-  return { ok: true, pack, summary: { name, author, kind: pack.kind, hasRanges, hasHudProfile, customStats } }
+  return { ok: true, pack, summary: { name, author, kind: pack.kind, hasRanges, hasHudProfile, customStats, ...(pack.description ? { description: pack.description } : {}) } }
 }
 
 /** One scenario of a report: counts only. */
@@ -190,4 +218,35 @@ export function parseReport(text: string): ReportResult {
 /** Share of the compared decisions that followed the ranges, or null when there are none. */
 export function respectShare(compared: number, matches: number): number | null {
   return compared > 0 ? matches / compared : null
+}
+
+export interface GalleryEntry {
+  pack: Pack
+  summary: PackSummary
+}
+
+export type GalleryResult = { ok: true; plugins: GalleryEntry[]; skipped: number } | { ok: false; error: 'size' | 'json' | 'format' | 'version' }
+
+/**
+ * Reads a gallery file: an index whose plugins carry their pack inline, so that no download is
+ * needed. A plugin that is not a valid pack is skipped and counted, the others stay usable.
+ */
+export function parseGallery(text: string): GalleryResult {
+  if (text.length > MAX_FILE_CHARS) return { ok: false, error: 'size' }
+  let raw: unknown
+  try {
+    raw = JSON.parse(text)
+  } catch {
+    return { ok: false, error: 'json' }
+  }
+  if (!isRecord(raw) || raw.format !== GALLERY_FORMAT || !Array.isArray(raw.plugins)) return { ok: false, error: 'format' }
+  if (raw.version !== PACK_VERSION) return { ok: false, error: 'version' }
+  const plugins: GalleryEntry[] = []
+  let skipped = 0
+  for (const entry of raw.plugins.slice(0, MAX_GALLERY_PLUGINS)) {
+    const parsed = isRecord(entry) ? parsePackValue(entry.pack) : null
+    if (parsed?.ok) plugins.push({ pack: parsed.pack, summary: parsed.summary })
+    else skipped += 1
+  }
+  return { ok: true, plugins, skipped: skipped + Math.max(0, raw.plugins.length - MAX_GALLERY_PLUGINS) }
 }

@@ -5,7 +5,7 @@ import { ipcService, type Json } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import { exportProfiles, type HudProfile } from '@/views/LiveHud/hudProfile'
-import { buildPack, buildReport, parsePack, parseReport, respectShare, type Pack, type PackContent, type PackSummary, type Report } from '@/utils/packs'
+import { buildPack, buildReport, parseGallery, parsePack, parseReport, respectShare, type GalleryEntry, type Pack, type PackContent, type PackSummary, type Report } from '@/utils/packs'
 
 const PERCENT = 100
 const PACK_EXTENSION = 'spinpack'
@@ -30,6 +30,8 @@ export default function PacksSettings() {
   const [opened, setOpened] = useState<{ pack: Pack; summary: PackSummary } | null>(null)
   const [report, setReport] = useState<Report | null>(null)
   const [reportPack, setReportPack] = useState('')
+  const [gallery, setGallery] = useState<{ plugins: GalleryEntry[]; skipped: number } | null>(null)
+  const galleryInput = useRef<HTMLInputElement>(null)
 
   const save = async (title: string, fileName: string, content: unknown, extension: string): Promise<boolean> => {
     const saved = await ipcService.saveTextFile(title, fileName, JSON.stringify(content, null, 2), extension)
@@ -66,6 +68,14 @@ export default function PacksSettings() {
     setNotice(null)
     setOpened({ pack: parsed.pack, summary: parsed.summary })
     setReportPack(parsed.pack.name)
+  }
+
+  const openGallery = async (file: File | undefined) => {
+    if (!file) return
+    const parsed = parseGallery(await file.text())
+    if (!parsed.ok) return setNotice({ ok: false, text: t(`settings.packs.gallery_error.${parsed.error}`) })
+    setNotice(null)
+    setGallery({ plugins: parsed.plugins, skipped: parsed.skipped })
   }
 
   const applyPack = async () => {
@@ -171,6 +181,50 @@ export default function PacksSettings() {
                 </button>
               </div>
             </div>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <h4 className="text-sm font-semibold text-gray-100">{t('settings.packs.gallery')}</h4>
+          <p className="text-xs text-gray-500">{t('settings.packs.gallery_hint')}</p>
+          <button className="btn-secondary" onClick={() => galleryInput.current?.click()}>
+            {t('settings.packs.gallery_open')}
+          </button>
+          <input
+            ref={galleryInput}
+            type="file"
+            accept=".spingallery,application/json"
+            className="hidden"
+            aria-label={t('settings.packs.gallery_open')}
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              e.target.value = ''
+              void openGallery(file)
+            }}
+          />
+          {gallery && (
+            <ul className="space-y-2">
+              {gallery.plugins.map((entry) => (
+                <li key={entry.pack.id ?? `${entry.pack.name}-${entry.pack.createdAt}`} className="flex items-start justify-between gap-3 rounded-lg border border-dark-200 p-3">
+                  <div>
+                    <p className="text-sm font-semibold text-gray-100">
+                      {entry.pack.name} <span className="text-xs font-normal text-gray-500">{t(`settings.packs.kind.${entry.summary.kind}`)}</span>
+                    </p>
+                    {entry.summary.description && <p className="text-xs text-gray-400">{entry.summary.description}</p>}
+                  </div>
+                  <button
+                    className="btn-secondary"
+                    onClick={() => {
+                      setOpened(entry)
+                      setReportPack(entry.pack.name)
+                    }}
+                  >
+                    {t('settings.packs.gallery_choose')}
+                  </button>
+                </li>
+              ))}
+              {gallery.skipped > 0 && <li className="text-xs text-gray-500">{t('settings.packs.gallery_skipped', { count: gallery.skipped })}</li>}
+            </ul>
           )}
         </div>
 

@@ -26,14 +26,20 @@ and a sample in `tests/fixtures/community/`.
 
 ## Gallery
 
-A gallery is a JSON index:
+A gallery is a JSON file whose plugins carry their pack **inline**, so nothing has to be downloaded:
 
 ```json
-{ "format": "spingallery", "version": 1, "plugins": [ { "id": "...", "name": "...", "description": "...", "kind": "...", "url": "...", "sha256": "..." } ] }
+{ "format": "spingallery", "version": 1, "plugins": [ { "pack": { "format": "spinpack", "version": 1, "kind": "stat-pack", "id": "author.name", "name": "...", "description": "...", "pluginVersion": "1.0.0", "customStats": [ ... ] } } ] }
 ```
 
-v1 reads an index from a **file** the user picks. Reading it from a GitHub repository is read-only
-and opt-in by design, but needs a network read outside the update flow, so it is not in v1.
+Settings > Packs > Gallery reads the file the user picks, lists its plugins with their kind and
+description and, on "Look", shows the same summary and confirmation as for any pack. An entry that
+is not a valid pack is skipped and counted; the others stay usable. Reading an index from a GitHub
+repository is read-only and opt-in by design, but needs a network read outside the update flow, so
+it is **not in v1**: the gallery file can be shared by any means (a repository, a forum, a chat).
+
+Manifest rules: `id` is lowercase letters, digits, `.`, `_` and `-` (2 to 64 characters),
+`pluginVersion` is `major.minor.patch`, `description` is at most 400 characters.
 
 ## Safety
 

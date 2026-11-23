@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPack, buildReport, kindOf, MAX_CUSTOM_STATS, MAX_FILE_CHARS, PACK_VERSION, parsePack, parseReport, respectShare } from './packs'
+import { buildPack, buildReport, parseGallery, kindOf, MAX_CUSTOM_STATS, MAX_FILE_CHARS, PACK_VERSION, parsePack, parseReport, respectShare } from './packs'
 
 const NOW = new Date('2026-11-23T10:00:00Z')
 const ranges = { format: 'spintracker-ranges', version: 1 }
@@ -78,5 +78,31 @@ describe('reports', () => {
   it('gives the share of decisions that followed the ranges', () => {
     expect(respectShare(10, 7)).toBe(0.7)
     expect(respectShare(0, 0)).toBeNull()
+  })
+})
+
+describe('gallery', () => {
+  const plugin = (id: string) => ({ ...buildPack({ name: 'Stats', author: 'A', customStats: [stat] }, NOW), id, description: 'Two stats', pluginVersion: '1.0.0' })
+
+  it('reads the plugins of a gallery and skips the ones that are not valid packs', () => {
+    const file = JSON.stringify({ format: 'spingallery', version: 1, plugins: [{ pack: plugin('coach.stats') }, { pack: { format: 'other' } }, { name: 'no pack' }] })
+    const result = parseGallery(file)
+    expect(result.ok && result.plugins.map((p) => p.pack.id)).toEqual(['coach.stats'])
+    expect(result.ok && result.skipped).toBe(2)
+    expect(result.ok && result.plugins[0].summary.description).toBe('Two stats')
+  })
+
+  it('refuses a file that is not a gallery', () => {
+    expect(parseGallery('{}')).toEqual({ ok: false, error: 'format' })
+    expect(parseGallery('x')).toEqual({ ok: false, error: 'json' })
+    expect(parseGallery(JSON.stringify({ format: 'spingallery', version: 2, plugins: [] }))).toEqual({ ok: false, error: 'version' })
+  })
+
+  it('checks the manifest of a plugin', () => {
+    const bad = (patch: object) => parsePack(JSON.stringify({ ...plugin('a.b'), ...patch }))
+    expect(bad({ id: 'Has Space' })).toEqual({ ok: false, error: 'manifest' })
+    expect(bad({ pluginVersion: 'latest' })).toEqual({ ok: false, error: 'manifest' })
+    expect(bad({ description: 'x'.repeat(401) })).toEqual({ ok: false, error: 'manifest' })
+    expect(bad({}).ok).toBe(true)
   })
 })
