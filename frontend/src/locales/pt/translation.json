@@ -1778,6 +1778,14 @@
     "legend_acts": "Rende mais do que desistir",
     "legend_folds": "Desistir",
     "cell_ev": "{{hand}}: {{act}} BB contra {{fold}} BB ao desistir",
-    "note": "EV em fichas contra a frequência observada nas suas próprias mãos. Não é um cálculo de valor de torneio nem uma recomendação: mostra o que rende mais contra o que o pool faz."
+    "note": "EV em fichas contra a frequência observada nas suas próprias mãos. Não é um cálculo de valor de torneio nem uma recomendação: mostra o que rende mais contra o que o pool faz.",
+    "reference_title": "Estratégia de referência",
+    "reference_subtitle": "A estratégia all-in ou fold que ninguém consegue explorar, calculada no seu computador.",
+    "reference_stack": "Stack: {{stack}} BB",
+    "reference_shove": "All-in como small blind",
+    "reference_call": "Pagar como big blind",
+    "reference_gap": "Distância de uma estratégia inexplorável: {{value}} BB",
+    "reference_note": "Uma referência para olhar. As suas próprias mãos nunca são comparadas com ela.",
+    "cell_freq": "{{hand}}: {{pct}}%"
   }
 }

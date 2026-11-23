@@ -564,6 +564,13 @@ impl Backend {
                     Err(message) => Response::message(400, &message),
                 }
             }
+            ("POST", ["reference", "push-fold"]) => {
+                let body: Value = r.body_as()?;
+                match body.get("stack").and_then(Value::as_f64).map_or_else(|| Err("stack is required".to_string()), crate::services::exploit::reference) {
+                    Ok(value) => Response::data(value),
+                    Err(message) => Response::message(400, &message),
+                }
+            }
             ("POST", ["hud", "figure-hands"]) => {
                 let request: HudFigureHandsRequest = r.body_as()?;
                 match request.validate() {

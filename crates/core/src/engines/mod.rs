@@ -2,6 +2,7 @@
 
 pub mod actions;
 pub mod cards;
+pub mod cfr;
 pub mod cev_breakdown;
 pub mod analytics;
 pub mod pool_ev;

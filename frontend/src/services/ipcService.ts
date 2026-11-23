@@ -122,6 +122,7 @@ export const ipcService = {
   deleteBankrollTransaction: (id: number) => backend('DELETE', `/bankroll/transactions/${id}`),
   getTimeStats: (options: Json = {}) => backend('POST', '/db/time-stats', options),
   getExploit: (options: Json) => backend('POST', '/hud/exploit', options),
+  getPushFoldReference: (options: Json) => backend('POST', '/reference/push-fold', options),
   getCevBreakdown: (options: Json = {}) => backend('POST', '/db/cev-breakdown', options),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),
   // User preferences the backend computes with

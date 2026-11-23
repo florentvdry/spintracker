@@ -1778,6 +1778,14 @@
     "legend_acts": "Rende più del fold",
     "legend_folds": "Fold",
     "cell_ev": "{{hand}}: {{act}} BB contro {{fold}} BB foldando",
-    "note": "EV in chip contro la frequenza osservata nelle tue mani. Non è un calcolo del valore di torneo né un consiglio: mostra ciò che rende di più contro ciò che fa il pool."
+    "note": "EV in chip contro la frequenza osservata nelle tue mani. Non è un calcolo del valore di torneo né un consiglio: mostra ciò che rende di più contro ciò che fa il pool.",
+    "reference_title": "Strategia di riferimento",
+    "reference_subtitle": "La strategia all-in o fold che nessuno può sfruttare, calcolata sul tuo computer.",
+    "reference_stack": "Stack: {{stack}} BB",
+    "reference_shove": "All-in come piccolo buio",
+    "reference_call": "Pagare come grande buio",
+    "reference_gap": "Distanza da una strategia non sfruttabile: {{value}} BB",
+    "reference_note": "Un riferimento da guardare. Le tue mani non vengono mai confrontate con essa.",
+    "cell_freq": "{{hand}}: {{pct}}%"
   }
 }

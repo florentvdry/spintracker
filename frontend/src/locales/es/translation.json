@@ -1778,6 +1778,14 @@
     "legend_acts": "Rinde más que retirarse",
     "legend_folds": "Retirarse",
     "cell_ev": "{{hand}}: {{act}} BB frente a {{fold}} BB al retirarse",
-    "note": "EV en fichas frente a la frecuencia observada en tus propias manos. No es un cálculo de valor de torneo ni una recomendación: muestra qué rinde más frente a lo que hace el pool."
+    "note": "EV en fichas frente a la frecuencia observada en tus propias manos. No es un cálculo de valor de torneo ni una recomendación: muestra qué rinde más frente a lo que hace el pool.",
+    "reference_title": "Estrategia de referencia",
+    "reference_subtitle": "La estrategia all-in o fold que nadie puede explotar, calculada en tu ordenador.",
+    "reference_stack": "Stack: {{stack}} BB",
+    "reference_shove": "All-in como ciega pequeña",
+    "reference_call": "Pagar como ciega grande",
+    "reference_gap": "Distancia a una estrategia inexplotable: {{value}} BB",
+    "reference_note": "Una referencia para mirar. Tus propias manos nunca se comparan con ella.",
+    "cell_freq": "{{hand}}: {{pct}} %"
   }
 }

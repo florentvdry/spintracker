@@ -1778,6 +1778,14 @@
     "legend_acts": "Pays more than folding",
     "legend_folds": "Fold",
     "cell_ev": "{{hand}}: {{act}} BB against {{fold}} BB for folding",
-    "note": "Chip EV against the frequency observed in your own hands. It is not a tournament-value calculation and not a recommendation: it shows what pays most against what the pool does."
+    "note": "Chip EV against the frequency observed in your own hands. It is not a tournament-value calculation and not a recommendation: it shows what pays most against what the pool does.",
+    "reference_title": "Reference strategy",
+    "reference_subtitle": "The all-in or fold strategy nobody can exploit, computed on your computer.",
+    "reference_stack": "Stack: {{stack}} BB",
+    "reference_shove": "All-in as the small blind",
+    "reference_call": "Call as the big blind",
+    "reference_gap": "Distance from an unexploitable strategy: {{value}} BB",
+    "reference_note": "A reference to look at. Your own hands are never compared with it.",
+    "cell_freq": "{{hand}}: {{pct}}%"
   }
 }

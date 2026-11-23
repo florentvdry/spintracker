@@ -1778,6 +1778,14 @@
     "legend_acts": "Rapporte plus que se coucher",
     "legend_folds": "Se coucher",
     "cell_ev": "{{hand}} : {{act}} BB contre {{fold}} BB en se couchant",
-    "note": "EV en jetons face à la fréquence observée dans vos propres mains. Ce n'est ni un calcul de valeur de tournoi ni une recommandation : cela montre ce qui rapporte le plus face à ce que fait le pool."
+    "note": "EV en jetons face à la fréquence observée dans vos propres mains. Ce n'est ni un calcul de valeur de tournoi ni une recommandation : cela montre ce qui rapporte le plus face à ce que fait le pool.",
+    "reference_title": "Stratégie de référence",
+    "reference_subtitle": "La stratégie all-in ou fold que personne ne peut exploiter, calculée sur votre ordinateur.",
+    "reference_stack": "Tapis : {{stack}} BB",
+    "reference_shove": "All-in en petite blinde",
+    "reference_call": "Payer en grosse blinde",
+    "reference_gap": "Écart avec une stratégie inexploitable : {{value}} BB",
+    "reference_note": "Une référence à regarder. Vos propres mains ne sont jamais comparées avec elle.",
+    "cell_freq": "{{hand}} : {{pct}} %"
   }
 }
