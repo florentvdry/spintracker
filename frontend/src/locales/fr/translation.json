@@ -1786,6 +1786,20 @@
     "reference_call": "Payer en grosse blinde",
     "reference_gap": "Écart avec une stratégie inexploitable : {{value}} BB",
     "reference_note": "Une référence à regarder. Vos propres mains ne sont jamais comparées avec elle.",
-    "cell_freq": "{{hand}} : {{pct}} %"
+    "cell_freq": "{{hand}} : {{pct}} %",
+    "practice_title": "M'entraîner sur mes vraies mains",
+    "practice_subtitle": "Des mains que vous avez vraiment eues dans les blindes : vous répondez d'abord, puis ce qui rapporte le plus face à votre pool.",
+    "practice_start": "Tirer mes mains",
+    "practice_empty": "Aucune main en heads-up avec cartes connues dans cette salle.",
+    "practice_all_in": "All-in",
+    "practice_call": "Payer",
+    "practice_fold": "Se coucher",
+    "practice_hand": "{{cards}} à {{stack}} BB",
+    "practice_best": "Rapporte plus : {{action}} ({{act}} BB contre {{fold}} BB)",
+    "practice_no_data": "Pas assez de mains à cette profondeur pour répondre.",
+    "practice_same": "Identique à ce qui rapporte le plus.",
+    "practice_other": "Différent de ce qui rapporte le plus.",
+    "practice_next": "Main suivante",
+    "practice_score": "{{same}} réponses sur {{total}} correspondent à ce qui rapporte le plus"
   }
 }

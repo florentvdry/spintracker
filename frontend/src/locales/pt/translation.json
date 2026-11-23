@@ -1786,6 +1786,20 @@
     "reference_call": "Pagar como big blind",
     "reference_gap": "Distância de uma estratégia inexplorável: {{value}} BB",
     "reference_note": "Uma referência para olhar. As suas próprias mãos nunca são comparadas com ela.",
-    "cell_freq": "{{hand}}: {{pct}}%"
+    "cell_freq": "{{hand}}: {{pct}}%",
+    "practice_title": "Treinar com as minhas mãos reais",
+    "practice_subtitle": "Mãos que realmente teve nos blinds: responde primeiro e depois vê o que rende mais contra o seu pool.",
+    "practice_start": "Sortear as minhas mãos",
+    "practice_empty": "Nenhuma mão heads-up com cartas conhecidas nesta sala.",
+    "practice_all_in": "All-in",
+    "practice_call": "Pagar",
+    "practice_fold": "Desistir",
+    "practice_hand": "{{cards}} com {{stack}} BB",
+    "practice_best": "Rende mais: {{action}} ({{act}} BB contra {{fold}} BB)",
+    "practice_no_data": "Não há mãos suficientes a esta profundidade para responder.",
+    "practice_same": "Igual ao que rende mais.",
+    "practice_other": "Diferente do que rende mais.",
+    "practice_next": "Próxima mão",
+    "practice_score": "{{same}} de {{total}} respostas coincidem com o que rende mais"
   }
 }

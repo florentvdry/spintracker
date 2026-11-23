@@ -1786,6 +1786,20 @@
     "reference_call": "Call as the big blind",
     "reference_gap": "Distance from an unexploitable strategy: {{value}} BB",
     "reference_note": "A reference to look at. Your own hands are never compared with it.",
-    "cell_freq": "{{hand}}: {{pct}}%"
+    "cell_freq": "{{hand}}: {{pct}}%",
+    "practice_title": "Practise on my real hands",
+    "practice_subtitle": "Hands you really held in the blinds, answered first by you, then by what pays most against your pool.",
+    "practice_start": "Draw my hands",
+    "practice_empty": "No heads-up hand with known cards found in this room.",
+    "practice_all_in": "All-in",
+    "practice_call": "Call",
+    "practice_fold": "Fold",
+    "practice_hand": "{{cards}} at {{stack}} BB",
+    "practice_best": "Pays more: {{action}} ({{act}} BB against {{fold}} BB)",
+    "practice_no_data": "Not enough hands at this depth to answer.",
+    "practice_same": "Same as what pays most.",
+    "practice_other": "Different from what pays most.",
+    "practice_next": "Next hand",
+    "practice_score": "{{same}} of {{total}} answers match what pays most"
   }
 }

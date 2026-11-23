@@ -299,6 +299,15 @@ impl HudService {
         }
     }
 
+    /// Real heads-up hands of the player to practise on, in the `SB` or `BB`.
+    pub fn exploit_spots(&self, room: &str, hero: &str, position: &str, limit: usize) -> std::result::Result<Value, String> {
+        if !matches!(position, "SB" | "BB") || room.trim().is_empty() || hero.trim().is_empty() {
+            return Err("room, heroName and a position of SB or BB are required".into());
+        }
+        let conn = self.db.conn().map_err(|e| e.to_string())?;
+        crate::services::exploit::spots(&conn, room, hero, position, limit.clamp(1, 50)).map_err(|e| e.to_string())
+    }
+
     /// Best responses against the all-in frequencies the pool shows, one block per stack depth.
     pub fn exploit(&self, room: &str, hero: &str, spin_format: Option<&str>) -> std::result::Result<Value, String> {
         let format = parse_format(spin_format)?;

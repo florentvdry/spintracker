@@ -1786,6 +1786,20 @@
     "reference_call": "Pagar como ciega grande",
     "reference_gap": "Distancia a una estrategia inexplotable: {{value}} BB",
     "reference_note": "Una referencia para mirar. Tus propias manos nunca se comparan con ella.",
-    "cell_freq": "{{hand}}: {{pct}} %"
+    "cell_freq": "{{hand}}: {{pct}} %",
+    "practice_title": "Practicar con mis manos reales",
+    "practice_subtitle": "Manos que realmente tuviste en las ciegas: respondes primero y luego ves lo que más rinde contra tu pool.",
+    "practice_start": "Sacar mis manos",
+    "practice_empty": "No hay manos heads-up con cartas conocidas en esta sala.",
+    "practice_all_in": "All-in",
+    "practice_call": "Pagar",
+    "practice_fold": "Retirarse",
+    "practice_hand": "{{cards}} con {{stack}} BB",
+    "practice_best": "Rinde más: {{action}} ({{act}} BB frente a {{fold}} BB)",
+    "practice_no_data": "No hay suficientes manos a esta profundidad para responder.",
+    "practice_same": "Igual que lo que más rinde.",
+    "practice_other": "Distinto de lo que más rinde.",
+    "practice_next": "Siguiente mano",
+    "practice_score": "{{same}} de {{total}} respuestas coinciden con lo que más rinde"
   }
 }

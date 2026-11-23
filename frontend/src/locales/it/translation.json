@@ -1786,6 +1786,20 @@
     "reference_call": "Pagare come grande buio",
     "reference_gap": "Distanza da una strategia non sfruttabile: {{value}} BB",
     "reference_note": "Un riferimento da guardare. Le tue mani non vengono mai confrontate con essa.",
-    "cell_freq": "{{hand}}: {{pct}}%"
+    "cell_freq": "{{hand}}: {{pct}}%",
+    "practice_title": "Allenarsi sulle mie mani reali",
+    "practice_subtitle": "Mani che hai davvero avuto nei buio: rispondi prima tu, poi vedi ciò che rende di più contro il tuo pool.",
+    "practice_start": "Pesca le mie mani",
+    "practice_empty": "Nessuna mano heads-up con carte note in questa sala.",
+    "practice_all_in": "All-in",
+    "practice_call": "Paga",
+    "practice_fold": "Fold",
+    "practice_hand": "{{cards}} a {{stack}} BB",
+    "practice_best": "Rende di più: {{action}} ({{act}} BB contro {{fold}} BB)",
+    "practice_no_data": "Non ci sono abbastanza mani a questa profondità per rispondere.",
+    "practice_same": "Uguale a ciò che rende di più.",
+    "practice_other": "Diverso da ciò che rende di più.",
+    "practice_next": "Mano successiva",
+    "practice_score": "{{same}} risposte su {{total}} coincidono con ciò che rende di più"
   }
 }

@@ -4,6 +4,7 @@ pub mod app_settings;
 pub mod bankroll;
 pub mod cev_breakdown;
 pub mod detailed_stats;
+pub mod exploit_spots;
 pub mod hands;
 pub mod hands_query;
 pub mod heatmap;
