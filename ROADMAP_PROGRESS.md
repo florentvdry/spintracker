@@ -80,8 +80,8 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] P8-5. Backup / restore
 - [~] P8-6. (partial) macOS build without HUD
 - [x] P8-7. ES / IT / PT locales
-- [ ] P8-8. History anonymizer
-- [ ] P8-9. Community fixtures corpus
+- [x] P8-8. History anonymizer
+- [x] P8-9. Community fixtures corpus
 
 ## Phase 9 - Big bets
 
@@ -103,6 +103,11 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - P8-5: backup = `VACUUM INTO` a file the user picks (a consistent copy, safe while the app runs), then the copy is opened read-only and checked (`PRAGMA integrity_check`, the tables, the schema version). Restore = pick a file, same checks (a damaged file, a foreign file or one from a NEWER version is refused with a message), then it is added as a new database next to the others (a copy, named "Restored <date>", never active by itself): nothing is overwritten, the user switches with the existing databases list. The paths never go through the web side: both commands (`backup_database`, `restore_database`) are Tauri commands of the main window with native dialogs. Logic in `db/backup.rs`, tested (copy holds data, checks, refusals, registry).
 - P8-6 (PARTIAL, not built on a Mac): the Rust shell already compiled the HUD as stubs outside Windows (`hud\/mod.rs`, the `windows` dependency is `cfg(windows)`). Added `src-tauri\/tauri.macos.conf.json` (dmg target, `.icns` icon, no updater artifacts, macOS 11), a `macos` job in `ci.yml` (backend tests + `cargo check -p spintracker` on `macos-latest`), and the HUD hidden on a Mac: the HUD switch of the filter bar is not drawn and the HUD page says it is Windows-only (`utils\/platform.ts`, from the webview user agent). NOT done: publishing a macOS build in the release workflow (needs an Apple signing and notarization setup, and a `darwin-*` entry in `latest.json` for the updater), so `deploy.yml` is unchanged. NOT verified: that the shell compiles and the app starts on macOS (no Mac here): the new CI job will tell on the first pull request. The main navigation is untouched: the HUD tab stays, with its explanation.
 - P8-7: Spanish, Italian and Portuguese (Brazilian wording where it differs) locale files, complete: the 1442 strings of the English reference, written by me (no professional translator, no machine translation service: nothing leaves the machine) so they need a native read-through. A test (`locales.test.ts`) checks that every locale has exactly the keys of English and the same `{{placeholders}}` and tags, so a string added later must be added in all five files. The selector in Settings > General lists the five languages (`LANGUAGES` in `i18n.ts`). Wording fixed on the way: the variance simulator sentence no longer says "leak" (en, fr).
+- P8-8: Settings > "Anonymise a hand history": pick a file, the room parser finds the players, every name is replaced everywhere by the same stand-in (`Hero`, `Player A`, `Player B`...) and the result is saved where the user chooses (`services/anonymizer.rs`, Tauri command `anonymize_history`, nothing leaves the machine). A name inside a longer word is left alone; figures do not change (tested by parsing before and after). Only names are changed: ids, dates and table names stay, so the user must read the file before sharing.
+- P8-9: `crates/core/tests/fixtures/community/` with a README explaining how to contribute an anonymised file, and `community_corpus.rs` which parses EVERY file there (recognised by a parser, at least one hand, a hero, results adding up to the rake, no e-mail address). Seeded with copies of the three synthetic files (named `*-synthetic*`); real contributions are what is missing.
+
+## Phase 8 summary (done; P8-1, P8-2 synthetic only, P8-6 partial)
+Items on `roadmap/phase-8-rooms-platform`. Migrations: none new in phase 8 (the review, tags, bankroll ones are phase 1 and 6). New Tauri commands: `import_hand_history_folder`, `import_detected_folders`, `backup_database`, `restore_database`, `anonymize_history`, `save_binary_file`. To test by hand: import a folder, first launch wizard (fresh database), backup then restore, switch language to ES/IT/PT, anonymise a file; the PokerStars, GGPoker and iPoker parsers need real files.
 
 - Commit style follows AGENTS.md (`type(scope): description`); the item number goes in the commit body.
 - Everything written in the repo is English (AGENTS.md section 0); UI strings exist in the fr and en locales.
