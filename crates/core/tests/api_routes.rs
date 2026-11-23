@@ -140,3 +140,18 @@ fn pool_ev_follows_the_saved_multiplier_tables() {
     assert!((chart_total - dashboard_total).abs() < 0.05, "chart {chart_total} and dashboard {dashboard_total} agree");
     assert!((last["rakeback"].as_f64().unwrap() - rakeback).abs() < 0.05);
 }
+
+#[test]
+fn cev_breakdown_route_returns_every_section() {
+    use serde_json::json;
+    let b = backend();
+    let body = json!({ "heroName": "jmenfouu", "following": 3, "minEquityPercent": 60, "mode": "big_pot" });
+    let data = b.handle("POST", "/db/cev-breakdown", Some(body)).body["data"].clone();
+    let multiplier_tournaments: i64 = data["by_multiplier"].as_array().unwrap().iter().map(|m| m["tournaments"].as_i64().unwrap()).sum();
+    assert_eq!(multiplier_tournaments, 300, "every Betclic tournament of the fixtures has a multiplier bucket");
+    let progress: i64 = data["by_session_progress"].as_array().unwrap().iter().map(|m| m["tournaments"].as_i64().unwrap()).sum();
+    assert_eq!(progress, 300);
+    let composed_hands: i64 = data["by_composition"].as_object().unwrap().values().map(|b| b["hands"].as_i64().unwrap()).sum();
+    assert_eq!(composed_hands, 4416, "every hand lands in one composition");
+    assert!(data["after_bad_beat"]["avg_all"].is_number());
+}

@@ -389,6 +389,11 @@
     "pool_ev": "PoolEV",
     "pool_ev_hint": "Expected profit with the prize pool replaced by the average of your multiplier table: jackpots no longer hide your results",
     "ev_roi": "evROI",
+    "table_2_fish": "2 fish",
+    "table_reg_fish": "1 reg + 1 fish",
+    "table_2_regs": "2 regs",
+    "vs_reg": "vs Reg",
+    "vs_fish": "vs Fish",
     "rakeback": "Rakeback",
     "pool_ev_covered": "{{count}} tournaments counted",
     "pool_ev_missing": "Add a multiplier table in the settings to see PoolEV",
@@ -608,6 +613,23 @@
   "ranges": {
     "title": "Range Analyzer",
     "subtitle": "Study your opening ranges"
+  },
+  "cev_breakdown": {
+    "title": "CEV breakdowns",
+    "subtitle": "Average chip EV per tournament, by situation",
+    "by_multiplier": "By multiplier",
+    "by_session_progress": "By tournament rank in the session",
+    "after_bad_beat": "After a bad beat",
+    "following": "Following tournaments",
+    "min_equity": "Min. equity (%)",
+    "definition": "Bad beat definition",
+    "mode_elimination": "Eliminated with the best hand",
+    "mode_big_pot": "Big all-in lost",
+    "bad_beats_one": "{{count}} bad beat found",
+    "bad_beats_other": "{{count}} bad beats found",
+    "next_tournaments": "Next {{count}} tournaments",
+    "all_tournaments": "All tournaments",
+    "no_bad_beat": "No bad beat matches this definition."
   },
   "charts": {
     "stats_title": "Stats",

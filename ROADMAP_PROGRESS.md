@@ -12,10 +12,10 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 - [x] 8. PoolEV / evROI (editable multiplier table, dashboard + charts)
 - [x] 9. Rakeback per room, PoolEV+RB and Winnings+RB charts
-- [ ] 10. CEV by table composition (vs Reg / vs Fish rows)
-- [ ] 11. CEV by multiplier
-- [ ] 12. CEV by session progress
-- [ ] 13. CEV after a bad beat
+- [x] 10. CEV by table composition (vs Reg / vs Fish rows)
+- [x] 11. CEV by multiplier
+- [x] 12. CEV by session progress
+- [x] 13. CEV after a bad beat
 - [ ] 14. Results heatmap by hour / weekday
 - [ ] 15. Soft table hours
 - [ ] 16. Profit per hour
@@ -107,6 +107,9 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - No `lint` script exists in `frontend/package.json`; `tsc --noEmit` and the Vite build are used instead. Rust: `cargo check -p spintracker` clean.
 
 - Item 9: rakeback = pct x 7% of the buy-in (RAKE_SHARE, matching the published 93% return of the multiplier tables). Rates in `app_settings` key `rakeback`. Chart lines Net Profit+RB and PoolEV+RB appear only once a rate is set.
+
+- Items 10-13 (one engine, `engines/cev_breakdown.rs`, one route `POST /db/cev-breakdown`, one dashboard card + rows in the position block). Composition = number of opponents flagged `is_reg` in each hand: HU `vs Reg`/`vs Fish`, 3-way `2 fish`/`1 reg + 1 fish`/`2 regs`. Rows divide by total tournaments like the other position rows. Multiplier and session buckets show CEV per tournament; session = 2 h gap (same as sessions elsewhere); rank buckets 1-10, 11-20, 21-35, 36-50, 51+.
+- Item 13: the equity columns (`equity_preflop`...) are never filled by the importer, so hero equity at a lost all-in is rebuilt from `ev_chips`: (EV + investment) / total pot. It is an estimate (antes and rake in the pot). Definitions: `elimination` = the lost all-in is the hero last hand of the tournament; `big_pot` = any lost all-in. N (default 5) and min equity (default 70 %) are editable on the card (not persisted).
 
 ## Blockers / missing real data
 

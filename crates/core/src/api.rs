@@ -22,6 +22,7 @@ use crate::models::ParsedHand;
 use crate::parsers::{get_parser, get_parser_by_room};
 use crate::repos::detailed_stats::{detailed_stats, DetailedQuery};
 use crate::repos::app_settings;
+use crate::repos::cev_breakdown::{self, BreakdownQuery};
 use crate::repos::hud_stats;
 use crate::repos::hands_query::{self, HandsAgainstQuery, HandsQuery};
 use crate::repos::player_queries::{self, PlayersQuery};
@@ -312,6 +313,11 @@ impl Backend {
             ("GET" | "POST", ["db", "range-heatmap"]) => {
                 let q: heatmap::RangeHeatmapQuery = if post { r.body_or_default()? } else { Default::default() };
                 Response::data(heatmap::range_heatmap(&*conn()?, &q)?)
+            }
+
+            ("POST", ["db", "cev-breakdown"]) => {
+                let q: BreakdownQuery = r.body_or_default()?;
+                Response::data(cev_breakdown::cev_breakdown(&*conn()?, &q)?)
             }
 
             // --- User preferences the backend computes with (PoolEV tables...)

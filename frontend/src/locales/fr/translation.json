@@ -389,6 +389,11 @@
     "pool_ev": "PoolEV",
     "pool_ev_hint": "Profit attendu avec le prize pool remplacé par la moyenne de ta table de multiplicateurs : les jackpots ne masquent plus tes résultats",
     "ev_roi": "evROI",
+    "table_2_fish": "2 fish",
+    "table_reg_fish": "1 reg + 1 fish",
+    "table_2_regs": "2 regs",
+    "vs_reg": "vs Reg",
+    "vs_fish": "vs Fish",
     "rakeback": "Rakeback",
     "pool_ev_covered": "{{count}} tournois comptés",
     "pool_ev_missing": "Ajoute une table de multiplicateurs dans les réglages pour voir la PoolEV",
@@ -608,6 +613,23 @@
   "ranges": {
     "title": "Analyseur de Ranges",
     "subtitle": "Étudiez vos ranges d'ouverture"
+  },
+  "cev_breakdown": {
+    "title": "CEV détaillé",
+    "subtitle": "Chip EV moyen par tournoi, selon la situation",
+    "by_multiplier": "Par multiplicateur",
+    "by_session_progress": "Par rang du tournoi dans la session",
+    "after_bad_beat": "Après un bad beat",
+    "following": "Tournois suivants",
+    "min_equity": "Équité min. (%)",
+    "definition": "Définition du bad beat",
+    "mode_elimination": "Éliminé en étant devant",
+    "mode_big_pot": "Gros tapis perdu",
+    "bad_beats_one": "{{count}} bad beat trouvé",
+    "bad_beats_other": "{{count}} bad beats trouvés",
+    "next_tournaments": "{{count}} tournois suivants",
+    "all_tournaments": "Tous les tournois",
+    "no_bad_beat": "Aucun bad beat ne correspond à cette définition."
   },
   "charts": {
     "stats_title": "Stats",
