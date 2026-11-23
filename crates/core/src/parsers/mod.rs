@@ -6,10 +6,15 @@
 use crate::models::{ParseResult, ParsedHand};
 
 pub mod betclic;
+pub mod ggpoker;
+pub mod pokerstars;
+mod stars_like;
 pub mod unibet;
 pub mod winamax;
 
 pub use betclic::BetclicParser;
+pub use ggpoker::GgPokerParser;
+pub use pokerstars::PokerStarsParser;
 pub use unibet::UnibetParser;
 pub use winamax::WinamaxParser;
 
@@ -26,7 +31,7 @@ pub trait HandParser: Sync {
     fn parse_hand(&self, hand_text: &str) -> Option<ParsedHand>;
 }
 
-/// Returns the first parser that recognises `content` (Betclic, then Winamax, then Unibet).
+/// Returns the first parser that recognises `content` (Betclic, Winamax, Unibet, PokerStars, GGPoker).
 pub fn get_parser(content: &str) -> Option<&'static dyn HandParser> {
     all_parsers().iter().copied().find(|p| p.detect_format(content))
 }
@@ -36,7 +41,7 @@ pub fn get_parser_by_room(room: &str) -> Option<&'static dyn HandParser> {
 }
 
 fn all_parsers() -> &'static [&'static dyn HandParser] {
-    static PARSERS: [&dyn HandParser; 3] = [&BetclicParser, &WinamaxParser, &UnibetParser];
+    static PARSERS: [&dyn HandParser; 5] = [&BetclicParser, &WinamaxParser, &UnibetParser, &PokerStarsParser, &GgPokerParser];
     &PARSERS
 }
 
