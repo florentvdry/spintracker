@@ -55,7 +55,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] 38. Custom stat block builder
 - [x] 39. Live preview with n
 - [x] 40. Me / Regs / Fish table
-- [ ] 41. Saved filter presets
+- [x] 41. Saved filter presets
 - [ ] 42. "See hands" from any figure
 
 ## Phase 6 - Opponents & review
@@ -146,6 +146,8 @@ Items 32-37 on `roadmap/phase-4-replayer`. No migration. Replay answer gains `eq
 
 - Items 38-39: already present: the custom stat builder (Statistics page) has nested groups (all of / any of / not) of situation, position, stack, sizing and sequence conditions, reusing the custom stat engine, and a live preview. Only change: the preview text now starts with "n = xx opportunities".
 - Item 40: new scope `me` on `GET /db/detailed-stats` (the hero hands only, needs `heroName`) and a card "Me, regs and fish" on the Statistics page: the preflop stats side by side with the sample size of each (3 requests, same filters as the page).
+
+- Item 41: filter presets (name + one click) in the filter bar: they keep period, buy-in, position and result (not the hero, and a single session is kept as "all period"); stored in the browser storage, 20 at most, same name overwrites.
 
 ## Blockers / missing real data
 

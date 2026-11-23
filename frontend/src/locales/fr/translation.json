@@ -692,6 +692,14 @@
     "settings_subtitle": "Le résumé de la dernière session s'ouvre après cette durée d'inactivité. 0 le désactive.",
     "minutes": "minutes d'inactivité"
   },
+  "presets": {
+    "title": "Presets",
+    "none": "Aucun preset enregistré.",
+    "name_placeholder": "Nom du preset",
+    "save": "Enregistrer",
+    "refused": "Saisis un nom, ou supprime un preset (20 au plus).",
+    "hint": "Enregistre les filtres de buy-in, période, position et résultat actuels."
+  },
   "charts": {
     "stats_title": "Stats",
     "cev": "CEV",
