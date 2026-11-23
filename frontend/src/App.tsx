@@ -5,6 +5,8 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import NotificationContainer from '@/components/ui/NotificationContainer'
 import ProgressModal from '@/components/ui/ProgressModal'
 import SessionSummaryModal from '@/components/ui/SessionSummaryModal'
+import ShortcutsHelp from '@/components/ui/ShortcutsHelp'
+import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts'
 import StartupNotice from '@/components/ui/StartupNotice'
 import UpdateModal from '@/components/ui/UpdateModal'
 import { ipcService } from '@/services/ipcService'
@@ -30,6 +32,7 @@ export default function App() {
   const initializeUpdates = useUpdateStore((s) => s.initialize)
   const listenAutoImport = useAutoImportStore((s) => s.listen)
   const { pathname } = useLocation()
+  const { helpOpen, setHelpOpen } = useGlobalShortcuts()
 
   const { heroName, dateRange, customDateFrom, customDateTo, buyIn, selectedSession, hasHydrated } = useFilterStore()
 
@@ -79,6 +82,7 @@ export default function App() {
         </ErrorBoundary>
       </Layout>
       <SessionSummaryModal />
+      <ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} scopes={['app']} />
       <NotificationContainer />
       <ProgressModal />
       <UpdateModal />

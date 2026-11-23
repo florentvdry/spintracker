@@ -732,6 +732,28 @@
     "marked": "Marked",
     "mark_hint": "Mark this hand for review (M)"
   },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "scope_app": "Everywhere",
+    "scope_replayer": "Replayer",
+    "nav_dashboard": "Go to the dashboard",
+    "nav_history": "Go to the hand history",
+    "nav_analysis": "Go to the analysis",
+    "nav_ranges": "Go to my ranges",
+    "nav_players": "Go to the players",
+    "nav_hud": "Go to the HUD",
+    "nav_settings": "Go to the settings",
+    "mark_hand": "Mark the hand on screen for review",
+    "help": "Show or hide this list",
+    "replayer_play": "Play or pause",
+    "replayer_next": "Next action",
+    "replayer_previous": "Previous action",
+    "replayer_start": "Back to the start",
+    "replayer_end": "Jump to the end",
+    "replayer_units": "Chips or big blinds",
+    "replayer_hud": "Show or hide the HUD",
+    "replayer_log": "Show or hide the actions"
+  },
   "charts": {
     "stats_title": "Stats",
     "cev": "CEV",

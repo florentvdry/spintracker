@@ -63,7 +63,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] 43. Automatic player tags
 - [x] 44. History against a player
 - [x] 45. Review queue
-- [ ] 46. Keyboard shortcuts + help
+- [x] 46. Keyboard shortcuts + help
 
 ## Phase 7 - Content & streaming
 
@@ -158,6 +158,11 @@ Items 38-42 on `roadmap/phase-5-custom-stats`. No migration. New: scope `me` on 
 - Item 44: what the Players page had: the hands against a player with the CEV column, reg/fish toggle. Added `GET /players/summary`: games and hands in common, the hero CEV against them (total and per game), first and last game, automatic tags and an editable note (the HUD per-room note, same storage), shown at the top of the hands-against window.
 
 - Item 45: queue of marked hands: table `review_hands` (migration 202611230004), `services/hand_review.rs` on the SAME boxes and intervals as the range cards (`review::next_state`: 0, 1, 3, 7, 21 days; a hand to look at again comes back tomorrow). Routes `/review-queue` (GET, POST, DELETE, `/answer`). Marking: bookmark button in the replayer and in the hand detail of the history (the M key arrives with item 46). Session: Analysis > Review tab: the hand due first is put forward with "I handled it well" / "Look at it again tomorrow" and a replay button; the rest of the queue is listed. The hand is replayed in the replayer window, the answer is given in the tab.
+
+- Item 46: one list of shortcuts (`utils/shortcuts.ts`) read by the handlers and by the help screen opened with `?` (main window and replayer). Main window: `g` then `d`/`h`/`a`/`r`/`p`/`u`/`s` to go to a page, `m` marks the hand shown in the history, `?` help. Replayer: space, arrows, Home/End, `b` chips/bb, `h` HUD, `l` actions, `m` mark, `?` help. Ignored while typing in a field or with Ctrl/Alt/Meta. Not covered: the HUD windows and the dialogs (they keep their own keys).
+
+## Phase 6 summary (done)
+Items 43-46 on `roadmap/phase-6-opponents-review`. Migrations 202611230003 `player_auto_tags`, 202611230004 `review_hands`. New routes: `/players/auto-tags` (+ rules, recompute), `/players/summary`, `/review-queue`. To test by hand: Settings > automatic tags then an import, Players > hands against a player, mark a hand with M, Analysis > Review, press `?`.
 
 ## Blockers / missing real data
 
