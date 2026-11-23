@@ -38,7 +38,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 - [x] 28. Nitro / classic Expresso HUD split
 - [x] 29. Colors vs pool average
-- [ ] 30. Last-hands hover popup
+- [x] 30. Last-hands hover popup
 - [ ] 31. Colour-blind palette
 
 ## Phase 4 - Replayer
@@ -128,6 +128,8 @@ Items 8-19 delivered on `roadmap/phase-1-results-metrics`. Migrations: 202611230
 - Item 28: the format is already stored (Winamax tournament name, e.g. "Expresso Nitro", in `tournament_name`/`game_name`), so no migration or backfill: it is derived in SQL (`LIKE %nitro%`). `POST /hud/players` and `/hud/figure-hands` accept `spinFormat` (`nitro`/`classic`), the active-table list returns `spinFormat`, the Tauri HUD engine forwards it and the overlay sends it: figures of one format never include the other. Not verified against a real Nitro history (none in the repo fixtures: only classic Expresso); the Nitro detection rests on the tournament name containing "Nitro".
 
 - Item 29: new route `POST /hud/pool` (same body as `/hud/players`) returns the figures of every opponent of the hero in the room, added together, filtered by `spinFormat`, cached 5 minutes in memory (the average of a whole base moves slowly; reading it is a pass over all hands). Profile options `poolColors` (off by default) and `poolThreshold` (points, 1-30, default 5): a figure with at least 10 opportunities more than the threshold above the pool average gets a red underline, below it a blue one; the underline sits next to the existing colour bands, which keep their text colour. Figures of custom stats and counts are not compared. Not looked at in the real HUD window.
+
+- Item 30: the hover popup already existed (hold a stat for 1 s: stat title, player, one block per hand with cards, stack in bb, result and street-by-street actions). Aligned with the expected rendering: it opens with the 4 latest hands (was 30), each block shows the player seat (BTN/SB/BB, new `position` field of the figure-hands answer), and a "Show more hands" button loads up to 30.
 
 ## Blockers / missing real data
 

@@ -152,6 +152,7 @@
       "which_chances": "Toutes",
       "count_all": "{{total}} mains",
       "count_latest": "{{shown}} dernières sur {{total}}",
+      "more": "Voir plus de mains",
       "loading": "Chargement des mains…",
       "empty": "Aucune main à afficher.",
       "error": "Impossible de lire les mains.",

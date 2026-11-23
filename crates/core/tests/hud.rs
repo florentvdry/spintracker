@@ -566,3 +566,15 @@ fn the_pool_figures_add_up_the_opponents_of_the_hero() {
     let unknown = json!({ "room": "Winamax", "heroName": HERO, "players": [], "stats": [], "spinFormat": "turbo" });
     assert_eq!(backend.handle("POST", "/hud/pool", Some(unknown)).status, 400);
 }
+
+#[test]
+fn a_listed_hand_tells_the_seat_of_the_player() {
+    let (_dir, backend) = backend_with_hands();
+    let vpip = stat("preflop", "VPIP", Some("tot"));
+    let listed = figure_hands(&backend, OPPONENTS[0], vpip, &[], "chances", 4);
+    let hands = listed["hands"].as_array().unwrap();
+    assert!(!hands.is_empty() && hands.len() <= 4);
+    for hand in hands {
+        assert!(["BTN", "SB", "BB"].contains(&hand["position"].as_str().unwrap()), "{hand}");
+    }
+}

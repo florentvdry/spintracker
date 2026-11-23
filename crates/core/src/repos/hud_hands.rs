@@ -11,7 +11,7 @@ use crate::Result;
 pub fn summaries(conn: &Connection, player: &str, ids: &[String]) -> Result<Vec<Value>> {
     let mut hand = conn.prepare_cached(
         "SELECT h.date_time, h.blinds, h.preflop_action, h.flop_action, h.turn_action, h.river_action,
-                h.flop, h.turn, h.river, ph.cards, ph.net_profit
+                h.flop, h.turn, h.river, ph.cards, ph.net_profit, ph.position
          FROM hands h JOIN player_hands ph ON ph.hand_id = h.id
          WHERE h.id = ?1 AND ph.player_name = ?2",
     )?;
@@ -27,6 +27,7 @@ pub fn summaries(conn: &Connection, player: &str, ids: &[String]) -> Result<Vec<
         let board = [text(6)?, text(7)?, text(8)?];
         let cards = text(9)?;
         let net_profit = row.get::<_, Option<f64>>(10)?.unwrap_or(0.0);
+        let position = text(11)?;
 
         let stacks: Vec<(String, f64)> = seats
             .query_map([id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, Option<f64>>(1)?.unwrap_or(0.0))))?
@@ -43,6 +44,7 @@ pub fn summaries(conn: &Connection, player: &str, ids: &[String]) -> Result<Vec<
         let mut value = serde_json::to_value(summary)?;
         value["id"] = json!(id);
         value["playedAt"] = json!(played_at);
+        value["position"] = json!(position);
         out.push(value);
     }
     Ok(out)
