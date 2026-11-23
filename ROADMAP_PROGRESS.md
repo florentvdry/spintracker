@@ -47,8 +47,8 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] 33. All-in EV badge
 - [x] 34. Clickable timeline
 - [x] 35. Stacks in bb
-- [ ] 36. HUD in replayer
-- [ ] 37. GTO Wizard export
+- [x] 36. HUD in replayer
+- [x] 37. GTO Wizard export
 
 ## Phase 5 - Custom stats & filters
 
@@ -137,6 +137,12 @@ Items 8-19 delivered on `roadmap/phase-1-results-metrics`. Migrations: 202611230
 Items 28-31 on `roadmap/phase-3-hud`. No migration. New routes: `POST /hud/pool`; `spinFormat` on `/hud/players` and `/hud/figure-hands`. To test by hand in the real HUD (needs Winamax tables): Nitro vs classic separation, pool colours option in the profile inspector, hover popup with 4 hands, palette switch.
 
 - Items 32-35 (replayer). 32: new `engines/replay_equity.rs` on top of the exact equity engine; `GET /analysis/replayer/{id}` puts an `equity` map (name -> %) on every deal of cards, for the players still in the hand whose cards are known (the preflop deal included); the seats show a bar and the percentage, updating when the deal of the current step changes. Needs at least two known hands, so a hand where villain never showed has none. 33: `allInEv` in the replay (EV minus actual profit, in bb, only when the hero was all-in and the hand has an EV) shown as the badge "All-in EV +x bb" over the table (the sign means the all-in was worth more than the result). 34 and 35 already existed (right timeline with the current action highlighted and clickable; stacks in bb with a Chips/BB switch remembered between sessions): I added the auto-scroll of the timeline to the current action. The seats default to chips (stored choice).
+
+- Item 36: `POST /hud/players` accepts `before` (a stored date): figures count only the hands played before it (read once for the hand, not cached). The replayer shows, on each opponent seat, the first grid of the active HUD profile for the table size (HUD toggle in the controls, on by default, remembered); the replay also returns `spinFormat` so the figures follow the Nitro/classic split. Only the first grid of the layout is shown (not every grid and popup). Not looked at in the real replayer window.
+- Item 37: the hand is written in the PokerStars layout, the one GTO Wizard documents for imports (copy to clipboard or save as .txt through `save_text_file`, which now takes an optional extension and is allowed from the replayer windows). Not tested against GTO Wizard itself (no access): uncalled bets returned and the tournament id are approximated. Needs a check by pasting a hand into GTO Wizard.
+
+## Phase 4 summary (done)
+Items 32-37 on `roadmap/phase-4-replayer`. No migration. Replay answer gains `equity` (per deal), `allInEv`, `spinFormat`; `/hud/players` gains `before`. To test by hand: replayer equity bars on a showdown hand, the all-in badge on an all-in hand, HUD toggle, Export > GTO Wizard (copy and file).
 
 ## Blockers / missing real data
 

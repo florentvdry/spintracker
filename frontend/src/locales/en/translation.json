@@ -961,6 +961,16 @@
     "no_hand": "No hand loaded",
     "hand_of": "Hand {{current}} / {{total}}",
     "actions": "Actions",
+    "export": {
+      "title": "Export",
+      "copied": "Copied",
+      "saved": "Saved",
+      "failed": "Export failed",
+      "copy_gto": "Copy for GTO Wizard",
+      "save_gto": "Save as a .txt file",
+      "dialog": "Save the hand",
+      "gto_hint": "PokerStars layout, which GTO Wizard reads. Not checked against its importer."
+    },
     "hud_hint": "HUD of each opponent with the figures as they stood before this hand",
     "all_in_ev": "All-in EV {{value}} bb",
     "all_in_ev_hint": "What the all-in was worth beyond the result: your EV minus what you actually won, in big blinds.",

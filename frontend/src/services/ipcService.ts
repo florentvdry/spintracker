@@ -231,7 +231,8 @@ export const ipcService = {
   },
   getExportSummary: () => backend<ExportBucket[]>('GET', '/db/export-summary'),
   exportData: (dialogTitle: string, filter: ExportFilter) => command<ApiResult>('export_data', { dialogTitle, filter }),
-  saveTextFile: (dialogTitle: string, defaultName: string, content: string) => command<ApiResult>('save_text_file', { dialogTitle, defaultName, content }),
+  saveTextFile: (dialogTitle: string, defaultName: string, content: string, extension?: string) =>
+    command<ApiResult>('save_text_file', { dialogTitle, defaultName, content, extension: extension ?? null }),
   checkServerStatus: () => command<ApiResult>('check_server_status'),
   openLogsFolder: () => command<ApiResult>('open_logs_folder'),
   getAppVersion: async (): Promise<string | null> => {

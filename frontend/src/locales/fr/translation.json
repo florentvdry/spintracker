@@ -961,6 +961,16 @@
     "no_hand": "Aucune main chargée",
     "hand_of": "Main {{current}} / {{total}}",
     "actions": "Actions",
+    "export": {
+      "title": "Exporter",
+      "copied": "Copié",
+      "saved": "Enregistré",
+      "failed": "Échec de l'export",
+      "copy_gto": "Copier pour GTO Wizard",
+      "save_gto": "Enregistrer en .txt",
+      "dialog": "Enregistrer la main",
+      "gto_hint": "Format PokerStars, lu par GTO Wizard. Non vérifié sur son import."
+    },
     "hud_hint": "HUD de chaque adversaire avec les stats telles qu'elles étaient avant cette main",
     "all_in_ev": "All-in EV {{value}} bb",
     "all_in_ev_hint": "Ce que valait le tapis au-delà du résultat : ton EV moins ce que tu as réellement gagné, en gros blinds.",
