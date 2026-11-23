@@ -7,6 +7,7 @@ pub mod hand_review;
 pub mod hud;
 pub mod importer;
 pub mod live_import;
+pub mod overlay;
 pub mod summaries;
 pub mod range_adherence;
 pub mod ranges_io;

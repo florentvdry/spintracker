@@ -16,6 +16,7 @@ import { useLocation } from 'react-router-dom'
 import { AUTO_IMPORT_ANCHOR, RANGES_ANCHOR } from './anchors'
 import AutoImportCard from './components/AutoImportCard'
 import AutoTagSettings from './components/AutoTagSettings'
+import OverlaySettings from './components/OverlaySettings'
 import PaletteSettings from './components/PaletteSettings'
 import PoolEvSettings from './components/PoolEvSettings'
 import RakebackSettings from './components/RakebackSettings'
@@ -320,6 +321,8 @@ export default function Settings() {
       <PaletteSettings />
 
       <AutoTagSettings />
+
+      <OverlaySettings />
 
       <PoolEvSettings />
 
