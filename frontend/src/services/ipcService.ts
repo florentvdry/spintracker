@@ -220,6 +220,7 @@ export const ipcService = {
   associateHudTable: (table: number, gameId: string) => command<ApiResult>('hud_associate', { table, gameId }),
   setHudTableHidden: (table: number, hidden: boolean) => command<ApiResult>('hud_set_hidden', { table, hidden }),
   getHudPlayers: (body: Json) => backend('POST', '/hud/players', body),
+  getFigureHandIds: (body: Json) => backend('POST', '/hud/figure-hand-ids', body),
   getHudPool: (body: Json) => backend('POST', '/hud/pool', body),
   getHudFigureHands: (body: Json) => backend('POST', '/hud/figure-hands', body),
   getHudSettings: () => command<ApiResult>('hud_settings_get'),

@@ -426,6 +426,9 @@
     }
   },
   "hand_history": {
+    "selection": "Mains de {{title}} : {{count}} mains",
+    "selection_clear": "Voir toutes les mains",
+    "open_in_history": "Ouvrir dans l'historique",
     "range_deviation": "Écart à ma range · {{count}}",
     "title": "Historique",
     "subtitle": "Parcourez vos tournois et mains",

@@ -56,7 +56,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] 39. Live preview with n
 - [x] 40. Me / Regs / Fish table
 - [x] 41. Saved filter presets
-- [ ] 42. "See hands" from any figure
+- [~] 42. (partial) "See hands" from any figure
 
 ## Phase 6 - Opponents & review
 
@@ -148,6 +148,11 @@ Items 32-37 on `roadmap/phase-4-replayer`. No migration. Replay answer gains `eq
 - Item 40: new scope `me` on `GET /db/detailed-stats` (the hero hands only, needs `heroName`) and a card "Me, regs and fish" on the Statistics page: the preflop stats side by side with the sample size of each (3 requests, same filters as the page).
 
 - Item 41: filter presets (name + one click) in the filter bar: they keep period, buy-in, position and result (not the hero, and a single session is kept as "all period"); stored in the browser storage, 20 at most, same name overwrites.
+
+- Item 42 (PARTIAL): the mechanism is in place and tested: `POST /hud/figure-hand-ids` (hero or a player, one stat, every room), `handIds` filter on `POST /db/hands` (500 at most), `useHandsStore.showHands(title, ids)` and a banner in the hand history with a "show all hands" button. Wired to: the deviation list of My ranges (all the hands of a line, up to 200) and the detail window of a Statistics figure (only the sample hands the backend attaches to the figure, not every hand: the page figures carry no stat identity to ask the full list). NOT wired yet: dashboard CEV rows, multipliers, time heatmap cells, bankroll, the CEV breakdown card, the scope comparison table. Each needs its own hand query (by multiplier, by composition...).
+
+## Phase 5 summary (done, 42 partial)
+Items 38-42 on `roadmap/phase-5-custom-stats`. No migration. New: scope `me` on detailed-stats, hand-ids route, `handIds` filter. To test by hand: Statistics > Me, regs and fish; filter presets in the filter bar; deviation list > open in history.
 
 ## Blockers / missing real data
 

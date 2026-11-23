@@ -4,6 +4,8 @@ import DeviationBadge from '@/components/ranges/DeviationBadge'
 import Modal from '@/components/ui/Modal'
 import { ipcService } from '@/services/ipcService'
 import { useFilterStore, getDateRangeParams } from '@/stores/filterStore'
+import { useNavigate } from 'react-router-dom'
+import { useHandsStore } from '@/stores/handsStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import { deviationRows, formatCards, type DeviationEntry, type DeviationRow, type ScenarioDetail } from '@/utils/rangeAdherence'
 import { logError } from '@/utils/log'
@@ -28,6 +30,8 @@ export default function DeviationList({ detail, actions, heroName }: Props) {
   const [hands, setHands] = useState<DeviationEntry[] | null>(null)
   const openReplayer = useReplayerStore((s) => s.openSingleHandReplayer)
   const filters = useFilterStore()
+  const navigate = useNavigate()
+  const showHands = useHandsStore((s) => s.showHands)
 
   useEffect(() => {
     if (!open) return undefined
@@ -85,6 +89,19 @@ export default function DeviationList({ detail, actions, heroName }: Props) {
         {hands === null ? (
           <div className="spinner mx-auto my-6" />
         ) : (
+          <>
+          {hands.length > 0 && open && (
+            <button
+              className="btn-secondary mb-2 w-full text-xs"
+              onClick={() => {
+                showHands(`${open.hand} · ${byId.get(open.plannedActionId)?.label ?? '?'} → ${chipOf(open.playedActionId, open.playedImmediate).label}`, hands.map((h) => h.handId))
+                setOpen(null)
+                navigate('/hands')
+              }}
+            >
+              {t('hand_history.open_in_history')}
+            </button>
+          )}
           <ul className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto">
             {hands.map((entry) => (
               <li key={entry.handId} className="rounded-lg border border-dark-200 bg-dark-600 p-3">
@@ -101,6 +118,7 @@ export default function DeviationList({ detail, actions, heroName }: Props) {
               </li>
             ))}
           </ul>
+          </>
         )}
       </Modal>
     </>
