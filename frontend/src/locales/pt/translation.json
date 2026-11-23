@@ -621,7 +621,9 @@
       "ranges": "Analisador de ranges",
       "variance": "Simulador de variância",
       "time": "Horários",
-      "bankroll": "Bankroll"
+      "bankroll": "Bankroll",
+      "exploit": "Exploit",
+      "review": "Revisão"
     },
     "filters": {
       "situation": "Situação",
@@ -1760,5 +1762,22 @@
     "hint": "Após uma atualização, o banco de dados pode ser atualizado ou suas estatísticas recalculadas. Com um histórico grande pode levar alguns minutos e só acontece uma vez.",
     "statistics": "Atualizando estatísticas: {{done}} / {{total}} ({{percent}}%)",
     "failed_title": "Não foi possível abrir o banco de dados"
+  },
+  "exploit": {
+    "title": "Exploit",
+    "subtitle": "O que rende mais contra as frequências de all-in que o seu pool realmente mostra, heads-up, por profundidade de stack.",
+    "room": "Sala",
+    "no_hero": "Escolha o seu nome de jogador nos filtros para ver esta análise.",
+    "as_sb": "Como small blind",
+    "as_bb": "Como big blind",
+    "opponent_calls": "O big blind pagou {{pct}}% dos all-ins ({{num}} de {{den}} oportunidades)",
+    "opponent_shoves": "O small blind foi all-in {{pct}}% das vezes ({{num}} de {{den}} oportunidades)",
+    "not_enough": "Ainda não há mãos suficientes: {{den}} oportunidades, são necessárias {{min}}.",
+    "sb_acts": "Ir all-in com {{pct}}% das mãos rende mais do que desistir",
+    "bb_acts": "Pagar com {{pct}}% das mãos rende mais do que desistir",
+    "legend_acts": "Rende mais do que desistir",
+    "legend_folds": "Desistir",
+    "cell_ev": "{{hand}}: {{act}} BB contra {{fold}} BB ao desistir",
+    "note": "EV em fichas contra a frequência observada nas suas próprias mãos. Não é um cálculo de valor de torneio nem uma recomendação: mostra o que rende mais contra o que o pool faz."
   }
 }

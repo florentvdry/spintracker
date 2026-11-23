@@ -555,6 +555,15 @@ impl Backend {
                     Err(message) => Response::message(400, &message),
                 }
             }
+            ("POST", ["hud", "exploit"]) => {
+                let body: Value = r.body_as()?;
+                let text = |key: &str| body.get(key).and_then(Value::as_str).unwrap_or("").to_string();
+                let format = body.get("spinFormat").and_then(Value::as_str);
+                match self.hud.exploit(&text("room"), &text("heroName"), format) {
+                    Ok(value) => Response::data(value),
+                    Err(message) => Response::message(400, &message),
+                }
+            }
             ("POST", ["hud", "figure-hands"]) => {
                 let request: HudFigureHandsRequest = r.body_as()?;
                 match request.validate() {

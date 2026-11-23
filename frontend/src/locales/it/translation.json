@@ -621,7 +621,9 @@
       "ranges": "Analizzatore di range",
       "variance": "Simulatore di varianza",
       "time": "Orari",
-      "bankroll": "Bankroll"
+      "bankroll": "Bankroll",
+      "exploit": "Exploit",
+      "review": "Revisione"
     },
     "filters": {
       "situation": "Situazione",
@@ -1760,5 +1762,22 @@
     "hint": "Dopo un aggiornamento, il database può essere aggiornato o le sue statistiche ricalcolate. Con una cronologia ampia può richiedere qualche minuto e avviene una sola volta.",
     "statistics": "Aggiornamento delle statistiche: {{done}} / {{total}} ({{percent}}%)",
     "failed_title": "Impossibile aprire il database"
+  },
+  "exploit": {
+    "title": "Exploit",
+    "subtitle": "Ciò che rende di più contro le frequenze di all-in che il tuo pool mostra davvero, heads-up, per profondità di stack.",
+    "room": "Sala",
+    "no_hero": "Scegli il tuo nome giocatore nei filtri per vedere questa analisi.",
+    "as_sb": "Come piccolo buio",
+    "as_bb": "Come grande buio",
+    "opponent_calls": "Il grande buio ha pagato il {{pct}}% degli all-in ({{num}} su {{den}} occasioni)",
+    "opponent_shoves": "Il piccolo buio è andato all-in il {{pct}}% delle volte ({{num}} su {{den}} occasioni)",
+    "not_enough": "Non ci sono ancora abbastanza mani: {{den}} occasioni, ne servono {{min}}.",
+    "sb_acts": "L'all-in con il {{pct}}% delle mani rende più del fold",
+    "bb_acts": "Pagare con il {{pct}}% delle mani rende più del fold",
+    "legend_acts": "Rende più del fold",
+    "legend_folds": "Fold",
+    "cell_ev": "{{hand}}: {{act}} BB contro {{fold}} BB foldando",
+    "note": "EV in chip contro la frequenza osservata nelle tue mani. Non è un calcolo del valore di torneo né un consiglio: mostra ciò che rende di più contro ciò che fa il pool."
   }
 }

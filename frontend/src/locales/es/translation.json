@@ -621,7 +621,9 @@
       "ranges": "Analizador de rangos",
       "variance": "Simulador de varianza",
       "time": "Horarios",
-      "bankroll": "Bankroll"
+      "bankroll": "Bankroll",
+      "exploit": "Explotación",
+      "review": "Revisión"
     },
     "filters": {
       "situation": "Situación",
@@ -1760,5 +1762,22 @@
     "hint": "Tras una actualización, la base de datos puede actualizarse o sus estadísticas recalcularse. Con un historial grande puede tardar unos minutos y solo ocurre una vez.",
     "statistics": "Actualizando estadísticas: {{done}} / {{total}} ({{percent}} %)",
     "failed_title": "No se pudo abrir la base de datos"
+  },
+  "exploit": {
+    "title": "Explotación",
+    "subtitle": "Lo que más rinde contra las frecuencias de all-in que tu pool muestra realmente, heads-up, por profundidad de stack.",
+    "room": "Sala",
+    "no_hero": "Elige tu nombre de jugador en los filtros para ver este análisis.",
+    "as_sb": "Como ciega pequeña",
+    "as_bb": "Como ciega grande",
+    "opponent_calls": "La ciega grande pagó el {{pct}} % de los all-ins ({{num}} de {{den}} oportunidades)",
+    "opponent_shoves": "La ciega pequeña fue all-in el {{pct}} % de las veces ({{num}} de {{den}} oportunidades)",
+    "not_enough": "Aún no hay suficientes manos: {{den}} oportunidades, se necesitan {{min}}.",
+    "sb_acts": "Ir all-in con el {{pct}} % de las manos rinde más que retirarse",
+    "bb_acts": "Pagar con el {{pct}} % de las manos rinde más que retirarse",
+    "legend_acts": "Rinde más que retirarse",
+    "legend_folds": "Retirarse",
+    "cell_ev": "{{hand}}: {{act}} BB frente a {{fold}} BB al retirarse",
+    "note": "EV en fichas frente a la frecuencia observada en tus propias manos. No es un cálculo de valor de torneo ni una recomendación: muestra qué rinde más frente a lo que hace el pool."
   }
 }

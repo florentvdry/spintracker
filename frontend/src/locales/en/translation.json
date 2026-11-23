@@ -621,7 +621,9 @@
       "ranges": "Range Analyzer",
       "variance": "Variance Simulator",
       "time": "Time",
-      "bankroll": "Bankroll"
+      "bankroll": "Bankroll",
+      "exploit": "Exploit",
+      "review": "Review"
     },
     "filters": {
       "situation": "Situation",
@@ -633,8 +635,503 @@
     }
   },
   "ranges": {
-    "title": "Range Analyzer",
-    "subtitle": "Study your opening ranges"
+    "tabs": {
+      "editor": "Editor",
+      "overview": "Overview",
+      "adherence": "Range adherence",
+      "training": "Training",
+      "review": "Review"
+    },
+    "colors": {
+      "hex": "Hex colour"
+    },
+    "actions": {
+      "label": "Label",
+      "color": "Action colour",
+      "immediate": "Immediate action",
+      "size": "Size",
+      "unit": "Size unit",
+      "response": "If raised",
+      "newTitle": "New action"
+    },
+    "immediate": {
+      "fold": "Fold",
+      "check": "Check",
+      "call": "Call",
+      "limp": "Limp",
+      "raise": "Raise",
+      "iso": "Iso-raise",
+      "threebet": "3-bet",
+      "allin": "All-in"
+    },
+    "units": {
+      "bb": "bb",
+      "x": "x bet",
+      "pct_stack": "% stack"
+    },
+    "responses": {
+      "none": "No plan",
+      "fold": "Fold",
+      "call": "Call",
+      "allin": "All-in"
+    },
+    "responsesIf": {
+      "fold": "fold if raised",
+      "call": "call if raised",
+      "allin": "all-in if raised"
+    },
+    "verbs": {
+      "fold": "Fold",
+      "call": "Limp / Call",
+      "raise": "Raise",
+      "all-in": "All-in"
+    },
+    "format": {
+      "3max": "3 players",
+      "hu": "Heads-up",
+      "3maxShort": "3 players",
+      "huShort": "heads-up"
+    },
+    "opponent": {
+      "any": "Anyone",
+      "reg": "Reg only",
+      "anyLower": "any opponent",
+      "regLower": "reg opponent"
+    },
+    "wizard": {
+      "title": "New scenario",
+      "editTitle": "Edit scenario",
+      "create": "Create ({{count}} ranges)",
+      "format": "Format",
+      "position": "Your position",
+      "inFront": "In front of you",
+      "firstToAct": "You act first",
+      "raiseSize": "{{seat}} raise size in bb",
+      "exists": "This scenario already exists:",
+      "open": "Open",
+      "opponent": "Opponent",
+      "opponentHelp": "Used when the opponent is marked reg in Players. Otherwise the \"Anyone\" version is used.",
+      "depths": "Depths (bb) · one range per depth",
+      "otherDepth": "+ other",
+      "depthRequired": "Pick at least one depth.",
+      "start": "Starting point",
+      "startEmpty": "Empty (everything in the first action)",
+      "startCopy": "Copy an existing scenario:",
+      "name": "Name",
+      "quiz": "Include in the quiz and the review"
+    },
+    "tree": {
+      "program": "Program",
+      "format": "Format",
+      "allRanges": "All my ranges · {{count}} scenarios",
+      "newProgram": "+ New program",
+      "editProgram": "Edit program",
+      "empty": "No scenario",
+      "emptyFormat": {
+        "3max": "No 3 players scenario yet",
+        "hu": "No heads-up scenario yet"
+      },
+      "studyOnly": "to study",
+      "newScenario": "+ New scenario",
+      "menu": {
+        "open": "Scenario menu",
+        "edit": "Edit",
+        "duplicate": "Duplicate (other opponent)",
+        "addDepth": "Add a depth",
+        "addToProgram": "Add to a program",
+        "delete": "Delete"
+      }
+    },
+    "actionsCard": {
+      "title": "Your actions",
+      "combos": "combos · % of {{total}}",
+      "manage": "Manage my actions and colours →",
+      "newAction": "New action"
+    },
+    "scenarioCard": {
+      "title": "Scenario",
+      "format": "Format",
+      "position": "Your position",
+      "inFront": "In front of you",
+      "opponent": "Opponent",
+      "regFallback": "falls back to \"Anyone\" if none",
+      "depths": "Depths",
+      "addDepth": "Add a depth",
+      "quiz": "Quiz",
+      "included": "included",
+      "modify": "Edit",
+      "removeDepth": "Remove this depth"
+    },
+    "overview": {
+      "title": "Your ranges at a glance",
+      "open": "Show {{name}} at {{depth}} bb",
+      "edit": "Edit",
+      "pick": "Pick a range in the table.",
+      "empty": "Build or import ranges first: they will all appear here."
+    },
+    "exportDialog": {
+      "title": "Export ranges",
+      "help": "Pick the situations and depths to put in the file. Only the actions and programs they use are kept.",
+      "all": "Select all",
+      "none": "Select none",
+      "count": "{{selected}} of {{total}} depths",
+      "confirm": "Export",
+      "selectGroup": "Select every {{name}} range",
+      "selectSpot": "Select {{name}}",
+      "selectDepth": "{{name}} at {{depth}} bb"
+    },
+    "fileCard": {
+      "dialogTitle": "Export my ranges",
+      "exported": "Ranges exported",
+      "help": "Save or share your ranges (SpinTracker .json format).",
+      "import": "Import",
+      "export": "Export"
+    },
+    "import": {
+      "title": "Import ranges",
+      "actions": "Actions",
+      "spots": "Scenarios",
+      "scenarios": "Ranges",
+      "programs": "Programs",
+      "warnings": "{{count}} things were ignored or repaired",
+      "choose": "Replace drops your current ranges first. Merge keeps them: actions with the same label are reused and scenarios with the same name are replaced.",
+      "merge": "Merge",
+      "replace": "Replace my ranges"
+    },
+    "program": {
+      "newTitle": "New program",
+      "editTitle": "Edit program",
+      "name": "Program name",
+      "scenarios": "Scenarios in this program",
+      "up": "Move up",
+      "down": "Move down"
+    },
+    "depth": {
+      "title": "Add a depth (bb)",
+      "add": "Add",
+      "copy": "Copy the range of"
+    },
+    "editor": {
+      "saved": "Range saved",
+      "unsavedTitle": "Unsaved changes",
+      "unsavedDetail": "The painted hands of this range have not been saved. Leave without saving?",
+      "discard": "Discard changes",
+      "deleteTitle": "Delete {{name}}?",
+      "deleteDetail": "{{count}} depths and their ranges will be deleted. This cannot be undone.",
+      "removeDepthTitle": "Remove {{depth}} bb?",
+      "removeDepthDetail": "The range of this depth will be deleted. This cannot be undone.",
+      "complete": "{{count}} / {{count}} hands · 0 duplicates",
+      "missing": "{{known}} / {{total}} hands · {{missing}} missing",
+      "modes": {
+        "brush": "Brush",
+        "rect": "Rectangle",
+        "picker": "Picker"
+      },
+      "activeColor": "Active colour:",
+      "copyFrom": "Copy from…",
+      "undo": "Undo",
+      "redo": "Redo",
+      "gridLabel": "Range {{name}} at {{depth}} bb",
+      "note": "Click and drag to paint · Shift + click: whole row · hands outlined in white changed since the last save.",
+      "save": "Save",
+      "revert": "Discard changes"
+    },
+    "empty": {
+      "title": "Build your ranges",
+      "body": "Pick a situation, your depths and paint your hands with your own actions.",
+      "create": "Create my first scenario"
+    },
+    "settings": {
+      "title": "My ranges",
+      "saved": "Actions saved",
+      "actionsTitle": "My actions and colours",
+      "actionsHelp": "These actions are used by all your ranges.",
+      "drag": "Drag to reorder",
+      "addAction": "Add an action",
+      "depthsTitle": "Suggested depths",
+      "depthsHelp": "They only prefill the choices; a scenario can have any depth.",
+      "removeDepth": "Remove {{depth}} bb",
+      "addDepth": "Add a depth",
+      "depthRule": "Between two defined depths:",
+      "rules": {
+        "nearest": "The closest",
+        "below": "The one below"
+      },
+      "regNote": "\"Reg\" variants use the players marked reg in Players.",
+      "deleteTitle": "Delete {{label}}?",
+      "deleteUsed": "{{count}} hands in your ranges use this action.",
+      "replaceBy": "Replace by:",
+      "trainingTitle": "Training",
+      "newCardsPerDay": "New cards per day"
+    },
+    "deviation": {
+      "yourRange": "Your range:",
+      "played": "played:",
+      "response": "· answer {{response}}"
+    },
+    "adherence": {
+      "noHero": "Pick a hero to compare your hands with your ranges.",
+      "noRanges": "Build at least one scenario in the editor to compare it with your hands.",
+      "loading": {
+        "title": "Comparing your hands with your ranges…",
+        "hint": "The first analysis of a large history can take a moment. It is only redone when you change your ranges.",
+        "detail": "Reading this scenario…"
+      },
+      "failed": "The comparison could not be read.",
+      "retry": "Try again",
+      "report": {
+        "respect": "Respect of your ranges",
+        "respectHint": "of the compared decisions follow your range",
+        "lowSample": "Under 300 decisions: a trend, not a score",
+        "compared": "Compared decisions",
+        "comparedHint": "those that have a range",
+        "deviations": "Deviations",
+        "deviationsHint": "not what you planned, {{count}} on the answer to a raise",
+        "noRange": "Without range",
+        "noRangeHint": "{{count}} decisions, click to see where",
+        "opponentLabel": "Opponents",
+        "opponents": {
+          "all": "All",
+          "any": "Fish",
+          "reg": "Regulars"
+        },
+        "tableTitle": "By position and by range",
+        "seat": {
+          "BTN": "Button",
+          "SB": "Small blind",
+          "BB": "Big blind"
+        },
+        "groupLabel": "{{position}}: {{value}} % of your range followed",
+        "uncoveredInGroup": "{{count}} decisions without range"
+      },
+      "noHands": "No hand with a known decision in this period.",
+      "betweenDepths": "Between two depths:",
+      "note": "A deviation means \"not what you planned\", not an error.",
+      "noUncovered": "Every decision is covered by a scenario.",
+      "createScenario": "Create this scenario",
+      "byScenario": "By scenario",
+      "columns": {
+        "scenario": "Scenario",
+        "decisions": "Decisions",
+        "respect": "Adherence",
+        "topDeviation": "Most frequent deviation (planned → played)",
+        "evMatch": "Chip EV followed",
+        "evDeviation": "Chip EV deviation"
+      },
+      "playedBetween": "hands played between {{min}} and {{max}} bb",
+      "gridLabel": "Deviations from {{name}}",
+      "tip": {
+        "planned": "Planned",
+        "played": "Played instead",
+        "followed": "Followed",
+        "never": "Not played in this period"
+      },
+      "ringTitle": "Adherence",
+      "ringLabel": "Adherence {{value}} %",
+      "handsCount_one": "{{count}} hand",
+      "handsCount_other": "{{count}} hands",
+      "recentHands": "Latest hands",
+      "legendDeviation": "deviation (count)",
+      "latest": "Latest deviations",
+      "latestCount": "{{count}} in the selected period",
+      "noDeviation": "No deviation over this period.",
+      "replay": "Replay →",
+      "train": "Train on these {{count}} deviations"
+    },
+    "replayer": {
+      "match": "Follows your range",
+      "deviation": "Deviation from your range",
+      "noRange": "No range for this situation",
+      "scenario": "Scenario \"{{name}} · {{depth}} bb\", used for {{stack}} bb."
+    },
+    "training": {
+      "sources": {
+        "scenario": "One scenario",
+        "program": "Program",
+        "deviation": "My deviations · {{count}}",
+        "review": "Review of the day",
+        "missed": "Most missed hands"
+      },
+      "scenario": "Scenario",
+      "program": "Program",
+      "borderline": "Prioritise borderline hands",
+      "question": "Question {{current}} / {{total}}",
+      "score": "Score {{right}} / {{total}}",
+      "nothing": "Nothing to ask here: pick a scenario or a program that is not marked \"to study\".",
+      "noDeviation": "No deviation to practise on. Play some hands against your ranges first.",
+      "whatDoYouDo": "What do you do?",
+      "yourAction": "1. Your action",
+      "ifRaised": "2. If {{seat}} raises",
+      "noFollowUp": "no follow-up planned for this action",
+      "yourAnswer": "· your answer",
+      "yourRangeTag": "· your range",
+      "shortcuts": "Shortcuts: 1 to 9 for the action, C / F / A for the answer, Space for the next question.",
+      "right": "Right",
+      "wrong": "Missed",
+      "rightShort": "right",
+      "wrongShort": "missed",
+      "rangeSays": "Your range says",
+      "youAnswered": ", you answered",
+      "responseWrong": "The action was right, but your range answers a raise with {{response}}.",
+      "borderlineNote": "Borderline hand, next to another action: {{neighbor}}.",
+      "gridLabel": "Your range, hand {{hand}} highlighted",
+      "openRange": "Open the range",
+      "nextQuestion": "Next",
+      "waiting": "Pick an action. The correction appears here.",
+      "thisSession": "This session",
+      "table": {
+        "fold": "Fold",
+        "limp": "Limp",
+        "call": "Call",
+        "raise": "Raise",
+        "allin": "All-in",
+        "pot": "Pot",
+        "you": "You",
+        "label": "Table of {{name}}"
+      },
+      "backTomorrow": "It comes back tomorrow in review (box 1).",
+      "sessionNote": "Missed hands go back to box 1 of the review."
+    },
+    "review": {
+      "today": "Today",
+      "cardsToReview": "cards to review",
+      "newAndTime": "+ {{count}} new · ≈ {{minutes}} min",
+      "start": "Start the review",
+      "realDeviations": "My real deviations · {{count}} new",
+      "success7": "Success over 7 days",
+      "answers": "{{count}} answers",
+      "mastered": "Mastered cards",
+      "masteredHint": "boxes 4 and 5",
+      "byBox": "Your cards by box",
+      "boxHelp": "A card = a hand in a scenario. Right → next box, missed → box 1.",
+      "box": "Box {{number}}",
+      "boxBar": "Box {{number}}: {{count}} cards",
+      "interval": {
+        "0": "every day",
+        "1": "after 1 day",
+        "3": "after 3 days",
+        "7": "after 7 days",
+        "21": "after 21 days"
+      },
+      "newCardsNote": "New cards: borderline hands of your ranges first, then the hands you are dealt most often in real games. Ranges \"to study\" are left out.",
+      "byProgram": "By program · mastered cards",
+      "scenarios": "{{count}} scenarios",
+      "noProgram": "No program yet. Create one in the editor to follow it here.",
+      "hardest": "Most missed hands",
+      "noMisses": "No missed hand yet.",
+      "missedOf": "{{missed}} / {{attempts}} missed",
+      "quizOnThese": "Quiz on these hands",
+      "byScenario": "By scenario · {{program}}",
+      "allRanges": "all my ranges",
+      "columns": {
+        "cards": "Cards",
+        "mastered": "Mastered",
+        "due": "Due today",
+        "last": "Last session"
+      }
+    },
+    "tour": {
+      "title": "My ranges: quick tour",
+      "open": "Quick tour",
+      "progress": "{{current}} / {{total}}",
+      "next": "Next",
+      "back": "Back",
+      "skip": "Skip",
+      "gridLabel": "Practice grid",
+      "painted": "{{count}} hands painted (try {{target}} or more)",
+      "actions": {
+        "shove": "Shove",
+        "fold": "Fold"
+      },
+      "fromScratch": "Start from scratch",
+      "loadExamples": "Load example ranges",
+      "examplesLoaded": "Example ranges added. Change them to match your own strategy.",
+      "examplesNote": "This adds {{spots}} spots ({{scenarios}} scenarios, 3-max, 8 to 20 bb) typical of Spin & Go. They are rough illustrations to start from, not a recommendation: edit or delete them any time.",
+      "steps": {
+        "layout": {
+          "title": "Four tabs, one workflow",
+          "body": "The app ships no range: everything here is your own plan, and the rest of the tab measures you against it.",
+          "points": [
+            "Editor: build your ranges. Scenarios on the left, the grid in the middle, scenario and actions on the right. Import and export sit at the top, next to the help button.",
+            "Range adherence: compares your real hands with your ranges.",
+            "Training: quizzes you on your own ranges.",
+            "Review: brings back the hands you miss, at spaced intervals."
+          ]
+        },
+        "palette": {
+          "title": "Your actions are the palette",
+          "body": "Every cell of a range takes one of your actions. The card on the right lists them with how many hands each one covers.",
+          "points": [
+            "An action has a name, a colour, a first move (fold, call, raise, all-in...) and, for a raise, a size.",
+            "For a raise you can also plan the answer to a re-raise: fold, call or all-in. It is checked in adherence and in the quiz.",
+            "\"New action\" adds one. In Settings > My ranges you can reorder, edit and delete actions, and set the depths you are offered."
+          ]
+        },
+        "paint": {
+          "title": "Painting a range",
+          "body": "Pick an action, then paint. Try it on this practice grid: nothing is saved.",
+          "points": [
+            "Brush: click or drag. Shift-click paints a whole row.",
+            "Rectangle: click two corners. Eyedropper: takes the action of a cell.",
+            "Ctrl+Z / Ctrl+Shift+Z undo and redo. Edited cells get a white outline until you save.",
+            "The pill above the grid shows how many of the 169 hands are set; click it to highlight the missing ones."
+          ]
+        },
+        "scenarios": {
+          "title": "Spots and depths",
+          "body": "\"New scenario\" opens a wizard. A spot is a situation; each spot holds one range per stack depth.",
+          "points": [
+            "A spot = format (3-max or heads-up), your position and what happened before you (fold, limp, raise, shove).",
+            "Opponent: any, or a reg variant that is used first when the opponent is a reg.",
+            "\"To study only\" keeps a range out of adherence and out of the review.",
+            "Add depths to a spot, and copy another depth to start from it. A hand played at a depth in between uses the rule set in Settings (nearest or below)."
+          ]
+        },
+        "organize": {
+          "title": "Programs and files",
+          "body": "Group spots into programs to study them together, and move your work around with files.",
+          "points": [
+            "A program is an ordered list of spots, for example everything you play at 10 bb. Quiz and review can focus on one.",
+            "Duplicate a spot to try a variant without touching the original.",
+            "Export writes all your ranges to a JSON file; import merges a file or replaces everything, and shows what it will do first."
+          ]
+        },
+        "adherence": {
+          "title": "Range adherence",
+          "body": "Each real preflop decision is compared with the range of its situation and depth.",
+          "points": [
+            "Match, or deviation: \"not what you planned\", never an error. A different action, size or answer to a raise all count.",
+            "Hands with no range yet are listed, so you know which scenario to create next.",
+            "A deviation badge shows in the replayer and in the history, where you can also filter on it.",
+            "A deviation is a good reason to question the range, or to train on that hand."
+          ]
+        },
+        "training": {
+          "title": "Training",
+          "body": "The quiz shows a hand in a spot and asks for your range's action.",
+          "points": [
+            "Sources: one scenario, a program, or your real deviations.",
+            "Number keys pick the action; for a raise you also answer the re-raise (C call, F fold, A all-in).",
+            "A hand near the edge of a range (a neighbour on the grid has another action) is drawn more often.",
+            "After each answer you see the right action and the whole range."
+          ]
+        },
+        "review": {
+          "title": "Review",
+          "body": "Spaced repetition, with one card per hand and scenario, in 5 boxes.",
+          "points": [
+            "A right answer moves the card to the next box (it comes back after 1, 3, 7 then 21 days); a miss sends it back to box 1.",
+            "Each day you get the cards due, plus a few new ones (set in Settings > My ranges).",
+            "New cards start with the borderline hands, then the hands you are dealt most often.",
+            "The page also shows your success rate, mastered cards and most missed hands."
+          ]
+        },
+        "start": {
+          "title": "Ready to start?",
+          "body": "Begin with an empty page, or load example ranges to see every screen filled in."
+        }
+      }
+    }
   },
   "cev_breakdown": {
     "title": "CEV breakdowns",
@@ -662,7 +1159,15 @@
     "metric_hint_cev": "Average chip EV of the tournaments started in each slot",
     "metric_hint_fish": "Share of opponents who are not regulars, to spot the softest hours",
     "cell_tooltip": "{{count}} tournaments",
-    "weekdays": { "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu", "fri": "Fri", "sat": "Sat", "sun": "Sun" },
+    "weekdays": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
     "hourly_title": "Time played",
     "profit_per_hour": "Profit per hour",
     "hours_played": "Hours played",
@@ -1258,500 +1763,21 @@
     "statistics": "Updating statistics: {{done}} / {{total}} ({{percent}}%)",
     "failed_title": "The database could not be opened"
   },
-  "ranges": {
-    "tabs": {
-      "editor": "Editor",
-      "overview": "Overview",
-      "adherence": "Range adherence",
-      "training": "Training",
-      "review": "Review"
-    },
-    "colors": {
-      "hex": "Hex colour"
-    },
-    "actions": {
-      "label": "Label",
-      "color": "Action colour",
-      "immediate": "Immediate action",
-      "size": "Size",
-      "unit": "Size unit",
-      "response": "If raised",
-      "newTitle": "New action"
-    },
-    "immediate": {
-      "fold": "Fold",
-      "check": "Check",
-      "call": "Call",
-      "limp": "Limp",
-      "raise": "Raise",
-      "iso": "Iso-raise",
-      "threebet": "3-bet",
-      "allin": "All-in"
-    },
-    "units": {
-      "bb": "bb",
-      "x": "x bet",
-      "pct_stack": "% stack"
-    },
-    "responses": {
-      "none": "No plan",
-      "fold": "Fold",
-      "call": "Call",
-      "allin": "All-in"
-    },
-    "responsesIf": {
-      "fold": "fold if raised",
-      "call": "call if raised",
-      "allin": "all-in if raised"
-    },
-    "verbs": {
-      "fold": "Fold",
-      "call": "Limp / Call",
-      "raise": "Raise",
-      "all-in": "All-in"
-    },
-    "format": {
-      "3max": "3 players",
-      "hu": "Heads-up",
-      "3maxShort": "3 players",
-      "huShort": "heads-up"
-    },
-    "opponent": {
-      "any": "Anyone",
-      "reg": "Reg only",
-      "anyLower": "any opponent",
-      "regLower": "reg opponent"
-    },
-    "wizard": {
-      "title": "New scenario",
-      "editTitle": "Edit scenario",
-      "create": "Create ({{count}} ranges)",
-      "format": "Format",
-      "position": "Your position",
-      "inFront": "In front of you",
-      "firstToAct": "You act first",
-      "raiseSize": "{{seat}} raise size in bb",
-      "exists": "This scenario already exists:",
-      "open": "Open",
-      "opponent": "Opponent",
-      "opponentHelp": "Used when the opponent is marked reg in Players. Otherwise the \"Anyone\" version is used.",
-      "depths": "Depths (bb) · one range per depth",
-      "otherDepth": "+ other",
-      "depthRequired": "Pick at least one depth.",
-      "start": "Starting point",
-      "startEmpty": "Empty (everything in the first action)",
-      "startCopy": "Copy an existing scenario:",
-      "name": "Name",
-      "quiz": "Include in the quiz and the review"
-    },
-    "tree": {
-      "program": "Program",
-      "format": "Format",
-      "allRanges": "All my ranges · {{count}} scenarios",
-      "newProgram": "+ New program",
-      "editProgram": "Edit program",
-      "empty": "No scenario",
-      "emptyFormat": { "3max": "No 3 players scenario yet", "hu": "No heads-up scenario yet" },
-      "studyOnly": "to study",
-      "newScenario": "+ New scenario",
-      "menu": {
-        "open": "Scenario menu",
-        "edit": "Edit",
-        "duplicate": "Duplicate (other opponent)",
-        "addDepth": "Add a depth",
-        "addToProgram": "Add to a program",
-        "delete": "Delete"
-      }
-    },
-    "actionsCard": {
-      "title": "Your actions",
-      "combos": "combos · % of {{total}}",
-      "manage": "Manage my actions and colours →",
-      "newAction": "New action"
-    },
-    "scenarioCard": {
-      "title": "Scenario",
-      "format": "Format",
-      "position": "Your position",
-      "inFront": "In front of you",
-      "opponent": "Opponent",
-      "regFallback": "falls back to \"Anyone\" if none",
-      "depths": "Depths",
-      "addDepth": "Add a depth",
-      "quiz": "Quiz",
-      "included": "included",
-      "modify": "Edit",
-      "removeDepth": "Remove this depth"
-    },
-    "overview": {
-      "title": "Your ranges at a glance",
-      "open": "Show {{name}} at {{depth}} bb",
-      "edit": "Edit",
-      "pick": "Pick a range in the table.",
-      "empty": "Build or import ranges first: they will all appear here."
-    },
-    "exportDialog": {
-      "title": "Export ranges",
-      "help": "Pick the situations and depths to put in the file. Only the actions and programs they use are kept.",
-      "all": "Select all",
-      "none": "Select none",
-      "count": "{{selected}} of {{total}} depths",
-      "confirm": "Export",
-      "selectGroup": "Select every {{name}} range",
-      "selectSpot": "Select {{name}}",
-      "selectDepth": "{{name}} at {{depth}} bb"
-    },
-    "fileCard": {
-      "dialogTitle": "Export my ranges",
-      "exported": "Ranges exported",
-      "help": "Save or share your ranges (SpinTracker .json format).",
-      "import": "Import",
-      "export": "Export"
-    },
-    "import": {
-      "title": "Import ranges",
-      "actions": "Actions",
-      "spots": "Scenarios",
-      "scenarios": "Ranges",
-      "programs": "Programs",
-      "warnings": "{{count}} things were ignored or repaired",
-      "choose": "Replace drops your current ranges first. Merge keeps them: actions with the same label are reused and scenarios with the same name are replaced.",
-      "merge": "Merge",
-      "replace": "Replace my ranges"
-    },
-    "program": {
-      "newTitle": "New program",
-      "editTitle": "Edit program",
-      "name": "Program name",
-      "scenarios": "Scenarios in this program",
-      "up": "Move up",
-      "down": "Move down"
-    },
-    "depth": {
-      "title": "Add a depth (bb)",
-      "add": "Add",
-      "copy": "Copy the range of"
-    },
-    "editor": {
-      "saved": "Range saved",
-      "unsavedTitle": "Unsaved changes",
-      "unsavedDetail": "The painted hands of this range have not been saved. Leave without saving?",
-      "discard": "Discard changes",
-      "deleteTitle": "Delete {{name}}?",
-      "deleteDetail": "{{count}} depths and their ranges will be deleted. This cannot be undone.",
-      "removeDepthTitle": "Remove {{depth}} bb?",
-      "removeDepthDetail": "The range of this depth will be deleted. This cannot be undone.",
-      "complete": "{{count}} / {{count}} hands · 0 duplicates",
-      "missing": "{{known}} / {{total}} hands · {{missing}} missing",
-      "modes": {
-        "brush": "Brush",
-        "rect": "Rectangle",
-        "picker": "Picker"
-      },
-      "activeColor": "Active colour:",
-      "copyFrom": "Copy from…",
-      "undo": "Undo",
-      "redo": "Redo",
-      "gridLabel": "Range {{name}} at {{depth}} bb",
-      "note": "Click and drag to paint · Shift + click: whole row · hands outlined in white changed since the last save.",
-      "save": "Save",
-      "revert": "Discard changes"
-    },
-    "empty": {
-      "title": "Build your ranges",
-      "body": "Pick a situation, your depths and paint your hands with your own actions.",
-      "create": "Create my first scenario"
-    },
-    "settings": {
-      "title": "My ranges",
-      "saved": "Actions saved",
-      "actionsTitle": "My actions and colours",
-      "actionsHelp": "These actions are used by all your ranges.",
-      "drag": "Drag to reorder",
-      "addAction": "Add an action",
-      "depthsTitle": "Suggested depths",
-      "depthsHelp": "They only prefill the choices; a scenario can have any depth.",
-      "removeDepth": "Remove {{depth}} bb",
-      "addDepth": "Add a depth",
-      "depthRule": "Between two defined depths:",
-      "rules": {
-        "nearest": "The closest",
-        "below": "The one below"
-      },
-      "regNote": "\"Reg\" variants use the players marked reg in Players.",
-      "deleteTitle": "Delete {{label}}?",
-      "deleteUsed": "{{count}} hands in your ranges use this action.",
-      "replaceBy": "Replace by:",
-      "trainingTitle": "Training",
-      "newCardsPerDay": "New cards per day"
-    },
-    "deviation": {
-      "yourRange": "Your range:",
-      "played": "played:",
-      "response": "· answer {{response}}"
-    },
-    "adherence": {
-      "noHero": "Pick a hero to compare your hands with your ranges.",
-      "noRanges": "Build at least one scenario in the editor to compare it with your hands.",
-      "loading": {
-        "title": "Comparing your hands with your ranges…",
-        "hint": "The first analysis of a large history can take a moment. It is only redone when you change your ranges.",
-        "detail": "Reading this scenario…"
-      },
-      "failed": "The comparison could not be read.",
-      "retry": "Try again",
-      "report": {
-        "respect": "Respect of your ranges",
-        "respectHint": "of the compared decisions follow your range",
-        "lowSample": "Under 300 decisions: a trend, not a score",
-        "compared": "Compared decisions",
-        "comparedHint": "those that have a range",
-        "deviations": "Deviations",
-        "deviationsHint": "not what you planned, {{count}} on the answer to a raise",
-        "noRange": "Without range",
-        "noRangeHint": "{{count}} decisions, click to see where",
-        "opponentLabel": "Opponents",
-        "opponents": {
-          "all": "All",
-          "any": "Fish",
-          "reg": "Regulars"
-        },
-        "tableTitle": "By position and by range",
-        "seat": {
-          "BTN": "Button",
-          "SB": "Small blind",
-          "BB": "Big blind"
-        },
-        "groupLabel": "{{position}}: {{value}} % of your range followed",
-        "uncoveredInGroup": "{{count}} decisions without range"
-      },
-      "noHands": "No hand with a known decision in this period.",
-      "betweenDepths": "Between two depths:",
-      "note": "A deviation means \"not what you planned\", not an error.",
-      "noUncovered": "Every decision is covered by a scenario.",
-      "createScenario": "Create this scenario",
-      "byScenario": "By scenario",
-      "columns": {
-        "scenario": "Scenario",
-        "decisions": "Decisions",
-        "respect": "Adherence",
-        "topDeviation": "Most frequent deviation (planned → played)",
-        "evMatch": "Chip EV followed",
-        "evDeviation": "Chip EV deviation"
-      },
-      "playedBetween": "hands played between {{min}} and {{max}} bb",
-      "gridLabel": "Deviations from {{name}}",
-      "tip": {
-        "planned": "Planned",
-        "played": "Played instead",
-        "followed": "Followed",
-        "never": "Not played in this period"
-      },
-      "ringTitle": "Adherence",
-      "ringLabel": "Adherence {{value}} %",
-      "handsCount_one": "{{count}} hand",
-      "handsCount_other": "{{count}} hands",
-      "recentHands": "Latest hands",
-      "legendDeviation": "deviation (count)",
-      "latest": "Latest deviations",
-      "latestCount": "{{count}} in the selected period",
-      "noDeviation": "No deviation over this period.",
-      "replay": "Replay →",
-      "train": "Train on these {{count}} deviations"
-    },
-    "replayer": {
-      "match": "Follows your range",
-      "deviation": "Deviation from your range",
-      "noRange": "No range for this situation",
-      "scenario": "Scenario \"{{name}} · {{depth}} bb\", used for {{stack}} bb."
-    },
-    "training": {
-      "sources": {
-        "scenario": "One scenario",
-        "program": "Program",
-        "deviation": "My deviations · {{count}}",
-        "review": "Review of the day",
-        "missed": "Most missed hands"
-      },
-      "scenario": "Scenario",
-      "program": "Program",
-      "borderline": "Prioritise borderline hands",
-      "question": "Question {{current}} / {{total}}",
-      "score": "Score {{right}} / {{total}}",
-      "nothing": "Nothing to ask here: pick a scenario or a program that is not marked \"to study\".",
-      "noDeviation": "No deviation to practise on. Play some hands against your ranges first.",
-      "whatDoYouDo": "What do you do?",
-      "yourAction": "1. Your action",
-      "ifRaised": "2. If {{seat}} raises",
-      "noFollowUp": "no follow-up planned for this action",
-      "yourAnswer": "· your answer",
-      "yourRangeTag": "· your range",
-      "shortcuts": "Shortcuts: 1 to 9 for the action, C / F / A for the answer, Space for the next question.",
-      "right": "Right",
-      "wrong": "Missed",
-      "rightShort": "right",
-      "wrongShort": "missed",
-      "rangeSays": "Your range says",
-      "youAnswered": ", you answered",
-      "responseWrong": "The action was right, but your range answers a raise with {{response}}.",
-      "borderlineNote": "Borderline hand, next to another action: {{neighbor}}.",
-      "gridLabel": "Your range, hand {{hand}} highlighted",
-      "openRange": "Open the range",
-      "nextQuestion": "Next",
-      "waiting": "Pick an action. The correction appears here.",
-      "thisSession": "This session",
-      "table": {
-        "fold": "Fold",
-        "limp": "Limp",
-        "call": "Call",
-        "raise": "Raise",
-        "allin": "All-in",
-        "pot": "Pot",
-        "you": "You",
-        "label": "Table of {{name}}"
-      },
-      "backTomorrow": "It comes back tomorrow in review (box 1).",
-      "sessionNote": "Missed hands go back to box 1 of the review."
-    },
-    "review": {
-      "today": "Today",
-      "cardsToReview": "cards to review",
-      "newAndTime": "+ {{count}} new · ≈ {{minutes}} min",
-      "start": "Start the review",
-      "realDeviations": "My real deviations · {{count}} new",
-      "success7": "Success over 7 days",
-      "answers": "{{count}} answers",
-      "mastered": "Mastered cards",
-      "masteredHint": "boxes 4 and 5",
-      "byBox": "Your cards by box",
-      "boxHelp": "A card = a hand in a scenario. Right → next box, missed → box 1.",
-      "box": "Box {{number}}",
-      "boxBar": "Box {{number}}: {{count}} cards",
-      "interval": {
-        "0": "every day",
-        "1": "after 1 day",
-        "3": "after 3 days",
-        "7": "after 7 days",
-        "21": "after 21 days"
-      },
-      "newCardsNote": "New cards: borderline hands of your ranges first, then the hands you are dealt most often in real games. Ranges \"to study\" are left out.",
-      "byProgram": "By program · mastered cards",
-      "scenarios": "{{count}} scenarios",
-      "noProgram": "No program yet. Create one in the editor to follow it here.",
-      "hardest": "Most missed hands",
-      "noMisses": "No missed hand yet.",
-      "missedOf": "{{missed}} / {{attempts}} missed",
-      "quizOnThese": "Quiz on these hands",
-      "byScenario": "By scenario · {{program}}",
-      "allRanges": "all my ranges",
-      "columns": {
-        "cards": "Cards",
-        "mastered": "Mastered",
-        "due": "Due today",
-        "last": "Last session"
-      }
-    },
-    "tour": {
-      "title": "My ranges: quick tour",
-      "open": "Quick tour",
-      "progress": "{{current}} / {{total}}",
-      "next": "Next",
-      "back": "Back",
-      "skip": "Skip",
-      "gridLabel": "Practice grid",
-      "painted": "{{count}} hands painted (try {{target}} or more)",
-      "actions": {
-        "shove": "Shove",
-        "fold": "Fold"
-      },
-      "fromScratch": "Start from scratch",
-      "loadExamples": "Load example ranges",
-      "examplesLoaded": "Example ranges added. Change them to match your own strategy.",
-      "examplesNote": "This adds {{spots}} spots ({{scenarios}} scenarios, 3-max, 8 to 20 bb) typical of Spin & Go. They are rough illustrations to start from, not a recommendation: edit or delete them any time.",
-      "steps": {
-        "layout": {
-          "title": "Four tabs, one workflow",
-          "body": "The app ships no range: everything here is your own plan, and the rest of the tab measures you against it.",
-          "points": [
-            "Editor: build your ranges. Scenarios on the left, the grid in the middle, scenario and actions on the right. Import and export sit at the top, next to the help button.",
-            "Range adherence: compares your real hands with your ranges.",
-            "Training: quizzes you on your own ranges.",
-            "Review: brings back the hands you miss, at spaced intervals."
-          ]
-        },
-        "palette": {
-          "title": "Your actions are the palette",
-          "body": "Every cell of a range takes one of your actions. The card on the right lists them with how many hands each one covers.",
-          "points": [
-            "An action has a name, a colour, a first move (fold, call, raise, all-in...) and, for a raise, a size.",
-            "For a raise you can also plan the answer to a re-raise: fold, call or all-in. It is checked in adherence and in the quiz.",
-            "\"New action\" adds one. In Settings > My ranges you can reorder, edit and delete actions, and set the depths you are offered."
-          ]
-        },
-        "paint": {
-          "title": "Painting a range",
-          "body": "Pick an action, then paint. Try it on this practice grid: nothing is saved.",
-          "points": [
-            "Brush: click or drag. Shift-click paints a whole row.",
-            "Rectangle: click two corners. Eyedropper: takes the action of a cell.",
-            "Ctrl+Z / Ctrl+Shift+Z undo and redo. Edited cells get a white outline until you save.",
-            "The pill above the grid shows how many of the 169 hands are set; click it to highlight the missing ones."
-          ]
-        },
-        "scenarios": {
-          "title": "Spots and depths",
-          "body": "\"New scenario\" opens a wizard. A spot is a situation; each spot holds one range per stack depth.",
-          "points": [
-            "A spot = format (3-max or heads-up), your position and what happened before you (fold, limp, raise, shove).",
-            "Opponent: any, or a reg variant that is used first when the opponent is a reg.",
-            "\"To study only\" keeps a range out of adherence and out of the review.",
-            "Add depths to a spot, and copy another depth to start from it. A hand played at a depth in between uses the rule set in Settings (nearest or below)."
-          ]
-        },
-        "organize": {
-          "title": "Programs and files",
-          "body": "Group spots into programs to study them together, and move your work around with files.",
-          "points": [
-            "A program is an ordered list of spots, for example everything you play at 10 bb. Quiz and review can focus on one.",
-            "Duplicate a spot to try a variant without touching the original.",
-            "Export writes all your ranges to a JSON file; import merges a file or replaces everything, and shows what it will do first."
-          ]
-        },
-        "adherence": {
-          "title": "Range adherence",
-          "body": "Each real preflop decision is compared with the range of its situation and depth.",
-          "points": [
-            "Match, or deviation: \"not what you planned\", never an error. A different action, size or answer to a raise all count.",
-            "Hands with no range yet are listed, so you know which scenario to create next.",
-            "A deviation badge shows in the replayer and in the history, where you can also filter on it.",
-            "A deviation is a good reason to question the range, or to train on that hand."
-          ]
-        },
-        "training": {
-          "title": "Training",
-          "body": "The quiz shows a hand in a spot and asks for your range's action.",
-          "points": [
-            "Sources: one scenario, a program, or your real deviations.",
-            "Number keys pick the action; for a raise you also answer the re-raise (C call, F fold, A all-in).",
-            "A hand near the edge of a range (a neighbour on the grid has another action) is drawn more often.",
-            "After each answer you see the right action and the whole range."
-          ]
-        },
-        "review": {
-          "title": "Review",
-          "body": "Spaced repetition, with one card per hand and scenario, in 5 boxes.",
-          "points": [
-            "A right answer moves the card to the next box (it comes back after 1, 3, 7 then 21 days); a miss sends it back to box 1.",
-            "Each day you get the cards due, plus a few new ones (set in Settings > My ranges).",
-            "New cards start with the borderline hands, then the hands you are dealt most often.",
-            "The page also shows your success rate, mastered cards and most missed hands."
-          ]
-        },
-        "start": {
-          "title": "Ready to start?",
-          "body": "Begin with an empty page, or load example ranges to see every screen filled in."
-        }
-      }
-    }
+  "exploit": {
+    "title": "Exploit",
+    "subtitle": "What pays most against the all-in frequencies your pool really shows, heads-up, by stack depth.",
+    "room": "Room",
+    "no_hero": "Pick your player name in the filters to see this analysis.",
+    "as_sb": "As the small blind",
+    "as_bb": "As the big blind",
+    "opponent_calls": "The big blind called {{pct}}% of the all-ins ({{num}} of {{den}} chances)",
+    "opponent_shoves": "The small blind went all-in {{pct}}% of the time ({{num}} of {{den}} chances)",
+    "not_enough": "Not enough hands yet: {{den}} chances, {{min}} are needed.",
+    "sb_acts": "All-in with {{pct}}% of hands pays more than folding",
+    "bb_acts": "Calling with {{pct}}% of hands pays more than folding",
+    "legend_acts": "Pays more than folding",
+    "legend_folds": "Fold",
+    "cell_ev": "{{hand}}: {{act}} BB against {{fold}} BB for folding",
+    "note": "Chip EV against the frequency observed in your own hands. It is not a tournament-value calculation and not a recommendation: it shows what pays most against what the pool does."
   }
 }

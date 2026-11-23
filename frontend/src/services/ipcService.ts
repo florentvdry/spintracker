@@ -121,6 +121,7 @@ export const ipcService = {
   addBankrollTransaction: (transaction: Json) => backend('POST', '/bankroll/transactions', transaction),
   deleteBankrollTransaction: (id: number) => backend('DELETE', `/bankroll/transactions/${id}`),
   getTimeStats: (options: Json = {}) => backend('POST', '/db/time-stats', options),
+  getExploit: (options: Json) => backend('POST', '/hud/exploit', options),
   getCevBreakdown: (options: Json = {}) => backend('POST', '/db/cev-breakdown', options),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),
   // User preferences the backend computes with

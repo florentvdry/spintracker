@@ -275,23 +275,38 @@ impl HudService {
     /// The figures of the whole pool (every opponent of the hero in the room): what a player is
     /// compared with. Same shape as one player of [`HudService::players`].
     pub fn pool(&self, request: &HudPlayersRequest) -> Result<Value> {
-        let conn = self.db.conn()?;
         let format = parse_format(request.spin_format.as_deref()).ok().flatten();
-        let key: PoolKey = (request.room.clone(), request.hero_name.clone(), format);
+        let rows = self.pool_rows(&request.room, &request.hero_name, format)?;
+        let (hands, stats) = hud_stats::compute(&rows, &request.stats, &Default::default());
+        Ok(json!({ "room": request.room, "hands": hands, "stats": stats }))
+    }
+
+    /// The rows of every opponent of the hero in a room, kept for [`POOL_TTL`].
+    fn pool_rows(&self, room: &str, hero: &str, format: Option<SpinFormat>) -> Result<Arc<Vec<Row>>> {
+        let key: PoolKey = (room.to_string(), hero.to_string(), format);
         let cached = {
             let pools = self.pools.lock().expect("the HUD pool lock is never held across a panic");
             pools.get(&key).filter(|(at, _)| at.elapsed() < POOL_TTL).map(|(_, rows)| rows.clone())
         };
-        let rows = match cached {
-            Some(rows) => rows,
+        match cached {
+            Some(rows) => Ok(rows),
             None => {
-                let rows = Arc::new(hud_stats::load_pool_rows(&conn, &request.room, &request.hero_name, format)?);
+                let conn = self.db.conn()?;
+                let rows = Arc::new(hud_stats::load_pool_rows(&conn, room, hero, format)?);
                 self.pools.lock().expect("the HUD pool lock is never held across a panic").insert(key, (Instant::now(), rows.clone()));
-                rows
+                Ok(rows)
             }
-        };
-        let (hands, stats) = hud_stats::compute(&rows, &request.stats, &Default::default());
-        Ok(json!({ "room": request.room, "hands": hands, "stats": stats }))
+        }
+    }
+
+    /// Best responses against the all-in frequencies the pool shows, one block per stack depth.
+    pub fn exploit(&self, room: &str, hero: &str, spin_format: Option<&str>) -> std::result::Result<Value, String> {
+        let format = parse_format(spin_format)?;
+        if room.trim().is_empty() || hero.trim().is_empty() {
+            return Err("room and heroName are required".into());
+        }
+        let rows = self.pool_rows(room, hero, format).map_err(|e| e.to_string())?;
+        Ok(crate::services::exploit::analyze(&rows))
     }
 
     /// The newest hands behind a figure, summarised, with how many there are in all.
