@@ -1371,6 +1371,11 @@
         "followed": "Respecté",
         "never": "Pas jouée sur cette période"
       },
+      "ringTitle": "Adhérence",
+      "ringLabel": "Adhérence {{value}} %",
+      "handsCount_one": "{{count}} main",
+      "handsCount_other": "{{count}} mains",
+      "recentHands": "Dernières mains",
       "legendDeviation": "écart (nombre)",
       "latest": "Derniers écarts",
       "latestCount": "{{count}} sur la période choisie",

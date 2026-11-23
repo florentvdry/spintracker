@@ -175,6 +175,8 @@ export const ipcService = {
   getRangeSettings: () => backend('GET', '/ranges/settings'),
   saveRangeSettings: (patch: Json) => backend('POST', '/ranges/settings', patch),
   getRangeAdherence: (heroName: string, from?: string | null, to?: string | null, opponent?: string | null) => backend('GET', `/ranges/adherence${query({ heroName, from, to, opponent })}`),
+  getRangeDeviationHands: (scenarioId: number, params: { heroName: string; handClass: string; played: string; response: string; from?: string | null; to?: string | null }) =>
+    backend('GET', `/ranges/adherence/${scenarioId}/hands${query(params)}`),
   getRangeAdherenceScenario: (scenarioId: number, heroName: string, from?: string | null, to?: string | null) =>
     backend('GET', `/ranges/adherence/${scenarioId}${query({ heroName, from, to })}`),
   getReview: (heroName?: string | null) => backend('GET', `/ranges/review${query({ heroName })}`),

@@ -526,6 +526,45 @@ pub fn scenario_detail(conn: &Connection, scenario_id: i64, hero: &str, from: Op
     })))
 }
 
+/// Most hands the list of one deviation returns.
+const DEVIATION_HANDS_LIMIT: i64 = 200;
+
+/// Which deviation of a scenario to list: a hand class and what was played instead of the plan.
+pub struct DeviationFilter<'a> {
+    pub hand_class: &'a str,
+    pub played_immediate: &'a str,
+    /// Empty when the response did not matter.
+    pub played_response: &'a str,
+}
+
+/// The hands behind one line of the deviation list, newest first.
+pub fn deviation_hands(conn: &Connection, scenario_id: i64, hero: &str, from: Option<&str>, to: Option<&str>, filter: &DeviationFilter) -> Result<Vec<Value>> {
+    let book = load_book(conn)?;
+    let scope = Scope::new(hero, from, to)
+        .and("c.scenario_id = @scenario", "@scenario", SqlValue::Integer(scenario_id))
+        .and_clause("c.status = 'deviation'")
+        .and("c.hand_class = @handClass", "@handClass", SqlValue::Text(filter.hand_class.to_string()))
+        .and("c.played_immediate = @playedImmediate", "@playedImmediate", SqlValue::Text(filter.played_immediate.to_string()))
+        .and("COALESCE(c.played_response, '') = @playedResponse", "@playedResponse", SqlValue::Text(filter.played_response.to_string()));
+    let mut stmt = conn.prepare(&format!(
+        "SELECT c.hand_id, c.played_at, c.cards, c.hand_class, c.expected_action_id, c.played_immediate, c.played_response, c.deviation_kind
+         FROM hand_range_checks c WHERE {} ORDER BY c.played_at DESC LIMIT {DEVIATION_HANDS_LIMIT}",
+        scope.where_sql()
+    ))?;
+    let rows = stmt
+        .query_map(&scope.params()[..], |r| {
+            let played: String = r.get(5)?;
+            let response: Option<String> = r.get(6)?;
+            Ok(json!({
+                "handId": r.get::<_, String>(0)?, "playedAt": r.get::<_, Option<String>>(1)?, "cards": r.get::<_, Option<String>>(2)?, "handClass": r.get::<_, String>(3)?,
+                "expectedActionId": r.get::<_, Option<i64>>(4)?, "playedImmediate": played, "playedActionId": played_action_id(&book, &played, response.as_deref()),
+                "playedResponse": response, "kind": r.get::<_, Option<String>>(7)?,
+            }))
+        })?
+        .collect::<std::result::Result<Vec<_>, _>>()?;
+    Ok(rows)
+}
+
 /// The comparison of one hand (the replayer's card); `None` when there is no decision to compare.
 pub fn hand_check(conn: &Connection, hero: &str, hand_id: &str) -> Result<Option<Value>> {
     if hero.trim().is_empty() {
@@ -646,6 +685,14 @@ mod tests {
         assert_eq!((played["playedImmediate"].as_str(), played["kind"].as_str(), played["count"].as_i64()), (Some("check"), Some("immediate"), Some(1)));
         assert_eq!(detail["handStats"]["72o"]["played"], json!([]), "a followed hand lists nothing played instead");
         assert_eq!(detail["deviations"][0]["handId"], "h_dev");
+
+        // The hands behind one line of the deviation list: this hand class, played as a check.
+        let filter = DeviationFilter { hand_class: "AKo", played_immediate: "check", played_response: "" };
+        let hands = deviation_hands(&conn, scenario, "Hero", None, None, &filter).unwrap();
+        assert_eq!(hands.len(), 1);
+        assert_eq!(hands[0]["handId"], "h_dev");
+        let other = DeviationFilter { hand_class: "AKo", played_immediate: "fold", played_response: "" };
+        assert!(deviation_hands(&conn, scenario, "Hero", None, None, &other).unwrap().is_empty());
     }
 
     #[test]

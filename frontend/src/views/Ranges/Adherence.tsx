@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import ActionChip from '@/components/ranges/ActionChip'
+import AdherenceRing from '@/components/ranges/AdherenceRing'
 import DeviationBadge from '@/components/ranges/DeviationBadge'
 import RangeMatrix from '@/components/ranges/RangeMatrix'
 import { getDateRangeParams, useFilterStore } from '@/stores/filterStore'
@@ -28,8 +29,9 @@ import {
   type TopDeviation,
 } from '@/utils/rangeAdherence'
 import { ChevronDown, ChevronRight } from 'lucide-react'
+import DeviationList from './components/DeviationList'
 import { actionSubtitle } from './components/SidePanel'
-import { COLOR_SHADES, formatDepth, formatNumber, lineSummary, type Position, type RangeAction } from '@/utils/ranges'
+import { actionStats, COLOR_SHADES, formatDepth, formatNumber, lineSummary, type Position, type RangeAction } from '@/utils/ranges'
 
 /** Colour of a played action the player has no action for. */
 const UNKNOWN_ACTION_COLOR = COLOR_SHADES[2]
@@ -180,6 +182,9 @@ export default function Adherence() {
       </button>
     </th>
   )
+
+  const scenarioRespect = detail ? respectOf({ compared: Object.values(detail.handStats).reduce((n, s) => n + s.matches + s.deviations, 0), matches: Object.values(detail.handStats).reduce((n, s) => n + s.matches, 0) }) : null
+  const legendStats = useMemo(() => actionStats(detail?.hands ?? {}), [detail])
 
   const evCell = (value: number | null) => (
     <td className={clsx('px-4 py-2.5 text-right font-mono', value === null ? 'text-gray-500' : value >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>{formatEv(value, i18n.language)}</td>
@@ -422,18 +427,28 @@ export default function Adherence() {
           {detail && (
             <div className={clsx('grid gap-[18px] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]', detailLoading && 'invisible')}>
               <section className="card p-5 flex flex-col gap-3">
-                <div>
-                  <h3 className="text-[15px] font-semibold text-gray-100">{detail.name} · {formatDepth(detail.stackBb)} bb</h3>
-                  {detail.observedMinBb !== null && detail.observedMaxBb !== null && (
-                    <p className="text-xs text-gray-500">{t('ranges.adherence.playedBetween', { min: num(detail.observedMinBb, 1), max: num(detail.observedMaxBb, 1) })}</p>
-                  )}
+                <div className="flex items-center gap-4">
+                  <AdherenceRing
+                    respect={scenarioRespect}
+                    label={t('ranges.adherence.ringLabel', { value: scenarioRespect === null ? 0 : Math.round(scenarioRespect * 100) })}
+                  />
+                  <div>
+                    <div className="text-[11px] uppercase tracking-wide text-gray-500">{t('ranges.adherence.ringTitle')}</div>
+                    <h3 className="text-[15px] font-semibold text-gray-100">{detail.name} · {formatDepth(detail.stackBb)} bb</h3>
+                    {detail.observedMinBb !== null && detail.observedMaxBb !== null && (
+                      <p className="text-xs text-gray-500">{t('ranges.adherence.playedBetween', { min: num(detail.observedMinBb, 1), max: num(detail.observedMaxBb, 1) })}</p>
+                    )}
+                  </div>
                 </div>
                 <RangeMatrix cells={deviationCells(detail, actions, handTip)} label={t('ranges.adherence.gridLabel', { name: detail.name })} />
                 <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">
                   {actions
                     .filter((a) => Object.values(detail.hands).includes(a.id))
                     .map((a) => (
-                      <ActionChip key={a.id} action={a} />
+                      <span key={a.id} className="inline-flex items-center gap-1">
+                        <ActionChip action={a} />
+                        <span className="font-mono text-[11px] text-gray-300">{num(legendStats.get(a.id)?.percent ?? 0, 1)} %</span>
+                      </span>
                     ))}
                   <span className="rounded-md border-2 border-deviation px-2 py-0.5 font-semibold text-deviation">{t('ranges.adherence.legendDeviation')}</span>
                 </div>
@@ -444,7 +459,13 @@ export default function Adherence() {
                   <h3 className="text-[15px] font-semibold text-gray-100">{t('ranges.adherence.latest')}</h3>
                   <span className="text-xs text-gray-400">{t('ranges.adherence.latestCount', { count: detail.deviationTotal })}</span>
                 </div>
-                {detail.deviations.length === 0 ? <p className="text-sm text-gray-400">{t('ranges.adherence.noDeviation')}</p> : <ul className="flex flex-col gap-2">{detail.deviations.map(deviationCard)}</ul>}
+                <DeviationList detail={detail} actions={actions} heroName={heroName} />
+                {detail.deviations.length > 0 && (
+                  <details className="text-sm text-gray-400">
+                    <summary className="cursor-pointer text-xs">{t('ranges.adherence.recentHands')}</summary>
+                    <ul className="mt-2 flex flex-col gap-2">{detail.deviations.map(deviationCard)}</ul>
+                  </details>
+                )}
                 {detail.deviationTotal > 0 && (
                   <button
                     className="btn-primary w-full"

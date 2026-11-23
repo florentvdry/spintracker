@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { deviationCells, formatCards, formatEv, groupByPosition, groupBySpot, isReliable, respectOf, respectTone, sortSpots, type ScenarioRow } from './rangeAdherence'
+import { deviationCells, deviationRows, formatCards, formatEv, groupByPosition, groupBySpot, isReliable, respectOf, respectTone, sortSpots, type ScenarioRow } from './rangeAdherence'
 import type { RangeAction } from './ranges'
 
 describe('formatting', () => {
@@ -86,5 +86,32 @@ describe('the report', () => {
     expect(spots[0]).toMatchObject({ decisions: 200, matches: 160, deviations: 40, respect: 0.8 })
     expect(spots[0].depths.map((d) => d.stackBb)).toEqual([20, 10])
     expect(spots[1].deviations).toBe(30)
+  })
+})
+
+
+describe('deviationRows', () => {
+  it('lists every played-instead line with its planned action, most frequent first', () => {
+    const rows = deviationRows({
+      hands: { A8o: 1, KQs: 2, '72o': 3 },
+      handStats: {
+        A8o: { matches: 4, deviations: 3, played: [{ playedImmediate: 'fold', playedActionId: 5, playedResponse: null, kind: 'immediate', count: 3 }] },
+        KQs: {
+          matches: 0,
+          deviations: 6,
+          played: [
+            { playedImmediate: 'call', playedActionId: null, playedResponse: null, kind: 'immediate', count: 4 },
+            { playedImmediate: 'raise', playedActionId: 6, playedResponse: 'fold', kind: 'response', count: 2 },
+          ],
+        },
+        '72o': { matches: 9, deviations: 0, played: [] },
+        ZZ: { matches: 0, deviations: 1, played: [{ playedImmediate: 'fold', playedActionId: 5, playedResponse: null, kind: 'immediate', count: 9 }] },
+      },
+    })
+    expect(rows.map((r) => [r.hand, r.plannedActionId, r.playedImmediate, r.count])).toEqual([
+      ['KQs', 2, 'call', 4],
+      ['A8o', 1, 'fold', 3],
+      ['KQs', 2, 'raise', 2],
+    ])
   })
 })

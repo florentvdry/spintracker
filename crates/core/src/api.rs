@@ -644,6 +644,15 @@ impl Backend {
                         None => return Ok(None),
                     }
                 }
+                ("GET", ["adherence", scenario, "hands"]) => {
+                    let hero = r.query_str("heroName").ok_or_else(|| RangeError::Invalid("heroName is required".into()))?;
+                    let hand_class = r.query_str("handClass").ok_or_else(|| RangeError::Invalid("handClass is required".into()))?;
+                    let played = r.query_str("played").ok_or_else(|| RangeError::Invalid("played is required".into()))?;
+                    let response = r.query_str("response").unwrap_or_default();
+                    range_adherence::ensure_computed(&mut conn, &hero)?;
+                    let filter = range_adherence::DeviationFilter { hand_class: &hand_class, played_immediate: &played, played_response: &response };
+                    Response::data(Value::Array(range_adherence::deviation_hands(&conn, id(scenario)?, &hero, r.query_str("from").as_deref(), r.query_str("to").as_deref(), &filter)?))
+                }
                 ("POST", ["training", "question"]) => {
                     let mut request: training::QuestionRequest = r.body_as()?;
                     // The seed only varies the draw; tests pass their own.

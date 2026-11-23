@@ -29,10 +29,10 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] 21. Dashboard KPIs
 - [x] 22. 3-curve main chart
 - [x] 23. Multipliers histogram card
-- [ ] 24. Ranges legend with combo %
-- [ ] 25. Adherence ring
-- [ ] 26. Amber deviation cells in matrix
-- [ ] 27. Deviation list with hand drill-down
+- [x] 24. Ranges legend with combo %
+- [x] 25. Adherence ring
+- [x] 26. Amber deviation cells in matrix
+- [x] 27. Deviation list with hand drill-down
 
 ## Phase 3 - HUD
 
@@ -122,6 +122,8 @@ Items 8-19 delivered on `roadmap/phase-1-results-metrics`. Migrations: 202611230
 - Item 20: `ImportProgress` gains `tournaments`; the importer gets `inspect_files` (room + hand count per file); Tauri import emits `rooms[]` (per-room totals, hands, tournaments) and the progress dialog draws one bar per room. Tournament counts are per file (a tournament split across files would count twice). Not exercised in the real desktop app (needs a manual import).
 
 - Items 21-23: KPI strip (profit, chip EV per tournament, tournaments, win %) above the hero card (these four figures left the hero card); main chart shows chips won, EV chips and non-showdown by default (showdown line is one legend click away, legend already existed); multipliers card gets a histogram with the share of each multiplier above the existing table.
+
+- Items 24-27 (Adherence screen of My ranges): the editor already listed combos and % per action (ActionsCard); the adherence detail legend now shows the % of combos of each action too (All-in, Raise, Limp, Fold are the user own actions). Ring "Adhérence xx %" for the shown scenario (`AdherenceRing`). Item 26 already existed (amber `#f5c06b` ring and count badge on deviating cells with a hover card); kept. Item 27: new list `hand · planned → played · n hands`, a click opens a modal listing the hands (new route `GET /ranges/adherence/{scenario}/hands`) with a replay link per hand; the old "latest hands" list is folded in a details block. The modal is a stopgap: item 42 will send the same filter to the Hand History.
 
 ## Blockers / missing real data
 

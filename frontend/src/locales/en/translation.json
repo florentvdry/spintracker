@@ -1371,6 +1371,11 @@
         "followed": "Followed",
         "never": "Not played in this period"
       },
+      "ringTitle": "Adherence",
+      "ringLabel": "Adherence {{value}} %",
+      "handsCount_one": "{{count}} hand",
+      "handsCount_other": "{{count}} hands",
+      "recentHands": "Latest hands",
       "legendDeviation": "deviation (count)",
       "latest": "Latest deviations",
       "latestCount": "{{count}} in the selected period",
