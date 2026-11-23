@@ -7,6 +7,7 @@ import Card from '@/components/ui/Card'
 import { ipcService } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
+import { usePalette } from '@/stores/paletteStore'
 import { usePoolEvStore } from '@/stores/poolEvStore'
 import {
   ACCEPTABLE_RISK, buildBankrollSeries, COMFORTABLE_RISK, highestStakeUnder, recommendStakes,
@@ -18,7 +19,6 @@ import type { SharingRoom } from '@/utils/varianceSimulator'
 import { MULTIPLIER_PRESETS } from '@/views/VarianceSimulator/multiplierPresets'
 
 const CHART_HEIGHT = 300
-const LINE_COLOR = '#34c27a'
 const GRID_COLOR = '#262b34'
 const KNOWN_ROOMS: SharingRoom[] = ['winamax', 'unibet', 'betclic']
 const todayIso = () => new Date().toISOString().slice(0, 10)
@@ -38,6 +38,7 @@ export default function Bankroll() {
   const [note, setNote] = useState('')
   const [formError, setFormError] = useState(false)
   const chartRef = useRef<HTMLDivElement>(null)
+  const lineColor = usePalette().positive
 
   const reload = useCallback(async () => {
     try {
@@ -73,7 +74,7 @@ export default function Bankroll() {
       tooltip: { trigger: 'axis', valueFormatter: (value: unknown) => `${Number(value).toFixed(2)}€` },
       xAxis: { type: 'category', data: series.map((p) => p.day), axisLabel: { color: '#a7aab3' }, boundaryGap: false },
       yAxis: { type: 'value', axisLabel: { color: '#a7aab3', formatter: '{value}€' }, splitLine: { lineStyle: { color: GRID_COLOR } } },
-      series: [{ type: 'line', data: series.map((p) => p.bankroll), showSymbol: false, itemStyle: { color: LINE_COLOR }, lineStyle: { width: 2.5 } }],
+      series: [{ type: 'line', data: series.map((p) => p.bankroll), showSymbol: false, itemStyle: { color: lineColor }, lineStyle: { width: 2.5 } }],
     })
     const resize = () => chart.resize()
     window.addEventListener('resize', resize)
@@ -81,7 +82,7 @@ export default function Bankroll() {
       window.removeEventListener('resize', resize)
       chart.dispose()
     }
-  }, [series])
+  }, [series, lineColor])
 
   const addTransaction = async () => {
     const value = Math.abs(Number(amount.replace(',', '.')))

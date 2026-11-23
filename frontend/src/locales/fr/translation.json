@@ -765,6 +765,12 @@
   },
   "settings": {
     "title": "Paramètres",
+    "palette": {
+      "title": "Palette de couleurs",
+      "subtitle": "S'applique au HUD, aux ranges et aux graphes. La palette daltoniens distingue les gains (bleu) des pertes (orange).",
+      "default": "Par défaut",
+      "colorblind": "Daltoniens"
+    },
     "rakeback": {
       "title": "Rakeback",
       "subtitle": "Part du rake reversée par chaque room. Elle ajoute les courbes Gains + RB et PoolEV + RB au graphe en euros.",

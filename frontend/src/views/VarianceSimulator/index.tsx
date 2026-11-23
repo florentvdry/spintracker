@@ -8,6 +8,8 @@ import { ipcService, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { MULTIPLIER_PRESETS, type DistributionChoice, type PresetKey } from './multiplierPresets'
 import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterStore'
+import { usePalette } from '@/stores/paletteStore'
+import type { Palette } from '@/utils/palette'
 import { logError } from '@/utils/log'
 import {
   expectedMultiplier, expectedProfitPerSpin, MAX_SIMULATIONS, MAX_SPINS, MAX_WORK, runSimulation, breakevenChipEvForTable, estimateRank, sampleCurve, tournamentCurve, validateInput, winRateFromChipEv,
@@ -22,12 +24,10 @@ const DEFAULT_BANKROLL = 300
 const PERCENT = 100
 const SEED_RANGE = 2 ** 32
 const CHART_HEIGHT = 360
-const CHART_COLOR = '#34c27a'
 const REAL_COLOR = '#7aa7ff'
 const PATH_COLOR = '#c9d1d9'
 const EXPECTED_COLOR = '#eab308'
 const LUCKY_COLOR = '#a7f3d0'
-const UNLUCKY_COLOR = '#ff7a6b'
 const GRID_COLOR = '#262b34'
 const Y_PADDING = 0.25
 const BAND_LOW_COLOR = 'rgba(52, 194, 122, 0.13)'
@@ -52,7 +52,7 @@ function roomOf(mainRoom: unknown): SharingRoom {
 const toNumber = (value: string): number => (value.trim() === '' ? Number.NaN : Number(value.replace(',', '.')))
 const signed = (value: number, digits = 0) => `${value >= 0 ? '+' : '−'}${Math.abs(value).toFixed(digits)}`
 const euros = (value: number) => `${signed(value)} €`
-const profitColor = (value: number) => (value >= 0 ? '#4ccf8f' : '#ff7a6b')
+const profitColorOf = (palette: Palette) => (value: number) => (value >= 0 ? palette.positive : palette.negative)
 const labelClass = 'text-[11px] font-medium uppercase tracking-[.06em] text-gray-500'
 
 function Field({ label, suffix, children }: { label: string; suffix?: string; children: React.ReactNode }) {
@@ -88,6 +88,10 @@ function Legend({ color, label, line }: { color: string; label: string; line?: b
 
 /** Monte Carlo variance simulator: what a given win rate can look like over a number of tournaments. */
 export default function VarianceSimulator() {
+  const palette = usePalette()
+  const CHART_COLOR = palette.positive
+  const UNLUCKY_COLOR = palette.negative
+  const profitColor = profitColorOf(palette)
   const { t, i18n } = useTranslation()
   const heroName = useFilterStore((s) => s.heroName)
   const buyInFilter = useFilterStore((s) => s.buyIn)

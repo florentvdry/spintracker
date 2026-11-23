@@ -7,6 +7,7 @@ import AdherenceRing from '@/components/ranges/AdherenceRing'
 import DeviationBadge from '@/components/ranges/DeviationBadge'
 import RangeMatrix from '@/components/ranges/RangeMatrix'
 import { getDateRangeParams, useFilterStore } from '@/stores/filterStore'
+import { usePalette } from '@/stores/paletteStore'
 import { useRangeAdherenceStore } from '@/stores/rangeAdherenceStore'
 import { useTrainingStore } from '@/stores/trainingStore'
 import { useReplayerStore } from '@/stores/replayerStore'
@@ -19,7 +20,6 @@ import {
   isReliable,
   respectOf,
   respectTone,
-  RESPECT_COLORS,
   groupByPosition,
   sortSpots,
   type OpponentFilter,
@@ -58,7 +58,8 @@ function Tile({ label, value, hint, tone, onClick, active }: { label: string; va
 
 /** The share of followed decisions as a thin bar and a figure. */
 function RespectBar({ respect, label }: { respect: number | null; label: string }) {
-  const color = respect === null ? undefined : RESPECT_COLORS[respectTone(respect)]
+  const palette = usePalette()
+  const color = respect === null ? undefined : palette.respect[respectTone(respect)]
   return (
     <div className="flex items-center justify-end gap-2" role="img" aria-label={label}>
       <div className="h-1.5 w-24 overflow-hidden rounded-full bg-dark-300" aria-hidden="true">
@@ -82,6 +83,7 @@ function BlockingLoader({ title, hint, compact = false }: { title: string; hint?
 
 export default function Adherence() {
   const { t, i18n } = useTranslation()
+  const palette = usePalette()
   const navigate = useNavigate()
   const heroName = useFilterStore((s) => s.heroName)
   const { opponent, setOpponent, summary, selectedScenarioId, detail, loading, detailLoading, failed, load, select } = useRangeAdherenceStore()
@@ -289,7 +291,7 @@ export default function Adherence() {
           <Tile
             label={t('ranges.adherence.report.respect')}
             value={summary.respect === null ? '–' : `${num(summary.respect * 100, 1)} %`}
-            tone={summary.respect === null ? undefined : RESPECT_COLORS[respectTone(summary.respect)]}
+            tone={summary.respect === null ? undefined : palette.respect[respectTone(summary.respect)]}
             hint={isReliable(summary.compared) ? t('ranges.adherence.report.respectHint') : <span className="text-deviation">{t('ranges.adherence.report.lowSample')}</span>}
           />
           <Tile label={t('ranges.adherence.report.compared')} value={num(summary.compared)} hint={t('ranges.adherence.report.comparedHint')} />

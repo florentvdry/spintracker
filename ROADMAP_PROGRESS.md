@@ -39,7 +39,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] 28. Nitro / classic Expresso HUD split
 - [x] 29. Colors vs pool average
 - [x] 30. Last-hands hover popup
-- [ ] 31. Colour-blind palette
+- [x] 31. Colour-blind palette
 
 ## Phase 4 - Replayer
 
@@ -130,6 +130,11 @@ Items 8-19 delivered on `roadmap/phase-1-results-metrics`. Migrations: 202611230
 - Item 29: new route `POST /hud/pool` (same body as `/hud/players`) returns the figures of every opponent of the hero in the room, added together, filtered by `spinFormat`, cached 5 minutes in memory (the average of a whole base moves slowly; reading it is a pass over all hands). Profile options `poolColors` (off by default) and `poolThreshold` (points, 1-30, default 5): a figure with at least 10 opportunities more than the threshold above the pool average gets a red underline, below it a blue one; the underline sits next to the existing colour bands, which keep their text colour. Figures of custom stats and counts are not compared. Not looked at in the real HUD window.
 
 - Item 30: the hover popup already existed (hold a stat for 1 s: stat title, player, one block per hand with cards, stack in bb, result and street-by-street actions). Aligned with the expected rendering: it opens with the 4 latest hands (was 30), each block shows the player seat (BTN/SB/BB, new `position` field of the figure-hands answer), and a "Show more hands" button loads up to 30.
+
+- Item 31: global setting (Settings > Colour palette, stored in the browser storage, shared by the HUD window through the `storage` event). Okabe-Ito palette: gains blue, losses orange, deviations pink-purple. Tailwind `profit-positive`, `profit-negative` and `deviation` now read CSS variables (`--c-positive`...), so every place using them follows; charts (profit chart, bankroll, variance simulator), the adherence ring and bars and the HUD pool marks follow the palette in JS. Not converted: colours a user picks himself (range actions, HUD colour bands stored in layouts), the replayer and review box colours. In the variance simulator the chart option is memoised, a palette change shows after the next simulation.
+
+## Phase 3 summary (done)
+Items 28-31 on `roadmap/phase-3-hud`. No migration. New routes: `POST /hud/pool`; `spinFormat` on `/hud/players` and `/hud/figure-hands`. To test by hand in the real HUD (needs Winamax tables): Nitro vs classic separation, pool colours option in the profile inspector, hover popup with 4 hands, palette switch.
 
 ## Blockers / missing real data
 

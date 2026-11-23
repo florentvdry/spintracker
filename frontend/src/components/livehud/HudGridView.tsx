@@ -1,4 +1,6 @@
 import { memo, useMemo, type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react'
+import { usePalette } from '@/stores/paletteStore'
+import type { Palette } from '@/utils/palette'
 import { hudBaselines } from '@/views/Stats/hudText'
 import {
   BASE_FONT_SIZE,
@@ -78,10 +80,7 @@ const sameView = (a: CellView, b: CellView) =>
   a.numeric === b.numeric &&
   JSON.stringify(a.border) === JSON.stringify(b.border)
 
-/** Colours of the pool marks: blue under the average, red above it. */
-const POOL_COLORS = { below: '#5aa0ff', above: '#ff6b6b' } as const
-
-function cellStyle(view: CellView, zebra: boolean): CSSProperties {
+function cellStyle(view: CellView, zebra: boolean, palette: Palette): CSSProperties {
   const { border } = view
   return {
     gridRow: `${view.row + 1} / span ${view.rowSpan}`,
@@ -93,7 +92,7 @@ function cellStyle(view: CellView, zebra: boolean): CSSProperties {
     fontFamily: view.numeric ? NUMBER_FONT : LABEL_FONT,
     fontVariantNumeric: view.numeric ? 'tabular-nums' : undefined,
     textAlign: view.align ?? (view.numeric || view.kind === 'text' ? 'center' : 'left'),
-    boxShadow: view.poolTone ? `inset 0 -2px 0 ${POOL_COLORS[view.poolTone]}` : undefined,
+    boxShadow: view.poolTone ? `inset 0 -2px 0 ${view.poolTone === 'above' ? palette.poolAbove : palette.poolBelow}` : undefined,
     borderTop: border?.top ? KEY_BORDER : undefined,
     borderRight: border?.right ? KEY_BORDER : undefined,
     borderBottom: border?.bottom ? KEY_BORDER : undefined,
@@ -133,13 +132,14 @@ interface CellProps {
 
 const Cell = memo(
   function Cell({ view, zebra, slot, extra, overlay, onPopup, onFigureEnter, onFigureLeave, editing }: CellProps) {
+    const palette = usePalette()
     return (
       <div
         data-cell={view.id}
         data-row={slot.row}
         data-col={slot.col}
         className={extra?.className}
-        style={{ ...cellStyle(view, zebra), position: 'relative', ...extra?.style }}
+        style={{ ...cellStyle(view, zebra, palette), position: 'relative', ...extra?.style }}
         onClick={view.popupId && onPopup ? (e) => onPopup(view, e) : undefined}
         onMouseEnter={view.figure && onFigureEnter ? (e) => onFigureEnter(view, e) : undefined}
         onMouseLeave={view.figure && onFigureLeave ? onFigureLeave : undefined}

@@ -1,4 +1,5 @@
-import { respectTone, RESPECT_COLORS } from '@/utils/rangeAdherence'
+import { usePalette } from '@/stores/paletteStore'
+import { respectTone } from '@/utils/rangeAdherence'
 
 const SIZE = 84
 const STROKE = 9
@@ -14,7 +15,8 @@ interface AdherenceRingProps {
 
 /** A ring filled to the share of decisions that followed the range, with the figure in its middle. */
 export default function AdherenceRing({ respect, label }: AdherenceRingProps) {
-  const color = respect === null ? undefined : RESPECT_COLORS[respectTone(respect)]
+  const palette = usePalette()
+  const color = respect === null ? undefined : palette.respect[respectTone(respect)]
   const filled = (respect ?? 0) * CIRCUMFERENCE
   return (
     <div className="relative shrink-0" style={{ width: SIZE, height: SIZE }} role="img" aria-label={label}>

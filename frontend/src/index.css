@@ -3,6 +3,13 @@
 @tailwind utilities;
 
 @layer base {
+  /* Default palette; `applyPalette` replaces them (colour-blind palette). */
+  :root {
+    --c-positive: 63 212 154;
+    --c-negative: 255 122 107;
+    --c-deviation: 245 192 107;
+  }
+
   html {
     @apply scroll-smooth;
   }
