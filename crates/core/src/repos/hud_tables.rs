@@ -103,6 +103,7 @@ pub fn active_tables(conn: &Connection, room: &str, since: &str, heroes: &[Strin
             "gameId": game_id,
             "room": room,
             "tournamentName": name,
+            "spinFormat": super::hud_stats::SpinFormat::of_tournament(&name).key(),
             "lastHandAt": last_at,
             "format": if players == 2 { "headsUp" } else { "threeMax" },
             "hero": hero,

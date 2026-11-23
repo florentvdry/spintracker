@@ -19,6 +19,48 @@ use crate::stats::flags::Flags;
 use crate::stats::registry::{Section, STATS};
 use crate::Result;
 
+/// The two Winamax Spin formats whose figures must never be mixed: Expresso Nitro plays much
+/// shorter stacks than the classic Expresso. Other rooms only have `Classic`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum SpinFormat {
+    Nitro,
+    Classic,
+}
+
+impl SpinFormat {
+    /// The format of a tournament from its name ("Expresso Nitro").
+    pub fn of_tournament(name: &str) -> SpinFormat {
+        if name.to_ascii_lowercase().contains("nitro") {
+            SpinFormat::Nitro
+        } else {
+            SpinFormat::Classic
+        }
+    }
+
+    pub fn parse(text: &str) -> Option<SpinFormat> {
+        match text {
+            "nitro" => Some(SpinFormat::Nitro),
+            "classic" => Some(SpinFormat::Classic),
+            _ => None,
+        }
+    }
+
+    pub fn key(self) -> &'static str {
+        match self {
+            SpinFormat::Nitro => "nitro",
+            SpinFormat::Classic => "classic",
+        }
+    }
+
+    /// SQL condition on the `hands` alias `h`; the name is the one `hud_tables` reads.
+    fn sql_clause(self) -> &'static str {
+        match self {
+            SpinFormat::Nitro => "COALESCE(h.tournament_name, h.game_name, '') LIKE '%nitro%'",
+            SpinFormat::Classic => "COALESCE(h.tournament_name, h.game_name, '') NOT LIKE '%nitro%'",
+        }
+    }
+}
+
 /// Sections whose stats the HUD can show (the postflop ones are not counted for it).
 const SECTIONS: [(Section, &str); 6] = [
     (Section::Preflop, "preflop"),
@@ -152,8 +194,8 @@ fn load_custom_hits(conn: &Connection, player: &str) -> Result<HashMap<String, V
 
 /// Everything the HUD needs of one player: the rows of the hands that count. `with_custom` also
 /// reads the hits of the custom stats; a request that asks for none pays nothing for them.
-pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Vec<Row>> {
-    Ok(query_rows(conn, room, hero, player, with_custom, false)?.into_iter().map(|hand| hand.row).collect())
+pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: Option<SpinFormat>) -> Result<Vec<Row>> {
+    Ok(query_rows(conn, room, hero, player, with_custom, false, format)?.into_iter().map(|hand| hand.row).collect())
 }
 
 /// A row with the hand it comes from, for listing the hands behind a figure.
@@ -165,13 +207,13 @@ pub(crate) struct HandRow {
 
 /// The rows of `load_rows`, each with its hand id and date. Read on demand, never cached: only a
 /// list of hands needs them.
-pub(crate) fn load_identified_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Vec<HandRow>> {
-    query_rows(conn, room, hero, player, with_custom, true)
+pub(crate) fn load_identified_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: Option<SpinFormat>) -> Result<Vec<HandRow>> {
+    query_rows(conn, room, hero, player, with_custom, true, format)
 }
 
 /// The hand id and date are read only when asked for (or, for the id, when custom hits are joined):
 /// the figures of the HUD do not need them.
-fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, with_ids: bool) -> Result<Vec<HandRow>> {
+fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, with_ids: bool, format: Option<SpinFormat>) -> Result<Vec<HandRow>> {
     let hand_column = if with_custom || with_ids { "ph.hand_id" } else { "NULL" };
     let date_column = if with_ids { "h.date_time" } else { "NULL" };
     let sql = format!(
@@ -180,8 +222,9 @@ fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_cust
          JOIN hands h ON h.id = ph.hand_id
          LEFT JOIN hand_player_flags f ON f.hand_id = ph.hand_id AND f.player_name = ph.player_name
          WHERE ph.player_name = @player AND h.room = @room AND h.player_count IN (2, 3)
-           AND EXISTS (SELECT 1 FROM player_hands hp WHERE hp.hand_id = h.id AND hp.player_name IN {})",
-        hero_resolution_sql("@hero")
+           AND EXISTS (SELECT 1 FROM player_hands hp WHERE hp.hand_id = h.id AND hp.player_name IN {}){}",
+        hero_resolution_sql("@hero"),
+        format.map_or(String::new(), |f| format!(" AND {}", f.sql_clause())),
     );
     let binds: [(&str, SqlValue); 3] = [
         ("@player", SqlValue::Text(player.into())),
@@ -361,6 +404,33 @@ pub(crate) fn compute(rows: &[Row], requests: &[HudStatRequest], ready: &HashSet
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_spin_format_comes_from_the_tournament_name() {
+        assert_eq!(SpinFormat::of_tournament("Expresso Nitro"), SpinFormat::Nitro);
+        assert_eq!(SpinFormat::of_tournament("expresso NITRO"), SpinFormat::Nitro);
+        assert_eq!(SpinFormat::of_tournament("Expresso"), SpinFormat::Classic);
+        assert_eq!(SpinFormat::of_tournament(""), SpinFormat::Classic);
+        assert_eq!(SpinFormat::parse("nitro"), Some(SpinFormat::Nitro));
+        assert_eq!(SpinFormat::parse("other"), None);
+    }
+
+    #[test]
+    fn a_format_keeps_only_the_hands_of_its_tournaments() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::migrations::run(&mut conn).unwrap();
+        for (id, name) in [("h1", "Expresso"), ("h2", "Expresso Nitro"), ("h3", "Expresso Nitro")] {
+            conn.execute("INSERT INTO hands (id, room, game_name, player_count) VALUES (?1, 'Winamax', ?2, 3)", [id, name]).unwrap();
+            for player in ["Hero", "Villain"] {
+                conn.execute("INSERT INTO player_hands (hand_id, player_name, position) VALUES (?1, ?2, 'BTN')", [id, player]).unwrap();
+            }
+        }
+        conn.execute("INSERT INTO players (name) VALUES ('Hero')", []).unwrap();
+        let count = |format| load_rows(&conn, "Winamax", "Hero", "Villain", false, format).unwrap().len();
+        assert_eq!(count(None), 3);
+        assert_eq!(count(Some(SpinFormat::Nitro)), 2);
+        assert_eq!(count(Some(SpinFormat::Classic)), 1);
+    }
 
     #[test]
     fn the_catalog_lists_registry_stats_with_unique_ids() {

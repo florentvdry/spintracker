@@ -8,6 +8,7 @@ import { logError } from '@/utils/log'
 import { figureKey, requestsOf, type CellView, type GridPosition, type HudFigure, type HudFigures, type HudGrid } from './hudGrid'
 import { dragTo, type Rect } from './hudEditor'
 import { GRID_STEP, seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom, type SeatPlacements } from './hudProfile'
+import type { SpinFormat } from './spinFormat'
 import { figureHandsBody, HOVER_DELAY_MS, parseFigureHands, prettyLabel, type FigureRef, type HandsOf } from './figureHands'
 import { placePopup } from './hudPopup'
 import { tableScale } from './hudScale'
@@ -31,6 +32,8 @@ export interface HudPayload {
   format?: HudFormat
   hero?: string
   players?: { seat: string; name: string }[]
+  /** `nitro` or `classic`: the figures only count the hands of that Spin format. */
+  spinFormat?: SpinFormat
   /** Changes with every hand of the table. */
   lastHandAt?: string
 }
@@ -44,6 +47,7 @@ function useLivePanels(payload: HudPayload | null, layoutKey: string, requests: 
   const room = payload?.room
   const hero = payload?.hero
   const lastHandAt = payload?.lastHandAt
+  const spinFormat = payload?.spinFormat
 
   useEffect(() => {
     if (!seats || !room || !hero) {
@@ -56,7 +60,7 @@ function useLivePanels(payload: HudPayload | null, layoutKey: string, requests: 
       setPanels((previous) => previous.map((panel) => ({ ...panel, stale: true })))
     }
     void ipcService
-      .getHudPlayers({ room, heroName: hero, players: seats.map((p) => p.name), stats: requests })
+      .getHudPlayers({ room, heroName: hero, players: seats.map((p) => p.name), stats: requests, spinFormat })
       .then((result) => {
         if (cancelled) return
         if (!result.success) {
@@ -85,7 +89,7 @@ function useLivePanels(payload: HudPayload | null, layoutKey: string, requests: 
       cancelled = true
     }
     // The figures are read again with each hand and when the layout changes.
-  }, [seats, room, hero, lastHandAt, layoutKey, requests])
+  }, [seats, room, hero, lastHandAt, spinFormat, layoutKey, requests])
 
   return panels
 }
@@ -212,7 +216,7 @@ export default function HudOverlay() {
         if (request === handsRequest.current) setHands((current) => (current ? { ...current, state } : current))
       }
       ipcService
-        .getHudFigureHands(figureHandsBody(room, hero, player, figure, which))
+        .getHudFigureHands({ ...figureHandsBody(room, hero, player, figure, which), spinFormat: payload?.spinFormat })
         .then((result) => {
           const data = result.success ? parseFigureHands(result.data) : null
           if (!data) logError('Could not read the hands behind a figure:', result.success ? 'unexpected answer' : result.message)
@@ -223,7 +227,7 @@ export default function HudOverlay() {
           settle({ status: 'error' })
         })
     },
-    [payload?.room, payload?.hero, payload?.demo, panels],
+    [payload?.room, payload?.hero, payload?.demo, payload?.spinFormat, panels],
   )
 
   const closeHands = useCallback(() => {

@@ -268,7 +268,7 @@ fn tick(app: &AppHandle) {
                         w.handle,
                         json!({
                             "room": room.defaults.room, "format": t["format"], "hero": t["hero"], "gameId": t["gameId"],
-                            "players": t["players"],
+                            "players": t["players"], "spinFormat": t["spinFormat"],
                             // Changes with every hand, so the HUD page reads the figures again.
                             "lastHandAt": t["lastHandAt"],
                         }),
