@@ -678,6 +678,15 @@
     "stake_summary": "Jusqu'à {{acceptable}}€ le risque de ruine reste sous 5 % ; jusqu'à {{comfortable}}€ il reste sous 1 %.",
     "ruin_at_stake": "risque de ruine {{risk}} %"
   },
+  "session_summary": {
+    "title": "Résumé de session",
+    "view": "Résumé",
+    "fish_share": "Fish aux tables",
+    "multipliers_won": "Multiplicateurs gagnés",
+    "settings_title": "Résumé de fin de session",
+    "settings_subtitle": "Le résumé de la dernière session s'ouvre après cette durée d'inactivité. 0 le désactive.",
+    "minutes": "minutes d'inactivité"
+  },
   "charts": {
     "stats_title": "Stats",
     "cev": "CEV",

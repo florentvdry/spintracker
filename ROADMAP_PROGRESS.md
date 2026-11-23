@@ -20,7 +20,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] 15. Soft table hours
 - [x] 16. Profit per hour
 - [x] 17. Volume and goals
-- [ ] 18. End-of-session summary
+- [x] 18. End-of-session summary
 - [x] 19. Bankroll
 
 ## Phase 2 - Dashboard & My ranges
@@ -112,6 +112,9 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - Item 13: the equity columns (`equity_preflop`...) are never filled by the importer, so hero equity at a lost all-in is rebuilt from `ev_chips`: (EV + investment) / total pot. It is an estimate (antes and rake in the pot). Definitions: `elimination` = the lost all-in is the hero last hand of the tournament; `big_pot` = any lost all-in. N (default 5) and min equity (default 70 %) are editable on the card (not persisted).
 
 - Items 14-17: new Analysis tab "Time" (not main navigation), `POST /db/time-stats`, `engines/time_stats.rs`. Cells use the tournament start hour and weekday in the stored (local) time of the hand histories. Soft hours = share of faced opponents not flagged `is_reg` per cell (metric toggle on the heatmap). Profit per hour uses merged play time (parallel tables counted once, 2 h gap = new session). Goals stored in `app_settings` `volume_goals`.
+
+- Item 18: summary modal composed from existing endpoints (dashboard-stats, time-stats, multiplier-stats on the session range); opens automatically when the last session ended at least N minutes ago (default 30, 0 = off, editable in settings), at most 24 h ago and once per session (persisted in localStorage); reopen from the "Summary" link of each session in the dashboard list.
+- Item 19: bankroll = deposits - withdrawals + cumulative euro result; new table `bankroll_transactions` (migration 202611230002). Buy-in recommendation uses the existing variance simulator (1000 Spins, 1500 simulations, fixed seed) with the average chip EV of the current filters and the main room table; limits 1 % (comfortable) and 5 % (acceptable).
 
 ## Blockers / missing real data
 
