@@ -9,7 +9,7 @@ vi.hoisted(() => {
   })
 })
 
-import { selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from './replayerStore'
+import { buildReplaySteps, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from './replayerStore'
 
 const step = (order: number, street: string, type: string, playerName: string | null, amount: number, potBefore: number, potAfter: number, cards: string | null = null) => ({
   order, street, type, playerName, amount, potBefore, potAfter, cards, description: `${type} ${playerName ?? ''}`.trim(),
@@ -98,5 +98,39 @@ describe('replayer store', () => {
     state().play()
     expect(selectDoneActions(state())).toBe(0)
     state().stop()
+  })
+})
+
+describe('buildReplaySteps', () => {
+  const hand = {
+    players: [
+      { name: 'Hero', position: 'SB', initialStack: 500, cards: 'AhKd', isHero: true },
+      { name: 'Villain', position: 'BB', initialStack: 500, cards: 'QsJs', isHero: false },
+    ],
+    actions: [
+      { type: 'DealCards', street: 'Preflop', potBefore: 0, potAfter: 0 },
+      { type: 'PostSB', street: 'Preflop', playerName: 'Hero', potBefore: 0, potAfter: 15, amount: 15 },
+      { type: 'PostBB', street: 'Preflop', playerName: 'Villain', potBefore: 15, potAfter: 45, amount: 30 },
+      { type: 'Raise', street: 'Preflop', playerName: 'Hero', potBefore: 45, potAfter: 105, amount: 75 },
+      { type: 'Fold', street: 'Preflop', playerName: 'Villain', potBefore: 105, potAfter: 105 },
+    ],
+  }
+
+  it('gives the table before the first real action, then one state after each action', () => {
+    const steps = buildReplaySteps(hand)
+    expect(steps.map((s) => s.applied)).toEqual([3, 4, 5])
+    expect(steps[0].snapshot.pot).toBe(45)
+    expect(steps[1].snapshot.players[0].bet).toBe(75)
+    expect(steps[2].snapshot.players[1].isFolded).toBe(true)
+  })
+
+  it('does not share state between the steps', () => {
+    const steps = buildReplaySteps(hand)
+    expect(steps[0].snapshot.players[1].isFolded).toBe(false)
+    expect(steps[0].snapshot).not.toBe(steps[2].snapshot)
+  })
+
+  it('has one step for a hand without real actions', () => {
+    expect(buildReplaySteps({ players: hand.players, actions: [] })).toHaveLength(1)
   })
 })

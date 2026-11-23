@@ -230,6 +230,18 @@ export const ipcService = {
   markHandForReview: (handId: string, note = '') => backend('POST', '/review-queue', { handId, note }),
   unmarkHandForReview: (handId: string) => backend('DELETE', `/review-queue/${enc(handId)}`),
   answerHandReview: (handId: string, correct: boolean) => backend('POST', `/review-queue/${enc(handId)}/answer`, { correct }),
+  /** Asks where to save a video or a GIF and writes `bytes` there; the details travel in headers, the file as the raw body. */
+  saveBinaryFile: async (dialogTitle: string, name: string, extension: string, bytes: Uint8Array): Promise<ApiResult> => {
+    if (!isTauri) return { success: false, message: 'Tauri is not available' }
+    try {
+      return await invoke<ApiResult>('save_binary_file', bytes, {
+        headers: { 'x-title': encodeURIComponent(dialogTitle), 'x-name': encodeURIComponent(name), 'x-ext': extension },
+      })
+    } catch (error) {
+      console.error('[IPC Error] save_binary_file:', error)
+      return { success: false, message: String(error) }
+    }
+  },
   getOverlaySettings: () => backend('GET', '/overlay/settings'),
   saveOverlaySettings: (settings: Json) => backend('PUT', '/overlay/settings', settings),
   getOverlayStatus: () => backend('GET', '/overlay/status'),

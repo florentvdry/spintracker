@@ -3,6 +3,8 @@ import { Share2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { ipcService, type Json } from '@/services/ipcService'
+import HandVideoDialog from './HandVideoDialog'
+import { useReplayerStore } from '@/stores/replayerStore'
 import { normalizeHand, toForumMarkdown, toGtoWizard } from '@/utils/handText'
 import { logError } from '@/utils/log'
 
@@ -17,6 +19,8 @@ export default function HandExportMenu({ handData }: { handData: Json }) {
   const [feedback, setFeedback] = useState<Feedback>(null)
   const timer = useRef<number | null>(null)
   const [anonymize, setAnonymize] = useState(true)
+  const [videoOpen, setVideoOpen] = useState(false)
+  const inBb = useReplayerStore((s) => s.viewMode === 'bb')
 
   useEffect(() => () => {
     if (timer.current !== null) window.clearTimeout(timer.current)
@@ -70,6 +74,17 @@ export default function HandExportMenu({ handData }: { handData: Json }) {
           </button>
           <p className="px-3 pb-2 pt-1 text-[11px] text-gray-500">{t('replayer.export.gto_hint')}</p>
           <div className="mt-1 border-t border-dark-200 pt-1">
+            <button
+              className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-200 hover:bg-dark-400"
+              onClick={() => {
+                setOpen(false)
+                setVideoOpen(true)
+              }}
+            >
+              {t('replayer.export.video')}
+            </button>
+          </div>
+          <div className="mt-1 border-t border-dark-200 pt-1">
             <button className="w-full rounded-md px-3 py-2 text-left text-sm text-gray-200 hover:bg-dark-400" onClick={() => void copy(forumText)}>
               {t('replayer.export.copy_forum')}
             </button>
@@ -80,6 +95,7 @@ export default function HandExportMenu({ handData }: { handData: Json }) {
           </div>
         </div>
       )}
+      <HandVideoDialog open={videoOpen} onClose={() => setVideoOpen(false)} handData={handData} inBb={inBb} />
     </div>
   )
 }

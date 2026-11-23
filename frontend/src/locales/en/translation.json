@@ -1060,6 +1060,19 @@
     "no_hand": "No hand loaded",
     "hand_of": "Hand {{current}} / {{total}}",
     "actions": "Actions",
+    "video": {
+      "title": "Export the hand as a video",
+      "dialog": "Save the video",
+      "kind_video": "Video (MP4 or WebM)",
+      "kind_gif": "GIF",
+      "step": "Time per action",
+      "start": "Export",
+      "progress": "Step {{done}} of {{total}}",
+      "saved": "File saved.",
+      "failed": "The export failed.",
+      "cancelled": "Export cancelled.",
+      "hint": "The table is drawn and recorded here, nothing is uploaded. MP4 depends on the system: WebM is written when it is not available."
+    },
     "export": {
       "title": "Export",
       "copied": "Copied",
@@ -1068,6 +1081,7 @@
       "copy_gto": "Copy for GTO Wizard",
       "save_gto": "Save as a .txt file",
       "dialog": "Save the hand",
+      "video": "Export as a video or a GIF",
       "copy_forum": "Copy as text for Discord or a forum",
       "anonymize": "Hide the player names",
       "gto_hint": "PokerStars layout, which GTO Wizard reads. Not checked against its importer."

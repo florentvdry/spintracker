@@ -1060,6 +1060,19 @@
     "no_hand": "Aucune main chargée",
     "hand_of": "Main {{current}} / {{total}}",
     "actions": "Actions",
+    "video": {
+      "title": "Exporter la main en vidéo",
+      "dialog": "Enregistrer la vidéo",
+      "kind_video": "Vidéo (MP4 ou WebM)",
+      "kind_gif": "GIF",
+      "step": "Durée par action",
+      "start": "Exporter",
+      "progress": "Étape {{done}} sur {{total}}",
+      "saved": "Fichier enregistré.",
+      "failed": "L'export a échoué.",
+      "cancelled": "Export annulé.",
+      "hint": "La table est dessinée et enregistrée ici, rien n'est envoyé. Le MP4 dépend du système : du WebM est écrit quand il n'est pas disponible."
+    },
     "export": {
       "title": "Exporter",
       "copied": "Copié",
@@ -1068,6 +1081,7 @@
       "copy_gto": "Copier pour GTO Wizard",
       "save_gto": "Enregistrer en .txt",
       "dialog": "Enregistrer la main",
+      "video": "Exporter en vidéo ou en GIF",
       "copy_forum": "Copier en texte pour Discord ou un forum",
       "anonymize": "Masquer les pseudos",
       "gto_hint": "Format PokerStars, lu par GTO Wizard. Non vérifié sur son import."

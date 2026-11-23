@@ -67,7 +67,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 ## Phase 7 - Content & streaming
 
-- [ ] 47. Hand video export
+- [x] 47. Hand video export
 - [x] 48. OBS overlay server
 - [x] 49. Text export for Discord/forums
 
@@ -167,6 +167,11 @@ Items 43-46 on `roadmap/phase-6-opponents-review`. Migrations 202611230003 `play
 - Item 49: replayer Export menu > "Copy as text for Discord or a forum": markdown with stakes, positions and stacks in bb, one line per street, showdown and result; the box "Hide the player names" (on by default) replaces the names with Hero, Villain, Villain 2 and drops the room, so no name or id leaves the app. Amounts are in big blinds (rounded to 2 decimals).
 
 - Item 48: `services/overlay.rs`, a small HTTP server on the standard library only (no new dependency): off by default, listens on 127.0.0.1 only, answers GET `/` (the page) and GET `/stats.json` (latest session: Spins, profit, CEV per tournament, win rate, multipliers, plus the theme), refuses any request whose Host header is not `127.0.0.1:port` or `localhost:port` (DNS rebinding), other methods and paths. The page writes the figures with `textContent` and refreshes every 3 s. Settings (Settings > Streaming overlay): on/off, port (1024+, default 38417), text size, text and accent colours, transparent or dark background, figures shown; saved in `app_settings` through its own validated route (`/overlay/settings`, not the generic settings route). The server restarts when the settings change and starts with the app when it was on. It does not follow a change of the active database (restart it from the settings). Not tried inside OBS.
+
+- Item 47: replayer Export > "Export as a video or a GIF": the table is DRAWN on a canvas (`utils/handVideo.ts`: felt, board, pot, seats with cards, stacks in bb or chips, bets, last action, equities) from the replay steps (`buildReplaySteps`, same rules as the replayer), in 16:9 (1280x720, GIF 640x360) or 9:16 (720x1280, GIF 360x640), one step every 0.6/1/1.5/2 s. Video: `MediaRecorder` on `canvas.captureStream`, MP4 (H.264) when the webview supports it, WebM otherwise (the file extension follows). GIF: own GIF89a encoder (`utils/gif.ts`, 3-3-2 palette, LZW checked against a reference decoder in the tests), no dependency. ffmpeg is NOT embedded, as asked. Saving goes through the new Tauri command `save_binary_file` (raw request body, mp4/webm/gif only, 256 MB max, main and replayer windows only). The video is recorded in real time (a 10-step hand at 1 s takes ~10 s). NOT verified here: whether the Windows webview (WebView2) records MP4 or only WebM, and the look of the frames (never seen on screen): to check by hand.
+
+## Phase 7 summary (done)
+Items 47-49 on `roadmap/phase-7-content-streaming`. No migration. New: overlay server (opt-in), `save_binary_file` command. To test by hand: Settings > Streaming overlay then open the URL in a browser and in an OBS browser source; replayer > Export > video/GIF/Discord text.
 
 ## Blockers / missing real data
 

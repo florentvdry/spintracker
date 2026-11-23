@@ -117,6 +117,96 @@ pub async fn save_text_file(app: AppHandle, window: WebviewWindow, dialog_title:
     }
 }
 
+/// Largest video or GIF the replayer may write.
+const MAX_SAVED_BINARY_BYTES: usize = 256 * 1024 * 1024;
+/// File types a binary save accepts.
+const BINARY_EXTENSIONS: [&str; 3] = ["mp4", "webm", "gif"];
+
+/// A header the webview sent, decoded from its percent-encoding.
+fn header_text(request: &tauri::ipc::Request<'_>, name: &str) -> Option<String> {
+    let raw = request.headers().get(name)?.to_str().ok()?;
+    let mut bytes = Vec::with_capacity(raw.len());
+    let mut chars = raw.bytes();
+    while let Some(byte) = chars.next() {
+        if byte == b'%' {
+            let hi = chars.next()?;
+            let lo = chars.next()?;
+            bytes.push(u8::from_str_radix(std::str::from_utf8(&[hi, lo]).ok()?, 16).ok()?);
+        } else {
+            bytes.push(byte);
+        }
+    }
+    String::from_utf8(bytes).ok()
+}
+
+/// A file name the user may be offered: no folder part, and the extension is one of the allowed ones.
+fn binary_file_name(name: &str, extension: &str) -> Option<String> {
+    let extension = extension.to_ascii_lowercase();
+    if !BINARY_EXTENSIONS.contains(&extension.as_str()) {
+        return None;
+    }
+    let stem: String = name.chars().filter(|c| !matches!(c, '/' | '\\' | ':' | '\0')).collect();
+    let stem = stem.trim_end_matches(&format!(".{extension}")).trim();
+    Some(format!("{}.{extension}", if stem.is_empty() { "hand" } else { stem }))
+}
+
+#[cfg(test)]
+mod binary_name_tests {
+    use super::binary_file_name;
+
+    #[test]
+    fn only_video_and_gif_names_are_accepted_and_folders_are_dropped() {
+        assert_eq!(binary_file_name("hand-1", "mp4").as_deref(), Some("hand-1.mp4"));
+        assert_eq!(binary_file_name("hand-1.gif", "GIF").as_deref(), Some("hand-1.gif"));
+        assert_eq!(binary_file_name("..\\..\\evil", "webm").as_deref(), Some("....evil.webm"));
+        assert_eq!(binary_file_name("", "webm").as_deref(), Some("hand.webm"));
+        assert_eq!(binary_file_name("x", "exe"), None);
+        assert_eq!(binary_file_name("x", "html"), None);
+    }
+}
+
+/// Asks where to save a video or a GIF, then writes the bytes the webview sent as the request body.
+/// The title, the suggested name and the type travel in headers (percent-encoded).
+#[tauri::command]
+pub async fn save_binary_file(app: AppHandle, window: WebviewWindow, request: tauri::ipc::Request<'_>) -> Result<Value, String> {
+    if window.label() != "main" && !window.label().starts_with("replayer-") {
+        return Ok(json!({ "success": false, "message": "This window cannot save files." }));
+    }
+    let tauri::ipc::InvokeBody::Raw(bytes) = request.body() else {
+        return Ok(json!({ "success": false, "message": "No file content." }));
+    };
+    let (Some(title), Some(name), Some(extension)) = (header_text(&request, "x-title"), header_text(&request, "x-name"), header_text(&request, "x-ext")) else {
+        return Ok(json!({ "success": false, "message": "Missing file details." }));
+    };
+    // The request borrows the message: what the dialog and the write need is copied out first.
+    Ok(save_binary(app, bytes.clone(), title, name, extension).await)
+}
+
+async fn save_binary(app: AppHandle, content: Vec<u8>, title: String, name: String, extension: String) -> Value {
+    if content.is_empty() || content.len() > MAX_SAVED_BINARY_BYTES {
+        return json!({ "success": false, "message": "The file is empty or too large to save." });
+    }
+    let Some(default_name) = binary_file_name(&name, &extension) else {
+        return json!({ "success": false, "message": "This file type cannot be saved." });
+    };
+    let extension = extension.to_ascii_lowercase();
+    let picker = app.clone();
+    let target = tauri::async_runtime::spawn_blocking(move || {
+        picker.dialog().file().set_title(title).set_file_name(default_name).add_filter(extension.to_ascii_uppercase(), &[extension.as_str()]).blocking_save_file()
+    })
+    .await
+    .ok()
+    .flatten()
+    .and_then(|p| p.into_path().ok());
+    let Some(target) = target else {
+        return json!({ "success": false, "cancelled": true });
+    };
+    match std::fs::write(&target, content) {
+        Ok(()) => json!({ "success": true, "path": target.to_string_lossy() }),
+        Err(err) => json!({ "success": false, "message": err.to_string() }),
+    }
+}
+
 /// The caller is responsible for asking the user to confirm first.
 #[tauri::command]
 pub async fn delete_all_hands(app: AppHandle, window: WebviewWindow) -> Value {
