@@ -14,3 +14,4 @@ pub mod preflop_line;
 pub mod quiz;
 pub mod range_check;
 pub mod range_scenarios;
+pub mod time_stats;

@@ -15,4 +15,5 @@ pub mod postflop_stats;
 pub mod player_queries;
 pub mod players;
 pub mod stats;
+pub mod time_stats;
 pub mod tournaments;

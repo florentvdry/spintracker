@@ -16,10 +16,10 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] 11. CEV by multiplier
 - [x] 12. CEV by session progress
 - [x] 13. CEV after a bad beat
-- [ ] 14. Results heatmap by hour / weekday
-- [ ] 15. Soft table hours
-- [ ] 16. Profit per hour
-- [ ] 17. Volume and goals
+- [x] 14. Results heatmap by hour / weekday
+- [x] 15. Soft table hours
+- [x] 16. Profit per hour
+- [x] 17. Volume and goals
 - [ ] 18. End-of-session summary
 - [ ] 19. Bankroll
 
@@ -110,6 +110,8 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 - Items 10-13 (one engine, `engines/cev_breakdown.rs`, one route `POST /db/cev-breakdown`, one dashboard card + rows in the position block). Composition = number of opponents flagged `is_reg` in each hand: HU `vs Reg`/`vs Fish`, 3-way `2 fish`/`1 reg + 1 fish`/`2 regs`. Rows divide by total tournaments like the other position rows. Multiplier and session buckets show CEV per tournament; session = 2 h gap (same as sessions elsewhere); rank buckets 1-10, 11-20, 21-35, 36-50, 51+.
 - Item 13: the equity columns (`equity_preflop`...) are never filled by the importer, so hero equity at a lost all-in is rebuilt from `ev_chips`: (EV + investment) / total pot. It is an estimate (antes and rake in the pot). Definitions: `elimination` = the lost all-in is the hero last hand of the tournament; `big_pot` = any lost all-in. N (default 5) and min equity (default 70 %) are editable on the card (not persisted).
+
+- Items 14-17: new Analysis tab "Time" (not main navigation), `POST /db/time-stats`, `engines/time_stats.rs`. Cells use the tournament start hour and weekday in the stored (local) time of the hand histories. Soft hours = share of faced opponents not flagged `is_reg` per cell (metric toggle on the heatmap). Profit per hour uses merged play time (parallel tables counted once, 2 h gap = new session). Goals stored in `app_settings` `volume_goals`.
 
 ## Blockers / missing real data
 

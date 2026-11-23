@@ -155,3 +155,19 @@ fn cev_breakdown_route_returns_every_section() {
     assert_eq!(composed_hands, 4416, "every hand lands in one composition");
     assert!(data["after_bad_beat"]["avg_all"].is_number());
 }
+
+#[test]
+fn time_stats_route_counts_every_tournament_and_saves_goals() {
+    use serde_json::json;
+    let b = backend();
+    assert_eq!(b.handle("PUT", "/settings/volume_goals", Some(json!({ "weekly": 40, "monthly": 150 }))).status, 200);
+    let data = b.handle("GET", "/db/time-stats?heroName=jmenfouu", None).body["data"].clone();
+    assert_eq!(data["tournaments"], 300);
+    let in_cells: i64 = data["cells"].as_array().unwrap().iter().map(|c| c["tournaments"].as_i64().unwrap()).sum();
+    assert_eq!(in_cells, 300);
+    let by_hour: i64 = data["by_hour"].as_array().unwrap().iter().map(|c| c.as_i64().unwrap()).sum();
+    assert_eq!(by_hour, 300);
+    assert!(data["hours_played"].as_f64().unwrap() > 0.0);
+    assert_eq!(data["week"]["target"], 40);
+    assert_eq!(data["month"]["target"], 150);
+}

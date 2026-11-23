@@ -6,7 +6,7 @@ use serde_json::Value;
 use crate::Result;
 
 /// Keys the UI may read and write; anything else is refused so the table stays a closed set.
-pub const ALLOWED_KEYS: &[&str] = &["pool_ev_tables", "rakeback"];
+pub const ALLOWED_KEYS: &[&str] = &["pool_ev_tables", "rakeback", "volume_goals"];
 
 pub fn is_allowed(key: &str) -> bool {
     ALLOWED_KEYS.contains(&key)
