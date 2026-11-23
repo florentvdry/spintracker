@@ -26,9 +26,9 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 ## Phase 2 - Dashboard & My ranges
 
 - [x] 20. Import screen progress per room
-- [ ] 21. Dashboard KPIs
-- [ ] 22. 3-curve main chart
-- [ ] 23. Multipliers histogram card
+- [x] 21. Dashboard KPIs
+- [x] 22. 3-curve main chart
+- [x] 23. Multipliers histogram card
 - [ ] 24. Ranges legend with combo %
 - [ ] 25. Adherence ring
 - [ ] 26. Amber deviation cells in matrix
@@ -120,6 +120,8 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 Items 8-19 delivered on `roadmap/phase-1-results-metrics`. Migrations: 202611230001 `app_settings`, 202611230002 `bankroll_transactions`. New routes: `GET/PUT /settings/{key}`, `POST /db/cev-breakdown`, `POST /db/time-stats`, `/bankroll/transactions`. To test by hand: Settings (PoolEV tables, rakeback, session summary), Dashboard (PoolEV line, CEV rows, breakdown card), Analysis > Time and Bankroll, session summary modal.
 
 - Item 20: `ImportProgress` gains `tournaments`; the importer gets `inspect_files` (room + hand count per file); Tauri import emits `rooms[]` (per-room totals, hands, tournaments) and the progress dialog draws one bar per room. Tournament counts are per file (a tournament split across files would count twice). Not exercised in the real desktop app (needs a manual import).
+
+- Items 21-23: KPI strip (profit, chip EV per tournament, tournaments, win %) above the hero card (these four figures left the hero card); main chart shows chips won, EV chips and non-showdown by default (showdown line is one legend click away, legend already existed); multipliers card gets a histogram with the share of each multiplier above the existing table.
 
 ## Blockers / missing real data
 
