@@ -887,6 +887,16 @@
       "failed": "Ça n'a pas marché.",
       "hint": "Une restauration ajoute le fichier comme une nouvelle base à côté des tiennes : rien n'est écrasé."
     },
+    "anonymize": {
+      "title": "Anonymiser un historique",
+      "subtitle": "Une copie d'un fichier d'historique avec les pseudos remplacés, pour joindre des mains à une issue GitHub.",
+      "button": "Anonymiser un fichier…",
+      "pick": "Choisir un fichier d'historique",
+      "save_dialog": "Enregistrer le fichier anonymisé",
+      "done": "Terminé : {{count}} pseudos remplacés. Relis le fichier avant de le partager.",
+      "failed": "Ça n'a pas marché.",
+      "hint": "Un même joueur reçoit le même remplaçant partout (Hero, Player A, Player B…). Relis le résultat avant de partager : seuls les pseudos sont modifiés."
+    },
     "palette": {
       "title": "Palette de couleurs",
       "subtitle": "S'applique au HUD, aux ranges et aux graphes. La palette daltoniens distingue les gains (bleu) des pertes (orange).",

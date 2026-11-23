@@ -11,6 +11,7 @@ const COMMANDS: &[&str] = &[
     "save_text_file",
     "save_binary_file",
     "backup_database",
+    "anonymize_history",
     "restore_database",
     "delete_all_hands",
     "set_active_database",

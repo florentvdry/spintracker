@@ -833,6 +833,16 @@
       "failed": "It did not work.",
       "hint": "A restore adds the file as a new database next to yours: nothing is overwritten."
     },
+    "anonymize": {
+      "title": "Anonymise a hand history",
+      "subtitle": "A copy of a hand-history file with the player names replaced, to attach hands to an issue on GitHub.",
+      "button": "Anonymise a file…",
+      "pick": "Choose a hand-history file",
+      "save_dialog": "Save the anonymised file",
+      "done": "Done: {{count}} names replaced. Check the file before you share it.",
+      "failed": "It did not work.",
+      "hint": "The same player gets the same stand-in everywhere (Hero, Player A, Player B…). Read the result before sharing: nothing but the names is changed."
+    },
     "palette": {
       "title": "Colour palette",
       "subtitle": "Applies to the HUD, the ranges and the charts. The colour-blind palette tells gains (blue) from losses (orange).",

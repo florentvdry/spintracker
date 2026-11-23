@@ -1,6 +1,7 @@
 //! Application logic built on the parsers, the engines and the repositories.
 
 pub mod analysis;
+pub mod anonymizer;
 pub mod auto_tags;
 pub mod custom_stats;
 pub mod hand_review;

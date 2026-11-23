@@ -18,6 +18,7 @@
     "allow-save-text-file",
     "allow-save-binary-file",
     "allow-backup-database",
+    "allow-anonymize-history",
     "allow-restore-database",
     "allow-delete-all-hands",
     "allow-set-active-database",

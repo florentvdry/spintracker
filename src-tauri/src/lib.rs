@@ -100,6 +100,7 @@ pub fn run() {
             commands::save_text_file,
             commands::save_binary_file,
             commands::backup_database,
+            commands::anonymize_history,
             commands::restore_database,
             commands::delete_all_hands,
             commands::set_active_database,

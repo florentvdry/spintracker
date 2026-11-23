@@ -205,6 +205,7 @@ export const ipcService = {
   // Maintenance
   deleteAllHands: () => command<ApiResult>('delete_all_hands'),
   importHandHistory: () => command<ApiResult>('import_hand_history'),
+  anonymizeHistory: (pickTitle: string, saveTitle: string) => command<ApiResult>('anonymize_history', { pickTitle, saveTitle }),
   backupDatabase: (dialogTitle: string) => command<ApiResult>('backup_database', { dialogTitle }),
   restoreDatabase: (dialogTitle: string) => command<ApiResult>('restore_database', { dialogTitle }),
   importDetectedFolders: (folders: string[]) => command<ApiResult>('import_detected_folders', { folders }),

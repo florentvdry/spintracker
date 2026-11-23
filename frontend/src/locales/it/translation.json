@@ -1336,6 +1336,16 @@
       "failed": "Non ha funzionato.",
       "hint": "Un ripristino aggiunge il file come nuovo database accanto ai tuoi: non viene sovrascritto nulla."
     },
+    "anonymize": {
+      "title": "Anonimizza una cronologia di mani",
+      "subtitle": "Una copia di un file di cronologia con i nomi dei giocatori sostituiti, per allegare mani a una issue di GitHub.",
+      "button": "Anonimizza un file…",
+      "pick": "Scegli un file di cronologia delle mani",
+      "save_dialog": "Salva il file anonimizzato",
+      "done": "Fatto: {{count}} nomi sostituiti. Controlla il file prima di condividerlo.",
+      "failed": "Non ha funzionato.",
+      "hint": "Lo stesso giocatore riceve lo stesso sostituto ovunque (Hero, Player A, Player B…). Leggi il risultato prima di condividerlo: cambiano solo i nomi."
+    },
     "palette": {
       "title": "Tavolozza dei colori",
       "subtitle": "Si applica all'HUD, ai range e ai grafici. La tavolozza per daltonici distingue i guadagni (blu) dalle perdite (arancione).",

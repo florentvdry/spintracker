@@ -1336,6 +1336,16 @@
       "failed": "Não funcionou.",
       "hint": "Uma restauração adiciona o arquivo como um novo banco de dados ao lado dos seus: nada é sobrescrito."
     },
+    "anonymize": {
+      "title": "Anonimizar um histórico de mãos",
+      "subtitle": "Uma cópia de um arquivo de histórico com os nomes dos jogadores substituídos, para anexar mãos a uma issue do GitHub.",
+      "button": "Anonimizar um arquivo…",
+      "pick": "Escolha um arquivo de histórico de mãos",
+      "save_dialog": "Salvar o arquivo anonimizado",
+      "done": "Concluído: {{count}} nomes substituídos. Confira o arquivo antes de compartilhar.",
+      "failed": "Não funcionou.",
+      "hint": "O mesmo jogador recebe o mesmo substituto em todo lugar (Hero, Player A, Player B…). Leia o resultado antes de compartilhar: só os nomes são alterados."
+    },
     "palette": {
       "title": "Paleta de cores",
       "subtitle": "Aplica-se ao HUD, aos ranges e aos gráficos. A paleta para daltônicos distingue os ganhos (azul) das perdas (laranja).",
