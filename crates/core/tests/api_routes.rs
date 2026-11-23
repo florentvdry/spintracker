@@ -185,3 +185,26 @@ fn bankroll_transactions_can_be_added_listed_and_deleted() {
     assert_eq!(b.handle("DELETE", &format!("/bankroll/transactions/{id}"), None).status, 200);
     assert_eq!(b.handle("DELETE", &format!("/bankroll/transactions/{id}"), None).status, 404);
 }
+
+#[test]
+fn replay_deals_carry_the_equity_of_the_players_in() {
+    let b = backend();
+    let replay = b.handle("GET", "/analysis/replayer/01KE0SWZ3MWW23307PVSF796TN?heroName=jmenfouu", None).body["data"].clone();
+    let actions = replay["actions"].as_array().unwrap();
+    let deals: Vec<&serde_json::Value> = actions.iter().filter(|a| a["type"] == "DealCards").collect();
+    assert!(!deals.is_empty());
+    // Both hands are known (a showdown), so the first deal already has an equity for each player.
+    let first = deals[0]["equity"].as_object().expect("equity on the hole cards");
+    assert_eq!(first.len(), 2);
+    let total: f64 = first.values().map(|v| v.as_f64().unwrap()).sum();
+    assert!((total - 100.0).abs() < 1e-6, "{first:?}");
+    for deal in &deals {
+        if let Some(equity) = deal["equity"].as_object() {
+            let total: f64 = equity.values().map(|v| v.as_f64().unwrap()).sum();
+            assert!((total - 100.0).abs() < 1e-6);
+        }
+    }
+    // Nobody is all-in for an EV here, or the badge carries a finite figure.
+    let badge = &replay["allInEv"];
+    assert!(badge.is_null() || badge["diffBb"].as_f64().unwrap().is_finite());
+}

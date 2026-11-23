@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, useReplayerStore } from '@/stores/replayerStore'
+import { equitiesAt } from '@/utils/replayEquity'
 import Card from './Card'
 import { formatReplayValue, parseBigBlind } from './format'
 
@@ -38,6 +39,7 @@ export default function PlayerSeat({ player, seat }: { player: Json; seat: SeatL
   const showFoldedPlayers = useReplayerStore((s) => s.showFoldedPlayers)
   const blinds = useReplayerStore((s) => s.handData?.blinds)
   const action = useReplayerStore(selectCurrentAction)
+  const equity = useReplayerStore((s) => equitiesAt(s.handData?.actions ?? [], s.currentIndex))?.[player.name]
 
   const bbValue = parseBigBlind(blinds)
   const format = (value: number) => formatReplayValue(value, viewMode, bbValue)
@@ -85,6 +87,12 @@ export default function PlayerSeat({ player, seat }: { player: Json; seat: SeatL
           {player.position?.includes('BTN') && <span className="dealer-button">D</span>}
         </div>
         <div className="player-name" title={player.name}>{player.name}</div>
+        {equity !== undefined && !player.isFolded && (
+          <div className="equity-line" title="Equity">
+            <div className="equity-bar"><div className="equity-fill" style={{ width: `${equity}%` }} /></div>
+            <span className="equity-value">{equity < 10 || equity >= 99.95 ? equity.toFixed(1) : Math.round(equity)}%</span>
+          </div>
+        )}
         <div className="stack-line">
           <span className="stack-value">{format(player.currentStack)}</span>
           <span className="stack-unit">{unitLabel}</span>

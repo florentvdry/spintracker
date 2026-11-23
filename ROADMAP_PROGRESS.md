@@ -43,10 +43,10 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 ## Phase 4 - Replayer
 
-- [ ] 32. Per-street equity
-- [ ] 33. All-in EV badge
-- [ ] 34. Clickable timeline
-- [ ] 35. Stacks in bb
+- [x] 32. Per-street equity
+- [x] 33. All-in EV badge
+- [x] 34. Clickable timeline
+- [x] 35. Stacks in bb
 - [ ] 36. HUD in replayer
 - [ ] 37. GTO Wizard export
 
@@ -135,6 +135,8 @@ Items 8-19 delivered on `roadmap/phase-1-results-metrics`. Migrations: 202611230
 
 ## Phase 3 summary (done)
 Items 28-31 on `roadmap/phase-3-hud`. No migration. New routes: `POST /hud/pool`; `spinFormat` on `/hud/players` and `/hud/figure-hands`. To test by hand in the real HUD (needs Winamax tables): Nitro vs classic separation, pool colours option in the profile inspector, hover popup with 4 hands, palette switch.
+
+- Items 32-35 (replayer). 32: new `engines/replay_equity.rs` on top of the exact equity engine; `GET /analysis/replayer/{id}` puts an `equity` map (name -> %) on every deal of cards, for the players still in the hand whose cards are known (the preflop deal included); the seats show a bar and the percentage, updating when the deal of the current step changes. Needs at least two known hands, so a hand where villain never showed has none. 33: `allInEv` in the replay (EV minus actual profit, in bb, only when the hero was all-in and the hand has an EV) shown as the badge "All-in EV +x bb" over the table (the sign means the all-in was worth more than the result). 34 and 35 already existed (right timeline with the current action highlighted and clickable; stacks in bb with a Chips/BB switch remembered between sessions): I added the auto-scroll of the timeline to the current action. The seats default to chips (stored choice).
 
 ## Blockers / missing real data
 
