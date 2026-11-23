@@ -12,6 +12,7 @@
     "allow-backend-request",
     "allow-check-server-status",
     "allow-import-hand-history",
+    "allow-import-hand-history-folder",
     "allow-export-data",
     "allow-save-text-file",
     "allow-save-binary-file",

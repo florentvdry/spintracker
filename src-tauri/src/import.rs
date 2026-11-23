@@ -53,28 +53,55 @@ fn file_name(path: &Path) -> String {
     path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()
 }
 
-pub async fn run(app: AppHandle) -> Value {
+/// What the user picks to import: some files (or archives), or a folder holding a whole export
+/// (the way PokerTracker 4 and Hold'em Manager 3 write their hand-history exports).
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum Source {
+    Files,
+    Folder,
+}
+
+/// Every hand-history file under a folder, subfolders included, in a stable order. Archives inside
+/// the folder are not opened: pick them as files.
+pub fn files_of_folder(folder: &Path) -> Vec<PathBuf> {
+    let mut files = Vec::new();
+    collect_hand_files(folder, &mut files);
+    files.sort();
+    files
+}
+
+pub async fn run(app: AppHandle, source: Source) -> Value {
     let Some(backend) = app.state::<BackendState>().ready() else {
         return json!({ "success": false, "message": "The backend is not ready yet." });
     };
 
     let picker_app = app.clone();
-    let picked = tauri::async_runtime::spawn_blocking(move || {
-        picker_app
-            .dialog()
-            .file()
-            .add_filter("Hand History Files", &["txt", "xml", "zip"])
-            .add_filter("All Files", &["*"])
-            .blocking_pick_files()
-    })
-    .await
-    .ok()
-    .flatten();
-
-    let Some(selected) = picked else {
-        return json!({ "success": false, "message": "Import cancelled" });
+    let selected: Vec<PathBuf> = match source {
+        Source::Files => {
+            let picked = tauri::async_runtime::spawn_blocking(move || {
+                picker_app
+                    .dialog()
+                    .file()
+                    .add_filter("Hand History Files", &["txt", "xml", "zip"])
+                    .add_filter("All Files", &["*"])
+                    .blocking_pick_files()
+            })
+            .await
+            .ok()
+            .flatten();
+            match picked {
+                Some(files) => files.into_iter().filter_map(|p| p.into_path().ok()).collect(),
+                None => return json!({ "success": false, "message": "Import cancelled" }),
+            }
+        }
+        Source::Folder => {
+            let picked = tauri::async_runtime::spawn_blocking(move || picker_app.dialog().file().blocking_pick_folder()).await.ok().flatten();
+            let Some(folder) = picked.and_then(|p| p.into_path().ok()) else {
+                return json!({ "success": false, "message": "Import cancelled" });
+            };
+            tauri::async_runtime::spawn_blocking(move || files_of_folder(&folder)).await.unwrap_or_default()
+        }
     };
-    let selected: Vec<PathBuf> = selected.into_iter().filter_map(|p| p.into_path().ok()).collect();
 
     let millis = chrono::Utc::now().timestamp_millis();
     let temp_dir = std::env::temp_dir().join(format!("SpinTracker_Import_{millis}"));
@@ -222,4 +249,23 @@ fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], t
         "filesProcessed": total_files,
         "errors": errors,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_folder_gives_its_hand_files_at_every_depth_and_nothing_else() {
+        let dir = tempfile::tempdir().unwrap();
+        let nested = dir.path().join("2026").join("05");
+        fs::create_dir_all(&nested).unwrap();
+        for path in [dir.path().join("a.txt"), nested.join("b.XML"), nested.join("c.txt"), dir.path().join("notes.md"), nested.join("photo.png"), dir.path().join("archive.zip")] {
+            fs::write(path, "x").unwrap();
+        }
+        let mut names: Vec<String> = files_of_folder(dir.path()).iter().map(|p| file_name(p)).collect();
+        names.sort();
+        assert_eq!(names, vec!["a.txt", "b.XML", "c.txt"]);
+        assert!(files_of_folder(&dir.path().join("missing")).is_empty());
+    }
 }

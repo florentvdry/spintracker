@@ -360,6 +360,7 @@
     }
   },
   "header": {
+    "import_folder": "Import a folder (PokerTracker 4, Hold'em Manager 3 export...)",
     "search_placeholder": "Search hand, player...",
     "select_hero": "Select...",
     "hero_detected": "Hero detected",

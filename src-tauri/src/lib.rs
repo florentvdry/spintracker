@@ -94,6 +94,7 @@ pub fn run() {
             commands::backend_request,
             commands::check_server_status,
             commands::import_hand_history,
+            commands::import_hand_history_folder,
             commands::export_data,
             commands::save_text_file,
             commands::save_binary_file,

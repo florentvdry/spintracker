@@ -5,6 +5,7 @@ const COMMANDS: &[&str] = &[
     "backend_request",
     "check_server_status",
     "import_hand_history",
+    "import_hand_history_folder",
     "export_data",
     "save_text_file",
     "save_binary_file",
