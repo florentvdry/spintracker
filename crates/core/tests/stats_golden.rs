@@ -103,6 +103,7 @@ fn without_added_series(points: Vec<Value>) -> Value {
         .into_iter()
         .map(|mut point| {
             point.as_object_mut().unwrap().remove("pool_ev_profit");
+            point.as_object_mut().unwrap().remove("rakeback");
             point
         })
         .collect();
@@ -114,7 +115,7 @@ fn dashboard(q: StatsQuery) -> Value {
     // Depends on today's date.
     v.as_object_mut().unwrap().remove("sessions_this_month");
     // Added after the former backend: it has no counterpart in the golden files.
-    for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room", "pool_ev_profit", "pool_ev_tournaments", "pool_ev_buy_ins", "pool_ev_roi"] {
+    for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room", "pool_ev_profit", "pool_ev_tournaments", "pool_ev_buy_ins", "pool_ev_roi", "rakeback_total"] {
         v.as_object_mut().unwrap().remove(added);
     }
     v

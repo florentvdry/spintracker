@@ -12,7 +12,7 @@ use rusqlite::{Connection, ToSql};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::engines::pool_ev::{self, PoolEvTables};
+use crate::engines::pool_ev::{self, PoolEvTables, RakebackRates};
 use crate::repos::app_settings;
 use crate::Result;
 
@@ -631,6 +631,8 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let mut total_ev_profit_euro = 0.0;
     let pool_tables = load_pool_ev_tables(conn)?;
     let mut pool_ev = PoolEvTotals::default();
+    let rakeback_rates = load_rakeback_rates(conn)?;
+    let mut rakeback_total = 0.0;
     let mut tournaments_by_room = [0usize; KNOWN_ROOMS.len()];
     for (game_id, figures) in &games {
         if figures.is_in_the_money() {
@@ -641,6 +643,9 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         }
         total_profit_euro += figures.euro_profit();
         total_ev_profit_euro += figures.expected_euro_profit(chip_ev_by_game.get(game_id).copied().unwrap_or(0.0));
+        if let Some(room) = figures.room.key() {
+            rakeback_total += rakeback_rates.amount(room, figures.buy_in);
+        }
         pool_ev.add(&pool_tables, figures, pool_chips_by_game.get(game_id).copied().unwrap_or(0.0));
         if let Some(index) = KNOWN_ROOMS.iter().position(|room| *room == figures.room) {
             tournaments_by_room[index] += 1;
@@ -691,6 +696,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         "total_ev_profit": round_to(total_ev_profit_euro, 2),
         "luck_profit": round_to(total_profit_euro - total_ev_profit_euro, 2),
         "pool_ev_profit": round_to(pool_ev.profit, 2),
+        "rakeback_total": round_to(rakeback_total, 2),
         "pool_ev_tournaments": pool_ev.tournaments,
         "pool_ev_buy_ins": round_to(pool_ev.cost, 2),
         "pool_ev_roi": if pool_ev.cost > 0.0 { round_to(pool_ev.profit / pool_ev.cost * 100.0, 2) } else { 0.0 },
@@ -709,6 +715,11 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
 /// The PoolEV multiplier tables saved in the settings; empty until the UI has seeded them.
 fn load_pool_ev_tables(conn: &Connection) -> Result<PoolEvTables> {
     Ok(app_settings::get(conn, "pool_ev_tables")?.map(|v| PoolEvTables::from_json(&v)).unwrap_or_default())
+}
+
+/// Rakeback percentages saved in the settings; none until the user enters them.
+fn load_rakeback_rates(conn: &Connection) -> Result<RakebackRates> {
+    Ok(app_settings::get(conn, "rakeback")?.map(|v| RakebackRates::from_json(&v)).unwrap_or_default())
 }
 
 /// Running PoolEV of the tournaments whose room has a multiplier table.
@@ -890,7 +901,9 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
         .collect();
 
     let mut cumulative_euro = 0.0;
+    let rakeback_rates = load_rakeback_rates(conn)?;
     let mut cumulative_pool_ev = 0.0;
+    let mut cumulative_rakeback = 0.0;
     Ok(hands
         .iter()
         .enumerate()
@@ -899,6 +912,9 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
                 if last_hand_of.get(id) == Some(&i) {
                     cumulative_euro += euro_of_game[id];
                     cumulative_pool_ev += pool_ev_of_game.get(id).copied().unwrap_or(0.0);
+                    if let Some(room) = h.figures.room.key() {
+                        cumulative_rakeback += rakeback_rates.amount(room, h.figures.buy_in);
+                    }
                 }
             }
             json!({
@@ -909,6 +925,7 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
                 "chips_won_no_showdown": h.cumulative_no_showdown,
                 "euro_profit": cumulative_euro,
                 "pool_ev_profit": cumulative_pool_ev,
+                "rakeback": cumulative_rakeback,
             })
         })
         .collect())

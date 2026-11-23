@@ -11,7 +11,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 ## Phase 1 - Results & metrics
 
 - [x] 8. PoolEV / evROI (editable multiplier table, dashboard + charts)
-- [ ] 9. Rakeback per room, PoolEV+RB and Winnings+RB charts
+- [x] 9. Rakeback per room, PoolEV+RB and Winnings+RB charts
 - [ ] 10. CEV by table composition (vs Reg / vs Fish rows)
 - [ ] 11. CEV by multiplier
 - [ ] 12. CEV by session progress
@@ -105,6 +105,8 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - Item 8: multiplier tables live in a new `app_settings` table (migration 202611230001, additive); the frontend seeds it from `multiplierPresets.ts` on first launch (single source). Settings API: `GET/PUT /settings/{key}` with a key whitelist (`repos/app_settings.rs`).
 - Item 8: `Room::from_name` now matches by prefix (`Betclic.fr` was classed as Other). Euro results are unchanged for Betclic (Other shared like Betclic), Unibet.fr now gets the Unibet prize sharing it was meant to have.
 - No `lint` script exists in `frontend/package.json`; `tsc --noEmit` and the Vite build are used instead. Rust: `cargo check -p spintracker` clean.
+
+- Item 9: rakeback = pct x 7% of the buy-in (RAKE_SHARE, matching the published 93% return of the multiplier tables). Rates in `app_settings` key `rakeback`. Chart lines Net Profit+RB and PoolEV+RB appear only once a rate is set.
 
 ## Blockers / missing real data
 

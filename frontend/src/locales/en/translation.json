@@ -389,6 +389,7 @@
     "pool_ev": "PoolEV",
     "pool_ev_hint": "Expected profit with the prize pool replaced by the average of your multiplier table: jackpots no longer hide your results",
     "ev_roi": "evROI",
+    "rakeback": "Rakeback",
     "pool_ev_covered": "{{count}} tournaments counted",
     "pool_ev_missing": "Add a multiplier table in the settings to see PoolEV",
     "unpriced_note": "{{count}} tournaments without a known prize pool are not counted in this profit (tournament summary missing).",
@@ -612,6 +613,8 @@
     "stats_title": "Stats",
     "cev": "CEV",
     "pool_ev": "PoolEV (€)",
+    "euro_profit_rb": "Net Profit + RB (€)",
+    "pool_ev_rb": "PoolEV + RB (€)",
     "heads_up": "Heads-Up",
     "three_way": "3-Way",
     "positions": {
@@ -625,6 +628,13 @@
   },
   "settings": {
     "title": "Settings",
+    "rakeback": {
+      "title": "Rakeback",
+      "subtitle": "Share of the rake each room gives back. It adds the Net Profit + RB and PoolEV + RB lines to the euro chart.",
+      "save": "Save",
+      "saved": "Saved",
+      "save_failed": "The rates could not be saved"
+    },
     "pool_ev": {
       "title": "PoolEV multiplier tables",
       "subtitle": "Expected prize pool by room. PoolEV and evROI use the average of each table.",

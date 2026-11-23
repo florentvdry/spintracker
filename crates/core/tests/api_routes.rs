@@ -56,7 +56,7 @@ fn get_routes_read_their_query_string() {
     for v in [&mut dashboard, &mut expected] {
         v["data"].as_object_mut().unwrap().remove("sessions_this_month");
         // Added after the former backend: they have no counterpart in the golden files.
-        for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room", "pool_ev_profit", "pool_ev_tournaments", "pool_ev_buy_ins", "pool_ev_roi"] {
+        for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room", "pool_ev_profit", "pool_ev_tournaments", "pool_ev_buy_ins", "pool_ev_roi", "rakeback_total"] {
             v["data"].as_object_mut().unwrap().remove(added);
         }
     }
@@ -128,9 +128,15 @@ fn pool_ev_follows_the_saved_multiplier_tables() {
     let roi = data["pool_ev_roi"].as_f64().unwrap();
     assert!(roi.abs() < 100.0, "evROI stays a plausible percentage, got {roi}");
 
+    // Rakeback: 10% of the 7% rake of every Betclic buy-in, in the dashboard and the chart.
+    assert_eq!(b.handle("PUT", "/settings/rakeback", Some(json!({ "betclic": 10 }))).status, 200);
+    let after = b.handle("GET", "/db/dashboard-stats?heroName=jmenfouu", None).body["data"].clone();
+    let rakeback = after["rakeback_total"].as_f64().unwrap();
+    assert!(rakeback > 0.0);
     let chart = b.handle("POST", "/db/winrate-chart", Some(json!({ "heroName": "jmenfouu" }))).body["data"].clone();
     let last = chart.as_array().unwrap().last().unwrap();
     let chart_total = last["pool_ev_profit"].as_f64().unwrap();
     let dashboard_total = data["pool_ev_profit"].as_f64().unwrap();
     assert!((chart_total - dashboard_total).abs() < 0.05, "chart {chart_total} and dashboard {dashboard_total} agree");
+    assert!((last["rakeback"].as_f64().unwrap() - rakeback).abs() < 0.05);
 }
