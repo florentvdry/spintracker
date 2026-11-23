@@ -1,4 +1,5 @@
 import FilterPresets from './FilterPresets'
+import { hudSupported } from '@/utils/platform'
 import { runImport } from '@/utils/runImport'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -376,7 +377,7 @@ export default function Header() {
 
           <div className="flex-1" />
 
-          <HudSwitch />
+          {hudSupported() && <HudSwitch />}
           <AutoImportIndicator />
         </div>
       )}
