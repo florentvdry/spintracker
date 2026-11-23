@@ -68,7 +68,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 ## Phase 7 - Content & streaming
 
 - [ ] 47. Hand video export
-- [ ] 48. OBS overlay server
+- [x] 48. OBS overlay server
 - [x] 49. Text export for Discord/forums
 
 ## Phase 8 - Rooms, import & platform
@@ -165,6 +165,8 @@ Items 38-42 on `roadmap/phase-5-custom-stats`. No migration. New: scope `me` on 
 Items 43-46 on `roadmap/phase-6-opponents-review`. Migrations 202611230003 `player_auto_tags`, 202611230004 `review_hands`. New routes: `/players/auto-tags` (+ rules, recompute), `/players/summary`, `/review-queue`. To test by hand: Settings > automatic tags then an import, Players > hands against a player, mark a hand with M, Analysis > Review, press `?`.
 
 - Item 49: replayer Export menu > "Copy as text for Discord or a forum": markdown with stakes, positions and stacks in bb, one line per street, showdown and result; the box "Hide the player names" (on by default) replaces the names with Hero, Villain, Villain 2 and drops the room, so no name or id leaves the app. Amounts are in big blinds (rounded to 2 decimals).
+
+- Item 48: `services/overlay.rs`, a small HTTP server on the standard library only (no new dependency): off by default, listens on 127.0.0.1 only, answers GET `/` (the page) and GET `/stats.json` (latest session: Spins, profit, CEV per tournament, win rate, multipliers, plus the theme), refuses any request whose Host header is not `127.0.0.1:port` or `localhost:port` (DNS rebinding), other methods and paths. The page writes the figures with `textContent` and refreshes every 3 s. Settings (Settings > Streaming overlay): on/off, port (1024+, default 38417), text size, text and accent colours, transparent or dark background, figures shown; saved in `app_settings` through its own validated route (`/overlay/settings`, not the generic settings route). The server restarts when the settings change and starts with the app when it was on. It does not follow a change of the active database (restart it from the settings). Not tried inside OBS.
 
 ## Blockers / missing real data
 
