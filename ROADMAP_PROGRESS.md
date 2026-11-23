@@ -74,7 +74,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 ## Phase 8 - Rooms, import & platform
 
 - [x] P8-1. (synthetic samples only) PokerStars + GGPoker parsers
-- [ ] P8-2. iPoker + PMU parsers
+- [x] P8-2. (synthetic samples only) iPoker + PMU parsers
 - [ ] P8-3. PT4 / H2N exports import
 - [ ] P8-4. First-run wizard
 - [ ] P8-5. Backup / restore
@@ -176,6 +176,7 @@ Items 47-49 on `roadmap/phase-7-content-streaming`. No migration. New: overlay s
 ## Blockers / missing real data
 
 - **P8-1 PokerStars and GGPoker**: no real hand history of either room is in the repo. Both parsers (`parsers/stars_like.rs` shared body, `pokerstars.rs`, `ggpoker.rs`) are written from the documented layout and tested on SYNTHETIC hands (`crates/core/tests/fixtures/synthetic/`, with a README saying so), end to end (detection, import, re-import without duplicate). Real samples needed: a PokerStars Spin & Go file and a GGPoker Spin Gold file, ideally with their tournament summary (the prize pool / multiplier is not in the hand history, so these tournaments stay "unpriced" until a summary reader exists), including a hand with antes, an uncalled bet, a split pot and a walk. GGPoker header most uncertain. Dates are kept in the room time zone (PokerStars `ET`), not converted to UTC.
+- **P8-2 iPoker and PMU (Twister)**: PMU Poker runs on the iPoker network, so one parser (`parsers/ipoker.rs`) covers both (room `PMU` when `<site>` says so, else `iPoker`). The XML is rewritten into the PokerStars-like text and read by the shared body parser. The XML layout is DOCUMENTED in the module header but was written WITHOUT a real file: tag names, the self-contained `<game>`, the suit-first card codes and above all the action codes (0 fold, 1 SB, 2 BB, 3 call, 4 check, 5 bet, 7 all-in, 15 ante, 23 raise) are the parts to check. Real samples needed: an iPoker XML export and a PMU Twister export, including a multi-hand file and a hand with an ante or side pot. Buy-in, level and the prize pool are not read from the hand (level fixed to I; multiplier unknown).
 
 - Unibet has no multiplier preset in `multiplierPresets.ts`: its PoolEV table starts empty and Unibet tournaments are not counted until the user fills it. Real Unibet Power Spin distribution needed.
 - The published distributions are for 1 EUR buy-ins only; the same table is used for every buy-in of a room unless the user adds a `room:buyin` override (backend supports it, the settings UI edits room tables only).

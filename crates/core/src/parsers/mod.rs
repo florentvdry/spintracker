@@ -7,6 +7,7 @@ use crate::models::{ParseResult, ParsedHand};
 
 pub mod betclic;
 pub mod ggpoker;
+pub mod ipoker;
 pub mod pokerstars;
 mod stars_like;
 pub mod unibet;
@@ -14,6 +15,7 @@ pub mod winamax;
 
 pub use betclic::BetclicParser;
 pub use ggpoker::GgPokerParser;
+pub use ipoker::IPokerParser;
 pub use pokerstars::PokerStarsParser;
 pub use unibet::UnibetParser;
 pub use winamax::WinamaxParser;
@@ -41,7 +43,7 @@ pub fn get_parser_by_room(room: &str) -> Option<&'static dyn HandParser> {
 }
 
 fn all_parsers() -> &'static [&'static dyn HandParser] {
-    static PARSERS: [&dyn HandParser; 5] = [&BetclicParser, &WinamaxParser, &UnibetParser, &PokerStarsParser, &GgPokerParser];
+    static PARSERS: [&dyn HandParser; 6] = [&BetclicParser, &WinamaxParser, &UnibetParser, &PokerStarsParser, &GgPokerParser, &IPokerParser];
     &PARSERS
 }
 
