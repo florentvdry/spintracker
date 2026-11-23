@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  figuresOf,
   MIN_POOL_SAMPLE,
   poolTone,
   buildCellView,
@@ -249,5 +250,18 @@ describe('poolTone', () => {
     expect(poolTone(null, 50, 30, 5)).toBeNull()
     expect(poolTone(40, 50, null, 5)).toBeNull()
     expect(poolTone(80, MIN_POOL_SAMPLE - 1, 30, 5)).toBeNull()
+  })
+})
+
+describe('figuresOf', () => {
+  it('keeps the figures the backend counted and drops the others', () => {
+    const figures = figuresOf([
+      { section: 'preflop', label: 'VPIP', column: 'tot', num: 3, den: 10, pct: 30 },
+      { section: 'preflop', label: 'PFR', column: 'tot' },
+      { section: 'meta', label: 'hands', num: 12, den: 12, pct: null },
+    ])
+    expect(figures[figureKey('preflop', 'VPIP', 'tot', null)]).toEqual({ pct: 30, num: 3, den: 10 })
+    expect(figures[figureKey('preflop', 'PFR', 'tot', null)]).toBeUndefined()
+    expect(figures[figureKey('meta', 'hands', null, null)]?.den).toBe(12)
   })
 })

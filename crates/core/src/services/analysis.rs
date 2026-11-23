@@ -907,6 +907,7 @@ pub fn hand_replay(conn: &Connection, hand_id: &str, hero_name: Option<&str>) ->
         "handId": text("id"), "room": text("room"), "blinds": blinds, "date": text("date_time"),
         "buyIn": hand["buy_in"].as_f64().unwrap_or(0.0), "players": replay_players, "actions": replay.actions,
         "board": board, "totalPot": total_pot, "allInEv": all_in_ev,
+        "spinFormat": crate::repos::hud_stats::SpinFormat::of_tournament(&if text("tournament_name").is_empty() { text("game_name") } else { text("tournament_name") }).key(),
     })))
 }
 

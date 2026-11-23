@@ -205,6 +205,9 @@ export default function Replayer() {
           </div>
 
           <div className="toggle-group" aria-label={t('replayer.options')}>
+            <button className={clsx(store.showHud && 'active')} onClick={() => store.setShowHud(!store.showHud)} title={t('replayer.hud_hint')}>
+              HUD
+            </button>
             <button className={clsx(store.showFoldedPlayers && 'active')} onClick={() => store.setShowFoldedPlayers(!store.showFoldedPlayers)}>
               <span className="toggle-icon">👥</span>
               {t('replayer.folded')}

@@ -578,3 +578,21 @@ fn a_listed_hand_tells_the_seat_of_the_player() {
         assert!(["BTN", "SB", "BB"].contains(&hand["position"].as_str().unwrap()), "{hand}");
     }
 }
+
+#[test]
+fn figures_can_be_read_as_they_stood_before_a_date() {
+    let (_dir, backend) = backend_with_hands();
+    let hands_of = |before: Option<&str>| {
+        let mut body = json!({ "room": "Winamax", "heroName": HERO, "players": [OPPONENTS[0]], "stats": [stat("meta", "hands", None)] });
+        if let Some(before) = before {
+            body["before"] = json!(before);
+        }
+        let response = backend.handle("POST", "/hud/players", Some(body));
+        assert_eq!(response.status, 200, "{:?}", response.body);
+        response.body["data"]["players"][0]["stats"][0]["num"].as_u64().unwrap_or(0)
+    };
+    let all = hands_of(None);
+    assert!(all > 0);
+    assert_eq!(hands_of(Some("2999-01-01 00:00:00")), all, "a later date keeps every hand");
+    assert_eq!(hands_of(Some("2000-01-01 00:00:00")), 0, "an earlier date keeps none");
+}

@@ -392,6 +392,7 @@ fn replayer_and_placeholder_range_match_the_former_backend() {
     let mut replay = analysis::hand_replay(&conn, "01KE0SWZ3MWW23307PVSF796TN", Some("jmenfouu")).unwrap().unwrap();
     // The all-in EV and the equities were added after the former backend: they have no counterpart in the golden file.
     replay.as_object_mut().unwrap().remove("allInEv");
+    replay.as_object_mut().unwrap().remove("spinFormat");
     for action in replay["actions"].as_array_mut().unwrap() {
         action.as_object_mut().unwrap().remove("equity");
     }

@@ -44,6 +44,10 @@ pub struct HudPlayersRequest {
     /// `nitro` or `classic`: only the hands of that format are counted. Absent counts them all.
     #[serde(default)]
     pub spin_format: Option<String>,
+    /// A stored date (`YYYY-MM-DD HH:MM:SS`): only the hands played before it count, so the
+    /// replayer can show the figures as they were at the time of a hand.
+    #[serde(default)]
+    pub before: Option<String>,
 }
 
 /// The format asked for; an unknown name is a mistake of the caller.
@@ -209,7 +213,7 @@ impl HudService {
                 }
             }
         }
-        let rows = Arc::new(hud_stats::load_rows(conn, room, hero, player, with_custom, format)?);
+        let rows = Arc::new(hud_stats::load_rows(conn, room, hero, player, with_custom, format, None)?);
         let mut cache = self.cache.lock().expect("the HUD cache lock is never held across a panic");
         if cache.epoch == epoch {
             cache.rows.insert(key, CachedRows { player_version, rows: rows.clone() });
@@ -225,7 +229,11 @@ impl HudService {
         let format = parse_format(request.spin_format.as_deref()).ok().flatten();
         let mut players = Vec::with_capacity(request.players.len());
         for name in &request.players {
-            let rows = self.rows_of(&conn, &request.room, &request.hero_name, name, with_custom, format)?;
+            // A figure as of a past date is read once for that hand: it is not worth keeping in memory.
+            let rows = match request.before.as_deref().filter(|b| !b.is_empty()) {
+                Some(before) => Arc::new(hud_stats::load_rows(&conn, &request.room, &request.hero_name, name, with_custom, format, Some(before))?),
+                None => self.rows_of(&conn, &request.room, &request.hero_name, name, with_custom, format)?,
+            };
             let (hands, stats) = hud_stats::compute(&rows, &request.stats, &ready);
             let note = player_notes::get(&conn, &request.room, name)?.unwrap_or_default();
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));
@@ -260,7 +268,7 @@ impl HudService {
         let conn = self.db.conn()?;
         let with_custom = hud_stats::is_custom(&request.stat);
         let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
-        let rows = hud_stats::load_identified_rows(&conn, &request.room, &request.hero_name, &request.player, with_custom, parse_format(request.spin_format.as_deref()).ok().flatten())?;
+        let rows = hud_stats::load_identified_rows(&conn, &request.room, &request.hero_name, &request.player, with_custom, parse_format(request.spin_format.as_deref()).ok().flatten(), None)?;
         let (listed, total) = hud_stats::figure_hand_ids(&rows, &request.stat, &request.buckets, &ready, request.which, request.limit);
         let ids: Vec<String> = listed.iter().map(|hand| hand.hand_id.clone()).collect();
         let mut hands = hud_hands::summaries(&conn, &request.player, &ids)?;

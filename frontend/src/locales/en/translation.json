@@ -961,6 +961,7 @@
     "no_hand": "No hand loaded",
     "hand_of": "Hand {{current}} / {{total}}",
     "actions": "Actions",
+    "hud_hint": "HUD of each opponent with the figures as they stood before this hand",
     "all_in_ev": "All-in EV {{value}} bb",
     "all_in_ev_hint": "What the all-in was worth beyond the result: your EV minus what you actually won, in big blinds.",
     "timeline": "Timeline",

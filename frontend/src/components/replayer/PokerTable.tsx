@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import logoUrl from '@/assets/logo.png'
 import { selectCurrentAction, useReplayerStore } from '@/stores/replayerStore'
+import { useReplayerHud } from '@/hooks/useReplayerHud'
 import Card from './Card'
 import { formatReplayValue, parseBigBlind } from './format'
 import PlayerSeat, { type SeatLayout } from './PlayerSeat'
@@ -38,6 +39,9 @@ export default function PokerTable() {
   const viewMode = useReplayerStore((s) => s.viewMode)
   const blinds = useReplayerStore((s) => s.handData?.blinds)
   const action = useReplayerStore(selectCurrentAction)
+  const handData = useReplayerStore((s) => s.handData)
+  const showHud = useReplayerStore((s) => s.showHud)
+  const huds = useReplayerHud(handData, showHud)
 
   const bbValue = parseBigBlind(blinds)
   const format = (value: unknown) => formatReplayValue(value, viewMode, bbValue)
@@ -92,7 +96,7 @@ export default function PokerTable() {
         </div>
 
         {seatEntries.map((entry) => (
-          <PlayerSeat key={entry.player.name} player={entry.player} seat={entry.seat} />
+          <PlayerSeat key={entry.player.name} player={entry.player} seat={entry.seat} hud={huds[entry.player.name]} />
         ))}
 
         {action?.type === 'CollectPot' && (

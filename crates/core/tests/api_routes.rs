@@ -69,6 +69,7 @@ fn get_routes_read_their_query_string() {
     // The all-in EV and the equities were added after the former backend: they have no counterpart in the golden file.
     let mut replay = b.handle("GET", "/analysis/replayer/01KE0SWZ3MWW23307PVSF796TN?heroName=jmenfouu", None).body;
     replay["data"].as_object_mut().unwrap().remove("allInEv");
+    replay["data"].as_object_mut().unwrap().remove("spinFormat");
     for action in replay["data"]["actions"].as_array_mut().unwrap() {
         action.as_object_mut().unwrap().remove("equity");
     }
