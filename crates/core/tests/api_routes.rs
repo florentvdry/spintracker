@@ -212,3 +212,14 @@ fn replay_deals_carry_the_equity_of_the_players_in() {
     let badge = &replay["allInEv"];
     assert!(badge.is_null() || badge["diffBb"].as_f64().unwrap().is_finite());
 }
+
+#[test]
+fn the_me_scope_counts_the_hands_of_the_hero_only() {
+    let b = backend();
+    let me = b.handle("GET", "/db/detailed-stats?statsScope=me&heroName=jmenfouu", None).body["data"].clone();
+    let everyone = b.handle("GET", "/db/detailed-stats?statsScope=population", None).body["data"].clone();
+    assert_eq!(me["meta"]["players"], 1, "only the hero is counted: {}", me["meta"]);
+    assert!(everyone["meta"]["players"].as_i64().unwrap() > 1);
+    let nobody = b.handle("GET", "/db/detailed-stats?statsScope=me", None).body["data"].clone();
+    assert_eq!(nobody["meta"]["players"], 0, "without a hero no player matches");
+}

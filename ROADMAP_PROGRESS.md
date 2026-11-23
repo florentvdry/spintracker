@@ -52,9 +52,9 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 ## Phase 5 - Custom stats & filters
 
-- [ ] 38. Custom stat block builder
-- [ ] 39. Live preview with n
-- [ ] 40. Me / Regs / Fish table
+- [x] 38. Custom stat block builder
+- [x] 39. Live preview with n
+- [x] 40. Me / Regs / Fish table
 - [ ] 41. Saved filter presets
 - [ ] 42. "See hands" from any figure
 
@@ -143,6 +143,9 @@ Items 28-31 on `roadmap/phase-3-hud`. No migration. New routes: `POST /hud/pool`
 
 ## Phase 4 summary (done)
 Items 32-37 on `roadmap/phase-4-replayer`. No migration. Replay answer gains `equity` (per deal), `allInEv`, `spinFormat`; `/hud/players` gains `before`. To test by hand: replayer equity bars on a showdown hand, the all-in badge on an all-in hand, HUD toggle, Export > GTO Wizard (copy and file).
+
+- Items 38-39: already present: the custom stat builder (Statistics page) has nested groups (all of / any of / not) of situation, position, stack, sizing and sequence conditions, reusing the custom stat engine, and a live preview. Only change: the preview text now starts with "n = xx opportunities".
+- Item 40: new scope `me` on `GET /db/detailed-stats` (the hero hands only, needs `heroName`) and a card "Me, regs and fish" on the Statistics page: the preflop stats side by side with the sample size of each (3 requests, same filters as the page).
 
 ## Blockers / missing real data
 

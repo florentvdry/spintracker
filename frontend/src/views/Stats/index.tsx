@@ -6,6 +6,7 @@ import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterSto
 import { useReplayerStore } from '@/stores/replayerStore'
 import { useCustomStatsStore } from '@/stores/customStatsStore'
 import CustomStatsPanel from '../CustomStats/CustomStatsPanel'
+import ScopeComparison from './components/ScopeComparison'
 import StatBuilder from '../CustomStats/StatBuilder'
 import type { CustomStat } from '../CustomStats/customStatModel'
 import { HudMatrix, HudMiniTable, HudPostflopBox, HudStatLine, type OpenHands } from './components/HudParts'
@@ -260,6 +261,8 @@ export default function Stats() {
           )}
         </section>
       )}
+
+      <ScopeComparison heroName={heroName} dateFrom={currentDateRange().dateFrom} dateTo={currentDateRange().dateTo} buyIn={buyInParam(buyIn)} reloadKey={`${dateRange}|${customFrom}|${customTo}|${selectedSession?.session_date ?? ''}|${customStats.length}`} />
 
       {!loading && stats && (
         <CustomStatsPanel figures={stats.customStats ?? []} onCreate={() => setBuilder({ stat: null })} onEdit={(stat) => setBuilder({ stat })} onDuplicate={(stat) => setBuilder({ stat: null, template: stat.definition })} />

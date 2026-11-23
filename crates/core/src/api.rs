@@ -300,6 +300,7 @@ impl Backend {
                         buy_in: r.query_f64("buyIn"),
                         stats_scope: r.query_str("statsScope"),
                         opponent_name: opponent,
+                        hero_name: r.query_str("heroName"),
                     };
                     Response::data(self.detailed_stats_cached(&q)?)
                 }

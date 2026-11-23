@@ -33,8 +33,10 @@ pub struct DetailedQuery {
     pub date_from: Option<String>,
     pub date_to: Option<String>,
     pub buy_in: Option<f64>,
-    /// "population" (default), "reg", "fish" or "player".
+    /// "population" (default), "me", "reg", "fish" or "player".
     pub stats_scope: Option<String>,
+    /// The hero, required by the "me" scope: the stats of his own hands.
+    pub hero_name: Option<String>,
     /// Required by the "player" scope.
     pub opponent_name: Option<String>,
 }
@@ -611,6 +613,13 @@ pub fn detailed_stats(conn: &Connection, q: &DetailedQuery) -> Result<Value> {
                 "ph.player_name IN (SELECT name FROM players WHERE name = @opponentName UNION SELECT p.name FROM players p JOIN aliases a ON p.alias_id = a.id WHERE a.name = @opponentName)"
             ));
             binds.push(("@opponentName", SqlValue::Text(name.into())));
+        }
+        ("me", _) => {
+            // Without a hero there is nothing to show: no player has this name.
+            filters.push(
+                "ph.player_name IN (SELECT name FROM players WHERE name = @heroName UNION SELECT p.name FROM players p JOIN aliases a ON p.alias_id = a.id WHERE a.name = @heroName)".into(),
+            );
+            binds.push(("@heroName", SqlValue::Text(q.hero_name.as_deref().map(str::trim).unwrap_or_default().into())));
         }
         ("reg", _) => filters.push("COALESCE(p.is_reg, 0) = 1".into()),
         ("fish", _) => filters.push("COALESCE(p.is_reg, 0) = 0".into()),
