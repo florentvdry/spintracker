@@ -600,7 +600,8 @@
       "stats": "Statistiques",
       "ranges": "Analyseur de ranges",
       "variance": "Simulateur de variance",
-      "time": "Horaires"
+      "time": "Horaires",
+      "bankroll": "Bankroll"
     },
     "filters": {
       "situation": "Situation",
@@ -654,6 +655,28 @@
     "monthly_goal": "Objectif mensuel",
     "volume_title": "Tournois par heure de début",
     "volume_subtitle": "Où ton volume se joue dans la journée"
+  },
+  "bankroll": {
+    "title": "Bankroll",
+    "current": "Bankroll",
+    "deposits": "Dépôts",
+    "withdrawals": "Retraits",
+    "results": "Résultats",
+    "movements": "Dépôts et retraits",
+    "type": "Type",
+    "deposit": "Dépôt",
+    "withdrawal": "Retrait",
+    "amount": "Montant (€)",
+    "note": "Note",
+    "add": "Ajouter",
+    "invalid": "Saisis une date et un montant supérieur à zéro.",
+    "none": "Aucun dépôt ni retrait pour l'instant.",
+    "recommendation_title": "Buy-in et risque de ruine",
+    "recommendation_subtitle": "Simulateur de variance, 1000 Spins, chip EV de {{chipEv}} par tournoi",
+    "recommendation_empty": "Ajoute un dépôt pour voir le risque de ruine à chaque buy-in.",
+    "no_stake_fits": "Aucun buy-in de la liste ne garde le risque de ruine sous 5 % avec cette bankroll.",
+    "stake_summary": "Jusqu'à {{acceptable}}€ le risque de ruine reste sous 5 % ; jusqu'à {{comfortable}}€ il reste sous 1 %.",
+    "ruin_at_stake": "risque de ruine {{risk}} %"
   },
   "charts": {
     "stats_title": "Stats",

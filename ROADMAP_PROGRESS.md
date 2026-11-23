@@ -21,7 +21,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [x] 16. Profit per hour
 - [x] 17. Volume and goals
 - [ ] 18. End-of-session summary
-- [ ] 19. Bankroll
+- [x] 19. Bankroll
 
 ## Phase 2 - Dashboard & My ranges
 

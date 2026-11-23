@@ -171,3 +171,17 @@ fn time_stats_route_counts_every_tournament_and_saves_goals() {
     assert_eq!(data["week"]["target"], 40);
     assert_eq!(data["month"]["target"], 150);
 }
+
+#[test]
+fn bankroll_transactions_can_be_added_listed_and_deleted() {
+    use serde_json::json;
+    let b = backend();
+    let bad = b.handle("POST", "/bankroll/transactions", Some(json!({ "occurredOn": "soon", "amount": 5 })));
+    assert_eq!(bad.status, 400);
+    let added = b.handle("POST", "/bankroll/transactions", Some(json!({ "occurredOn": "2026-01-02", "amount": 150.5, "note": "start" })));
+    let id = added.body["data"]["id"].as_i64().unwrap();
+    let listed = b.handle("GET", "/bankroll/transactions", None).body["data"].clone();
+    assert!(listed.as_array().unwrap().iter().any(|t| t["id"] == id && t["amount"] == 150.5));
+    assert_eq!(b.handle("DELETE", &format!("/bankroll/transactions/{id}"), None).status, 200);
+    assert_eq!(b.handle("DELETE", &format!("/bankroll/transactions/{id}"), None).status, 404);
+}

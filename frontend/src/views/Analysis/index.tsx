@@ -7,8 +7,9 @@ const Stats = lazy(() => import('@/views/Stats'))
 const RangeResearch = lazy(() => import('@/views/RangeResearch'))
 const VarianceSimulator = lazy(() => import('@/views/VarianceSimulator'))
 const TimeAnalysis = lazy(() => import('@/views/TimeAnalysis'))
+const Bankroll = lazy(() => import('@/views/Bankroll'))
 
-const TABS = ['stats', 'ranges', 'variance', 'time'] as const
+const TABS = ['stats', 'ranges', 'variance', 'time', 'bankroll'] as const
 type AnalysisTab = (typeof TABS)[number]
 
 const isTab = (value: string | null): value is AnalysisTab => TABS.some((tab) => tab === value)
@@ -44,6 +45,7 @@ export default function Analysis() {
         {active === 'ranges' && <RangeResearch />}
         {active === 'variance' && <VarianceSimulator />}
         {active === 'time' && <TimeAnalysis />}
+        {active === 'bankroll' && <Bankroll />}
       </Suspense>
     </div>
   )

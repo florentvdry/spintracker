@@ -23,6 +23,7 @@ use crate::parsers::{get_parser, get_parser_by_room};
 use crate::repos::detailed_stats::{detailed_stats, DetailedQuery};
 use crate::repos::app_settings;
 use crate::repos::cev_breakdown::{self, BreakdownQuery};
+use crate::repos::bankroll;
 use crate::repos::time_stats;
 use crate::repos::hud_stats;
 use crate::repos::hands_query::{self, HandsAgainstQuery, HandsQuery};
@@ -325,6 +326,21 @@ impl Backend {
                 let q: StatsQuery = r.options(stats_query_from_query)?;
                 Response::data(time_stats::time_stats(&*conn()?, &q)?)
             }
+
+            // --- Bankroll deposits and withdrawals
+            ("GET", ["bankroll", "transactions"]) => Response::data(serde_json::to_value(bankroll::list(&*conn()?)?)?),
+            ("POST", ["bankroll", "transactions"]) => {
+                let new: bankroll::NewTransaction = r.body_or_default()?;
+                match new.validate() {
+                    Ok(()) => Response::data(json!({ "id": bankroll::add(&*conn()?, &new)? })),
+                    Err(bankroll::Invalid::Date) => Response::failure(400, "Invalid date"),
+                    Err(bankroll::Invalid::Amount) => Response::failure(400, "Invalid amount"),
+                }
+            }
+            ("DELETE", ["bankroll", "transactions", id]) => match id.parse::<i64>() {
+                Ok(id) if bankroll::delete(&*conn()?, id)? => Response::data(json!({ "id": id })),
+                _ => Response::failure(404, "Transaction not found"),
+            },
 
             // --- User preferences the backend computes with (PoolEV tables...)
             ("GET", ["settings", key]) if app_settings::is_allowed(key) => {
