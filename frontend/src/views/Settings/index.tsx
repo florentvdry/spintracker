@@ -5,7 +5,7 @@ import clsx from 'clsx'
 import Card from '@/components/ui/Card'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 import ExportDialog from '@/components/ui/ExportDialog'
-import { setLanguage } from '@/i18n'
+import { LANGUAGES, setLanguage } from '@/i18n'
 import { ipcService, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
@@ -212,8 +212,7 @@ export default function Settings() {
       <Card title={t('settings.general.title')}>
         <SettingRow icon={Globe} title={t('settings.general.language')} description={t('settings.general.language_desc')}>
           <div className="segmented">
-            {languageButton('en', 'English')}
-            {languageButton('fr', 'Français')}
+            {LANGUAGES.map((language) => languageButton(language.code, language.label))}
           </div>
         </SettingRow>
       </Card>
