@@ -24,7 +24,9 @@ use crate::repos::detailed_stats::{detailed_stats, DetailedQuery};
 use crate::repos::app_settings;
 use crate::repos::cev_breakdown::{self, BreakdownQuery};
 use crate::repos::bankroll;
+use crate::repos::player_summary;
 use crate::repos::time_stats;
+use crate::services::auto_tags;
 use crate::repos::hud_stats;
 use crate::repos::hands_query::{self, HandsAgainstQuery, HandsQuery};
 use crate::repos::player_queries::{self, PlayersQuery};
@@ -352,6 +354,29 @@ impl Backend {
                 self.db.bump_data_version();
                 Response::data(json!({ "saved": true }))
             }
+
+            // --- Automatic player tags and the history against one player
+            ("GET", ["players", "auto-tags"]) => Response::data(Value::Array(auto_tags::all_tags(&*conn()?)?)),
+            ("POST", ["players", "auto-tags", "recompute"]) => {
+                let written = auto_tags::recompute(&mut *conn()?)?;
+                self.db.bump_data_version();
+                Response::data(json!({ "tags": written }))
+            }
+            ("GET", ["players", "auto-tags", "rules"]) => Response::data(serde_json::to_value(auto_tags::load_rules(&*conn()?)?)?),
+            ("PUT", ["players", "auto-tags", "rules"]) => match r.body_as::<Vec<auto_tags::Rule>>() {
+                Ok(rules) if rules.len() <= auto_tags::MAX_RULES && rules.iter().all(|rule| rule.validate().is_ok()) => {
+                    let mut conn = conn()?;
+                    app_settings::set(&conn, "auto_tag_rules", &serde_json::to_value(&rules)?)?;
+                    let written = auto_tags::recompute(&mut conn)?;
+                    self.db.bump_data_version();
+                    Response::data(json!({ "saved": rules.len(), "tags": written }))
+                }
+                _ => Response::message(400, "Invalid tag rules"),
+            },
+            ("GET", ["players", "summary"]) => match (r.query_str("heroName"), r.query_str("name")) {
+                (Some(hero), Some(name)) => Response::data(player_summary::summary(&*conn()?, &hero, &name, &r.query_str("room").unwrap_or_default())?),
+                _ => Response::message(400, "heroName and name are required"),
+            },
 
             // --- Players
             ("GET" | "POST", ["db", "players"]) => {

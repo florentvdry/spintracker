@@ -194,8 +194,13 @@ fn load_custom_hits(conn: &Connection, player: &str) -> Result<HashMap<String, V
 
 /// Everything the HUD needs of one player: the rows of the hands that count. `with_custom` also
 /// reads the hits of the custom stats; a request that asks for none pays nothing for them.
+/// Every hand of a player in a room, whoever else sat at the table: what the automatic tags read.
+pub(crate) fn load_rows_of_player(conn: &Connection, room: &str, player: &str) -> Result<Vec<Row>> {
+    Ok(query_rows(conn, room, None, player, false, false, None, None)?.into_iter().map(|hand| hand.row).collect())
+}
+
 pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: Option<SpinFormat>, before: Option<&str>) -> Result<Vec<Row>> {
-    Ok(query_rows(conn, room, hero, player, with_custom, false, format, before)?.into_iter().map(|hand| hand.row).collect())
+    Ok(query_rows(conn, room, Some(hero), player, with_custom, false, format, before)?.into_iter().map(|hand| hand.row).collect())
 }
 
 /// A row with the hand it comes from, for listing the hands behind a figure.
@@ -208,13 +213,14 @@ pub(crate) struct HandRow {
 /// The rows of `load_rows`, each with its hand id and date. Read on demand, never cached: only a
 /// list of hands needs them.
 pub(crate) fn load_identified_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: Option<SpinFormat>, before: Option<&str>) -> Result<Vec<HandRow>> {
-    query_rows(conn, room, hero, player, with_custom, true, format, before)
+    query_rows(conn, room, Some(hero), player, with_custom, true, format, before)
 }
 
 /// The hand id and date are read only when asked for (or, for the id, when custom hits are joined):
 /// the figures of the HUD do not need them.
 /// `before` keeps only the hands played before that date: the figures as they stood at a given hand.
-fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, with_ids: bool, format: Option<SpinFormat>, before: Option<&str>) -> Result<Vec<HandRow>> {
+/// `hero` limits the hands to those the hero played in (the HUD's rule); without one every hand counts.
+fn query_rows(conn: &Connection, room: &str, hero: Option<&str>, player: &str, with_custom: bool, with_ids: bool, format: Option<SpinFormat>, before: Option<&str>) -> Result<Vec<HandRow>> {
     let hand_column = if with_custom || with_ids { "ph.hand_id" } else { "NULL" };
     let date_column = if with_ids { "h.date_time" } else { "NULL" };
     let sql = format!(
@@ -222,16 +228,14 @@ fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_cust
          FROM player_hands ph
          JOIN hands h ON h.id = ph.hand_id
          LEFT JOIN hand_player_flags f ON f.hand_id = ph.hand_id AND f.player_name = ph.player_name
-         WHERE ph.player_name = @player AND h.room = @room AND h.player_count IN (2, 3)
-           AND EXISTS (SELECT 1 FROM player_hands hp WHERE hp.hand_id = h.id AND hp.player_name IN {}){}",
-        hero_resolution_sql("@hero"),
+         WHERE ph.player_name = @player AND h.room = @room AND h.player_count IN (2, 3){}{}",
+        if hero.is_some() { format!(" AND EXISTS (SELECT 1 FROM player_hands hp WHERE hp.hand_id = h.id AND hp.player_name IN {})", hero_resolution_sql("@hero")) } else { String::new() },
         format.map_or(String::new(), |f| format!(" AND {}", f.sql_clause())) + if before.is_some() { " AND h.date_time < @before" } else { "" },
     );
-    let mut binds: Vec<(&str, SqlValue)> = vec![
-        ("@player", SqlValue::Text(player.into())),
-        ("@room", SqlValue::Text(room.into())),
-        ("@hero", SqlValue::Text(hero.into())),
-    ];
+    let mut binds: Vec<(&str, SqlValue)> = vec![("@player", SqlValue::Text(player.into())), ("@room", SqlValue::Text(room.into()))];
+    if let Some(hero) = hero {
+        binds.push(("@hero", SqlValue::Text(hero.into())));
+    }
     if let Some(before) = before {
         binds.push(("@before", SqlValue::Text(before.into())));
     }

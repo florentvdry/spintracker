@@ -15,6 +15,7 @@ import { useUpdateStore } from '@/stores/updateStore'
 import { useLocation } from 'react-router-dom'
 import { AUTO_IMPORT_ANCHOR, RANGES_ANCHOR } from './anchors'
 import AutoImportCard from './components/AutoImportCard'
+import AutoTagSettings from './components/AutoTagSettings'
 import PaletteSettings from './components/PaletteSettings'
 import PoolEvSettings from './components/PoolEvSettings'
 import RakebackSettings from './components/RakebackSettings'
@@ -317,6 +318,8 @@ export default function Settings() {
       </Card>
 
       <PaletteSettings />
+
+      <AutoTagSettings />
 
       <PoolEvSettings />
 

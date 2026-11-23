@@ -616,3 +616,31 @@ fn the_hands_behind_a_figure_open_in_the_hand_list() {
     let missing = backend.handle("POST", "/hud/figure-hand-ids", Some(json!({ "heroName": "", "stat": stat("preflop", "VPIP", None), "which": "done" })));
     assert_eq!(missing.status, 400);
 }
+
+#[test]
+fn automatic_tags_follow_the_rules_and_the_summary_shows_them() {
+    let (_dir, backend) = backend_with_hands();
+    let seen = json!([{ "tag": "Seen", "section": "preflop", "label": "VPIP", "column": "tot", "comparison": "atLeast", "threshold": 0, "minSample": 1 }]);
+    let saved = backend.handle("PUT", "/players/auto-tags/rules", Some(seen.clone()));
+    assert_eq!(saved.status, 200, "{:?}", saved.body);
+    assert!(saved.body["data"]["tags"].as_u64().unwrap() >= 2, "{:?}", saved.body);
+
+    let tagged = backend.handle("GET", "/players/auto-tags", None).body["data"].clone();
+    let villain = tagged.as_array().unwrap().iter().find(|p| p["name"] == OPPONENTS[0]).expect("the opponent is tagged");
+    assert_eq!(villain["tags"], json!(["Seen"]));
+
+    let summary = backend.handle("GET", &format!("/players/summary?heroName={HERO}&name={}&room=Winamax", OPPONENTS[0]), None).body["data"].clone();
+    assert!(summary["games"].as_i64().unwrap() >= 1 && summary["hands"].as_i64().unwrap() >= 1, "{summary}");
+    assert_eq!(summary["autoTags"], json!(["Seen"]));
+    assert!(summary["cev"].as_f64().unwrap().is_finite());
+
+    // A rule nobody earns removes the tag at the next recompute.
+    let nobody = json!([{ "tag": "Nobody", "section": "preflop", "label": "VPIP", "column": "tot", "comparison": "atLeast", "threshold": 100, "minSample": 100000 }]);
+    assert_eq!(backend.handle("PUT", "/players/auto-tags/rules", Some(nobody)).body["data"]["tags"], 0);
+    assert!(backend.handle("GET", "/players/auto-tags", None).body["data"].as_array().unwrap().is_empty());
+
+    let bad = json!([{ "tag": "", "section": "preflop", "label": "VPIP", "comparison": "atLeast", "threshold": 10, "minSample": 1 }]);
+    assert_eq!(backend.handle("PUT", "/players/auto-tags/rules", Some(bad)).status, 400);
+    let missing = backend.handle("GET", "/players/summary?heroName=x", None);
+    assert_eq!(missing.status, 400);
+}
