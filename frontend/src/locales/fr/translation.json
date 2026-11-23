@@ -1046,6 +1046,8 @@
       "copy_gto": "Copier pour GTO Wizard",
       "save_gto": "Enregistrer en .txt",
       "dialog": "Enregistrer la main",
+      "copy_forum": "Copier en texte pour Discord ou un forum",
+      "anonymize": "Masquer les pseudos",
       "gto_hint": "Format PokerStars, lu par GTO Wizard. Non vérifié sur son import."
     },
     "hud_hint": "HUD de chaque adversaire avec les stats telles qu'elles étaient avant cette main",

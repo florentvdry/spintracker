@@ -69,7 +69,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 - [ ] 47. Hand video export
 - [ ] 48. OBS overlay server
-- [ ] 49. Text export for Discord/forums
+- [x] 49. Text export for Discord/forums
 
 ## Phase 8 - Rooms, import & platform
 
@@ -163,6 +163,8 @@ Items 38-42 on `roadmap/phase-5-custom-stats`. No migration. New: scope `me` on 
 
 ## Phase 6 summary (done)
 Items 43-46 on `roadmap/phase-6-opponents-review`. Migrations 202611230003 `player_auto_tags`, 202611230004 `review_hands`. New routes: `/players/auto-tags` (+ rules, recompute), `/players/summary`, `/review-queue`. To test by hand: Settings > automatic tags then an import, Players > hands against a player, mark a hand with M, Analysis > Review, press `?`.
+
+- Item 49: replayer Export menu > "Copy as text for Discord or a forum": markdown with stakes, positions and stacks in bb, one line per street, showdown and result; the box "Hide the player names" (on by default) replaces the names with Hero, Villain, Villain 2 and drops the room, so no name or id leaves the app. Amounts are in big blinds (rounded to 2 decimals).
 
 ## Blockers / missing real data
 

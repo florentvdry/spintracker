@@ -1046,6 +1046,8 @@
       "copy_gto": "Copy for GTO Wizard",
       "save_gto": "Save as a .txt file",
       "dialog": "Save the hand",
+      "copy_forum": "Copy as text for Discord or a forum",
+      "anonymize": "Hide the player names",
       "gto_hint": "PokerStars layout, which GTO Wizard reads. Not checked against its importer."
     },
     "hud_hint": "HUD of each opponent with the figures as they stood before this hand",

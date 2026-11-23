@@ -218,3 +218,86 @@ export function toGtoWizard(hand: TextHand): string {
   if (board.length > 0) lines.push(`Board [${cardsText(board)}]`)
   return lines.join('\n')
 }
+
+// --- Text for a forum or Discord
+
+const SUITS: Record<string, string> = { s: '♠', h: '♥', d: '♦', c: '♣' }
+const prettyCard = (card: string): string => `${card[0]?.toUpperCase() ?? ''}${SUITS[card[1]?.toLowerCase()] ?? card[1] ?? ''}`
+const prettyCards = (cards: string[]): string => cards.map(prettyCard).join(' ')
+
+export interface ForumTextOptions {
+  /** Replaces the player names with "Hero", "Villain", "Villain 2". */
+  anonymize: boolean
+}
+
+/** The names a hand is written with: the real ones, or consistent stand-ins. */
+export function displayNames(hand: TextHand, anonymize: boolean): Map<string, string> {
+  const names = new Map<string, string>()
+  let villains = 0
+  for (const player of hand.players) {
+    if (!anonymize) names.set(player.name, player.name)
+    else if (player.isHero) names.set(player.name, 'Hero')
+    else names.set(player.name, (villains += 1) === 1 ? 'Villain' : `Villain ${villains}`)
+  }
+  return names
+}
+
+/**
+ * The hand as readable markdown for Discord or a forum: stacks and bets in big blinds, one line per
+ * street. With `anonymize` no player name appears anywhere (nor the hand or tournament id).
+ */
+export function toForumMarkdown(hand: TextHand, options: ForumTextOptions): string {
+  const names = displayNames(hand, options.anonymize)
+  const name = (player: string) => names.get(player) ?? player
+  const bb = hand.bigBlind > 0 ? hand.bigBlind : 1
+  const inBb = (chips: number) => `${num(chips / bb)}bb`
+
+  const lines: string[] = []
+  const stakes = hand.buyIn > 0 ? `${num(hand.buyIn)}€ Spin` : 'Spin'
+  const where = options.anonymize ? '' : ` · ${hand.room}`
+  lines.push(`**${stakes}${where} · ${num(hand.smallBlind)}/${num(hand.bigBlind)}**`)
+  lines.push(hand.players.map((p) => `${name(p.name)} (${p.position || '–'}) ${inBb(p.stack)}`).join(' · '))
+  const hero = hand.players.find((p) => p.isHero)
+  if (hero && hero.cards.length > 0) lines.push(`${name(hero.name)}: ${prettyCards(hero.cards)}`)
+
+  const sentence = (action: TextAction): string => {
+    const who = name(action.player)
+    const allIn = action.allIn ? ' (all-in)' : ''
+    switch (action.kind) {
+      case 'postSb':
+        return `${who} posts the small blind`
+      case 'postBb':
+        return `${who} posts the big blind`
+      case 'fold':
+        return `${who} folds`
+      case 'check':
+        return `${who} checks`
+      case 'call':
+        return `${who} calls ${inBb(action.added)}${allIn}`
+      case 'bet':
+        return `${who} bets ${inBb(action.added)}${allIn}`
+      case 'raise':
+        return `${who} raises to ${inBb(action.to)}${allIn}`
+    }
+  }
+
+  const streets: [TextStreet, string, string[]][] = [
+    ['Preflop', 'Preflop', []],
+    ['Flop', 'Flop', hand.flop],
+    ['Turn', 'Turn', hand.turn],
+    ['River', 'River', hand.river],
+  ]
+  const board: string[] = []
+  for (const [street, title, cards] of streets) {
+    board.push(...cards)
+    if (street !== 'Preflop' && cards.length === 0) continue
+    const actions = hand.actions.filter((a) => a.street === street && a.kind !== 'postSb' && a.kind !== 'postBb')
+    if (actions.length === 0 && street === 'Preflop') continue
+    const boardText = street === 'Preflop' ? '' : ` [${prettyCards(board)}]`
+    lines.push(`**${title}**${boardText}: ${actions.map(sentence).join(', ') || '–'}`)
+  }
+
+  if (hand.shows.length > 0) lines.push(`**Showdown**: ${hand.shows.map((s) => `${name(s.player)} ${prettyCards(s.cards)}`).join(', ')}`)
+  if (hand.collected.length > 0) lines.push(`**Result**: ${hand.collected.map((c) => `${name(c.player)} wins ${inBb(c.amount)}`).join(', ')}`)
+  return lines.join('\n')
+}
