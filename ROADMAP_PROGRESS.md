@@ -85,11 +85,11 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 ## Phase 9 - Big bets
 
-- [ ] 50. Preflop exploit solver
-- [ ] 51. Exploit training
-- [ ] 52. In-house preflop GTO (CFR)
-- [ ] 53. Coach / student mode
-- [ ] 54. Open plugin platform
+- [~] 50. Preflop exploit solver (heads-up all-in or fold only)
+- [x] 51. Exploit training
+- [~] 52. In-house preflop GTO (CFR) (heads-up all-in or fold only)
+- [x] 53. Coach / student mode
+- [~] 54. Open plugin platform (gallery from a local file, no URL fetch)
 
 ## Phase 10 - Docs
 
@@ -105,6 +105,13 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - P8-7: Spanish, Italian and Portuguese (Brazilian wording where it differs) locale files, complete: the 1442 strings of the English reference, written by me (no professional translator, no machine translation service: nothing leaves the machine) so they need a native read-through. A test (`locales.test.ts`) checks that every locale has exactly the keys of English and the same `{{placeholders}}` and tags, so a string added later must be added in all five files. The selector in Settings > General lists the five languages (`LANGUAGES` in `i18n.ts`). Wording fixed on the way: the variance simulator sentence no longer says "leak" (en, fr).
 - P8-8: Settings > "Anonymise a hand history": pick a file, the room parser finds the players, every name is replaced everywhere by the same stand-in (`Hero`, `Player A`, `Player B`...) and the result is saved where the user chooses (`services/anonymizer.rs`, Tauri command `anonymize_history`, nothing leaves the machine). A name inside a longer word is left alone; figures do not change (tested by parsing before and after). Only names are changed: ids, dates and table names stay, so the user must read the file before sharing.
 - P8-9: `crates/core/tests/fixtures/community/` with a README explaining how to contribute an anonymised file, and `community_corpus.rs` which parses EVERY file there (recognised by a parser, at least one hand, a hero, results adding up to the rake, no e-mail address). Seeded with copies of the three synthetic files (named `*-synthetic*`); real contributions are what is missing.
+
+- Item 50: `engines/exploit.rs` (equity table of the 169 classes by Monte Carlo with a fixed seed, `top_range`, best responses of the small blind and of the big blind in chip EV), `services/exploit.rs` (reads the HUD figures `Call Shove` of the big blind and `Open Shove` of the small blind over the POOL rows, per stack-depth bucket, and refuses below 100 chances), route `POST /hud/exploit`, Analysis > Exploit tab (13x13 grids with the EV of acting and of folding in the tooltip, sample sizes shown). Only the heads-up all-in or fold tree: no limp, no raise sizes, no three-handed tree. The pool is ALL opponents (no regular/fish split yet, `load_pool_rows` has no such filter). The opponent range is "the top p % of hands" for a frequency p, an assumption; card removal is ignored. Chip EV only, never a tournament value, never the word mistake.
+- Item 51: Analysis > Exploit > "Practise on my real hands": `POST /hud/exploit-spots` draws random heads-up hands the hero held as small or big blind (class of the cards, stack bucket), the player answers act/fold, then sees what pays most against the pool and whether it is the same. The score counts matches with what pays most (no error wording). The big blind spot is hypothetical: it always assumes an all-in from the small blind, the hand itself may not have gone that way.
+- Item 52: `engines/cfr.rs` CFR+ (regret floor at zero, average strategy weighted by the round, 1500 iterations) on the same tree, `POST /reference/push-fold` for a stack of 3 to 25 BB, shown under Analysis > Exploit as a reference with its exploitability (tested below 0.05 BB at 5, 10 and 15 BB with a small equity table). Written from scratch, no solver code used. NEVER compared with the player's hands. Card removal ignored; equities are Monte Carlo, so the numbers are near an exact solution, not equal to one.
+- Item 53: files `.spinpack` (ranges, custom stats, one HUD profile) and `.spinreport` (counts per scenario only). The envelope is checked in `utils/packs.ts` (format, version, kind, size, limits, kind matches content) with tests; each part is checked AGAIN by the module that stores it (ranges importer in merge mode, custom-stat validator, HUD profile sanitiser). UI in Settings > Packs. Decision: the envelope logic lives in the frontend, not in Rust, because every part that writes data already has its own Rust validator; no new route. A report holds the scenario names the student chose (own range names), counts and the pack name: no player name, no hand id, no date of a hand.
+- Item 54: manifest fields (`id`, `description`, `pluginVersion`) on a pack, kinds `pack`, `stat-pack`, `hud-template`, `range-pack` (the kind must match the content), and a gallery file `spingallery` whose plugins carry the pack INLINE. NOT DONE: reading a gallery from a GitHub URL (it needs a network read outside the update flow, forbidden by the product rules); parser plugins are documented as not loaded (no user code is run).
+- Design notes for all five items are in `docs/design/`.
 
 ## Phase 8 summary (done; P8-1, P8-2 synthetic only, P8-6 partial)
 Items on `roadmap/phase-8-rooms-platform`. Migrations: none new in phase 8 (the review, tags, bankroll ones are phase 1 and 6). New Tauri commands: `import_hand_history_folder`, `import_detected_folders`, `backup_database`, `restore_database`, `anonymize_history`, `save_binary_file`. To test by hand: import a folder, first launch wizard (fresh database), backup then restore, switch language to ES/IT/PT, anonymise a file; the PokerStars, GGPoker and iPoker parsers need real files.
@@ -184,6 +191,9 @@ Items 43-46 on `roadmap/phase-6-opponents-review`. Migrations 202611230003 `play
 ## Phase 7 summary (done)
 Items 47-49 on `roadmap/phase-7-content-streaming`. No migration. New: overlay server (opt-in), `save_binary_file` command. To test by hand: Settings > Streaming overlay then open the URL in a browser and in an OBS browser source; replayer > Export > video/GIF/Discord text.
 
+## Phase 9 summary (done; 50, 52 limited to the heads-up all-in or fold game, 54 without URL fetch)
+Items 50-54 on `roadmap/phase-9-big-bets`. No migration. New routes: `POST /hud/exploit`, `POST /hud/exploit-spots`, `POST /reference/push-fold`. To test by hand: Analysis > Exploit (needs a player name in the filters and at least 100 chances at a depth; check the grids against what you know of the pool), the practice quiz, the reference strategy with the stack slider; Settings > Packs (create a pack of ranges, open it on a second database, apply, make a report, open it); open a gallery file.
+
 ## Blockers / missing real data
 
 - **P8-1 PokerStars and GGPoker**: no real hand history of either room is in the repo. Both parsers (`parsers/stars_like.rs` shared body, `pokerstars.rs`, `ggpoker.rs`) are written from the documented layout and tested on SYNTHETIC hands (`crates/core/tests/fixtures/synthetic/`, with a README saying so), end to end (detection, import, re-import without duplicate). Real samples needed: a PokerStars Spin & Go file and a GGPoker Spin Gold file, ideally with their tournament summary (the prize pool / multiplier is not in the hand history, so these tournaments stay "unpriced" until a summary reader exists), including a hand with antes, an uncalled bet, a split pot and a walk. GGPoker header most uncertain. Dates are kept in the room time zone (PokerStars `ET`), not converted to UTC.
@@ -191,3 +201,6 @@ Items 47-49 on `roadmap/phase-7-content-streaming`. No migration. New: overlay s
 
 - Unibet has no multiplier preset in `multiplierPresets.ts`: its PoolEV table starts empty and Unibet tournaments are not counted until the user fills it. Real Unibet Power Spin distribution needed.
 - The published distributions are for 1 EUR buy-ins only; the same table is used for every buy-in of a room unless the user adds a `room:buyin` override (backend supports it, the settings UI edits room tables only).
+
+- **Phase 9 exploit solver**: only the heads-up all-in or fold game exists. The roadmap asks for an abstract tree with limp and raise sizes and the three-handed tree: not done. The model of the opponent is a frequency turned into "the top p % of hands", never a real range. No regular/fish split of the pool yet. The numbers need a check against a database with real Winamax tables; none was available here.
+- **Phase 9 gallery**: no URL fetching (GitHub raw index) by design; nothing was tried with a real shared pack between two computers.
