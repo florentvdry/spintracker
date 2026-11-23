@@ -13,6 +13,7 @@
     "allow-check-server-status",
     "allow-import-hand-history",
     "allow-import-hand-history-folder",
+    "allow-import-detected-folders",
     "allow-export-data",
     "allow-save-text-file",
     "allow-save-binary-file",

@@ -1,4 +1,5 @@
 import FilterPresets from './FilterPresets'
+import { runImport } from '@/utils/runImport'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
@@ -8,11 +9,10 @@ import RoomLogo from '@/components/common/RoomLogo'
 import AutoImportIndicator from './AutoImportIndicator'
 import HudSwitch from './HudSwitch'
 import TopNav from './TopNav'
-import { ipcService, type ImportProgress, type Json } from '@/services/ipcService'
+import { ipcService, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore, type DateRange } from '@/stores/filterStore'
 import { useNotificationStore } from '@/stores/notificationStore'
-import { useProgressStore } from '@/stores/progressStore'
 import { useUpdateStore } from '@/stores/updateStore'
 import { formatCurrency, formatDate } from '@/utils/formatters'
 
@@ -37,7 +37,6 @@ export default function Header() {
   const filters = useFilterStore()
   const updates = useUpdateStore()
   const notifications = useNotificationStore()
-  const progress = useProgressStore()
 
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [players, setPlayers] = useState<Json[]>([])
@@ -92,51 +91,8 @@ export default function Header() {
     return `${formatDate(selected.session_date, { format: 'date-only' })} ${formatTime(selected.session_date)}→${formatTime(selected.session_end)}`
   })()
 
-  const handleImport = async (source: 'files' | 'folder' = 'files') => {
-    const unsubscribe = ipcService.onImportProgress((p: ImportProgress) => {
-      if (p.stage === 'counting') {
-        progress.update({
-          progress: p.percent,
-          message: t('header.counting', { current: p.filesProcessed + 1, total: p.totalFiles }),
-        })
-        return
-      }
-      let message = `${p.handsImported} ${t('common.hands')}`
-      if (p.handsSkipped) message += ` (+${p.handsSkipped} ${t('common.skipped')})`
-      if (p.totalHands) message += ` / ${p.totalHands}`
-      progress.update({ progress: p.percent, message, details: { rooms: p.rooms ?? [], hands: p.handsImported, tournaments: p.tournaments ?? 0 } })
-    })
-
-    progress.start({ title: t('header.import_hands'), message: t('header.calculating') })
-
-    try {
-      const result = source === 'folder' ? await ipcService.importHandHistoryFolder() : await ipcService.importHandHistory()
-      if (result.success) {
-        notifications.addNotification({
-          type: 'success',
-          title: t('header.import_success'),
-          message: t('header.import_stats', {
-            hands: result.handsImported,
-            skipped: result.handsSkipped || 0,
-            files: result.filesProcessed,
-          }),
-        })
-        await app.refreshAll()
-        await loadPlayers()
-      } else if (result.message !== 'Import cancelled') {
-        notifications.addNotification({ type: 'error', title: t('header.import_error'), message: result.message ?? '' })
-      }
-    } catch (error) {
-      notifications.addNotification({
-        type: 'error',
-        title: t('common.error'),
-        message: error instanceof Error ? error.message : String(error),
-      })
-    } finally {
-      progress.finish()
-      unsubscribe()
-    }
-  }
+  const handleImport = (source: 'files' | 'folder' = 'files') =>
+    void runImport(() => (source === 'folder' ? ipcService.importHandHistoryFolder() : ipcService.importHandHistory()), t).then(() => loadPlayers())
 
   const handleRefresh = async () => {
     setIsRefreshing(true)

@@ -53,6 +53,20 @@ pub async fn import_hand_history(app: AppHandle, window: WebviewWindow) -> Value
     import::run(app, import::Source::Files).await
 }
 
+/// Imports the histories of folders the application detected (first-run wizard). A path that is not
+/// one it detected is ignored: the webview cannot make it read an arbitrary folder.
+#[tauri::command]
+pub async fn import_detected_folders(app: AppHandle, window: WebviewWindow, folders: Vec<String>) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
+    let allowed = autoimport::detected_among(&app, &folders);
+    if allowed.is_empty() {
+        return json!({ "success": false, "message": "No known history folder selected." });
+    }
+    import::run(app, import::Source::Folders(allowed)).await
+}
+
 /// Imports every hand history of a folder (a PokerTracker 4 or Hold'em Manager 3 export, for instance).
 #[tauri::command]
 pub async fn import_hand_history_folder(app: AppHandle, window: WebviewWindow) -> Value {

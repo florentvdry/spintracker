@@ -755,6 +755,16 @@
     "replayer_hud": "Afficher ou masquer le HUD",
     "replayer_log": "Afficher ou masquer les actions"
   },
+  "wizard": {
+    "title": "Bienvenue dans SpinTracker",
+    "found": "Ces dossiers d'historiques ont été trouvés sur cet ordinateur. Choisis ceux à importer.",
+    "none": "Aucun dossier d'historiques n'a été trouvé aux emplacements habituels. Utilise les boutons Importer en haut pour choisir tes fichiers ou un dossier.",
+    "manual": "export manuel",
+    "watch": "Continuer à importer les nouvelles mains automatiquement (Winamax et Unibet)",
+    "later": "Tu pourras changer cela plus tard dans les réglages. Tout reste sur cet ordinateur.",
+    "skip": "Plus tard",
+    "import": "Importer"
+  },
   "charts": {
     "stats_title": "Stats",
     "cev": "CEV",

@@ -4,6 +4,7 @@ import Layout from '@/components/layout/Layout'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import NotificationContainer from '@/components/ui/NotificationContainer'
 import ProgressModal from '@/components/ui/ProgressModal'
+import FirstRunWizard from '@/components/ui/FirstRunWizard'
 import SessionSummaryModal from '@/components/ui/SessionSummaryModal'
 import ShortcutsHelp from '@/components/ui/ShortcutsHelp'
 import { useGlobalShortcuts } from '@/hooks/useGlobalShortcuts'
@@ -82,6 +83,7 @@ export default function App() {
         </ErrorBoundary>
       </Layout>
       <SessionSummaryModal />
+      <FirstRunWizard />
       <ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} scopes={['app']} />
       <NotificationContainer />
       <ProgressModal />
