@@ -75,7 +75,7 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 
 - [x] P8-1. (synthetic samples only) PokerStars + GGPoker parsers
 - [x] P8-2. (synthetic samples only) iPoker + PMU parsers
-- [ ] P8-3. PT4 / H2N exports import
+- [x] P8-3. PT4 / H2N exports import
 - [ ] P8-4. First-run wizard
 - [ ] P8-5. Backup / restore
 - [ ] P8-6. macOS build without HUD
@@ -97,6 +97,8 @@ Phase 8 items are numbered P8-n here to avoid clashing with items 1-9 of phase 1
 - [ ] 58. README repositioning
 
 ## Decisions
+
+- P8-3: no dedicated reader for the databases of PokerTracker 4 or Hold'em Manager 3 (as asked: exports only). A new button next to Import picks a folder; every `.txt` and `.xml` under it, subfolders included, goes through the normal import (format detected file by file, other files reported as errors without stopping the run, re-import creates no duplicates). A PT4 export in the original room format or in the PokerStars layout is read by the matching parser; no real PT4 or H2N export sample was available to check, so a layout of their own would not be recognised.
 
 - Commit style follows AGENTS.md (`type(scope): description`); the item number goes in the commit body.
 - Everything written in the repo is English (AGENTS.md section 0); UI strings exist in the fr and en locales.
