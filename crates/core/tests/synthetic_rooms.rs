@@ -19,10 +19,11 @@ fn hands_of(backend: &Backend, room: &str) -> i64 {
 
 #[test]
 fn each_synthetic_file_is_detected_by_its_room_and_imported_once() {
-    let cases = [("pokerstars_spin_and_go.txt", "PokerStars"), ("ggpoker_spin_gold.txt", "GGPoker")];
-    for (file, room) in cases {
+    // (file, room of the parser, room the hands are stored under)
+    let cases = [("pokerstars_spin_and_go.txt", "PokerStars", "PokerStars"), ("ggpoker_spin_gold.txt", "GGPoker", "GGPoker"), ("ipoker_spin.xml", "iPoker", "PMU")];
+    for (file, parser_room, room) in cases {
         let text = std::fs::read_to_string(fixture(file)).unwrap();
-        assert_eq!(get_parser(&text).map(|p| p.room_name()), Some(room), "{file}");
+        assert_eq!(get_parser(&text).map(|p| p.room_name()), Some(parser_room), "{file}");
 
         let dir = tempfile::tempdir().unwrap();
         let backend = Backend::open(dir.path(), None).unwrap();

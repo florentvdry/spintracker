@@ -20,7 +20,8 @@ const HAND_SEPARATOR: &str = "PokerStars Hand #";
 
 pub struct PokerStarsParser;
 
-fn read_header(line: &str, hand: &mut ParsedHand) -> bool {
+/// Also reads the intermediate text the iPoker parser writes, which has this very header.
+pub(super) fn read_header(line: &str, hand: &mut ParsedHand) -> bool {
     let header = regex!(
         r"^PokerStars Hand #(?<hand>\d+):\s+Tournament #(?<tid>\d+),\s+(?<buyin>[^\s+]+)\+(?<fee>[^\s+]+)(?:\+(?<bounty>[^\s]+))?\s*(?<ccy>[A-Z]{3})?\s+Hold'em No Limit - Level (?<level>[IVXLC\d]+) \((?<sb>\d+)/(?<bb>\d+)\) - (?<date>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2})"
     );
