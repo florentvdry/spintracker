@@ -13,7 +13,7 @@ use serde_json::{json, Value};
 use crate::db::Database;
 use crate::repos::detailed_stats::Row;
 use crate::repos::hud_hands;
-use crate::repos::hud_stats::{self, HandsOf, HudStatRequest};
+use crate::repos::hud_stats::{self, HandsOf, HudStatRequest, SpinFormat};
 use crate::repos::hud_tables;
 use crate::stats::custom::store as custom_store;
 use crate::repos::player_notes::{self, PlayerNote, MAX_NOTE_CHARS};
@@ -40,6 +40,17 @@ pub struct HudPlayersRequest {
     pub hero_name: String,
     pub players: Vec<String>,
     pub stats: Vec<HudStatRequest>,
+    /// `nitro` or `classic`: only the hands of that format are counted. Absent counts them all.
+    #[serde(default)]
+    pub spin_format: Option<String>,
+}
+
+/// The format asked for; an unknown name is a mistake of the caller.
+fn parse_format(format: Option<&str>) -> std::result::Result<Option<SpinFormat>, String> {
+    match format {
+        None | Some("") => Ok(None),
+        Some(text) => SpinFormat::parse(text).map(Some).ok_or_else(|| "spinFormat must be nitro or classic".to_string()),
+    }
 }
 
 impl HudPlayersRequest {
@@ -57,6 +68,7 @@ impl HudPlayersRequest {
         if self.stats.len() > MAX_STATS {
             return Err(format!("at most {MAX_STATS} stats per request"));
         }
+        parse_format(self.spin_format.as_deref())?;
         Ok(())
     }
 }
@@ -75,6 +87,8 @@ pub struct HudFigureHandsRequest {
     pub which: HandsOf,
     #[serde(default = "default_figure_hands")]
     pub limit: usize,
+    #[serde(default)]
+    pub spin_format: Option<String>,
 }
 
 fn default_figure_hands() -> usize {
@@ -92,6 +106,7 @@ impl HudFigureHandsRequest {
         if self.buckets.len() > MAX_GROUP_BUCKETS {
             return Err(format!("at most {MAX_GROUP_BUCKETS} buckets"));
         }
+        parse_format(self.spin_format.as_deref())?;
         Ok(())
     }
 }
@@ -140,6 +155,7 @@ struct CacheKey {
     player: String,
     /// Rows read with the custom-stat hits are not the rows read without them.
     with_custom: bool,
+    format: Option<SpinFormat>,
 }
 
 /// Rows of one player, with the version of that player's data they were read at.
@@ -167,12 +183,12 @@ impl HudService {
 
     /// `conn` is the caller's connection: asking the pool for a second one while holding the first
     /// could wait for ever when every connection is held by a caller doing the same.
-    fn rows_of(&self, conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Arc<Vec<Row>>> {
+    fn rows_of(&self, conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: Option<SpinFormat>) -> Result<Arc<Vec<Row>>> {
         // Versions are read before the rows: a write landing in between makes the entry look stale
         // at the next read instead of hiding it.
         let epoch = self.db.epoch();
         let player_version = self.db.player_version(player).max(self.db.player_version(hero));
-        let key = CacheKey { room: room.into(), hero: hero.into(), player: player.into(), with_custom };
+        let key = CacheKey { room: room.into(), hero: hero.into(), player: player.into(), with_custom, format };
         {
             let mut cache = self.cache.lock().expect("the HUD cache lock is never held across a panic");
             if cache.epoch != epoch || cache.rows.len() >= CACHE_CAPACITY {
@@ -185,7 +201,7 @@ impl HudService {
                 }
             }
         }
-        let rows = Arc::new(hud_stats::load_rows(conn, room, hero, player, with_custom)?);
+        let rows = Arc::new(hud_stats::load_rows(conn, room, hero, player, with_custom, format)?);
         let mut cache = self.cache.lock().expect("the HUD cache lock is never held across a panic");
         if cache.epoch == epoch {
             cache.rows.insert(key, CachedRows { player_version, rows: rows.clone() });
@@ -198,9 +214,10 @@ impl HudService {
         // Custom stats cost two queries: only a request that asks for one pays for them.
         let with_custom = request.stats.iter().any(hud_stats::is_custom);
         let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
+        let format = parse_format(request.spin_format.as_deref()).ok().flatten();
         let mut players = Vec::with_capacity(request.players.len());
         for name in &request.players {
-            let rows = self.rows_of(&conn, &request.room, &request.hero_name, name, with_custom)?;
+            let rows = self.rows_of(&conn, &request.room, &request.hero_name, name, with_custom, format)?;
             let (hands, stats) = hud_stats::compute(&rows, &request.stats, &ready);
             let note = player_notes::get(&conn, &request.room, name)?.unwrap_or_default();
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));
@@ -213,7 +230,7 @@ impl HudService {
         let conn = self.db.conn()?;
         let with_custom = hud_stats::is_custom(&request.stat);
         let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
-        let rows = hud_stats::load_identified_rows(&conn, &request.room, &request.hero_name, &request.player, with_custom)?;
+        let rows = hud_stats::load_identified_rows(&conn, &request.room, &request.hero_name, &request.player, with_custom, parse_format(request.spin_format.as_deref()).ok().flatten())?;
         let (listed, total) = hud_stats::figure_hand_ids(&rows, &request.stat, &request.buckets, &ready, request.which, request.limit);
         let ids: Vec<String> = listed.iter().map(|hand| hand.hand_id.clone()).collect();
         let mut hands = hud_hands::summaries(&conn, &request.player, &ids)?;
