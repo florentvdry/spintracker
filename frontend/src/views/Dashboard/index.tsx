@@ -75,16 +75,23 @@ export default function Dashboard() {
         <p className="page-subtitle">{t('dashboard.subtitle')}</p>
       </div>
 
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <KpiTile label={t('dashboard.total_profit') + rangeLabel} value={formatProfit(totalProfit)} tone={totalProfit >= 0 ? 'positive' : 'negative'} />
+        <KpiTile
+          label={t('dashboard.chips_ev_avg')}
+          value={(stats.avg_chips_ev || 0).toLocaleString()}
+          tone={(stats.avg_chips_ev || 0) >= 0 ? 'positive' : 'negative'}
+        />
+        <KpiTile label={t('common.tournaments')} value={(stats.total_tournaments || 0).toLocaleString()} />
+        <KpiTile label={t('dashboard.win_rate') + rangeLabel} value={`${winRate.toFixed(2)} %`} />
+      </div>
+
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-4 items-stretch">
         <section className="hero-card flex flex-col min-w-0">
           <LoadingOverlay loading={isLoading}>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <div className="stat-label">{t('dashboard.total_profit') + rangeLabel}</div>
-              <div className={clsx('mt-1 font-mono text-5xl font-semibold leading-[1.1]', totalProfit >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
-                {formatProfit(totalProfit)}
-              </div>
-              <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1" title={t('dashboard.ev_profit_hint')}>
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1" title={t('dashboard.ev_profit_hint')}>
                 <span className="stat-label">{t('dashboard.ev_profit')}</span>
                 <span className={clsx('font-mono text-xl font-semibold', evProfit >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
                   {formatProfit(evProfit)}
@@ -94,15 +101,6 @@ export default function Dashboard() {
                 </span>
               </div>
               {unpriced > 0 && <p className="mt-2 max-w-md text-xs text-gray-500">{t('dashboard.unpriced_note', { count: unpriced })}</p>}
-            </div>
-            <div className="flex gap-9">
-              <HeroStat label={t('dashboard.win_rate') + rangeLabel} value={`${winRate.toFixed(2)} %`} />
-              <HeroStat label={t('common.tournaments')} value={(stats.total_tournaments || 0).toLocaleString()} />
-              <HeroStat
-                label={t('dashboard.chips_ev_avg')}
-                value={(stats.avg_chips_ev || 0).toLocaleString()}
-                tone={(stats.avg_chips_ev || 0) >= 0 ? 'positive' : 'negative'}
-              />
             </div>
           </div>
           </LoadingOverlay>
@@ -160,11 +158,11 @@ export default function Dashboard() {
   )
 }
 
-function HeroStat({ label, value, tone }: { label: string; value: string; tone?: 'positive' | 'negative' }) {
+function KpiTile({ label, value, tone }: { label: string; value: string; tone?: 'positive' | 'negative' }) {
   return (
-    <div>
+    <div className="card">
       <div className="stat-label">{label}</div>
-      <div className={clsx('mt-1 font-mono text-[22px] font-semibold', tone === 'positive' && 'text-profit-positive', tone === 'negative' && 'text-profit-negative', !tone && 'text-gray-100')}>
+      <div className={clsx('mt-1 font-mono text-[28px] font-semibold leading-tight', tone === 'positive' && 'text-profit-positive', tone === 'negative' && 'text-profit-negative', !tone && 'text-gray-100')}>
         {value}
       </div>
     </div>

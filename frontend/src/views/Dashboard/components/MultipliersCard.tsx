@@ -25,6 +25,29 @@ const badgeClass = (multiplier: number) => MULTIPLIER_TIERS.find((tier) => multi
 
 const winRateClass = (winRate: number) => (winRate >= GOOD_WIN_RATE ? 'text-profit-positive' : winRate >= AVERAGE_WIN_RATE ? 'text-primary-400' : 'text-profit-negative')
 
+const HISTOGRAM_HEIGHT_PX = 120
+const MIN_BAR_PX = 2
+
+/** Bars of the share of each multiplier; the tallest share fills the chart. */
+function Histogram({ stats }: { stats: Json[] }) {
+  const peak = Math.max(...stats.map((s) => Number(s.percentageOfTotal) || 0), 1)
+  return (
+    <div className="mb-4 flex items-end gap-2 overflow-x-auto pb-1" role="img" aria-label="multipliers histogram">
+      {stats.map((s) => {
+        const percent = Number(s.percentageOfTotal) || 0
+        const height = Math.max(MIN_BAR_PX, (percent / peak) * HISTOGRAM_HEIGHT_PX)
+        return (
+          <div key={s.multiplier} className="flex min-w-[44px] flex-1 flex-col items-center justify-end gap-1" title={`x${s.multiplier}: ${s.totalCount}`}>
+            <span className="font-mono text-[11px] text-gray-300">{percent}%</span>
+            <div className="w-full rounded-t bg-primary-500/70" style={{ height }} />
+            <span className={clsx('inline-flex min-w-[40px] items-center justify-center rounded-md px-1.5 py-0.5 font-mono text-[11px] font-semibold', badgeClass(s.multiplier))}>x{s.multiplier}</span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 const headerCell = 'px-3.5 py-2.5 text-[11px] font-medium uppercase tracking-[.06em] text-gray-500'
 
 /** Results by Spin multiplier, for the hero and the period selected in the filters. */
@@ -86,6 +109,7 @@ export default function MultipliersCard() {
         <p className="py-6 text-center text-sm text-gray-500">{t('common.no_data')}</p>
       ) : (
         <div className="overflow-x-auto">
+          <Histogram stats={stats} />
           <table className="w-full border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-dark-300">

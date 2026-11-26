@@ -83,7 +83,7 @@ export default function WinrateChart() {
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState<Point[]>([])
   const [visible, setVisible] = useState<Record<LineKey, boolean>>({
-    chipsWon: true, netExpected: true, wonWithShowdown: true, wonWithoutShowdown: true, euroProfit: true,
+    chipsWon: true, netExpected: true, wonWithShowdown: false, wonWithoutShowdown: true, euroProfit: true,
   })
 
   const labels: Record<LineKey, string> = useMemo(
