@@ -1497,5 +1497,14 @@
     "monthly_goal": "Objectif mensuel",
     "volume_title": "Tournois par heure de début",
     "volume_subtitle": "Où ton volume se joue dans la journée"
+  },
+  "session_summary": {
+    "title": "Résumé de session",
+    "view": "Résumé",
+    "fish_share": "Fish aux tables",
+    "multipliers_won": "Multiplicateurs gagnés",
+    "settings_title": "Résumé de fin de session",
+    "settings_subtitle": "Le résumé de la dernière session s'ouvre après cette durée d'inactivité. 0 le désactive.",
+    "minutes": "minutes d'inactivité"
   }
 }

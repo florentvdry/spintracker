@@ -15,6 +15,7 @@ import { useUpdateStore } from '@/stores/updateStore'
 import { useLocation } from 'react-router-dom'
 import { AUTO_IMPORT_ANCHOR, RANGES_ANCHOR } from './anchors'
 import AutoImportCard from './components/AutoImportCard'
+import SessionSummarySettings from './components/SessionSummarySettings'
 import RangesSettings from './components/RangesSettings'
 import SettingRow from './components/SettingRow'
 import { logError } from '@/utils/log'
@@ -311,6 +312,8 @@ export default function Settings() {
           </SettingRow>
         </div>
       </Card>
+
+      <SessionSummarySettings />
 
       <Card title={t('settings.server.title')} subtitle={t('settings.server.subtitle')}>
         <SettingRow icon={Database} title={t('settings.server.status.title')} description={t('settings.server.status.desc')}>

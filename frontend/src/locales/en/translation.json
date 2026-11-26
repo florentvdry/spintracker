@@ -1497,5 +1497,14 @@
     "monthly_goal": "Monthly goal",
     "volume_title": "Tournaments by start hour",
     "volume_subtitle": "Where your volume is played during the day"
+  },
+  "session_summary": {
+    "title": "Session summary",
+    "view": "Summary",
+    "fish_share": "Fish at the tables",
+    "multipliers_won": "Multipliers won",
+    "settings_title": "End-of-session summary",
+    "settings_subtitle": "The summary of the last session opens after this much inactivity. 0 turns it off.",
+    "minutes": "minutes of inactivity"
   }
 }

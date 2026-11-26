@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { useFilterStore } from '@/stores/filterStore'
+import { useSessionSummaryStore } from '@/stores/sessionSummaryStore'
 import { formatCurrency, formatDate } from '@/utils/formatters'
 
 const RECENT_SESSIONS_SHOWN = 5
@@ -13,6 +14,7 @@ export default function SessionList({ sessions }: { sessions: Json[] }) {
   const dateRange = useFilterStore((s) => s.dateRange)
   const selectedSession = useFilterStore((s) => s.selectedSession)
   const setSelectedSession = useFilterStore((s) => s.setSelectedSession)
+  const openSummary = useSessionSummaryStore((s) => s.open)
 
   if (!sessions || sessions.length === 0) {
     return <div className="flex-1 flex items-center justify-center text-gray-500 text-sm">{t('dashboard.sessions_placeholder')}</div>
@@ -49,6 +51,15 @@ export default function SessionList({ sessions }: { sessions: Json[] }) {
                 <span>{session.tournaments || 0} {t('common.tournaments')}</span>
               </div>
               <div className="flex items-center gap-1.5 text-gray-400 justify-end">
+                <button
+                  className="text-primary-400 hover:underline"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    openSummary(session)
+                  }}
+                >
+                  {t('session_summary.view')}
+                </button>
                 <span>{session.hands_played} {t('common.hands')}</span>
               </div>
             </div>
