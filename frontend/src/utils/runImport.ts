@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next'
-import { ipcService, type ApiResult, type ImportProgress } from '@/services/ipcService'
+import { ipcService, type ApiResult, type ImportProgress, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { useNotificationStore } from '@/stores/notificationStore'
@@ -21,7 +21,10 @@ export async function runImport(start: () => Promise<ApiResult>, t: TFunction): 
     let message = `${p.handsImported} ${t('common.hands')}`
     if (p.handsSkipped) message += ` (+${p.handsSkipped} ${t('common.skipped')})`
     if (p.totalHands) message += ` / ${p.totalHands}`
-    progress.update({ progress: p.percent, message })
+    // Per-room figures, passed on when the import sends them (the dialog then shows a line per room).
+    const { rooms, tournaments } = p as Json
+    const details = rooms ? { details: { rooms, hands: p.handsImported, tournaments: tournaments ?? 0 } } : {}
+    progress.update({ progress: p.percent, message, ...details })
   })
 
   progress.start({ title: t('header.import_hands'), message: t('header.calculating') })
