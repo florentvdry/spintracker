@@ -294,6 +294,16 @@ export function cellRequests(grid: HudGrid, cell: HudGridCell): HudStatRequest[]
   return out
 }
 
+/** The figures of an answer of `POST /hud/players`; one the backend did not count stays absent (no data, not a zero). */
+export function figuresOf(stats: { section: string; label: string; column?: string | null; bucket?: string | null; pct?: number | null; num?: unknown; den?: unknown }[]): HudFigures {
+  const figures: HudFigures = {}
+  for (const stat of stats) {
+    if (typeof stat.num !== 'number' || typeof stat.den !== 'number') continue
+    figures[figureKey(stat.section, stat.label, stat.column ?? null, stat.bucket ?? null)] = { pct: stat.pct ?? null, num: stat.num, den: stat.den }
+  }
+  return figures
+}
+
 /** Every figure a layout shows, once each, as the `POST /hud/players` request wants them. */
 export function requestsOf(layout: HudLayout): HudStatRequest[] {
   const seen = new Set<string>()

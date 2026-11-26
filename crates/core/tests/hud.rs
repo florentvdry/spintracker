@@ -542,3 +542,21 @@ fn among_all_the_chances_the_hands_where_the_player_did_it_are_marked() {
     let done = figure_hands(&backend, "riickyy777", vpip, &[], "done", 50);
     assert!(done["hands"].as_array().unwrap().iter().all(|h| h["done"] == true));
 }
+
+#[test]
+fn figures_can_be_read_as_they_stood_before_a_date() {
+    let (_dir, backend) = backend_with_hands();
+    let hands_of = |before: Option<&str>| {
+        let mut body = json!({ "room": "Winamax", "heroName": HERO, "players": [OPPONENTS[0]], "stats": [stat("meta", "hands", None)] });
+        if let Some(before) = before {
+            body["before"] = json!(before);
+        }
+        let response = backend.handle("POST", "/hud/players", Some(body));
+        assert_eq!(response.status, 200, "{:?}", response.body);
+        response.body["data"]["players"][0]["stats"][0]["num"].as_u64().unwrap_or(0)
+    };
+    let all = hands_of(None);
+    assert!(all > 0);
+    assert_eq!(hands_of(Some("2999-01-01 00:00:00")), all, "a later date keeps every hand");
+    assert_eq!(hands_of(Some("2000-01-01 00:00:00")), 0, "an earlier date keeps none");
+}

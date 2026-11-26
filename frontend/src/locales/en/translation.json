@@ -843,6 +843,7 @@
     "no_hand": "No hand loaded",
     "hand_of": "Hand {{current}} / {{total}}",
     "actions": "Actions",
+    "hud_hint": "HUD of each opponent with the figures as they stood before this hand",
     "timeline": "Timeline",
     "current_action": "Current action",
     "empty_title": "Select a hand to start the replayer",

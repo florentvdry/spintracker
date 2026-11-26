@@ -5,7 +5,7 @@ import { ipcService, type Json } from '@/services/ipcService'
 import { useTranslation } from 'react-i18next'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import { logError } from '@/utils/log'
-import { figureKey, requestsOf, type CellView, type GridPosition, type HudFigure, type HudFigures, type HudGrid } from './hudGrid'
+import { figuresOf, requestsOf, type CellView, type GridPosition, type HudFigures, type HudGrid } from './hudGrid'
 import { dragTo, type Rect } from './hudEditor'
 import { GRID_STEP, seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom, type SeatPlacements } from './hudProfile'
 import { figureHandsBody, HOVER_DELAY_MS, parseFigureHands, prettyLabel, type FigureRef, type HandsOf } from './figureHands'
@@ -67,13 +67,7 @@ function useLivePanels(payload: HudPayload | null, layoutKey: string, requests: 
         setPanels(
           seats.map((seat) => {
             const answer = answers.find((a) => a.name === seat.name)
-            const figures: HudFigures = {}
-            for (const stat of (answer?.stats ?? []) as Json[]) {
-              // A figure the backend did not count stays absent (no data), it is not a zero.
-              if (typeof stat.num !== 'number' || typeof stat.den !== 'number') continue
-              const figure: HudFigure = { pct: stat.pct ?? null, num: stat.num, den: stat.den }
-              figures[figureKey(stat.section, stat.label, stat.column ?? null, stat.bucket ?? null)] = figure
-            }
+            const figures = figuresOf(answer?.stats ?? [])
             return { seat: seat.seat, name: seat.name, figures, tag: answer?.tag || undefined }
           }),
         )

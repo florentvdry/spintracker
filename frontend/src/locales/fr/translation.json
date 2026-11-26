@@ -843,6 +843,7 @@
     "no_hand": "Aucune main chargée",
     "hand_of": "Main {{current}} / {{total}}",
     "actions": "Actions",
+    "hud_hint": "HUD de chaque adversaire avec les stats telles qu'elles étaient avant cette main",
     "timeline": "Chronologie",
     "current_action": "Action actuelle",
     "empty_title": "Sélectionnez une main pour lancer le replayer",

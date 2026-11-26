@@ -1,6 +1,8 @@
 import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, useReplayerStore } from '@/stores/replayerStore'
+import HudGridView from '@/components/livehud/HudGridView'
+import type { SeatHud } from '@/hooks/useReplayerHud'
 import Card from './Card'
 import { formatReplayValue, parseBigBlind } from './format'
 
@@ -33,7 +35,7 @@ function positionLabel(position: string | undefined): string {
   return pos || '-'
 }
 
-export default function PlayerSeat({ player, seat }: { player: Json; seat: SeatLayout }) {
+export default function PlayerSeat({ player, seat, hud }: { player: Json; seat: SeatLayout; hud?: SeatHud }) {
   const viewMode = useReplayerStore((s) => s.viewMode)
   const showFoldedPlayers = useReplayerStore((s) => s.showFoldedPlayers)
   const blinds = useReplayerStore((s) => s.handData?.blinds)
@@ -90,6 +92,12 @@ export default function PlayerSeat({ player, seat }: { player: Json; seat: SeatL
           <span className="stack-unit">{unitLabel}</span>
         </div>
       </div>
+
+      {hud && !player.isFolded && (
+        <div className="seat-hud">
+          <HudGridView grid={hud.grid} figures={hud.figures} player={{ name: player.name }} opacity={0.9} />
+        </div>
+      )}
 
       {player.bet > 0 && (
         <div className={clsx('bet-pill', seat.betClass)}>

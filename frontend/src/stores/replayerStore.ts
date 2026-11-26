@@ -160,6 +160,8 @@ interface ReplayerState extends TableSnapshot {
   queueIndex: number
   heroName: string | null
   viewMode: ReplayerViewMode
+  /** Shows the HUD of each opponent on its seat, with the figures as they stood at the time of the hand. */
+  showHud: boolean
   showFoldedPlayers: boolean
 
   totalActions: () => number
@@ -179,6 +181,7 @@ interface ReplayerState extends TableSnapshot {
   stop: () => void
   setSpeed: (ms: number) => void
   setViewMode: (mode: ReplayerViewMode) => void
+  setShowHud: (show: boolean) => void
   setShowFoldedPlayers: (show: boolean) => void
   nextHand: () => Promise<void>
   prevHand: () => Promise<void>
@@ -218,6 +221,7 @@ export const useReplayerStore = create<ReplayerState>()(
         street: 'Preflop',
         actionLog: [],
         viewMode: 'chips',
+        showHud: true,
         showFoldedPlayers: true,
 
         totalActions: () => countRealActions(handActions(get().handData)),
@@ -345,6 +349,7 @@ export const useReplayerStore = create<ReplayerState>()(
         },
 
         setViewMode: (viewMode) => set({ viewMode }),
+        setShowHud: (showHud) => set({ showHud }),
         setShowFoldedPlayers: (showFoldedPlayers) => set({ showFoldedPlayers }),
 
         nextHand: async () => {
@@ -394,7 +399,7 @@ export const useReplayerStore = create<ReplayerState>()(
     },
     {
       name: 'replayer-storage',
-      partialize: (state) => ({ viewMode: state.viewMode, showFoldedPlayers: state.showFoldedPlayers }),
+      partialize: (state) => ({ viewMode: state.viewMode, showFoldedPlayers: state.showFoldedPlayers, showHud: state.showHud }),
     },
   ),
 )
