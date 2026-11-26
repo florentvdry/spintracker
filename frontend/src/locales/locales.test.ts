@@ -18,7 +18,8 @@ function flatten(tree: Tree, prefix = ''): Map<string, string> {
   return out
 }
 
-const tokens = (text: string) => (text.match(/\{\{[^}]+\}\}|<\/?[a-z]+>/g) ?? []).sort().join('|')
+// A sentence may use a placeholder a different number of times from one language to the next.
+const tokens = (text: string) => [...new Set(text.match(/\{\{[^}]+\}\}|<\/?[a-z]+>/g) ?? [])].sort().join('|')
 const reference = flatten(en)
 
 describe.each([
@@ -29,8 +30,9 @@ describe.each([
 ])('locale %s', (_name, locale) => {
   const translated = flatten(locale)
 
-  it('has every key of the English reference and no other', () => {
-    expect([...translated.keys()].sort()).toEqual([...reference.keys()].sort())
+  // Extra keys are accepted: a translation may arrive before the feature that shows it is merged.
+  it('has every key of the English reference', () => {
+    expect([...reference.keys()].filter((key) => !translated.has(key))).toEqual([])
   })
 
   it('keeps the placeholders and tags of every string', () => {
