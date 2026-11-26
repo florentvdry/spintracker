@@ -109,3 +109,14 @@ fn export_summary_counts_the_hands_the_list_returns() {
     assert_eq!(buckets.iter().map(|x| x["hands"].as_i64().unwrap()).sum::<i64>(), listed);
     assert!(buckets.iter().all(|x| x["day"].as_str().is_some_and(|d| d.len() == 10) && x["bytes"].as_i64().unwrap() > 0));
 }
+
+#[test]
+fn the_me_scope_counts_the_hands_of_the_hero_only() {
+    let b = backend();
+    let me = b.handle("GET", "/db/detailed-stats?statsScope=me&heroName=jmenfouu", None).body["data"].clone();
+    let everyone = b.handle("GET", "/db/detailed-stats?statsScope=population", None).body["data"].clone();
+    assert_eq!(me["meta"]["players"], 1, "only the hero is counted: {}", me["meta"]);
+    assert!(everyone["meta"]["players"].as_i64().unwrap() > 1);
+    let nobody = b.handle("GET", "/db/detailed-stats?statsScope=me", None).body["data"].clone();
+    assert_eq!(nobody["meta"]["players"], 0, "without a hero no player matches");
+}
