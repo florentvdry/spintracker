@@ -107,6 +107,7 @@ export const ipcService = {
     backend('POST', '/db/session-history?supersede=true', { limit, heroName, dateFrom, dateTo, buyIn }),
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),
   getMultiplierStats: (options: Json = {}) => backend('POST', '/db/multiplier-stats', options),
+  getCevBreakdown: (options: Json = {}) => backend('POST', '/db/cev-breakdown', options),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),
   getDetailedStats: (
     heroName?: string | null,

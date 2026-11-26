@@ -2,6 +2,7 @@
 
 pub mod actions;
 pub mod cards;
+pub mod cev_breakdown;
 pub mod analytics;
 pub mod equity;
 pub mod equity_cache;

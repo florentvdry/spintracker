@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { TrendingUp, Zap } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
@@ -7,6 +8,8 @@ import LoadingOverlay from '@/components/ui/LoadingOverlay'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { formatProfit } from '@/utils/formatters'
+import { useCevBreakdown, type BadBeatSettings } from '@/hooks/useCevBreakdown'
+import CevBreakdownCard from './components/CevBreakdownCard'
 import MultipliersCard from './components/MultipliersCard'
 import SessionList from './components/SessionList'
 
@@ -24,6 +27,8 @@ export default function Dashboard() {
   const heroName = useFilterStore((s) => s.heroName)
   const dateRange = useFilterStore((s) => s.dateRange)
   const isLoading = useAppStore((s) => s.isLoading)
+  const [badBeat, setBadBeat] = useState<BadBeatSettings>({ following: 5, minEquityPercent: 70, mode: 'elimination' })
+  const breakdown = useCevBreakdown(badBeat)
 
   const rangeLabel =
     dateRange === 'all' ? '' : ` (${dateRange === 'custom' ? t('common.date') : t(`dashboard.filters.${dateRange}`)})`
@@ -37,6 +42,8 @@ export default function Dashboard() {
   }
 
   const byPosition = stats.cev_by_position ?? {}
+  const composition = breakdown.data?.by_composition ?? {}
+  const compositionCev = (key: string) => formatCev(composition[key]?.ev)
   const c = (key: string) => formatCev(byPosition[key])
   const huSb = (byPosition['HU_BTN SB'] || 0) + (byPosition['HU_SB'] || 0)
 
@@ -51,6 +58,9 @@ export default function Dashboard() {
         { key: '3W_BB', label: 'BB', cev: c('3W_BB') },
         { key: '3W_BB_vs_BTN', label: 'vs BTN', cev: c('3W_BB_vs_BTN'), sub: true },
         { key: '3W_BB_vs_SB', label: 'vs SB', cev: c('3W_BB_vs_SB'), sub: true },
+        { key: '3w_2fish', label: t('dashboard.table_2_fish'), cev: compositionCev('3w_2fish') },
+        { key: '3w_1reg_1fish', label: t('dashboard.table_reg_fish'), cev: compositionCev('3w_1reg_1fish') },
+        { key: '3w_2regs', label: t('dashboard.table_2_regs'), cev: compositionCev('3w_2regs') },
       ],
     },
     {
@@ -58,6 +68,8 @@ export default function Dashboard() {
       rows: [
         { key: 'HU_SB', label: 'SB', cev: formatCev(huSb) },
         { key: 'HU_BB', label: 'BB', cev: c('HU_BB') },
+        { key: 'hu_reg', label: t('dashboard.vs_reg'), cev: compositionCev('hu_reg') },
+        { key: 'hu_fish', label: t('dashboard.vs_fish'), cev: compositionCev('hu_fish') },
       ],
     },
   ]
@@ -154,6 +166,8 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
+
+      <CevBreakdownCard data={breakdown.data} isLoading={breakdown.isLoading} badBeat={badBeat} onBadBeatChange={setBadBeat} />
 
       <MultipliersCard />
     </div>

@@ -386,6 +386,11 @@
     "ev_profit": "Profit EV",
     "ev_profit_hint": "Ce que vaut ton EV en jetons, sans la chance",
     "luck_gap": "Écart de chance",
+    "table_2_fish": "2 fish",
+    "table_reg_fish": "1 reg + 1 fish",
+    "table_2_regs": "2 regs",
+    "vs_reg": "vs Reg",
+    "vs_fish": "vs Fish",
     "unpriced_note": "{{count}} tournois sans prize pool connu ne sont pas comptés dans ce profit (résumé du tournoi manquant).",
     "activity": "Activité",
     "sessions_month": "Sessions ce mois",
@@ -1465,5 +1470,22 @@
         }
       }
     }
+  },
+  "cev_breakdown": {
+    "title": "CEV détaillé",
+    "subtitle": "Chip EV moyen par tournoi, selon la situation",
+    "by_multiplier": "Par multiplicateur",
+    "by_session_progress": "Par rang du tournoi dans la session",
+    "after_bad_beat": "Après un bad beat",
+    "following": "Tournois suivants",
+    "min_equity": "Équité min. (%)",
+    "definition": "Définition du bad beat",
+    "mode_elimination": "Éliminé en étant devant",
+    "mode_big_pot": "Gros tapis perdu",
+    "bad_beats_one": "{{count}} bad beat trouvé",
+    "bad_beats_other": "{{count}} bad beats trouvés",
+    "next_tournaments": "{{count}} tournois suivants",
+    "all_tournaments": "Tous les tournois",
+    "no_bad_beat": "Aucun bad beat ne correspond à cette définition."
   }
 }
