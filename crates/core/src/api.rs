@@ -21,6 +21,8 @@ use crate::engines::equity::calculate as calculate_equity;
 use crate::models::ParsedHand;
 use crate::parsers::{get_parser, get_parser_by_room};
 use crate::repos::detailed_stats::{detailed_stats, DetailedQuery};
+use crate::repos::app_settings;
+use crate::repos::time_stats;
 use crate::repos::hud_stats;
 use crate::repos::hands_query::{self, HandsAgainstQuery, HandsQuery};
 use crate::repos::player_queries::{self, PlayersQuery};
@@ -311,6 +313,21 @@ impl Backend {
             ("GET" | "POST", ["db", "range-heatmap"]) => {
                 let q: heatmap::RangeHeatmapQuery = if post { r.body_or_default()? } else { Default::default() };
                 Response::data(heatmap::range_heatmap(&*conn()?, &q)?)
+            }
+
+            ("GET" | "POST", ["db", "time-stats"]) => {
+                let q: StatsQuery = r.options(stats_query_from_query)?;
+                Response::data(time_stats::time_stats(&*conn()?, &q)?)
+            }
+
+            // --- User preferences the backend computes with
+            ("GET", ["settings", key]) if app_settings::is_allowed(key) => {
+                Response::data(app_settings::get(&*conn()?, key)?.unwrap_or(Value::Null))
+            }
+            ("PUT", ["settings", key]) if app_settings::is_allowed(key) => {
+                app_settings::set(&*conn()?, key, &r.body.clone().unwrap_or(Value::Null))?;
+                self.db.bump_data_version();
+                Response::data(json!({ "saved": true }))
             }
 
             // --- Players

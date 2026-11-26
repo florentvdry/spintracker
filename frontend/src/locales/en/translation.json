@@ -588,7 +588,8 @@
       "hands": "Hands List",
       "stats": "Statistics",
       "ranges": "Range Analyzer",
-      "variance": "Variance Simulator"
+      "variance": "Variance Simulator",
+      "time": "Time"
     },
     "filters": {
       "situation": "Situation",
@@ -1465,5 +1466,36 @@
         }
       }
     }
+  },
+  "time_analysis": {
+    "heatmap_title": "Results by hour and weekday",
+    "metric_euro": "Profit (€)",
+    "metric_cev": "CEV / tournament",
+    "metric_fish": "Fish at the table (%)",
+    "metric_hint_euro": "Profit in euros of the tournaments started in each slot",
+    "metric_hint_cev": "Average chip EV of the tournaments started in each slot",
+    "metric_hint_fish": "Share of opponents who are not regulars, to spot the softest hours",
+    "cell_tooltip": "{{count}} tournaments",
+    "weekdays": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "hourly_title": "Time played",
+    "profit_per_hour": "Profit per hour",
+    "hours_played": "Hours played",
+    "avg_duration": "Average Spin duration",
+    "goals_title": "Volume goals",
+    "goals_subtitle": "Tournaments to play per week and per month",
+    "this_week": "This week",
+    "this_month": "This month",
+    "weekly_goal": "Weekly goal",
+    "monthly_goal": "Monthly goal",
+    "volume_title": "Tournaments by start hour",
+    "volume_subtitle": "Where your volume is played during the day"
   }
 }

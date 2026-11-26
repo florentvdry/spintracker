@@ -82,27 +82,27 @@ pub struct ChartQuery {
 const HANDS_COVERED: &str = "hands h INDEXED BY idx_hands_cover";
 
 /// SQL pieces and bound values of a hero-scoped query.
-struct Scope {
+pub(crate) struct Scope {
     /// The `hands` table with its alias, read through the covering index when no date range
     /// narrows the scan (see `idx_hands_cover`).
-    hands: &'static str,
-    join: String,
-    where_clause: String,
+    pub(crate) hands: &'static str,
+    pub(crate) join: String,
+    pub(crate) where_clause: String,
     binds: Vec<(&'static str, SqlValue)>,
 }
 
 impl Scope {
-    fn params(&self) -> Vec<(&str, &dyn ToSql)> {
+    pub(crate) fn params(&self) -> Vec<(&str, &dyn ToSql)> {
         self.binds.iter().map(|(name, value)| (*name, value as &dyn ToSql)).collect()
     }
 }
 
-fn non_empty(v: &Option<String>) -> Option<&str> {
+pub(crate) fn non_empty(v: &Option<String>) -> Option<&str> {
     v.as_deref().filter(|s| !s.is_empty())
 }
 
 /// `date_from` / `date_to` bounds; the charts widen a bare date to the whole day.
-fn scope(
+pub(crate) fn scope(
     hero: Option<&str>,
     date_from: Option<&str>,
     date_to: Option<&str>,
@@ -333,7 +333,7 @@ impl TournamentFigures {
 // ---------------------------------------------------------------------------------------------
 
 /// Hands further apart than this belong to different sessions.
-const SESSION_GAP_HOURS: f64 = 2.0;
+use crate::engines::time_stats::SESSION_GAP_HOURS;
 
 #[derive(Debug, Clone)]
 struct Session {
@@ -353,7 +353,7 @@ struct SessionHand {
     hand_profit: f64,
 }
 
-fn parse_date_time(raw: &str) -> Option<NaiveDateTime> {
+pub(crate) fn parse_date_time(raw: &str) -> Option<NaiveDateTime> {
     let cleaned = raw.replace("(UTC)", "");
     let cleaned = cleaned.trim();
     ["%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S", "%Y/%m/%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d"]

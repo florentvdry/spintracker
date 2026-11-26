@@ -109,3 +109,19 @@ fn export_summary_counts_the_hands_the_list_returns() {
     assert_eq!(buckets.iter().map(|x| x["hands"].as_i64().unwrap()).sum::<i64>(), listed);
     assert!(buckets.iter().all(|x| x["day"].as_str().is_some_and(|d| d.len() == 10) && x["bytes"].as_i64().unwrap() > 0));
 }
+
+#[test]
+fn time_stats_route_counts_every_tournament_and_saves_goals() {
+    use serde_json::json;
+    let b = backend();
+    assert_eq!(b.handle("PUT", "/settings/volume_goals", Some(json!({ "weekly": 40, "monthly": 150 }))).status, 200);
+    let data = b.handle("GET", "/db/time-stats?heroName=jmenfouu", None).body["data"].clone();
+    assert_eq!(data["tournaments"], 300);
+    let in_cells: i64 = data["cells"].as_array().unwrap().iter().map(|c| c["tournaments"].as_i64().unwrap()).sum();
+    assert_eq!(in_cells, 300);
+    let by_hour: i64 = data["by_hour"].as_array().unwrap().iter().map(|c| c.as_i64().unwrap()).sum();
+    assert_eq!(by_hour, 300);
+    assert!(data["hours_played"].as_f64().unwrap() > 0.0);
+    assert_eq!(data["week"]["target"], 40);
+    assert_eq!(data["month"]["target"], 150);
+}

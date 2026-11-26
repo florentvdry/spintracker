@@ -588,7 +588,8 @@
       "hands": "Liste des mains",
       "stats": "Statistiques",
       "ranges": "Analyseur de ranges",
-      "variance": "Simulateur de variance"
+      "variance": "Simulateur de variance",
+      "time": "Horaires"
     },
     "filters": {
       "situation": "Situation",
@@ -1465,5 +1466,36 @@
         }
       }
     }
+  },
+  "time_analysis": {
+    "heatmap_title": "Résultats par heure et jour de la semaine",
+    "metric_euro": "Profit (€)",
+    "metric_cev": "CEV / tournoi",
+    "metric_fish": "Fish à la table (%)",
+    "metric_hint_euro": "Profit en euros des tournois commencés dans chaque créneau",
+    "metric_hint_cev": "Chip EV moyen des tournois commencés dans chaque créneau",
+    "metric_hint_fish": "Part d'adversaires qui ne sont pas des regs, pour repérer les heures les plus molles",
+    "cell_tooltip": "{{count}} tournois",
+    "weekdays": {
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mer",
+      "thu": "Jeu",
+      "fri": "Ven",
+      "sat": "Sam",
+      "sun": "Dim"
+    },
+    "hourly_title": "Temps de jeu",
+    "profit_per_hour": "Profit par heure",
+    "hours_played": "Heures jouées",
+    "avg_duration": "Durée moyenne d'un Spin",
+    "goals_title": "Objectifs de volume",
+    "goals_subtitle": "Tournois à jouer par semaine et par mois",
+    "this_week": "Cette semaine",
+    "this_month": "Ce mois-ci",
+    "weekly_goal": "Objectif hebdo",
+    "monthly_goal": "Objectif mensuel",
+    "volume_title": "Tournois par heure de début",
+    "volume_subtitle": "Où ton volume se joue dans la journée"
   }
 }

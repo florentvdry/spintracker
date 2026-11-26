@@ -1,5 +1,6 @@
 //! Data access: SQL reads and writes of the application tables.
 
+pub mod app_settings;
 pub mod detailed_stats;
 pub mod hands;
 pub mod hands_query;
@@ -13,4 +14,5 @@ pub mod postflop_stats;
 pub mod player_queries;
 pub mod players;
 pub mod stats;
+pub mod time_stats;
 pub mod tournaments;
