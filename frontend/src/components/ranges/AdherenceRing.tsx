@@ -27,7 +27,7 @@ export default function AdherenceRing({ respect, label }: AdherenceRingProps) {
           fill="none"
           strokeWidth={STROKE}
           strokeLinecap="round"
-          stroke={color}
+          style={{ stroke: color }}
           strokeDasharray={`${filled} ${CIRCUMFERENCE}`}
         />
       </svg>
