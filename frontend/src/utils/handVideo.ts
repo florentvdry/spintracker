@@ -86,9 +86,20 @@ export interface FrameOptions {
   inBb: boolean
   bigBlind: number
   title: string
+  /** The actions of the replay, for the equities its card deals may carry. */
+  actions?: Json[]
 }
 
 const splitCards = (text: unknown): string[] => (typeof text === 'string' ? (text.match(/.{2}/g) ?? []) : [])
+
+/** The equities in force once `applied` actions are played, when the replay carries them. */
+export function dealEquities(actions: Json[], applied: number): Record<string, number> | null {
+  for (let i = Math.min(applied, actions.length) - 1; i >= 0; i--) {
+    const equity = actions[i]?.equity
+    if (equity && typeof equity === 'object') return equity as Record<string, number>
+  }
+  return null
+}
 
 /** Draws one step of the replay. */
 export function drawFrame(ctx: CanvasRenderingContext2D, step: ReplayStep, options: FrameOptions): void {
@@ -132,6 +143,7 @@ export function drawFrame(ctx: CanvasRenderingContext2D, step: ReplayStep, optio
   }
 
   // Seats.
+  const equities = dealEquities(options.actions ?? [], step.applied)
   const last = snapshot.actionLog[snapshot.actionLog.length - 1]
   const seats = seatsOf(snapshot.players, aspect)
   const panelWidth = (aspect === '16:9' ? 250 : 230) * unit
@@ -161,6 +173,12 @@ export function drawFrame(ctx: CanvasRenderingContext2D, step: ReplayStep, optio
     ctx.font = `600 ${20 * unit}px "IBM Plex Mono", monospace`
     ctx.fillStyle = '#34c27a'
     ctx.fillText(amount(player.currentStack), cx, cy + 8 * unit)
+    const equity = equities?.[player.name]
+    if (equity !== undefined && !player.isFolded) {
+      ctx.fillStyle = '#e6e9ef'
+      ctx.font = `600 ${16 * unit}px "IBM Plex Mono", monospace`
+      ctx.fillText(`${Math.round(equity)}%`, cx, cy + 34 * unit)
+    }
     if (player.bet > 0) {
       ctx.fillStyle = '#f5c06b'
       ctx.font = `600 ${18 * unit}px "IBM Plex Mono", monospace`

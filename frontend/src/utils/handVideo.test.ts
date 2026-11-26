@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { GIF_SIZES, pickVideoFormat, seatPoints, seatsOf, VIDEO_SIZES } from './handVideo'
+import { GIF_SIZES, VIDEO_SIZES, dealEquities, pickVideoFormat, seatPoints, seatsOf } from './handVideo'
 
 describe('pickVideoFormat', () => {
   it('prefers MP4 and falls back to WebM', () => {
@@ -46,5 +46,19 @@ describe('layouts', () => {
     expect(seats[1]).toEqual(layout[0])
     expect(seats[2]).toEqual(layout[1])
     expect(seats[0]).toEqual(layout[2])
+  })
+})
+
+describe('dealEquities', () => {
+  const actions = [{ equity: { Hero: 60, Villain: 40 } }, { type: 'Call' }, { equity: { Hero: 90, Villain: 10 } }]
+
+  it('takes the equities of the last deal already played', () => {
+    expect(dealEquities(actions, 2)).toEqual({ Hero: 60, Villain: 40 })
+    expect(dealEquities(actions, 3)).toEqual({ Hero: 90, Villain: 10 })
+  })
+
+  it('gives nothing when the replay carries none', () => {
+    expect(dealEquities([{ type: 'Call' }], 1)).toBeNull()
+    expect(dealEquities(actions, 0)).toBeNull()
   })
 })

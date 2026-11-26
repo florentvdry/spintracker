@@ -50,7 +50,7 @@ export default function HandVideoDialog({ open, onClose, handData, inBb }: { ope
       const options = {
         steps,
         holdMs: seconds * 1000,
-        draw: (step: (typeof steps)[number]) => drawFrame(ctx, step, { ...size, aspect, inBb, bigBlind, title }),
+        draw: (step: (typeof steps)[number]) => drawFrame(ctx, step, { ...size, aspect, inBb, bigBlind, title, actions: handData.actions ?? [] }),
         onProgress: (done: number, total: number) => setProgress({ done, total }),
         signal: controller.signal,
       }
