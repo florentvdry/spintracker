@@ -8,7 +8,7 @@ import { logError } from '@/utils/log'
 import { figureKey, requestsOf, type CellView, type GridPosition, type HudFigure, type HudFigures, type HudGrid } from './hudGrid'
 import { dragTo, type Rect } from './hudEditor'
 import { GRID_STEP, seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom, type SeatPlacements } from './hudProfile'
-import { figureHandsBody, HOVER_DELAY_MS, parseFigureHands, prettyLabel, type FigureRef, type HandsOf } from './figureHands'
+import { FIGURE_HANDS_LIMIT, figureHandsBody, HOVER_DELAY_MS, parseFigureHands, prettyLabel, type FigureRef, type HandsOf } from './figureHands'
 import { placePopup } from './hudPopup'
 import { tableScale } from './hudScale'
 import { previewFigures } from './previewData'
@@ -106,6 +106,8 @@ interface OpenHands {
   seat: string
   figure: FigureRef
   which: HandsOf
+  /** The longer list was asked for. */
+  expanded: boolean
   anchor: { left: number; top: number; width: number; height: number }
   state: HandsPopupState
 }
@@ -202,7 +204,7 @@ export default function HudOverlay() {
   }, [payload?.lastHandAt, profile.id, format, stopTimers])
 
   const loadHands = useCallback(
-    (seat: string, figure: FigureRef, which: HandsOf) => {
+    (seat: string, figure: FigureRef, which: HandsOf, limit?: number) => {
       const room = payload?.room
       const hero = payload?.hero
       const player = panels.find((p) => p.seat === seat)?.name
@@ -212,7 +214,7 @@ export default function HudOverlay() {
         if (request === handsRequest.current) setHands((current) => (current ? { ...current, state } : current))
       }
       ipcService
-        .getHudFigureHands(figureHandsBody(room, hero, player, figure, which))
+        .getHudFigureHands(figureHandsBody(room, hero, player, figure, which, limit))
         .then((result) => {
           const data = result.success ? parseFigureHands(result.data) : null
           if (!data) logError('Could not read the hands behind a figure:', result.success ? 'unexpected answer' : result.message)
@@ -246,7 +248,7 @@ export default function HudOverlay() {
         hoverTimer.current = null
         const rect = target.getBoundingClientRect()
         setPopup(null)
-        setHands({ key, seat, figure, which: 'done', anchor: { left: rect.left, top: rect.top, width: rect.width, height: rect.height }, state: { status: 'loading' } })
+        setHands({ key, seat, figure, which: 'done', expanded: false, anchor: { left: rect.left, top: rect.top, width: rect.width, height: rect.height }, state: { status: 'loading' } })
         loadHands(seat, figure, 'done')
       }, HOVER_DELAY_MS)
     },
@@ -260,7 +262,14 @@ export default function HudOverlay() {
     const current = handsRef.current
     if (!current || current.which === which) return
     setHands({ ...current, which, state: { status: 'loading' } })
-    loadHands(current.seat, current.figure, which)
+    loadHands(current.seat, current.figure, which, current.expanded ? FIGURE_HANDS_LIMIT : undefined)
+  }
+
+  const showMoreHands = () => {
+    const current = handsRef.current
+    if (!current || current.expanded) return
+    setHands({ ...current, expanded: true, state: { status: 'loading' } })
+    loadHands(current.seat, current.figure, current.which, FIGURE_HANDS_LIMIT)
   }
 
   const openPopup = useCallback((seat: string, grid: string, cell: CellView, event: ReactMouseEvent<HTMLElement>) => {
@@ -444,7 +453,7 @@ export default function HudOverlay() {
             maxHeight: Math.min(HANDS_POPUP_MAX_HEIGHT_PX, Math.floor((window.innerHeight - WINDOW_MARGIN_PX) / scale)),
           }}
         >
-          <HandsPopup title={handsTitle(hands.figure)} player={handsPlayer.name} which={hands.which} onWhich={chooseHands} state={hands.state} onClose={closeHands} />
+          <HandsPopup title={handsTitle(hands.figure)} player={handsPlayer.name} which={hands.which} onWhich={chooseHands} state={hands.state} onClose={closeHands} onMore={hands.expanded ? undefined : showMoreHands} />
         </div>
       )}
     </div>

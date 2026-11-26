@@ -542,3 +542,15 @@ fn among_all_the_chances_the_hands_where_the_player_did_it_are_marked() {
     let done = figure_hands(&backend, "riickyy777", vpip, &[], "done", 50);
     assert!(done["hands"].as_array().unwrap().iter().all(|h| h["done"] == true));
 }
+
+#[test]
+fn a_listed_hand_tells_the_seat_of_the_player() {
+    let (_dir, backend) = backend_with_hands();
+    let vpip = stat("preflop", "VPIP", Some("tot"));
+    let listed = figure_hands(&backend, OPPONENTS[0], vpip, &[], "chances", 4);
+    let hands = listed["hands"].as_array().unwrap();
+    assert!(!hands.is_empty() && hands.len() <= 4);
+    for hand in hands {
+        assert!(["BTN", "SB", "BB"].contains(&hand["position"].as_str().unwrap()), "{hand}");
+    }
+}

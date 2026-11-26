@@ -152,6 +152,7 @@
       "which_chances": "All chances",
       "count_all": "{{total}} hands",
       "count_latest": "latest {{shown}} of {{total}}",
+      "more": "Show more hands",
       "loading": "Loading the hands…",
       "empty": "No hand to show.",
       "error": "Could not read the hands.",

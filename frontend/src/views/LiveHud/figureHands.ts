@@ -3,6 +3,8 @@ import type { Json } from '@/services/ipcService'
 
 /** A stat held under the pointer this long opens the list of its hands; the list then stays until its cross is clicked. */
 export const HOVER_DELAY_MS = 1000
+/** Hands listed when the popup opens, then when the player asks for more. */
+export const FIGURE_HANDS_PREVIEW = 4
 export const FIGURE_HANDS_LIMIT = 30
 
 /** Which stat a cell shows, the way the backend is asked for its hands. */
@@ -40,6 +42,8 @@ export interface FigureHand {
   id: string
   playedAt: string
   stackBb: number | null
+  /** The player's seat in the hand (BTN, SB, BB); empty when unknown. */
+  position: string
   cards: string[]
   resultBb: number | null
   /** Whether the player did what the figure counts (a chance can be let go). */
@@ -78,6 +82,7 @@ function parseHand(raw: unknown): FigureHand | null {
     id: raw.id,
     playedAt: typeof raw.playedAt === 'string' ? raw.playedAt : '',
     stackBb: numberOrNull(raw.stackBb),
+    position: typeof raw.position === 'string' ? raw.position : '',
     cards: cardsOf(raw.cards),
     resultBb: numberOrNull(raw.resultBb),
     done: raw.done === true,
@@ -91,7 +96,7 @@ export function parseFigureHands(data: unknown): FigureHands | null {
   return { total: data.total, hands: data.hands.map(parseHand).filter((h): h is FigureHand => h !== null) }
 }
 
-export function figureHandsBody(room: string, hero: string, player: string, figure: FigureRef, which: HandsOf, limit = FIGURE_HANDS_LIMIT): Json {
+export function figureHandsBody(room: string, hero: string, player: string, figure: FigureRef, which: HandsOf, limit = FIGURE_HANDS_PREVIEW): Json {
   return {
     room,
     heroName: hero,

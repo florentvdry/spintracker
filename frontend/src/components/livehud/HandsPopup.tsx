@@ -16,6 +16,8 @@ export interface HandsPopupProps {
   onWhich: (which: HandsOf) => void
   state: HandsPopupState
   onClose: () => void
+  /** Asks for the longer list; absent once it is already shown. */
+  onMore?: () => void
 }
 
 const OWN_COLOR = 'text-[#62e08a]'
@@ -70,6 +72,7 @@ function HandBlock({ hand, dimmed }: { hand: FigureHand; dimmed: boolean }) {
             <span className="text-xs text-[#8a93a5]">{t('liveHud.hands.hidden_cards')}</span>
           )}
         </span>
+        {hand.position && <span className="rounded bg-[#232937] px-1.5 py-0.5 text-[11px] font-semibold text-[#aeb6c4]">{hand.position}</span>}
         {hand.stackBb !== null && <span className="text-[13px] text-[#aeb6c4]">{t('liveHud.hands.bb', { value: formatBb(hand.stackBb) })}</span>}
         <ResultPill value={hand.resultBb} />
       </div>
@@ -96,7 +99,7 @@ function Body({ state, which }: { state: HandsPopupState; which: HandsOf }) {
   )
 }
 
-export default function HandsPopup({ title, player, which, onWhich, state, onClose }: HandsPopupProps) {
+export default function HandsPopup({ title, player, which, onWhich, state, onClose, onMore }: HandsPopupProps) {
   const { t } = useTranslation()
   const data = state.status === 'ready' ? state.data : null
   const count = data ? (data.total > data.hands.length ? t('liveHud.hands.count_latest', { shown: data.hands.length, total: data.total }) : t('liveHud.hands.count_all', { total: data.total })) : ''
@@ -127,6 +130,11 @@ export default function HandsPopup({ title, player, which, onWhich, state, onClo
       </div>
       <div className="min-h-0 overflow-y-auto">
         <Body state={state} which={which} />
+        {onMore && data && data.total > data.hands.length && (
+          <button type="button" className="w-full px-3.5 py-2.5 text-center text-xs font-semibold text-[#7fb0ff] hover:bg-[#1d2330]" onClick={onMore}>
+            {t('liveHud.hands.more')}
+          </button>
+        )}
       </div>
     </div>
   )
