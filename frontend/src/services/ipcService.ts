@@ -106,6 +106,8 @@ export const ipcService = {
   getSessionHistory: (limit = 50, heroName?: string | null, dateFrom?: string | null, dateTo?: string | null, buyIn?: number | null) =>
     backend('POST', '/db/session-history?supersede=true', { limit, heroName, dateFrom, dateTo, buyIn }),
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),
+  getRakeback: () => backend('GET', '/rakeback'),
+  setRakebackPercent: (room: string, percent: number) => backend('PUT', `/rakeback/${encodeURIComponent(room)}`, { percent }),
   getMultiplierStats: (options: Json = {}) => backend('POST', '/db/multiplier-stats', options),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),
   getDetailedStats: (

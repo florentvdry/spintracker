@@ -617,6 +617,20 @@
       "3W_BB": "3W BB"
     }
   },
+  "rakeback": {
+    "title": "Rakeback",
+    "all_time": "All tournaments, all time",
+    "fees": "Entry fees paid:",
+    "hint": "Set the rakeback percentage of each room in Settings to see what you get back.",
+    "settings": {
+      "title": "Rakeback",
+      "desc": "Share of the entry fees each room returns. Only used for the rakeback estimate.",
+      "percent": "Rakeback percentage",
+      "save": "Save",
+      "saved": "Saved",
+      "invalid": "Enter a percentage between 0 and 100."
+    }
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Configure the application",

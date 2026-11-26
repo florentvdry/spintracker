@@ -671,6 +671,20 @@
       "hu_vs_sb_limp": "vs SB Limp"
     }
   },
+  "rakeback": {
+    "title": "Rakeback",
+    "all_time": "Tous les tournois, toute période",
+    "fees": "Frais d'inscription payés :",
+    "hint": "Renseigne le pourcentage de rakeback de chaque room dans les réglages pour voir ce que tu récupères.",
+    "settings": {
+      "title": "Rakeback",
+      "desc": "Part des frais d'inscription restituée par chaque room. Sert uniquement à estimer le rakeback.",
+      "percent": "Pourcentage de rakeback",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "invalid": "Saisis un pourcentage entre 0 et 100."
+    }
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'application",

@@ -28,6 +28,7 @@ use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
+use crate::services::rakeback;
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
 use crate::services::review;
@@ -284,6 +285,13 @@ impl Backend {
                 Response::data(Value::Array(stats::session_history(&conn, limit, &q)?))
             }
             ("GET", ["db", "buyins"]) => Response::data(json!(stats::unique_buy_ins(&*conn()?)?)),
+            ("GET", ["rakeback"]) => Response::data(json!(rakeback::summary(&*conn()?)?)),
+            ("PUT", ["rakeback", room]) => {
+                let percent = r.body.as_ref().and_then(|b| b.get("percent")).and_then(Value::as_f64).unwrap_or(f64::NAN);
+                rakeback::set_percent(&*conn()?, room, percent)?;
+                self.db.bump_data_version();
+                Response::data(json!(rakeback::summary(&*conn()?)?))
+            }
             ("GET", ["db", "detailed-stats"]) => {
                 let scope = r.query_str("statsScope").unwrap_or_default().trim().to_lowercase();
                 let opponent = r.query_str("opponentName");
