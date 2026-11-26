@@ -1,3 +1,4 @@
+import FilterPresets from './FilterPresets'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
@@ -410,6 +411,9 @@ export default function Header() {
               </>
             )}
           </div>
+
+          <span className="mx-1.5 h-[22px] w-px bg-dark-200" />
+          <FilterPresets />
 
           <div className="flex-1" />
 

@@ -1465,5 +1465,13 @@
         }
       }
     }
+  },
+  "presets": {
+    "title": "Presets",
+    "none": "No saved preset yet.",
+    "name_placeholder": "Name of the preset",
+    "save": "Save",
+    "refused": "Enter a name, or delete a preset (20 at most).",
+    "hint": "Saves the buy-in, period, position and result filters now selected."
   }
 }
