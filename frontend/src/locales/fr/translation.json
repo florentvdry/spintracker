@@ -673,6 +673,28 @@
   },
   "settings": {
     "title": "Paramètres",
+    "overlay": {
+      "title": "Overlay de stream",
+      "subtitle": "Une page pour une source navigateur OBS avec les chiffres de ta session en cours.",
+      "enable": "Activer l'overlay",
+      "port": "Port",
+      "font_size": "Taille du texte",
+      "text": "Texte",
+      "accent": "Accent",
+      "background": "Fond",
+      "transparent": "Transparent",
+      "dark": "Sombre",
+      "figure_tournaments": "Spins",
+      "figure_profit": "Profit",
+      "figure_cev": "CEV",
+      "figure_winRate": "% de victoire",
+      "figure_multipliers": "Multiplicateurs",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "error": "L'overlay n'a pas pu être enregistré",
+      "url": "Adresse pour OBS",
+      "privacy": "Désactivé par défaut. Il n'écoute que sur cet ordinateur (127.0.0.1) : rien n'est envoyé sur internet."
+    },
     "subtitle": "Configuration de l'application",
     "general": {
       "title": "Général",

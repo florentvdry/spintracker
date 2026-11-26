@@ -109,3 +109,34 @@ fn export_summary_counts_the_hands_the_list_returns() {
     assert_eq!(buckets.iter().map(|x| x["hands"].as_i64().unwrap()).sum::<i64>(), listed);
     assert!(buckets.iter().all(|x| x["day"].as_str().is_some_and(|d| d.len() == 10) && x["bytes"].as_i64().unwrap() > 0));
 }
+
+#[test]
+fn the_overlay_server_follows_its_settings_and_is_off_by_default() {
+    use serde_json::json;
+    use std::io::{Read, Write};
+    let dir = tempfile::tempdir().unwrap();
+    let backend = Backend::open(dir.path(), None).unwrap();
+    assert_eq!(backend.handle("GET", "/overlay/status", None).body["data"]["running"], false);
+    assert_eq!(backend.handle("GET", "/overlay/settings", None).body["data"]["enabled"], false);
+    // The generic settings route does not reach the overlay: it is only set through its own route.
+    assert_eq!(backend.handle("PUT", "/settings/overlay", Some(json!({ "enabled": true }))).status, 404);
+
+    // A free port: bind then release.
+    let port = std::net::TcpListener::bind("127.0.0.1:0").unwrap().local_addr().unwrap().port();
+    assert_eq!(backend.handle("PUT", "/overlay/settings", Some(json!({ "enabled": true, "port": 80 }))).status, 400);
+    let started = backend.handle("PUT", "/overlay/settings", Some(json!({ "enabled": true, "port": port })));
+    assert_eq!(started.status, 200, "{:?}", started.body);
+    let status = backend.handle("GET", "/overlay/status", None).body["data"].clone();
+    assert_eq!(status["running"], true);
+    assert_eq!(status["url"], format!("http://127.0.0.1:{port}/"));
+
+    let mut stream = std::net::TcpStream::connect(("127.0.0.1", port)).unwrap();
+    stream.write_all(format!("GET /stats.json HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\n\r\n").as_bytes()).unwrap();
+    let mut answer = String::new();
+    stream.read_to_string(&mut answer).unwrap();
+    assert!(answer.starts_with("HTTP/1.1 200") && answer.contains("\"theme\""), "{answer}");
+
+    assert_eq!(backend.handle("PUT", "/overlay/settings", Some(json!({ "enabled": false, "port": port }))).status, 200);
+    assert_eq!(backend.handle("GET", "/overlay/status", None).body["data"]["running"], false);
+    assert!(std::net::TcpStream::connect(("127.0.0.1", port)).is_err());
+}

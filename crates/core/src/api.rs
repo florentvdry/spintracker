@@ -21,6 +21,8 @@ use crate::engines::equity::calculate as calculate_equity;
 use crate::models::ParsedHand;
 use crate::parsers::{get_parser, get_parser_by_room};
 use crate::repos::detailed_stats::{detailed_stats, DetailedQuery};
+use crate::repos::app_settings;
+use crate::services::overlay::{OverlayServer, OverlaySettings};
 use crate::repos::hud_stats;
 use crate::repos::hands_query::{self, HandsAgainstQuery, HandsQuery};
 use crate::repos::player_queries::{self, PlayersQuery};
@@ -83,6 +85,8 @@ pub struct Backend {
     /// Detailed statistics by query, valid for one data version: they read every hand.
     detailed_cache: Mutex<DetailedCache>,
     superseded: Supersedable,
+    /// The streaming overlay server, when the user turned it on.
+    overlay: Mutex<Option<OverlayServer>>,
 }
 
 #[derive(Default)]
@@ -149,7 +153,28 @@ impl Backend {
         let importer = Importer::new(db.clone(), analytics.clone());
         let hud = HudService::new(db.clone());
         let custom_stats = CustomStatsService::new(db.clone());
-        Ok(Self { db, registry, importer, hud, custom_stats, detailed_cache: Mutex::default(), superseded: Supersedable::default() })
+        let backend = Self { db, registry, importer, hud, custom_stats, detailed_cache: Mutex::default(), superseded: Supersedable::default(), overlay: Mutex::new(None) };
+        if let Err(error) = backend.apply_overlay_settings() {
+            log::warn!("the overlay server could not start: {error}");
+        }
+        Ok(backend)
+    }
+
+    /// The overlay settings saved in the active database (off by default).
+    fn overlay_settings(&self) -> Result<OverlaySettings> {
+        Ok(app_settings::get(&*self.db.conn()?, "overlay")?.and_then(|v| serde_json::from_value(v).ok()).filter(|s: &OverlaySettings| s.validate().is_ok()).unwrap_or_default())
+    }
+
+    /// Starts, restarts or stops the overlay server to match the saved settings.
+    fn apply_overlay_settings(&self) -> Result<()> {
+        let settings = self.overlay_settings()?;
+        let mut server = self.overlay.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+        // The old server is dropped first: it holds the port.
+        *server = None;
+        if settings.enabled {
+            *server = Some(OverlayServer::start(self.db.clone(), settings.clone(), settings.port)?);
+        }
+        Ok(())
     }
 
     pub fn importer(&self) -> &Importer {
@@ -313,6 +338,34 @@ impl Backend {
                 Response::data(heatmap::range_heatmap(&*conn()?, &q)?)
             }
 
+            // --- User preferences the backend computes with
+            ("GET", ["settings", key]) if app_settings::is_allowed(key) => {
+                Response::data(app_settings::get(&*conn()?, key)?.unwrap_or(Value::Null))
+            }
+            ("PUT", ["settings", key]) if app_settings::is_allowed(key) => {
+                app_settings::set(&*conn()?, key, &r.body.clone().unwrap_or(Value::Null))?;
+                self.db.bump_data_version();
+                Response::data(json!({ "saved": true }))
+            }
+
+
+            // --- Streaming overlay (a local web server, off by default)
+            ("GET", ["overlay", "settings"]) => Response::data(serde_json::to_value(self.overlay_settings()?)?),
+            ("PUT", ["overlay", "settings"]) => match r.body_as::<OverlaySettings>() {
+                Ok(settings) if settings.validate().is_ok() => {
+                    app_settings::set(&*conn()?, "overlay", &serde_json::to_value(&settings)?)?;
+                    match self.apply_overlay_settings() {
+                        Ok(()) => Response::data(json!({ "running": self.overlay.lock().unwrap_or_else(std::sync::PoisonError::into_inner).is_some() })),
+                        Err(e) => Response::message(409, &e.to_string()),
+                    }
+                }
+                Ok(settings) => Response::message(400, &settings.validate().err().unwrap_or_default()),
+                Err(_) => Response::message(400, "Invalid overlay settings"),
+            },
+            ("GET", ["overlay", "status"]) => {
+                let server = self.overlay.lock().unwrap_or_else(std::sync::PoisonError::into_inner);
+                Response::data(json!({ "running": server.is_some(), "port": server.as_ref().map(OverlayServer::port), "url": server.as_ref().map(|s| format!("http://127.0.0.1:{}/", s.port())) }))
+            }
             // --- Players
             ("GET" | "POST", ["db", "players"]) => {
                 let q: PlayersQuery = if post && r.body.is_some() {

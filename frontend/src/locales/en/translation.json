@@ -619,6 +619,28 @@
   },
   "settings": {
     "title": "Settings",
+    "overlay": {
+      "title": "Streaming overlay",
+      "subtitle": "A page for an OBS browser source with the figures of your current session.",
+      "enable": "Turn the overlay on",
+      "port": "Port",
+      "font_size": "Text size",
+      "text": "Text",
+      "accent": "Accent",
+      "background": "Background",
+      "transparent": "Transparent",
+      "dark": "Dark",
+      "figure_tournaments": "Spins",
+      "figure_profit": "Profit",
+      "figure_cev": "CEV",
+      "figure_winRate": "Win rate",
+      "figure_multipliers": "Multipliers",
+      "save": "Save",
+      "saved": "Saved",
+      "error": "The overlay could not be saved",
+      "url": "Address for OBS",
+      "privacy": "Off by default. It only listens on this computer (127.0.0.1): nothing is sent over the internet."
+    },
     "subtitle": "Configure the application",
     "general": {
       "title": "General",
