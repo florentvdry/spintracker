@@ -56,7 +56,7 @@ fn get_routes_read_their_query_string() {
     for v in [&mut dashboard, &mut expected] {
         v["data"].as_object_mut().unwrap().remove("sessions_this_month");
         // Added after the former backend: they have no counterpart in the golden files.
-        for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room"] {
+        for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room", "rakeback_total"] {
             v["data"].as_object_mut().unwrap().remove(added);
         }
     }
@@ -108,4 +108,18 @@ fn export_summary_counts_the_hands_the_list_returns() {
     assert!(!buckets.is_empty());
     assert_eq!(buckets.iter().map(|x| x["hands"].as_i64().unwrap()).sum::<i64>(), listed);
     assert!(buckets.iter().all(|x| x["day"].as_str().is_some_and(|d| d.len() == 10) && x["bytes"].as_i64().unwrap() > 0));
+}
+
+#[test]
+fn rakeback_follows_the_saved_rates_in_the_dashboard_and_the_chart() {
+    let b = backend();
+    // 10% of the 7% rake of every Betclic buy-in.
+    assert_eq!(b.handle("PUT", "/settings/rakeback", Some(json!({ "betclic": 10 }))).status, 200);
+    let data = b.handle("GET", "/db/dashboard-stats?heroName=jmenfouu", None).body["data"].clone();
+    let rakeback = data["rakeback_total"].as_f64().unwrap();
+    assert!(rakeback > 0.0);
+
+    let chart = b.handle("POST", "/db/winrate-chart", Some(json!({ "heroName": "jmenfouu" }))).body["data"].clone();
+    let last = chart.as_array().unwrap().last().unwrap();
+    assert!((last["rakeback"].as_f64().unwrap() - rakeback).abs() < 0.05);
 }

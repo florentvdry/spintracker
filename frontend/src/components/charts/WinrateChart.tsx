@@ -12,7 +12,7 @@ import LoadingOverlay from '@/components/ui/LoadingOverlay'
 import PositionStat from './PositionStat'
 
 type ChartMode = 'chips' | 'euro'
-type LineKey = 'chipsWon' | 'netExpected' | 'wonWithShowdown' | 'wonWithoutShowdown' | 'euroProfit'
+type LineKey = 'chipsWon' | 'netExpected' | 'wonWithShowdown' | 'wonWithoutShowdown' | 'euroProfit' | 'euroProfitRb'
 
 interface Point {
   label: string
@@ -21,6 +21,7 @@ interface Point {
   wonWithShowdown: number
   wonWithoutShowdown: number
   euroProfit: number
+  rakeback: number
 }
 
 const LINE_COLORS: Record<LineKey, string> = {
@@ -29,7 +30,11 @@ const LINE_COLORS: Record<LineKey, string> = {
   wonWithShowdown: '#7aa7ff',
   wonWithoutShowdown: '#ff7a6b',
   euroProfit: '#3fd49a',
+  euroProfitRb: '#f5c06b',
 }
+// The line adding the rakeback only exists once a rate is set.
+const EURO_LINES: LineKey[] = ['euroProfit']
+const RAKEBACK_LINES: LineKey[] = ['euroProfitRb']
 const CHIP_LINES: LineKey[] = ['chipsWon', 'netExpected', 'wonWithShowdown', 'wonWithoutShowdown']
 const CHART_HEIGHT = 500
 const POSITIONS = ['all', 'HU_SB', 'HU_BB', '3W_BTN', '3W_SB', '3W_BB'] as const
@@ -46,6 +51,7 @@ function toPoints(raw: Json): Point[] {
       wonWithShowdown: item.chips_won_showdown ?? item.chipsWonShowdown ?? 0,
       wonWithoutShowdown: item.chips_won_no_showdown ?? item.chipsWonNoShowdown ?? 0,
       euroProfit: item.euroProfit ?? item.euro_profit ?? 0,
+      rakeback: item.rakeback ?? 0,
     }))
   }
   if (raw?.labels && Array.isArray(raw.labels)) {
@@ -57,6 +63,7 @@ function toPoints(raw: Json): Point[] {
       wonWithShowdown: wonWithShowdown?.[i] || 0,
       wonWithoutShowdown: wonWithoutShowdown?.[i] || 0,
       euroProfit: euroProfit?.[i] || 0,
+      rakeback: 0,
     }))
   }
   return []
@@ -83,7 +90,7 @@ export default function WinrateChart() {
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState<Point[]>([])
   const [visible, setVisible] = useState<Record<LineKey, boolean>>({
-    chipsWon: true, netExpected: true, wonWithShowdown: true, wonWithoutShowdown: true, euroProfit: true,
+    chipsWon: true, netExpected: true, wonWithShowdown: true, wonWithoutShowdown: true, euroProfit: true, euroProfitRb: true,
   })
 
   const labels: Record<LineKey, string> = useMemo(
@@ -93,6 +100,7 @@ export default function WinrateChart() {
       wonWithShowdown: t('common.showdown_winning', 'Showdown Won'),
       wonWithoutShowdown: t('common.non_showdown_winning', 'Non-Showdown Won'),
       euroProfit: t('dashboard.net_profit', 'Net Profit (€)'),
+      euroProfitRb: t('charts.euro_profit_rb'),
     }),
     [t],
   )
@@ -125,14 +133,17 @@ export default function WinrateChart() {
     }
   }, [heroName, buyIn, dateRange, customDateFrom, customDateTo, selectedSession, lastUpdate, position])
 
+  const hasRakeback = useMemo(() => data.some((d) => d.rakeback > 0), [data])
+  const euroKeys = useMemo(() => (hasRakeback ? [...EURO_LINES, ...RAKEBACK_LINES] : EURO_LINES), [hasRakeback])
+
   const option = useMemo((): echarts.EChartsOption => {
-    const keys: LineKey[] = chartMode === 'chips' ? CHIP_LINES : ['euroProfit']
+    const keys: LineKey[] = chartMode === 'chips' ? CHIP_LINES : euroKeys
     const series = keys
       .filter((key) => visible[key])
       .map((key) => ({
         name: labels[key],
         type: 'line' as const,
-        data: data.map((d) => d[key]),
+        data: data.map((d) => (key === 'euroProfitRb' ? d.euroProfit + d.rakeback : d[key])),
         itemStyle: { color: LINE_COLORS[key] },
         showSymbol: false,
         lineStyle: { width: chartMode === 'euro' ? 3 : 2 },
@@ -201,7 +212,7 @@ export default function WinrateChart() {
       },
       series,
     }
-  }, [chartMode, data, labels, visible])
+  }, [chartMode, data, euroKeys, labels, visible])
 
   const hasData = !isLoading && data.length > 0
   useBrushChart(containerRef, hasData, option)
@@ -236,7 +247,7 @@ export default function WinrateChart() {
   }
 
   const toggleLine =(key: LineKey) => setVisible((v) => ({ ...v, [key]: !v[key] }))
-  const legendKeys: LineKey[] = chartMode === 'chips' ? CHIP_LINES : ['euroProfit']
+  const legendKeys: LineKey[] = chartMode === 'chips' ? CHIP_LINES : euroKeys
   const modeButton = (mode: ChartMode, label: string) => (
     <button
       onClick={() => setChartMode(mode)}

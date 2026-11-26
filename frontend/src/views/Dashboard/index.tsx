@@ -66,6 +66,7 @@ export default function Dashboard() {
   const evProfit = stats.total_ev_profit || 0
   const luckProfit = stats.luck_profit || 0
   const unpriced: number =stats.unpriced_tournaments || 0
+  const rakebackTotal: number = stats.rakeback_total || 0
   const maxAbsCev = Math.max(1, ...positionGroups.flatMap((g) => g.rows.map((r) => Math.abs(r.cev.value))))
 
   return (
@@ -93,6 +94,12 @@ export default function Dashboard() {
                   {t('dashboard.luck_gap')} <span className="font-mono">{formatProfit(luckProfit)}</span>
                 </span>
               </div>
+              {rakebackTotal > 0 && (
+                <div className="mt-1 flex items-baseline gap-3">
+                  <span className="stat-label">{t('dashboard.rakeback')}</span>
+                  <span className="font-mono text-xl font-semibold text-profit-positive">{formatProfit(rakebackTotal)}</span>
+                </div>
+              )}
               {unpriced > 0 && <p className="mt-2 max-w-md text-xs text-gray-500">{t('dashboard.unpriced_note', { count: unpriced })}</p>}
             </div>
             <div className="flex gap-9">

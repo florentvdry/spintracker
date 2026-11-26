@@ -10,5 +10,6 @@ pub mod hand_state;
 pub mod hand_summary;
 pub mod preflop_line;
 pub mod quiz;
+pub mod rakeback;
 pub mod range_check;
 pub mod range_scenarios;

@@ -386,6 +386,7 @@
     "ev_profit": "EV Profit",
     "ev_profit_hint": "What your chip EV is worth, without luck",
     "luck_gap": "Luck gap",
+    "rakeback": "Rakeback",
     "unpriced_note": "{{count}} tournaments without a known prize pool are not counted in this profit (tournament summary missing).",
     "activity": "Activity",
     "sessions_month": "Sessions this month",
@@ -606,6 +607,7 @@
   "charts": {
     "stats_title": "Stats",
     "cev": "CEV",
+    "euro_profit_rb": "Net Profit + RB (€)",
     "heads_up": "Heads-Up",
     "three_way": "3-Way",
     "positions": {
@@ -619,6 +621,13 @@
   },
   "settings": {
     "title": "Settings",
+    "rakeback": {
+      "title": "Rakeback",
+      "subtitle": "Share of the rake each room gives back. It adds the Net Profit + RB line to the euro chart.",
+      "save": "Save",
+      "saved": "Saved",
+      "save_failed": "The rates could not be saved"
+    },
     "subtitle": "Configure the application",
     "general": {
       "title": "General",

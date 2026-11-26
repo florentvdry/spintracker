@@ -386,6 +386,7 @@
     "ev_profit": "Profit EV",
     "ev_profit_hint": "Ce que vaut ton EV en jetons, sans la chance",
     "luck_gap": "Écart de chance",
+    "rakeback": "Rakeback",
     "unpriced_note": "{{count}} tournois sans prize pool connu ne sont pas comptés dans ce profit (résumé du tournoi manquant).",
     "activity": "Activité",
     "sessions_month": "Sessions ce mois",
@@ -606,6 +607,7 @@
   "charts": {
     "stats_title": "Stats",
     "cev": "CEV",
+    "euro_profit_rb": "Gains + RB (€)",
     "heads_up": "Heads-Up",
     "three_way": "3-Way",
     "positions": {
@@ -673,6 +675,13 @@
   },
   "settings": {
     "title": "Paramètres",
+    "rakeback": {
+      "title": "Rakeback",
+      "subtitle": "Part du rake reversée par chaque room. Elle ajoute la courbe Gains + RB au graphe en euros.",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "save_failed": "Impossible d'enregistrer les taux"
+    },
     "subtitle": "Configuration de l'application",
     "general": {
       "title": "Général",

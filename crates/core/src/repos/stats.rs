@@ -12,6 +12,8 @@ use rusqlite::{Connection, ToSql};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+use crate::engines::rakeback::RakebackRates;
+use crate::repos::app_settings;
 use crate::Result;
 
 /// Players resolved from a name: the player itself, or every player linked to the alias of that name.
@@ -168,12 +170,17 @@ pub(crate) enum Room {
 }
 
 impl Room {
+    /// The rooms store their site too (`Betclic.fr`), so the name is matched by its start.
     pub(crate) fn from_name(name: &str) -> Room {
-        match name.trim().to_ascii_lowercase().as_str() {
-            "winamax" => Room::Winamax,
-            "unibet" => Room::Unibet,
-            "betclic" => Room::Betclic,
-            _ => Room::Other,
+        let name = name.trim().to_ascii_lowercase();
+        if name.starts_with("winamax") {
+            Room::Winamax
+        } else if name.starts_with("unibet") {
+            Room::Unibet
+        } else if name.starts_with("betclic") {
+            Room::Betclic
+        } else {
+            Room::Other
         }
     }
 
@@ -619,6 +626,8 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let mut unpriced_tournaments = 0;
     let mut total_profit_euro = 0.0;
     let mut total_ev_profit_euro = 0.0;
+    let rakeback_rates = load_rakeback_rates(conn)?;
+    let mut rakeback_total = 0.0;
     let mut tournaments_by_room = [0usize; KNOWN_ROOMS.len()];
     for (game_id, figures) in &games {
         if figures.is_in_the_money() {
@@ -629,6 +638,9 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         }
         total_profit_euro += figures.euro_profit();
         total_ev_profit_euro += figures.expected_euro_profit(chip_ev_by_game.get(game_id).copied().unwrap_or(0.0));
+        if let Some(room) = figures.room.key() {
+            rakeback_total += rakeback_rates.amount(room, figures.buy_in);
+        }
         if let Some(index) = KNOWN_ROOMS.iter().position(|room| *room == figures.room) {
             tournaments_by_room[index] += 1;
         }
@@ -677,6 +689,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         "total_profit": total_profit_euro,
         "total_ev_profit": round_to(total_ev_profit_euro, 2),
         "luck_profit": round_to(total_profit_euro - total_ev_profit_euro, 2),
+        "rakeback_total": round_to(rakeback_total, 2),
         "main_room": main_room,
         "total_ev": total_ev,
         "total_tournaments": total_tournaments,
@@ -732,6 +745,11 @@ struct ChartHand {
     game_id: Option<String>,
     figures: TournamentFigures,
     hand_profit: f64,
+}
+
+/// Rakeback percentages saved in the settings; none until the user enters them.
+fn load_rakeback_rates(conn: &Connection) -> Result<RakebackRates> {
+    Ok(app_settings::get(conn, "rakeback")?.map(|v| RakebackRates::from_json(&v)).unwrap_or_default())
 }
 
 pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
@@ -828,7 +846,9 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
         })
         .collect();
 
+    let rakeback_rates = load_rakeback_rates(conn)?;
     let mut cumulative_euro = 0.0;
+    let mut cumulative_rakeback = 0.0;
     Ok(hands
         .iter()
         .enumerate()
@@ -836,6 +856,9 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
             if let Some(id) = h.game_id.as_deref().filter(|id| !id.is_empty()) {
                 if last_hand_of.get(id) == Some(&i) {
                     cumulative_euro += euro_of_game[id];
+                    if let Some(room) = h.figures.room.key() {
+                        cumulative_rakeback += rakeback_rates.amount(room, h.figures.buy_in);
+                    }
                 }
             }
             json!({
@@ -845,6 +868,7 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
                 "chips_won_showdown": h.cumulative_showdown,
                 "chips_won_no_showdown": h.cumulative_no_showdown,
                 "euro_profit": cumulative_euro,
+                "rakeback": cumulative_rakeback,
             })
         })
         .collect())
