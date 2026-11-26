@@ -3,6 +3,8 @@ import * as echarts from 'echarts'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import { GripHorizontal } from 'lucide-react'
+import { usePalette } from '@/stores/paletteStore'
+import type { Palette } from '@/utils/palette'
 import { useBrushChart } from '@/hooks/useBrushChart'
 import { ipcService, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
@@ -23,13 +25,14 @@ interface Point {
   euroProfit: number
 }
 
-const LINE_COLORS: Record<LineKey, string> = {
-  chipsWon: '#3fd49a',
+/** Colours of the lines: gains and losses follow the palette, the others stay apart from them. */
+const lineColorsOf = (palette: Palette): Record<LineKey, string> => ({
+  chipsWon: palette.positive,
   netExpected: '#eab308',
-  wonWithShowdown: '#7aa7ff',
-  wonWithoutShowdown: '#ff7a6b',
-  euroProfit: '#3fd49a',
-}
+  wonWithShowdown: palette.secondary,
+  wonWithoutShowdown: palette.negative,
+  euroProfit: palette.positive,
+})
 const CHIP_LINES: LineKey[] = ['chipsWon', 'netExpected', 'wonWithShowdown', 'wonWithoutShowdown']
 const CHART_HEIGHT = 500
 const POSITIONS = ['all', 'HU_SB', 'HU_BB', '3W_BTN', '3W_SB', '3W_BB'] as const
@@ -73,6 +76,8 @@ export default function WinrateChart() {
   const lastUpdate = useAppStore((s) => s.lastUpdate)
   const stats = useAppStore((s) => s.dashboardStats)
 
+  const palette = usePalette()
+  const lineColors = useMemo(() => lineColorsOf(palette), [palette])
   const containerRef = useRef<HTMLDivElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const dragOffset = useRef({ x: 0, y: 0 })
@@ -133,7 +138,7 @@ export default function WinrateChart() {
         name: labels[key],
         type: 'line' as const,
         data: data.map((d) => d[key]),
-        itemStyle: { color: LINE_COLORS[key] },
+        itemStyle: { color: lineColors[key] },
         showSymbol: false,
         lineStyle: { width: chartMode === 'euro' ? 3 : 2 },
         emphasis: { focus: 'series' as const },
@@ -201,7 +206,7 @@ export default function WinrateChart() {
       },
       series,
     }
-  }, [chartMode, data, labels, visible])
+  }, [chartMode, data, labels, lineColors, visible])
 
   const hasData = !isLoading && data.length > 0
   useBrushChart(containerRef, hasData, option)
@@ -263,7 +268,7 @@ export default function WinrateChart() {
         <div className="flex flex-wrap items-center justify-end gap-3">
           {legendKeys.map((key) => (
             <button key={key} onClick={() => toggleLine(key)} className={clsx('flex items-center gap-1.5 text-xs transition-opacity', !visible[key] && 'opacity-40')}>
-              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: LINE_COLORS[key] }} />
+              <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: lineColors[key] }} />
               <span className="text-gray-300">{labels[key]}</span>
             </button>
           ))}

@@ -619,6 +619,12 @@
   },
   "settings": {
     "title": "Settings",
+    "palette": {
+      "title": "Colour palette",
+      "subtitle": "Applies to the HUD, the ranges and the charts. The colour-blind palette tells gains (blue) from losses (orange).",
+      "default": "Default",
+      "colorblind": "Colour-blind"
+    },
     "subtitle": "Configure the application",
     "general": {
       "title": "General",

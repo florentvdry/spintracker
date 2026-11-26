@@ -9,7 +9,7 @@ export default {
       colors: {
         // Green accent from the redesign mockups (replaces the former blue primary).
         // Deviation from the player's own range: amber, never red (red is for money lost).
-        deviation: '#f5c06b',
+        deviation: 'rgb(var(--c-deviation) / <alpha-value>)',
         felt: '#173a2a',
         primary: {
           50: '#e9fbf2',
@@ -51,8 +51,8 @@ export default {
           900: '#15181d',
         },
         profit: {
-          positive: '#3fd49a',
-          negative: '#ff7a6b',
+          positive: 'rgb(var(--c-positive) / <alpha-value>)',
+          negative: 'rgb(var(--c-negative) / <alpha-value>)',
         },
       },
       fontFamily: {
