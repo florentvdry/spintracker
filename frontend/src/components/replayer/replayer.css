@@ -263,6 +263,54 @@
   margin-left: 0;
 }
 
+.equity-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 3px 0 1px;
+}
+
+.equity-bar {
+  flex: 1;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.equity-fill {
+  height: 100%;
+  background: #34c27a;
+  transition: width 0.25s ease;
+}
+
+.equity-value {
+  min-width: 34px;
+  text-align: right;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #e6e9ef;
+}
+
+.all-in-ev-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(11, 13, 17, 0.85);
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e6e9ef;
+}
+
+.all-in-ev-badge.positive { color: rgb(var(--c-positive)); }
+.all-in-ev-badge.negative { color: rgb(var(--c-negative)); }
+
 .seat-panel {
   width: 100%;
   min-height: clamp(48px, 6cqw, 68px);

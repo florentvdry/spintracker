@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::engines::actions::{parse_actions, ActionKind};
+use crate::engines::replay_equity::{street_equities, KnownHand};
 use crate::engines::preflop_line::{matches_action_sequence, player_positions, split_player_and_content, strip_timestamp};
 use crate::parsers::regex;
 use crate::repos::hands_query::{self, hero_resolution_sql};
@@ -899,11 +900,64 @@ pub fn hand_replay(conn: &Connection, hand_id: &str, hero_name: Option<&str>) ->
         }
     }
 
+    attach_equities(&mut replay.actions, &replay_players, [&text("flop"), &text("turn"), &text("river")]);
+    let all_in_ev = all_in_ev_of(&hand, bb);
+
     Ok(Some(json!({
         "handId": text("id"), "room": text("room"), "blinds": blinds, "date": text("date_time"),
         "buyIn": hand["buy_in"].as_f64().unwrap_or(0.0), "players": replay_players, "actions": replay.actions,
-        "board": board, "totalPot": total_pot,
+        "board": board, "totalPot": total_pot, "allInEv": all_in_ev,
     })))
+}
+
+/// Puts on every deal of cards the equity of the players still in the hand whose cards are known.
+/// Players who folded before the deal are out; with fewer than two known hands there is nothing to say.
+fn attach_equities(actions: &mut [Value], players: &[Value], board_parts: [&str; 3]) {
+    let known: Vec<KnownHand> = players
+        .iter()
+        .filter_map(|p| {
+            let cards = p["cards"].as_str().filter(|c| !c.is_empty())?;
+            Some(KnownHand { name: p["name"].as_str()?.to_string(), cards: cards.to_string() })
+        })
+        .collect();
+    if known.len() < 2 {
+        return;
+    }
+    let mut folded: HashSet<String> = HashSet::new();
+    for action in actions.iter_mut() {
+        match action["type"].as_str() {
+            Some("Fold") => {
+                if let Some(name) = action["playerName"].as_str() {
+                    folded.insert(name.to_string());
+                }
+            }
+            Some("DealCards") => {
+                let shown = match action["street"].as_str() {
+                    Some("Flop") => 1,
+                    Some("Turn") => 2,
+                    Some("River") => 3,
+                    _ => 0,
+                };
+                let board: String = board_parts.iter().take(shown).map(|part| clean_cards(part)).collect();
+                let live: Vec<KnownHand> = known.iter().filter(|k| !folded.contains(&k.name)).cloned().collect();
+                if let Some(equities) = street_equities(&live, &board) {
+                    let by_name: serde_json::Map<String, Value> = equities.into_iter().map(|(name, equity)| (name, json!(equity))).collect();
+                    action["equity"] = Value::Object(by_name);
+                }
+            }
+            _ => {}
+        }
+    }
+}
+
+/// What the all-in was worth beyond the result, in big blinds: the hero's EV minus the actual profit.
+/// `Null` unless the hero was all-in and the hand has an EV.
+fn all_in_ev_of(hand: &Value, big_blind: f64) -> Value {
+    let (Some(ev), Some(actual)) = (hand["ev_chips"].as_f64(), hand["hero_profit"].as_f64()) else { return Value::Null };
+    if !hand["hero_all_in"].as_bool().unwrap_or(false) || big_blind <= 0.0 {
+        return Value::Null;
+    }
+    json!({ "evChips": ev, "actualChips": actual, "diffBb": (ev - actual) / big_blind })
 }
 
 #[cfg(test)]

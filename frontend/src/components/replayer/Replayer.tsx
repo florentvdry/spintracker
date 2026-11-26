@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, FastForward, List, Pause, Play, Rewind, SkipBack, SkipForward, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
+import { formatAllInEv } from '@/utils/replayEquity'
 import RangeCheckCard from './RangeCheckCard'
 import './replayer.css'
 
@@ -43,6 +44,13 @@ export default function Replayer() {
   const lastPlayedIndex = currentIndex - 1
 
   const togglePlay = () => (isPlaying ? stop() : play())
+
+  // The timeline follows the replay: the action in progress stays in view.
+  const currentRow = useRef<HTMLButtonElement | null>(null)
+  useEffect(() => {
+    currentRow.current?.scrollIntoView({ block: 'nearest' })
+  }, [lastPlayedIndex, showLogs])
+  const allInEv = handData?.allInEv as { diffBb: number } | null | undefined
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -103,6 +111,12 @@ export default function Replayer() {
         <section className="table-panel">
           {store.loading && <div className="loading-cover"><div className="spinner" /></div>}
 
+          {allInEv && (
+            <div className={clsx('all-in-ev-badge', allInEv.diffBb > 0 ? 'positive' : allInEv.diffBb < 0 ? 'negative' : '')} title={t('replayer.all_in_ev_hint')}>
+              {t('replayer.all_in_ev', { value: formatAllInEv(allInEv.diffBb) })}
+            </div>
+          )}
+
           {handData ? (
             <PokerTable />
           ) : (
@@ -134,6 +148,8 @@ export default function Replayer() {
               {realActions.map(({ action, index }) => (
                 <button
                   key={`${index}-${action.description}`}
+                  ref={index === lastPlayedIndex ? currentRow : undefined}
+                  aria-current={index === lastPlayedIndex ? 'step' : undefined}
                   className={clsx('action-row', index < lastPlayedIndex && 'played', index === lastPlayedIndex && 'current')}
                   onClick={() => store.jumpToAction(index)}
                 >

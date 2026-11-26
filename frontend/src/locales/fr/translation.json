@@ -843,6 +843,8 @@
     "no_hand": "Aucune main chargée",
     "hand_of": "Main {{current}} / {{total}}",
     "actions": "Actions",
+    "all_in_ev": "All-in EV {{value}} bb",
+    "all_in_ev_hint": "Ce que valait le tapis au-delà du résultat : ton EV moins ce que tu as réellement gagné, en gros blinds.",
     "timeline": "Chronologie",
     "current_action": "Action actuelle",
     "empty_title": "Sélectionnez une main pour lancer le replayer",

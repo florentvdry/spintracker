@@ -66,10 +66,13 @@ fn get_routes_read_their_query_string() {
     assert!(same(&b.handle("GET", "/db/session-history?limit=50", None).body, &golden("sessions_default.json")));
     assert!(same(&b.handle("GET", "/db/opponents?heroName=jmenfouu&limit=5", None).body, &golden("opponents.json")));
     assert!(same(&b.handle("GET", "/db/tournaments?limit=5", None).body, &golden("tournaments_default.json")));
-    assert!(same(
-        &b.handle("GET", "/analysis/replayer/01KE0SWZ3MWW23307PVSF796TN?heroName=jmenfouu", None).body,
-        &golden("replayer.json")
-    ));
+    // The all-in EV and the equities were added after the former backend: they have no counterpart in the golden file.
+    let mut replay = b.handle("GET", "/analysis/replayer/01KE0SWZ3MWW23307PVSF796TN?heroName=jmenfouu", None).body;
+    replay["data"].as_object_mut().unwrap().remove("allInEv");
+    for action in replay["data"]["actions"].as_array_mut().unwrap() {
+        action.as_object_mut().unwrap().remove("equity");
+    }
+    assert!(same(&replay, &golden("replayer.json")));
 }
 
 #[test]
@@ -108,4 +111,27 @@ fn export_summary_counts_the_hands_the_list_returns() {
     assert!(!buckets.is_empty());
     assert_eq!(buckets.iter().map(|x| x["hands"].as_i64().unwrap()).sum::<i64>(), listed);
     assert!(buckets.iter().all(|x| x["day"].as_str().is_some_and(|d| d.len() == 10) && x["bytes"].as_i64().unwrap() > 0));
+}
+
+#[test]
+fn replay_deals_carry_the_equity_of_the_players_in() {
+    let b = backend();
+    let replay = b.handle("GET", "/analysis/replayer/01KE0SWZ3MWW23307PVSF796TN?heroName=jmenfouu", None).body["data"].clone();
+    let actions = replay["actions"].as_array().unwrap();
+    let deals: Vec<&serde_json::Value> = actions.iter().filter(|a| a["type"] == "DealCards").collect();
+    assert!(!deals.is_empty());
+    // Both hands are known (a showdown), so the first deal already has an equity for each player.
+    let first = deals[0]["equity"].as_object().expect("equity on the hole cards");
+    assert_eq!(first.len(), 2);
+    let total: f64 = first.values().map(|v| v.as_f64().unwrap()).sum();
+    assert!((total - 100.0).abs() < 1e-6, "{first:?}");
+    for deal in &deals {
+        if let Some(equity) = deal["equity"].as_object() {
+            let total: f64 = equity.values().map(|v| v.as_f64().unwrap()).sum();
+            assert!((total - 100.0).abs() < 1e-6);
+        }
+    }
+    // Nobody is all-in for an EV here, or the badge carries a finite figure.
+    let badge = &replay["allInEv"];
+    assert!(badge.is_null() || badge["diffBb"].as_f64().unwrap().is_finite());
 }
