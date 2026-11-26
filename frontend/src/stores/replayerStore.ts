@@ -126,6 +126,30 @@ function applyAction(snap: TableSnapshot, action: Json): void {
   snap.players.forEach((p) => (p.isActive = p.name === action.playerName))
 }
 
+/** One step of a replay: how the table looks and how many actions are played. */
+export interface ReplayStep {
+  snapshot: TableSnapshot
+  applied: number
+}
+
+/**
+ * Every state the table goes through, from the deal to the end: the one before the first real
+ * action, then one after each. The video and GIF exports draw these.
+ */
+export function buildReplaySteps(handData: Json): ReplayStep[] {
+  const actions = handActions(handData)
+  const snapshot = emptySnapshot(handData)
+  const steps: ReplayStep[] = []
+  const copy = (): TableSnapshot => JSON.parse(JSON.stringify(snapshot)) as TableSnapshot
+  actions.forEach((action, index) => {
+    if (steps.length === 0 && isRealAction(action)) steps.push({ snapshot: copy(), applied: index })
+    applyAction(snapshot, action)
+    if (isRealAction(action)) steps.push({ snapshot: copy(), applied: index + 1 })
+  })
+  if (steps.length === 0) steps.push({ snapshot: copy(), applied: actions.length })
+  return steps
+}
+
 function findNextRealActionIndex(actions: Json[], fromIndex: number): number {
   for (let i = fromIndex; i < actions.length; i++) if (isRealAction(actions[i])) return i
   return actions.length

@@ -208,6 +208,18 @@ export const ipcService = {
   associateHudTable: (table: number, gameId: string) => command<ApiResult>('hud_associate', { table, gameId }),
   setHudTableHidden: (table: number, hidden: boolean) => command<ApiResult>('hud_set_hidden', { table, hidden }),
   getHudPlayers: (body: Json) => backend('POST', '/hud/players', body),
+  /** Asks where to save a video or a GIF and writes `bytes` there; the details travel in headers, the file as the raw body. */
+  saveBinaryFile: async (dialogTitle: string, name: string, extension: string, bytes: Uint8Array): Promise<ApiResult> => {
+    if (!isTauri) return { success: false, message: 'Tauri is not available' }
+    try {
+      return await invoke<ApiResult>('save_binary_file', bytes, {
+        headers: { 'x-title': encodeURIComponent(dialogTitle), 'x-name': encodeURIComponent(name), 'x-ext': extension },
+      })
+    } catch (error) {
+      console.error('[IPC Error] save_binary_file:', error)
+      return { success: false, message: String(error) }
+    }
+  },
   getHudFigureHands: (body: Json) => backend('POST', '/hud/figure-hands', body),
   getHudSettings: () => command<ApiResult>('hud_settings_get'),
   setHudSettings: (settings: Json) => command<ApiResult>('hud_settings_set', { settings }),

@@ -838,11 +838,27 @@
     }
   },
   "replayer": {
+    "export": {
+      "video": "Export as a video or a GIF"
+    },
     "title": "Replayer",
     "ready": "Ready to replay the hand",
     "no_hand": "No hand loaded",
     "hand_of": "Hand {{current}} / {{total}}",
     "actions": "Actions",
+    "video": {
+      "title": "Export the hand as a video",
+      "dialog": "Save the video",
+      "kind_video": "Video (MP4 or WebM)",
+      "kind_gif": "GIF",
+      "step": "Time per action",
+      "start": "Export",
+      "progress": "Step {{done}} of {{total}}",
+      "saved": "File saved.",
+      "failed": "The export failed.",
+      "cancelled": "Export cancelled.",
+      "hint": "The table is drawn and recorded here, nothing is uploaded. MP4 depends on the system: WebM is written when it is not available."
+    },
     "timeline": "Timeline",
     "current_action": "Current action",
     "empty_title": "Select a hand to start the replayer",

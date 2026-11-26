@@ -838,11 +838,27 @@
     }
   },
   "replayer": {
+    "export": {
+      "video": "Exporter en vidéo ou en GIF"
+    },
     "title": "Replayer",
     "ready": "Prêt à rejouer la main",
     "no_hand": "Aucune main chargée",
     "hand_of": "Main {{current}} / {{total}}",
     "actions": "Actions",
+    "video": {
+      "title": "Exporter la main en vidéo",
+      "dialog": "Enregistrer la vidéo",
+      "kind_video": "Vidéo (MP4 ou WebM)",
+      "kind_gif": "GIF",
+      "step": "Durée par action",
+      "start": "Exporter",
+      "progress": "Étape {{done}} sur {{total}}",
+      "saved": "Fichier enregistré.",
+      "failed": "L'export a échoué.",
+      "cancelled": "Export annulé.",
+      "hint": "La table est dessinée et enregistrée ici, rien n'est envoyé. Le MP4 dépend du système : du WebM est écrit quand il n'est pas disponible."
+    },
     "timeline": "Chronologie",
     "current_action": "Action actuelle",
     "empty_title": "Sélectionnez une main pour lancer le replayer",

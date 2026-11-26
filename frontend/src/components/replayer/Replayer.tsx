@@ -6,6 +6,7 @@ import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
 import RangeCheckCard from './RangeCheckCard'
+import VideoExportButton from './VideoExportButton'
 import './replayer.css'
 
 const SPEEDS = [
@@ -93,6 +94,7 @@ export default function Replayer() {
           </div>
         )}
 
+        {handData && <VideoExportButton handData={handData} />}
         <button className={clsx('log-toggle', showLogs && 'active')} onClick={() => setShowLogs(!showLogs)}>
           <List size={18} />
           <span>{t('replayer.actions')}</span>
