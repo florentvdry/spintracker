@@ -79,7 +79,8 @@ const sameView = (a: CellView, b: CellView) =>
   JSON.stringify(a.border) === JSON.stringify(b.border)
 
 /** Colours of the pool marks: blue under the average, red above it. */
-const POOL_COLORS = { below: '#5aa0ff', above: '#ff6b6b' } as const
+// A colour palette, when the application has one, sets these variables.
+const POOL_COLORS = { below: 'var(--pool-below, #5aa0ff)', above: 'var(--pool-above, #ff6b6b)' } as const
 
 function cellStyle(view: CellView, zebra: boolean): CSSProperties {
   const { border } = view
