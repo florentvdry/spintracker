@@ -17,7 +17,7 @@ export function Screenshots() {
 
   const shots = [
     { key: "handhistory", image: historyImg, items: ["filters", "tournaments", "export"] },
-    { key: "analysis", image: statsImg, items: ["situations", "leaks", "filters"] },
+    { key: "analysis", image: statsImg, items: ["situations", "benchmarks", "filters"] },
     { key: "hud", image: hudImg, items: ["editor", "layouts", "hands"] },
     { key: "custom_stats", image: customStatsImg, items: ["conditions", "examples", "preview"] },
     { key: "replayer", image: replayerImg, items: ["analyze", "export"] },

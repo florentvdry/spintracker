@@ -6,7 +6,7 @@
 
 **The free, open-source poker tracker for Spin & Go tournaments.**
 
-Import your hand histories, find your leaks, replay your hands and study ranges — 100% local, no account, no subscription.
+Free and open source (MIT). Import your hand histories from several rooms, follow your results, replay your hands, build your own ranges and read your opponents on a table HUD — 100% local, no account, no subscription.
 
 [![Latest release](https://img.shields.io/github/v/release/florentvdry/spintracker?style=flat-square&color=10b981)](https://github.com/florentvdry/spintracker/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/florentvdry/spintracker/total?style=flat-square&color=10b981)](https://github.com/florentvdry/spintracker/releases)
@@ -27,11 +27,13 @@ Import your hand histories, find your leaks, replay your hands and study ranges 
 
 ## What is SpinTracker?
 
-SpinTracker is a **free and open-source poker tracker built for Spin & Go players**. It reads the hand histories saved by your poker room, stores them in a local SQLite database on your computer, and turns them into statistics, leak detection, EV analysis, a hand replayer and a range research tool.
+SpinTracker is a **free and open-source poker tracker built for Spin & Go players**. It reads the hand histories saved by your poker room, stores them in a local SQLite database on your computer, and turns them into results and statistics, EV analysis, a hand replayer, a table HUD and a tool to build and follow your own ranges.
 
 It is a free alternative to paid poker trackers for 3-max Spin & Go, Heads-Up and multiplier-based formats.
 
-> Your data never leaves your machine. There is no cloud, no account and no telemetry.
+> Your data never leaves your machine. There is no cloud, no account and no telemetry. The only network use is checking for updates.
+
+**In short:** free · open source (MIT) · several rooms · table HUD · your own personal ranges · 100% local.
 
 ## Features
 
@@ -39,10 +41,10 @@ It is a free alternative to paid poker trackers for 3-max Spin & Go, Heads-Up an
 |---|---|
 | 📊 **Dashboard** | Recent sessions, winrate chart and global statistics at a glance. |
 | 🗂️ **Hand & tournament history** | Browse every hand and tournament with filters by player, position, street, stakes and more. |
-| 📈 **Detailed statistics** | Stats by spot, stack depth and player profile, compared with a baseline to highlight your **leaks**. |
+| 📈 **Detailed statistics** | Stats by spot, stack depth and player profile, shown next to a benchmark so you can see the gaps. |
 | 🎬 **Interactive hand replayer** | Replay hands street by street, check equities, take notes on opponents. |
 | 🧮 **Range research** | Interactive 13×13 range grid to study your ranges and compare them with opponent tendencies. |
-| 🎯 **My ranges and training** | Build your own preflop ranges (your scenarios, depths, actions and colours; SpinTracker ships none), see how often you follow them on your real hands, then practise with a quiz, your own deviations and a spaced review. A deviation means "not what you planned", never "a mistake". An overview tab shows all your ranges at a glance, and you pick which ranges and depths to export as a versioned `.json` file (import it back anywhere). |
+| 🎯 **My ranges and training** | Build your own preflop ranges (your scenarios, depths, actions and colours; SpinTracker ships none), see how often you follow them on your real hands, then practise with a quiz, the hands where you differed from your plan and a spaced review. A deviation means "not what you planned", never "a mistake". An overview tab shows all your ranges at a glance, and you pick which ranges and depths to export as a versioned `.json` file (import it back anywhere). |
 | 🎰 **Multipliers analysis** | Break down your results by Spin multiplier. |
 | 👥 **Player database** | Overview of every opponent you faced and how they play. |
 | 🔄 **Automatic import** | Detects the room and imports hand histories idempotently — re-importing never creates duplicates. Optionally watches your Winamax and Unibet history folders and imports new hands as they are written (on by default, it starts watching as soon as a history folder is set; Betclic stays a manual export). |
@@ -71,7 +73,7 @@ Missing your room? [Open a room support request](https://github.com/florentvdry/
 
 <table>
   <tr>
-    <td><img src="website/assets/img/stats.png" alt="Detailed poker statistics and leak detection" /></td>
+    <td><img src="website/assets/img/stats.png" alt="Detailed poker statistics" /></td>
     <td><img src="website/assets/img/replayer.png" alt="Interactive poker hand replayer" /></td>
   </tr>
   <tr>
@@ -151,11 +153,13 @@ Please follow our [Code of Conduct](CODE_OF_CONDUCT.md). For vulnerabilities, se
 
 **Is SpinTracker free?** Yes. It is MIT-licensed: free to use, modify and redistribute.
 
-**Is it a HUD?** Mainly an analysis tool (stats, leaks, replayer, ranges), with a table HUD on Windows that you can turn off with one switch. It only follows the table window's position and shows figures from your local database. Check your room's terms regarding HUDs before using it.
+**Is it a HUD?** It is both an analysis tool (results, stats, replayer, your own ranges) and, on Windows, an optional table HUD that you can turn off with one switch. The HUD only follows the table window's position and shows figures from your local database, never advice. Check your room's terms regarding HUDs before using it.
 
 **Is it allowed by poker rooms?** SpinTracker only reads the hand history files your room already saves on disk. Always check your room's terms of service regarding tracking software.
 
-**Where is my data stored?** In a local SQLite database on your machine. Nothing is uploaded.
+**Where is my data stored?** In a local SQLite database on your machine. Nothing is uploaded; the only network use is checking for updates.
+
+**Does it tell me what to play?** No. It shows your results and your figures next to benchmarks, and how often you follow the ranges you wrote yourself.
 
 ## License
 
@@ -163,4 +167,4 @@ Please follow our [Code of Conduct](CODE_OF_CONDUCT.md). For vulnerabilities, se
 
 SpinTracker is not affiliated with, endorsed by or sponsored by Winamax, Betclic, Unibet or any other poker operator. All trademarks belong to their respective owners.
 
-<sub>Keywords: poker tracker, Spin & Go tracker, hand history analyzer, poker leak finder, poker replayer, range analyzer, Winamax, Betclic, Unibet, open source poker software, free poker tracker.</sub>
+<sub>Keywords: poker tracker, Spin & Go tracker, hand history analyzer, poker HUD, poker replayer, range builder, Winamax, Betclic, Unibet, open source poker software, free poker tracker.</sub>
