@@ -6,6 +6,7 @@ const COMMANDS: &[&str] = &[
     "check_server_status",
     "import_hand_history",
     "import_hand_history_folder",
+    "import_detected_folders",
     "export_data",
     "save_text_file",
     "delete_all_hands",

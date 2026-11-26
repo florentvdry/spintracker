@@ -30,6 +30,14 @@ export interface AutoImportStatus {
   message: string | null
 }
 
+/** A folder where a room keeps hand histories on this computer. */
+export interface HistoryFolder {
+  room: string
+  path: string
+  /** Whether it can be watched (Betclic only offers manual exports). */
+  watchable: boolean
+}
+
 export interface AutoImportFolder {
   room: string
   path: string
@@ -185,6 +193,7 @@ export const ipcService = {
   // Maintenance
   deleteAllHands: () => command<ApiResult>('delete_all_hands'),
   importHandHistory: () => command<ApiResult>('import_hand_history'),
+  importDetectedFolders: (folders: string[]) => command<ApiResult>('import_detected_folders', { folders }),
   importHandHistoryFolder: () => command<ApiResult>('import_hand_history_folder'),
   getAutoImport: () => command<ApiResult>('auto_import_get'),
   setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),

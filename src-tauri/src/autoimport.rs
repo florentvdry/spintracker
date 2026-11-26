@@ -197,27 +197,89 @@ fn unibet_folder(documents: &Path) -> Option<WatchedFolder> {
     dir.is_dir().then(|| WatchedFolder { room: "Unibet".into(), path: dir.to_string_lossy().into_owned() })
 }
 
-/// Where the rooms keep their history on a default install. Only folders that exist are returned.
-fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
+/// A folder where a room keeps hand histories on a default install.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct DetectedFolder {
+    pub room: String,
+    pub path: String,
+    /// Whether the folder can be watched (Betclic only offers manual exports).
+    pub watchable: bool,
+}
+
+fn has_hand_files(dir: &Path) -> bool {
+    fs::read_dir(dir).is_ok_and(|entries| {
+        entries.flatten().any(|e| e.path().extension().is_some_and(|x| x.eq_ignore_ascii_case("txt") || x.eq_ignore_ascii_case("xml")))
+    })
+}
+
+/// Folders under `documents` whose name holds `needle` (any case), and their direct subfolders called
+/// like a history folder, when they hold hand files: where a room's exports end up.
+fn exports_of(documents: &Path, needle: &str) -> Vec<PathBuf> {
+    let Ok(entries) = fs::read_dir(documents) else { return Vec::new() };
+    let mut found = Vec::new();
+    for dir in entries.flatten().map(|e| e.path()).filter(|p| p.is_dir()) {
+        if !dir.file_name().is_some_and(|n| n.to_string_lossy().to_lowercase().contains(needle)) {
+            continue;
+        }
+        if has_hand_files(&dir) {
+            found.push(dir.clone());
+        }
+        let Ok(inner) = fs::read_dir(&dir) else { continue };
+        for sub in inner.flatten().map(|e| e.path()).filter(|p| p.is_dir()) {
+            let name = sub.file_name().map(|n| n.to_string_lossy().to_lowercase()).unwrap_or_default();
+            if (name.contains("hand") || name.contains("history")) && has_hand_files(&sub) {
+                found.push(sub);
+            }
+        }
+    }
+    found.sort();
+    found
+}
+
+/// Where the rooms keep their history on a default install (Windows, and macOS through the same
+/// `Documents` and `Application Support` folders). Only folders that exist are returned.
+fn detect_history_folders(documents: Option<&Path>, config: Option<&Path>) -> Vec<DetectedFolder> {
     let mut found = Vec::new();
     let mut roots: Vec<(PathBuf, &str)> = Vec::new();
-    if let Ok(documents) = app.path().document_dir() {
-        found.extend(unibet_folder(&documents));
+    if let Some(documents) = documents {
+        if let Some(folder) = unibet_folder(documents) {
+            found.push(DetectedFolder { room: folder.room, path: folder.path, watchable: true });
+        }
         roots.push((documents.join("Winamax Poker").join("accounts"), "history"));
+        for dir in exports_of(documents, "betclic") {
+            found.push(DetectedFolder { room: "Betclic".into(), path: dir.to_string_lossy().into_owned(), watchable: false });
+        }
     }
-    if let Ok(roaming) = app.path().config_dir() {
-        roots.push((roaming.join("winamax").join("documents").join("accounts"), "History"));
+    if let Some(config) = config {
+        roots.push((config.join("winamax").join("documents").join("accounts"), "History"));
     }
     for (accounts, history) in roots {
         let Ok(entries) = fs::read_dir(&accounts) else { continue };
         for account in entries.flatten().map(|e| e.path()).filter(|p| p.is_dir()) {
             let dir = account.join(history);
             if dir.is_dir() {
-                found.push(WatchedFolder { room: "Winamax".into(), path: dir.to_string_lossy().into_owned() });
+                found.push(DetectedFolder { room: "Winamax".into(), path: dir.to_string_lossy().into_owned(), watchable: true });
             }
         }
     }
     found
+}
+
+fn all_detected(app: &AppHandle) -> Vec<DetectedFolder> {
+    let documents = app.path().document_dir().ok();
+    let config = app.path().config_dir().ok();
+    detect_history_folders(documents.as_deref(), config.as_deref())
+}
+
+/// The folders that can be watched.
+fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
+    all_detected(app).into_iter().filter(|f| f.watchable).map(|f| WatchedFolder { room: f.room, path: f.path }).collect()
+}
+
+/// Detected folders among `asked`: the webview may only import from where the application found histories.
+pub fn detected_among(app: &AppHandle, asked: &[String]) -> Vec<PathBuf> {
+    let known = all_detected(app);
+    asked.iter().filter(|a| known.iter().any(|k| &k.path == *a)).map(PathBuf::from).collect()
 }
 
 pub fn get(app: &AppHandle) -> Value {
@@ -229,6 +291,7 @@ pub fn get(app: &AppHandle) -> Value {
         "enabled": enabled,
         "folders": folders,
         "detected": detect_folders(app),
+        "historyFolders": all_detected(app),
         "status": status,
     })
 }
@@ -560,5 +623,43 @@ mod tests {
         let config: Config = serde_json::from_str(text).unwrap();
         assert!(config.databases["a"].enabled);
         assert!(config.databases.get("b").is_none());
+    }
+}
+
+#[cfg(test)]
+mod detection_tests {
+    use super::*;
+
+    fn touch(path: &Path) {
+        fs::create_dir_all(path.parent().unwrap()).unwrap();
+        fs::write(path, "x").unwrap();
+    }
+
+    #[test]
+    fn the_known_history_folders_are_found_and_the_others_are_not() {
+        let documents = tempfile::tempdir().unwrap();
+        let config = tempfile::tempdir().unwrap();
+        fs::create_dir_all(documents.path().join("Winamax Poker").join("accounts").join("me").join("history")).unwrap();
+        fs::create_dir_all(config.path().join("winamax").join("documents").join("accounts").join("me").join("History")).unwrap();
+        fs::create_dir_all(documents.path().join("Unibet Poker").join("History").join("Exports").join("Automatic")).unwrap();
+        touch(&documents.path().join("Betclic Poker").join("HandHistory").join("a.txt"));
+        touch(&documents.path().join("Unrelated").join("a.txt"));
+        // A Betclic folder without hand files is not a history folder.
+        fs::create_dir_all(documents.path().join("betclic stuff").join("pictures")).unwrap();
+
+        let found = detect_history_folders(Some(documents.path()), Some(config.path()));
+        let rooms: Vec<(&str, bool)> = found.iter().map(|f| (f.room.as_str(), f.watchable)).collect();
+        assert_eq!(rooms.iter().filter(|r| **r == ("Winamax", true)).count(), 2, "{rooms:?}");
+        assert!(rooms.contains(&("Unibet", true)));
+        assert_eq!(rooms.iter().filter(|r| r.0 == "Betclic").count(), 1);
+        assert!(rooms.contains(&("Betclic", false)), "Betclic exports are manual");
+        assert!(!found.iter().any(|f| f.path.contains("Unrelated")));
+    }
+
+    #[test]
+    fn nothing_is_found_without_folders() {
+        assert!(detect_history_folders(None, None).is_empty());
+        let empty = tempfile::tempdir().unwrap();
+        assert!(detect_history_folders(Some(empty.path()), Some(empty.path())).is_empty());
     }
 }

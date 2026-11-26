@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { ipcService, type AutoImportFolder, type AutoImportStatus } from '@/services/ipcService'
+import { ipcService, type AutoImportFolder, type AutoImportStatus, type HistoryFolder } from '@/services/ipcService'
 import { useAppStore } from './appStore'
 
 /** Hands arrive in bursts while playing: reload the data once the burst is over. */
@@ -11,6 +11,8 @@ interface AutoImportState {
   enabled: boolean
   folders: AutoImportFolder[]
   detected: AutoImportFolder[]
+  /** Every history folder found on this computer, Betclic's (manual exports) included. */
+  historyFolders: HistoryFolder[]
   status: AutoImportStatus
   loaded: boolean
   load: () => Promise<void>
@@ -23,6 +25,7 @@ export const useAutoImportStore = create<AutoImportState>((set, get) => ({
   enabled: false,
   folders: [],
   detected: [],
+  historyFolders: [],
   status: IDLE_STATUS,
   loaded: false,
 
@@ -33,6 +36,7 @@ export const useAutoImportStore = create<AutoImportState>((set, get) => ({
       enabled: result.enabled,
       folders: result.folders,
       detected: result.detected,
+      historyFolders: result.historyFolders ?? [],
       status: result.status,
       loaded: true,
     })

@@ -1466,5 +1466,15 @@
         }
       }
     }
+  },
+  "wizard": {
+    "title": "Welcome to SpinTracker",
+    "found": "These hand-history folders were found on this computer. Choose the ones to import.",
+    "none": "No hand-history folder was found at the usual places. Use the Import buttons at the top to pick your files or a folder.",
+    "manual": "manual export",
+    "watch": "Keep importing new hands automatically (Winamax and Unibet)",
+    "later": "You can change this later in the settings. Everything stays on this computer.",
+    "skip": "Not now",
+    "import": "Import"
   }
 }

@@ -54,10 +54,12 @@ fn file_name(path: &Path) -> String {
 
 /// What the user picks to import: some files (or archives), or a folder holding a whole export
 /// (the way PokerTracker 4 and Hold'em Manager 3 write their hand-history exports).
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone)]
 pub enum Source {
     Files,
     Folder,
+    /// Folders the application itself found (the first-run wizard).
+    Folders(Vec<PathBuf>),
 }
 
 /// Every hand-history file under a folder, subfolders included, in a stable order. Archives inside
@@ -93,6 +95,7 @@ pub async fn run(app: AppHandle, source: Source) -> Value {
                 None => return json!({ "success": false, "message": "Import cancelled" }),
             }
         }
+        Source::Folders(folders) => tauri::async_runtime::spawn_blocking(move || folders.iter().flat_map(|f| files_of_folder(f)).collect()).await.unwrap_or_default(),
         Source::Folder => {
             let picked = tauri::async_runtime::spawn_blocking(move || picker_app.dialog().file().blocking_pick_folder()).await.ok().flatten();
             let Some(folder) = picked.and_then(|p| p.into_path().ok()) else {

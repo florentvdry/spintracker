@@ -4,6 +4,7 @@ import Layout from '@/components/layout/Layout'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import NotificationContainer from '@/components/ui/NotificationContainer'
 import ProgressModal from '@/components/ui/ProgressModal'
+import FirstRunWizard from '@/components/ui/FirstRunWizard'
 import StartupNotice from '@/components/ui/StartupNotice'
 import UpdateModal from '@/components/ui/UpdateModal'
 import { ipcService } from '@/services/ipcService'
@@ -70,6 +71,7 @@ export default function App() {
           )}
         </ErrorBoundary>
       </Layout>
+      <FirstRunWizard />
       <NotificationContainer />
       <ProgressModal />
       <UpdateModal />
