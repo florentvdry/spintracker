@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
+import HandExportMenu from './HandExportMenu'
 import RangeCheckCard from './RangeCheckCard'
 import './replayer.css'
 
@@ -92,6 +93,8 @@ export default function Replayer() {
             <button className="icon-button" disabled={store.queueIndex >= store.handQueue.length - 1} onClick={() => void store.nextHand()}><ChevronRight size={18} /></button>
           </div>
         )}
+
+        {handData && <HandExportMenu handData={handData} />}
 
         <button className={clsx('log-toggle', showLogs && 'active')} onClick={() => setShowLogs(!showLogs)}>
           <List size={18} />

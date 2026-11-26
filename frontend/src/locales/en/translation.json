@@ -843,6 +843,18 @@
     "no_hand": "No hand loaded",
     "hand_of": "Hand {{current}} / {{total}}",
     "actions": "Actions",
+    "export": {
+      "title": "Export",
+      "copied": "Copied",
+      "saved": "Saved",
+      "failed": "Export failed",
+      "copy_gto": "Copy for GTO Wizard",
+      "save_gto": "Save as a .txt file",
+      "dialog": "Save the hand",
+      "copy_forum": "Copy as text for Discord or a forum",
+      "anonymize": "Hide the player names",
+      "gto_hint": "PokerStars layout, which GTO Wizard reads. Not checked against its importer."
+    },
     "timeline": "Timeline",
     "current_action": "Current action",
     "empty_title": "Select a hand to start the replayer",
