@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, FastForward, List, Pause, Play, Rewind, SkipBack, SkipForward, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
+import { useKeyShortcut } from '@/hooks/useKeyShortcut'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
@@ -43,6 +44,7 @@ export default function Replayer() {
   const lastPlayedIndex = currentIndex - 1
 
   const togglePlay = () => (isPlaying ? stop() : play())
+  useKeyShortcut('h', () => store.setShowHud(!store.showHud))
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
