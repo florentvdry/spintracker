@@ -215,6 +215,41 @@ fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_cust
     Ok(rows)
 }
 
+/// The rows of every opponent the hero faced in `room`: the pool the figures of a player are
+/// compared with. Only the hero's own base counts, as for the figures of a player.
+pub(crate) fn load_pool_rows(conn: &Connection, room: &str, hero: &str) -> Result<Vec<Row>> {
+    let hero_names = hero_resolution_sql("@hero");
+    let sql = format!(
+        "SELECT h.player_count, ph.position, f.flags_0, f.flags_1, f.flags_2, f.flags_3, f.street_counts, ph.stack, h.blinds
+         FROM player_hands ph
+         JOIN hands h ON h.id = ph.hand_id
+         LEFT JOIN hand_player_flags f ON f.hand_id = ph.hand_id AND f.player_name = ph.player_name
+         WHERE h.room = @room AND h.player_count IN (2, 3)
+           AND ph.player_name NOT IN {hero_names}
+           AND EXISTS (SELECT 1 FROM player_hands hp WHERE hp.hand_id = h.id AND hp.player_name IN {hero_names})"
+    );
+    let binds: [(&str, SqlValue); 2] = [("@room", SqlValue::Text(room.into())), ("@hero", SqlValue::Text(hero.into()))];
+    let params: Vec<(&str, &dyn ToSql)> = binds.iter().map(|(n, v)| (*n, v as &dyn ToSql)).collect();
+    let mut stmt = conn.prepare_cached(&sql)?;
+    let rows = stmt
+        .query_map(&params[..], |r| {
+            let word = |i: usize| -> rusqlite::Result<u64> { Ok(r.get::<_, Option<i64>>(i)?.unwrap_or(0) as u64) };
+            let position: Option<String> = r.get(1)?;
+            let flags = Flags::from_words([word(2)?, word(3)?, word(4)?, word(5)?]);
+            let blinds: Option<String> = r.get(8)?;
+            Ok(Row::lean(
+                r.get::<_, Option<i32>>(0)?.unwrap_or(0),
+                position.as_deref().unwrap_or(""),
+                flags,
+                word(6)?,
+                r.get::<_, Option<i64>>(7)?.unwrap_or(0),
+                blinds.as_deref().unwrap_or(""),
+            ))
+        })?
+        .collect::<std::result::Result<Vec<_>, _>>()?;
+    Ok(rows)
+}
+
 /// Rows grouped the way the requests ask: by stack depth and, for figures counted over the rows of
 /// a table column, by that column. Each group is counted once, however many figures read it.
 struct Groups<'a> {
@@ -361,6 +396,24 @@ pub(crate) fn compute(rows: &[Row], requests: &[HudStatRequest], ready: &HashSet
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_pool_holds_the_opponents_of_the_hero() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        crate::db::migrations::run(&mut conn).unwrap();
+        for (id, name) in [("h1", "Expresso"), ("h2", "Expresso Nitro")] {
+            conn.execute("INSERT INTO hands (id, room, game_name, player_count) VALUES (?1, 'Winamax', ?2, 3)", [id, name]).unwrap();
+            for player in ["Hero", "Villain", "Other"] {
+                conn.execute("INSERT INTO player_hands (hand_id, player_name, position) VALUES (?1, ?2, 'BTN')", [id, player]).unwrap();
+            }
+        }
+        // A hand the hero did not play is not part of the pool.
+        conn.execute("INSERT INTO hands (id, room, game_name, player_count) VALUES ('h3', 'Winamax', 'Expresso', 3)", []).unwrap();
+        conn.execute("INSERT INTO player_hands (hand_id, player_name, position) VALUES ('h3', 'Stranger', 'BTN')", []).unwrap();
+        conn.execute("INSERT INTO players (name) VALUES ('Hero')", []).unwrap();
+        let rows = load_pool_rows(&conn, "Winamax", "Hero").unwrap();
+        assert_eq!(rows.len(), 4, "two opponents in each of the two hands, the hero left out");
+    }
 
     #[test]
     fn the_catalog_lists_registry_stats_with_unique_ids() {

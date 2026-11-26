@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useLiveHudStore } from '@/stores/liveHudStore'
-import { MAX_OPACITY, MAX_SIZE, MIN_OPACITY, MIN_SIZE } from '../hudProfile'
+import { MAX_OPACITY, MAX_POOL_THRESHOLD, MAX_SIZE, MIN_OPACITY, MIN_POOL_THRESHOLD, MIN_SIZE } from '../hudProfile'
 import { HIGHEST_MIN_TABLE_SCALE, LOWEST_MIN_TABLE_SCALE } from '../hudScale'
 
 /** What the right-hand panel shows when nothing is selected: the profile itself. */
@@ -48,6 +48,25 @@ export default function ProfileInspector() {
       <label className="flex items-center gap-2 text-xs text-gray-200">
         <input type="checkbox" checked={profile.showHero} onChange={(e) => updateProfile(profile.id, (p) => ({ ...p, showHero: e.target.checked }))} />
         {t('liveHud.profiles.show_hero')}
+      </label>
+      <label className="flex items-center gap-2 text-xs text-gray-200" title={t('liveHud.profiles.pool_colors_hint')}>
+        <input type="checkbox" checked={profile.poolColors} onChange={(e) => updateProfile(profile.id, (p) => ({ ...p, poolColors: e.target.checked }))} />
+        {t('liveHud.profiles.pool_colors')}
+      </label>
+      <label className="block text-xs text-gray-400">
+        <span className="mb-1 flex justify-between">
+          {t('liveHud.profiles.pool_threshold')}
+          <span className="font-mono text-gray-200">{profile.poolThreshold} {t('liveHud.profiles.points')}</span>
+        </span>
+        <input
+          type="range"
+          min={MIN_POOL_THRESHOLD}
+          max={MAX_POOL_THRESHOLD}
+          step={1}
+          disabled={!profile.poolColors}
+          value={profile.poolThreshold}
+          onChange={(e) => updateProfile(profile.id, (p) => ({ ...p, poolThreshold: Number(e.target.value) }))}
+        />
       </label>
       <label className="flex items-center gap-2 text-xs text-gray-200" title={t('liveHud.placement.snap_hint')}>
         <input type="checkbox" checked={settings.snapToGrid} onChange={(e) => setSnapToGrid(e.target.checked)} />

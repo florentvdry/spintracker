@@ -402,6 +402,13 @@ impl Backend {
                     Err(message) => Response::message(400, &message),
                 }
             }
+            ("POST", ["hud", "pool"]) => {
+                let request: HudPlayersRequest = r.body_as()?;
+                match request.validate() {
+                    Ok(()) => Response::data(self.hud.pool(&request)?),
+                    Err(message) => Response::message(400, &message),
+                }
+            }
             ("POST", ["hud", "figure-hands"]) => {
                 let request: HudFigureHandsRequest = r.body_as()?;
                 match request.validate() {

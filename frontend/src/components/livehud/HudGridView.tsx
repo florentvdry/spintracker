@@ -3,6 +3,7 @@ import { hudBaselines } from '@/views/Stats/hudText'
 import {
   BASE_FONT_SIZE,
   buildCellViews,
+  type PoolColoring,
   HUD_COLORS,
   type Baseline,
   type CellView,
@@ -52,6 +53,8 @@ export interface HudGridViewProps {
   onFigureLeave?: () => void
   /** Rendered text of the cell being edited in place, instead of its value. */
   editing?: { cellId: string; node: ReactNode }
+  /** Marks the figures that sit above or below the pool average. */
+  pool?: PoolColoring
 }
 
 const sameView = (a: CellView, b: CellView) =>
@@ -71,8 +74,12 @@ const sameView = (a: CellView, b: CellView) =>
   a.popupId === b.popupId &&
   JSON.stringify(a.figure) === JSON.stringify(b.figure) &&
   a.tagColor === b.tagColor &&
+  a.poolTone === b.poolTone &&
   a.numeric === b.numeric &&
   JSON.stringify(a.border) === JSON.stringify(b.border)
+
+/** Colours of the pool marks: blue under the average, red above it. */
+const POOL_COLORS = { below: '#5aa0ff', above: '#ff6b6b' } as const
 
 function cellStyle(view: CellView, zebra: boolean): CSSProperties {
   const { border } = view
@@ -86,6 +93,7 @@ function cellStyle(view: CellView, zebra: boolean): CSSProperties {
     fontFamily: view.numeric ? NUMBER_FONT : LABEL_FONT,
     fontVariantNumeric: view.numeric ? 'tabular-nums' : undefined,
     textAlign: view.align ?? (view.numeric || view.kind === 'text' ? 'center' : 'left'),
+    boxShadow: view.poolTone ? `inset 0 -2px 0 ${POOL_COLORS[view.poolTone]}` : undefined,
     borderTop: border?.top ? KEY_BORDER : undefined,
     borderRight: border?.right ? KEY_BORDER : undefined,
     borderBottom: border?.bottom ? KEY_BORDER : undefined,
@@ -163,8 +171,8 @@ function emptySlots(grid: HudGrid): GridSlot[] {
 
 const EMPTY_VIEW = (slot: GridSlot): CellView => ({ ...slot, kind: 'empty', text: '', sample: null, bold: false, numeric: false })
 
-function HudGridViewBase({ grid, figures, player, opacity = 1, showEmptySlots, decorate, overlay, onPopup, onFigureEnter, onFigureLeave, editing }: HudGridViewProps) {
-  const views = useMemo(() => buildCellViews(grid, figures, player, BASELINES), [grid, figures, player.name, player.tag]) // eslint-disable-line react-hooks/exhaustive-deps
+function HudGridViewBase({ grid, figures, player, opacity = 1, showEmptySlots, decorate, overlay, onPopup, onFigureEnter, onFigureLeave, editing, pool }: HudGridViewProps) {
+  const views = useMemo(() => buildCellViews(grid, figures, player, BASELINES, pool), [grid, figures, player.name, player.tag, pool]) // eslint-disable-line react-hooks/exhaustive-deps
   const fontSize = grid.style.fontSize ?? BASE_FONT_SIZE
   const zebra = grid.style.zebra === true
   const slots = useMemo(() => (showEmptySlots ? emptySlots(grid) : []), [showEmptySlots, grid])

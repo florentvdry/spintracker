@@ -5,7 +5,7 @@ import { ipcService, type Json } from '@/services/ipcService'
 import { useTranslation } from 'react-i18next'
 import { useLiveHudStore } from '@/stores/liveHudStore'
 import { logError } from '@/utils/log'
-import { figureKey, requestsOf, type CellView, type GridPosition, type HudFigure, type HudFigures, type HudGrid } from './hudGrid'
+import { figureKey, requestsOf, type PoolColoring, type CellView, type GridPosition, type HudFigure, type HudFigures, type HudGrid } from './hudGrid'
 import { dragTo, type Rect } from './hudEditor'
 import { GRID_STEP, seatPositions, SEATS_BY_FORMAT, type HudFormat, type HudRoom, type SeatPlacements } from './hudProfile'
 import { figureHandsBody, HOVER_DELAY_MS, parseFigureHands, prettyLabel, type FigureRef, type HandsOf } from './figureHands'
@@ -90,6 +90,38 @@ function useLivePanels(payload: HudPayload | null, layoutKey: string, requests: 
   return panels
 }
 
+/** The average of the player's own base for every figure asked. */
+function usePoolFigures(payload: HudPayload | null, requests: ReturnType<typeof requestsOf>, enabled: boolean): HudFigures | null {
+  const [figures, setFigures] = useState<HudFigures | null>(null)
+  const room = payload?.room
+  const hero = payload?.hero
+
+  useEffect(() => {
+    if (!enabled || !room || !hero) {
+      setFigures(null)
+      return undefined
+    }
+    let cancelled = false
+    void ipcService
+      .getHudPool({ room, heroName: hero, players: [], stats: requests })
+      .then((result) => {
+        if (cancelled || !result.success) return
+        const next: HudFigures = {}
+        for (const stat of (result.data?.stats ?? []) as Json[]) {
+          if (typeof stat.num !== 'number' || typeof stat.den !== 'number') continue
+          next[figureKey(stat.section, stat.label, stat.column ?? null, stat.bucket ?? null)] = { pct: stat.pct ?? null, num: stat.num, den: stat.den }
+        }
+        setFigures(next)
+      })
+      .catch((error: unknown) => logError('Could not read the pool averages:', error))
+    return () => {
+      cancelled = true
+    }
+  }, [enabled, room, hero, requests])
+
+  return figures
+}
+
 interface OpenPopup {
   /** The cell that opened it, so that a second click on the same cell closes it. */
   key: string
@@ -169,6 +201,8 @@ export default function HudOverlay() {
   const format = payload?.format ?? DEMO_FORMAT
   const layout = profile.layouts[format]
   const requests = useMemo(() => requestsOf(layout), [layout])
+  const poolFigures = usePoolFigures(payload, requests, profile.poolColors)
+  const pool = useMemo<PoolColoring | undefined>(() => (poolFigures ? { figures: poolFigures, threshold: profile.poolThreshold } : undefined), [poolFigures, profile.poolThreshold])
   const live = useLivePanels(payload, `${profile.id}:${format}`, requests)
 
   const panels = useMemo<LivePanel[]>(() => {
@@ -379,6 +413,7 @@ export default function HudOverlay() {
                 grid={grid}
                 figures={panel.figures}
                 player={{ name: panel.name, tag: panel.tag }}
+                pool={pool}
                 opacity={profile.opacity}
                 onPopup={(cell, event) => openPopup(panel.seat, grid.id, cell, event)}
                 onFigureEnter={(cell, event) => hoverFigure(panel.seat, cell, event)}

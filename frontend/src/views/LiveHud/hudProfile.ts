@@ -24,6 +24,9 @@ export const MAX_SIZE = 1.5
 /** Placement grid, as a fraction of the table width. */
 export const GRID_STEP = 0.02
 export const MAX_PROFILES = 20
+export const DEFAULT_POOL_THRESHOLD = 5
+export const MIN_POOL_THRESHOLD = 1
+export const MAX_POOL_THRESHOLD = 30
 /** An imported file larger than this is refused before it is parsed. */
 export const MAX_IMPORT_CHARS = 8 * 1024 * 1024
 const MAX_NAME_LENGTH = 40
@@ -50,6 +53,10 @@ export interface HudProfile {
   /** How small the panels may get when they fit a small table. */
   fitMinScale: number
   showHero: boolean
+  /** Marks the figures above or below the average of the player's own base (blue under, red above). */
+  poolColors: boolean
+  /** Points a figure must be away from the pool average to be marked. */
+  poolThreshold: number
 }
 
 /** Positions of the grids of one seat, by grid id. */
@@ -98,6 +105,8 @@ export const defaultProfile = (id: string, name: string): HudProfile => ({
   fitToTable: true,
   fitMinScale: MIN_TABLE_SCALE,
   showHero: false,
+  poolColors: false,
+  poolThreshold: DEFAULT_POOL_THRESHOLD,
 })
 
 /** A profile with nothing on it, to build from scratch. */
@@ -181,6 +190,8 @@ function sanitizeProfile(raw: unknown, index: number): SanitizedProfile | null {
       fitToTable: raw.fitToTable !== false,
       fitMinScale: finiteNumber(raw.fitMinScale, MIN_TABLE_SCALE, LOWEST_MIN_TABLE_SCALE, HIGHEST_MIN_TABLE_SCALE),
       showHero: raw.showHero === true,
+      poolColors: raw.poolColors === true,
+      poolThreshold: finiteNumber(raw.poolThreshold, DEFAULT_POOL_THRESHOLD, MIN_POOL_THRESHOLD, MAX_POOL_THRESHOLD),
     },
     migrated,
   }
