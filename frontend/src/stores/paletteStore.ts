@@ -17,6 +17,10 @@ export function applyPalette(name: PaletteName): void {
   root.style.setProperty('--c-positive', rgbTriplet(palette.positive))
   root.style.setProperty('--c-negative', rgbTriplet(palette.negative))
   root.style.setProperty('--c-deviation', rgbTriplet(palette.deviation))
+  // Plain colours, for the styles that read a variable directly.
+  for (const [tone, color] of Object.entries(palette.respect)) root.style.setProperty(`--respect-${tone}`, color)
+  root.style.setProperty('--pool-above', palette.poolAbove)
+  root.style.setProperty('--pool-below', palette.poolBelow)
 }
 
 /** The global palette: shared by every window (the HUD included) through the browser storage. */

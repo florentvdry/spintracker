@@ -224,6 +224,13 @@ export function groupByPosition(spots: readonly SpotReport[]): PositionGroup[] {
   return [...groups.values()].map((g) => ({ ...g, respect: respectOf({ compared: g.decisions, matches: g.matches }) })).sort((a, b) => rank(a) - rank(b))
 }
 
+/** Colours of the tones, shared by the rings, the bars and the big figure: the palette sets the variables. */
+export const RESPECT_COLORS: Record<RespectTone, string> = {
+  good: 'var(--respect-good, #2fd45a)',
+  ok: 'var(--respect-ok, #a6c93a)',
+  work: 'var(--respect-work, #e8962d)',
+}
+
 export function respectTone(respect: number): RespectTone {
   if (respect >= GOOD_RESPECT) return 'good'
   return respect >= OK_RESPECT ? 'ok' : 'work'
