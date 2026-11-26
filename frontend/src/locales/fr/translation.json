@@ -431,6 +431,16 @@
     }
   },
   "players": {
+    "summary": {
+      "games": "Parties en commun",
+      "hands": "Mains en commun",
+      "cev": "Ton CEV contre lui",
+      "cev_per_game": "CEV par partie",
+      "tags": "Tags",
+      "note_placeholder": "Note sur ce joueur",
+      "save_note": "Enregistrer la note",
+      "saved": "Enregistré"
+    },
     "title": "Joueurs",
     "subtitle": "Statistiques des joueurs",
     "filter_all": "Tous",
@@ -673,6 +683,17 @@
   },
   "settings": {
     "title": "Paramètres",
+    "auto_tags": {
+      "title": "Tags automatiques des joueurs",
+      "subtitle": "Un tag décrit comment un joueur joue, d'après ses stats. Recalculé après chaque import.",
+      "tag": "Tag",
+      "over": "sur au moins",
+      "chances": "occasions",
+      "add": "Ajouter une règle",
+      "save": "Enregistrer et recalculer",
+      "saved": "Règles enregistrées",
+      "invalid": "Les règles ne sont pas valides (un tag, un pourcentage de 0 à 100)."
+    },
     "subtitle": "Configuration de l'application",
     "general": {
       "title": "Général",

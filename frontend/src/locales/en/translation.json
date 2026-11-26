@@ -431,6 +431,16 @@
     "total_hands": "{{total}} hands found"
   },
   "players": {
+    "summary": {
+      "games": "Games together",
+      "hands": "Hands together",
+      "cev": "Your CEV against them",
+      "cev_per_game": "CEV per game",
+      "tags": "Tags",
+      "note_placeholder": "Note on this player",
+      "save_note": "Save the note",
+      "saved": "Saved"
+    },
     "title": "Players",
     "subtitle": "Player statistics",
     "filter_all": "All",
@@ -619,6 +629,17 @@
   },
   "settings": {
     "title": "Settings",
+    "auto_tags": {
+      "title": "Automatic player tags",
+      "subtitle": "A tag describes how a player plays, from their figures. Recomputed after every import.",
+      "tag": "Tag",
+      "over": "over at least",
+      "chances": "chances",
+      "add": "Add a rule",
+      "save": "Save and recompute",
+      "saved": "Rules saved",
+      "invalid": "The rules are not valid (a tag, a percentage from 0 to 100)."
+    },
     "subtitle": "Configure the application",
     "general": {
       "title": "General",

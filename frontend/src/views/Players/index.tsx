@@ -11,6 +11,7 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import { parseCards } from '@/utils/formatters'
 import AliasManagement from './AliasManagement'
+import PlayerSummaryCard from './PlayerSummaryCard'
 import { logError } from '@/utils/log'
 
 const PAGE_SIZE = 50
@@ -45,6 +46,17 @@ export default function Players() {
   const [handsPage, setHandsPage] = useState(1)
   const [handsSortBy, setHandsSortBy] = useState('date_desc')
   const [expandedHands, setExpandedHands] = useState<Record<string, boolean>>({})
+  // Automatic tags by room and name, read once with the list.
+  const [autoTags, setAutoTags] = useState<Record<string, string[]>>({})
+
+  useEffect(() => {
+    void ipcService.getAutoTags().then((result) => {
+      if (!result.success) return
+      const byPlayer: Record<string, string[]> = {}
+      for (const entry of result.data as { room: string; name: string; tags: string[] }[]) byPlayer[`${entry.room}|${entry.name}`] = entry.tags
+      setAutoTags(byPlayer)
+    })
+  }, [])
 
   const loadPlayers = useCallback(async (regFilter: RegFilter) => {
     setLoading(true)
@@ -243,6 +255,9 @@ export default function Players() {
                             {player.name ? player.name.charAt(0).toUpperCase() : '?'}
                           </div>
                           <span className="text-sm font-medium text-gray-100">{player.name}</span>
+                          {(autoTags[`${player.room}|${player.name}`] ?? []).map((tag) => (
+                            <span key={tag} className="rounded-full bg-dark-300 px-2 py-0.5 text-[10px] font-medium text-gray-300">{tag}</span>
+                          ))}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right"><span className="text-sm text-gray-300">{(player.total_hands || 0).toLocaleString()}</span></td>
@@ -332,6 +347,8 @@ export default function Players() {
               </div>
               <button onClick={closeModal} className="p-2 rounded-lg hover:bg-dark-300 text-gray-400 hover:text-gray-100 transition-colors"><X className="w-5 h-5" /></button>
             </div>
+
+            {heroName && <PlayerSummaryCard heroName={heroName} name={selectedPlayer.name} room={selectedPlayer.room ?? ''} />}
 
             <div className="flex-1 overflow-auto p-2">
               {handsLoading && !playerHands ? (

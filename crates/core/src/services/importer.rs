@@ -14,6 +14,7 @@ use std::time::{Duration, Instant};
 use rayon::prelude::*;
 use rusqlite::Connection;
 
+use super::auto_tags;
 use super::summaries::{self, SummaryKind, Summaries};
 use crate::db::Database;
 use crate::engines::analytics::AnalyticsCalculator;
@@ -79,6 +80,13 @@ impl SummaryCache {
             SummaryKind::Unibet => "Unibet",
         };
         self.by_folder.entry((folder, room)).or_insert_with(|| summaries::load_for_file(file, kind))
+    }
+}
+
+/// Recomputes the automatic player tags; a failure is logged, it must not undo an import.
+fn refresh_auto_tags(conn: &mut Connection) {
+    if let Err(error) = auto_tags::recompute(conn) {
+        log::warn!("[import] could not refresh the automatic player tags: {error}");
     }
 }
 
@@ -149,7 +157,9 @@ impl Importer {
             results.push(self.import_one(path, cancel, &mut |progress| on_progress(index, progress), Some(&mut cache)));
         }
         if results.iter().any(|r| r.as_ref().is_ok_and(|s| s.imported > 0)) {
-            players::update_player_stats(&*self.db.conn()?)?;
+            let mut conn = self.db.conn()?;
+            players::update_player_stats(&conn)?;
+            refresh_auto_tags(&mut conn);
         }
         Ok(results)
     }
@@ -222,6 +232,7 @@ impl Importer {
 
         if imported > 0 && !batched {
             players::update_player_stats(&conn)?;
+            refresh_auto_tags(&mut conn);
         }
 
         let summary = ImportSummary {

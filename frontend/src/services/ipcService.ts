@@ -108,6 +108,9 @@ export const ipcService = {
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),
   getMultiplierStats: (options: Json = {}) => backend('POST', '/db/multiplier-stats', options),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),
+  // User preferences the backend computes with
+  getSetting: (key: string) => backend('GET', `/settings/${enc(key)}`),
+  saveSetting: (key: string, value: unknown) => backend('PUT', `/settings/${enc(key)}`, value),
   getDetailedStats: (
     heroName?: string | null,
     dateFrom?: string | null,
@@ -208,6 +211,11 @@ export const ipcService = {
   associateHudTable: (table: number, gameId: string) => command<ApiResult>('hud_associate', { table, gameId }),
   setHudTableHidden: (table: number, hidden: boolean) => command<ApiResult>('hud_set_hidden', { table, hidden }),
   getHudPlayers: (body: Json) => backend('POST', '/hud/players', body),
+  getAutoTags: () => backend('GET', '/players/auto-tags'),
+  getAutoTagRules: () => backend('GET', '/players/auto-tags/rules'),
+  saveAutoTagRules: (rules: Json) => backend('PUT', '/players/auto-tags/rules', rules),
+  getPlayerSummary: (params: { heroName: string; name: string; room: string }) => backend('GET', `/players/summary${query(params)}`),
+  saveHudNote: (body: Json) => backend('PUT', '/hud/notes', body),
   getHudFigureHands: (body: Json) => backend('POST', '/hud/figure-hands', body),
   getHudSettings: () => command<ApiResult>('hud_settings_get'),
   setHudSettings: (settings: Json) => command<ApiResult>('hud_settings_set', { settings }),

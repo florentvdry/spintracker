@@ -21,6 +21,9 @@ use crate::engines::equity::calculate as calculate_equity;
 use crate::models::ParsedHand;
 use crate::parsers::{get_parser, get_parser_by_room};
 use crate::repos::detailed_stats::{detailed_stats, DetailedQuery};
+use crate::repos::app_settings;
+use crate::repos::player_summary;
+use crate::services::auto_tags;
 use crate::repos::hud_stats;
 use crate::repos::hands_query::{self, HandsAgainstQuery, HandsQuery};
 use crate::repos::player_queries::{self, PlayersQuery};
@@ -312,6 +315,39 @@ impl Backend {
                 let q: heatmap::RangeHeatmapQuery = if post { r.body_or_default()? } else { Default::default() };
                 Response::data(heatmap::range_heatmap(&*conn()?, &q)?)
             }
+
+            // --- User preferences the backend computes with
+            ("GET", ["settings", key]) if app_settings::is_allowed(key) => {
+                Response::data(app_settings::get(&*conn()?, key)?.unwrap_or(Value::Null))
+            }
+            ("PUT", ["settings", key]) if app_settings::is_allowed(key) => {
+                app_settings::set(&*conn()?, key, &r.body.clone().unwrap_or(Value::Null))?;
+                self.db.bump_data_version();
+                Response::data(json!({ "saved": true }))
+            }
+
+            // --- Automatic player tags and the history against one player
+            ("GET", ["players", "auto-tags"]) => Response::data(Value::Array(auto_tags::all_tags(&*conn()?)?)),
+            ("POST", ["players", "auto-tags", "recompute"]) => {
+                let written = auto_tags::recompute(&mut *conn()?)?;
+                self.db.bump_data_version();
+                Response::data(json!({ "tags": written }))
+            }
+            ("GET", ["players", "auto-tags", "rules"]) => Response::data(serde_json::to_value(auto_tags::load_rules(&*conn()?)?)?),
+            ("PUT", ["players", "auto-tags", "rules"]) => match r.body_as::<Vec<auto_tags::Rule>>() {
+                Ok(rules) if rules.len() <= auto_tags::MAX_RULES && rules.iter().all(|rule| rule.validate().is_ok()) => {
+                    let mut conn = conn()?;
+                    app_settings::set(&conn, "auto_tag_rules", &serde_json::to_value(&rules)?)?;
+                    let written = auto_tags::recompute(&mut conn)?;
+                    self.db.bump_data_version();
+                    Response::data(json!({ "saved": rules.len(), "tags": written }))
+                }
+                _ => Response::message(400, "Invalid tag rules"),
+            },
+            ("GET", ["players", "summary"]) => match (r.query_str("heroName"), r.query_str("name")) {
+                (Some(hero), Some(name)) => Response::data(player_summary::summary(&*conn()?, &hero, &name, &r.query_str("room").unwrap_or_default())?),
+                _ => Response::message(400, "heroName and name are required"),
+            },
 
             // --- Players
             ("GET" | "POST", ["db", "players"]) => {
