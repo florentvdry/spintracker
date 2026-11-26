@@ -3,6 +3,7 @@
 pub mod analysis;
 pub mod custom_stats;
 pub mod hud;
+pub mod exploit;
 pub mod importer;
 pub mod live_import;
 pub mod summaries;

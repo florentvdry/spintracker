@@ -4,6 +4,7 @@
 //! the data changes (see [`Database::data_version`]).
 
 use std::collections::HashMap;
+use std::time::{Duration, Instant};
 use std::sync::{Arc, Mutex};
 
 use rusqlite::Connection;
@@ -155,14 +156,21 @@ struct Cache {
     rows: HashMap<CacheKey, CachedRows>,
 }
 
+/// How long the rows of a pool are kept: the average of a whole base moves slowly, and reading
+/// it takes a pass over every hand.
+const POOL_TTL: Duration = Duration::from_secs(300);
+
+type PoolKey = (String, String);
+
 pub struct HudService {
     db: Arc<Database>,
     cache: Mutex<Cache>,
+    pools: Mutex<HashMap<PoolKey, (Instant, Arc<Vec<Row>>)>>,
 }
 
 impl HudService {
     pub fn new(db: Arc<Database>) -> Self {
-        Self { db, cache: Mutex::new(Cache::default()) }
+        Self { db, cache: Mutex::new(Cache::default()), pools: Mutex::new(HashMap::new()) }
     }
 
     /// `conn` is the caller's connection: asking the pool for a second one while holding the first
@@ -206,6 +214,42 @@ impl HudService {
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));
         }
         Ok(json!({ "players": players }))
+    }
+
+    /// The rows of every opponent of the hero in a room, kept for [`POOL_TTL`].
+    fn pool_rows(&self, room: &str, hero: &str) -> Result<Arc<Vec<Row>>> {
+        let key: PoolKey = (room.to_string(), hero.to_string());
+        let cached = {
+            let pools = self.pools.lock().expect("the HUD pool lock is never held across a panic");
+            pools.get(&key).filter(|(at, _)| at.elapsed() < POOL_TTL).map(|(_, rows)| rows.clone())
+        };
+        match cached {
+            Some(rows) => Ok(rows),
+            None => {
+                let conn = self.db.conn()?;
+                let rows = Arc::new(hud_stats::load_pool_rows(&conn, room, hero)?);
+                self.pools.lock().expect("the HUD pool lock is never held across a panic").insert(key, (Instant::now(), rows.clone()));
+                Ok(rows)
+            }
+        }
+    }
+
+    /// Real heads-up hands of the player to practise on, in the `SB` or `BB`.
+    pub fn exploit_spots(&self, room: &str, hero: &str, position: &str, limit: usize) -> std::result::Result<Value, String> {
+        if !matches!(position, "SB" | "BB") || room.trim().is_empty() || hero.trim().is_empty() {
+            return Err("room, heroName and a position of SB or BB are required".into());
+        }
+        let conn = self.db.conn().map_err(|e| e.to_string())?;
+        crate::services::exploit::spots(&conn, room, hero, position, limit.clamp(1, 50)).map_err(|e| e.to_string())
+    }
+
+    /// Best responses against the all-in frequencies the pool shows, one block per stack depth.
+    pub fn exploit(&self, room: &str, hero: &str) -> std::result::Result<Value, String> {
+        if room.trim().is_empty() || hero.trim().is_empty() {
+            return Err("room and heroName are required".into());
+        }
+        let rows = self.pool_rows(room, hero).map_err(|e| e.to_string())?;
+        Ok(crate::services::exploit::analyze(&rows))
     }
 
     /// The newest hands behind a figure, summarised, with how many there are in all.

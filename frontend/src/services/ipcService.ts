@@ -107,6 +107,9 @@ export const ipcService = {
     backend('POST', '/db/session-history?supersede=true', { limit, heroName, dateFrom, dateTo, buyIn }),
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),
   getMultiplierStats: (options: Json = {}) => backend('POST', '/db/multiplier-stats', options),
+  getExploit: (options: Json) => backend('POST', '/hud/exploit', options),
+  getPushFoldReference: (options: Json) => backend('POST', '/reference/push-fold', options),
+  getExploitSpots: (options: Json) => backend('POST', '/hud/exploit-spots', options),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),
   getDetailedStats: (
     heroName?: string | null,
