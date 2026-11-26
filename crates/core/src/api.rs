@@ -207,7 +207,7 @@ impl Backend {
         let response = match (r.method, segments) {
             ("GET", ["health"]) => Response::ok(json!({
                 "success": true, "status": "running", "version": API_VERSION,
-                "features": { "database": true, "parsers": ["Betclic", "Winamax", "Unibet"], "equity": true, "analysis": true },
+                "features": { "database": true, "parsers": ["Betclic", "Winamax", "Unibet", "PokerStars", "GGPoker"], "equity": true, "analysis": true },
             })),
 
             // --- Parsing and import
