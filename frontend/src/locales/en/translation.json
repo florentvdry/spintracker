@@ -410,6 +410,9 @@
     }
   },
   "hand_history": {
+    "selection": "Hands of {{title}}: {{count}} hands",
+    "selection_clear": "Show all hands",
+    "open_in_history": "Open in the hand history",
     "range_deviation": "Deviation from my range · {{count}}",
     "title": "Tournament History",
     "subtitle": "Browse your tournaments and hands",

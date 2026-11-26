@@ -51,6 +51,7 @@ export default function HandHistory() {
   useEffect(() => {
     loadData()
   }, [heroName, dateRange, buyIn, selectedSession, filters.result, filters.sortBy, filters.rangeDeviation, loadData])
+  const selection = hands.handSelection
 
   // The "left my range" filter only exists for players who built ranges; its count is for all time.
   const [deviationCount, setDeviationCount] = useState<number | null>(null)
@@ -112,6 +113,13 @@ export default function HandHistory() {
           </select>
         </div>
       </div>
+
+      {selection && !isTournaments && (
+        <div className="flex items-center gap-3 rounded-lg border border-primary-500/30 bg-primary-500/10 px-3 py-2 text-sm text-gray-200">
+          <span className="min-w-0 flex-1 truncate">{t('hand_history.selection', { title: selection.title, count: selection.ids.length })}</span>
+          <button className="btn-secondary text-xs" onClick={hands.clearHandSelection}>{t('hand_history.selection_clear')}</button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 items-start">
         <div>

@@ -48,7 +48,15 @@ pub struct HandsQuery {
     pub sort_by: Option<String>,
     /// Only the hands where the hero left their own range (needs the stored range checks).
     pub range_deviation: bool,
+    /// Only these hands (the hands behind a figure of a report). At most [`MAX_HAND_IDS`] are read.
+    pub hand_ids: Option<Vec<String>>,
 }
+
+/// Most hand ids a query accepts: each one is a bound parameter.
+pub const MAX_HAND_IDS: usize = 500;
+
+/// Names of the parameters of the hand ids (the bound names must live as long as the query).
+const HAND_ID_PARAMS: [&str; MAX_HAND_IDS] = ["@hid0", "@hid1", "@hid2", "@hid3", "@hid4", "@hid5", "@hid6", "@hid7", "@hid8", "@hid9", "@hid10", "@hid11", "@hid12", "@hid13", "@hid14", "@hid15", "@hid16", "@hid17", "@hid18", "@hid19", "@hid20", "@hid21", "@hid22", "@hid23", "@hid24", "@hid25", "@hid26", "@hid27", "@hid28", "@hid29", "@hid30", "@hid31", "@hid32", "@hid33", "@hid34", "@hid35", "@hid36", "@hid37", "@hid38", "@hid39", "@hid40", "@hid41", "@hid42", "@hid43", "@hid44", "@hid45", "@hid46", "@hid47", "@hid48", "@hid49", "@hid50", "@hid51", "@hid52", "@hid53", "@hid54", "@hid55", "@hid56", "@hid57", "@hid58", "@hid59", "@hid60", "@hid61", "@hid62", "@hid63", "@hid64", "@hid65", "@hid66", "@hid67", "@hid68", "@hid69", "@hid70", "@hid71", "@hid72", "@hid73", "@hid74", "@hid75", "@hid76", "@hid77", "@hid78", "@hid79", "@hid80", "@hid81", "@hid82", "@hid83", "@hid84", "@hid85", "@hid86", "@hid87", "@hid88", "@hid89", "@hid90", "@hid91", "@hid92", "@hid93", "@hid94", "@hid95", "@hid96", "@hid97", "@hid98", "@hid99", "@hid100", "@hid101", "@hid102", "@hid103", "@hid104", "@hid105", "@hid106", "@hid107", "@hid108", "@hid109", "@hid110", "@hid111", "@hid112", "@hid113", "@hid114", "@hid115", "@hid116", "@hid117", "@hid118", "@hid119", "@hid120", "@hid121", "@hid122", "@hid123", "@hid124", "@hid125", "@hid126", "@hid127", "@hid128", "@hid129", "@hid130", "@hid131", "@hid132", "@hid133", "@hid134", "@hid135", "@hid136", "@hid137", "@hid138", "@hid139", "@hid140", "@hid141", "@hid142", "@hid143", "@hid144", "@hid145", "@hid146", "@hid147", "@hid148", "@hid149", "@hid150", "@hid151", "@hid152", "@hid153", "@hid154", "@hid155", "@hid156", "@hid157", "@hid158", "@hid159", "@hid160", "@hid161", "@hid162", "@hid163", "@hid164", "@hid165", "@hid166", "@hid167", "@hid168", "@hid169", "@hid170", "@hid171", "@hid172", "@hid173", "@hid174", "@hid175", "@hid176", "@hid177", "@hid178", "@hid179", "@hid180", "@hid181", "@hid182", "@hid183", "@hid184", "@hid185", "@hid186", "@hid187", "@hid188", "@hid189", "@hid190", "@hid191", "@hid192", "@hid193", "@hid194", "@hid195", "@hid196", "@hid197", "@hid198", "@hid199", "@hid200", "@hid201", "@hid202", "@hid203", "@hid204", "@hid205", "@hid206", "@hid207", "@hid208", "@hid209", "@hid210", "@hid211", "@hid212", "@hid213", "@hid214", "@hid215", "@hid216", "@hid217", "@hid218", "@hid219", "@hid220", "@hid221", "@hid222", "@hid223", "@hid224", "@hid225", "@hid226", "@hid227", "@hid228", "@hid229", "@hid230", "@hid231", "@hid232", "@hid233", "@hid234", "@hid235", "@hid236", "@hid237", "@hid238", "@hid239", "@hid240", "@hid241", "@hid242", "@hid243", "@hid244", "@hid245", "@hid246", "@hid247", "@hid248", "@hid249", "@hid250", "@hid251", "@hid252", "@hid253", "@hid254", "@hid255", "@hid256", "@hid257", "@hid258", "@hid259", "@hid260", "@hid261", "@hid262", "@hid263", "@hid264", "@hid265", "@hid266", "@hid267", "@hid268", "@hid269", "@hid270", "@hid271", "@hid272", "@hid273", "@hid274", "@hid275", "@hid276", "@hid277", "@hid278", "@hid279", "@hid280", "@hid281", "@hid282", "@hid283", "@hid284", "@hid285", "@hid286", "@hid287", "@hid288", "@hid289", "@hid290", "@hid291", "@hid292", "@hid293", "@hid294", "@hid295", "@hid296", "@hid297", "@hid298", "@hid299", "@hid300", "@hid301", "@hid302", "@hid303", "@hid304", "@hid305", "@hid306", "@hid307", "@hid308", "@hid309", "@hid310", "@hid311", "@hid312", "@hid313", "@hid314", "@hid315", "@hid316", "@hid317", "@hid318", "@hid319", "@hid320", "@hid321", "@hid322", "@hid323", "@hid324", "@hid325", "@hid326", "@hid327", "@hid328", "@hid329", "@hid330", "@hid331", "@hid332", "@hid333", "@hid334", "@hid335", "@hid336", "@hid337", "@hid338", "@hid339", "@hid340", "@hid341", "@hid342", "@hid343", "@hid344", "@hid345", "@hid346", "@hid347", "@hid348", "@hid349", "@hid350", "@hid351", "@hid352", "@hid353", "@hid354", "@hid355", "@hid356", "@hid357", "@hid358", "@hid359", "@hid360", "@hid361", "@hid362", "@hid363", "@hid364", "@hid365", "@hid366", "@hid367", "@hid368", "@hid369", "@hid370", "@hid371", "@hid372", "@hid373", "@hid374", "@hid375", "@hid376", "@hid377", "@hid378", "@hid379", "@hid380", "@hid381", "@hid382", "@hid383", "@hid384", "@hid385", "@hid386", "@hid387", "@hid388", "@hid389", "@hid390", "@hid391", "@hid392", "@hid393", "@hid394", "@hid395", "@hid396", "@hid397", "@hid398", "@hid399", "@hid400", "@hid401", "@hid402", "@hid403", "@hid404", "@hid405", "@hid406", "@hid407", "@hid408", "@hid409", "@hid410", "@hid411", "@hid412", "@hid413", "@hid414", "@hid415", "@hid416", "@hid417", "@hid418", "@hid419", "@hid420", "@hid421", "@hid422", "@hid423", "@hid424", "@hid425", "@hid426", "@hid427", "@hid428", "@hid429", "@hid430", "@hid431", "@hid432", "@hid433", "@hid434", "@hid435", "@hid436", "@hid437", "@hid438", "@hid439", "@hid440", "@hid441", "@hid442", "@hid443", "@hid444", "@hid445", "@hid446", "@hid447", "@hid448", "@hid449", "@hid450", "@hid451", "@hid452", "@hid453", "@hid454", "@hid455", "@hid456", "@hid457", "@hid458", "@hid459", "@hid460", "@hid461", "@hid462", "@hid463", "@hid464", "@hid465", "@hid466", "@hid467", "@hid468", "@hid469", "@hid470", "@hid471", "@hid472", "@hid473", "@hid474", "@hid475", "@hid476", "@hid477", "@hid478", "@hid479", "@hid480", "@hid481", "@hid482", "@hid483", "@hid484", "@hid485", "@hid486", "@hid487", "@hid488", "@hid489", "@hid490", "@hid491", "@hid492", "@hid493", "@hid494", "@hid495", "@hid496", "@hid497", "@hid498", "@hid499"];
 
 impl Default for HandsQuery {
     fn default() -> Self {
@@ -65,6 +73,7 @@ impl Default for HandsQuery {
             hero_name: None,
             sort_by: None,
             range_deviation: false,
+            hand_ids: None,
         }
     }
 }
@@ -231,6 +240,16 @@ pub fn get_hands(conn: &Connection, q: &HandsQuery) -> Result<Value> {
     }
     if q.range_deviation {
         clauses.push("h.id IN (SELECT hand_id FROM hand_range_checks WHERE status = 'deviation')".into());
+    }
+    if let Some(ids) = &q.hand_ids {
+        if ids.is_empty() {
+            // An empty list selects nothing, it does not lift the filter.
+            clauses.push("0".into());
+        } else {
+            let names: Vec<&'static str> = ids.iter().take(MAX_HAND_IDS).enumerate().map(|(i, _)| HAND_ID_PARAMS[i]).collect();
+            clauses.push(format!("h.id IN ({})", names.join(", ")));
+            binds.extend(ids.iter().take(MAX_HAND_IDS).enumerate().map(|(i, id)| (HAND_ID_PARAMS[i], SqlValue::Text(id.clone()))));
+        }
     }
     match non_empty(&q.result).map(str::to_lowercase).as_deref() {
         Some("won") => clauses.push("ph.net_profit > 0".into()),

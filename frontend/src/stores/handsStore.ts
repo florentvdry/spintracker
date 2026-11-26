@@ -27,6 +27,8 @@ interface HandsState {
   pageSize: number
   filters: HandsFilters
   viewMode: ViewMode
+  /** The hands behind a figure of a report: when set, the list shows only these. */
+  handSelection: { title: string; ids: string[] } | null
   selectedHand: Json | null
   selectedTournament: Json | null
   tournamentHands: Json[]
@@ -38,6 +40,9 @@ interface HandsState {
   setPage: (page: number) => void
   setSortBy: (sortBy: string) => void
   setFilters: (updates: Partial<HandsFilters>) => void
+  /** Shows exactly these hands in the history (by hands view), under a title saying where they come from. */
+  showHands: (title: string, ids: string[]) => void
+  clearHandSelection: () => void
   selectHand: (handId: string | number | null) => Promise<void>
   selectTournament: (tournament: Json | null) => void
   clearSelection: () => void
@@ -59,6 +64,7 @@ export const useHandsStore = create<HandsState>((set, get) => ({
   pageSize: 50,
   filters: { position: null, result: null, minPot: null, maxPot: null, sortBy: 'date_desc', rangeDeviation: false },
   viewMode: 'tournaments',
+  handSelection: null,
   selectedHand: null,
   selectedTournament: null,
   tournamentHands: [],
@@ -98,10 +104,11 @@ export const useHandsStore = create<HandsState>((set, get) => ({
     set({ isLoading: true })
     const { heroName } = useFilterStore.getState()
     const { dateFrom, dateTo } = currentDateRange()
-    const { currentPage, pageSize, filters } = get()
+    const { currentPage, pageSize, filters, handSelection } = get()
 
     try {
       const result = await ipcService.getHands({
+        handIds: handSelection?.ids ?? undefined,
         page: currentPage,
         limit: pageSize,
         heroName,
@@ -152,6 +159,16 @@ export const useHandsStore = create<HandsState>((set, get) => ({
 
   setFilters: (updates) => {
     set((state) => ({ filters: { ...state.filters, ...updates }, currentPage: 1 }))
+    void get().loadData()
+  },
+
+  showHands: (title, ids) => {
+    set({ handSelection: { title, ids }, viewMode: 'hands', currentPage: 1 })
+    void get().loadData()
+  },
+
+  clearHandSelection: () => {
+    set({ handSelection: null, currentPage: 1 })
     void get().loadData()
   },
 

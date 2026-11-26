@@ -5,6 +5,8 @@ import { ipcService, type Json } from '@/services/ipcService'
 import { buyInParam, currentDateRange, useFilterStore } from '@/stores/filterStore'
 import { useReplayerStore } from '@/stores/replayerStore'
 import { useCustomStatsStore } from '@/stores/customStatsStore'
+import { useNavigate } from 'react-router-dom'
+import { useHandsStore } from '@/stores/handsStore'
 import CustomStatsPanel from '../CustomStats/CustomStatsPanel'
 import StatBuilder from '../CustomStats/StatBuilder'
 import type { CustomStat } from '../CustomStats/customStatModel'
@@ -48,6 +50,8 @@ export default function Stats() {
   const aliases = useFilterStore((s) => s.aliases)
   const fetchAliases = useFilterStore((s) => s.fetchAliases)
   const openSingleHandReplayer = useReplayerStore((s) => s.openSingleHandReplayer)
+  const showHands = useHandsStore((s) => s.showHands)
+  const navigate = useNavigate()
 
   const [loading, setLoading] = useState(false)
   const [stats, setStats] = useState<Json | null>(null)
@@ -279,6 +283,18 @@ export default function Stats() {
                 <strong>{hudDetail.sample?.num ?? 0}</strong>
                 <span>/ {hudDetail.sample?.den ?? 0} {t('common.opportunities')}</span>
               </div>
+              {hudDetail.hands?.length > 0 && (
+                <button
+                  className="modal-close"
+                  onClick={() => {
+                    showHands(`${hudDetail.label} (${hudDetail.context || t('stats.occurrences')})`, hudDetail.hands.map((hand: Json) => String(hand.id)))
+                    setHudDetail(null)
+                    navigate('/hands')
+                  }}
+                >
+                  {t('hand_history.open_in_history')}
+                </button>
+              )}
               <button className="modal-close" onClick={() => setHudDetail(null)}>{t('common.close')}</button>
             </header>
 

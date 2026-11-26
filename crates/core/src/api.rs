@@ -402,6 +402,13 @@ impl Backend {
                     Err(message) => Response::message(400, &message),
                 }
             }
+            ("POST", ["hud", "figure-hand-ids"]) => {
+                let request: crate::services::hud::FigureHandIdsRequest = r.body_as()?;
+                match request.validate() {
+                    Ok(()) => Response::data(self.hud.figure_hand_ids(&request)?),
+                    Err(message) => Response::message(400, &message),
+                }
+            }
             ("POST", ["hud", "figure-hands"]) => {
                 let request: HudFigureHandsRequest = r.body_as()?;
                 match request.validate() {

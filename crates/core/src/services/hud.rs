@@ -30,6 +30,8 @@ const CACHE_CAPACITY: usize = 500;
 /// Hands listed behind a figure by default, and at most: a list is read at a glance.
 const DEFAULT_FIGURE_HANDS: usize = 30;
 const MAX_FIGURE_HANDS: usize = 50;
+/// Hands a report sends to the hand history: the history reads them as bound parameters.
+pub const MAX_FIGURE_HAND_IDS: usize = crate::repos::hands_query::MAX_HAND_IDS;
 /// Stack depths a group can hold: there are not more depths than this.
 const MAX_GROUP_BUCKETS: usize = 16;
 
@@ -88,6 +90,32 @@ impl HudFigureHandsRequest {
         }
         if self.limit == 0 || self.limit > MAX_FIGURE_HANDS {
             return Err(format!("limit must be between 1 and {MAX_FIGURE_HANDS}"));
+        }
+        if self.buckets.len() > MAX_GROUP_BUCKETS {
+            return Err(format!("at most {MAX_GROUP_BUCKETS} buckets"));
+        }
+        Ok(())
+    }
+}
+
+/// The hands behind one figure of a player (the hero when `player` is empty), in every room: what a
+/// report needs to show them in the hand history.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FigureHandIdsRequest {
+    pub hero_name: String,
+    #[serde(default)]
+    pub player: String,
+    pub stat: HudStatRequest,
+    #[serde(default)]
+    pub buckets: Vec<String>,
+    pub which: HandsOf,
+}
+
+impl FigureHandIdsRequest {
+    pub fn validate(&self) -> std::result::Result<(), String> {
+        if self.hero_name.trim().is_empty() {
+            return Err("heroName is required".into());
         }
         if self.buckets.len() > MAX_GROUP_BUCKETS {
             return Err(format!("at most {MAX_GROUP_BUCKETS} buckets"));
@@ -222,6 +250,34 @@ impl HudService {
             hand["done"] = json!(done);
         }
         Ok(json!({ "total": total, "hands": hands }))
+    }
+
+    /// The newest hands behind a figure over every room, at most [`MAX_FIGURE_HAND_IDS`], and how
+    /// many there are in all.
+    pub fn figure_hand_ids(&self, request: &FigureHandIdsRequest) -> Result<Value> {
+        let conn = self.db.conn()?;
+        let with_custom = hud_stats::is_custom(&request.stat);
+        let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
+        let player = if request.player.trim().is_empty() { request.hero_name.as_str() } else { request.player.as_str() };
+        let rooms: Vec<String> = {
+            let mut stmt = conn.prepare("SELECT DISTINCT room FROM hands WHERE room IS NOT NULL AND room != ''")?;
+            let rooms = stmt.query_map([], |r| r.get(0))?.collect::<std::result::Result<_, _>>()?;
+            rooms
+        };
+        let mut found: Vec<(String, String)> = Vec::new();
+        let mut total = 0;
+        for room in rooms {
+            let rows = hud_stats::load_identified_rows(&conn, &room, &request.hero_name, player, with_custom)?;
+            let (listed, count) = hud_stats::figure_hand_ids(&rows, &request.stat, &request.buckets, &ready, request.which, MAX_FIGURE_HAND_IDS);
+            total += count;
+            for hand in listed {
+                let played_at = rows.iter().find(|r| r.hand_id == hand.hand_id).map(|r| r.played_at.clone()).unwrap_or_default();
+                found.push((played_at, hand.hand_id));
+            }
+        }
+        found.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| a.1.cmp(&b.1)));
+        found.truncate(MAX_FIGURE_HAND_IDS);
+        Ok(json!({ "total": total, "handIds": found.into_iter().map(|(_, id)| id).collect::<Vec<_>>() }))
     }
 
     /// Tournaments of `room` being played: see [`hud_tables::active_tables`].

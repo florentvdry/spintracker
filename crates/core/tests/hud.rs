@@ -542,3 +542,23 @@ fn among_all_the_chances_the_hands_where_the_player_did_it_are_marked() {
     let done = figure_hands(&backend, "riickyy777", vpip, &[], "done", 50);
     assert!(done["hands"].as_array().unwrap().iter().all(|h| h["done"] == true));
 }
+
+#[test]
+fn the_hands_behind_a_figure_open_in_the_hand_list() {
+    let (_dir, backend) = backend_with_hands();
+    let body = json!({ "heroName": HERO, "player": "", "stat": stat("preflop", "VPIP", Some("tot")), "which": "chances" });
+    let ids = backend.handle("POST", "/hud/figure-hand-ids", Some(body)).body["data"].clone();
+    let listed: Vec<String> = ids["handIds"].as_array().unwrap().iter().map(|v| v.as_str().unwrap().to_string()).collect();
+    assert!(!listed.is_empty());
+    assert_eq!(ids["total"].as_u64().unwrap() as usize, listed.len());
+
+    let hands = backend.handle("POST", "/db/hands", Some(json!({ "heroName": HERO, "limit": 100, "handIds": listed })));
+    assert_eq!(hands.status, 200, "{:?}", hands.body);
+    assert_eq!(hands.body["data"]["total"].as_u64().unwrap() as usize, listed.len(), "the list shows exactly the hands of the figure");
+
+    let none = backend.handle("POST", "/db/hands", Some(json!({ "heroName": HERO, "limit": 100, "handIds": [] })));
+    assert_eq!(none.body["data"]["total"], 0, "an empty selection shows nothing");
+
+    let missing = backend.handle("POST", "/hud/figure-hand-ids", Some(json!({ "heroName": "", "stat": stat("preflop", "VPIP", None), "which": "done" })));
+    assert_eq!(missing.status, 400);
+}
