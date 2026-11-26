@@ -13,6 +13,7 @@ use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_dialog::DialogExt;
 
 use crate::backend::BackendState;
+use crate::import_rooms::{FileFigures, RoomTracker};
 
 const PROGRESS_EVENT: &str = "import-progress";
 // The counting phase fills the first 10% of the global progress bar.
@@ -127,11 +128,14 @@ fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], t
             "percent": 0,
             "handsImported": 0,
             "totalHands": Value::Null,
+            "tournaments": 0,
+            "rooms": [],
         }),
     );
     // Counting reads every file, so it runs on all cores. A file that cannot be counted only
     // leaves the total a little short.
-    let total_hands_expected = backend.importer().count_hands_in(&files);
+    let mut rooms = RoomTracker::new(backend.importer().inspect_files(&files));
+    let total_hands_expected = rooms.total_hands();
 
     // Phase 2: import the files and relay their progress.
     let file_share = IMPORT_SHARE / total_files as f64;
@@ -154,6 +158,10 @@ fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], t
         }
         let finished = progress.success;
         current = progress;
+        rooms.update(
+            index,
+            FileFigures { imported: current.hands_imported as u64, skipped: current.hands_skipped as u64, tournaments: current.tournaments as u64 },
+        );
         // Thousands of small files would flood the webview with events.
         if !finished && last_emit.is_some_and(|t| t.elapsed() < EMIT_INTERVAL) {
             return;
@@ -178,6 +186,8 @@ fn import_files(app: &AppHandle, backend: &Arc<Backend>, selected: &[PathBuf], t
                 "handsImported": done_imported + current.hands_imported as u64,
                 "handsSkipped": done_skipped + current.hands_skipped as u64,
                 "totalHands": if total_hands_expected > 0 { json!(total_hands_expected) } else { Value::Null },
+                "tournaments": rooms.tournaments(),
+                "rooms": rooms.rooms_json(),
             }),
         );
     });
