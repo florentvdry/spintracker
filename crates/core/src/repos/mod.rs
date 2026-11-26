@@ -1,5 +1,6 @@
 //! Data access: SQL reads and writes of the application tables.
 
+pub mod bankroll;
 pub mod detailed_stats;
 pub mod hands;
 pub mod hands_query;

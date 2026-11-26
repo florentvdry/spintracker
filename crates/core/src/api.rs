@@ -21,6 +21,7 @@ use crate::engines::equity::calculate as calculate_equity;
 use crate::models::ParsedHand;
 use crate::parsers::{get_parser, get_parser_by_room};
 use crate::repos::detailed_stats::{detailed_stats, DetailedQuery};
+use crate::repos::bankroll;
 use crate::repos::hud_stats;
 use crate::repos::hands_query::{self, HandsAgainstQuery, HandsQuery};
 use crate::repos::player_queries::{self, PlayersQuery};
@@ -313,6 +314,21 @@ impl Backend {
                 Response::data(heatmap::range_heatmap(&*conn()?, &q)?)
             }
 
+
+            // --- Bankroll deposits and withdrawals
+            ("GET", ["bankroll", "transactions"]) => Response::data(serde_json::to_value(bankroll::list(&*conn()?)?)?),
+            ("POST", ["bankroll", "transactions"]) => {
+                let new: bankroll::NewTransaction = r.body_or_default()?;
+                match new.validate() {
+                    Ok(()) => Response::data(json!({ "id": bankroll::add(&*conn()?, &new)? })),
+                    Err(bankroll::Invalid::Date) => Response::failure(400, "Invalid date"),
+                    Err(bankroll::Invalid::Amount) => Response::failure(400, "Invalid amount"),
+                }
+            }
+            ("DELETE", ["bankroll", "transactions", id]) => match id.parse::<i64>() {
+                Ok(id) if bankroll::delete(&*conn()?, id)? => Response::data(json!({ "id": id })),
+                _ => Response::failure(404, "Transaction not found"),
+            },
             // --- Players
             ("GET" | "POST", ["db", "players"]) => {
                 let q: PlayersQuery = if post && r.body.is_some() {

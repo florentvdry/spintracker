@@ -6,8 +6,9 @@ import clsx from 'clsx'
 const Stats = lazy(() => import('@/views/Stats'))
 const RangeResearch = lazy(() => import('@/views/RangeResearch'))
 const VarianceSimulator = lazy(() => import('@/views/VarianceSimulator'))
+const Bankroll = lazy(() => import('@/views/Bankroll'))
 
-const TABS = ['stats', 'ranges', 'variance'] as const
+const TABS = ['stats', 'ranges', 'variance', 'bankroll'] as const
 type AnalysisTab = (typeof TABS)[number]
 
 const isTab = (value: string | null): value is AnalysisTab => TABS.some((tab) => tab === value)
@@ -42,6 +43,7 @@ export default function Analysis() {
         {active === 'stats' && <Stats />}
         {active === 'ranges' && <RangeResearch />}
         {active === 'variance' && <VarianceSimulator />}
+        {active === 'bankroll' && <Bankroll />}
       </Suspense>
     </div>
   )

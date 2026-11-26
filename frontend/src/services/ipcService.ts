@@ -107,6 +107,9 @@ export const ipcService = {
     backend('POST', '/db/session-history?supersede=true', { limit, heroName, dateFrom, dateTo, buyIn }),
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),
   getMultiplierStats: (options: Json = {}) => backend('POST', '/db/multiplier-stats', options),
+  getBankrollTransactions: () => backend('GET', '/bankroll/transactions'),
+  addBankrollTransaction: (transaction: Json) => backend('POST', '/bankroll/transactions', transaction),
+  deleteBankrollTransaction: (id: number) => backend('DELETE', `/bankroll/transactions/${id}`),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),
   getDetailedStats: (
     heroName?: string | null,
