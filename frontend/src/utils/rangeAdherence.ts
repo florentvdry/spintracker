@@ -272,3 +272,35 @@ export function groupBySpot(scenarios: readonly ScenarioRow[]): SpotReport[] {
     .map((spot) => ({ ...spot, respect: respectOf({ compared: spot.decisions, matches: spot.matches }), depths: [...spot.depths].sort((a, b) => b.stackBb - a.stackBb) }))
     .sort((a, b) => b.deviations - a.deviations || a.name.localeCompare(b.name))
 }
+
+/** One line of the deviation list: a hand class, what the range plans and what was played instead. */
+export interface DeviationRow {
+  hand: string
+  plannedActionId: number
+  playedImmediate: string
+  playedActionId: number | null
+  playedResponse: string | null
+  kind: PlayedInstead['kind']
+  count: number
+}
+
+/** Deviations of a scenario grouped by hand class and played action, the most frequent first. */
+export function deviationRows(detail: Pick<ScenarioDetail, 'hands' | 'handStats'>): DeviationRow[] {
+  const rows: DeviationRow[] = []
+  for (const [hand, stat] of Object.entries(detail.handStats)) {
+    const planned = detail.hands[hand]
+    if (planned === undefined) continue
+    for (const played of stat.played ?? []) {
+      rows.push({
+        hand,
+        plannedActionId: planned,
+        playedImmediate: played.playedImmediate,
+        playedActionId: played.playedActionId,
+        playedResponse: played.playedResponse,
+        kind: played.kind,
+        count: played.count,
+      })
+    }
+  }
+  return rows.sort((a, b) => b.count - a.count || a.hand.localeCompare(b.hand))
+}
