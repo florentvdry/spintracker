@@ -168,12 +168,17 @@ pub(crate) enum Room {
 }
 
 impl Room {
+    /// The rooms store their site too (`Betclic.fr`), so the name is matched by its start.
     pub(crate) fn from_name(name: &str) -> Room {
-        match name.trim().to_ascii_lowercase().as_str() {
-            "winamax" => Room::Winamax,
-            "unibet" => Room::Unibet,
-            "betclic" => Room::Betclic,
-            _ => Room::Other,
+        let name = name.trim().to_ascii_lowercase();
+        if name.starts_with("winamax") {
+            Room::Winamax
+        } else if name.starts_with("unibet") {
+            Room::Unibet
+        } else if name.starts_with("betclic") {
+            Room::Betclic
+        } else {
+            Room::Other
         }
     }
 
@@ -1045,5 +1050,18 @@ mod tests {
         assert_eq!(round_to(0.125, 2), 0.12);
         assert_eq!(round_to(1.005, 2), 1.0);
         assert_eq!(round_to(85.954, 2), 85.95);
+    }
+}
+
+#[cfg(test)]
+mod room_name_tests {
+    use super::Room;
+
+    #[test]
+    fn a_room_stored_with_its_site_is_recognised() {
+        assert!(matches!(Room::from_name("Betclic.fr"), Room::Betclic));
+        assert!(matches!(Room::from_name(" Unibet.fr "), Room::Unibet));
+        assert!(matches!(Room::from_name("Winamax"), Room::Winamax));
+        assert!(matches!(Room::from_name("Elsewhere"), Room::Other));
     }
 }
