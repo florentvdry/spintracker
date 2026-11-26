@@ -1465,5 +1465,9 @@
         }
       }
     }
+  },
+  "hud_unavailable": {
+    "title": "Le HUD n'est pas disponible sur macOS",
+    "text": "Le HUD de table suit les tables d'un client de poker Windows : il n'existe que dans la version Windows. Tout le reste (import, statistiques, ranges, replayer, analyse) fonctionne pareil."
   }
 }

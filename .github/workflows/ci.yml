@@ -23,6 +23,21 @@ jobs:
       - name: Desktop shell
         run: cargo check -p spintracker
 
+  # The macOS build has no HUD (it reads the windows of a Windows poker client): the shell has to
+  # compile there with the HUD turned into stubs, and the backend has to pass its tests.
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: .
+      - name: Tests
+        run: cargo test -p spintracker-core
+      - name: Desktop shell
+        run: cargo check -p spintracker
+
   frontend:
     runs-on: ubuntu-latest
     defaults:

@@ -1,3 +1,4 @@
+import { hudSupported } from '@/utils/platform'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
@@ -413,7 +414,7 @@ export default function Header() {
 
           <div className="flex-1" />
 
-          <HudSwitch />
+          {hudSupported() && <HudSwitch />}
           <AutoImportIndicator />
         </div>
       )}
