@@ -14,6 +14,8 @@
     "allow-import-hand-history",
     "allow-export-data",
     "allow-save-text-file",
+    "allow-backup-database",
+    "allow-restore-database",
     "allow-delete-all-hands",
     "allow-set-active-database",
     "allow-auto-import-get",

@@ -673,6 +673,18 @@
   },
   "settings": {
     "title": "Paramètres",
+    "backup": {
+      "title": "Sauvegarde et restauration",
+      "subtitle": "Un seul fichier avec toute la base, vérifié après son écriture.",
+      "backup": "Sauvegarder la base",
+      "restore": "Restaurer une sauvegarde",
+      "dialog_backup": "Enregistrer la sauvegarde",
+      "dialog_restore": "Choisir une sauvegarde",
+      "backup_done": "Sauvegarde enregistrée et vérifiée ({{hands}} mains).",
+      "restore_done": "{{name}} ajoutée ({{hands}} mains). Passe dessus dans la liste des bases ci-dessus.",
+      "failed": "Ça n'a pas marché.",
+      "hint": "Une restauration ajoute le fichier comme une nouvelle base à côté des tiennes : rien n'est écrasé."
+    },
     "subtitle": "Configuration de l'application",
     "general": {
       "title": "Général",

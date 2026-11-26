@@ -53,6 +53,11 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611200005, "AddRangeCheckOpponent", "202611200005_range_check_opponent.sql"),
 ];
 
+/// The newest migration this version knows: a database past it comes from a newer application.
+pub fn latest_version() -> i64 {
+    MIGRATIONS.iter().map(|m| m.version).max().unwrap_or(0)
+}
+
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
 /// Returns the number of migrations applied.
 pub fn run(conn: &mut Connection) -> Result<usize> {

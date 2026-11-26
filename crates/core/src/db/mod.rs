@@ -1,5 +1,6 @@
 //! SQLite access: migrations, connection pool and database registry.
 
+pub mod backup;
 pub mod migrations;
 pub mod pool;
 pub mod registry;
