@@ -22,6 +22,12 @@ const GRID_COLOR = '#262b34'
 const KNOWN_ROOMS: SharingRoom[] = ['winamax', 'unibet', 'betclic']
 const todayIso = () => new Date().toISOString().slice(0, 10)
 
+/** The colour of gains of the page (a palette may change it), or the default one. */
+function gainColor(): string {
+  const channels = getComputedStyle(document.documentElement).getPropertyValue('--c-positive').trim()
+  return channels ? `rgb(${channels.split(/\s+/).join(',')})` : LINE_COLOR
+}
+
 /** Bankroll: deposits and withdrawals, its evolution and the buy-ins it can carry. */
 export default function Bankroll() {
   const { t } = useTranslation()
@@ -71,7 +77,7 @@ export default function Bankroll() {
       tooltip: { trigger: 'axis', valueFormatter: (value: unknown) => `${Number(value).toFixed(2)}€` },
       xAxis: { type: 'category', data: series.map((p) => p.day), axisLabel: { color: '#a7aab3' }, boundaryGap: false },
       yAxis: { type: 'value', axisLabel: { color: '#a7aab3', formatter: '{value}€' }, splitLine: { lineStyle: { color: GRID_COLOR } } },
-      series: [{ type: 'line', data: series.map((p) => p.bankroll), showSymbol: false, itemStyle: { color: LINE_COLOR }, lineStyle: { width: 2.5 } }],
+      series: [{ type: 'line', data: series.map((p) => p.bankroll), showSymbol: false, itemStyle: { color: gainColor() }, lineStyle: { width: 2.5 } }],
     })
     const resize = () => chart.resize()
     window.addEventListener('resize', resize)
