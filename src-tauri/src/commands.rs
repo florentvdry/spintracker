@@ -93,6 +93,56 @@ pub async fn save_text_file(app: AppHandle, window: WebviewWindow, dialog_title:
     }
 }
 
+/// Largest hand-history file the anonymiser reads.
+const MAX_ANONYMIZED_BYTES: u64 = 64 * 1024 * 1024;
+
+/// Reads a hand-history file the user picks, replaces the player names and saves the result
+/// where the user picks. The names never leave the machine.
+#[tauri::command]
+pub async fn anonymize_history(app: AppHandle, window: WebviewWindow, pick_title: String, save_title: String) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
+    let picker = app.clone();
+    let source = tauri::async_runtime::spawn_blocking(move || picker.dialog().file().set_title(pick_title).add_filter("Hand History Files", &["txt", "xml"]).blocking_pick_file())
+        .await
+        .ok()
+        .flatten()
+        .and_then(|p| p.into_path().ok());
+    let Some(source) = source else {
+        return json!({ "success": false, "cancelled": true });
+    };
+    let read = tauri::async_runtime::spawn_blocking(move || -> Result<(String, usize, String), String> {
+        let size = std::fs::metadata(&source).map_err(|e| e.to_string())?.len();
+        if size > MAX_ANONYMIZED_BYTES {
+            return Err("This file is too large to anonymise here.".into());
+        }
+        let text = std::fs::read_to_string(&source).map_err(|e| e.to_string())?;
+        let stem = source.file_stem().map(|s| s.to_string_lossy().into_owned()).unwrap_or_else(|| "hands".into());
+        let anonymized = spintracker_core::services::anonymizer::anonymize(&text).map_err(|e| e.to_string())?;
+        Ok((format!("{stem}.anonymized.txt"), anonymized.names, anonymized.text))
+    })
+    .await;
+    let (name, names, text) = match read {
+        Ok(Ok(done)) => done,
+        Ok(Err(message)) => return json!({ "success": false, "message": message }),
+        Err(error) => return json!({ "success": false, "message": error.to_string() }),
+    };
+    let picker = app.clone();
+    let target = tauri::async_runtime::spawn_blocking(move || picker.dialog().file().set_title(save_title).set_file_name(name).add_filter("Text", &["txt"]).blocking_save_file())
+        .await
+        .ok()
+        .flatten()
+        .and_then(|p| p.into_path().ok());
+    let Some(target) = target else {
+        return json!({ "success": false, "cancelled": true });
+    };
+    match std::fs::write(&target, text) {
+        Ok(()) => json!({ "success": true, "names": names }),
+        Err(err) => json!({ "success": false, "message": err.to_string() }),
+    }
+}
+
 /// The caller is responsible for asking the user to confirm first.
 #[tauri::command]
 pub async fn delete_all_hands(app: AppHandle, window: WebviewWindow) -> Value {

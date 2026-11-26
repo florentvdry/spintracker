@@ -185,6 +185,7 @@ export const ipcService = {
   // Maintenance
   deleteAllHands: () => command<ApiResult>('delete_all_hands'),
   importHandHistory: () => command<ApiResult>('import_hand_history'),
+  anonymizeHistory: (pickTitle: string, saveTitle: string) => command<ApiResult>('anonymize_history', { pickTitle, saveTitle }),
   getAutoImport: () => command<ApiResult>('auto_import_get'),
   setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),
   getHudCatalog: () => backend<{ stats: { section: string; label: string; id: string; fixedSeat: boolean; name?: string; ready?: boolean }[] }>('GET', '/hud/catalog'),

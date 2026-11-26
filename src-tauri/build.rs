@@ -7,6 +7,7 @@ const COMMANDS: &[&str] = &[
     "import_hand_history",
     "export_data",
     "save_text_file",
+    "anonymize_history",
     "delete_all_hands",
     "set_active_database",
     "auto_import_get",

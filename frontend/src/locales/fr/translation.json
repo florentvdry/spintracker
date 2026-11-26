@@ -673,6 +673,16 @@
   },
   "settings": {
     "title": "Paramètres",
+    "anonymize": {
+      "title": "Anonymiser un historique",
+      "subtitle": "Une copie d'un fichier d'historique avec les pseudos remplacés, pour joindre des mains à une issue GitHub.",
+      "button": "Anonymiser un fichier…",
+      "pick": "Choisir un fichier d'historique",
+      "save_dialog": "Enregistrer le fichier anonymisé",
+      "done": "Terminé : {{count}} pseudos remplacés. Relis le fichier avant de le partager.",
+      "failed": "Ça n'a pas marché.",
+      "hint": "Un même joueur reçoit le même remplaçant partout (Hero, Player A, Player B…). Relis le résultat avant de partager : seuls les pseudos sont modifiés."
+    },
     "subtitle": "Configuration de l'application",
     "general": {
       "title": "Général",
