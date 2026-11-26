@@ -1,8 +1,9 @@
-import { X } from 'lucide-react'
+import { Bookmark, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import CardTile from '@/components/common/CardTile'
 import type { Json } from '@/services/ipcService'
+import { useReviewQueueStore } from '@/stores/reviewQueueStore'
 import { parseCards } from '@/utils/formatters'
 import ActionBlock from './ActionBlock'
 import InfoRow from './InfoRow'
@@ -14,6 +15,9 @@ interface HandDetailsProps {
 
 export default function HandDetails({ hand, onClose }: HandDetailsProps) {
   const { t } = useTranslation()
+  const handId = String(hand?.id ?? '')
+  const marked = useReviewQueueStore((s) => s.markedIds.has(handId))
+  const { mark, unmark } = useReviewQueueStore.getState()
 
   const profit: number = hand?.hero_profit || 0
   const isPositive = profit >= 0
@@ -32,7 +36,17 @@ export default function HandDetails({ hand, onClose }: HandDetailsProps) {
           </div>
           <p className="text-xs text-gray-400">{hand.date_time}</p>
         </div>
-        <button onClick={onClose} className="btn-icon"><X className="w-4 h-4" /></button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => void (marked ? unmark(handId) : mark(handId))}
+            className={clsx('btn-icon', marked && 'text-primary-400')}
+            aria-pressed={marked}
+            title={t('hand_review.mark_hint')}
+          >
+            <Bookmark className="w-4 h-4" />
+          </button>
+          <button onClick={onClose} className="btn-icon"><X className="w-4 h-4" /></button>
+        </div>
       </div>
 
       <div className="p-4 bg-dark-300 rounded-lg text-center">

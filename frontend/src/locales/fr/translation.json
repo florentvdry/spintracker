@@ -550,7 +550,8 @@
       "work": "Tournois multipliés par simulations ne peut pas dépasser {{maxWork}}.",
       "winRate": "Le CEV doit être un nombre.",
       "multipliers": "Ajoutez au moins un multiplicateur avec une fréquence positive.",
-      "bankroll": "La bankroll doit être supérieure à 0, ou laissée vide."
+      "bankroll": "La bankroll doit être supérieure à 0, ou laissée vide.",
+      "review": "Révision"
     },
     "chip_ev": "CEV (par tournoi)",
     "tip_after": "Après {{count}} tournois",
@@ -588,7 +589,8 @@
       "hands": "Liste des mains",
       "stats": "Statistiques",
       "ranges": "Analyseur de ranges",
-      "variance": "Simulateur de variance"
+      "variance": "Simulateur de variance",
+      "review": "Révision"
     },
     "filters": {
       "situation": "Situation",
@@ -1465,5 +1467,23 @@
         }
       }
     }
+  },
+  "hand_review": {
+    "title": "Mains à revoir",
+    "subtitle": "{{due}} à revoir aujourd'hui, {{total}} marquées",
+    "empty": "Aucune main marquée. Marque une main depuis le replayer, l'historique ou avec la touche M.",
+    "nothing_due": "Rien à revoir aujourd'hui. La prochaine main revient à sa date.",
+    "no_note": "Pas de note",
+    "open_replayer": "Rejouer cette main",
+    "handled": "Je l'ai bien jouée",
+    "again": "À revoir demain",
+    "hint": "Une main bien traitée revient plus tard (1, 3, 7 puis 21 jours) ; une main à revoir revient demain.",
+    "queue": "Prochaines mains",
+    "box": "boîte {{box}}",
+    "due_now": "à revoir",
+    "remove": "Retirer de la révision",
+    "mark": "À revoir",
+    "marked": "Marquée",
+    "mark_hint": "Marquer cette main à revoir (M)"
   }
 }

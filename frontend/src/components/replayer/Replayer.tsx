@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
+import ReviewMarkButton from './ReviewMarkButton'
 import RangeCheckCard from './RangeCheckCard'
 import './replayer.css'
 
@@ -93,6 +94,7 @@ export default function Replayer() {
           </div>
         )}
 
+        {handData && <ReviewMarkButton handId={String(handData.handId)} heroName={((handData.players ?? []) as Json[]).find((p) => p.isHero)?.name ?? null} />}
         <button className={clsx('log-toggle', showLogs && 'active')} onClick={() => setShowLogs(!showLogs)}>
           <List size={18} />
           <span>{t('replayer.actions')}</span>

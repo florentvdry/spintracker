@@ -10,7 +10,7 @@ use rusqlite::{params, Connection};
 
 use crate::Result;
 
-struct Migration {
+pub(crate) struct Migration {
     version: i64,
     description: &'static str,
     sql: &'static str,
@@ -26,7 +26,7 @@ macro_rules! migration {
     };
 }
 
-const MIGRATIONS: &[Migration] = &[
+pub(crate) const MIGRATIONS: &[Migration] = &[
     migration!(20260111001, "InitialCreate20260111", "20260111001_initial_create.sql"),
     migration!(20260116001, "DropConfigTable20260116", "20260116001_drop_config_table.sql"),
     migration!(20260312001, "AddPerformanceIndexes", "20260312001_add_performance_indexes.sql"),
@@ -51,6 +51,7 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611200003, "AddTraining", "202611200003_training.sql"),
     migration!(202611200004, "AddTrainingCards", "202611200004_training_cards.sql"),
     migration!(202611200005, "AddRangeCheckOpponent", "202611200005_range_check_opponent.sql"),
+    migration!(202611230004, "AddReviewHands", "202611230004_add_review_hands.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -211,6 +212,7 @@ mod tests {
              DROP TABLE hand_range_checks;
              DROP TABLE training_attempts;
              DROP TABLE training_cards;
+             DROP TABLE review_hands;
              ALTER TABLE players DROP COLUMN alias_id;
              ALTER TABLE players DROP COLUMN room;
              ALTER TABLE hands DROP COLUMN position;
@@ -231,7 +233,8 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 19);
+        // All but the five migrations of the former backend that this database already has.
+        assert_eq!(run(&mut conn).unwrap(), MIGRATIONS.len() - 5);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))

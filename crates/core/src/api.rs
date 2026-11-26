@@ -21,6 +21,7 @@ use crate::engines::equity::calculate as calculate_equity;
 use crate::models::ParsedHand;
 use crate::parsers::{get_parser, get_parser_by_room};
 use crate::repos::detailed_stats::{detailed_stats, DetailedQuery};
+use crate::services::hand_review;
 use crate::repos::hud_stats;
 use crate::repos::hands_query::{self, HandsAgainstQuery, HandsQuery};
 use crate::repos::player_queries::{self, PlayersQuery};
@@ -311,6 +312,38 @@ impl Backend {
             ("GET" | "POST", ["db", "range-heatmap"]) => {
                 let q: heatmap::RangeHeatmapQuery = if post { r.body_or_default()? } else { Default::default() };
                 Response::data(heatmap::range_heatmap(&*conn()?, &q)?)
+            }
+
+            // --- Hands marked to review (spaced repetition)
+            ("GET", ["review-queue"]) => {
+                let today = chrono::Local::now().date_naive();
+                Response::data(hand_review::queue(&*conn()?, r.query_str("heroName").as_deref(), today)?)
+            }
+            ("POST", ["review-queue"]) => match r.body_str("handId") {
+                Some(hand_id) => {
+                    let today = chrono::Local::now().date_naive();
+                    if hand_review::mark(&*conn()?, &hand_id, &r.body_str("note").unwrap_or_default(), today)? {
+                        Response::data(json!({ "handId": hand_id }))
+                    } else {
+                        Response::failure(404, "Hand not found")
+                    }
+                }
+                None => Response::failure(400, "handId is required"),
+            },
+            ("DELETE", ["review-queue", hand_id]) => {
+                if hand_review::unmark(&*conn()?, hand_id)? {
+                    Response::data(json!({ "handId": hand_id }))
+                } else {
+                    Response::failure(404, "Hand not in the queue")
+                }
+            }
+            ("POST", ["review-queue", hand_id, "answer"]) => {
+                let today = chrono::Local::now().date_naive();
+                let stamp = chrono::Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
+                match hand_review::answer(&*conn()?, hand_id, r.body_field::<bool>("correct").unwrap_or(false), today, &stamp)? {
+                    Some((new_box, due)) => Response::data(json!({ "box": new_box, "dueOn": due.format("%Y-%m-%d").to_string() })),
+                    None => Response::failure(404, "Hand not in the queue"),
+                }
             }
 
             // --- Players
