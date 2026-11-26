@@ -64,11 +64,34 @@ pub async fn export_data(app: AppHandle, window: WebviewWindow, dialog_title: St
 /// Largest text the webview may ask to save (an exported ranges file is far smaller).
 const MAX_SAVED_TEXT_BYTES: usize = 16 * 1024 * 1024;
 
+/// The file type of the save dialog: JSON unless the caller names a plain alphanumeric extension.
+fn save_filter(extension: Option<&str>) -> (String, String) {
+    match extension.map(str::to_ascii_lowercase) {
+        Some(ext) if !ext.is_empty() && ext.len() <= 8 && ext.chars().all(|c| c.is_ascii_alphanumeric()) => (ext.to_ascii_uppercase(), ext),
+        _ => ("JSON".to_string(), "json".to_string()),
+    }
+}
+
+#[cfg(test)]
+mod save_filter_tests {
+    use super::save_filter;
+
+    #[test]
+    fn a_plain_extension_is_used_and_anything_else_falls_back_to_json() {
+        assert_eq!(save_filter(Some("TXT")), ("TXT".to_string(), "txt".to_string()));
+        assert_eq!(save_filter(None).1, "json");
+        assert_eq!(save_filter(Some("../x")).1, "json");
+        assert_eq!(save_filter(Some("")).1, "json");
+        assert_eq!(save_filter(Some("waytoolongext")).1, "json");
+    }
+}
+
 /// Asks where to save a text file, then writes it. The webview cannot download blobs by itself.
 #[tauri::command]
-pub async fn save_text_file(app: AppHandle, window: WebviewWindow, dialog_title: String, default_name: String, content: String) -> Value {
-    if let Some(denied) = main_window_only(&window) {
-        return denied;
+pub async fn save_text_file(app: AppHandle, window: WebviewWindow, dialog_title: String, default_name: String, content: String, extension: Option<String>) -> Value {
+    // The replayer windows save the hand they show (text for a forum, for GTO Wizard...).
+    if window.label() != "main" && !window.label().starts_with("replayer-") {
+        return json!({ "success": false, "message": "This window cannot save files." });
     }
     if content.len() > MAX_SAVED_TEXT_BYTES {
         return json!({ "success": false, "message": "The file is too large to save." });
@@ -76,9 +99,10 @@ pub async fn save_text_file(app: AppHandle, window: WebviewWindow, dialog_title:
     // Only a file name is accepted as the suggestion: the folder is the user's choice in the dialog.
     let default_name: String = default_name.chars().filter(|c| !matches!(c, '/' | '\\' | ':')).collect();
 
+    let (filter_name, extension) = save_filter(extension.as_deref());
     let picker = app.clone();
     let target = tauri::async_runtime::spawn_blocking(move || {
-        picker.dialog().file().set_title(dialog_title).set_file_name(default_name).add_filter("JSON", &["json"]).blocking_save_file()
+        picker.dialog().file().set_title(dialog_title).set_file_name(default_name).add_filter(filter_name, &[extension.as_str()]).blocking_save_file()
     })
     .await
     .ok()
