@@ -50,7 +50,16 @@ pub async fn import_hand_history(app: AppHandle, window: WebviewWindow) -> Value
     if let Some(denied) = main_window_only(&window) {
         return denied;
     }
-    import::run(app).await
+    import::run(app, import::Source::Files).await
+}
+
+/// Imports every hand history of a folder (a PokerTracker 4 or Hold'em Manager 3 export, for instance).
+#[tauri::command]
+pub async fn import_hand_history_folder(app: AppHandle, window: WebviewWindow) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
+    import::run(app, import::Source::Folder).await
 }
 
 #[tauri::command]

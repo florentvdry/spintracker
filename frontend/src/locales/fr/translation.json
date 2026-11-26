@@ -355,6 +355,7 @@
     }
   },
   "header": {
+    "import_folder": "Importer un dossier (export PokerTracker 4, Hold'em Manager 3...)",
     "search_placeholder": "Rechercher une main, joueur...",
     "select_hero": "Sélectionner...",
     "hero_detected": "Héro détecté",

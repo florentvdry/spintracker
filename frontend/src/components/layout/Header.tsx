@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import clsx from 'clsx'
-import { Bell, Check, ChevronDown, Hash, RefreshCw, Search, Trash2, Trophy, Upload, Users, X } from 'lucide-react'
+import { Bell, Check, ChevronDown, Hash, RefreshCw, Search, Trash2, Trophy, Upload, Users, X, FolderOpen } from 'lucide-react'
 import RoomLogo from '@/components/common/RoomLogo'
 import AutoImportIndicator from './AutoImportIndicator'
 import HudSwitch from './HudSwitch'
@@ -91,7 +91,7 @@ export default function Header() {
     return `${formatDate(selected.session_date, { format: 'date-only' })} ${formatTime(selected.session_date)}→${formatTime(selected.session_end)}`
   })()
 
-  const handleImport = async () => {
+  const handleImport = async (source: 'files' | 'folder' = 'files') => {
     const unsubscribe = ipcService.onImportProgress((p: ImportProgress) => {
       if (p.stage === 'counting') {
         progress.update({
@@ -109,7 +109,7 @@ export default function Header() {
     progress.start({ title: t('header.import_hands'), message: t('header.calculating') })
 
     try {
-      const result = await ipcService.importHandHistory()
+      const result = source === 'folder' ? await ipcService.importHandHistoryFolder() : await ipcService.importHandHistory()
       if (result.success) {
         notifications.addNotification({
           type: 'success',
@@ -222,9 +222,12 @@ export default function Header() {
           </div>
         )}
 
-        <button onClick={handleImport} className="btn-primary">
+        <button onClick={() => void handleImport('files')} className="btn-primary">
           <Upload className="w-4 h-4" />
           <span>{t('common.import')}</span>
+        </button>
+        <button onClick={() => void handleImport('folder')} className="btn-icon p-2" title={t('header.import_folder')}>
+          <FolderOpen className="w-4 h-4" />
         </button>
 
         <button onClick={handleRefresh} disabled={isRefreshing} className="btn-icon p-2" title={t('common.refresh')}>
