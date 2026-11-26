@@ -1,0 +1,25 @@
+PokerStars Hand #251345667040: Tournament #3456789012, $0.97+$0.03 USD Hold'em No Limit - Level I (10/20) - 2023/06/15 20:30:45 ET
+Table '3456789012 1' 3-max Seat #1 is the button
+Seat 1: Alice (500 in chips)
+Seat 2: Bob (500 in chips)
+Seat 3: Hero (500 in chips)
+Bob: posts small blind 10
+Hero: posts big blind 20
+*** HOLE CARDS ***
+Dealt to Hero [Ah Kd]
+Alice: folds
+Bob: raises 480 to 500 and is all-in
+Hero: calls 480 and is all-in
+*** FLOP *** [2c 7d 9h]
+*** TURN *** [2c 7d 9h] [Js]
+*** RIVER *** [2c 7d 9h Js] [3d]
+*** SHOW DOWN ***
+Hero: shows [Ah Kd] (high card Ace)
+Bob: shows [Qs Qd] (a pair of Queens)
+Bob collected 1000 from pot
+*** SUMMARY ***
+Total pot 1000 | Rake 0
+Board [2c 7d 9h Js 3d]
+Seat 1: Alice (button) folded before Flop (didn't bet)
+Seat 2: Bob (small blind) showed [Qs Qd] and won (1000) with a pair of Queens
+Seat 3: Hero (big blind) showed [Ah Kd] and lost with high card Ace
