@@ -149,7 +149,7 @@ export default function WinrateChart() {
         lineStyle: { width: chartMode === 'euro' ? 3 : 2 },
         emphasis: { focus: 'series' as const },
         large: true,
-        ...(chartMode === 'euro' && {
+        ...(chartMode === 'euro' && key === 'euroProfit' && {
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               { offset: 0, color: 'rgba(16, 185, 129, 0.3)' },
