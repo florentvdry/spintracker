@@ -1465,5 +1465,25 @@
         }
       }
     }
+  },
+  "shortcuts": {
+    "title": "Raccourcis clavier",
+    "scope_app": "Partout",
+    "scope_replayer": "Replayer",
+    "nav_dashboard": "Aller au tableau de bord",
+    "nav_history": "Aller à l'historique",
+    "nav_analysis": "Aller à l'analyse",
+    "nav_ranges": "Aller à mes ranges",
+    "nav_players": "Aller aux joueurs",
+    "nav_hud": "Aller au HUD",
+    "nav_settings": "Aller aux réglages",
+    "help": "Afficher ou masquer cette liste",
+    "replayer_play": "Lecture ou pause",
+    "replayer_next": "Action suivante",
+    "replayer_previous": "Action précédente",
+    "replayer_start": "Retour au début",
+    "replayer_end": "Aller à la fin",
+    "replayer_units": "Jetons ou gros blinds",
+    "replayer_log": "Afficher ou masquer les actions"
   }
 }

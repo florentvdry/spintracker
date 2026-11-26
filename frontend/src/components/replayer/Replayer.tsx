@@ -5,6 +5,8 @@ import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
+import ShortcutsHelp from '@/components/ui/ShortcutsHelp'
+import { isTypingTarget, SequenceMatcher } from '@/utils/shortcuts'
 import RangeCheckCard from './RangeCheckCard'
 import './replayer.css'
 
@@ -33,6 +35,7 @@ export default function Replayer() {
   const totalActions = useReplayerStore(selectTotalActions)
   const doneActions = useReplayerStore(selectDoneActions)
   const [showLogs, setShowLogs] = useState(() => window.innerWidth >= LOG_DEFAULT_MIN_WIDTH)
+  const [helpOpen, setHelpOpen] = useState(false)
 
   const { handData, currentIndex, isPlaying, nextStep, prevStep, play, stop } = store
 
@@ -45,16 +48,39 @@ export default function Replayer() {
   const togglePlay = () => (isPlaying ? stop() : play())
 
   useEffect(() => {
+    const matcher = new SequenceMatcher('replayer')
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === ' ') {
-        event.preventDefault()
-        const { isPlaying: playing, play: start, stop: pause } = useReplayerStore.getState()
-        if (playing) pause()
-        else start()
-      } else if (event.key === 'ArrowRight') {
-        useReplayerStore.getState().nextStep()
-      } else if (event.key === 'ArrowLeft') {
-        useReplayerStore.getState().prevStep()
+      if (event.ctrlKey || event.metaKey || event.altKey || isTypingTarget(event.target)) return
+      const id = matcher.feed(event.key, Date.now())
+      if (!id) return
+      event.preventDefault()
+      const state = useReplayerStore.getState()
+      switch (id) {
+        case 'replayer.play':
+          if (state.isPlaying) state.stop()
+          else state.play()
+          break
+        case 'replayer.next':
+          state.nextStep()
+          break
+        case 'replayer.previous':
+          state.prevStep()
+          break
+        case 'replayer.start':
+          state.resetTable()
+          break
+        case 'replayer.end':
+          state.jumpToProgress(selectTotalActions(state))
+          break
+        case 'replayer.units':
+          state.setViewMode(state.viewMode === 'bb' ? 'chips' : 'bb')
+          break
+        case 'replayer.log':
+          setShowLogs((open) => !open)
+          break
+        case 'help.replayer':
+          setHelpOpen((open) => !open)
+          break
       }
     }
     window.addEventListener('keydown', onKeyDown)
@@ -196,6 +222,7 @@ export default function Replayer() {
           </div>
         </div>
       </footer>
+      <ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} scopes={['replayer']} />
     </div>
   )
 }
