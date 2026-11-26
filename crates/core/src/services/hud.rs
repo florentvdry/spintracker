@@ -230,7 +230,10 @@ impl HudService {
         let conn = self.db.conn()?;
         let with_custom = hud_stats::is_custom(&request.stat);
         let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
-        let rows = hud_stats::load_identified_rows(&conn, &request.room, &request.hero_name, &request.player, with_custom, parse_format(request.spin_format.as_deref()).ok().flatten())?;
+        let rows = match parse_format(request.spin_format.as_deref()).ok().flatten() {
+            Some(format) => hud_stats::load_identified_rows_of_format(&conn, &request.room, &request.hero_name, &request.player, with_custom, format)?,
+            None => hud_stats::load_identified_rows(&conn, &request.room, &request.hero_name, &request.player, with_custom)?,
+        };
         let (listed, total) = hud_stats::figure_hand_ids(&rows, &request.stat, &request.buckets, &ready, request.which, request.limit);
         let ids: Vec<String> = listed.iter().map(|hand| hand.hand_id.clone()).collect();
         let mut hands = hud_hands::summaries(&conn, &request.player, &ids)?;

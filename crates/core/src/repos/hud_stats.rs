@@ -207,8 +207,13 @@ pub(crate) struct HandRow {
 
 /// The rows of `load_rows`, each with its hand id and date. Read on demand, never cached: only a
 /// list of hands needs them.
-pub(crate) fn load_identified_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: Option<SpinFormat>) -> Result<Vec<HandRow>> {
-    query_rows(conn, room, hero, player, with_custom, true, format)
+pub(crate) fn load_identified_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Vec<HandRow>> {
+    query_rows(conn, room, hero, player, with_custom, true, None)
+}
+
+/// [`load_identified_rows`] limited to the tournaments of one format.
+pub(crate) fn load_identified_rows_of_format(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: SpinFormat) -> Result<Vec<HandRow>> {
+    query_rows(conn, room, hero, player, with_custom, true, Some(format))
 }
 
 /// The hand id and date are read only when asked for (or, for the id, when custom hits are joined):
