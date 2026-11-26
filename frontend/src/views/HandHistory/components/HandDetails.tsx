@@ -2,6 +2,7 @@ import { Bookmark, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import CardTile from '@/components/common/CardTile'
+import { useKeyShortcut } from '@/hooks/useKeyShortcut'
 import type { Json } from '@/services/ipcService'
 import { useReviewQueueStore } from '@/stores/reviewQueueStore'
 import { parseCards } from '@/utils/formatters'
@@ -18,6 +19,8 @@ export default function HandDetails({ hand, onClose }: HandDetailsProps) {
   const handId = String(hand?.id ?? '')
   const marked = useReviewQueueStore((s) => s.markedIds.has(handId))
   const { mark, unmark } = useReviewQueueStore.getState()
+  const toggleMark = () => void (marked ? unmark(handId) : mark(handId))
+  useKeyShortcut('m', toggleMark)
 
   const profit: number = hand?.hero_profit || 0
   const isPositive = profit >= 0
@@ -38,7 +41,7 @@ export default function HandDetails({ hand, onClose }: HandDetailsProps) {
         </div>
         <div className="flex items-center gap-1">
           <button
-            onClick={() => void (marked ? unmark(handId) : mark(handId))}
+            onClick={toggleMark}
             className={clsx('btn-icon', marked && 'text-primary-400')}
             aria-pressed={marked}
             title={t('hand_review.mark_hint')}
