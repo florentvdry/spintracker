@@ -51,6 +51,8 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611200003, "AddTraining", "202611200003_training.sql"),
     migration!(202611200004, "AddTrainingCards", "202611200004_training_cards.sql"),
     migration!(202611200005, "AddRangeCheckOpponent", "202611200005_range_check_opponent.sql"),
+    migration!(202611270001, "AddSettingsTable", "202611270001_add_settings_table.sql"),
+    migration!(202611270002, "AddRakePerPlayerToCoverIndex", "202611270002_add_rake_per_player_to_cover_index.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -149,7 +151,7 @@ mod tests {
         assert_eq!(run(&mut conn).unwrap(), MIGRATIONS.len());
 
         let t = names(&conn, "table");
-        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes", "custom_stats", "custom_stat_hits", "range_actions", "range_spots", "range_scenarios", "range_hands", "range_programs", "range_program_spots", "range_settings", "hand_range_checks", "training_attempts", "training_cards"] {
+        for expected in ["hands", "player_hands", "players", "aliases", "VersionInfo", "hand_player_flags", "import_files", "player_notes", "custom_stats", "custom_stat_hits", "range_actions", "range_spots", "range_scenarios", "range_hands", "range_programs", "range_program_spots", "range_settings", "hand_range_checks", "training_attempts", "training_cards", "settings"] {
             assert!(t.iter().any(|n| n == expected), "table {expected} missing");
         }
         assert!(!t.iter().any(|n| n == "config"), "config must be dropped");
@@ -231,7 +233,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 19);
+        assert_eq!(run(&mut conn).unwrap(), 21);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))

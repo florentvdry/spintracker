@@ -174,6 +174,10 @@ export const ipcService = {
   importRanges: (content: string, mode: 'replace' | 'merge', dryRun = false) => backend('POST', '/ranges/import', { content, mode, dryRun }),
   calculateEquity: (params: Json) => backend('POST', '/equity', params),
 
+  // Settings
+  getSettings: () => backend<Json>('GET', '/db/settings'),
+  setSettings: (key: string, value: string) => backend('POST', '/db/settings', { key, value }),
+
   // Databases
   getDatabases: () => backend('GET', '/api/databases'),
   getActiveDatabase: () => backend('GET', '/api/databases/active'),

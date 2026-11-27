@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 
-use rusqlite::InterruptHandle;
+use rusqlite::{params, Connection, InterruptHandle};
 
 use serde::de::DeserializeOwned;
 use serde_json::{json, Value};
@@ -307,6 +307,20 @@ impl Backend {
             ("GET" | "POST", ["db", "multiplier-stats"]) => {
                 let q: StatsQuery = r.options(stats_query_from_query)?;
                 Response::data(serde_json::to_value(stats::multiplier_stats(&*conn()?, &q)?)?)
+            }
+
+            // --- Settings
+            ("GET", ["db", "settings"]) => Response::data(settings_get(&*conn()?)?),
+            ("POST", ["db", "settings"]) => {
+                let body = r.body.as_ref().unwrap_or(&Value::Null);
+                let key = body.get("key").and_then(Value::as_str).unwrap_or("");
+                let value = body.get("value").and_then(Value::as_str).unwrap_or("");
+                if key.is_empty() {
+                    Response::failure(400, "key is required")
+                } else {
+                    settings_set(&mut *conn()?, key, value)?;
+                    Response::data(json!({ "key": key, "value": value }))
+                }
             }
             ("GET" | "POST", ["db", "range-heatmap"]) => {
                 let q: heatmap::RangeHeatmapQuery = if post { r.body_or_default()? } else { Default::default() };
@@ -847,6 +861,28 @@ fn tournaments_query_from_query(query: &HashMap<String, String>) -> HandsQuery {
     }
 }
 
+/// All stored settings as a JSON object `{ key: value, ... }`.
+fn settings_get(conn: &Connection) -> Result<Value> {
+    let mut stmt = conn.prepare("SELECT key, value FROM settings")?;
+    let mut out = serde_json::Map::new();
+    let rows = stmt.query_map([], |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?)))?;
+    for row in rows {
+        let (key, value) = row?;
+        out.insert(key, json!(value));
+    }
+    Ok(Value::Object(out))
+}
+
+/// Upserts a single setting. Inserts when absent, overwrites when present.
+fn settings_set(conn: &mut Connection, key: &str, value: &str) -> Result<()> {
+    conn.execute(
+        "INSERT INTO settings (key, value) VALUES (?1, ?2)
+         ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+        params![key, value],
+    )?;
+    Ok(())
+}
+
 /// Splits "/path?a=1&b=x%20y" into the path and the decoded query parameters.
 fn split_target(target: &str) -> (&str, HashMap<String, String>) {
     let (path, raw) = target.split_once('?').unwrap_or((target, ""));
@@ -987,6 +1023,47 @@ mod tests {
         let batch = b.handle("POST", "/equity/batch", Some(json!({"hands": [{"id": "a", "heroCards": "Zz Ad", "villainCards": "Kc Kd"}]})));
         assert_eq!(batch.body["processed"], 1);
         assert!(batch.body["data"][0]["error"].is_string());
+    }
+
+    #[test]
+    fn settings_can_be_read_and_written() {
+        let (_dir, b) = backend();
+        // No settings yet: empty object.
+        let empty = b.handle("GET", "/db/settings", None);
+        assert_eq!(empty.body["success"], true);
+        assert_eq!(empty.body["data"], json!({}));
+
+        // Write a setting.
+        let set = b.handle(
+            "POST",
+            "/db/settings",
+            Some(json!({ "key": "rakeback_pct", "value": "15" })),
+        );
+        assert_eq!(set.status, 200);
+        assert_eq!(set.body["data"]["key"], "rakeback_pct");
+        assert_eq!(set.body["data"]["value"], "15");
+
+        // Reading it back.
+        let got = b.handle("GET", "/db/settings", None);
+        assert_eq!(got.body["data"]["rakeback_pct"], "15");
+
+        // Overwriting works.
+        let overwritten = b.handle(
+            "POST",
+            "/db/settings",
+            Some(json!({ "key": "rakeback_pct", "value": "25" })),
+        );
+        assert_eq!(overwritten.status, 200);
+        let got2 = b.handle("GET", "/db/settings", None);
+        assert_eq!(got2.body["data"]["rakeback_pct"], "25");
+
+        // A missing key is a 400.
+        let missing = b.handle(
+            "POST",
+            "/db/settings",
+            Some(json!({ "value": "15" })),
+        );
+        assert_eq!(missing.status, 400);
     }
 
     #[test]

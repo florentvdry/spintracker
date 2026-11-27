@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, HashMap};
 
 use chrono::{Datelike, NaiveDate, NaiveDateTime, Utc};
 use rusqlite::types::Value as SqlValue;
-use rusqlite::{Connection, ToSql};
+use rusqlite::{Connection, OptionalExtension, ToSql};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
@@ -514,12 +514,20 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     let hero = resolve_hero(conn, q.hero_name.as_deref())?;
     let scope = scope(hero.as_deref(), non_empty(&q.date_from), non_empty(&q.date_to), q.buy_in, false, &[]);
 
+    /// The rakeback percentage the player configured in settings, 0 by default.
+    fn rakeback_pct(conn: &Connection) -> Result<f64> {
+        let pct: Option<String> = conn
+            .query_row("SELECT value FROM settings WHERE key = 'rakeback_pct'", [], |r| r.get(0))
+            .optional()?;
+        Ok(pct.and_then(|v| v.parse().ok()).unwrap_or(0.0) / 100.0)
+    }
+
     // One pass over the hero's hands feeds every figure: each extra query would read the whole
     // history again (several seconds on a large one). The blinds' investments are read only for the
     // three-handed small and big blinds that need them.
     let mut stmt = conn.prepare(&format!(
         "SELECT date_time, room, game_id, buy_in, prize_pool, net_profit, player_count, multiplier, hand_position,
-                hero_pos, net_won_adjusted,
+                hero_pos, net_won_adjusted, rake_per_player,
                 CASE WHEN is_blind THEN
                     CASE
                         WHEN hero_pos = 'SB' AND COALESCE(btn_investment, 0) > COALESCE(ante, 0) THEN 'vs_BTN'
@@ -531,7 +539,8 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
                 END AS situation
          FROM (
              SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, ph.net_profit, h.player_count, h.multiplier,
-                    h.position AS hand_position, ph.position AS hero_pos, ph.net_won_adjusted, h.ante, h.blinds,
+                    h.position AS hand_position, ph.position AS hero_pos, ph.net_won_adjusted, h.rake_per_player,
+                    h.ante, h.blinds,
                     (h.player_count = 3 AND ph.position IN ('SB', 'BB')) AS is_blind,
                     CASE WHEN h.player_count = 3 AND ph.position IN ('SB', 'BB') THEN
                         (SELECT MAX(COALESCE(p2.investment, 0)) FROM player_hands p2 WHERE p2.hand_id = h.id AND +p2.position = 'BTN') END AS btn_investment,
@@ -543,6 +552,9 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         scope.hands, scope.join, scope.where_clause
     ))?;
     let mut rows = stmt.query(&scope.params()[..])?;
+
+    let rakeback_rate = rakeback_pct(conn)?;
+    let mut total_rake = 0.0;
 
     // One entry per tournament: its figures decide the euro result and whether it was cashed.
     let mut games: HashMap<Option<String>, TournamentFigures> = HashMap::new();
@@ -562,7 +574,10 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         let hand_position = r.get::<_, Option<i32>>(8)?.unwrap_or(0);
         let hero_position: Option<String> = r.get(9)?;
         let net_won_adjusted: Option<f64> = r.get(10)?;
-        let situation: Option<String> = r.get(11)?;
+        let rake_per_player = r.get::<_, Option<f64>>(11)?.unwrap_or(0.0);
+        let situation: Option<String> = r.get(12)?;
+
+        total_rake += rake_per_player;
 
         let lowest_player_count = player_count.unwrap_or(3);
         let tournament = games.entry(game_id.clone()).or_insert_with(|| TournamentFigures {
@@ -669,6 +684,8 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
 
     let sessions_this_month = count_in_month_of(sessions.iter().map(|s| s.start), Utc::now().naive_utc());
 
+    let rakeback_won = round_to(total_rake * rakeback_rate, 2);
+
     Ok(json!({
         "total_hands": total_hands,
         "hands_won": hands_won,
@@ -677,6 +694,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         "total_profit": total_profit_euro,
         "total_ev_profit": round_to(total_ev_profit_euro, 2),
         "luck_profit": round_to(total_profit_euro - total_ev_profit_euro, 2),
+        "rakeback_won": rakeback_won,
         "main_room": main_room,
         "total_ev": total_ev,
         "total_tournaments": total_tournaments,
@@ -729,6 +747,7 @@ struct ChartHand {
     cumulative_showdown: f64,
     cumulative_no_showdown: f64,
     cumulative_ev: f64,
+    cumulative_rake: f64,
     game_id: Option<String>,
     figures: TournamentFigures,
     hand_profit: f64,
@@ -736,6 +755,14 @@ struct ChartHand {
 
 pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
     let hero = resolve_hero(conn, q.hero_name.as_deref())?;
+
+    /// The rakeback percentage the player configured in settings, 0 by default.
+    fn rakeback_rate(conn: &Connection) -> Result<f64> {
+        let pct: Option<String> = conn
+            .query_row("SELECT value FROM settings WHERE key = 'rakeback_pct'", [], |r| r.get(0))
+            .optional()?;
+        Ok(pct.and_then(|v| v.parse().ok()).unwrap_or(0.0) / 100.0)
+    }
 
     let mut extra: Vec<&str> = Vec::new();
     let mut seat: Option<String> = None;
@@ -756,6 +783,8 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
         scope.binds.push(("@pos", SqlValue::Text(seat)));
     }
 
+    let rakeback_rate = rakeback_rate(conn)?;
+
     let sql = format!(
         "SELECT
             h.date_time,
@@ -763,6 +792,7 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
             SUM(COALESCE(CASE WHEN ph.went_to_showdown = 1 THEN ph.net_profit ELSE 0 END, 0)) OVER (ORDER BY h.date_time, h.id) as cumulative_showdown,
             SUM(COALESCE(CASE WHEN NOT (ph.went_to_showdown = 1) THEN ph.net_profit ELSE 0 END, 0)) OVER (ORDER BY h.date_time, h.id) as cumulative_no_showdown,
             SUM(COALESCE(ph.net_won_adjusted, ph.net_profit)) OVER (ORDER BY h.date_time, h.id) as cumulative_ev,
+            SUM(COALESCE(h.rake_per_player, 0)) OVER (ORDER BY h.date_time, h.id) as cumulative_rake,
             h.game_id, h.buy_in, h.prize_pool, h.player_count,
             ph.net_profit as hand_profit, h.multiplier, h.position, h.room
          FROM {}
@@ -774,22 +804,23 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
     let mut stmt = conn.prepare(&sql)?;
     let hands: Vec<ChartHand> = stmt
         .query_map(&scope.params()[..], |r| {
-            let hand_profit: f64 = r.get(9)?;
+            let hand_profit: f64 = r.get(10)?;
             Ok(ChartHand {
                 date: r.get(0)?,
                 cumulative_profit: r.get(1)?,
                 cumulative_showdown: r.get(2)?,
                 cumulative_no_showdown: r.get(3)?,
                 cumulative_ev: r.get(4)?,
-                game_id: r.get(5)?,
+                cumulative_rake: r.get(5)?,
+                game_id: r.get(6)?,
                 hand_profit,
                 figures: TournamentFigures {
-                    room: Room::from_name(&r.get::<_, Option<String>>(12)?.unwrap_or_default()),
-                    buy_in: r.get::<_, Option<f64>>(6)?.unwrap_or(0.0),
-                    prize_pool: r.get::<_, Option<f64>>(7)?.unwrap_or(0.0),
-                    lowest_player_count: r.get::<_, Option<i32>>(8)?.unwrap_or(3),
-                    multiplier: r.get::<_, Option<i32>>(10)?.unwrap_or(0),
-                    position: r.get::<_, Option<i32>>(11)?.unwrap_or(0),
+                    room: Room::from_name(&r.get::<_, Option<String>>(13)?.unwrap_or_default()),
+                    buy_in: r.get::<_, Option<f64>>(7)?.unwrap_or(0.0),
+                    prize_pool: r.get::<_, Option<f64>>(8)?.unwrap_or(0.0),
+                    lowest_player_count: r.get::<_, Option<i32>>(9)?.unwrap_or(3),
+                    multiplier: r.get::<_, Option<i32>>(11)?.unwrap_or(0),
+                    position: r.get::<_, Option<i32>>(12)?.unwrap_or(0),
                     chip_profit: 0.0,
                 },
             })
@@ -845,6 +876,7 @@ pub fn winrate_chart(conn: &Connection, q: &ChartQuery) -> Result<Vec<Value>> {
                 "chips_won_showdown": h.cumulative_showdown,
                 "chips_won_no_showdown": h.cumulative_no_showdown,
                 "euro_profit": cumulative_euro,
+                "rakeback": h.cumulative_rake * rakeback_rate,
             })
         })
         .collect())
@@ -1045,5 +1077,105 @@ mod tests {
         assert_eq!(round_to(0.125, 2), 0.12);
         assert_eq!(round_to(1.005, 2), 1.0);
         assert_eq!(round_to(85.954, 2), 85.95);
+    }
+
+    /// A minimal database with one hero hand, to test rakeback computation.
+    fn rakeback_db() -> rusqlite::Connection {
+        use crate::db::migrations::run;
+        let mut conn = rusqlite::Connection::open_in_memory().unwrap();
+        run(&mut conn).unwrap();
+        conn.execute_batch(
+            "INSERT INTO hands (id, game_id, date_time, room, buy_in, prize_pool, multiplier, player_count, position, rake_per_player, ante, blinds)
+             VALUES
+               ('h1', 'g1', '2026-01-03 10:00:00', 'Winamax', 1.0, 100.0, 100, 3, 1, 0.07, 0.02, '0.02/0.05'),
+               ('h2', 'g1', '2026-01-03 10:01:00', 'Winamax', 1.0, 100.0, 100, 3, 0, 0.07, 0.02, '0.02/0.05'),
+               ('h3', 'g1', '2026-01-03 10:02:00', 'Winamax', 1.0, 100.0, 100, 3, 3, 0.07, 0.02, '0.02/0.05');
+             INSERT INTO player_hands (hand_id, player_name, position, net_profit, net_won_adjusted, went_to_showdown, cards)
+             VALUES
+               ('h1', 'hero', 'BTN', 500.0, 50.0, 1, 'Ah Kh'),
+               ('h2', 'hero', 'SB', -500.0, -30.0, 0, 'Qs Qd'),
+               ('h3', 'hero', 'BB', 0.0, 20.0, 1, 'Jd Tc');
+              INSERT INTO players (name) VALUES ('hero');",
+        )
+        .unwrap();
+        conn
+    }
+
+    #[test]
+    fn rakeback_won_is_zero_by_default() {
+        let conn = rakeback_db();
+        let stats = super::dashboard_stats(
+            &conn,
+            &super::StatsQuery {
+                date_from: Some("2026-01-03 00:00:00".into()),
+                date_to: Some("2026-01-03 23:59:59".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert_eq!(stats["rakeback_won"], 0.0);
+    }
+
+    #[test]
+    fn rakeback_won_is_computed_when_setting_is_set() {
+        let conn = rakeback_db();
+        conn.execute(
+            "INSERT INTO settings (key, value) VALUES ('rakeback_pct', '20')",
+            [],
+        )
+        .unwrap();
+        // Total rake per player across 3 hands: 0.07 * 3 = 0.21. At 20%: 0.042 -> rounded to 0.04.
+        let stats = super::dashboard_stats(
+            &conn,
+            &super::StatsQuery {
+                date_from: Some("2026-01-03 00:00:00".into()),
+                date_to: Some("2026-01-03 23:59:59".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert!((stats["rakeback_won"].as_f64().unwrap() - 0.04).abs() < 1e-9);
+    }
+
+    #[test]
+    fn rakeback_in_chart_is_zero_by_default() {
+        let conn = rakeback_db();
+        let points = super::winrate_chart(
+            &conn,
+            &super::ChartQuery {
+                date_from: Some("2026-01-03 00:00:00".into()),
+                date_to: Some("2026-01-03 23:59:59".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert_eq!(points.len(), 3);
+        for p in &points {
+            assert_eq!(p["rakeback"], 0.0);
+        }
+    }
+
+    #[test]
+    fn rakeback_in_chart_is_computed_when_setting_is_set() {
+        let conn = rakeback_db();
+        conn.execute(
+            "INSERT INTO settings (key, value) VALUES ('rakeback_pct', '50')",
+            [],
+        )
+        .unwrap();
+        let points = super::winrate_chart(
+            &conn,
+            &super::ChartQuery {
+                date_from: Some("2026-01-03 00:00:00".into()),
+                date_to: Some("2026-01-03 23:59:59".into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert_eq!(points.len(), 3);
+        // Cumulative rake per hand: 0.07, 0.14, 0.21. At 50%: 0.035, 0.07, 0.105.
+        assert!((points[0]["rakeback"].as_f64().unwrap() - 0.035).abs() < 1e-9);
+        assert!((points[1]["rakeback"].as_f64().unwrap() - 0.07).abs() < 1e-9);
+        assert!((points[2]["rakeback"].as_f64().unwrap() - 0.105).abs() < 1e-9);
     }
 }

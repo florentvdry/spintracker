@@ -102,7 +102,7 @@ fn dashboard(q: StatsQuery) -> Value {
     // Depends on today's date.
     v.as_object_mut().unwrap().remove("sessions_this_month");
     // Added after the former backend: it has no counterpart in the golden files.
-    for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room"] {
+    for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room", "rakeback_won"] {
         v.as_object_mut().unwrap().remove(added);
     }
     v
@@ -163,6 +163,20 @@ fn multiplier_stats_match_the_former_backend() {
     assert_same("multiplier_day3.json", serde_json::to_value(day).unwrap());
 }
 
+/// Removes the `rakeback` key from chart points (added after the former backend).
+fn strip_rakeback(value: Value) -> Value {
+    match value {
+        Value::Array(items) => Value::Array(items.into_iter().map(strip_rakeback).collect()),
+        Value::Object(map) => Value::Object(
+            map.into_iter()
+                .filter(|(k, _)| k != "rakeback")
+                .map(|(k, v)| (k, strip_rakeback(v)))
+                .collect(),
+        ),
+        other => other,
+    }
+}
+
 #[test]
 fn winrate_chart_matches_the_former_backend() {
     let conn = database().conn().unwrap();
@@ -176,9 +190,9 @@ fn winrate_chart_matches_the_former_backend() {
         },
     )
     .unwrap();
-    assert_same("chart_husb_day3.json", Value::Array(heads_up));
+    assert_same("chart_husb_day3.json", Value::Array(heads_up.into_iter().map(strip_rakeback).collect()));
     let big_blind = stats::winrate_chart(&conn, &ChartQuery { position: Some("3W_BB".into()), ..Default::default() }).unwrap();
-    assert_same("chart_3wbb.json", Value::Array(big_blind));
+    assert_same("chart_3wbb.json", Value::Array(big_blind.into_iter().map(strip_rakeback).collect()));
 }
 
 /// Same reduction as the golden file: sample hands become "id|player" (top level) or a count.

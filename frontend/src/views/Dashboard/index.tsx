@@ -21,6 +21,7 @@ export default function Dashboard() {
   const { t } = useTranslation()
   const stats = useAppStore((s) => s.dashboardStats) ?? {}
   const sessions = useAppStore((s) => s.sessions)
+  const rakebackPct = useAppStore((s) => s.rakebackPct)
   const heroName = useFilterStore((s) => s.heroName)
   const dateRange = useFilterStore((s) => s.dateRange)
   const isLoading = useAppStore((s) => s.isLoading)
@@ -65,6 +66,7 @@ export default function Dashboard() {
   const totalProfit = stats.total_profit || 0
   const evProfit = stats.total_ev_profit || 0
   const luckProfit = stats.luck_profit || 0
+  const rakebackWon = stats.rakeback_won || 0
   const unpriced: number =stats.unpriced_tournaments || 0
   const maxAbsCev = Math.max(1, ...positionGroups.flatMap((g) => g.rows.map((r) => Math.abs(r.cev.value))))
 
@@ -103,6 +105,9 @@ export default function Dashboard() {
                 value={(stats.avg_chips_ev || 0).toLocaleString()}
                 tone={(stats.avg_chips_ev || 0) >= 0 ? 'positive' : 'negative'}
               />
+              {rakebackPct > 0 && (
+                <HeroStat label={t('dashboard.rakeback_won')} value={formatProfit(rakebackWon)} tone={rakebackWon >= 0 ? 'positive' : 'negative'} />
+              )}
             </div>
           </div>
           </LoadingOverlay>

@@ -56,7 +56,7 @@ fn get_routes_read_their_query_string() {
     for v in [&mut dashboard, &mut expected] {
         v["data"].as_object_mut().unwrap().remove("sessions_this_month");
         // Added after the former backend: they have no counterpart in the golden files.
-        for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room"] {
+        for added in ["unpriced_tournaments", "total_ev_profit", "luck_profit", "main_room", "rakeback_won"] {
             v["data"].as_object_mut().unwrap().remove(added);
         }
     }

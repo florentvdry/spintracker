@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Check, Database, Download, Edit2, FolderOpen, Globe, Loader, Plus, RefreshCw, Trash2, X } from 'lucide-react'
+import { Check, Database, Download, Edit2, FolderOpen, Globe, Loader, Plus, RefreshCw, Trash2, TrendingUp, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import Card from '@/components/ui/Card'
@@ -32,6 +32,8 @@ export default function Settings() {
   const { t, i18n } = useTranslation()
   const notify = useNotificationStore()
   const refreshAll = useAppStore((s) => s.refreshAll)
+  const loadSettings = useAppStore((s) => s.loadSettings)
+  const rakebackPct = useAppStore((s) => s.rakebackPct)
   const setHeroName = useFilterStore((s) => s.setHeroName)
   const loadPlayers = usePlayersStore((s) => s.loadPlayers)
   const isChecking = useUpdateStore((s) => s.isChecking)
@@ -43,11 +45,17 @@ export default function Settings() {
     if (focus) document.getElementById(focus)?.scrollIntoView({ block: 'start' })
   }, [focus])
 
+  useEffect(() => {
+    setRakebackDraft(rakebackPct)
+  }, [rakebackPct])
+
   const [serverActive, setServerActive] = useState<boolean | null>(null)
   const [exportOpen, setExportOpen] = useState(false)
   const closeExport = useCallback(() => setExportOpen(false), [])
   const [appVersion, setAppVersion] = useState('1.0.0')
   const [databases, setDatabases] = useState<Json[]>([])
+  const [rakebackDraft, setRakebackDraft] = useState(rakebackPct)
+  const [rakebackSaving, setRakebackSaving] = useState(false)
   const [loadingDatabases, setLoadingDatabases] = useState(true)
   const [creatingDb, setCreatingDb] = useState(false)
   const [newDbName, setNewDbName] = useState('')
@@ -168,6 +176,25 @@ export default function Settings() {
     }
   }
 
+  const handleSaveRakeback = async () => {
+    const value = String(rakebackDraft).trim()
+    if (!value) return
+    setRakebackSaving(true)
+    try {
+      const result = await ipcService.setSettings('rakeback_pct', value)
+      if (result.success) {
+        notify.success(t('settings.rakeback.saved'), t('common.success'))
+        await loadSettings()
+      } else {
+        reportError(result.message || t('settings.messages.error_unknown'))
+      }
+    } catch (error) {
+      reportError(errorMessage(error) || t('settings.messages.error_unknown'))
+    } finally {
+      setRakebackSaving(false)
+    }
+  }
+
   const handleRenameDatabase = async (db: Json) => {
     const name = editingDbName.trim()
     if (!name) return
@@ -207,6 +234,31 @@ export default function Settings() {
           <div className="segmented">
             {languageButton('en', 'English')}
             {languageButton('fr', 'Français')}
+          </div>
+        </SettingRow>
+      </Card>
+
+      <Card title={t('settings.rakeback.title')} subtitle={t('settings.rakeback.subtitle')}>
+        <SettingRow
+          icon={TrendingUp}
+          title={t('settings.rakeback.percentage')}
+          description={t('settings.rakeback.percentage_desc')}
+        >
+          <div className="flex items-center gap-3 w-64">
+            <input
+              type="number"
+              min="0"
+              max="100"
+              step="0.1"
+              value={rakebackDraft}
+              onChange={(e) => setRakebackDraft(e.target.valueAsNumber ?? 0)}
+              className="w-20 bg-dark-300 border border-dark-200 rounded-lg px-3 py-1.5 text-gray-100 text-sm focus:outline-none focus:border-primary-500"
+            />
+            <span className="text-gray-400 text-sm">%</span>
+            <button onClick={() => void handleSaveRakeback()} disabled={rakebackSaving} className="btn-secondary flex items-center gap-2 text-sm">
+              {rakebackSaving ? <Loader className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
+              {t('common.save')}
+            </button>
           </div>
         </SettingRow>
       </Card>

@@ -674,6 +674,13 @@
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'application",
+    "rakeback": {
+      "title": "Rakeback",
+      "subtitle": "Récupérez un pourcentage du rake que vous avez payé",
+      "percentage": "Pourcentage de rakeback",
+      "percentage_desc": "Pourcentage du rake payé qui vous est reversé. Mettez à 0 pour masquer le rakeback dans le tableau de bord.",
+      "saved": "Rakeback enregistré"
+    },
     "general": {
       "title": "Général",
       "language": "Langue",

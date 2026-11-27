@@ -3,12 +3,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const getDashboardStats = vi.fn()
 const getSessionHistory = vi.fn()
 const getBuyIns = vi.fn()
+const getSettings = vi.fn(() => Promise.resolve({ success: true, data: {} }))
 
 vi.mock('@/services/ipcService', () => ({
   ipcService: {
-    getDashboardStats: (...args: unknown[]) => getDashboardStats(...args),
-    getSessionHistory: (...args: unknown[]) => getSessionHistory(...args),
-    getBuyIns: (...args: unknown[]) => getBuyIns(...args),
+    getDashboardStats: getDashboardStats,
+    getSessionHistory: getSessionHistory,
+    getBuyIns: getBuyIns,
+    getSettings: getSettings,
   },
 }))
 

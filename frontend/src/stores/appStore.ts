@@ -27,12 +27,15 @@ interface AppState {
   sessions: Json[]
   availableBuyIns: number[]
   lastUpdate: number
+  /** The player's rakeback percentage, 0 by default. */
+  rakebackPct: number
   error: string | null
   initialize: () => Promise<void>
   runInitialization: () => Promise<void>
   loadDashboardStats: () => Promise<void>
   loadSessions: (limit?: number) => Promise<void>
   loadBuyIns: () => Promise<void>
+  loadSettings: () => Promise<void>
   refreshAll: () => Promise<void>
 }
 
@@ -44,6 +47,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   sessions: [],
   availableBuyIns: [],
   lastUpdate: 0,
+  rakebackPct: 0,
   error: null,
 
   initialize: () => {
@@ -137,11 +141,28 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   },
 
+  loadSettings: async () => {
+    try {
+      const result = await ipcService.getSettings()
+      if (result.success && result.data) {
+        const pct = Number(result.data.rakeback_pct) || 0
+        set({ rakebackPct: pct })
+      }
+    } catch (err) {
+      logError('Failed to load settings:', err)
+    }
+  },
+
   refreshAll: async () => {
     const request = ++refreshRequest
     set({ isLoading: true })
     try {
-      await Promise.all([get().loadDashboardStats(), get().loadSessions(SESSION_LIMIT), get().loadBuyIns()])
+      await Promise.all([
+        get().loadDashboardStats(),
+        get().loadSessions(SESSION_LIMIT),
+        get().loadBuyIns(),
+        get().loadSettings(),
+      ])
       if (request === refreshRequest) set({ lastUpdate: Date.now() })
     } finally {
       if (request === refreshRequest) set({ isLoading: false })

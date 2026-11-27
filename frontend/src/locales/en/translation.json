@@ -386,6 +386,7 @@
     "ev_profit": "EV Profit",
     "ev_profit_hint": "What your chip EV is worth, without luck",
     "luck_gap": "Luck gap",
+    "rakeback_won": "Rakeback Won",
     "unpriced_note": "{{count}} tournaments without a known prize pool are not counted in this profit (tournament summary missing).",
     "activity": "Activity",
     "sessions_month": "Sessions this month",
@@ -608,6 +609,8 @@
     "cev": "CEV",
     "heads_up": "Heads-Up",
     "three_way": "3-Way",
+    "rakeback": "Rakeback",
+    "netWonPlusRakeback": "Net Won + Rakeback",
     "positions": {
       "all": "All positions",
       "HU_SB": "HU SB",
@@ -620,6 +623,13 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Configure the application",
+    "rakeback": {
+      "title": "Rakeback",
+      "subtitle": "Get a share of the rake you paid back",
+      "percentage": "Rakeback percentage",
+      "percentage_desc": "Percentage of the rake paid that is returned to you. Set to 0 to hide rakeback from the dashboard.",
+      "saved": "Rakeback saved"
+    },
     "general": {
       "title": "General",
       "language": "Language",
