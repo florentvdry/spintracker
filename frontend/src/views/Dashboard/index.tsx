@@ -8,6 +8,7 @@ import { useAppStore } from '@/stores/appStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { formatProfit } from '@/utils/formatters'
 import MultipliersCard from './components/MultipliersCard'
+import VolumeCard from './components/VolumeCard'
 import SessionList from './components/SessionList'
 
 interface CevRow {
@@ -126,6 +127,7 @@ export default function Dashboard() {
         </section>
 
         <div className="flex flex-col gap-4 min-w-0">
+          <VolumeCard />
           <Card title={t('dashboard.cev_per_positions')}>
             <LoadingOverlay loading={isLoading}>
               {positionGroups.map((group) => (

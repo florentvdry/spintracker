@@ -671,6 +671,23 @@
       "hu_vs_sb_limp": "vs SB Limp"
     }
   },
+  "volume": {
+    "title": "Volume",
+    "subtitle": "Combien tu joues, et tes objectifs",
+    "per_hour": "Tournois / heure",
+    "average_duration": "Durée moyenne d'un Spin",
+    "play_hours": "Heures jouées",
+    "goal_week": "Cette semaine",
+    "goal_month": "Ce mois-ci",
+    "target": "objectif",
+    "no_target": "pas d'objectif",
+    "invalid_target": "Saisis un nombre entier de 1 à 100 000 (vide supprime l'objectif).",
+    "last_session": "Dernière session",
+    "session_ongoing": "en cours",
+    "session_ended": "terminée",
+    "no_session": "Aucune session pour l'instant.",
+    "inactivity": "Fin après (min)"
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'application",

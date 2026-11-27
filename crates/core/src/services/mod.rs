@@ -9,6 +9,7 @@ pub mod summaries;
 pub mod range_adherence;
 pub mod ranges_io;
 pub mod review;
+pub mod volume;
 pub mod table_pairing;
 pub mod training;
 pub mod user_ranges;

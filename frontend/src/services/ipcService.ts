@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import type { ExportBucket, ExportFilter } from '@/utils/exportFilter'
+import type { GoalPeriodKey, VolumeSummary } from '@/utils/volume'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Json = any
@@ -103,6 +104,9 @@ export const ipcService = {
   // Dashboard & stats
   getDashboardStats: (heroName?: string | null, dateFrom?: string | null, dateTo?: string | null, buyIn?: number | null) =>
     backend('GET', `/db/dashboard-stats${query({ heroName, dateFrom, dateTo, buyIn, supersede: true })}`),
+  getVolume: (params: { heroName?: string | null; dateFrom?: string | null; dateTo?: string | null; buyIn?: number | null }) =>
+    backend<VolumeSummary>('GET', `/db/volume${query({ ...params })}`),
+  saveGoal: (period: GoalPeriodKey, target: number | null) => backend('PUT', `/db/goals/${period}`, { target }),
   getSessionHistory: (limit = 50, heroName?: string | null, dateFrom?: string | null, dateTo?: string | null, buyIn?: number | null) =>
     backend('POST', '/db/session-history?supersede=true', { limit, heroName, dateFrom, dateTo, buyIn }),
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),

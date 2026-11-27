@@ -617,6 +617,23 @@
       "3W_BB": "3W BB"
     }
   },
+  "volume": {
+    "title": "Volume",
+    "subtitle": "How much you play, and your goals",
+    "per_hour": "Tournaments / hour",
+    "average_duration": "Average Spin",
+    "play_hours": "Hours played",
+    "goal_week": "This week",
+    "goal_month": "This month",
+    "target": "target",
+    "no_target": "no goal",
+    "invalid_target": "Enter a whole number from 1 to 100,000 (empty removes the goal).",
+    "last_session": "Last session",
+    "session_ongoing": "in progress",
+    "session_ended": "ended",
+    "no_session": "No session yet.",
+    "inactivity": "Session ends after (min)"
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Configure the application",

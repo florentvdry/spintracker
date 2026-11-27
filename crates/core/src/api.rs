@@ -27,7 +27,9 @@ use crate::repos::player_queries::{self, PlayersQuery};
 use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
+use crate::repos::volume::VolumeScope;
 use crate::services::custom_stats::CustomStatsService;
+use crate::services::volume;
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
 use crate::services::review;
@@ -284,6 +286,19 @@ impl Backend {
                 Response::data(Value::Array(stats::session_history(&conn, limit, &q)?))
             }
             ("GET", ["db", "buyins"]) => Response::data(json!(stats::unique_buy_ins(&*conn()?)?)),
+            ("GET", ["db", "volume"]) => {
+                let conn = conn()?;
+                let (hero, from, to) = (r.query_str("heroName"), r.query_str("dateFrom"), r.query_str("dateTo"));
+                let scope = VolumeScope { hero_name: hero.as_deref(), date_from: from.as_deref(), date_to: to.as_deref(), buy_in: r.query_f64("buyIn") };
+                Response::data(volume::summary(&conn, &scope)?)
+            }
+            ("PUT", ["db", "goals", period]) => {
+                let target = r.body.as_ref().and_then(|b| b.get("target")).and_then(Value::as_i64);
+                let conn = conn()?;
+                volume::save_goal(&conn, period, target)?;
+                self.db.bump_data_version();
+                Response::data(Value::Null)
+            }
             ("GET", ["db", "detailed-stats"]) => {
                 let scope = r.query_str("statsScope").unwrap_or_default().trim().to_lowercase();
                 let opponent = r.query_str("opponentName");
