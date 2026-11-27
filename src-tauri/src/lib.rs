@@ -100,6 +100,8 @@ pub fn run() {
             commands::auto_import_get,
             commands::auto_import_set,
             commands::auto_import_pick_folder,
+            commands::onboarding_detect,
+            commands::onboarding_complete,
             commands::hud_settings_get,
             commands::hud_settings_set,
             commands::hud_get_state,

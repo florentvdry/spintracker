@@ -97,6 +97,17 @@
       "error": "Import error"
     }
   },
+  "onboarding": {
+    "title": "Set up your hand history import",
+    "subtitle": "Import your tournaments as they are played",
+    "intro": "SpinTracker found the history folders of the rooms installed on this computer. Choose the ones you want to import, then finish to start watching them.",
+    "addFolder": "Add a folder",
+    "detected": "Detected",
+    "none": "No folder for {{room}} yet. Add one to import {{room}} hands automatically.",
+    "saving": "Saving your choices…",
+    "finish": "Finish setup",
+    "done": "Your history folders are set up. Hands will be imported automatically."
+  },
   "liveHud": {
     "tabs": {
       "profiles": "Profiles"

@@ -22,6 +22,7 @@ use crate::backend::{self, BackendState};
 use crate::hud;
 
 const CONFIG_FILE: &str = "auto_import.json";
+const ONBOARDING_MARKER: &str = "onboarding.json";
 const HANDS_IMPORTED_EVENT: &str = "hands-imported";
 const STATUS_EVENT: &str = "auto-import-status";
 /// A file is handled once it has been quiet this long: a room writes a hand in several bursts.
@@ -198,7 +199,7 @@ fn unibet_folder(documents: &Path) -> Option<WatchedFolder> {
 }
 
 /// Where the rooms keep their history on a default install. Only folders that exist are returned.
-fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
+pub fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
     let mut found = Vec::new();
     let mut roots: Vec<(PathBuf, &str)> = Vec::new();
     if let Ok(documents) = app.path().document_dir() {
@@ -218,6 +219,42 @@ fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
         }
     }
     found
+}
+
+/// Has the onboarding assistant already been completed in `data_dir`?
+pub fn onboarding_is_done(data_dir: &Path) -> bool {
+    data_dir.join(ONBOARDING_MARKER).exists()
+}
+
+/// Writes the marker that tells the onboarding assistant not to show again.
+fn mark_onboarding_done(data_dir: &Path) -> Result<(), String> {
+    fs::create_dir_all(data_dir).map_err(|e| e.to_string())?;
+    fs::write(data_dir.join(ONBOARDING_MARKER), "{\"done\": true}\n").map_err(|e| e.to_string())
+}
+
+/// Saves the folders chosen during onboarding as the auto-import settings of the active database,
+/// enabled, then (re)starts the watcher so the detected rooms are imported from the first launch.
+pub fn apply_onboarding(app: &AppHandle, folders: Vec<WatchedFolder>) -> Value {
+    let folders = match validate(folders) {
+        Ok(folders) => folders,
+        Err(message) => return json!({ "success": false, "message": message }),
+    };
+    let Some(backend) = app.state::<BackendState>().ready() else {
+        return json!({ "success": false, "message": "The backend is not ready yet." });
+    };
+    let Some(id) = active_database_id(&backend) else {
+        return json!({ "success": false, "message": "No active database." });
+    };
+    let mut config = load_config(app);
+    config.databases.insert(id, DatabaseSettings { enabled: true, folders });
+    if let Err(message) = save_config(app, &config) {
+        return json!({ "success": false, "message": message });
+    }
+    if let Err(message) = mark_onboarding_done(&backend::data_dir(app)) {
+        return json!({ "success": false, "message": message });
+    }
+    reload(app);
+    json!({ "success": true })
 }
 
 pub fn get(app: &AppHandle) -> Value {
@@ -560,5 +597,21 @@ mod tests {
         let config: Config = serde_json::from_str(text).unwrap();
         assert!(config.databases["a"].enabled);
         assert!(config.databases.get("b").is_none());
+    }
+
+    #[test]
+    fn onboarding_is_done_only_after_the_marker_is_written() {
+        let dir = tempfile::tempdir().unwrap();
+        assert!(!onboarding_is_done(dir.path()));
+        mark_onboarding_done(dir.path()).expect("the marker is written");
+        assert!(onboarding_is_done(dir.path()));
+    }
+
+    #[test]
+    fn writing_the_marker_twice_is_idempotent() {
+        let dir = tempfile::tempdir().unwrap();
+        mark_onboarding_done(dir.path()).unwrap();
+        mark_onboarding_done(dir.path()).unwrap();
+        assert!(onboarding_is_done(dir.path()));
     }
 }

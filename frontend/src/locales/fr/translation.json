@@ -97,6 +97,17 @@
       "error": "Erreur d'import"
     }
   },
+  "onboarding": {
+    "title": "Configurer l'import de vos historiques",
+    "subtitle": "Importez vos tournois au fur et à mesure",
+    "intro": "SpinTracker a trouvé les dossiers d'historique des salles installées sur cet ordinateur. Choisissez ceux à importer, puis terminez pour les surveiller.",
+    "addFolder": "Ajouter un dossier",
+    "detected": "Détecté",
+    "none": "Aucun dossier pour {{room}} encore. Ajoutez-en un pour importer les mains de {{room}} automatiquement.",
+    "saving": "Enregistrement de vos choix…",
+    "finish": "Terminer la configuration",
+    "done": "Vos dossiers d'historique sont configurés. Les mains seront importées automatiquement."
+  },
   "liveHud": {
     "tabs": {
       "profiles": "Profils"

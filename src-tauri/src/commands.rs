@@ -140,6 +140,25 @@ pub fn auto_import_set(app: AppHandle, window: WebviewWindow, enabled: bool, fol
     autoimport::set(&app, enabled, folders)
 }
 
+/// Whether the onboarding assistant still has to run, and the history folders found on this
+/// computer for the detected rooms. No backend is needed: the folders come from the file system.
+#[tauri::command]
+pub fn onboarding_detect(app: AppHandle) -> Value {
+    json!({
+        "success": true,
+        "needed": !autoimport::onboarding_is_done(&backend::data_dir(&app)),
+        "detected": autoimport::detect_folders(&app),
+    })
+}
+
+/// Saves the folders the user confirmed during onboarding as the auto-import settings of the
+/// active database, enables watching, and marks onboarding as done so the assistant does not
+/// show again.
+#[tauri::command]
+pub fn onboarding_complete(app: AppHandle, folders: Vec<WatchedFolder>) -> Value {
+    autoimport::apply_onboarding(&app, folders)
+}
+
 #[tauri::command]
 pub fn hud_settings_get(app: AppHandle) -> Value {
     hud_settings::get(&app)
