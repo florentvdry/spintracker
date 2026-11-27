@@ -7,8 +7,6 @@
 //! `... wins €...`. The word "ipoker" is not present in these exports, so detection relies on
 //! the `GAME #` hand boundary and the `Table Info`/`Uncalled:Y` markers.
 
-use chrono::NaiveDateTime;
-
 use super::{clean_lines, content_id, entry_cost, join_lines, parse_f64, parse_i32, regex, HandParser};
 use crate::models::{BlindsInfo, ParseResult, ParsedHand, PlayerInfo};
 
