@@ -28,7 +28,7 @@ pub const MAX_STATS: usize = 2048;
 /// Players kept in memory; the cache is emptied when it grows past this.
 const CACHE_CAPACITY: usize = 500;
 /// Hands listed behind a figure by default, and at most: a list is read at a glance.
-const DEFAULT_FIGURE_HANDS: usize = 30;
+const DEFAULT_FIGURE_HANDS: usize = 4;
 const MAX_FIGURE_HANDS: usize = 50;
 /// Stack depths a group can hold: there are not more depths than this.
 const MAX_GROUP_BUCKETS: usize = 16;

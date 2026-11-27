@@ -59,6 +59,7 @@ function HandBlock({ hand, dimmed }: { hand: FigureHand; dimmed: boolean }) {
   return (
     <div className={clsx('border-b border-[#232937] px-3.5 py-3', dimmed && 'opacity-55')} title={hand.playedAt}>
       <div className="mb-2 flex items-center gap-2.5">
+        {hand.position && <span className="rounded bg-[#232937] px-1.5 py-0.5 text-xs font-bold text-[#e6e9ef]">{hand.position}</span>}
         <span className="flex items-center">
           {hand.cards.length > 0 ? (
             hand.cards.map((card, i) => (

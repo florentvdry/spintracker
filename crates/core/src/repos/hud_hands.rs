@@ -11,7 +11,7 @@ use crate::Result;
 pub fn summaries(conn: &Connection, player: &str, ids: &[String]) -> Result<Vec<Value>> {
     let mut hand = conn.prepare_cached(
         "SELECT h.date_time, h.blinds, h.preflop_action, h.flop_action, h.turn_action, h.river_action,
-                h.flop, h.turn, h.river, ph.cards, ph.net_profit
+                h.flop, h.turn, h.river, ph.cards, ph.net_profit, ph.position
          FROM hands h JOIN player_hands ph ON ph.hand_id = h.id
          WHERE h.id = ?1 AND ph.player_name = ?2",
     )?;
@@ -27,6 +27,8 @@ pub fn summaries(conn: &Connection, player: &str, ids: &[String]) -> Result<Vec<
         let board = [text(6)?, text(7)?, text(8)?];
         let cards = text(9)?;
         let net_profit = row.get::<_, Option<f64>>(10)?.unwrap_or(0.0);
+        // The seat the player sat in (BTN, SB, BB...), shown so a stat can be read by position.
+        let position: Option<String> = row.get(11)?;
 
         let stacks: Vec<(String, f64)> = seats
             .query_map([id], |r| Ok((r.get::<_, String>(0)?, r.get::<_, Option<f64>>(1)?.unwrap_or(0.0))))?
@@ -43,7 +45,30 @@ pub fn summaries(conn: &Connection, player: &str, ids: &[String]) -> Result<Vec<
         let mut value = serde_json::to_value(summary)?;
         value["id"] = json!(id);
         value["playedAt"] = json!(played_at);
+        value["position"] = json!(position);
         out.push(value);
     }
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::db::migrations;
+
+    #[test]
+    fn summaries_carry_the_players_seat() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        migrations::run(&mut conn).unwrap();
+        conn.execute_batch(
+            "INSERT INTO hands (id, room, date_time, blinds, player_count) VALUES ('h1', 'Winamax', '2026-01-05 21:10:00', '10/20', 3);
+             INSERT INTO player_hands (hand_id, player_name, position, stack) VALUES ('h1', 'Hero', 'BTN', 1000.0);
+             INSERT INTO player_hands (hand_id, player_name, position, stack) VALUES ('h1', 'Villain', 'BB', 800.0);",
+        )
+        .unwrap();
+
+        let summaries = summaries(&conn, "Hero", &["h1".to_string()]).unwrap();
+        assert_eq!(summaries.len(), 1);
+        assert_eq!(summaries[0]["position"], json!("BTN"));
+    }
 }

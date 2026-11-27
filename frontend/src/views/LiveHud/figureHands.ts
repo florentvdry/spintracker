@@ -3,7 +3,8 @@ import type { Json } from '@/services/ipcService'
 
 /** A stat held under the pointer this long opens the list of its hands; the list then stays until its cross is clicked. */
 export const HOVER_DELAY_MS = 1000
-export const FIGURE_HANDS_LIMIT = 30
+/** The popup lists the newest hands behind a figure: a few are enough to read the spot, the total is counted in full. */
+export const FIGURE_HANDS_LIMIT = 4
 
 /** Which stat a cell shows, the way the backend is asked for its hands. */
 export interface FigureRef {
@@ -39,6 +40,8 @@ export interface HandStreet {
 export interface FigureHand {
   id: string
   playedAt: string
+  /** The player's seat in that hand (BTN, SB, BB...), when known. */
+  position: string | null
   stackBb: number | null
   cards: string[]
   resultBb: number | null
@@ -77,6 +80,7 @@ function parseHand(raw: unknown): FigureHand | null {
   return {
     id: raw.id,
     playedAt: typeof raw.playedAt === 'string' ? raw.playedAt : '',
+    position: typeof raw.position === 'string' && raw.position !== '' ? raw.position : null,
     stackBb: numberOrNull(raw.stackBb),
     cards: cardsOf(raw.cards),
     resultBb: numberOrNull(raw.resultBb),
