@@ -165,37 +165,32 @@ fn format_detection_picks_the_right_room() {
 
 #[test]
 fn ipoker_detection_is_case_insensitive() {
-    let lowercase = "site: ipoker.fr\ngame mode: spin\nhand id: H001\n";
+    // Real iPoker Network exports use the `GAME #` hand boundary and do not carry the
+    // word "ipoker", so detection relies on the `Table Info`/`Uncalled:Y` markers.
+    let lowercase = "game #h001 version:26.7.1.25 uncalled:y texas hold'em nl  tournament 2026-01-01 10:00:00/gmt\ntable info: size: 3, blinds: 10/20\n";
     assert_eq!(get_parser(lowercase).map(|p| p.room_name()), Some("iPoker"));
 
-    let uppercase = "SITE: IPOKER.FR\nGAME MODE: SPIN\nHAND ID: H001\n";
+    let uppercase = "GAME #H001 VERSION:26.7.1.25 UNCALLED:Y TEXAS HOLDEM NL  TOURNAMENT 2026-01-01 10:00:00/GMT\nTABLE INFO: SIZE: 3, BLINDS: 10/20\n";
     assert_eq!(get_parser(uppercase).map(|p| p.room_name()), Some("iPoker"));
 
     // An unrelated room must not be mistaken for iPoker.
-    let betclic = "site: betclic.fr\ngame mode: cash\nhand id: H001\n";
-    assert_ne!(get_parser(betclic).map(|p| p.room_name()), Some("iPoker"));
+    let winamax = "Winamax Poker - Tournament \"X\" buyIn: 1 + 0.1 level: 1 - HandId: #1 - Holdem no limit (10/20) - 2026/01/01 10:00:00 UTC";
+    assert_ne!(get_parser(winamax).map(|p| p.room_name()), Some("iPoker"));
 }
 
 #[test]
-fn ipoker_network_export_is_detected_without_site_line() {
-    // Some iPoker Network exports do not carry a `Site:` line: they must still be
-    // recognised as iPoker through the room name and the export layout.
-    let content = "iPoker Network\n*** HEADER ***\nGame Mode: Spin\nGame ID: T001\nHand ID: H001\n*** PLAYERS ***\nSeat 1: hero_player (1500) [BTN SB Hero]\n";
-    assert_eq!(get_parser(content).map(|p| p.room_name()), Some("iPoker"));
-}
-
-#[test]
-fn ipoker_network_export_sample_is_detected_and_parsed() {
-    // Regression test on a real-shaped iPoker Network export that has no `Site:` line.
+fn ipoker_real_format_is_detected_and_parsed() {
+    // Regression test on a real-shaped iPoker Network export (GAME # layout).
     let dir = sample_dir("iPoker");
-    let file = dir.join("iPoker Network_HandsExport_202611271148_tourney_00001.txt");
+    let file = dir.join("iPoker_2026-1-1.txt");
     let content = read_text(&file);
     assert_eq!(get_parser(&content).map(|p| p.room_name()), Some("iPoker"));
     let hands = IPokerParser.parse_file(&content).hands;
-    assert_eq!(hands.len(), 1);
-    assert_eq!(hands[0].hand_id.as_deref(), Some("HNET001"));
+    assert_eq!(hands.len(), 2);
+    assert_eq!(hands[0].hand_id.as_deref(), Some("H001"));
     assert_eq!(hands[0].room.as_deref(), Some("iPoker"));
-    assert_eq!(hands[0].player_count, 2);
+    assert_eq!(hands[0].player_count, 3);
+    assert_eq!(hands[0].game_id.as_deref(), Some("T001"));
 }
 
 #[test]

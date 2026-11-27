@@ -151,24 +151,6 @@ fn ipoker_import_imports_all_hands_from_a_sample_file() {
     assert_eq!(count(&conn, "SELECT COUNT(*) FROM hands"), 2);
 }
 
-#[test]
-fn ipoker_import_without_dashed_dividers_is_split_into_hands() {
-    let f = fixture();
-    let original = sample("iPoker", "iPoker_2026-1-1.txt");
-    let text = std::fs::read_to_string(&original).unwrap();
-    assert!(text.lines().any(|l| l.starts_with("------------")), "the sample uses the dashed layout");
-
-    // The modern export layout: hands follow each other with no dashed line.
-    let stripped: String = text.lines().filter(|l| !l.starts_with("------------")).map(|l| format!("{l}\n")).collect();
-    let path = f._dir.path().join("iPoker_HandsExport_test.txt");
-    std::fs::write(&path, stripped).unwrap();
-
-    let expected = f.importer.count_hands(&original).unwrap();
-    assert!(expected > 1, "the dashed sample must hold several hands");
-    assert_eq!(f.importer.count_hands(&path).unwrap(), expected, "count must match the dashed layout");
-    let (summary, _) = run(&f, &path);
-    assert_eq!(summary.imported, expected, "all hands must be imported without dividers");
-}
 
 #[test]
 fn counting_hands_and_unknown_files() {

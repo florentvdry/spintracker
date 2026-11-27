@@ -1,7 +1,7 @@
 iPoker: pseudo: hero_player
-4 Mains.
+2 Mains.
 Date: Global
 Tournaments 1
-250 chips won
-300 chips won with showdown
--50 chips won without showdown
+530 chips won
+520 chips won with showdown
+10 chips won without showdown
