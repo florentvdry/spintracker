@@ -207,6 +207,9 @@ export default function Settings() {
           <div className="segmented">
             {languageButton('en', 'English')}
             {languageButton('fr', 'Français')}
+            {languageButton('es', 'Español')}
+            {languageButton('it', 'Italiano')}
+            {languageButton('pt', 'Português')}
           </div>
         </SettingRow>
       </Card>

@@ -2,6 +2,9 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import en from './locales/en/translation.json'
 import fr from './locales/fr/translation.json'
+import es from './locales/es/translation.json'
+import it from './locales/it/translation.json'
+import pt from './locales/pt/translation.json'
 
 const LANGUAGE_STORAGE_KEY = 'spintracker-language'
 const DEFAULT_LANGUAGE = 'fr'
@@ -24,7 +27,7 @@ export function setLanguage(language: string): void {
 }
 
 void i18n.use(initReactI18next).init({
-  resources: { en: { translation: en }, fr: { translation: fr } },
+  resources: { en: { translation: en }, fr: { translation: fr }, es: { translation: es }, it: { translation: it }, pt: { translation: pt } },
   lng: storedLanguage(),
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
