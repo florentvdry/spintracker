@@ -7,6 +7,7 @@ import RoomLogo from '@/components/common/RoomLogo'
 import AutoImportIndicator from './AutoImportIndicator'
 import HudSwitch from './HudSwitch'
 import TopNav from './TopNav'
+import ImportSummaryDialog from '@/components/ui/ImportSummaryDialog'
 import { ipcService, type ImportProgress, type Json } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useFilterStore, type DateRange } from '@/stores/filterStore'
@@ -44,6 +45,13 @@ export default function Header() {
   const [heroOpen, setHeroOpen] = useState(false)
   const [dateMenu, setDateMenu] = useState<'session' | 'custom' | null>(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [summaryOpen, setSummaryOpen] = useState(false)
+  const [summaryResult, setSummaryResult] = useState<{
+    handsImported: number
+    handsSkipped: number
+    filesProcessed: number
+    errors: Array<{ file: string; error: string }>
+  } | null>(null)
   const [customFrom, setCustomFrom] = useState(filters.customDateFrom ?? '')
   const [customTo, setCustomTo] = useState(filters.customDateTo ?? '')
 
@@ -111,17 +119,15 @@ export default function Header() {
     try {
       const result = await ipcService.importHandHistory()
       if (result.success) {
-        notifications.addNotification({
-          type: 'success',
-          title: t('header.import_success'),
-          message: t('header.import_stats', {
-            hands: result.handsImported,
-            skipped: result.handsSkipped || 0,
-            files: result.filesProcessed,
-          }),
-        })
         await app.refreshAll()
         await loadPlayers()
+        setSummaryResult({
+          handsImported: result.handsImported,
+          handsSkipped: result.handsSkipped ?? 0,
+          filesProcessed: result.filesProcessed,
+          errors: result.errors ?? [],
+        })
+        setSummaryOpen(true)
       } else if (result.message !== 'Import cancelled') {
         notifications.addNotification({ type: 'error', title: t('header.import_error'), message: result.message ?? '' })
       }
@@ -417,6 +423,12 @@ export default function Header() {
           <AutoImportIndicator />
         </div>
       )}
+
+      <ImportSummaryDialog
+        open={summaryOpen}
+        onClose={() => setSummaryOpen(false)}
+        result={summaryResult ?? { handsImported: 0, handsSkipped: 0, filesProcessed: 0, errors: [] }}
+      />
     </>
   )
 }
