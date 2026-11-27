@@ -34,7 +34,7 @@ use crate::services::review;
 use crate::services::training;
 use crate::services::ranges_io;
 use crate::services::user_ranges::{self as ranges, RangeError};
-use crate::services::hud::{HudFigureHandsRequest, HudNoteRequest, HudPlayersRequest, HudService, HudTablesRequest};
+use crate::services::hud::{HudFigureHandsRequest, HudNoteRequest, HudPlayersRequest, HudPoolRequest, HudService, HudTablesRequest};
 use crate::services::Importer;
 use crate::stats::store;
 use crate::{Error, Result};
@@ -395,6 +395,10 @@ impl Backend {
                 Ok(id) if self.custom_stats.delete(id)? => Response::data(json!({ "id": id })),
                 _ => Response::failure(404, "Custom stat not found"),
             },
+            ("POST", ["hud", "pool-averages"]) => {
+                let request: HudPoolRequest = r.body_as()?;
+                Response::data(self.hud.pool_averages(&request)?)
+            }
             ("POST", ["hud", "players"]) => {
                 let request: HudPlayersRequest = r.body_as()?;
                 match request.validate() {

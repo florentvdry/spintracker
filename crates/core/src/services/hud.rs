@@ -11,6 +11,7 @@ use serde::Deserialize;
 use serde_json::{json, Value};
 
 use crate::db::Database;
+use crate::engines::pool_average::{pooled_percent, POOL_MAX_PLAYERS, POOL_MIN_HANDS};
 use crate::repos::detailed_stats::Row;
 use crate::repos::hud_hands;
 use crate::repos::hud_stats::{self, HandsOf, HudStatRequest};
@@ -40,6 +41,17 @@ pub struct HudPlayersRequest {
     pub hero_name: String,
     pub players: Vec<String>,
     pub stats: Vec<HudStatRequest>,
+    /// "expresso" or "nitro": the stats of that format only; none reads every format.
+    #[serde(default)]
+    pub format: Option<String>,
+}
+
+/// Tournament formats the stats can be split by.
+pub const FORMATS: [&str; 2] = ["expresso", "nitro"];
+
+/// Whether a format filter, when given, is one the stats know.
+pub fn valid_format(format: Option<&str>) -> bool {
+    format.map_or(true, |f| FORMATS.contains(&f))
 }
 
 impl HudPlayersRequest {
@@ -47,6 +59,9 @@ impl HudPlayersRequest {
     pub fn validate(&self) -> std::result::Result<(), String> {
         if self.room.trim().is_empty() {
             return Err("room is required".into());
+        }
+        if !valid_format(self.format.as_deref()) {
+            return Err("format must be expresso or nitro".into());
         }
         if self.hero_name.trim().is_empty() {
             return Err("heroName is required".into());
@@ -75,6 +90,9 @@ pub struct HudFigureHandsRequest {
     pub which: HandsOf,
     #[serde(default = "default_figure_hands")]
     pub limit: usize,
+    /// The same format filter as the figure's own request; none reads every format.
+    #[serde(default)]
+    pub format: Option<String>,
 }
 
 fn default_figure_hands() -> usize {
@@ -140,6 +158,8 @@ struct CacheKey {
     player: String,
     /// Rows read with the custom-stat hits are not the rows read without them.
     with_custom: bool,
+    /// A format-split read is not the all-formats read.
+    format: Option<String>,
 }
 
 /// Rows of one player, with the version of that player's data they were read at.
@@ -167,12 +187,12 @@ impl HudService {
 
     /// `conn` is the caller's connection: asking the pool for a second one while holding the first
     /// could wait for ever when every connection is held by a caller doing the same.
-    fn rows_of(&self, conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Arc<Vec<Row>>> {
+    fn rows_of(&self, conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: Option<&str>) -> Result<Arc<Vec<Row>>> {
         // Versions are read before the rows: a write landing in between makes the entry look stale
         // at the next read instead of hiding it.
         let epoch = self.db.epoch();
         let player_version = self.db.player_version(player).max(self.db.player_version(hero));
-        let key = CacheKey { room: room.into(), hero: hero.into(), player: player.into(), with_custom };
+        let key = CacheKey { room: room.into(), hero: hero.into(), player: player.into(), with_custom, format: format.map(str::to_string) };
         {
             let mut cache = self.cache.lock().expect("the HUD cache lock is never held across a panic");
             if cache.epoch != epoch || cache.rows.len() >= CACHE_CAPACITY {
@@ -185,7 +205,7 @@ impl HudService {
                 }
             }
         }
-        let rows = Arc::new(hud_stats::load_rows(conn, room, hero, player, with_custom)?);
+        let rows = Arc::new(hud_stats::load_rows(conn, room, hero, player, with_custom, format)?);
         let mut cache = self.cache.lock().expect("the HUD cache lock is never held across a panic");
         if cache.epoch == epoch {
             cache.rows.insert(key, CachedRows { player_version, rows: rows.clone() });
@@ -200,7 +220,7 @@ impl HudService {
         let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
         let mut players = Vec::with_capacity(request.players.len());
         for name in &request.players {
-            let rows = self.rows_of(&conn, &request.room, &request.hero_name, name, with_custom)?;
+            let rows = self.rows_of(&conn, &request.room, &request.hero_name, name, with_custom, request.format.as_deref())?;
             let (hands, stats) = hud_stats::compute(&rows, &request.stats, &ready);
             let note = player_notes::get(&conn, &request.room, name)?.unwrap_or_default();
             players.push(json!({ "name": name, "room": request.room, "hands": hands, "stats": stats, "note": note.note, "tag": note.tag }));
@@ -213,7 +233,7 @@ impl HudService {
         let conn = self.db.conn()?;
         let with_custom = hud_stats::is_custom(&request.stat);
         let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
-        let rows = hud_stats::load_identified_rows(&conn, &request.room, &request.hero_name, &request.player, with_custom)?;
+        let rows = hud_stats::load_identified_rows(&conn, &request.room, &request.hero_name, &request.player, with_custom, request.format.as_deref())?;
         let (listed, total) = hud_stats::figure_hand_ids(&rows, &request.stat, &request.buckets, &ready, request.which, request.limit);
         let ids: Vec<String> = listed.iter().map(|hand| hand.hand_id.clone()).collect();
         let mut hands = hud_hands::summaries(&conn, &request.player, &ids)?;
@@ -232,5 +252,57 @@ impl HudService {
     pub fn set_note(&self, request: &HudNoteRequest) -> Result<()> {
         let note = PlayerNote { note: request.note.clone(), tag: request.tag.clone() };
         player_notes::set(&*self.db.conn()?, &request.room, &request.player_name, &note)
+    }
+}
+
+/// Pool averages of the stats: the players of the room and format in the player's own database,
+/// read with the same stats as the HUD, so each average can be compared with a player's value.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HudPoolRequest {
+    pub room: String,
+    pub hero_name: String,
+    pub stats: Vec<HudStatRequest>,
+    #[serde(default)]
+    pub format: Option<String>,
+}
+
+impl HudService {
+    pub fn pool_averages(&self, request: &HudPoolRequest) -> Result<Value> {
+        if request.room.trim().is_empty() || request.hero_name.trim().is_empty() {
+            return Err(crate::Error::Message("room and hero are required".into()));
+        }
+        if !valid_format(request.format.as_deref()) {
+            return Err(crate::Error::Message("format must be expresso or nitro".into()));
+        }
+        if request.stats.len() > MAX_STATS {
+            return Err(crate::Error::Message(format!("at most {MAX_STATS} stats per request")));
+        }
+        let conn = self.db.conn()?;
+        let with_custom = request.stats.iter().any(hud_stats::is_custom);
+        let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
+        let format = request.format.as_deref();
+        // The hero is not a pool player: his own hands would pull every average towards him.
+        let players: Vec<String> = hud_stats::eligible_players(&conn, &request.room, format, POOL_MIN_HANDS, POOL_MAX_PLAYERS)?
+            .into_iter()
+            .filter(|name| !name.eq_ignore_ascii_case(&request.hero_name))
+            .collect();
+
+        let mut num = vec![0u64; request.stats.len()];
+        let mut den = vec![0u64; request.stats.len()];
+        for name in &players {
+            let rows = self.rows_of(&conn, &request.room, &request.hero_name, name, with_custom, format)?;
+            let (_, stats) = hud_stats::compute(&rows, &request.stats, &ready);
+            for (i, stat) in stats.iter().enumerate() {
+                num[i] += stat["num"].as_u64().unwrap_or(0);
+                den[i] += stat["den"].as_u64().unwrap_or(0);
+            }
+        }
+        let stats: Vec<Value> = num
+            .iter()
+            .zip(&den)
+            .map(|(&n, &d)| json!({ "num": n, "den": d, "pct": pooled_percent(n, d) }))
+            .collect();
+        Ok(json!({ "players": players.len(), "stats": stats }))
     }
 }

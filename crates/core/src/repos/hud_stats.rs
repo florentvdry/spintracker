@@ -152,8 +152,8 @@ fn load_custom_hits(conn: &Connection, player: &str) -> Result<HashMap<String, V
 
 /// Everything the HUD needs of one player: the rows of the hands that count. `with_custom` also
 /// reads the hits of the custom stats; a request that asks for none pays nothing for them.
-pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Vec<Row>> {
-    Ok(query_rows(conn, room, hero, player, with_custom, false)?.into_iter().map(|hand| hand.row).collect())
+pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: Option<&str>) -> Result<Vec<Row>> {
+    Ok(query_rows(conn, room, hero, player, with_custom, false, format)?.into_iter().map(|hand| hand.row).collect())
 }
 
 /// A row with the hand it comes from, for listing the hands behind a figure.
@@ -165,13 +165,14 @@ pub(crate) struct HandRow {
 
 /// The rows of `load_rows`, each with its hand id and date. Read on demand, never cached: only a
 /// list of hands needs them.
-pub(crate) fn load_identified_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Vec<HandRow>> {
-    query_rows(conn, room, hero, player, with_custom, true)
+pub(crate) fn load_identified_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, format: Option<&str>) -> Result<Vec<HandRow>> {
+    query_rows(conn, room, hero, player, with_custom, true, format)
 }
 
 /// The hand id and date are read only when asked for (or, for the id, when custom hits are joined):
-/// the figures of the HUD do not need them.
-fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, with_ids: bool) -> Result<Vec<HandRow>> {
+/// the figures of the HUD do not need them. `format` keeps one tournament format ("expresso" or
+/// "nitro") apart from the other; `None` reads both.
+fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, with_ids: bool, format: Option<&str>) -> Result<Vec<HandRow>> {
     let hand_column = if with_custom || with_ids { "ph.hand_id" } else { "NULL" };
     let date_column = if with_ids { "h.date_time" } else { "NULL" };
     let sql = format!(
@@ -180,13 +181,15 @@ fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_cust
          JOIN hands h ON h.id = ph.hand_id
          LEFT JOIN hand_player_flags f ON f.hand_id = ph.hand_id AND f.player_name = ph.player_name
          WHERE ph.player_name = @player AND h.room = @room AND h.player_count IN (2, 3)
+           AND (@format IS NULL OR h.format = @format)
            AND EXISTS (SELECT 1 FROM player_hands hp WHERE hp.hand_id = h.id AND hp.player_name IN {})",
         hero_resolution_sql("@hero")
     );
-    let binds: [(&str, SqlValue); 3] = [
+    let binds: [(&str, SqlValue); 4] = [
         ("@player", SqlValue::Text(player.into())),
         ("@room", SqlValue::Text(room.into())),
         ("@hero", SqlValue::Text(hero.into())),
+        ("@format", format.map_or(SqlValue::Null, |f| SqlValue::Text(f.into()))),
     ];
     let params: Vec<(&str, &dyn ToSql)> = binds.iter().map(|(n, v)| (*n, v as &dyn ToSql)).collect();
     let mut custom = if with_custom { load_custom_hits(conn, player)? } else { HashMap::new() };
@@ -378,5 +381,76 @@ mod tests {
             assert_eq!(section_key(section), Some(key));
         }
         assert_eq!(parse_section("flop"), None);
+    }
+}
+
+/// Players of the room with at least `min_hands` hands of the given format, most played first.
+/// Only the `limit` most played are read: a pool average over a huge history stays cheap.
+pub(crate) fn eligible_players(conn: &Connection, room: &str, format: Option<&str>, min_hands: i64, limit: i64) -> Result<Vec<String>> {
+    let mut stmt = conn.prepare(
+        "SELECT ph.player_name FROM player_hands ph
+         JOIN hands h ON h.id = ph.hand_id
+         WHERE h.room = @room AND h.player_count IN (2, 3) AND (@format IS NULL OR h.format = @format)
+         GROUP BY ph.player_name
+         HAVING COUNT(*) >= @minHands
+         ORDER BY COUNT(*) DESC, ph.player_name
+         LIMIT @limit",
+    )?;
+    let format_value = format.map_or(SqlValue::Null, |f| SqlValue::Text(f.into()));
+    let binds: [(&str, SqlValue); 4] = [
+        ("@room", SqlValue::Text(room.into())),
+        ("@format", format_value),
+        ("@minHands", SqlValue::Integer(min_hands)),
+        ("@limit", SqlValue::Integer(limit)),
+    ];
+    let params: Vec<(&str, &dyn ToSql)> = binds.iter().map(|(n, v)| (*n, v as &dyn ToSql)).collect();
+    let names = stmt.query_map(&params[..], |r| r.get::<_, String>(0))?;
+    Ok(names.collect::<std::result::Result<_, _>>()?)
+}
+
+#[cfg(test)]
+mod format_split_tests {
+    use super::*;
+    use crate::db::migrations;
+
+    fn test_conn() -> Connection {
+        let mut conn = Connection::open_in_memory().unwrap();
+        migrations::run(&mut conn).unwrap();
+        conn
+    }
+
+    /// One 3-handed hand of `format`, played by `player` at a Winamax table.
+    fn insert_hand(conn: &Connection, id: &str, format: &str, player: &str) {
+        conn.execute(
+            "INSERT INTO hands (id, room, player_count, format) VALUES (?1, 'Winamax', 3, ?2)",
+            rusqlite::params![id, format],
+        )
+        .unwrap();
+        conn.execute("INSERT INTO player_hands (hand_id, player_name) VALUES (?1, ?2)", rusqlite::params![id, player]).unwrap();
+    }
+
+    #[test]
+    fn eligible_players_are_split_by_format() {
+        let conn = test_conn();
+        insert_hand(&conn, "h1", "nitro", "Alice");
+        insert_hand(&conn, "h2", "expresso", "Bob");
+        insert_hand(&conn, "h3", "expresso", "Bob");
+
+        let nitro = eligible_players(&conn, "Winamax", Some("nitro"), 1, 10).unwrap();
+        assert_eq!(nitro, vec!["Alice".to_string()]);
+        let expresso = eligible_players(&conn, "Winamax", Some("expresso"), 1, 10).unwrap();
+        assert_eq!(expresso, vec!["Bob".to_string()]);
+        let both = eligible_players(&conn, "Winamax", None, 1, 10).unwrap();
+        assert_eq!(both.len(), 2);
+    }
+
+    #[test]
+    fn minimum_hands_and_limit_are_applied() {
+        let conn = test_conn();
+        insert_hand(&conn, "h1", "expresso", "Alice");
+        insert_hand(&conn, "h2", "expresso", "Alice");
+        insert_hand(&conn, "h3", "expresso", "Bob");
+        assert_eq!(eligible_players(&conn, "Winamax", None, 2, 10).unwrap(), vec!["Alice".to_string()]);
+        assert_eq!(eligible_players(&conn, "Winamax", None, 1, 1).unwrap(), vec!["Alice".to_string()]);
     }
 }

@@ -8,6 +8,7 @@ pub mod equity_cache;
 pub mod evaluator;
 pub mod hand_state;
 pub mod hand_summary;
+pub mod pool_average;
 pub mod preflop_line;
 pub mod quiz;
 pub mod range_check;
