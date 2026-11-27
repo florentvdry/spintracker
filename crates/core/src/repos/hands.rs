@@ -35,10 +35,10 @@ pub fn insert_batch(conn: &mut Connection, items: &[ImportedHand]) -> Result<usi
                 showdown, result, all_in_street, went_to_showdown, player_count, position,
                 limit_type, game_variant, currency, button_seat, ante, tournament_id,
                 tournament_name, tournament_level, buyin_currency, rake_per_player,
-                structured_actions
+                structured_actions, format
             ) VALUES (
                 ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19, ?20,
-                ?21, ?22, ?23, ?24, ?25, ?26, ?27, ?28, ?29, ?30, ?31, ?32, ?33, ?34, ?35, ?36, ?37, ?38, ?39
+                ?21, ?22, ?23, ?24, ?25, ?26, ?27, ?28, ?29, ?30, ?31, ?32, ?33, ?34, ?35, ?36, ?37, ?38, ?39, ?40
             )",
         )?;
         let mut player_stmt = tx.prepare_cached(
@@ -106,6 +106,7 @@ pub fn insert_batch(conn: &mut Connection, items: &[ImportedHand]) -> Result<usi
                 h.buyin_currency,
                 h.rake_per_player,
                 structured,
+                tournament_format(h.game_name.as_deref()),
             ])?;
 
             // A hand imported again replaces its players too: none of the previous rows may remain.
@@ -218,4 +219,30 @@ pub fn delete_all(conn: &mut Connection) -> Result<()> {
     }
     tx.commit()?;
     Ok(())
+}
+
+/// Tournament format of a hand, from its game name: Nitro games are named with "Nitro", every other
+/// game is a classic Expresso. Kept in line with the `hands.format` backfill in the migration.
+pub fn tournament_format(game_name: Option<&str>) -> &'static str {
+    match game_name {
+        Some(name) if name.to_ascii_lowercase().contains("nitro") => "nitro",
+        _ => "expresso",
+    }
+}
+
+#[cfg(test)]
+mod format_tests {
+    use super::tournament_format;
+
+    #[test]
+    fn nitro_games_are_recognised_whatever_the_case() {
+        assert_eq!(tournament_format(Some("Winamax Nitro Spin")), "nitro");
+        assert_eq!(tournament_format(Some("NITRO")), "nitro");
+    }
+
+    #[test]
+    fn other_games_and_unknown_names_are_classic_expresso() {
+        assert_eq!(tournament_format(Some("Winamax Expresso")), "expresso");
+        assert_eq!(tournament_format(None), "expresso");
+    }
 }
