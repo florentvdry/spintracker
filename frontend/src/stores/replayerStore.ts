@@ -2,6 +2,18 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { ipcService, type Json } from '@/services/ipcService'
 import { logError } from '@/utils/log'
+import type { HandEquities } from '@/utils/replayerEquity'
+
+/** Equities are a bonus on the replay: a failure leaves the replay as it was, without them. */
+async function fetchEquities(handId: string | number, heroName: string | null): Promise<HandEquities | null> {
+  try {
+    const response = await ipcService.getHandEquities(handId, heroName)
+    return response.success ? (response.data as HandEquities) : null
+  } catch (err) {
+    logError('replayer equities failed', err)
+    return null
+  }
+}
 
 /** Blinds only set up the table; they are replayed instantly, not stepped through. */
 const BLIND_ACTION_TYPES = ['PostSB', 'PostBB']
@@ -151,6 +163,8 @@ export const selectDoneActions = (s: Pick<ReplayerState, 'handData' | 'currentIn
 interface ReplayerState extends TableSnapshot {
   handId: string | number | null
   handData: Json | null
+  /** Equity per street and all-in value of the current hand; null while loading or when unavailable. */
+  equities: HandEquities | null
   loading: boolean
   error: string | null
   currentIndex: number
@@ -204,6 +218,7 @@ export const useReplayerStore = create<ReplayerState>()(
       return {
         handId: null,
         handData: null,
+        equities: null,
         loading: false,
         error: null,
         currentIndex: 0,
@@ -226,12 +241,15 @@ export const useReplayerStore = create<ReplayerState>()(
 
         loadHand: async (handId, heroName = null) => {
           get().stop()
-          set({ loading: true, error: null, currentIndex: 0 })
+          set({ loading: true, error: null, currentIndex: 0, equities: null })
           try {
             const response = await ipcService.getHandReplay(handId, heroName)
             if (response.success) {
               set({ handData: response.data, handId })
               get().resetTable()
+              void fetchEquities(handId, heroName).then((equities) => {
+                if (get().handId === handId) set({ equities })
+              })
             } else {
               set({ error: response.error || 'Failed to load hand' })
             }
@@ -247,6 +265,7 @@ export const useReplayerStore = create<ReplayerState>()(
           set({
             error: null,
             loading: false,
+            equities: null,
             handData: { ...handData, players: handPlayers(handData), actions: handActions(handData) },
             handId: handData.id || handData.handId || handData.HandId,
           })

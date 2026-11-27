@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, useReplayerStore } from '@/stores/replayerStore'
+import { formatEquity } from '@/utils/replayerEquity'
 import Card from './Card'
 import { formatReplayValue, parseBigBlind } from './format'
 
@@ -33,7 +34,8 @@ function positionLabel(position: string | undefined): string {
   return pos || '-'
 }
 
-export default function PlayerSeat({ player, seat }: { player: Json; seat: SeatLayout }) {
+/** `equity` is the player's equity on the current street (percent), null while it is not known. */
+export default function PlayerSeat({ player, seat, equity = null }: { player: Json; seat: SeatLayout; equity?: number | null }) {
   const viewMode = useReplayerStore((s) => s.viewMode)
   const showFoldedPlayers = useReplayerStore((s) => s.showFoldedPlayers)
   const blinds = useReplayerStore((s) => s.handData?.blinds)
@@ -89,6 +91,7 @@ export default function PlayerSeat({ player, seat }: { player: Json; seat: SeatL
           <span className="stack-value">{format(player.currentStack)}</span>
           <span className="stack-unit">{unitLabel}</span>
         </div>
+        {equity !== null && <div className="equity-chip">{formatEquity(equity)}</div>}
       </div>
 
       {player.bet > 0 && (

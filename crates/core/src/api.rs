@@ -436,6 +436,10 @@ impl Backend {
             ("POST", ["analysis", "stats"]) => Response::data(analysis::analysis_stats(&*conn()?, &r.body_as_camel::<AnalysisFilters>()?)?),
             ("POST", ["analysis", "hands"]) => Response::data(analysis::analysis_hands(&*conn()?, &r.body_as_camel::<AnalysisHandsRequest>()?)?),
             ("POST", ["analysis", "range-breakdown"]) => Response::data(analysis::range_breakdown(&*conn()?, &r.body_as_camel::<AnalysisFilters>()?)?),
+            ("GET", ["analysis", "replayer", id, "equities"]) => match analysis::hand_equities(&*conn()?, id, r.query_str("heroName").as_deref())? {
+                Some(equities) => Response::data(equities),
+                None => Response::failure(404, "Hand not found"),
+            },
             ("GET", ["analysis", "replayer", id]) => match analysis::hand_replay(&*conn()?, id, r.query_str("heroName").as_deref())? {
                 Some(mut replay) => {
                     let hero = r.query_str("heroName").unwrap_or_default();

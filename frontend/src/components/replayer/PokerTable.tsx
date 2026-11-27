@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import logoUrl from '@/assets/logo.png'
 import { selectCurrentAction, useReplayerStore } from '@/stores/replayerStore'
+import { equityAt, streetOf } from '@/utils/replayerEquity'
 import Card from './Card'
 import { formatReplayValue, parseBigBlind } from './format'
 import PlayerSeat, { type SeatLayout } from './PlayerSeat'
@@ -35,6 +36,7 @@ export default function PokerTable() {
   const board = useReplayerStore((s) => s.board)
   const pot = useReplayerStore((s) => s.pot)
   const street = useReplayerStore((s) => s.street)
+  const equities = useReplayerStore((s) => s.equities)
   const viewMode = useReplayerStore((s) => s.viewMode)
   const blinds = useReplayerStore((s) => s.handData?.blinds)
   const action = useReplayerStore(selectCurrentAction)
@@ -92,7 +94,12 @@ export default function PokerTable() {
         </div>
 
         {seatEntries.map((entry) => (
-          <PlayerSeat key={entry.player.name} player={entry.player} seat={entry.seat} />
+          <PlayerSeat
+            key={entry.player.name}
+            player={entry.player}
+            seat={entry.seat}
+            equity={equityAt(equities?.players.find((p) => p.name === entry.player.name), streetOf(street) ?? 'preflop')}
+          />
         ))}
 
         {action?.type === 'CollectPot' && (

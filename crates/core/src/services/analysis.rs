@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::engines::actions::{parse_actions, ActionKind};
+use crate::engines::all_in::{all_in_equity, all_in_ev_bb};
 use crate::engines::preflop_line::{matches_action_sequence, player_positions, split_player_and_content, strip_timestamp};
 use crate::parsers::regex;
 use crate::repos::hands_query::{self, hero_resolution_sql};
@@ -906,6 +907,46 @@ pub fn hand_replay(conn: &Connection, hand_id: &str, hero_name: Option<&str>) ->
     })))
 }
 
+/// Equity of each player at each street, and the all-in expected value of the players who went
+/// all-in. Served beside the replay rather than inside it: the replay payload keeps its shape.
+pub fn hand_equities(conn: &Connection, hand_id: &str, hero_name: Option<&str>) -> Result<Option<Value>> {
+    let Some(hand) = hands_query::get_hand_by_id(conn, hand_id, hero_name)? else { return Ok(None) };
+    let bb = big_blind(hand["blinds"].as_str().unwrap_or(""));
+    let pot = hand["total_pot"].as_f64().unwrap_or(0.0);
+    let all_in_street = hand["all_in_street"].as_str().unwrap_or("");
+    let players: Vec<Value> = hand["players"].as_array().cloned().unwrap_or_default();
+
+    let equities: Vec<Value> = players
+        .iter()
+        .map(|p| {
+            json!({
+                "name": p["name"], "isHero": p["isHero"],
+                "equities": {
+                    "preflop": p["equityPreflop"], "flop": p["equityFlop"], "turn": p["equityTurn"], "river": p["equityRiver"],
+                },
+            })
+        })
+        .collect();
+
+    let all_in: Vec<Value> = players
+        .iter()
+        .filter(|p| p["isAllIn"].as_bool().unwrap_or(false))
+        .filter_map(|p| {
+            let equity = all_in_equity(
+                p["equityPreflop"].as_f64(),
+                p["equityFlop"].as_f64(),
+                p["equityTurn"].as_f64(),
+                p["equityRiver"].as_f64(),
+                all_in_street,
+            )?;
+            let ev_bb = all_in_ev_bb(equity, pot, p["investment"].as_f64().unwrap_or(0.0), bb)?;
+            Some(json!({ "name": p["name"], "isHero": p["isHero"], "equity": equity, "evBb": ev_bb }))
+        })
+        .collect();
+
+    Ok(Some(json!({ "handId": hand_id, "players": equities, "allIn": all_in })))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -997,5 +1038,37 @@ mod tests {
         assert_eq!(replay.actions[0]["potBefore"], 30.0);
         assert_eq!(replay.actions[1]["potAfter"], 130.0);
         assert_eq!(replay.actions[2]["type"], "Fold");
+    }
+}
+
+#[cfg(test)]
+mod equity_tests {
+    use super::*;
+    use crate::db::migrations;
+
+    #[test]
+    fn all_in_value_uses_the_equity_at_the_all_in() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        migrations::run(&mut conn).unwrap();
+        conn.execute_batch(
+            "INSERT INTO hands (id, room, blinds, total_pot, all_in_street, player_count) VALUES ('h1', 'Winamax', '10/20', 200, 'Preflop', 3);
+             INSERT INTO players (name) VALUES ('Hero'), ('Villain');
+             INSERT INTO player_hands (hand_id, player_name, position, stack, investment, is_all_in, equity_preflop) VALUES ('h1', 'Hero', 'BTN', 1000, 100, 1, 75);
+             INSERT INTO player_hands (hand_id, player_name, position, stack, investment, is_all_in, equity_preflop) VALUES ('h1', 'Villain', 'BB', 1000, 100, 1, 25);",
+        )
+        .unwrap();
+
+        let equities = hand_equities(&conn, "h1", Some("Hero")).unwrap().expect("the hand exists");
+        let hero = equities["allIn"].as_array().unwrap().iter().find(|p| p["isHero"] == json!(true)).expect("hero went all-in");
+        assert_eq!(hero["equity"], json!(75.0));
+        // 75 % of 200 is 150, minus the 100 put in: +50 chips, +2.5 bb at 20 chips.
+        assert!((hero["evBb"].as_f64().unwrap() - 2.5).abs() < 1e-9);
+    }
+
+    #[test]
+    fn unknown_hand_has_no_equities() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        migrations::run(&mut conn).unwrap();
+        assert!(hand_equities(&conn, "missing", None).unwrap().is_none());
     }
 }

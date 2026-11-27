@@ -970,3 +970,21 @@
     white-space: normal;
   }
 }
+
+/* Equity of a seat on the current street, and the all-in value of the hero. */
+.replayer-page .equity-chip {
+  margin-top: 2px;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11px;
+  color: #e6e9ef;
+  opacity: 0.85;
+}
+
+.replayer-page .allin-badge {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(52, 194, 122, 0.15);
+  color: #34c27a;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 12px;
+}

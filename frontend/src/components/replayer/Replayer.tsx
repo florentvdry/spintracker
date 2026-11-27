@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, FastForward, List, Pause, Play, Rewind, Skip
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
+import { formatAllInEv } from '@/utils/replayerEquity'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
 import RangeCheckCard from './RangeCheckCard'
@@ -35,6 +36,7 @@ export default function Replayer() {
   const [showLogs, setShowLogs] = useState(() => window.innerWidth >= LOG_DEFAULT_MIN_WIDTH)
 
   const { handData, currentIndex, isPlaying, nextStep, prevStep, play, stop } = store
+  const heroAllIn = store.equities?.allIn.find((a) => a.isHero) ?? null
 
   const actions: Json[] = handData?.actions ?? []
   const realActions = actions.map((action, index) => ({ action, index })).filter((entry) => isRealAction(entry.action))
@@ -76,6 +78,7 @@ export default function Replayer() {
             <div className="hand-meta">
               <span>{handData.date}</span>
               {handData.blinds && <span>Blinds {handData.blinds}</span>}
+              {heroAllIn && <span className="allin-badge">{t('replayer.all_in_ev', { value: formatAllInEv(heroAllIn.evBb) })}</span>}
             </div>
           </div>
         ) : (
