@@ -27,6 +27,7 @@ use crate::repos::player_queries::{self, PlayersQuery};
 use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
+use crate::services::backup;
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
@@ -282,6 +283,17 @@ impl Backend {
                 let conn = conn()?;
                 let _running = r.query.contains_key("supersede").then(|| self.superseded.begin("session-history", &conn));
                 Response::data(Value::Array(stats::session_history(&conn, limit, &q)?))
+            }
+            ("POST", ["db", "backup"]) => {
+                let path = r.body_str("path").unwrap_or_default();
+                let conn = conn()?;
+                backup::write_backup(&conn, Path::new(&path))?;
+                Response::data(json!({ "path": path }))
+            }
+            ("POST", ["db", "backup", "verify"]) => {
+                let path = r.body_str("path").unwrap_or_default();
+                let check = backup::verify_backup(Path::new(&path))?;
+                Response::data(json!({ "integrityOk": check.integrity_ok, "schemaVersion": check.schema_version, "tablesPresent": check.tables_present }))
             }
             ("GET", ["db", "buyins"]) => Response::data(json!(stats::unique_buy_ins(&*conn()?)?)),
             ("GET", ["db", "detailed-stats"]) => {
