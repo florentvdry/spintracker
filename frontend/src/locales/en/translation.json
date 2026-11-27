@@ -620,6 +620,23 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Configure the application",
+    "overlay": {
+      "title": "Live overlay (streaming)",
+      "subtitle": "A page with your live session stats, for a browser source in OBS",
+      "enable": "Overlay",
+      "enable_desc": "Serves the page on this computer only, while it is on. It is off when the app starts.",
+      "toggle_on": "Turn on",
+      "toggle_off": "Turn off",
+      "port": "Port",
+      "port_desc": "From 1024 to 65535. Change it while the overlay is off.",
+      "theme": "Theme",
+      "theme_desc": "Colours of the page",
+      "theme_dark": "Dark",
+      "theme_light": "Light",
+      "url": "Address for the browser source:",
+      "invalid_port": "Enter a whole port number from 1024 to 65535.",
+      "failed": "The overlay could not start (the port may be in use)."
+    },
     "general": {
       "title": "General",
       "language": "Language",

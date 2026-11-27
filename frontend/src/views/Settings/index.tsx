@@ -15,6 +15,7 @@ import { useUpdateStore } from '@/stores/updateStore'
 import { useLocation } from 'react-router-dom'
 import { AUTO_IMPORT_ANCHOR, RANGES_ANCHOR } from './anchors'
 import AutoImportCard from './components/AutoImportCard'
+import OverlayCard from './components/OverlayCard'
 import RangesSettings from './components/RangesSettings'
 import SettingRow from './components/SettingRow'
 import { logError } from '@/utils/log'
@@ -210,6 +211,8 @@ export default function Settings() {
           </div>
         </SettingRow>
       </Card>
+
+      <OverlayCard />
 
       <div id={AUTO_IMPORT_ANCHOR}>
         <AutoImportCard />

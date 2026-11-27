@@ -674,6 +674,23 @@
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'application",
+    "overlay": {
+      "title": "Overlay en direct (streaming)",
+      "subtitle": "Une page avec tes stats de session en direct, pour une source navigateur dans OBS",
+      "enable": "Overlay",
+      "enable_desc": "Sert la page sur cet ordinateur uniquement, tant qu'il est activé. Il est éteint au lancement de l'app.",
+      "toggle_on": "Activer",
+      "toggle_off": "Désactiver",
+      "port": "Port",
+      "port_desc": "De 1024 à 65535. À modifier quand l'overlay est éteint.",
+      "theme": "Thème",
+      "theme_desc": "Couleurs de la page",
+      "theme_dark": "Sombre",
+      "theme_light": "Clair",
+      "url": "Adresse de la source navigateur :",
+      "invalid_port": "Saisis un numéro de port entier de 1024 à 65535.",
+      "failed": "L'overlay n'a pas pu démarrer (le port est peut-être déjà utilisé)."
+    },
     "general": {
       "title": "Général",
       "language": "Langue",

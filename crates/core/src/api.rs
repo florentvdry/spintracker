@@ -28,6 +28,7 @@ use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
+use crate::services::overlay::{self, OverlayConfig, Theme, DEFAULT_PORT};
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
 use crate::services::review;
@@ -83,6 +84,7 @@ pub struct Backend {
     /// Detailed statistics by query, valid for one data version: they read every hand.
     detailed_cache: Mutex<DetailedCache>,
     superseded: Supersedable,
+    overlay: overlay::OverlayServer,
 }
 
 #[derive(Default)]
@@ -149,7 +151,7 @@ impl Backend {
         let importer = Importer::new(db.clone(), analytics.clone());
         let hud = HudService::new(db.clone());
         let custom_stats = CustomStatsService::new(db.clone());
-        Ok(Self { db, registry, importer, hud, custom_stats, detailed_cache: Mutex::default(), superseded: Supersedable::default() })
+        Ok(Self { db, registry, importer, hud, custom_stats, detailed_cache: Mutex::default(), superseded: Supersedable::default(), overlay: overlay::OverlayServer::default() })
     }
 
     pub fn importer(&self) -> &Importer {
@@ -282,6 +284,19 @@ impl Backend {
                 let conn = conn()?;
                 let _running = r.query.contains_key("supersede").then(|| self.superseded.begin("session-history", &conn));
                 Response::data(Value::Array(stats::session_history(&conn, limit, &q)?))
+            }
+            ("GET", ["overlay", "status"]) => Response::data(json!({ "running": self.overlay.port().is_some(), "port": self.overlay.port() })),
+            ("POST", ["overlay", "start"]) => {
+                let body = r.body.as_ref();
+                let port = body.and_then(|b| b.get("port")).and_then(Value::as_u64).and_then(|p| u16::try_from(p).ok()).unwrap_or(DEFAULT_PORT);
+                let theme = body.and_then(|b| b.get("theme")).and_then(Value::as_str).and_then(Theme::parse).unwrap_or(Theme::Dark);
+                let hero = body.and_then(|b| b.get("heroName")).and_then(Value::as_str).filter(|h| !h.trim().is_empty()).map(str::to_string);
+                let started = self.overlay.start(self.db.clone(), OverlayConfig { port, theme, hero })?;
+                Response::data(json!({ "running": true, "port": started }))
+            }
+            ("POST", ["overlay", "stop"]) => {
+                self.overlay.stop();
+                Response::data(json!({ "running": false, "port": Value::Null }))
             }
             ("GET", ["db", "buyins"]) => Response::data(json!(stats::unique_buy_ins(&*conn()?)?)),
             ("GET", ["db", "detailed-stats"]) => {

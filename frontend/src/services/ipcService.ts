@@ -124,6 +124,9 @@ export const ipcService = {
     backend('GET', `/db/tournament-hands?gameId=${enc(String(gameId))}${heroName ? `&heroName=${enc(heroName)}` : ''}`),
   getHandDetails: (handId: string | number, heroName: string | null = null) =>
     backend('GET', `/db/hand/${enc(String(handId))}${query({ heroName })}`),
+  overlayStatus: () => backend<{ running: boolean; port: number | null }>('GET', '/overlay/status'),
+  overlayStart: (port: number, theme: string, heroName: string | null) => backend('POST', '/overlay/start', { port, theme, heroName }),
+  overlayStop: () => backend('POST', '/overlay/stop'),
   getHandReplay: (handId: string | number, heroName: string | null = null) =>
     backend('GET', `/analysis/replayer/${enc(String(handId))}${query({ heroName })}`),
 
