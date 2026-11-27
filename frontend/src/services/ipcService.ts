@@ -203,6 +203,11 @@ export const ipcService = {
     const state = await command<Json | null>('hud_get_state')
     return state && state.success === false ? null : state
   },
+  /** The streamer overlay settings: which stats to show and over which range. */
+  getStreamerSettings: () => command<ApiResult>('streamer_settings_get'),
+  setStreamerSettings: (settings: Json) => command<ApiResult>('streamer_settings_set', { settings }),
+  /** Opens the streamer overlay window served from a local HTML page. */
+  openOverlay: () => command<ApiResult>('open_overlay'),
   setHudPanelRects: (rects: { x: number; y: number; width: number; height: number }[]) => command<ApiResult>('hud_set_panel_rects', { rects }),
   getHudTables: () => command<ApiResult>('hud_tables'),
   associateHudTable: (table: number, gameId: string) => command<ApiResult>('hud_associate', { table, gameId }),

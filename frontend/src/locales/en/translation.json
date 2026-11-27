@@ -672,6 +672,38 @@
       "description": "Spin & Go tracking and analysis application - Developed by Nelfrot",
       "check_updates": "Check for updates"
     },
+    "streamer": {
+      "title": "Streamer overlay",
+      "subtitle": "Statistics shown on the OBS overlay while live",
+      "statsTitle": "Stats to show",
+      "statsHelp": "Pick the figures viewers see on the overlay.",
+      "rangeTitle": "Range",
+      "rangeHelp": "The period the overlay computes the stats over.",
+      "range": {
+        "session": "Current session",
+        "month": "This month",
+        "all": "All time"
+      },
+      "refresh": "Refresh every",
+      "refreshMs": "ms",
+      "openOverlay": "Open overlay",
+      "openOverlayDesc": "Open the local HTML page shown by OBS.",
+      "saved": "Overlay settings saved",
+      "stat": {
+        "net_won": "Net won",
+        "cev": "CEV",
+        "games": "Tournaments",
+        "ev_profit": "EV profit",
+        "hands": "Hands played"
+      }
+    },
+    "categories": {
+      "general": "General",
+      "database": "Database",
+      "server": "Server",
+      "streamer": "Streamer overlay",
+      "about": "About"
+    },
     "maintenance": {
       "title": "Maintenance & Support",
       "logs": {

@@ -6,6 +6,7 @@ mod export;
 mod hud;
 mod hud_settings;
 mod import;
+mod streamer_settings;
 mod updater;
 
 use std::time::Duration;
@@ -102,6 +103,9 @@ pub fn run() {
             commands::auto_import_pick_folder,
             commands::hud_settings_get,
             commands::hud_settings_set,
+            commands::streamer_settings_get,
+            commands::streamer_settings_set,
+            commands::open_overlay,
             commands::hud_get_state,
             commands::hud_tables,
             commands::hud_set_heroes,

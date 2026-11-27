@@ -11,7 +11,7 @@ use tauri_plugin_opener::OpenerExt;
 
 use crate::backend::BackendState;
 use crate::autoimport::{self, WatchedFolder};
-use crate::{api, backend, export, hud, hud_settings, import, updater};
+use crate::{api, backend, export, hud, hud_settings, import, streamer_settings, updater};
 
 const REPLAYER_BACKGROUND: tauri::window::Color = tauri::window::Color(14, 16, 20, 255);
 
@@ -148,6 +148,31 @@ pub fn hud_settings_get(app: AppHandle) -> Value {
 #[tauri::command]
 pub fn hud_settings_set(app: AppHandle, settings: Value) -> Value {
     hud_settings::set(&app, &settings)
+}
+
+/// What the streamer overlay should show (stats selection and range) and over which period.
+#[tauri::command]
+pub fn streamer_settings_get(app: AppHandle) -> Value {
+    streamer_settings::get(&app)
+}
+
+#[tauri::command]
+pub fn streamer_settings_set(app: AppHandle, settings: Value) -> Value {
+    streamer_settings::set(&app, &settings)
+}
+
+/// Opens the streamer overlay window, served from a local HTML page so OBS can capture it.
+#[tauri::command]
+pub async fn open_overlay(app: AppHandle) -> Value {
+    let built = WebviewWindowBuilder::new(&app, "overlay", WebviewUrl::App("overlay.html".into()))
+        .title("SpinTracker Streamer Overlay")
+        .inner_size(560.0, 340.0)
+        .resizable(true)
+        .build();
+    match built {
+        Ok(_) => json!({ "success": true }),
+        Err(err) => json!({ "success": false, "message": err.to_string() }),
+    }
 }
 
 /// What the HUD window that asks should show. Only HUD windows may ask.

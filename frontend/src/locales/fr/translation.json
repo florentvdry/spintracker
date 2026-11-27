@@ -726,6 +726,38 @@
       "description": "Application de suivi et d'analyse pour le poker Spin & Go - Développée par Nelfrot",
       "check_updates": "Vérifier les mises à jour"
     },
+    "streamer": {
+      "title": "Overlay streamer",
+      "subtitle": "Statistiques affichées sur l'overlay OBS pendant le direct",
+      "statsTitle": "Statistiques à afficher",
+      "statsHelp": "Choisissez les chiffres que les spectateurs voient sur l'overlay.",
+      "rangeTitle": "Période",
+      "rangeHelp": "La période sur laquelle l'overlay calcule les statistiques.",
+      "range": {
+        "session": "Session en cours",
+        "month": "Ce mois-ci",
+        "all": "Tout l'historique"
+      },
+      "refresh": "Rafraîchir toutes les",
+      "refreshMs": "ms",
+      "openOverlay": "Ouvrir l'overlay",
+      "openOverlayDesc": "Ouvrir la page HTML locale affichée par OBS.",
+      "saved": "Réglages de l'overlay enregistrés",
+      "stat": {
+        "net_won": "Net gagné",
+        "cev": "CEV",
+        "games": "Tournois",
+        "ev_profit": "Profit EV",
+        "hands": "Mains jouées"
+      }
+    },
+    "categories": {
+      "general": "Général",
+      "database": "Base de données",
+      "server": "Serveur",
+      "streamer": "Overlay streamer",
+      "about": "À propos"
+    },
     "maintenance": {
       "title": "Maintenance & Support",
       "logs": {
