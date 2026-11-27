@@ -671,6 +671,14 @@
       "hu_vs_sb_limp": "vs SB Limp"
     }
   },
+  "filters": {
+    "presets": {
+      "apply": "Présélections",
+      "name": "Nom de la présélection",
+      "save": "Enregistrer les filtres",
+      "delete": "Supprimer une présélection"
+    }
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'application",

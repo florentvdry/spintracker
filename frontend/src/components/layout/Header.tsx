@@ -13,6 +13,7 @@ import { useFilterStore, type DateRange } from '@/stores/filterStore'
 import { useNotificationStore } from '@/stores/notificationStore'
 import { useProgressStore } from '@/stores/progressStore'
 import { useUpdateStore } from '@/stores/updateStore'
+import FilterPresets from './FilterPresets'
 import { formatCurrency, formatDate } from '@/utils/formatters'
 
 const RECENT_SESSIONS_SHOWN = 5
@@ -321,6 +322,7 @@ export default function Header() {
 
       {!hideFilters && (
         <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-dark-200 bg-dark-500 px-6 py-2.5">
+          <FilterPresets />
           <span className="text-[11px] uppercase tracking-[.06em] text-gray-500">{t('header.buy_in')}</span>
           <button type="button" className={clsx('pill', filters.buyIn === 'all' && 'active')} onClick={() => filters.setBuyIn('all')}>
             {t('dashboard.filters.all')} Buy-ins

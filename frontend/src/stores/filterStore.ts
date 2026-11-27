@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { ipcService, type Json } from '@/services/ipcService'
+import { makePreset, MAX_PRESETS, validPresetName, type FilterPreset } from '@/utils/filterPresets'
 
 export type DateRange = 'all' | 'today' | 'week' | 'month' | 'custom' | 'session'
 
@@ -20,6 +21,8 @@ interface FilterState {
   buyIn: string | number
   position: string
   result: string
+  /** Named sets of filters (without the hero), applied in one click. */
+  presets: FilterPreset[]
   hasHydrated: boolean
   setHasHydrated: (state: boolean) => void
   setHeroName: (name: string | null) => void
@@ -30,6 +33,9 @@ interface FilterState {
   setFilters: (updates: Partial<Omit<FilterState, 'aliases' | 'hasHydrated'>>) => void
   resetFilters: () => void
   fetchAliases: () => Promise<void>
+  savePreset: (name: string) => boolean
+  applyPreset: (id: string) => void
+  deletePreset: (id: string) => void
 }
 
 const pad = (n: number) => n.toString().padStart(2, '0')
@@ -91,7 +97,7 @@ export function getDateRangeParams(
 
 export const useFilterStore = create<FilterState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       heroName: null,
       aliases: [],
       dateRange: 'month',
@@ -127,6 +133,37 @@ export const useFilterStore = create<FilterState>()(
           position: 'all',
           result: 'all',
         }),
+      presets: [],
+      savePreset: (raw) => {
+        const name = validPresetName(raw)
+        const state = get()
+        if (!name || state.presets.length >= MAX_PRESETS) return false
+        const values = {
+          dateRange: state.dateRange,
+          customDateFrom: state.customDateFrom,
+          customDateTo: state.customDateTo,
+          selectedSession: state.selectedSession,
+          buyIn: state.buyIn,
+          position: state.position,
+          result: state.result,
+        }
+        set({ presets: [...state.presets, makePreset(name, values, crypto.randomUUID())] })
+        return true
+      },
+      applyPreset: (id) => {
+        const preset = get().presets.find((p) => p.id === id)
+        if (!preset) return
+        set({
+          dateRange: preset.values.dateRange as DateRange,
+          customDateFrom: preset.values.customDateFrom,
+          customDateTo: preset.values.customDateTo,
+          selectedSession: preset.values.selectedSession as SessionFilter | null,
+          buyIn: preset.values.buyIn,
+          position: preset.values.position,
+          result: preset.values.result,
+        })
+      },
+      deletePreset: (id) => set({ presets: get().presets.filter((p) => p.id !== id) }),
       fetchAliases: async () => {
         const res = await ipcService.getAliases()
         if (res?.success) set({ aliases: res.data })
@@ -140,6 +177,7 @@ export const useFilterStore = create<FilterState>()(
         customDateFrom: state.customDateFrom,
         customDateTo: state.customDateTo,
         buyIn: state.buyIn,
+        presets: state.presets,
         selectedSession: state.selectedSession,
       }),
       onRehydrateStorage: () => (state) => state?.setHasHydrated(true),

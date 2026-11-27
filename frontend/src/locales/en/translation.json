@@ -617,6 +617,14 @@
       "3W_BB": "3W BB"
     }
   },
+  "filters": {
+    "presets": {
+      "apply": "Presets",
+      "name": "Preset name",
+      "save": "Save filters",
+      "delete": "Delete a preset"
+    }
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Configure the application",
