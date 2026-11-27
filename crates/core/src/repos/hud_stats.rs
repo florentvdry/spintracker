@@ -153,7 +153,7 @@ fn load_custom_hits(conn: &Connection, player: &str) -> Result<HashMap<String, V
 /// Everything the HUD needs of one player: the rows of the hands that count. `with_custom` also
 /// reads the hits of the custom stats; a request that asks for none pays nothing for them.
 pub(crate) fn load_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Vec<Row>> {
-    Ok(query_rows(conn, room, hero, player, with_custom, false)?.into_iter().map(|hand| hand.row).collect())
+    Ok(query_rows(conn, room, hero, player, with_custom, false, None)?.into_iter().map(|hand| hand.row).collect())
 }
 
 /// A row with the hand it comes from, for listing the hands behind a figure.
@@ -166,12 +166,12 @@ pub(crate) struct HandRow {
 /// The rows of `load_rows`, each with its hand id and date. Read on demand, never cached: only a
 /// list of hands needs them.
 pub(crate) fn load_identified_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool) -> Result<Vec<HandRow>> {
-    query_rows(conn, room, hero, player, with_custom, true)
+    query_rows(conn, room, hero, player, with_custom, true, None)
 }
 
 /// The hand id and date are read only when asked for (or, for the id, when custom hits are joined):
 /// the figures of the HUD do not need them.
-fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, with_ids: bool) -> Result<Vec<HandRow>> {
+fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, with_ids: bool, before: Option<&str>) -> Result<Vec<HandRow>> {
     let hand_column = if with_custom || with_ids { "ph.hand_id" } else { "NULL" };
     let date_column = if with_ids { "h.date_time" } else { "NULL" };
     let sql = format!(
@@ -180,10 +180,12 @@ fn query_rows(conn: &Connection, room: &str, hero: &str, player: &str, with_cust
          JOIN hands h ON h.id = ph.hand_id
          LEFT JOIN hand_player_flags f ON f.hand_id = ph.hand_id AND f.player_name = ph.player_name
          WHERE ph.player_name = @player AND h.room = @room AND h.player_count IN (2, 3)
+           AND (@before IS NULL OR h.date_time < @before)
            AND EXISTS (SELECT 1 FROM player_hands hp WHERE hp.hand_id = h.id AND hp.player_name IN {})",
         hero_resolution_sql("@hero")
     );
-    let binds: [(&str, SqlValue); 3] = [
+    let binds: [(&str, SqlValue); 4] = [
+        ("@before", before.map_or(SqlValue::Null, |b| SqlValue::Text(b.into()))),
         ("@player", SqlValue::Text(player.into())),
         ("@room", SqlValue::Text(room.into())),
         ("@hero", SqlValue::Text(hero.into())),
@@ -378,5 +380,53 @@ mod tests {
             assert_eq!(section_key(section), Some(key));
         }
         assert_eq!(parse_section("flop"), None);
+    }
+}
+
+/// The rows of a player for the hands played strictly before `before` (a stored date and time):
+/// the stats he had when that hand was played. Not cached: a replayed hand reads them once.
+pub(crate) fn load_rows_before(conn: &Connection, room: &str, hero: &str, player: &str, with_custom: bool, before: &str) -> Result<Vec<Row>> {
+    Ok(query_rows(conn, room, hero, player, with_custom, false, Some(before))?.into_iter().map(|hand| hand.row).collect())
+}
+
+/// When a hand was played, as stored; None when there is no such hand.
+pub(crate) fn hand_time(conn: &Connection, hand_id: &str) -> Result<Option<String>> {
+    match conn.query_row("SELECT date_time FROM hands WHERE id = ?1", [hand_id], |r| r.get::<_, Option<String>>(0)) {
+        Ok(time) => Ok(time),
+        Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+        Err(err) => Err(err.into()),
+    }
+}
+
+#[cfg(test)]
+mod before_tests {
+    use super::*;
+    use crate::db::migrations;
+
+    fn insert_hand(conn: &Connection, id: &str, date: &str) {
+        conn.execute(
+            "INSERT INTO hands (id, room, date_time, player_count, blinds) VALUES (?1, 'Winamax', ?2, 3, '10/20')",
+            rusqlite::params![id, date],
+        )
+        .unwrap();
+        conn.execute(
+            "INSERT INTO player_hands (hand_id, player_name, position, stack) VALUES (?1, 'Fish', 'BB', 1000.0), (?1, 'Hero', 'BTN', 1000.0)",
+            rusqlite::params![id],
+        )
+        .unwrap();
+    }
+
+    #[test]
+    fn only_hands_played_before_the_cut_are_read() {
+        let mut conn = Connection::open_in_memory().unwrap();
+        migrations::run(&mut conn).unwrap();
+        conn.execute_batch("INSERT INTO players (name) VALUES ('Fish'), ('Hero');").unwrap();
+        insert_hand(&conn, "early", "2026-01-05 21:10:00");
+        insert_hand(&conn, "late", "2026-01-05 22:10:00");
+
+        let before = hand_time(&conn, "late").unwrap().unwrap();
+        let rows = load_rows_before(&conn, "Winamax", "Hero", "Fish", false, &before).unwrap();
+        assert_eq!(rows.len(), 1);
+        assert!(hand_time(&conn, "missing").unwrap().is_none());
     }
 }

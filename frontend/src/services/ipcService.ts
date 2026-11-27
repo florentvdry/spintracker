@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 import type { ExportBucket, ExportFilter } from '@/utils/exportFilter'
+import type { StatsAtHand } from '@/utils/replayerHud'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Json = any
@@ -124,6 +125,7 @@ export const ipcService = {
     backend('GET', `/db/tournament-hands?gameId=${enc(String(gameId))}${heroName ? `&heroName=${enc(heroName)}` : ''}`),
   getHandDetails: (handId: string | number, heroName: string | null = null) =>
     backend('GET', `/db/hand/${enc(String(handId))}${query({ heroName })}`),
+  getHudAtHand: (body: Json) => backend<StatsAtHand>('POST', '/hud/at-hand', body),
   getHandReplay: (handId: string | number, heroName: string | null = null) =>
     backend('GET', `/analysis/replayer/${enc(String(handId))}${query({ heroName })}`),
 

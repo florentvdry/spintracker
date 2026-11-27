@@ -2,6 +2,18 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { ipcService, type Json } from '@/services/ipcService'
 import { logError } from '@/utils/log'
+import { AT_HAND_STATS, type StatsAtHand } from '@/utils/replayerHud'
+
+/** The stats of the players before the hand: a bonus on the replay, so a failure only leaves it out. */
+async function fetchStatsAtHand(handId: string | number, heroName: string, room: string, players: string[]): Promise<StatsAtHand | null> {
+  try {
+    const response = await ipcService.getHudAtHand({ room, heroName, handId: String(handId), players, stats: AT_HAND_STATS })
+    return response.success ? (response.data as StatsAtHand) : null
+  } catch (err) {
+    logError('replayer stats at hand failed', err)
+    return null
+  }
+}
 
 /** Blinds only set up the table; they are replayed instantly, not stepped through. */
 const BLIND_ACTION_TYPES = ['PostSB', 'PostBB']
@@ -151,6 +163,8 @@ export const selectDoneActions = (s: Pick<ReplayerState, 'handData' | 'currentIn
 interface ReplayerState extends TableSnapshot {
   handId: string | number | null
   handData: Json | null
+  /** Stats of the players as they were when the hand was played; null while loading or when unavailable. */
+  handStats: StatsAtHand | null
   loading: boolean
   error: string | null
   currentIndex: number
@@ -204,6 +218,7 @@ export const useReplayerStore = create<ReplayerState>()(
       return {
         handId: null,
         handData: null,
+        handStats: null,
         loading: false,
         error: null,
         currentIndex: 0,
@@ -226,12 +241,19 @@ export const useReplayerStore = create<ReplayerState>()(
 
         loadHand: async (handId, heroName = null) => {
           get().stop()
-          set({ loading: true, error: null, currentIndex: 0 })
+          set({ loading: true, error: null, currentIndex: 0, handStats: null })
           try {
             const response = await ipcService.getHandReplay(handId, heroName)
             if (response.success) {
               set({ handData: response.data, handId })
               get().resetTable()
+              // Stats need a hero to count for; without one the replay simply shows none.
+              if (heroName && response.data) {
+                const players = ((response.data.players ?? []) as Json[]).map((p) => String(p.name))
+                void fetchStatsAtHand(handId, heroName, String(response.data.room ?? ''), players).then((handStats) => {
+                  if (get().handId === handId) set({ handStats })
+                })
+              }
             } else {
               set({ error: response.error || 'Failed to load hand' })
             }

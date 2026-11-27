@@ -40,7 +40,7 @@ It is a free alternative to paid poker trackers for 3-max Spin & Go, Heads-Up an
 | 📊 **Dashboard** | Recent sessions, winrate chart and global statistics at a glance. |
 | 🗂️ **Hand & tournament history** | Browse every hand and tournament with filters by player, position, street, stakes and more. |
 | 📈 **Detailed statistics** | Stats by spot, stack depth and player profile, compared with a baseline to highlight your **leaks**. |
-| 🎬 **Interactive hand replayer** | Replay hands street by street, check equities, take notes on opponents. |
+| 🎬 **Interactive hand replayer** | Replay hands street by street, check equities, take notes on opponents, and see their stats as they were when the hand was played. |
 | 🧮 **Range research** | Interactive 13×13 range grid to study your ranges and compare them with opponent tendencies. |
 | 🎯 **My ranges and training** | Build your own preflop ranges (your scenarios, depths, actions and colours; SpinTracker ships none), see how often you follow them on your real hands, then practise with a quiz, your own deviations and a spaced review. A deviation means "not what you planned", never "a mistake". An overview tab shows all your ranges at a glance, and you pick which ranges and depths to export as a versioned `.json` file (import it back anywhere). |
 | 🎰 **Multipliers analysis** | Break down your results by Spin multiplier. |

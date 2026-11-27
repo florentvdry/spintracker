@@ -234,3 +234,39 @@ impl HudService {
         player_notes::set(&*self.db.conn()?, &request.room, &request.player_name, &note)
     }
 }
+
+/// The stats of some players as they were when one hand was played: only the hands before it count.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HudAtHandRequest {
+    pub room: String,
+    pub hero_name: String,
+    pub hand_id: String,
+    pub players: Vec<String>,
+    pub stats: Vec<HudStatRequest>,
+}
+
+impl HudService {
+    /// Read straight from the database, not from the cache: each replayed hand asks for its own cut.
+    pub fn stats_at_hand(&self, request: &HudAtHandRequest) -> Result<Value> {
+        if request.room.trim().is_empty() || request.hero_name.trim().is_empty() || request.hand_id.trim().is_empty() {
+            return Err(crate::Error::Message("room, hero and hand are required".into()));
+        }
+        if request.players.len() > MAX_PLAYERS || request.stats.len() > MAX_STATS {
+            return Err(crate::Error::Message(format!("at most {MAX_PLAYERS} players and {MAX_STATS} stats per request")));
+        }
+        let conn = self.db.conn()?;
+        let Some(time) = hud_stats::hand_time(&conn, &request.hand_id)? else {
+            return Err(crate::Error::Message(format!("hand not found: {}", request.hand_id)));
+        };
+        let with_custom = request.stats.iter().any(hud_stats::is_custom);
+        let ready = if with_custom { custom_store::ready_ids(&conn)? } else { Default::default() };
+        let mut players = Vec::with_capacity(request.players.len());
+        for name in &request.players {
+            let rows = hud_stats::load_rows_before(&conn, &request.room, &request.hero_name, name, with_custom, &time)?;
+            let (hands, stats) = hud_stats::compute(&rows, &request.stats, &ready);
+            players.push(json!({ "name": name, "hands": hands, "stats": stats }));
+        }
+        Ok(json!({ "handId": request.hand_id, "players": players }))
+    }
+}

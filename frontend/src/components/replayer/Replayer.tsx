@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
+import HandStatsCard from './HandStatsCard'
 import PokerTable from './PokerTable'
 import RangeCheckCard from './RangeCheckCard'
 import './replayer.css'
@@ -117,6 +118,11 @@ export default function Replayer() {
 
         {showLogs && (
           <aside className="action-panel">
+            {store.handStats && (
+              <div className="p-3 pb-0">
+                <HandStatsCard stats={store.handStats} />
+              </div>
+            )}
             {handData?.rangeCheck && (
               <div className="p-3 pb-0">
                 <RangeCheckCard check={handData.rangeCheck} />
