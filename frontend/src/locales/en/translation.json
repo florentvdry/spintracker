@@ -617,6 +617,25 @@
       "3W_BB": "3W BB"
     }
   },
+  "cev_breakdown": {
+    "title": "CEV breakdown",
+    "subtitle": "Chip EV summed by table mix, multiplier, progress and bad beats",
+    "empty": "No hands in this selection.",
+    "table_mix": "Table mix",
+    "fish_only": "Only fish",
+    "mixed": "Mixed",
+    "reg_only": "Only regs",
+    "multiplier": "Multiplier",
+    "progress": "Progress in the tournament",
+    "progress_part": "Part {{index}}",
+    "bad_beat": "After a bad beat",
+    "bad_beat_window": "Tournaments after each bad beat",
+    "bad_beat_equity": "Min. equity of a lost all-in (%)",
+    "bad_beat_summary": "{{tournaments}} tournaments after {{bad_beats}} bad beats",
+    "bad_beat_definition": "A bad beat is a lost all-in with at least that equity, or a tournament ended on a place other than first.",
+    "count_hands": "{{count}} hands",
+    "count_tournaments": "{{count}} tournaments"
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Configure the application",

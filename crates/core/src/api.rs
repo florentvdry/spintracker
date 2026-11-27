@@ -27,6 +27,7 @@ use crate::repos::player_queries::{self, PlayersQuery};
 use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
+use crate::services::cev_breakdown::{self, BreakdownQuery};
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
@@ -276,6 +277,18 @@ impl Backend {
                 let conn = conn()?;
                 let _running = r.query.contains_key("supersede").then(|| self.superseded.begin("dashboard-stats", &conn));
                 Response::data(stats::dashboard_stats(&conn, &stats_query_from_query(&r.query))?)
+            }
+            ("GET", ["db", "cev-breakdown"]) => {
+                let query = BreakdownQuery {
+                    hero_name: r.query_str("heroName"),
+                    date_from: r.query_str("dateFrom"),
+                    date_to: r.query_str("dateTo"),
+                    buy_in: r.query_f64("buyIn"),
+                    bad_beat_window: r.query_i64("badBeatWindow"),
+                    bad_beat_equity: r.query_f64("badBeatEquity"),
+                };
+                let conn = conn()?;
+                Response::data(cev_breakdown::breakdown(&conn, &query)?)
             }
             ("GET" | "POST", ["db", "session-history"]) => {
                 let (limit, q) = r.session_options();

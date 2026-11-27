@@ -671,6 +671,25 @@
       "hu_vs_sb_limp": "vs SB Limp"
     }
   },
+  "cev_breakdown": {
+    "title": "Détail du CEV",
+    "subtitle": "CEV en jetons par composition de table, multiplicateur, avancement et bad beats",
+    "empty": "Aucune main dans cette sélection.",
+    "table_mix": "Composition de table",
+    "fish_only": "Que des fish",
+    "mixed": "Mixte",
+    "reg_only": "Que des regs",
+    "multiplier": "Multiplicateur",
+    "progress": "Avancement dans le tournoi",
+    "progress_part": "Partie {{index}}",
+    "bad_beat": "Après un bad beat",
+    "bad_beat_window": "Tournois après chaque bad beat",
+    "bad_beat_equity": "Équité min. d'un all-in perdu (%)",
+    "bad_beat_summary": "{{tournaments}} tournois après {{bad_beats}} bad beats",
+    "bad_beat_definition": "Un bad beat est un all-in perdu avec au moins cette équité, ou un tournoi terminé hors première place.",
+    "count_hands": "{{count}} mains",
+    "count_tournaments": "{{count}} tournois"
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'application",

@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
+import type { CevBreakdown } from '@/utils/cevBreakdown'
 import type { ExportBucket, ExportFilter } from '@/utils/exportFilter'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,6 +104,8 @@ export const ipcService = {
   // Dashboard & stats
   getDashboardStats: (heroName?: string | null, dateFrom?: string | null, dateTo?: string | null, buyIn?: number | null) =>
     backend('GET', `/db/dashboard-stats${query({ heroName, dateFrom, dateTo, buyIn, supersede: true })}`),
+  getCevBreakdown: (params: { heroName?: string | null; dateFrom?: string | null; dateTo?: string | null; buyIn?: number | null; badBeatWindow?: number; badBeatEquity?: number }) =>
+    backend<CevBreakdown>('GET', `/db/cev-breakdown${query({ ...params })}`),
   getSessionHistory: (limit = 50, heroName?: string | null, dateFrom?: string | null, dateTo?: string | null, buyIn?: number | null) =>
     backend('POST', '/db/session-history?supersede=true', { limit, heroName, dateFrom, dateTo, buyIn }),
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),
