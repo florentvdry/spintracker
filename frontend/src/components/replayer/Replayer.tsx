@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, FastForward, List, Pause, Play, Rewind, Skip
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import type { Json } from '@/services/ipcService'
+import { handToMarkdown, toShareHand } from '@/utils/handShare'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
 import RangeCheckCard from './RangeCheckCard'
@@ -35,6 +36,19 @@ export default function Replayer() {
   const [showLogs, setShowLogs] = useState(() => window.innerWidth >= LOG_DEFAULT_MIN_WIDTH)
 
   const { handData, currentIndex, isPlaying, nextStep, prevStep, play, stop } = store
+  const [copyStatus, setCopyStatus] = useState<string | null>(null)
+
+  /** Copies the hand as Markdown, with the real names or with stand-in names. */
+  const copyHand = async (anonymize: boolean) => {
+    if (!handData) return
+    try {
+      await navigator.clipboard.writeText(handToMarkdown(toShareHand(handData), { anonymize }))
+      setCopyStatus('replayer.copied')
+    } catch {
+      // The clipboard can be refused by the system: say so instead of failing silently.
+      setCopyStatus('replayer.copy_failed')
+    }
+  }
 
   const actions: Json[] = handData?.actions ?? []
   const realActions = actions.map((action, index) => ({ action, index })).filter((entry) => isRealAction(entry.action))
@@ -76,6 +90,11 @@ export default function Replayer() {
             <div className="hand-meta">
               <span>{handData.date}</span>
               {handData.blinds && <span>Blinds {handData.blinds}</span>}
+            </div>
+            <div className="hand-meta">
+              <button type="button" className="copy-hand" onClick={() => void copyHand(false)}>{t('replayer.copy_hand')}</button>
+              <button type="button" className="copy-hand" onClick={() => void copyHand(true)}>{t('replayer.copy_hand_anonymous')}</button>
+              {copyStatus && <span>{t(copyStatus)}</span>}
             </div>
           </div>
         ) : (
