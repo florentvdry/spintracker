@@ -6,7 +6,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use spintracker_core::models::ParsedHand;
-use spintracker_core::parsers::{get_parser, BetclicParser, HandParser, UnibetParser, WinamaxParser};
+use spintracker_core::parsers::{get_parser, BetclicParser, HandParser, IPokerParser, UnibetParser, WinamaxParser};
 
 fn sample_dir(room: &str) -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/exemple-data").join(room)
@@ -140,8 +140,19 @@ fn unibet_samples_match_expected_figures() {
 }
 
 #[test]
+fn ipoker_samples_match_expected_figures() {
+    let dir = sample_dir("iPoker");
+    let expected = parse_expected(&dir.join("expected_result.txt"));
+    let files = files_in(&dir, |name| name != "expected_result.txt");
+    let hands = parse_all(&IPokerParser, &files);
+    assert_matches_expected(&hands, &expected, |h| {
+        h.players.iter().position(|p| p.is_hero || p.name == expected.hero)
+    });
+}
+
+#[test]
 fn format_detection_picks_the_right_room() {
-    for (room, parser) in [("Betclic", "Betclic"), ("Winamax", "Winamax"), ("Unibet", "Unibet")] {
+    for (room, parser) in [("Betclic", "Betclic"), ("Winamax", "Winamax"), ("Unibet", "Unibet"), ("iPoker", "iPoker")] {
         let dir = sample_dir(room);
         let file = files_in(&dir, |n| n.starts_with(|c: char| c != 'e') && !n.contains("_summary") && !n.starts_with("TS"))
             .remove(0);
@@ -152,10 +163,11 @@ fn format_detection_picks_the_right_room() {
 
 #[test]
 fn parsed_hands_are_internally_consistent() {
-    let cases: [(&str, &dyn HandParser, fn(&str) -> bool); 3] = [
+    let cases: [(&str, &dyn HandParser, fn(&str) -> bool); 4] = [
         ("Betclic", &BetclicParser, |n| n != "excepted_result.txt"),
         ("Winamax", &WinamaxParser, |n| n != "expected_result.txt" && !n.contains("_summary")),
         ("Unibet", &UnibetParser, |n| n.starts_with('H')),
+        ("iPoker", &IPokerParser, |n| n != "expected_result.txt"),
     ];
     for (room, parser, keep) in cases {
         let hands = parse_all(parser, &files_in(&sample_dir(room), keep));
