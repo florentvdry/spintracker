@@ -8,14 +8,13 @@
 
 use chrono::NaiveDateTime;
 
-use super::{after_first, clean_lines, content_id, join_lines, parse_f64, parse_i32, regex, HandParser};
+use super::{after_first, clean_lines, content_id, join_lines, parse_f64, parse_i32, regex, split_before_marker, HandParser};
 use crate::models::{
     ActionType, BlindsInfo, BoardInfo, HandActions, HandInfo, HandSummary, ParseResult, ParsedHand,
     PlayerHandInfo, PlayerInfo, StreetAction, WinnerInfo,
 };
 
 const HAND_SEPARATOR: &str = "------------";
-const HAND_HEADER: &str = "*** HEADER ***";
 
 pub struct IPokerParser;
 
@@ -59,7 +58,7 @@ struct StreetLines {
 impl StreetLines {
     fn push(&mut self, section: Section, line: &str) {
         match section {
-            Section::Preflop => self.preflop.push(line.to_string()),
+            Section::Preflop | Section::HoleCards => self.preflop.push(line.to_string()),
             Section::Flop => self.flop.push(line.to_string()),
             Section::Turn => self.turn.push(line.to_string()),
             Section::River => self.river.push(line.to_string()),
@@ -100,41 +99,63 @@ impl HandParser for IPokerParser {
         HAND_SEPARATOR
     }
 
+    /// Séparateur entre deux mains. Le format actuel iPoker Network ouvre chaque main par
+    /// `GAME #…` ; les mains sont séparées par une ligne vide.
     fn hand_separator_for(&self, content: &str) -> &'static str {
-        if content.lines().any(|l| l.trim().starts_with(HAND_SEPARATOR)) {
-            HAND_SEPARATOR
+        if content.contains("GAME #") {
+            "GAME #"
         } else {
-            HAND_HEADER
+            HAND_SEPARATOR
         }
     }
 
     fn detect_format(&self, content: &str) -> bool {
         let lower = content.to_lowercase();
-        // iPoker Network exports carry the room name ("iPoker") and use the shared
-        // iPoker/Betclic export layout (`*** HEADER ***`, `*** PLAYERS ***`…).
-        // Betclic is matched first by its own `Site: Betclic` marker, so requiring
-        // "ipoker" here never steals a Betclic file. `site:` covers exports with a
-        // `Site: iPoker…` line; the section markers cover the ones that don't.
-        lower.contains("ipoker")
-            && (lower.contains("site:") || lower.contains("*** header ***") || lower.contains("*** players ***"))
+        // Ancien format : `Site: iPoker…` avec sections `*** HEADER ***` / `*** PLAYERS ***`.
+        if lower.contains("site:") && lower.contains("ipoker") {
+            return true;
+        }
+        // Format actuel iPoker Network (`GAME #…`, `Uncalled:Y`, `Table Info:`).
+        // Aucun `Site:` ni nom de room explicite : on s'appuie sur la structure d'export.
+        lower.contains("game #")
+            && lower.contains("uncalled:y")
+            && lower.contains("table info:")
     }
 
     fn parse_file(&self, content: &str) -> ParseResult {
         let separator = self.hand_separator_for(content);
-        let hands = content
-            .split(separator)
-            .map(str::trim)
-            .filter(|t| !t.is_empty())
-            .filter_map(|t| self.parse_hand(t))
-            .collect();
+        let hands: Vec<&str> = if separator == "GAME #" {
+            split_before_marker(content, separator)
+        } else {
+            content
+                .split(separator)
+                .map(str::trim)
+                .filter(|t| !t.is_empty())
+                .collect()
+        };
+        let hands = hands.into_iter().filter_map(|t| self.parse_hand(t)).collect();
         ParseResult::ok(hands)
     }
 
     fn parse_hand(&self, hand_text: &str) -> Option<ParsedHand> {
         let lines = clean_lines(hand_text);
+        if lines.is_empty() {
+            return None;
+        }
         let mut hand = ParsedHand { room: Some("iPoker".into()), ..ParsedHand::default() };
         let mut st = State::default();
         let mut section = Section::Header;
+
+        // Première ligne : `GAME #<id> Version:… Uncalled:Y Texas Hold'em NL  Tournament <date>/GMT`
+        if let Some(first) = lines.first() {
+            if let Some(c) = regex!(r"GAME #(\S+)").captures(first) {
+                hand.game_id = Some(c[1].to_string());
+                hand.hand_id = Some(c[1].to_string());
+            }
+            if let Some(c) = regex!(r"Tournament\s+(.*?)\s*/GMT").captures(first) {
+                hand.date_time = Some(format_date_time(c[1].trim()));
+            }
+        }
 
         for line in &lines {
             let result_line = match st.hero_name.as_deref() {
@@ -155,14 +176,28 @@ impl HandParser for IPokerParser {
             }
 
             match section {
-                Section::Header => parse_header_line(line, &mut hand),
-                Section::Players => parse_player_line(line, &mut hand, &mut st),
+                Section::Header => {
+                    parse_header_line(line, &mut hand);
+                    parse_meta_line(line, &mut hand, &mut st);
+                    if line.contains("Seat ") {
+                        parse_player_line(line, &mut hand, &mut st);
+                    } else {
+                        // Mises préflop avant `*** HOLE CARDS ***` (Post SB, Post BB, Raise…).
+                        parse_game_play_line(line, &mut hand, Section::Preflop, &mut st);
+                    }
+                }
+                Section::Players => {}
                 Section::HoleCards
                 | Section::Preflop
                 | Section::Flop
                 | Section::Turn
                 | Section::River
-                | Section::Showdown => parse_game_play_line(line, &mut hand, section, &mut st),
+                | Section::Showdown => {
+                    if parse_card_reveals(line, &mut hand, section, &mut st) {
+                        continue;
+                    }
+                    parse_game_play_line(line, &mut hand, section, &mut st);
+                }
                 Section::Summary => parse_summary_line(line, &mut hand, &mut st),
             }
         }
@@ -183,6 +218,40 @@ impl HandParser for IPokerParser {
         consolidate_showdown_status(&mut hand, &st);
 
         Some(hand)
+    }
+}
+
+/// Méta-infos de la table : blinds, taille, buy-in / fee et nom du tournoi.
+fn parse_meta_line(line: &str, hand: &mut ParsedHand, st: &mut State) {
+    if line.contains("Table Info:") {
+        // `Table Info: Size: 3, Blinds: 10/20`
+        if let Some(c) = regex!(r"Blinds:\s*(\d+)\s*/\s*(\d+)").captures(line) {
+            let sb = parse_f64(&c[1]);
+            let bb = parse_f64(&c[2]);
+            hand.structured_blinds = Some(BlindsInfo { sb, bb, ante: None });
+            hand.limit_type = Some("NL".into());
+            hand.game_variant = Some("HOLDEM".into());
+            hand.blinds = Some(format!("{sb}/{bb}"));
+        }
+        if let Some(c) = regex!(r"Size:\s*(\d+)").captures(line) {
+            hand.player_count = parse_i32(&c[1]);
+            st.players.reserve(hand.player_count as usize);
+        }
+    } else if line.starts_with("Table ") {
+        // `Table Twister 2?, 1218544661, 1218544660 (Tournament: Twister 2? Buy-In: ?1.86 + ?0.14)`
+        if let Some(c) = regex!(r"Buy-In:\s*\??([\d.,]+)\s*\+\s*\??([\d.,]+)").captures(line) {
+            let buy_in = parse_f64(&c[1].replace(',', ""));
+            let fee = parse_f64(&c[2].replace(',', ""));
+            hand.buy_in = buy_in;
+            // L'entrée effective inclut le fee ; on l'ajoute au buy-in pour le calcul du multiplier.
+            hand.prize_pool = buy_in + fee;
+        }
+        if let Some(c) = regex!(r"Tournament:\s*([^(]+)").captures(line) {
+            let name = c[1].trim().trim_end_matches('?').trim().to_string();
+            if !name.is_empty() {
+                hand.game_name = Some(name);
+            }
+        }
     }
 }
 
@@ -326,14 +395,15 @@ fn parse_player_line(line: &str, hand: &mut ParsedHand, st: &mut State) {
     if !line.contains("Seat ") {
         return;
     }
-    if let Some(c) = regex!(r"Seat (\d+): (.+?) \((\d+)\)(.*)").captures(line) {
+    // `Seat 1: hero_player (?1500.00 in chips)  DEALER`
+    if let Some(c) = regex!(r"Seat (\d+): (.+?) \(\??([\d.,]+) in chips\)(.*)").captures(line) {
         let name = c[2].to_string();
         let positions = &c[4];
         let is_hero = positions.contains("Hero");
         st.players.push(name.clone());
         hand.players.push(PlayerInfo {
             name: name.clone(),
-            stack: parse_f64(&c[3]),
+            stack: parse_f64(&c[3].replace(',', "")),
             is_hero,
             position: extract_position(positions).to_string(),
             ..PlayerInfo::default()
@@ -377,7 +447,7 @@ fn parse_card_reveals(line: &str, hand: &mut ParsedHand, section: Section, st: &
     let summary_show = regex!(r"(?i)Seat \d+: (.+?) .*showed \[(.+?)\]").captures(line);
 
     if let Some(c) = dealt {
-        let name = c[1].trim();
+        let name = c[1].trim().trim_end_matches(':').trim();
         let cards = c[2].trim().to_string();
         if let Some(p) = hand.players.iter_mut().find(|p| crate::util::eq_ic(&p.name, name)) {
             p.is_hero = true;
@@ -387,7 +457,7 @@ fn parse_card_reveals(line: &str, hand: &mut ParsedHand, section: Section, st: &
     }
 
     if let Some(c) = show {
-        let name = c[1].trim();
+        let name = c[1].trim().trim_end_matches(':').trim();
         let cards = c[2].trim();
         hand.went_to_showdown = true;
         st.showdown_section_encountered = true;
@@ -398,7 +468,7 @@ fn parse_card_reveals(line: &str, hand: &mut ParsedHand, section: Section, st: &
     if hole.is_some() || summary_show.is_some() {
         let is_summary_show = summary_show.is_some();
         let c = hole.or(summary_show).expect("one of the two matched");
-        let name = c[1].trim();
+        let name = c[1].trim().trim_end_matches(':').trim();
         let cards = c[2].trim();
 
         let player_idx = hand.players.iter().position(|p| crate::util::eq_ic(&p.name, name));
@@ -428,7 +498,7 @@ fn parse_card_reveals(line: &str, hand: &mut ParsedHand, section: Section, st: &
     }
 
     if let Some(c) = no_show {
-        let name = c[1].trim();
+        let name = c[1].trim().trim_end_matches(':').trim();
         hand.went_to_showdown = true;
         st.showdown_section_encountered = true;
         if let Some(p) = hand.players.iter_mut().find(|p| crate::util::eq_ic(&p.name, name)) {
@@ -451,7 +521,9 @@ fn parse_action_line(line: &str, hand: &mut ParsedHand, section: Section, st: &m
         handle_fold(line, hand);
     }
 
-    let is_action = ["posts", "raises", "calls", "bets", "folds", "checks", "all-in"].iter().any(|k| lower.contains(k));
+    let is_action = ["post", "raise", "call", "bet", "fold", "check", "all-in"]
+        .iter()
+        .any(|k| lower.contains(k));
     if !is_action {
         return;
     }

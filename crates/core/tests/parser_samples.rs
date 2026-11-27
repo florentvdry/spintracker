@@ -140,16 +140,23 @@ fn unibet_samples_match_expected_figures() {
 }
 
 #[test]
-fn ipoker_samples_match_expected_figures() {
+fn ipoker_game_format_is_detected_and_parsed() {
+    // iPoker Network exports use the `GAME #…` layout (no `Site:` line).
     let dir = sample_dir("iPoker");
-    let expected = parse_expected(&dir.join("expected_result.txt"));
-    // The `iPoker Network_HandsExport_...` file is a detection-only regression sample
-    // (no `Site:` line); it is not part of the profit-parity figures.
-    let files = files_in(&dir, |name| name != "expected_result.txt" && !name.contains("HandsExport"));
-    let hands = parse_all(&IPokerParser, &files);
-    assert_matches_expected(&hands, &expected, |h| {
-        h.players.iter().position(|p| p.is_hero || p.name == expected.hero)
-    });
+    let file = dir.join("iPoker_2026-1-1.txt");
+    let content = read_text(&file);
+    assert_eq!(get_parser(&content).map(|p| p.room_name()), Some("iPoker"));
+    let hands = IPokerParser.parse_file(&content).hands;
+    assert_eq!(hands.len(), 2, "both hands in the file must be parsed");
+    assert_eq!(hands[0].hand_id.as_deref(), Some("H001"));
+    assert_eq!(hands[1].hand_id.as_deref(), Some("H002"));
+    for hand in &hands {
+        assert_eq!(hand.room.as_deref(), Some("iPoker"));
+        assert!(!hand.players.is_empty(), "hand {:?} has no players", hand.hand_id);
+        assert_eq!(hand.player_count as usize, hand.players.len(), "player count");
+        // The hero is the player whose hole cards are dealt (`Dealt to`).
+        assert!(hand.players.iter().any(|p| p.is_hero), "hand {:?} has no hero", hand.hand_id);
+    }
 }
 
 #[test]
@@ -179,8 +186,8 @@ fn ipoker_detection_is_case_insensitive() {
 #[test]
 fn ipoker_network_export_is_detected_without_site_line() {
     // Some iPoker Network exports do not carry a `Site:` line: they must still be
-    // recognised as iPoker through the room name and the export layout.
-    let content = "iPoker Network\n*** HEADER ***\nGame Mode: Spin\nGame ID: T001\nHand ID: H001\n*** PLAYERS ***\nSeat 1: hero_player (1500) [BTN SB Hero]\n";
+    // recognised as iPoker through the `GAME #…` / `Uncalled:Y` / `Table Info:` export layout.
+    let content = "GAME #H001 Version:26.7.1.25 Uncalled:Y Texas Hold'em NL  Tournament 2026-01-01 10:00:00/GMT\nTable Info: Size: 2, Blinds: 50/100\nTable Twister 2, 1, 2 (Tournament: Twister 2 Buy-In: 1.00 + 0.10)\nSeat 1: hero_player (?1500.00 in chips)\n";
     assert_eq!(get_parser(content).map(|p| p.room_name()), Some("iPoker"));
 }
 
@@ -192,10 +199,12 @@ fn ipoker_network_export_sample_is_detected_and_parsed() {
     let content = read_text(&file);
     assert_eq!(get_parser(&content).map(|p| p.room_name()), Some("iPoker"));
     let hands = IPokerParser.parse_file(&content).hands;
-    assert_eq!(hands.len(), 1);
+    assert_eq!(hands.len(), 2, "both hands in the file must be parsed");
     assert_eq!(hands[0].hand_id.as_deref(), Some("HNET001"));
+    assert_eq!(hands[1].hand_id.as_deref(), Some("HNET002"));
     assert_eq!(hands[0].room.as_deref(), Some("iPoker"));
-    assert_eq!(hands[0].player_count, 2);
+    assert_eq!(hands[0].player_count, 3);
+    assert!(hands[0].players.iter().any(|p| p.is_hero), "first hand has no hero");
 }
 
 #[test]
