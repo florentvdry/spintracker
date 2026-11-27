@@ -112,6 +112,37 @@ fn default_db_path(app: &AppHandle) -> PathBuf {
     db_path
 }
 
+/// Rakeback percentage the user wants applied to the hero's results on the dashboard.
+/// Kept in a JSON file next to the database (the `config` SQL table was dropped by migration
+/// 20260116001 and must not be recreated).
+const RAKEBACK_FILE: &str = "rakeback.json";
+
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
+struct RakebackSettings {
+    rakeback_pct: f64,
+}
+
+fn rakeback_path(app: &AppHandle) -> PathBuf {
+    data_dir(app).join(RAKEBACK_FILE)
+}
+
+/// Reads the stored rakeback percentage, clamped to 0..=100, default 0.
+pub fn rakeback_get(app: &AppHandle) -> f64 {
+    let text = match fs::read_to_string(rakeback_path(app)) {
+        Ok(text) => text,
+        Err(_) => return 0.0,
+    };
+    let settings: RakebackSettings = serde_json::from_str(&text).unwrap_or_default();
+    settings.rakeback_pct.clamp(0.0, 100.0)
+}
+
+/// Persists the rakeback percentage, clamped to 0..=100.
+pub fn rakeback_set(app: &AppHandle, pct: f64) {
+    let pct = pct.clamp(0.0, 100.0);
+    let text = serde_json::to_string(&RakebackSettings { rakeback_pct: pct }).unwrap_or_default();
+    let _ = fs::write(rakeback_path(app), text);
+}
+
 /// Opens the database, brings its stored statistics up to date, then marks the backend ready.
 pub fn start(app: &AppHandle) {
     let app = app.clone();

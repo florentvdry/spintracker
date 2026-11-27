@@ -387,6 +387,9 @@
     "ev_profit_hint": "Ce que vaut ton EV en jetons, sans la chance",
     "luck_gap": "Écart de chance",
     "unpriced_note": "{{count}} tournois sans prize pool connu ne sont pas comptés dans ce profit (résumé du tournoi manquant).",
+    "net_won_rakeback": "NetWon + {{pct}} % de rakeback",
+    "net_ev_rakeback": "NetEV + {{pct}} % de rakeback",
+    "rakeback_hint": "Résultat net incluant la part de rakeback",
     "activity": "Activité",
     "sessions_month": "Sessions ce mois",
     "chip_evolution": "Evolution des jetons",
@@ -678,6 +681,10 @@
       "title": "Général",
       "language": "Langue",
       "language_desc": "Choisissez votre langue préférée"
+    },
+    "rakeback": {
+      "title": "Rakeback",
+      "desc": "Part du rake reversée, appliquée au NetWon et au NetEV sur le tableau de bord"
     },
     "database": {
       "title": "Base de données",

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Check, Database, Download, Edit2, FolderOpen, Globe, Loader, Plus, RefreshCw, Trash2, X } from 'lucide-react'
+import { Check, Database, Download, Edit2, FolderOpen, Globe, Loader, Percent, Plus, RefreshCw, Trash2, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import Card from '@/components/ui/Card'
@@ -32,6 +32,8 @@ export default function Settings() {
   const { t, i18n } = useTranslation()
   const notify = useNotificationStore()
   const refreshAll = useAppStore((s) => s.refreshAll)
+  const setRakeback = useAppStore((s) => s.setRakeback)
+  const rakebackPct = useAppStore((s) => s.rakebackPct)
   const setHeroName = useFilterStore((s) => s.setHeroName)
   const loadPlayers = usePlayersStore((s) => s.loadPlayers)
   const isChecking = useUpdateStore((s) => s.isChecking)
@@ -208,6 +210,23 @@ export default function Settings() {
             {languageButton('en', 'English')}
             {languageButton('fr', 'Français')}
           </div>
+        </SettingRow>
+      </Card>
+
+      <Card title={t('settings.rakeback.title')} subtitle={t('settings.rakeback.desc')}>
+        <SettingRow icon={Percent} title={t('settings.rakeback.title')} description={t('settings.rakeback.desc')}>
+          <input
+            type="number"
+            min={0}
+            max={100}
+            step={1}
+            value={rakebackPct}
+            onChange={(e) => {
+              const pct = Number(e.target.value)
+              if (!Number.isNaN(pct)) void setRakeback(pct)
+            }}
+            className="w-full bg-dark-300 border border-dark-200 rounded-lg px-3 py-2 text-gray-100 text-sm focus:outline-none focus:border-primary-500"
+          />
         </SettingRow>
       </Card>
 

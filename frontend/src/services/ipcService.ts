@@ -187,6 +187,8 @@ export const ipcService = {
   importHandHistory: () => command<ApiResult>('import_hand_history'),
   getAutoImport: () => command<ApiResult>('auto_import_get'),
   setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),
+  getRakeback: () => command<ApiResult>('get_rakeback'),
+  setRakeback: (pct: number) => command<ApiResult>('set_rakeback', { pct }),
   getHudCatalog: () => backend<{ stats: { section: string; label: string; id: string; fixedSeat: boolean; name?: string; ready?: boolean }[] }>('GET', '/hud/catalog'),
 
   // Custom stats (definitions are the JSON of views/CustomStats/customStatModel.ts)

@@ -24,6 +24,7 @@ export default function Dashboard() {
   const heroName = useFilterStore((s) => s.heroName)
   const dateRange = useFilterStore((s) => s.dateRange)
   const isLoading = useAppStore((s) => s.isLoading)
+  const rakebackPct = useAppStore((s) => s.rakebackPct)
 
   const rangeLabel =
     dateRange === 'all' ? '' : ` (${dateRange === 'custom' ? t('common.date') : t(`dashboard.filters.${dateRange}`)})`
@@ -65,6 +66,8 @@ export default function Dashboard() {
   const totalProfit = stats.total_profit || 0
   const evProfit = stats.total_ev_profit || 0
   const luckProfit = stats.luck_profit || 0
+  const totalRake = stats.total_rake || 0
+  const rakebackAmount = rakebackPct !== 0 ? totalRake * (rakebackPct / 100) : 0
   const unpriced: number =stats.unpriced_tournaments || 0
   const maxAbsCev = Math.max(1, ...positionGroups.flatMap((g) => g.rows.map((r) => Math.abs(r.cev.value))))
 
@@ -93,6 +96,22 @@ export default function Dashboard() {
                   {t('dashboard.luck_gap')} <span className="font-mono">{formatProfit(luckProfit)}</span>
                 </span>
               </div>
+              {rakebackPct !== 0 && (
+                <>
+                  <div className="mt-2 flex items-baseline gap-2" title={t('dashboard.rakeback_hint')}>
+                    <span className="stat-label">{t('dashboard.net_won_rakeback', { pct: rakebackPct })}</span>
+                    <span className={clsx('font-mono text-xl font-semibold', totalProfit + rakebackAmount >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
+                      {formatProfit(totalProfit + rakebackAmount)}
+                    </span>
+                  </div>
+                  <div className="mt-1 flex items-baseline gap-2" title={t('dashboard.rakeback_hint')}>
+                    <span className="stat-label">{t('dashboard.net_ev_rakeback', { pct: rakebackPct })}</span>
+                    <span className={clsx('font-mono text-xl font-semibold', evProfit + rakebackAmount >= 0 ? 'text-profit-positive' : 'text-profit-negative')}>
+                      {formatProfit(evProfit + rakebackAmount)}
+                    </span>
+                  </div>
+                </>
+              )}
               {unpriced > 0 && <p className="mt-2 max-w-md text-xs text-gray-500">{t('dashboard.unpriced_note', { count: unpriced })}</p>}
             </div>
             <div className="flex gap-9">

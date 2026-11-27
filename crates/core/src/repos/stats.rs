@@ -528,10 +528,12 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
                         WHEN hero_pos = 'BB' AND COALESCE(btn_investment, 0) <= COALESCE(ante, 0) AND COALESCE(sb_investment, 0) > (COALESCE(ante, 0) + CAST(REPLACE(SUBSTR(blinds, 1, INSTR(blinds, '/') - 1), ',', '.') AS REAL)) THEN 'vs_SB'
                         ELSE 'Other'
                     END
-                END AS situation
+                END AS situation,
+                rake
          FROM (
              SELECT h.date_time, h.room, h.game_id, h.buy_in, h.prize_pool, ph.net_profit, h.player_count, h.multiplier,
                     h.position AS hand_position, ph.position AS hero_pos, ph.net_won_adjusted, h.ante, h.blinds,
+                    h.rake,
                     (h.player_count = 3 AND ph.position IN ('SB', 'BB')) AS is_blind,
                     CASE WHEN h.player_count = 3 AND ph.position IN ('SB', 'BB') THEN
                         (SELECT MAX(COALESCE(p2.investment, 0)) FROM player_hands p2 WHERE p2.hand_id = h.id AND +p2.position = 'BTN') END AS btn_investment,
@@ -547,6 +549,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
     // One entry per tournament: its figures decide the euro result and whether it was cashed.
     let mut games: HashMap<Option<String>, TournamentFigures> = HashMap::new();
     let mut by_position: BTreeMap<(Option<String>, i32), PositionTotals> = BTreeMap::new();
+    let mut total_rake = 0.0f64;
     let mut blind_ev: BTreeMap<(String, String), f64> = BTreeMap::new();
     let mut chip_ev_by_game: HashMap<Option<String>, f64> = HashMap::new();
     let mut session_hands = Vec::new();
@@ -563,6 +566,8 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         let hero_position: Option<String> = r.get(9)?;
         let net_won_adjusted: Option<f64> = r.get(10)?;
         let situation: Option<String> = r.get(11)?;
+        let rake: f64 = r.get::<_, Option<f64>>(12)?.unwrap_or(0.0);
+        total_rake += rake;
 
         let lowest_player_count = player_count.unwrap_or(3);
         let tournament = games.entry(game_id.clone()).or_insert_with(|| TournamentFigures {
@@ -675,6 +680,7 @@ pub fn dashboard_stats(conn: &Connection, q: &StatsQuery) -> Result<Value> {
         "tournaments_won": tournaments_won,
         "unpriced_tournaments": unpriced_tournaments,
         "total_profit": total_profit_euro,
+        "total_rake": round_to(total_rake, 2),
         "total_ev_profit": round_to(total_ev_profit_euro, 2),
         "luck_profit": round_to(total_profit_euro - total_ev_profit_euro, 2),
         "main_room": main_room,

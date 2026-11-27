@@ -3,12 +3,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const getDashboardStats = vi.fn()
 const getSessionHistory = vi.fn()
 const getBuyIns = vi.fn()
+const getRakeback = vi.fn()
+const setRakeback = vi.fn()
 
 vi.mock('@/services/ipcService', () => ({
   ipcService: {
     getDashboardStats: (...args: unknown[]) => getDashboardStats(...args),
     getSessionHistory: (...args: unknown[]) => getSessionHistory(...args),
     getBuyIns: (...args: unknown[]) => getBuyIns(...args),
+    getRakeback: (...args: unknown[]) => getRakeback(...args),
+    setRakeback: (...args: unknown[]) => setRakeback(...args),
   },
 }))
 
@@ -31,6 +35,7 @@ describe('appStore refresh', () => {
     getBuyIns.mockResolvedValue({ success: true, data: [] })
     getDashboardStats.mockResolvedValue({ success: true, data: {} })
     getSessionHistory.mockResolvedValue({ success: true, data: [] })
+    getRakeback.mockResolvedValue({ success: true, rakeback_pct: 0 })
   })
 
   it('keeps loading until the latest of two overlapping refreshes completes', async () => {

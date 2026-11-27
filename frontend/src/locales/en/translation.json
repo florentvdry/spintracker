@@ -387,6 +387,9 @@
     "ev_profit_hint": "What your chip EV is worth, without luck",
     "luck_gap": "Luck gap",
     "unpriced_note": "{{count}} tournaments without a known prize pool are not counted in this profit (tournament summary missing).",
+    "net_won_rakeback": "NetWon + {{pct}} % rakeback",
+    "net_ev_rakeback": "NetEV + {{pct}} % rakeback",
+    "rakeback_hint": "Net result including the rakeback share",
     "activity": "Activity",
     "sessions_month": "Sessions this month",
     "chip_evolution": "Chip Evolution",
@@ -624,6 +627,10 @@
       "title": "General",
       "language": "Language",
       "language_desc": "Choose your preferred language"
+    },
+    "rakeback": {
+      "title": "Rakeback",
+      "desc": "Share of the rake paid back to you, applied to NetWon and NetEV on the dashboard"
     },
     "database": {
       "title": "Database",

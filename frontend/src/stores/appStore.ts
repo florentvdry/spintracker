@@ -26,11 +26,13 @@ interface AppState {
   dashboardStats: Json | null
   sessions: Json[]
   availableBuyIns: number[]
+  rakebackPct: number
   lastUpdate: number
   error: string | null
   initialize: () => Promise<void>
   runInitialization: () => Promise<void>
   loadDashboardStats: () => Promise<void>
+  setRakeback: (pct: number) => Promise<void>
   loadSessions: (limit?: number) => Promise<void>
   loadBuyIns: () => Promise<void>
   refreshAll: () => Promise<void>
@@ -43,6 +45,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   dashboardStats: null,
   sessions: [],
   availableBuyIns: [],
+  rakebackPct: 0,
   lastUpdate: 0,
   error: null,
 
@@ -110,9 +113,19 @@ export const useAppStore = create<AppState>((set, get) => ({
           },
         })
       }
+      const rakeback = await ipcService.getRakeback()
+      if (request === dashboardRequest && rakeback.success) {
+        set({ rakebackPct: Number(rakeback.rakeback_pct) || 0 })
+      }
     } catch (err) {
       logError('Failed to load dashboard stats:', err)
     }
+  },
+
+  setRakeback: async (pct: number) => {
+    const result = await ipcService.setRakeback(pct)
+    if (result.success) set({ rakebackPct: Math.max(0, Math.min(100, pct)) })
+    else logError('Failed to save rakeback:', result.message)
   },
 
   loadSessions: async (limit = SESSION_LIMIT) => {

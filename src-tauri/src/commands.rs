@@ -141,6 +141,17 @@ pub fn auto_import_set(app: AppHandle, window: WebviewWindow, enabled: bool, fol
 }
 
 #[tauri::command]
+pub fn get_rakeback(app: AppHandle) -> Value {
+    json!({ "success": true, "rakeback_pct": backend::rakeback_get(&app) })
+}
+
+#[tauri::command]
+pub fn set_rakeback(app: AppHandle, pct: f64) -> Value {
+    backend::rakeback_set(&app, pct);
+    json!({ "success": true })
+}
+
+#[tauri::command]
 pub fn hud_settings_get(app: AppHandle) -> Value {
     hud_settings::get(&app)
 }
