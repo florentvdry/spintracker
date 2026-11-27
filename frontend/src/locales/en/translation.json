@@ -374,6 +374,18 @@
     "buy_in": "Buy-in",
     "period": "Period"
   },
+  "import": {
+    "title": "Import Recap",
+    "files_processed": "{{count}} file(s) processed",
+    "hands_imported": "{{count}} hands imported",
+    "hands_skipped": "{{count}} skipped (duplicates)",
+    "sessions": "Sessions",
+    "no_sessions": "No sessions recorded yet",
+    "stats": "Statistics",
+    "total_profit": "Total profit",
+    "total_hands": "Total hands",
+    "total_ev": "Total EV"
+  },
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Overview of your performance",

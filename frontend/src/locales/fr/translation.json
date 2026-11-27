@@ -374,6 +374,18 @@
     "buy_in": "Buy-in",
     "period": "Période"
   },
+  "import": {
+    "title": "Récapitulatif de l'import",
+    "files_processed": "{{count}} fichier(s) traité(s)",
+    "hands_imported": "{{count}} mains importées",
+    "hands_skipped": "{{count}} ignorées (doublons)",
+    "sessions": "Sessions",
+    "no_sessions": "Aucune session enregistrée",
+    "stats": "Statistiques",
+    "total_profit": "Profit total",
+    "total_hands": "Total mains",
+    "total_ev": "EV total"
+  },
   "dashboard": {
     "title": "Tableau de bord",
     "subtitle": "Vue d'ensemble de vos performances",

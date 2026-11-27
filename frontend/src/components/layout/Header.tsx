@@ -14,6 +14,7 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { useProgressStore } from '@/stores/progressStore'
 import { useUpdateStore } from '@/stores/updateStore'
 import { formatCurrency, formatDate } from '@/utils/formatters'
+import ImportRecapDialog from '@/components/ui/ImportRecapDialog'
 
 const RECENT_SESSIONS_SHOWN = 5
 const PLAYER_LIST_LIMIT = 500
@@ -39,6 +40,12 @@ export default function Header() {
   const progress = useProgressStore()
 
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [recapOpen, setRecapOpen] = useState(false)
+  const [recapData, setRecapData] = useState<{
+    handsImported: number
+    handsSkipped: number
+    filesProcessed: number
+  } | null>(null)
   const [players, setPlayers] = useState<Json[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [heroOpen, setHeroOpen] = useState(false)
@@ -111,17 +118,14 @@ export default function Header() {
     try {
       const result = await ipcService.importHandHistory()
       if (result.success) {
-        notifications.addNotification({
-          type: 'success',
-          title: t('header.import_success'),
-          message: t('header.import_stats', {
-            hands: result.handsImported,
-            skipped: result.handsSkipped || 0,
-            files: result.filesProcessed,
-          }),
+        setRecapData({
+          handsImported: result.handsImported,
+          handsSkipped: result.handsSkipped || 0,
+          filesProcessed: result.filesProcessed,
         })
         await app.refreshAll()
         await loadPlayers()
+        setRecapOpen(true)
       } else if (result.message !== 'Import cancelled') {
         notifications.addNotification({ type: 'error', title: t('header.import_error'), message: result.message ?? '' })
       }
@@ -417,6 +421,18 @@ export default function Header() {
           <AutoImportIndicator />
         </div>
       )}
+
+      <ImportRecapDialog
+        open={recapOpen}
+        onClose={() => { setRecapOpen(false); setRecapData(null) }}
+        data={{
+          handsImported: recapData?.handsImported ?? 0,
+          handsSkipped: recapData?.handsSkipped ?? 0,
+          filesProcessed: recapData?.filesProcessed ?? 0,
+          sessions: app.sessions,
+          dashboardStats: app.dashboardStats,
+        }}
+      />
     </>
   )
 }
