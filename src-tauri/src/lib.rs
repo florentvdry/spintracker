@@ -100,6 +100,7 @@ pub fn run() {
             commands::auto_import_get,
             commands::auto_import_set,
             commands::auto_import_pick_folder,
+            commands::detect_history_folders,
             commands::hud_settings_get,
             commands::hud_settings_set,
             commands::hud_get_state,

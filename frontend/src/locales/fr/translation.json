@@ -975,6 +975,16 @@
     "statistics": "Mise à jour des statistiques : {{done}} / {{total}} ({{percent}}%)",
     "failed_title": "Impossible d'ouvrir la base de données"
   },
+  "onboarding": {
+    "title": "Accueil",
+    "subtitle": "Surveillons vos dossiers d'historique de mains",
+    "detecting": "Détection de vos dossiers d'historique…",
+    "room": "Salle",
+    "path": "Chemin",
+    "select_all": "Tout sélectionner",
+    "finish": "Terminer",
+    "note": "Sélectionnez les salles dont SpinTracker doit importer l'historique automatiquement. Vous pourrez modifier ce choix plus tard dans les Réglages."
+  },
   "ranges": {
     "tabs": {
       "editor": "Éditeur",

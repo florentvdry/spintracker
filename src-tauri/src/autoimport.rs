@@ -197,12 +197,50 @@ fn unibet_folder(documents: &Path) -> Option<WatchedFolder> {
     dir.is_dir().then(|| WatchedFolder { room: "Unibet".into(), path: dir.to_string_lossy().into_owned() })
 }
 
+/// iPoker skins write their hand histories under a Documents subfolder whose name contains "ipoker".
+/// Returns the folders that actually hold at least one `.txt` hand-history file.
+fn ipoker_folders(documents: &Path) -> Vec<WatchedFolder> {
+    let mut found = Vec::new();
+    let Ok(entries) = fs::read_dir(documents) else { return found };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if !path.is_dir() {
+            continue;
+        }
+        let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
+        if !name.to_lowercase().contains("ipoker") {
+            continue;
+        }
+        if folder_contains_txt(&path) {
+            found.push(WatchedFolder { room: "iPoker".into(), path: path.to_string_lossy().into_owned() });
+        }
+    }
+    found
+}
+
+/// True when the directory tree holds at least one `.txt` file.
+fn folder_contains_txt(dir: &Path) -> bool {
+    let Ok(entries) = fs::read_dir(dir) else { return false };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            if folder_contains_txt(&path) {
+                return true;
+            }
+        } else if is_history_file(&path) {
+            return true;
+        }
+    }
+    false
+}
+
 /// Where the rooms keep their history on a default install. Only folders that exist are returned.
-fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
+pub fn detect_folders(app: &AppHandle) -> Vec<WatchedFolder> {
     let mut found = Vec::new();
     let mut roots: Vec<(PathBuf, &str)> = Vec::new();
     if let Ok(documents) = app.path().document_dir() {
         found.extend(unibet_folder(&documents));
+        found.extend(ipoker_folders(&documents));
         roots.push((documents.join("Winamax Poker").join("accounts"), "history"));
     }
     if let Ok(roaming) = app.path().config_dir() {
@@ -540,6 +578,40 @@ mod tests {
         fs::create_dir_all(&export).unwrap();
         let found = unibet_folder(documents.path()).expect("the folder exists now");
         assert_eq!((found.room.as_str(), Path::new(&found.path)), ("Unibet", export.as_path()));
+    }
+
+    #[test]
+    fn ipoker_folders_are_detected_only_when_they_contain_txt_files() {
+        let documents = tempfile::tempdir().unwrap();
+
+        // A folder named like iPoker but without any .txt file: not detected.
+        let empty_ipoker = documents.path().join("My iPoker Room");
+        fs::create_dir_all(&empty_ipoker).unwrap();
+        // A folder named like iPoker with a .txt file: detected.
+        let history_ipoker = documents.path().join("iPoker.fr").join("players").join("hero");
+        fs::create_dir_all(&history_ipoker).unwrap();
+        fs::write(history_ipoker.join("hand_history.txt"), "a hand").unwrap();
+        // A folder whose name does not contain "ipoker": not detected even with a .txt file.
+        let other = documents.path().join("Winamax Poker").join("accounts");
+        fs::create_dir_all(&other).unwrap();
+        fs::write(other.join("hands.txt"), "a hand").unwrap();
+
+        let found = ipoker_folders(documents.path());
+        assert_eq!(found.len(), 1);
+        assert_eq!(found[0].room, "iPoker");
+        assert_eq!(Path::new(&found[0].path), documents.path().join("iPoker.fr").as_path());
+    }
+
+    #[test]
+    fn ipoker_folder_name_matching_is_case_insensitive() {
+        let documents = tempfile::tempdir().unwrap();
+        let ipoker = documents.path().join("IPoker.fr");
+        fs::create_dir_all(&ipoker).unwrap();
+        fs::write(ipoker.join("hands.txt"), "a hand").unwrap();
+
+        let found = ipoker_folders(documents.path());
+        assert_eq!(found.len(), 1);
+        assert_eq!(found[0].room, "iPoker");
     }
 
     #[test]

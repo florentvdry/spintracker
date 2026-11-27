@@ -10,6 +10,7 @@ import { ipcService } from '@/services/ipcService'
 import { useAppStore } from '@/stores/appStore'
 import { useAutoImportStore } from '@/stores/autoImportStore'
 import { useFilterStore } from '@/stores/filterStore'
+import { useOnboardingStore } from '@/stores/onboardingStore'
 import { useUpdateStore } from '@/stores/updateStore'
 import { heroNamesOf } from '@/utils/heroNames'
 
@@ -20,6 +21,7 @@ const Players = lazy(() => import('@/views/Players'))
 const LiveHud = lazy(() => import('@/views/LiveHud'))
 const Ranges = lazy(() => import('@/views/Ranges'))
 const Settings = lazy(() => import('@/views/Settings'))
+const OnboardingWizard = lazy(() => import('@/views/OnboardingWizard'))
 
 export default function App() {
   const initialize = useAppStore((s) => s.initialize)
@@ -27,6 +29,8 @@ export default function App() {
   const isInitialized = useAppStore((s) => s.isInitialized)
   const initializeUpdates = useUpdateStore((s) => s.initialize)
   const listenAutoImport = useAutoImportStore((s) => s.listen)
+  const onboardingCompleted = useOnboardingStore((s) => s.completed)
+  const loadOnboarding = useOnboardingStore((s) => s.load)
   const { pathname } = useLocation()
 
   const { heroName, dateRange, customDateFrom, customDateTo, buyIn, selectedSession, hasHydrated } = useFilterStore()
@@ -37,6 +41,11 @@ export default function App() {
   }, [initialize, initializeUpdates])
 
   useEffect(() => listenAutoImport(), [listenAutoImport])
+
+  // Load the first-launch onboarding wizard once the app is initialized.
+  useEffect(() => {
+    if (isInitialized && !onboardingCompleted) void loadOnboarding()
+  }, [isInitialized, onboardingCompleted, loadOnboarding])
 
   // The HUD finds the hero at a table from the names the user plays under.
   const aliases = useFilterStore((s) => s.aliases)
@@ -54,17 +63,21 @@ export default function App() {
       <Layout>
         <ErrorBoundary resetKey={pathname}>
           {isInitialized ? (
-            <Suspense fallback={<div className="spinner mx-auto mt-24" />}>
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/hands" element={<HandHistory />} />
-                <Route path="/analysis" element={<Analysis />} />
-                <Route path="/players" element={<Players />} />
-                <Route path="/hud" element={<LiveHud />} />
-                <Route path="/ranges" element={<Ranges />} />
-                <Route path="/settings" element={<Settings />} />
-              </Routes>
-            </Suspense>
+            onboardingCompleted ? (
+              <Suspense fallback={<div className="spinner mx-auto mt-24" />}>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/hands" element={<HandHistory />} />
+                  <Route path="/analysis" element={<Analysis />} />
+                  <Route path="/players" element={<Players />} />
+                  <Route path="/hud" element={<LiveHud />} />
+                  <Route path="/ranges" element={<Ranges />} />
+                  <Route path="/settings" element={<Settings />} />
+                </Routes>
+              </Suspense>
+            ) : (
+              <OnboardingWizard />
+            )
           ) : (
             <StartupNotice />
           )}

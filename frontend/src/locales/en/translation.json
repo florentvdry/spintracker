@@ -975,6 +975,16 @@
     "statistics": "Updating statistics: {{done}} / {{total}} ({{percent}}%)",
     "failed_title": "The database could not be opened"
   },
+  "onboarding": {
+    "title": "Onboarding",
+    "subtitle": "Let's watch your hand-history folders",
+    "detecting": "Detecting your hand-history folders…",
+    "room": "Room",
+    "path": "Path",
+    "select_all": "Select all",
+    "finish": "Finish",
+    "note": "Select the rooms whose hand histories SpinTracker should import automatically. You can change this later in Settings."
+  },
   "ranges": {
     "tabs": {
       "editor": "Editor",

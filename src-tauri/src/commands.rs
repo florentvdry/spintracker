@@ -140,6 +140,17 @@ pub fn auto_import_set(app: AppHandle, window: WebviewWindow, enabled: bool, fol
     autoimport::set(&app, enabled, folders)
 }
 
+/// Lists the hand-history folders found on this computer (Winamax, Unibet, iPoker...).
+/// iPoker is only detected here: automatic watch stays Winamax/Unibet only.
+#[tauri::command]
+pub fn detect_history_folders(app: AppHandle) -> Value {
+    let rooms = autoimport::detect_folders(&app)
+        .into_iter()
+        .map(|folder| serde_json::json!({ "room": folder.room, "path": folder.path }))
+        .collect::<Vec<_>>();
+    serde_json::json!({ "success": true, "rooms": rooms })
+}
+
 #[tauri::command]
 pub fn hud_settings_get(app: AppHandle) -> Value {
     hud_settings::get(&app)

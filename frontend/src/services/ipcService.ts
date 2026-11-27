@@ -187,6 +187,7 @@ export const ipcService = {
   importHandHistory: () => command<ApiResult>('import_hand_history'),
   getAutoImport: () => command<ApiResult>('auto_import_get'),
   setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),
+  detectHistoryFolders: () => command<{ success: boolean; rooms: Array<{ room: string; path: string }> }>('detect_history_folders'),
   getHudCatalog: () => backend<{ stats: { section: string; label: string; id: string; fixedSeat: boolean; name?: string; ready?: boolean }[] }>('GET', '/hud/catalog'),
 
   // Custom stats (definitions are the JSON of views/CustomStats/customStatModel.ts)
