@@ -272,3 +272,14 @@ export function groupBySpot(scenarios: readonly ScenarioRow[]): SpotReport[] {
     .map((spot) => ({ ...spot, respect: respectOf({ compared: spot.decisions, matches: spot.matches }), depths: [...spot.depths].sort((a, b) => b.stackBb - a.stackBb) }))
     .sort((a, b) => b.deviations - a.deviations || a.name.localeCompare(b.name))
 }
+
+/**
+ * Adherence to a scenario: matching decisions over all the decisions taken on its hands.
+ * A hand's decisions are its matches plus its deviations.
+ */
+export function scenarioRespect(handStats: Record<string, Pick<HandStat, 'matches' | 'deviations'>>): number | null {
+  const values = Object.values(handStats)
+  const compared = values.reduce((sum, stat) => sum + stat.matches + stat.deviations, 0)
+  const matches = values.reduce((sum, stat) => sum + stat.matches, 0)
+  return respectOf({ compared, matches })
+}

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import ActionChip from '@/components/ranges/ActionChip'
 import DeviationBadge from '@/components/ranges/DeviationBadge'
+import AdherenceRing from '@/components/ranges/AdherenceRing'
 import RangeMatrix from '@/components/ranges/RangeMatrix'
 import { getDateRangeParams, useFilterStore } from '@/stores/filterStore'
 import { useRangeAdherenceStore } from '@/stores/rangeAdherenceStore'
@@ -19,6 +20,7 @@ import {
   respectOf,
   respectTone,
   RESPECT_COLORS,
+  scenarioRespect,
   groupByPosition,
   sortSpots,
   type OpponentFilter,
@@ -422,11 +424,14 @@ export default function Adherence() {
           {detail && (
             <div className={clsx('grid gap-[18px] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]', detailLoading && 'invisible')}>
               <section className="card p-5 flex flex-col gap-3">
-                <div>
-                  <h3 className="text-[15px] font-semibold text-gray-100">{detail.name} · {formatDepth(detail.stackBb)} bb</h3>
-                  {detail.observedMinBb !== null && detail.observedMaxBb !== null && (
-                    <p className="text-xs text-gray-500">{t('ranges.adherence.playedBetween', { min: num(detail.observedMinBb, 1), max: num(detail.observedMaxBb, 1) })}</p>
-                  )}
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-[15px] font-semibold text-gray-100">{detail.name} · {formatDepth(detail.stackBb)} bb</h3>
+                    {detail.observedMinBb !== null && detail.observedMaxBb !== null && (
+                      <p className="text-xs text-gray-500">{t('ranges.adherence.playedBetween', { min: num(detail.observedMinBb, 1), max: num(detail.observedMaxBb, 1) })}</p>
+                    )}
+                  </div>
+                  <AdherenceRing value={scenarioRespect(detail.handStats)} label={t('ranges.adherence.ring')} />
                 </div>
                 <RangeMatrix cells={deviationCells(detail, actions, handTip)} label={t('ranges.adherence.gridLabel', { name: detail.name })} />
                 <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">

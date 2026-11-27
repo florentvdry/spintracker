@@ -1209,6 +1209,7 @@
     },
     "adherence": {
       "noHero": "Choisis un héros pour comparer tes mains à tes ranges.",
+      "ring": "Adhérence",
       "noRanges": "Construis au moins un scénario dans l’éditeur pour le comparer à tes mains.",
       "loading": {
         "title": "Comparaison de tes mains avec tes ranges…",

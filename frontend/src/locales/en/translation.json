@@ -1209,6 +1209,7 @@
     },
     "adherence": {
       "noHero": "Pick a hero to compare your hands with your ranges.",
+      "ring": "Adherence",
       "noRanges": "Build at least one scenario in the editor to compare it with your hands.",
       "loading": {
         "title": "Comparing your hands with your ranges…",
