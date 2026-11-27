@@ -30,7 +30,9 @@ const LINE_COLORS: Record<LineKey, string> = {
   wonWithoutShowdown: '#ff7a6b',
   euroProfit: '#3fd49a',
 }
-const CHIP_LINES: LineKey[] = ['chipsWon', 'netExpected', 'wonWithShowdown', 'wonWithoutShowdown']
+// Three curves: chips won, chip EV, and the chips won without showdown. The showdown-only line
+// stays computed but is no longer drawn; it is not needed to read the evolution.
+const CHIP_LINES: LineKey[] = ['chipsWon', 'netExpected', 'wonWithoutShowdown']
 const CHART_HEIGHT = 500
 const POSITIONS = ['all', 'HU_SB', 'HU_BB', '3W_BTN', '3W_SB', '3W_BB'] as const
 const STATS_BOX_MIN_WIDTH = 250
