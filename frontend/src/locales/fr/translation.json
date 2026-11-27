@@ -671,6 +671,29 @@
       "hu_vs_sb_limp": "vs SB Limp"
     }
   },
+  "bankroll": {
+    "title": "Bankroll",
+    "subtitle": "Dépôts, retraits et le buy-in que tu peux te permettre",
+    "balance": "Solde",
+    "deposits": "Dépôts :",
+    "withdrawals": "Retraits :",
+    "profit": "Gains en tournois :",
+    "chart": "Bankroll dans le temps",
+    "amount": "Montant (€)",
+    "note": "Note (facultatif)",
+    "deposit": "Dépôt",
+    "withdraw": "Retrait",
+    "invalid_amount": "Saisis un montant supérieur à 0,01 €.",
+    "save_failed": "Le mouvement n'a pas pu être enregistré.",
+    "delete_title": "Supprimer ce mouvement ?",
+    "delete_detail": "Le solde est recalculé sans lui. Action irréversible.",
+    "recommend_title": "Buy-in que la bankroll permet",
+    "recommend_empty": "Ajoute un dépôt pour voir le buy-in que tu peux te permettre.",
+    "recommend_no_history": "Joue quelques tournois pour estimer le risque.",
+    "recommended": "Buy-in conseillé : {{buyIn}}, risque de ruine {{risk}}.",
+    "none_recommended": "Aucun buy-in de ton historique ne garde le risque de ruine sous {{threshold}} % avec cette bankroll.",
+    "risk_row": "Buy-in de {{buyIn}}, risque de ruine"
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'application",

@@ -27,6 +27,7 @@ use crate::repos::player_queries::{self, PlayersQuery};
 use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
+use crate::services::bankroll;
 use crate::services::custom_stats::CustomStatsService;
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
@@ -284,6 +285,28 @@ impl Backend {
                 Response::data(Value::Array(stats::session_history(&conn, limit, &q)?))
             }
             ("GET", ["db", "buyins"]) => Response::data(json!(stats::unique_buy_ins(&*conn()?)?)),
+            ("GET", ["db", "bankroll"]) => {
+                let conn = conn()?;
+                let hero = r.query_str("heroName");
+                Response::data(bankroll::overview(&conn, hero.as_deref())?)
+            }
+            ("POST", ["db", "bankroll", "movements"]) => {
+                let body = r.body.as_ref();
+                let amount = body.and_then(|b| b.get("amount")).and_then(Value::as_f64).unwrap_or(f64::NAN);
+                let note = body.and_then(|b| b.get("note")).and_then(Value::as_str).unwrap_or("");
+                let occurred_at = body.and_then(|b| b.get("occurredAt")).and_then(Value::as_str);
+                let conn = conn()?;
+                bankroll::record_movement(&conn, occurred_at, amount, note)?;
+                self.db.bump_data_version();
+                Response::data(Value::Null)
+            }
+            ("DELETE", ["db", "bankroll", "movements", id]) => {
+                let id: i64 = id.parse().map_err(|_| Error::Message(format!("bad movement id: {id}")))?;
+                let conn = conn()?;
+                let removed = bankroll::remove_movement(&conn, id)?;
+                self.db.bump_data_version();
+                Response::data(json!({ "removed": removed }))
+            }
             ("GET", ["db", "detailed-stats"]) => {
                 let scope = r.query_str("statsScope").unwrap_or_default().trim().to_lowercase();
                 let opponent = r.query_str("opponentName");

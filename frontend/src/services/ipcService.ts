@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
+import type { BankrollOverview } from '@/utils/bankroll'
 import type { ExportBucket, ExportFilter } from '@/utils/exportFilter'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -108,6 +109,9 @@ export const ipcService = {
   getWinrateChartData: (options: Json = {}) => backend('POST', '/db/winrate-chart', options),
   getMultiplierStats: (options: Json = {}) => backend('POST', '/db/multiplier-stats', options),
   getBuyIns: () => backend<number[]>('GET', '/db/buyins'),
+  getBankroll: (heroName?: string | null) => backend<BankrollOverview>('GET', `/db/bankroll${query({ heroName })}`),
+  addBankrollMovement: (amount: number, note: string) => backend('POST', '/db/bankroll/movements', { amount, note }),
+  deleteBankrollMovement: (id: number) => backend('DELETE', `/db/bankroll/movements/${id}`),
   getDetailedStats: (
     heroName?: string | null,
     dateFrom?: string | null,

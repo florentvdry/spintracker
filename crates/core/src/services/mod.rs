@@ -7,6 +7,7 @@ pub mod importer;
 pub mod live_import;
 pub mod summaries;
 pub mod range_adherence;
+pub mod bankroll;
 pub mod ranges_io;
 pub mod review;
 pub mod table_pairing;

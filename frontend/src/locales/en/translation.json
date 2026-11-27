@@ -617,6 +617,29 @@
       "3W_BB": "3W BB"
     }
   },
+  "bankroll": {
+    "title": "Bankroll",
+    "subtitle": "Deposits, withdrawals and the buy-in you can afford",
+    "balance": "Balance",
+    "deposits": "Deposits:",
+    "withdrawals": "Withdrawals:",
+    "profit": "Tournament profit:",
+    "chart": "Bankroll over time",
+    "amount": "Amount (€)",
+    "note": "Note (optional)",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "invalid_amount": "Enter an amount greater than 0.01 €.",
+    "save_failed": "The movement could not be saved.",
+    "delete_title": "Delete this movement?",
+    "delete_detail": "The balance is recalculated without it. This cannot be undone.",
+    "recommend_title": "Buy-in the bankroll can afford",
+    "recommend_empty": "Add a deposit to see which buy-in you can afford.",
+    "recommend_no_history": "Play some tournaments to estimate the risk.",
+    "recommended": "Recommended buy-in: {{buyIn}}, risk of ruin {{risk}}.",
+    "none_recommended": "No buy-in in your history keeps the risk of ruin under {{threshold}} % with this bankroll.",
+    "risk_row": "{{buyIn}} buy-in, risk of ruin"
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Configure the application",

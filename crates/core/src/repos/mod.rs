@@ -9,6 +9,7 @@ pub mod hud_stats;
 pub mod hud_tables;
 pub mod import_files;
 pub mod player_notes;
+pub mod bankroll;
 pub mod postflop_stats;
 pub mod player_queries;
 pub mod players;
