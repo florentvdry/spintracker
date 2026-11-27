@@ -539,7 +539,7 @@
     "sample_path": "Série {{index}}",
     "reading": "Lecture",
     "reading_text": "Avec ces paramètres, 10 % des séries finissent au-dessus de <good>{{high}}</good> et 10 % en dessous de <bad>{{low}}</bad> après {{count}} tournois.",
-    "verdict_inside": "Votre courbe réelle est dans la zone normale ; un écart n'est pas une preuve de leak.",
+    "verdict_inside": "Votre courbe réelle est dans la zone normale ; un écart est un repère, pas un verdict.",
     "verdict_above": "Votre courbe réelle est au-dessus de la zone normale : soit une série chanceuse, soit un taux de victoire supérieur à celui saisi.",
     "verdict_below": "Votre courbe réelle est en dessous de la zone normale : une très mauvaise série peut l'expliquer, mais vérifiez aussi le taux de victoire saisi.",
     "footnote": "Simulation par tirage aléatoire : le CEV donne la probabilité de victoire (part de jetons parmi les 3 stacks), un tournoi gagné rapporte sa part du prize pool (multiplicateur × buy-in), les 2e et 3e places aussi quand la salle partage les gros prix, et un tournoi perdu coûte le buy-in. Tout est calculé en local.",

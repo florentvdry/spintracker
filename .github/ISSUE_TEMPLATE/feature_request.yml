@@ -28,7 +28,7 @@ body:
       options:
         - Import / parser
         - Dashboard
-        - Statistics / leaks
+        - Statistics / gaps
         - Replayer
         - Range research
         - Multipliers

@@ -16,12 +16,12 @@ const SITE_URL = "https://florentvdry.github.io/spintracker";
 const COPY = {
   en: {
     title: "SpinTracker - Free Open-Source Poker Tracker for Spin & Go",
-    description: "Free, open-source poker tracker for Spin & Go. Import Winamax, Betclic and Unibet hand histories, find your leaks, replay hands and study ranges. 100% local.",
+    description: "Free, open-source poker tracker for Spin & Go. Import Winamax, Betclic and Unibet hand histories, find the gaps against your own ranges, replay hands and study ranges. 100% local.",
     ogLocale: "en_US",
   },
   fr: {
     title: "SpinTracker - Tracker Poker Gratuit et Open Source pour Spin & Go",
-    description: "Tracker poker gratuit et open source pour les Spin & Go. Importez vos mains Winamax, Betclic et Unibet, détectez vos leaks, rejouez vos mains et étudiez vos ranges. 100% local.",
+    description: "Tracker poker gratuit et open source pour les Spin & Go. Importez vos mains Winamax, Betclic et Unibet, repérez vos écarts à vos ranges, rejouez vos mains et étudiez vos ranges. 100% local.",
     ogLocale: "fr_FR",
   },
 } as const;
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     metadataBase: new URL(SITE_URL),
     title: { default: copy.title, template: "%s | SpinTracker" },
     description: copy.description,
-    keywords: ["poker tracker", "spin and go tracker", "spin tracker", "hand history", "poker analysis", "open source poker", "free poker tracker", "winamax", "betclic", "unibet", "range research", "poker replayer", "leak finder"],
+    keywords: ["poker tracker", "spin and go tracker", "spin tracker", "hand history", "poker analysis", "open source poker", "free poker tracker", "winamax", "betclic", "unibet", "range research", "poker replayer", "stats tracker"],
     authors: [{ name: "SpinTracker contributors" }],
     creator: "SpinTracker",
     alternates: {

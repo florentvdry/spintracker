@@ -539,7 +539,7 @@
     "sample_path": "Run {{index}}",
     "reading": "Reading",
     "reading_text": "With these parameters, 10% of the runs end above <good>{{high}}</good> and 10% below <bad>{{low}}</bad> after {{count}} tournaments.",
-    "verdict_inside": "Your real curve is inside the normal zone; a gap is not proof of a leak.",
+    "verdict_inside": "Your real curve is inside the normal zone; a gap is a benchmark, not a verdict.",
     "verdict_above": "Your real curve is above the normal zone: either a lucky run or a win rate higher than the one entered.",
     "verdict_below": "Your real curve is below the normal zone: a very bad run can explain it, but check the win rate you entered too.",
     "footnote": "Random draw simulation: the chip EV gives the win probability (chips share out of the 3 stacks), a won tournament pays its share of the prize pool (multiplier × buy-in), the 2nd and 3rd places too when the room shares large prizes, and a lost one costs the buy-in. Everything is computed locally.",

@@ -7,7 +7,7 @@
   "Hero": {
     "title": "Le tracker open source",
     "subtitle": "pour les Spins.",
-    "description": "Analysez votre jeu, identifiez vos leaks et améliorez vos performances avec SpinTracker.",
+    "description": "Analysez votre jeu, repérez vos écarts à vos ranges et améliorez vos performances avec SpinTracker.",
     "compatible_rooms": "Compatible avec : Betclic, Winamax et Unibet (HUD en direct sur Winamax et Unibet).",
     "download_free": "Télécharger",
     "badge": "Open source · Gratuit · 100 % local",
@@ -80,7 +80,7 @@
       "alt": "Capture d'écran des statistiques détaillées",
       "list": {
         "situations": "Stats par situation (3-max, Heads-Up)",
-        "leaks": "Identification des leaks",
+        "gaps": "Repérage des écarts",
         "filters": "Comparaison à la population"
       }
     },
