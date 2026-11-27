@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight, FastForward, List, Pause, Play, Rewind, SkipBack, SkipForward, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
-import type { Json } from '@/services/ipcService'
+import { ipcService, type Json } from '@/services/ipcService'
+import { isTypingTarget } from '@/utils/shortcuts'
 import { isRealAction, selectCurrentAction, selectDoneActions, selectTotalActions, useReplayerStore } from '@/stores/replayerStore'
 import PokerTable from './PokerTable'
 import RangeCheckCard from './RangeCheckCard'
@@ -35,6 +36,28 @@ export default function Replayer() {
   const [showLogs, setShowLogs] = useState(() => window.innerWidth >= LOG_DEFAULT_MIN_WIDTH)
 
   const { handData, currentIndex, isPlaying, nextStep, prevStep, play, stop } = store
+  const handId = store.handId
+  const [marked, setMarked] = useState(false)
+  const markRef = useRef<() => void>(() => {})
+
+  useEffect(() => {
+    if (handId === null) return
+    let active = true
+    void ipcService.listMarkedHands().then((response) => {
+      if (active && response.success) setMarked((response.data as Json[]).some((m) => String(m.handId) === String(handId)))
+    })
+    return () => {
+      active = false
+    }
+  }, [handId])
+
+  const toggleMark = async () => {
+    if (handId === null) return
+    const next = !marked
+    const response = next ? await ipcService.markHand(String(handId)) : await ipcService.unmarkHand(String(handId))
+    if (response.success) setMarked(next)
+  }
+  markRef.current = () => void toggleMark()
 
   const actions: Json[] = handData?.actions ?? []
   const realActions = actions.map((action, index) => ({ action, index })).filter((entry) => isRealAction(entry.action))
@@ -53,6 +76,8 @@ export default function Replayer() {
         else start()
       } else if (event.key === 'ArrowRight') {
         useReplayerStore.getState().nextStep()
+      } else if ((event.key === 'm' || event.key === 'M') && !isTypingTarget(event.target as HTMLElement | null)) {
+        markRef.current()
       } else if (event.key === 'ArrowLeft') {
         useReplayerStore.getState().prevStep()
       }
@@ -76,6 +101,7 @@ export default function Replayer() {
             <div className="hand-meta">
               <span>{handData.date}</span>
               {handData.blinds && <span>Blinds {handData.blinds}</span>}
+              <button type="button" className="copy-hand" aria-pressed={marked} onClick={() => void toggleMark()}>{marked ? t('replayer.unmark_hand') : t('replayer.mark_hand')}</button>
             </div>
           </div>
         ) : (

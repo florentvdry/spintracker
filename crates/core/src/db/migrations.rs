@@ -51,6 +51,7 @@ const MIGRATIONS: &[Migration] = &[
     migration!(202611200003, "AddTraining", "202611200003_training.sql"),
     migration!(202611200004, "AddTrainingCards", "202611200004_training_cards.sql"),
     migration!(202611200005, "AddRangeCheckOpponent", "202611200005_range_check_opponent.sql"),
+    migration!(202611280004, "AddMarkedHands", "202611280004_marked_hands.sql"),
 ];
 
 /// Applies the missing migrations in numeric version order (like FluentMigrator).
@@ -211,6 +212,7 @@ mod tests {
              DROP TABLE hand_range_checks;
              DROP TABLE training_attempts;
              DROP TABLE training_cards;
+             DROP TABLE marked_hands;
              ALTER TABLE players DROP COLUMN alias_id;
              ALTER TABLE players DROP COLUMN room;
              ALTER TABLE hands DROP COLUMN position;
@@ -231,7 +233,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(run(&mut conn).unwrap(), 19);
+        assert_eq!(run(&mut conn).unwrap(), 20);
         // Existing data survives and the `room` backfill runs.
         let room: Option<String> = conn
             .query_row("SELECT room FROM players WHERE name = 'hero'", [], |r| r.get(0))

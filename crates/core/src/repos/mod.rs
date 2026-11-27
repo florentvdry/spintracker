@@ -7,6 +7,7 @@ pub mod heatmap;
 pub mod hud_hands;
 pub mod hud_stats;
 pub mod hud_tables;
+pub mod marked_hands;
 pub mod import_files;
 pub mod player_notes;
 pub mod postflop_stats;

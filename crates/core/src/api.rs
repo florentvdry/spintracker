@@ -28,6 +28,7 @@ use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
 use crate::services::custom_stats::CustomStatsService;
+use crate::services::marked_hands;
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
 use crate::services::review;
@@ -282,6 +283,15 @@ impl Backend {
                 let conn = conn()?;
                 let _running = r.query.contains_key("supersede").then(|| self.superseded.begin("session-history", &conn));
                 Response::data(Value::Array(stats::session_history(&conn, limit, &q)?))
+            }
+            ("GET", ["db", "marked-hands"]) => Response::data(json!(marked_hands::list(&*conn()?)?)),
+            ("POST", ["db", "marked-hands", id]) => {
+                marked_hands::mark(&*conn()?, id)?;
+                Response::data(Value::Null)
+            }
+            ("DELETE", ["db", "marked-hands", id]) => {
+                marked_hands::unmark(&*conn()?, id)?;
+                Response::data(Value::Null)
             }
             ("GET", ["db", "buyins"]) => Response::data(json!(stats::unique_buy_ins(&*conn()?)?)),
             ("GET", ["db", "detailed-stats"]) => {

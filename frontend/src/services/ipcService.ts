@@ -124,6 +124,9 @@ export const ipcService = {
     backend('GET', `/db/tournament-hands?gameId=${enc(String(gameId))}${heroName ? `&heroName=${enc(heroName)}` : ''}`),
   getHandDetails: (handId: string | number, heroName: string | null = null) =>
     backend('GET', `/db/hand/${enc(String(handId))}${query({ heroName })}`),
+  listMarkedHands: () => backend<Json[]>('GET', '/db/marked-hands'),
+  markHand: (handId: string) => backend('POST', `/db/marked-hands/${enc(handId)}`),
+  unmarkHand: (handId: string) => backend('DELETE', `/db/marked-hands/${enc(handId)}`),
   getHandReplay: (handId: string | number, heroName: string | null = null) =>
     backend('GET', `/analysis/replayer/${enc(String(handId))}${query({ heroName })}`),
 

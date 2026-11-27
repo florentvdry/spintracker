@@ -2,6 +2,7 @@
 
 pub mod analysis;
 pub mod custom_stats;
+pub mod marked_hands;
 pub mod hud;
 pub mod importer;
 pub mod live_import;

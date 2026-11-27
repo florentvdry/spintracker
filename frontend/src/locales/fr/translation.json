@@ -671,6 +671,13 @@
       "hu_vs_sb_limp": "vs SB Limp"
     }
   },
+  "shortcuts": {
+    "title": "Raccourcis clavier",
+    "help": "Afficher cette liste",
+    "play_pause": "Lancer ou mettre en pause le replay",
+    "step": "Action précédente ou suivante",
+    "mark": "Marquer ou démarquer cette main pour la réviser"
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'application",
@@ -846,6 +853,8 @@
     "timeline": "Chronologie",
     "current_action": "Action actuelle",
     "empty_title": "Sélectionnez une main pour lancer le replayer",
+    "mark_hand": "Marquer pour réviser",
+    "unmark_hand": "Démarquer",
     "empty_text": "Les pseudos, stacks et actions restent visibles sur desktop, tablette et mobile.",
     "folded": "Couchés",
     "display_mode": "Mode d'affichage",

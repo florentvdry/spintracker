@@ -617,6 +617,13 @@
       "3W_BB": "3W BB"
     }
   },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "help": "Show this list",
+    "play_pause": "Play or pause the replay",
+    "step": "Previous or next action",
+    "mark": "Mark or unmark this hand for review"
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Configure the application",
@@ -846,6 +853,8 @@
     "timeline": "Timeline",
     "current_action": "Current action",
     "empty_title": "Select a hand to start the replayer",
+    "mark_hand": "Mark for review",
+    "unmark_hand": "Unmark",
     "empty_text": "Names, stacks and actions stay visible on desktop, tablet and mobile.",
     "folded": "Folded",
     "display_mode": "Display mode",

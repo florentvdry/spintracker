@@ -1,7 +1,8 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Layout from '@/components/layout/Layout'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
+import ShortcutHelp from '@/components/ui/ShortcutHelp'
 import NotificationContainer from '@/components/ui/NotificationContainer'
 import ProgressModal from '@/components/ui/ProgressModal'
 import StartupNotice from '@/components/ui/StartupNotice'
@@ -12,6 +13,7 @@ import { useAutoImportStore } from '@/stores/autoImportStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { useUpdateStore } from '@/stores/updateStore'
 import { heroNamesOf } from '@/utils/heroNames'
+import { isTypingTarget } from '@/utils/shortcuts'
 
 const Dashboard = lazy(() => import('@/views/Dashboard'))
 const HandHistory = lazy(() => import('@/views/HandHistory'))
@@ -22,6 +24,16 @@ const Ranges = lazy(() => import('@/views/Ranges'))
 const Settings = lazy(() => import('@/views/Settings'))
 
 export default function App() {
+  const [helpOpen, setHelpOpen] = useState(false)
+
+  // "?" opens the list of shortcuts, unless the key is typed into a field.
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === '?' && !isTypingTarget(event.target as HTMLElement | null)) setHelpOpen(true)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
   const initialize = useAppStore((s) => s.initialize)
   const refreshAll = useAppStore((s) => s.refreshAll)
   const isInitialized = useAppStore((s) => s.isInitialized)
@@ -68,6 +80,7 @@ export default function App() {
           ) : (
             <StartupNotice />
           )}
+          <ShortcutHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
         </ErrorBoundary>
       </Layout>
       <NotificationContainer />

@@ -970,3 +970,20 @@
     white-space: normal;
   }
 }
+
+/* Mark / unmark button in the hand header. */
+.replayer-page .copy-hand {
+  margin-left: 6px;
+  padding: 2px 8px;
+  border: 1px solid #262b34;
+  border-radius: 6px;
+  background: #15181d;
+  color: #aeb6c4;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.replayer-page .copy-hand[aria-pressed='true'] {
+  border-color: #34c27a;
+  color: #34c27a;
+}
