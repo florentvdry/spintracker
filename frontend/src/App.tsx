@@ -4,6 +4,7 @@ import Layout from '@/components/layout/Layout'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import NotificationContainer from '@/components/ui/NotificationContainer'
 import ProgressModal from '@/components/ui/ProgressModal'
+import FirstLaunchWizard from '@/components/startup/FirstLaunchWizard'
 import StartupNotice from '@/components/ui/StartupNotice'
 import UpdateModal from '@/components/ui/UpdateModal'
 import { ipcService } from '@/services/ipcService'
@@ -68,6 +69,7 @@ export default function App() {
           ) : (
             <StartupNotice />
           )}
+          <FirstLaunchWizard />
         </ErrorBoundary>
       </Layout>
       <NotificationContainer />

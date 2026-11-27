@@ -671,6 +671,15 @@
       "hu_vs_sb_limp": "vs SB Limp"
     }
   },
+  "first_launch": {
+    "title": "Configurer tes dossiers d'historiques",
+    "intro": "SpinTracker a trouvé ces dossiers d'historiques. Surveille-les pour importer les nouvelles mains automatiquement, au fur et à mesure qu'elles sont écrites.",
+    "watch": "Surveiller ces dossiers",
+    "not_now": "Plus tard",
+    "watching": "Surveillance des dossiers d'historiques activée.",
+    "failed": "Les dossiers n'ont pas pu être enregistrés.",
+    "manual_note": "Betclic n'a pas de dossier à surveiller : exporte son historique et utilise Importer. Tu peux changer les dossiers plus tard dans les réglages."
+  },
   "settings": {
     "title": "Paramètres",
     "subtitle": "Configuration de l'application",

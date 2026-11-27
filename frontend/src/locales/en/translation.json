@@ -617,6 +617,15 @@
       "3W_BB": "3W BB"
     }
   },
+  "first_launch": {
+    "title": "Set up your history folders",
+    "intro": "SpinTracker found these history folders. Watch them to import new hands automatically, as they are written.",
+    "watch": "Watch these folders",
+    "not_now": "Not now",
+    "watching": "Watching the history folders.",
+    "failed": "The folders could not be saved.",
+    "manual_note": "Betclic has no folder to watch: export its history and use Import. You can change the folders later in Settings."
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Configure the application",
