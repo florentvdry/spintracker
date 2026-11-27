@@ -110,7 +110,13 @@ impl HandParser for IPokerParser {
 
     fn detect_format(&self, content: &str) -> bool {
         let lower = content.to_lowercase();
-        lower.contains("site:") && lower.contains("ipoker")
+        // iPoker Network exports carry the room name ("iPoker") and use the shared
+        // iPoker/Betclic export layout (`*** HEADER ***`, `*** PLAYERS ***`…).
+        // Betclic is matched first by its own `Site: Betclic` marker, so requiring
+        // "ipoker" here never steals a Betclic file. `site:` covers exports with a
+        // `Site: iPoker…` line; the section markers cover the ones that don't.
+        lower.contains("ipoker")
+            && (lower.contains("site:") || lower.contains("*** header ***") || lower.contains("*** players ***"))
     }
 
     fn parse_file(&self, content: &str) -> ParseResult {

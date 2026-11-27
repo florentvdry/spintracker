@@ -143,7 +143,9 @@ fn unibet_samples_match_expected_figures() {
 fn ipoker_samples_match_expected_figures() {
     let dir = sample_dir("iPoker");
     let expected = parse_expected(&dir.join("expected_result.txt"));
-    let files = files_in(&dir, |name| name != "expected_result.txt");
+    // The `iPoker Network_HandsExport_...` file is a detection-only regression sample
+    // (no `Site:` line); it is not part of the profit-parity figures.
+    let files = files_in(&dir, |name| name != "expected_result.txt" && !name.contains("HandsExport"));
     let hands = parse_all(&IPokerParser, &files);
     assert_matches_expected(&hands, &expected, |h| {
         h.players.iter().position(|p| p.is_hero || p.name == expected.hero)
@@ -172,6 +174,28 @@ fn ipoker_detection_is_case_insensitive() {
     // An unrelated room must not be mistaken for iPoker.
     let betclic = "site: betclic.fr\ngame mode: cash\nhand id: H001\n";
     assert_ne!(get_parser(betclic).map(|p| p.room_name()), Some("iPoker"));
+}
+
+#[test]
+fn ipoker_network_export_is_detected_without_site_line() {
+    // Some iPoker Network exports do not carry a `Site:` line: they must still be
+    // recognised as iPoker through the room name and the export layout.
+    let content = "iPoker Network\n*** HEADER ***\nGame Mode: Spin\nGame ID: T001\nHand ID: H001\n*** PLAYERS ***\nSeat 1: hero_player (1500) [BTN SB Hero]\n";
+    assert_eq!(get_parser(content).map(|p| p.room_name()), Some("iPoker"));
+}
+
+#[test]
+fn ipoker_network_export_sample_is_detected_and_parsed() {
+    // Regression test on a real-shaped iPoker Network export that has no `Site:` line.
+    let dir = sample_dir("iPoker");
+    let file = dir.join("iPoker Network_HandsExport_202611271148_tourney_00001.txt");
+    let content = read_text(&file);
+    assert_eq!(get_parser(&content).map(|p| p.room_name()), Some("iPoker"));
+    let hands = IPokerParser.parse_file(&content).hands;
+    assert_eq!(hands.len(), 1);
+    assert_eq!(hands[0].hand_id.as_deref(), Some("HNET001"));
+    assert_eq!(hands[0].room.as_deref(), Some("iPoker"));
+    assert_eq!(hands[0].player_count, 2);
 }
 
 #[test]
