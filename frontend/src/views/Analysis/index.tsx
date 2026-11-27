@@ -6,8 +6,9 @@ import clsx from 'clsx'
 const Stats = lazy(() => import('@/views/Stats'))
 const RangeResearch = lazy(() => import('@/views/RangeResearch'))
 const VarianceSimulator = lazy(() => import('@/views/VarianceSimulator'))
+const Hourly = lazy(() => import('@/views/Hourly'))
 
-const TABS = ['stats', 'ranges', 'variance'] as const
+const TABS = ['stats', 'hourly', 'ranges', 'variance'] as const
 type AnalysisTab = (typeof TABS)[number]
 
 const isTab = (value: string | null): value is AnalysisTab => TABS.some((tab) => tab === value)
@@ -40,6 +41,7 @@ export default function Analysis() {
 
       <Suspense fallback={<div className="spinner mx-auto mt-24" />}>
         {active === 'stats' && <Stats />}
+        {active === 'hourly' && <Hourly />}
         {active === 'ranges' && <RangeResearch />}
         {active === 'variance' && <VarianceSimulator />}
       </Suspense>

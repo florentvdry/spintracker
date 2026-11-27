@@ -587,6 +587,7 @@
     "tabs": {
       "hands": "Liste des mains",
       "stats": "Statistiques",
+      "hourly": "Heures et jours",
       "ranges": "Analyseur de ranges",
       "variance": "Simulateur de variance"
     },
@@ -670,6 +671,19 @@
       "hu_vs_sb_open": "vs SB Open",
       "hu_vs_sb_limp": "vs SB Limp"
     }
+  },
+  "hourly": {
+    "title": "Heures et jours",
+    "subtitle": "Quand tu gagnes, et à quel point les tables sont molles",
+    "select_hero": "Sélectionne un joueur pour voir l'analyse horaire.",
+    "empty": "Aucun tournoi dans cette sélection.",
+    "results_title": "Résultat en euros par jour et par heure",
+    "by_hour_title": "Résultat en euros par heure",
+    "fish_title": "Part de fish à la table",
+    "cell_results": "{{count}} tournois, {{profit}}",
+    "cell_fish": "{{fish}} adversaires sur {{opponents}} sont des fish ({{percent}} %)",
+    "cell_empty": "Aucune main",
+    "days": { "mon": "Lun", "tue": "Mar", "wed": "Mer", "thu": "Jeu", "fri": "Ven", "sat": "Sam", "sun": "Dim" }
   },
   "settings": {
     "title": "Paramètres",

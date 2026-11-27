@@ -2,6 +2,7 @@
 
 pub mod analysis;
 pub mod custom_stats;
+pub mod hourly;
 pub mod hud;
 pub mod importer;
 pub mod live_import;

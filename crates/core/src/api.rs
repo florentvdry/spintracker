@@ -27,7 +27,9 @@ use crate::repos::player_queries::{self, PlayersQuery};
 use crate::repos::stats::{self, ChartQuery, StatsQuery};
 use crate::repos::{hands, heatmap, players, tournaments};
 use crate::services::analysis::{self, AnalysisFilters, AnalysisHandsRequest};
+use crate::repos::hourly::HourlyScope;
 use crate::services::custom_stats::CustomStatsService;
+use crate::services::hourly;
 use crate::stats::custom::store::{self as custom_store, SaveError};
 use crate::services::range_adherence;
 use crate::services::review;
@@ -276,6 +278,12 @@ impl Backend {
                 let conn = conn()?;
                 let _running = r.query.contains_key("supersede").then(|| self.superseded.begin("dashboard-stats", &conn));
                 Response::data(stats::dashboard_stats(&conn, &stats_query_from_query(&r.query))?)
+            }
+            ("GET", ["db", "hourly"]) => {
+                let conn = conn()?;
+                let (hero, from, to) = (r.query_str("heroName"), r.query_str("dateFrom"), r.query_str("dateTo"));
+                let scope = HourlyScope { hero_name: hero.as_deref(), date_from: from.as_deref(), date_to: to.as_deref(), buy_in: r.query_f64("buyIn") };
+                Response::data(hourly::analysis(&conn, &scope)?)
             }
             ("GET" | "POST", ["db", "session-history"]) => {
                 let (limit, q) = r.session_options();

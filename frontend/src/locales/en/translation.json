@@ -587,6 +587,7 @@
     "tabs": {
       "hands": "Hands List",
       "stats": "Statistics",
+      "hourly": "Hours and days",
       "ranges": "Range Analyzer",
       "variance": "Variance Simulator"
     },
@@ -616,6 +617,19 @@
       "3W_SB": "3W SB",
       "3W_BB": "3W BB"
     }
+  },
+  "hourly": {
+    "title": "Hours and days",
+    "subtitle": "When you win, and how soft the tables are",
+    "select_hero": "Select a hero to see the hourly analysis.",
+    "empty": "No tournament in this selection.",
+    "results_title": "Euro result by weekday and hour",
+    "by_hour_title": "Euro result by hour",
+    "fish_title": "Share of fish at the table",
+    "cell_results": "{{count}} tournaments, {{profit}}",
+    "cell_fish": "{{fish}} of {{opponents}} opponents are fish ({{percent}} %)",
+    "cell_empty": "No hand",
+    "days": { "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu", "fri": "Fri", "sat": "Sat", "sun": "Sun" }
   },
   "settings": {
     "title": "Settings",
