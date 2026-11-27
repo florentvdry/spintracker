@@ -374,6 +374,19 @@
     "buy_in": "Buy-in",
     "period": "Période"
   },
+  "import": {
+    "title": "Import des historiques",
+    "subtitle": "Détection automatique de la room · import idempotent",
+    "detection": "Chaque fichier est analysé pour identifier sa room (Winamax, Unibet, Betclic). Seules les rooms détectées s'affichent.",
+    "idempotent": "L'import est idempotent : réimporter un fichier remplace les mains existantes, sans créer de doublons.",
+    "hands_imported": "Mains importées",
+    "tournaments": "Tournois",
+    "files": "Fichiers",
+    "start": "Commencer l'import",
+    "importing": "Import en cours…",
+    "done": "Import terminé",
+    "no_rooms": "Aucun fichier d'historique reconnu"
+  },
   "dashboard": {
     "title": "Tableau de bord",
     "subtitle": "Vue d'ensemble de vos performances",

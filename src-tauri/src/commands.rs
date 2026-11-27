@@ -54,6 +54,14 @@ pub async fn import_hand_history(app: AppHandle, window: WebviewWindow) -> Value
 }
 
 #[tauri::command]
+pub async fn import_history_rooms(app: AppHandle, window: WebviewWindow) -> Value {
+    if let Some(denied) = main_window_only(&window) {
+        return denied;
+    }
+    import::run_rooms(app).await
+}
+
+#[tauri::command]
 pub async fn export_data(app: AppHandle, window: WebviewWindow, dialog_title: String, filter: export::ExportFilter) -> Value {
     if let Some(denied) = main_window_only(&window) {
         return denied;

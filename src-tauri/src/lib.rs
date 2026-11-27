@@ -93,6 +93,7 @@ pub fn run() {
             commands::backend_request,
             commands::check_server_status,
             commands::import_hand_history,
+            commands::import_history_rooms,
             commands::export_data,
             commands::save_text_file,
             commands::delete_all_hands,

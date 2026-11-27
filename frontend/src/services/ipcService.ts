@@ -23,6 +23,31 @@ export interface ImportProgress {
   totalHands: number | null
 }
 
+export interface ImportRoomProgress {
+  room: string
+  handsImported: number
+  totalHands: number
+  percent: number
+  filesProcessed: number
+}
+
+export interface ImportRoom {
+  room: string
+  handsImported: number
+  totalHands: number
+  percent: number
+}
+
+export interface ImportHistoryRoomsResult {
+  success: boolean
+  message?: string
+  rooms: ImportRoom[]
+  totalHandsImported: number
+  totalTournaments: number
+  filesProcessed: number
+  errors: Json[]
+}
+
 export type AutoImportState = 'off' | 'nofolder' | 'watching' | 'importing' | 'paused' | 'error'
 
 export interface AutoImportStatus {
@@ -185,6 +210,8 @@ export const ipcService = {
   // Maintenance
   deleteAllHands: () => command<ApiResult>('delete_all_hands'),
   importHandHistory: () => command<ApiResult>('import_hand_history'),
+  /** Picks hand-history files, detects rooms and imports them one room at a time. */
+  importHistoryRooms: () => command<ImportHistoryRoomsResult>('import_history_rooms'),
   getAutoImport: () => command<ApiResult>('auto_import_get'),
   setAutoImport: (enabled: boolean, folders: AutoImportFolder[]) => command<ApiResult>('auto_import_set', { enabled, folders }),
   getHudCatalog: () => backend<{ stats: { section: string; label: string; id: string; fixedSeat: boolean; name?: string; ready?: boolean }[] }>('GET', '/hud/catalog'),
@@ -242,6 +269,11 @@ export const ipcService = {
 
   // Events
   onImportProgress: (callback: (progress: ImportProgress) => void) => subscribe('import-progress', callback),
+  /** One progress event per detected room while that room is imported. */
+  onImportRoomProgress: (callback: (progress: ImportRoomProgress) => void) =>
+    subscribe('import-room-progress', callback),
+  /** The list of rooms detected before importing starts (bars are drawn at 0%). */
+  onImportRoomsDetected: (callback: (payload: Json) => void) => subscribe('import-rooms-detected', callback),
   /** The stored statistics are being recomputed (after an update changed their definition). */
   onBackfillProgress: (callback: (progress: BackfillProgress) => void) => subscribe('backfill-progress', callback),
   onHandsImported: (callback: (payload: HandsImported) => void) => subscribe('hands-imported', callback),

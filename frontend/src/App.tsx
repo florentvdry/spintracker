@@ -20,6 +20,7 @@ const Players = lazy(() => import('@/views/Players'))
 const LiveHud = lazy(() => import('@/views/LiveHud'))
 const Ranges = lazy(() => import('@/views/Ranges'))
 const Settings = lazy(() => import('@/views/Settings'))
+const Import = lazy(() => import('@/views/Import'))
 
 export default function App() {
   const initialize = useAppStore((s) => s.initialize)
@@ -63,6 +64,7 @@ export default function App() {
                 <Route path="/hud" element={<LiveHud />} />
                 <Route path="/ranges" element={<Ranges />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/import" element={<Import />} />
               </Routes>
             </Suspense>
           ) : (
