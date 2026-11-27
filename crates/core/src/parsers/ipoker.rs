@@ -109,12 +109,14 @@ impl HandParser for IPokerParser {
     }
 
     fn detect_format(&self, content: &str) -> bool {
-        content.contains("Site:") && (content.contains("iPoker") || content.contains("IPoker"))
+        let lower = content.to_lowercase();
+        lower.contains("site:") && lower.contains("ipoker")
     }
 
     fn parse_file(&self, content: &str) -> ParseResult {
+        let separator = self.hand_separator_for(content);
         let hands = content
-            .split(HAND_SEPARATOR)
+            .split(separator)
             .map(str::trim)
             .filter(|t| !t.is_empty())
             .filter_map(|t| self.parse_hand(t))

@@ -162,6 +162,19 @@ fn format_detection_picks_the_right_room() {
 }
 
 #[test]
+fn ipoker_detection_is_case_insensitive() {
+    let lowercase = "site: ipoker.fr\ngame mode: spin\nhand id: H001\n";
+    assert_eq!(get_parser(lowercase).map(|p| p.room_name()), Some("iPoker"));
+
+    let uppercase = "SITE: IPOKER.FR\nGAME MODE: SPIN\nHAND ID: H001\n";
+    assert_eq!(get_parser(uppercase).map(|p| p.room_name()), Some("iPoker"));
+
+    // An unrelated room must not be mistaken for iPoker.
+    let betclic = "site: betclic.fr\ngame mode: cash\nhand id: H001\n";
+    assert_ne!(get_parser(betclic).map(|p| p.room_name()), Some("iPoker"));
+}
+
+#[test]
 fn parsed_hands_are_internally_consistent() {
     let cases: [(&str, &dyn HandParser, fn(&str) -> bool); 4] = [
         ("Betclic", &BetclicParser, |n| n != "excepted_result.txt"),

@@ -140,6 +140,37 @@ fn unibet_import_detects_the_hero_and_reads_summaries() {
 }
 
 #[test]
+fn ipoker_import_imports_all_hands_from_a_sample_file() {
+    let f = fixture();
+    let file = sample("iPoker", "iPoker_2026-1-1.txt");
+    assert!(f.importer.count_hands(&file).unwrap() > 0, "iPoker sample must be detected");
+    let (summary, events) = run(&f, &file);
+    assert_eq!((summary.imported, summary.skipped), (summary.total_found, 0), "{events:?}");
+    assert_eq!(summary.imported, 2, "iPoker_2026-1-1.txt holds two hands");
+    let conn = f.db.conn().unwrap();
+    assert_eq!(count(&conn, "SELECT COUNT(*) FROM hands"), 2);
+}
+
+#[test]
+fn ipoker_import_without_dashed_dividers_is_split_into_hands() {
+    let f = fixture();
+    let original = sample("iPoker", "iPoker_2026-1-1.txt");
+    let text = std::fs::read_to_string(&original).unwrap();
+    assert!(text.lines().any(|l| l.starts_with("------------")), "the sample uses the dashed layout");
+
+    // The modern export layout: hands follow each other with no dashed line.
+    let stripped: String = text.lines().filter(|l| !l.starts_with("------------")).map(|l| format!("{l}\n")).collect();
+    let path = f._dir.path().join("iPoker_HandsExport_test.txt");
+    std::fs::write(&path, stripped).unwrap();
+
+    let expected = f.importer.count_hands(&original).unwrap();
+    assert!(expected > 1, "the dashed sample must hold several hands");
+    assert_eq!(f.importer.count_hands(&path).unwrap(), expected, "count must match the dashed layout");
+    let (summary, _) = run(&f, &path);
+    assert_eq!(summary.imported, expected, "all hands must be imported without dividers");
+}
+
+#[test]
 fn counting_hands_and_unknown_files() {
     let f = fixture();
     let betclic = sample("Betclic", "21793509_ExportHH_2026-1-2.txt");
