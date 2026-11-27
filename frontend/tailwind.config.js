@@ -51,8 +51,8 @@ export default {
           900: '#15181d',
         },
         profit: {
-          positive: '#3fd49a',
-          negative: '#ff7a6b',
+          positive: 'rgb(var(--profit-positive-rgb, 63 212 154) / <alpha-value>)',
+          negative: 'rgb(var(--profit-negative-rgb, 255 122 107) / <alpha-value>)',
         },
       },
       fontFamily: {

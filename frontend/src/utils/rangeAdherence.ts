@@ -225,7 +225,6 @@ export function groupByPosition(spots: readonly SpotReport[]): PositionGroup[] {
 }
 
 /** Colours of the tones, shared by the rings, the bars and the big figure. */
-export const RESPECT_COLORS: Record<RespectTone, string> = { good: '#2fd45a', ok: '#a6c93a', work: '#e8962d' }
 
 export function respectTone(respect: number): RespectTone {
   if (respect >= GOOD_RESPECT) return 'good'

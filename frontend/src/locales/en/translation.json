@@ -623,7 +623,11 @@
     "general": {
       "title": "General",
       "language": "Language",
-      "language_desc": "Choose your preferred language"
+      "language_desc": "Choose your preferred language",
+      "palette": "Colour palette",
+      "palette_desc": "Green and red for gains and losses, or a colour-blind-safe palette (blue and orange)",
+      "palette_standard": "Standard",
+      "palette_colorblind": "Colour-blind safe"
     },
     "database": {
       "title": "Database",

@@ -5,7 +5,9 @@ import App from './App'
 import './i18n'
 import './fonts'
 import './index.css'
+import { applyPalette, readPalette } from '@/utils/palette'
 
+applyPalette(readPalette())
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HashRouter>

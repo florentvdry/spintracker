@@ -677,7 +677,11 @@
     "general": {
       "title": "Général",
       "language": "Langue",
-      "language_desc": "Choisissez votre langue préférée"
+      "language_desc": "Choisissez votre langue préférée",
+      "palette": "Palette de couleurs",
+      "palette_desc": "Vert et rouge pour les gains et les pertes, ou une palette adaptée au daltonisme (bleu et orange)",
+      "palette_standard": "Standard",
+      "palette_colorblind": "Adaptée au daltonisme"
     },
     "database": {
       "title": "Base de données",

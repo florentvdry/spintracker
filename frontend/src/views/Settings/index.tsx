@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Check, Database, Download, Edit2, FolderOpen, Globe, Loader, Plus, RefreshCw, Trash2, X } from 'lucide-react'
+import { Check, Database, Download, Edit2, FolderOpen, Globe, Loader, Palette, Plus, RefreshCw, Trash2, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
 import Card from '@/components/ui/Card'
@@ -18,6 +18,7 @@ import AutoImportCard from './components/AutoImportCard'
 import RangesSettings from './components/RangesSettings'
 import SettingRow from './components/SettingRow'
 import { logError } from '@/utils/log'
+import { applyPalette, PALETTE_NAMES, readPalette, writePalette, type PaletteName } from '@/utils/palette'
 
 const STATUS_POLL_MS = 30_000
 const RELOAD_AFTER_DB_SWITCH_MS = 2000
@@ -43,6 +44,7 @@ export default function Settings() {
     if (focus) document.getElementById(focus)?.scrollIntoView({ block: 'start' })
   }, [focus])
 
+  const [palette, setPalette] = useState<PaletteName>(readPalette)
   const [serverActive, setServerActive] = useState<boolean | null>(null)
   const [exportOpen, setExportOpen] = useState(false)
   const closeExport = useCallback(() => setExportOpen(false), [])
@@ -186,6 +188,12 @@ export default function Settings() {
     }
   }
 
+  const choosePalette = (name: PaletteName) => {
+    applyPalette(name)
+    writePalette(name)
+    setPalette(name)
+  }
+
   const languageButton = (code: string, label: string) => (
     <button
       onClick={() => setLanguage(code)}
@@ -207,6 +215,15 @@ export default function Settings() {
           <div className="segmented">
             {languageButton('en', 'English')}
             {languageButton('fr', 'Français')}
+          </div>
+        </SettingRow>
+        <SettingRow icon={Palette} title={t('settings.general.palette')} description={t('settings.general.palette_desc')}>
+          <div className="segmented">
+            {PALETTE_NAMES.map((name) => (
+              <button key={name} className={clsx('segmented-item', palette === name && 'active')} onClick={() => choosePalette(name)}>
+                {t(`settings.general.palette_${name}`)}
+              </button>
+            ))}
           </div>
         </SettingRow>
       </Card>
